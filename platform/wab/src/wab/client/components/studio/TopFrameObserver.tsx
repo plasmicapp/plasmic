@@ -73,7 +73,7 @@ function trackArtboardFileDrags(studioCtx: StudioCtx): () => void {
       if (!untrackByViewCtx.has(vc)) {
         untrackByViewCtx.set(
           vc,
-          fileDragMonitor.addWindowListeners(vc.canvasCtx.win())
+          fileDragMonitor.addWindowListeners(vc.canvasCtx.win()),
         );
       }
     }
@@ -132,7 +132,7 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
             metaKey,
             shiftKey,
             keyCode,
-          })
+          }),
         );
         document.body.dispatchEvent(
           new KeyboardEvent("keypress", {
@@ -142,13 +142,13 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
             metaKey,
             shiftKey,
             keyCode,
-          })
+          }),
         );
       },
       updateLocalizationProjectFlags: async (
         localization,
         keyScheme,
-        tagPrefix
+        tagPrefix,
       ) => {
         await studioCtx.change(() => {
           studioCtx.site.flags.usePlasmicTranslation = localization;
@@ -201,7 +201,7 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
         return roleUsage;
       },
       async setDefaultPageRoleId(
-        roleId: string | null | undefined
+        roleId: string | null | undefined,
       ): Promise<void> {
         await studioCtx.change(() => {
           studioCtx.site.defaultPageRoleId = roleId;
@@ -223,7 +223,7 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
       },
       async executeCopilotToolCall(
         toolName: string,
-        toolArgs: Record<string, unknown>
+        toolArgs: Record<string, unknown>,
       ): Promise<CopilotToolCallResult> {
         const copilotTool = COPILOT_TOOLS[toolName];
 
@@ -281,7 +281,7 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
         fileDragMonitor.onRemoteEvent(event);
       },
     }),
-    [studioCtx]
+    [studioCtx],
   );
 
   React.useEffect(() => {
@@ -292,9 +292,9 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
   React.useEffect(
     () =>
       fileDragMonitor.subscribeRemote((event) =>
-        spawn(topFrameApi.onFileDragEventInHost(event))
+        spawn(topFrameApi.onFileDragEventInHost(event)),
       ),
-    [topFrameApi]
+    [topFrameApi],
   );
 
   React.useEffect(() => {
@@ -311,7 +311,7 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
     const noComponents = computed(
       () =>
         studioCtx.site.components.filter((c) => !isFrameComponent(c)).length ===
-        0
+        0,
     );
 
     // Get either (in descending preference):
@@ -327,20 +327,20 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
           isPageArena(studioCtx.currentArena)
             ? studioCtx.currentArena.component
             : isComponentArena(studioCtx.currentArena)
-            ? studioCtx.currentArena.component
-            : studioCtx.focusedViewCtx()?.component,
+              ? studioCtx.currentArena.component
+              : studioCtx.focusedViewCtx()?.component,
           studioCtx.site.components.find(
-            (c) => isPageComponent(c) && c.pageMeta.path === "/"
+            (c) => isPageComponent(c) && c.pageMeta.path === "/",
           ),
           sortBy(
             studioCtx.site.components.filter((c) => isPageComponent(c)),
-            (c) => c.name.toLowerCase()
+            (c) => c.name.toLowerCase(),
           )[0],
           sortBy(
             studioCtx.site.components.filter((c) => isReusableComponent(c)),
-            (c) => c.name.toLowerCase()
+            (c) => c.name.toLowerCase(),
           )[0],
-        ].filter(Boolean)[0]
+        ].filter(Boolean)[0],
     );
 
     const disposes = filterFalsy([
@@ -357,7 +357,7 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
                   tagPrefix: studioCtx.site.flags.tagPrefix,
                 } as LocalizationConfig)
               : undefined,
-          })
+          }),
         );
       }),
       autorun(() => {
@@ -368,8 +368,8 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
                   revisionId: studioCtx.releases[0].revisionId,
                   version: studioCtx.releases[0].version,
                 }
-              : undefined
-          )
+              : undefined,
+          ),
         );
       }),
       autorun(() => {
@@ -390,8 +390,8 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
           const branchInfo = studioCtx.dbCtx().branchInfo;
           spawn(
             topFrameApi.setActivatedBranch(
-              jsonClone(branchInfo ?? null) ?? undefined
-            )
+              jsonClone(branchInfo ?? null) ?? undefined,
+            ),
           );
         }),
     ]);

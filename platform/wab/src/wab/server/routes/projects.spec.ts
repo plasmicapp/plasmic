@@ -7,10 +7,10 @@ import {
 import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { seedTestUserAndProjects } from "@/wab/server/db/DbInit";
 import {
-  DbMgr,
   DEFAULT_DEV_PASSWORD,
-  normalActor,
+  DbMgr,
   SUPER_USER,
+  normalActor,
 } from "@/wab/server/db/DbMgr";
 import { Project, User } from "@/wab/server/entities/Entities";
 import { ensure } from "@/wab/shared/common";
@@ -40,7 +40,7 @@ describe("project routes", () => {
       const userAndProjects = await seedTestUserAndProjects(
         em,
         { email: "user@example.com" },
-        1
+        1,
       );
       user = userAndProjects.user;
 
@@ -49,7 +49,7 @@ describe("project routes", () => {
       // flow in Studio does.
       project = await db.updateProject(
         { id: userAndProjects.projects[0].id },
-        true
+        true,
       );
       publicToken = ensure(project.projectApiToken, "expected public token");
       secretToken = ensure(project.secretApiToken, "expected secret token");
@@ -69,7 +69,7 @@ describe("project routes", () => {
       await db.grantProjectPermissionByEmail(
         project.id,
         contentUser.email,
-        "content"
+        "content",
       );
     });
 
@@ -126,7 +126,7 @@ describe("project routes", () => {
         "get",
         mkUrl(project.id),
         undefined,
-        withPublicToken()
+        withPublicToken(),
       );
       expect(res.status()).toEqual(200);
 
@@ -147,7 +147,7 @@ describe("project routes", () => {
         "put",
         `/api/v1/projects/${project.id}`,
         { name: "renamed with public token" },
-        withPublicToken()
+        withPublicToken(),
       );
       expect(readOnly.status()).toEqual(403);
 
@@ -159,7 +159,7 @@ describe("project routes", () => {
           headers: {
             "x-plasmic-api-project-tokens": `${project.id}:${secretToken}`,
           },
-        }
+        },
       );
       expect(readWrite.status()).toEqual(200);
     });
@@ -171,7 +171,7 @@ describe("project routes", () => {
         "put",
         `/api/v1/projects/${project.id}`,
         { name: "renamed by a content creator" },
-        asUser(contentUser)
+        asUser(contentUser),
       );
       expect(res.status()).toEqual(200);
 
@@ -179,7 +179,7 @@ describe("project routes", () => {
       const body = await res.json();
       expect(body.paywall).toEqual("pass");
       expect(body.response.project.name).toEqual(
-        "renamed by a content creator"
+        "renamed by a content creator",
       );
       expect(body.response.regeneratedSecretApiToken).toBeUndefined();
       expect(JSON.stringify(body)).not.toContain(secretToken);
@@ -190,7 +190,7 @@ describe("project routes", () => {
         "put",
         `/api/v1/projects/${project.id}`,
         { regenerateSecretApiToken: true },
-        asUser(user)
+        asUser(user),
       );
       expect(res.status()).toEqual(200);
 

@@ -26,7 +26,7 @@ export function collectUsedAnimationSequences(site: Site): AnimationSequence[] {
  * Collects the AnimationSequences referenced by the given components' RuleSets.
  */
 export function extractUsedAnimationSequencesForComponents(
-  components: Component[]
+  components: Component[],
 ): Set<AnimationSequence> {
   const sequences = new Set<AnimationSequence>();
   for (const component of components) {
@@ -39,7 +39,7 @@ export function extractUsedAnimationSequencesForComponents(
 
 export function collectUsedAnimationSequencesForTpl(
   collector: Set<AnimationSequence>,
-  tpl: TplNode
+  tpl: TplNode,
 ) {
   for (const vs of tpl.vsettings) {
     for (const anim of vs.rs.animations ?? []) {
@@ -49,7 +49,7 @@ export function collectUsedAnimationSequencesForTpl(
 }
 
 export function getAnimationSequenceIdentifier(
-  animationSequence: AnimationSequence
+  animationSequence: AnimationSequence,
 ) {
   return `${toVarName(animationSequence.name)}-${animationSequence.uuid}`;
 }

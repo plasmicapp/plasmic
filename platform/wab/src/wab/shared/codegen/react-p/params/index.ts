@@ -56,7 +56,7 @@ export function getExternalParams(ctx: SerializerBaseContext) {
   const vgParams = getGenableVariantParams(ctx);
   return [...argParams, ...vgParams].filter(
     (p) =>
-      ctx.exportOpts.forceAllProps || p.exportType === ParamExportType.External
+      ctx.exportOpts.forceAllProps || p.exportType === ParamExportType.External,
   );
 }
 
@@ -102,21 +102,21 @@ export function serializeVariantsArgsType(ctx: SerializerBaseContext) {
         .map(
           (vg) =>
             `${toVarName(
-              vg.param.variable.name
-            )}: ${serializeVariantGroupMembersType(vg)};`
+              vg.param.variable.name,
+            )}: ${serializeVariantGroupMembersType(vg)};`,
         )
         .join("\n")}
     };
     export type ${name} = ${serializeVariantsArgsTypeContent(vgs)};
     type VariantPropType = keyof ${name};
     export const ${makeVariantPropsName(
-      ctx.component
+      ctx.component,
     )} = new Array<VariantPropType>(${getParamNames(
-    ctx.component,
-    vgs.map((p) => p.param)
-  )
-    .map(jsLiteral)
-    .join()});
+      ctx.component,
+      vgs.map((p) => p.param),
+    )
+      .map(jsLiteral)
+      .join()});
   `;
 }
 
@@ -132,8 +132,8 @@ export function serializeParamsTypeContent(ctx: SerializerBaseContext) {
         `"${paramToVarName(ctx.component, p)}"?: ${serializeParamType(
           ctx.component,
           p,
-          ctx.projectFlags
-        )};`
+          ctx.projectFlags,
+        )};`,
     )
     .join("\n");
 }
@@ -159,7 +159,7 @@ export function serializeArgsType(ctx: SerializerBaseContext) {
 export type ${name} = ${getArgsTypeContent(ctx)};
 type ArgPropType = keyof ${name};
 export const ${makeArgPropsName(
-    ctx.component
+    ctx.component,
   )} = new Array<ArgPropType>(${argPropTypes});
 `;
 }
@@ -170,7 +170,7 @@ export const ${makeArgPropsName(
 export function serializeParamType(
   component: Component,
   param: Param,
-  projectFlags: DevFlagsType
+  projectFlags: DevFlagsType,
 ) {
   const variantGroup = findVariantGroupForParam(component, param);
   if (variantGroup) {
@@ -183,7 +183,7 @@ export function serializeParamType(
     return `(${param.type.params
       .map(
         (arg) =>
-          `${toJsIdentifier(arg.argName)}: ${wabToTsType(arg.type, true)}`
+          `${toJsIdentifier(arg.argName)}: ${wabToTsType(arg.type, true)}`,
       )
       .join(", ")}) => void`;
   } else {
@@ -196,7 +196,7 @@ export function getGenableVariantGroups(ctx: SerializerBaseContext) {
     (vg) =>
       vg.variants.length > 0 &&
       (ctx.exportOpts.forceAllProps ||
-        vg.param.exportType !== ParamExportType.ToolsOnly)
+        vg.param.exportType !== ParamExportType.ToolsOnly),
   );
 }
 
@@ -208,7 +208,8 @@ export function getArgParams(ctx: SerializerBaseContext) {
   const params = getNonVariantParams(ctx.component);
   return params.filter(
     (p) =>
-      ctx.exportOpts.forceAllProps || p.exportType !== ParamExportType.ToolsOnly
+      ctx.exportOpts.forceAllProps ||
+      p.exportType !== ParamExportType.ToolsOnly,
   );
 }
 
@@ -219,12 +220,12 @@ export function serializeNonParamExpr(
     forCodeComponent: boolean;
     localizable: boolean;
     source: LocalizableStringSource;
-  }
+  },
 ) {
   const param = extractReferencedParam(ctx.component, expr);
   assert(
     !param,
-    "serializeExpr can not be used with exprs referencing component params"
+    "serializeExpr can not be used with exprs referencing component params",
   );
   if (
     isKnownImageAssetRef(expr) &&

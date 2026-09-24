@@ -10,7 +10,7 @@ export async function sendAppEndUserInviteEmail(
     appName,
     url,
     sharer,
-  }: { sharer: User; email: string; appName: string; url: string }
+  }: { sharer: User; email: string; appName: string; url: string },
 ) {
   const sharerName = sanitize(fullName(sharer)) || sharer.email;
   const safeAppName = sanitize(appName);

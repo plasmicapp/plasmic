@@ -24,7 +24,7 @@ export type OptimizationOptionProps = DefaultOptimizationOptionProps;
 
 function OptimizationOption_(
   props: OptimizationOptionProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicOptimizationOption to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

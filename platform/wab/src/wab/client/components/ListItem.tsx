@@ -10,11 +10,10 @@ import { combineProps } from "@/wab/commons/components/ReactUtil";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 
-interface ListItemProps
-  extends Omit<
-    DefaultListItemProps & PlasmicListItem__OverridesType,
-    "hasMenu" | "showAdditionalRow" | "alwaysShowDragHandle"
-  > {
+interface ListItemProps extends Omit<
+  DefaultListItemProps & PlasmicListItem__OverridesType,
+  "hasMenu" | "showAdditionalRow" | "alwaysShowDragHandle"
+> {
   showActionsOnHover?: boolean;
   dragHandleProps?: DraggableProvidedDragHandleProps;
   style?: React.CSSProperties;

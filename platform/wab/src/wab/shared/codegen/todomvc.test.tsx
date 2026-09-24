@@ -25,7 +25,7 @@ describe("todolist blackbox codegen", () => {
     const { importFromProject } = await codegen(dir.name, site);
     // Import the root component from js
     const ThemeContext = await importFromProject(
-      "PlasmicGlobalVariant__Theme.js"
+      "PlasmicGlobalVariant__Theme.js",
     );
     const component = await importFromProject("TodoApp.js");
 
@@ -33,7 +33,7 @@ describe("todolist blackbox codegen", () => {
     render(
       React.createElement(ThemeContext.default.Provider, { value: "light" }, [
         React.createElement(component.default),
-      ])
+      ]),
     );
 
     // Some basic sanity checks

@@ -8,7 +8,7 @@ export const migrate: BundledMigrationFn = async (bundle) => {
       const values = inst["values"];
       if ("transform" in values) {
         values["transform"] = _migrationOnlyUtil.migrateTransformsValue(
-          values["transform"]
+          values["transform"],
         );
       }
     }

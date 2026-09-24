@@ -21,7 +21,7 @@ export function getPlasmicAuthPackageName(opts: {
 
 export function shouldWrapWithPageGuard(
   ctx: SerializerBaseContext,
-  component: Component
+  component: Component,
 ) {
   if (!isPageComponent(component)) {
     return false;
@@ -32,7 +32,7 @@ export function shouldWrapWithPageGuard(
 
 export function serializeWithPlasmicPageGuard(
   ctx: SerializerBaseContext,
-  component: Component
+  component: Component,
 ) {
   if (!shouldWrapWithPageGuard(ctx, component)) {
     return "";
@@ -45,7 +45,7 @@ export function serializeWithPlasmicPageGuard(
       return generateSubstituteComponentCalls(
         [unauthorizedComp],
         ctx.exportOpts,
-        ctx.aliases
+        ctx.aliases,
       );
     }
     return "";
@@ -89,7 +89,7 @@ export function serializeWithPlasmicPageGuard(
 
 export function shouldWrapWithUsePlasmicAuth(
   ctx: SerializerBaseContext,
-  component: Component
+  component: Component,
 ) {
   return (
     isPageComponent(component) &&
@@ -100,7 +100,7 @@ export function shouldWrapWithUsePlasmicAuth(
 
 export function serializeWithUsePlasmicAuth(
   ctx: SerializerBaseContext,
-  component: Component
+  component: Component,
 ) {
   if (!shouldWrapWithUsePlasmicAuth(ctx, component)) {
     return "";

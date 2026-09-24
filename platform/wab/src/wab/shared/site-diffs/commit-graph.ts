@@ -13,7 +13,7 @@ import { countBy, intersection } from "lodash";
 /** Return all unique ancestors start from given node. */
 export function ancestors(
   graph: CommitParentGraph,
-  node: PkgVersionId
+  node: PkgVersionId,
 ): PkgVersionId[] {
   const result: PkgVersionId[] = [];
   const stack: PkgVersionId[] = [node];
@@ -38,26 +38,26 @@ export function ancestors(
 /** Return the graph filtered to only the specified nodes. */
 export function subgraph(
   graph: CommitParentGraph,
-  nodesToKeep: PkgVersionId[]
+  nodesToKeep: PkgVersionId[],
 ): CommitParentGraph {
   const nodesToKeepSet = new Set(nodesToKeep);
   return Object.fromEntries(
     nodesToKeep.map((node) =>
       tuple(
         node,
-        graph[node].filter((parent) => nodesToKeepSet.has(parent))
-      )
-    )
+        graph[node].filter((parent) => nodesToKeepSet.has(parent)),
+      ),
+    ),
   );
 }
 
 /** Return all nodes that have no children. */
 export function leaves(graph: CommitParentGraph) {
   const numChildren = countBy(
-    Object.values(graph).flatMap((parents) => parents)
+    Object.values(graph).flatMap((parents) => parents),
   );
   return Object.keys(graph).filter(
-    (node) => (numChildren[node] ?? 0) === 0
+    (node) => (numChildren[node] ?? 0) === 0,
   ) as PkgVersionId[];
 }
 
@@ -67,7 +67,7 @@ export function getLowestCommonAncestor(
   fromBranchId?: BranchId,
   toBranchId?: BranchId,
   fromPkgVersionId?: PkgVersionId,
-  toPkgVersionId?: PkgVersionId
+  toPkgVersionId?: PkgVersionId,
 ) {
   // Lowest common ancestors algorithm - find the "best" merge-base.
   // From https://git-scm.com/docs/git-merge-base: One common ancestor is better than another common ancestor if the latter is an ancestor of the former.
@@ -97,7 +97,7 @@ export function getLowestCommonAncestor(
           graph,
           lowestCommonAncestors,
         },
-      }
+      },
     );
   }
 

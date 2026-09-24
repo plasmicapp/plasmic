@@ -17,19 +17,19 @@ import {
   useAsyncStrict,
 } from "@/wab/client/hooks/useAsyncStrict";
 import InfoIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Info";
-import { assertNever, ensure, spawn } from "@/wab/shared/common";
 import GatsbyIcon from "@/wab/commons/images/gatsby.svg";
 import NextjsIcon from "@/wab/commons/images/nextjs.svg";
 import ReactIcon from "@/wab/commons/images/react.svg";
 import {
   ApiProject,
-  GithubOrganization,
   GitRepository,
   GitSyncAction,
   GitSyncLanguage,
   GitSyncPlatform,
   GitSyncScheme,
+  GithubOrganization,
 } from "@/wab/shared/ApiSchema";
+import { assertNever, ensure, spawn } from "@/wab/shared/common";
 import { isValidSubdomainPart } from "@/wab/shared/strs";
 import { Tooltip } from "antd";
 import * as React from "react";
@@ -46,10 +46,10 @@ export function filterNonPlasmicBranches(allBranches: string[] = []): string[] {
 
 export function filterPlasmicPullRequests(
   allBranches: string[] = [],
-  branch: string
+  branch: string,
 ) {
   return allBranches.filter(
-    (name) => name.startsWith("plasmic/") && name.endsWith(`/${branch}`)
+    (name) => name.startsWith("plasmic/") && name.endsWith(`/${branch}`),
   );
 }
 
@@ -68,13 +68,13 @@ function GithubIntegration(props: GithubIntegrationProps) {
   const hideGithubPages = true;
 
   const [org, setOrg] = React.useState<GithubOrganization | undefined>(
-    undefined
+    undefined,
   );
   const [name, setName] = React.useState("");
   const [privateRepo, setPrivateRepo] = React.useState(false);
 
   const [repository, setRepository] = React.useState<GitRepository | undefined>(
-    undefined
+    undefined,
   );
   const [directory, setDirectory] = React.useState("");
   const [branch, setBranch] = React.useState("");
@@ -107,7 +107,7 @@ function GithubIntegration(props: GithubIntegrationProps) {
     } else if (org === undefined) {
       setOrg(
         data.organizations.filter((o) => o.type === "User")[0] ||
-          data.organizations[0]
+          data.organizations[0],
       );
     }
     if (
@@ -129,7 +129,7 @@ function GithubIntegration(props: GithubIntegrationProps) {
     return await appCtx.api.detectOptionsFromDirectory(
       repository,
       branch,
-      directory
+      directory,
     );
   }, [repository, branch, directory]);
 
@@ -336,7 +336,7 @@ function GithubIntegration(props: GithubIntegrationProps) {
         value: org?.login ?? null,
         onChange: (key) => {
           const o = githubData.value?.organizations.filter(
-            (_o) => _o.login === key
+            (_o) => _o.login === key,
           )[0];
           setOrg(o);
           setNameError(false);
@@ -373,7 +373,7 @@ function GithubIntegration(props: GithubIntegrationProps) {
         value: repository?.name ?? null,
         onChange: (key) => {
           const r = githubData.value?.repositories.filter(
-            (_r) => _r.name === key
+            (_r) => _r.name === key,
           )[0];
           setRepository(r);
         },
@@ -404,7 +404,7 @@ function GithubIntegration(props: GithubIntegrationProps) {
             <Select.Option value={b} key={b}>
               {b}
             </Select.Option>
-          )
+          ),
         ),
         placeholder: branches.loading
           ? "Loading branches..."
@@ -529,7 +529,7 @@ function GithubIntegration(props: GithubIntegrationProps) {
             e.preventDefault();
             ensure(
               subdomainInputRef.current,
-              () => `subdomainInputRef is Nil`
+              () => `subdomainInputRef is Nil`,
             ).focus();
           }
         },

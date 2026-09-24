@@ -28,7 +28,7 @@ describe("CMS tests", () => {
   /** Test checkUniqueFields and updateCmsRow (publish) have the same behavior. */
   async function testCheckAndPublish(
     rowId: CmsRowId,
-    data: { numField: number | null; textField: string | null }
+    data: { numField: number | null; textField: string | null },
   ) {
     const uniqueFieldChecks = await api.checkUniqueFields(table.id, {
       rowId,
@@ -68,7 +68,7 @@ describe("CMS tests", () => {
         {
           email: "user@example.com",
         },
-        0
+        0,
       );
       user = userAndProjects.user;
 
@@ -117,9 +117,9 @@ describe("CMS tests", () => {
       });
       published = await db.createCmsRows(
         table.id,
-        new Array(ROWS)
-          .fill(0)
-          .map((_, i) => ({ data: { "": { numField: i, textField: `${i}` } } }))
+        new Array(ROWS).fill(0).map((_, i) => ({
+          data: { "": { numField: i, textField: `${i}` } },
+        })),
       );
       published0Duplicate = await db.createCmsRow(table.id, {
         data: { "": { numField: 0, textField: "0" } },
@@ -162,7 +162,7 @@ describe("CMS tests", () => {
       api.checkUniqueFields(table.id, {
         rowId: check.id,
         uniqueFieldsData: {},
-      })
+      }),
     ).rejects.toThrow(BadRequestError);
   });
 
@@ -174,7 +174,7 @@ describe("CMS tests", () => {
           numField: null,
           textField: undefined,
         },
-      })
+      }),
     ).rejects.toThrow(BadRequestError);
   });
 
@@ -183,7 +183,7 @@ describe("CMS tests", () => {
       await api.checkUniqueFields(table.id, {
         rowId: check.id,
         uniqueFieldsData: { numField: ROWS * 2 },
-      })
+      }),
     ).toEqual([
       {
         fieldIdentifier: "numField",
@@ -195,7 +195,7 @@ describe("CMS tests", () => {
       await api.checkUniqueFields(table.id, {
         rowId: check.id,
         uniqueFieldsData: { textField: "unique" },
-      })
+      }),
     ).toEqual([
       {
         fieldIdentifier: "textField",
@@ -207,7 +207,7 @@ describe("CMS tests", () => {
       await testCheckAndPublish(check.id, {
         numField: ROWS * 2,
         textField: "unique",
-      })
+      }),
     ).toEqual([
       {
         fieldIdentifier: "numField",
@@ -227,7 +227,7 @@ describe("CMS tests", () => {
       await testCheckAndPublish(check.id, {
         numField: null,
         textField: "unique1",
-      })
+      }),
     ).toEqual([
       {
         fieldIdentifier: "numField",
@@ -244,7 +244,7 @@ describe("CMS tests", () => {
       await testCheckAndPublish(draft.id, {
         numField: null,
         textField: "unique2",
-      })
+      }),
     ).toEqual([
       {
         fieldIdentifier: "numField",
@@ -344,7 +344,7 @@ describe("CMS tests", () => {
     console.log(
       `Average response time with ${ROWS} rows: ${
         (end - start) / requestCount
-      }ms`
+      }ms`,
     );
   });
 });

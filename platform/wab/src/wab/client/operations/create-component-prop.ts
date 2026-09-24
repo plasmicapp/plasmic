@@ -55,7 +55,7 @@ export function createComponentProp(opts: {
   }
   assert(
     !isKnownRenderableType(type) && !isKnownRenderFuncType(type),
-    () => `Didn't expect slot type`
+    () => `Didn't expect slot type`,
   );
   const options = isOptionsType(type)
     ? (type.options as ChoiceOptions)
@@ -72,7 +72,7 @@ export function createComponentProp(opts: {
       "Default",
       propTypeData,
       options,
-      defaultValue
+      defaultValue,
     );
     if (invalidMessage) {
       return err({ message: invalidMessage });
@@ -83,7 +83,7 @@ export function createComponentProp(opts: {
       "Preview",
       propTypeData,
       options,
-      previewValue
+      previewValue,
     );
     if (invalidMessage) {
       return err({ message: invalidMessage });

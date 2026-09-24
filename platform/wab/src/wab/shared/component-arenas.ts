@@ -95,7 +95,7 @@ export function mkComponentArena({
 export function makeComponentArenaCustomMatrix(
   site: Site,
   component: Component,
-  opts?: { width: number; height: number }
+  opts?: { width: number; height: number },
 ) {
   const { width, height } = opts ?? deriveDefaultFrameSize(site, component);
   const combos = findNonEmptyCombos(component);
@@ -115,7 +115,7 @@ export function makeComponentArenaCustomMatrix(
                 height,
                 viewMode: FrameViewMode.Stretch,
               }),
-            })
+            }),
         ),
       }),
     ],
@@ -125,7 +125,7 @@ export function makeComponentArenaCustomMatrix(
 function makeDefaultComponentArenaMatrix(
   site: Site,
   component: Component,
-  opts?: { width: number; height: number }
+  opts?: { width: number; height: number },
 ) {
   const { width, height } = opts ?? deriveDefaultFrameSize(site, component);
   const globalGroups = usedGlobalVariantGroups(site, component);
@@ -148,7 +148,7 @@ function makeDefaultComponentArenaMatrix(
                   height,
                   viewMode: FrameViewMode.Stretch,
                 }),
-              })
+              }),
           ),
       }),
       ...[...component.variantGroups, ...globalGroups].map(
@@ -167,9 +167,9 @@ function makeDefaultComponentArenaMatrix(
                     height,
                     viewMode: FrameViewMode.Stretch,
                   }),
-                })
+                }),
             ),
-          })
+          }),
       ),
     ],
   });
@@ -208,10 +208,10 @@ export function makeComponentArenaFrame({
     pinnedVariants: Object.fromEntries(
       locals
         .filter((local) => !isBaseVariant(local))
-        .map((local) => [local.uuid, true])
+        .map((local) => [local.uuid, true]),
     ),
     pinnedGlobalVariants: Object.fromEntries(
-      globals.map((global) => [global.uuid, true])
+      globals.map((global) => [global.uuid, true]),
     ),
     name: "",
     width: getComponentArenaWidthFromScreenVariant(globals) || width,
@@ -232,7 +232,7 @@ export function ensureCellKey(cell: ArenaFrameCell) {
   }
 
   const pinnedVariants = cell.frame.container.component.variants.filter(
-    (it) => it.uuid in cell.frame.pinnedVariants
+    (it) => it.uuid in cell.frame.pinnedVariants,
   );
 
   cell.cellKey = uniqBy(
@@ -241,7 +241,7 @@ export function ensureCellKey(cell: ArenaFrameCell) {
       ...cell.frame.targetVariants,
       ...cell.frame.targetGlobalVariants,
     ],
-    (it) => it.uuid
+    (it) => it.uuid,
   );
 
   return cell.cellKey;
@@ -249,7 +249,7 @@ export function ensureCellKey(cell: ArenaFrameCell) {
 
 export function removeFramesFromComponentArenaForVariants(
   arena: ComponentArena,
-  variants: Variant[]
+  variants: Variant[],
 ) {
   // We only do this for managed artboards (arena.matrix.rows).
   // For custom artboards, we will just stop targeting / pinning
@@ -266,7 +266,7 @@ export function removeFramesFromComponentArenaForVariants(
     for (const cell of [...row.cols]) {
       if (
         ensureArrayOfInstances(ensureCellKey(cell), Variant).some((v) =>
-          variants.includes(v)
+          variants.includes(v),
         )
       ) {
         arrayRemove(row.cols, cell);
@@ -277,7 +277,7 @@ export function removeFramesFromComponentArenaForVariants(
 
 export function removeManagedFramesFromComponentArenaForVariantGroup(
   arena: ComponentArena,
-  group: VariantGroup
+  group: VariantGroup,
 ) {
   for (const row of [...arena.matrix.rows]) {
     if (row.rowKey === group) {
@@ -288,7 +288,7 @@ export function removeManagedFramesFromComponentArenaForVariantGroup(
 
 export function removeCustomComponentFrame(
   arena: ComponentArena,
-  frame: ArenaFrame
+  frame: ArenaFrame,
 ) {
   for (const row of arena.customMatrix.rows) {
     const cell = row.cols.find((c) => c.frame === frame);
@@ -300,7 +300,7 @@ export function removeCustomComponentFrame(
 
 export function removeSuperOrGlobalVariantComponentFrame(
   arena: ComponentArena,
-  frame: ArenaFrame
+  frame: ArenaFrame,
 ) {
   const component = arena.component;
   const cellKey = ensureKnownVariant(getCellKeyForFrame(arena, frame));
@@ -308,10 +308,10 @@ export function removeSuperOrGlobalVariantComponentFrame(
   assert(
     isGlobalVariantGroup(group) ||
       getSuperComponentVariantGroupToComponent(component).has(group),
-    `VariantGroup must be either a global group or a super component group`
+    `VariantGroup must be either a global group or a super component group`,
   );
   const row = arena.matrix.rows.find((it) =>
-    it.cols.some((col) => col.frame === frame)
+    it.cols.some((col) => col.frame === frame),
   );
 
   const cell = row?.cols.find((c) => c.frame === frame);
@@ -327,14 +327,14 @@ export function removeSuperOrGlobalVariantComponentFrame(
 
 export function isGlobalVariantFrame(
   arena: ComponentArena | PageArena,
-  frame: ArenaFrame
+  frame: ArenaFrame,
 ) {
   if (isComponentArena(arena)) {
     return arena.matrix.rows.some(
       (it) =>
         isKnownVariantGroup(it.rowKey) &&
         isGlobalVariantGroup(it.rowKey) &&
-        it.cols.some((col) => col.frame === frame)
+        it.cols.some((col) => col.frame === frame),
     );
   }
   return arena.matrix.rows.some(
@@ -342,7 +342,7 @@ export function isGlobalVariantFrame(
       isKnownVariant(it.rowKey) &&
       isKnownVariantGroup(it.rowKey.parent) &&
       isGlobalVariantGroup(it.rowKey.parent) &&
-      it.cols.some((col) => col.frame === frame)
+      it.cols.some((col) => col.frame === frame),
   );
 }
 
@@ -354,16 +354,16 @@ export function isSuperVariantFrame(arena: ComponentArena, frame: ArenaFrame) {
     (it) =>
       isKnownVariantGroup(it.rowKey) &&
       superGroups.includes(it.rowKey) &&
-      it.cols.some((col) => col.frame === frame)
+      it.cols.some((col) => col.frame === frame),
   );
 }
 
 export function isCustomComponentFrame(
   arena: ComponentArena,
-  frame: ArenaFrame
+  frame: ArenaFrame,
 ) {
   return arena.customMatrix.rows.some((row) =>
-    row.cols.some((cell) => cell.frame === frame)
+    row.cols.some((cell) => cell.frame === frame),
   );
 }
 
@@ -389,7 +389,7 @@ export function getCellForFrame(arena: ComponentArena, frame: ArenaFrame) {
 export function maybeEnsureManagedFrameForGlobalVariantInComponentArena(
   site: Site,
   arena: ComponentArena,
-  variant: Variant
+  variant: Variant,
 ) {
   assert(isGlobalVariant(variant), "Must be global variant");
   const group = ensureKnownVariantGroup(variant.parent);
@@ -403,7 +403,7 @@ export function maybeEnsureManagedFrameForGlobalVariantInComponentArena(
 export function ensureManagedFrameForVariantInComponentArena(
   site: Site,
   arena: ComponentArena,
-  variant: Variant
+  variant: Variant,
 ) {
   const existing = getManagedFrameForVariant(site, arena, variant);
   if (existing) {
@@ -413,7 +413,7 @@ export function ensureManagedFrameForVariantInComponentArena(
   // We never create a dedicated frame for private style variants
   assert(
     !isPrivateStyleVariant(variant),
-    "No dedicated frame for private style variants"
+    "No dedicated frame for private style variants",
   );
 
   const { width, height } = deriveDefaultFrameSize(site, arena.component);
@@ -446,7 +446,7 @@ export function ensureManagedFrameForVariantInComponentArena(
     ensureComponentArenaColsOrder(
       site,
       arena.component,
-      ensureKnownVariantGroup(variant.parent)
+      ensureKnownVariantGroup(variant.parent),
     );
   }
   return frame;
@@ -454,7 +454,7 @@ export function ensureManagedFrameForVariantInComponentArena(
 
 export function deriveDefaultFrameSize(
   site: Site,
-  component: Component
+  component: Component,
 ): { width: number; height: number } {
   const componentArena = getComponentArena(site, component);
   const totalFramePadding = isPageComponent(component) ? 0 : 40;
@@ -471,7 +471,7 @@ export function deriveDefaultFrameSize(
 
   const defaultScreenWidth = ensure(
     getFrameSizeForTargetScreenVariant(site, undefined),
-    "There should always be a default screen width for base variant"
+    "There should always be a default screen width for base variant",
   );
 
   const frameWidth =
@@ -491,15 +491,15 @@ export function addCustomComponentFrame(
   site: Site,
   arena: ComponentArena,
   frame: ArenaFrame,
-  position?: number
+  position?: number,
 ) {
   assert(
     frame.container.component === arena.component,
-    `Frame and arena must match`
+    `Frame and arena must match`,
   );
   if (arena.customMatrix.rows.length === 0) {
     arena.customMatrix.rows.push(
-      new ArenaFrameRow({ cols: [], rowKey: undefined })
+      new ArenaFrameRow({ cols: [], rowKey: undefined }),
     );
   }
   const activeVariants = getActivatedVariantsForFrame(site, frame);
@@ -520,13 +520,13 @@ export function addCustomComponentFrame(
 export function getManagedFrameForVariant(
   site: Site,
   arena: ComponentArena,
-  variant: Variant
+  variant: Variant,
 ) {
   if (isBaseVariant(variant)) {
     return getComponentArenaBaseFrame(arena);
   } else {
     const cell = getArenaFrameCellsInGrid(arena.matrix).find(
-      (c) => c.cellKey === variant
+      (c) => c.cellKey === variant,
     );
     return cell ? cell.frame : undefined;
   }
@@ -534,24 +534,24 @@ export function getManagedFrameForVariant(
 
 export function getCustomFrameForActivatedVariants(
   arena: ComponentArena | PageArena,
-  variants: Set<Variant>
+  variants: Set<Variant>,
 ) {
   const combo = new Set(ensureValidCombo(arena.component, [...variants]));
   const cell = getArenaFrameCellsInGrid(arena.customMatrix).find((c) =>
-    setsEq(new Set(ensureArrayOfInstances(ensureCellKey(c), Variant)), combo)
+    setsEq(new Set(ensureArrayOfInstances(ensureCellKey(c), Variant)), combo),
   );
   return cell ? cell.frame : undefined;
 }
 
 export function getFrameForActivatedVariants(
   arena: ComponentArena,
-  variants: Set<Variant>
+  variants: Set<Variant>,
 ) {
   const combo = new Set(ensureValidCombo(arena.component, [...variants]));
   const cell = getArenaFrameCellsInGrid(arena.matrix).find((c) => {
     return setsEq(
       new Set(ensureArrayOfInstances([ensureCellKey(c)], Variant)),
-      combo
+      combo,
     );
   });
   return cell ? cell.frame : undefined;
@@ -559,7 +559,7 @@ export function getFrameForActivatedVariants(
 
 function getRowForVariantGroupInComponentArena(
   arena: ComponentArena,
-  group: VariantGroup
+  group: VariantGroup,
 ) {
   return arena.matrix.rows.find((row) => row.rowKey === group);
 }
@@ -567,7 +567,7 @@ function getRowForVariantGroupInComponentArena(
 export function ensureRowForVariantGroupInComponentArena(
   site: Site,
   arena: ComponentArena,
-  group: VariantGroup
+  group: VariantGroup,
 ) {
   let row = getRowForVariantGroupInComponentArena(arena, group);
   if (!row) {
@@ -582,7 +582,7 @@ export function ensureRowForVariantGroupInComponentArena(
       // for component variant groups, always insert before global variant groups
       const index = arena.matrix.rows.findIndex(
         (r) =>
-          r.rowKey && isGlobalVariantGroup(ensureKnownVariantGroup(r.rowKey))
+          r.rowKey && isGlobalVariantGroup(ensureKnownVariantGroup(r.rowKey)),
       );
       if (index >= 0) {
         arena.matrix.rows.splice(index, 0, row);
@@ -607,14 +607,14 @@ export function getComponentArenaBaseFrame(arena: ComponentArena | PageArena) {
 }
 
 export function getComponentArenaBaseFrameViewMode(
-  arena: ComponentArena | PageArena
+  arena: ComponentArena | PageArena,
 ): FrameViewMode {
   return getComponentArenaBaseFrame(arena).viewMode as FrameViewMode;
 }
 
 export function ensureActivatedScreenVariantsForComponentArena(
   site: Site,
-  arena: ComponentArena
+  arena: ComponentArena,
 ) {
   for (const row of arena.matrix.rows) {
     if (
@@ -627,7 +627,7 @@ export function ensureActivatedScreenVariantsForComponentArena(
         ensureActivatedScreenVariantsForTargetScreenVariant(
           site,
           cell.frame,
-          targetVariant
+          targetVariant,
         );
       }
     }
@@ -640,7 +640,7 @@ export function ensureActivatedScreenVariantsForComponentArena(
 
 export function ensureActivatedScreenVariantsForCustomCell(
   site: Site,
-  cell: ArenaFrameCell
+  cell: ArenaFrameCell,
 ) {
   const keyVariants = ensureArrayOfInstances(ensureCellKey(cell), Variant);
   for (const variant of keyVariants) {
@@ -648,7 +648,7 @@ export function ensureActivatedScreenVariantsForCustomCell(
       ensureActivatedScreenVariantsForTargetScreenVariant(
         site,
         cell.frame,
-        variant
+        variant,
       );
     }
   }
@@ -657,12 +657,12 @@ export function ensureActivatedScreenVariantsForCustomCell(
 export function ensureActivatedScreenVariantsForComponentArenaFrame(
   site: Site,
   arena: ComponentArena,
-  frame: ArenaFrame
+  frame: ArenaFrame,
 ) {
   if (isCustomComponentFrame(arena, frame)) {
     const cell = ensure(
       getCellForFrame(arena, frame),
-      "Should be able to find cell for custom frame in arena"
+      "Should be able to find cell for custom frame in arena",
     );
     ensureActivatedScreenVariantsForCustomCell(site, cell);
   } else {
@@ -676,11 +676,11 @@ export function ensureActivatedScreenVariantsForComponentArenaFrame(
 function ensureActivatedScreenVariantsForTargetScreenVariant(
   site: Site,
   frame: ArenaFrame,
-  targetVariant: Variant
+  targetVariant: Variant,
 ) {
   const [active, inactive] = getPartitionedScreenVariantsByTargetVariant(
     site,
-    targetVariant
+    targetVariant,
   );
   const pinManager = new FramePinManager(site, frame);
   for (const variant of active) {
@@ -700,7 +700,7 @@ export function isStretchyComponentFrame(frame: ArenaFrame) {
 
 export function syncComponentArenaFrameSize(
   arena: ComponentArena,
-  anchor: ArenaFrame
+  anchor: ArenaFrame,
 ) {
   // Don't sync arena frames when in focused mode.
   if (arena._focusedFrame) {
@@ -708,7 +708,7 @@ export function syncComponentArenaFrameSize(
   }
 
   const anchorCellKeyVariants = ensureArray(
-    getCellKeyForFrame(arena, anchor)
+    getCellKeyForFrame(arena, anchor),
   ).map((it) => ensureKnownVariant(it));
 
   // Don't propagate frame size for screen variant artboards
@@ -725,7 +725,7 @@ export function syncComponentArenaFrameSize(
     .filter((cell) =>
       ensureArray(cell.cellKey)
         .map((it) => ensureKnownVariant(it))
-        .every((it) => !isScreenVariant(it))
+        .every((it) => !isScreenVariant(it)),
     )
     .forEach((cell) => {
       cell.frame.width = anchor.width;
@@ -736,7 +736,7 @@ export function syncComponentArenaFrameSize(
 export function ensureComponentArenaFrameSizeForTargetScreenVariant(
   site: Site,
   arena: ComponentArena,
-  variant: Variant
+  variant: Variant,
 ) {
   for (const cell of getArenaFrameCellsInGrid(arena.matrix)) {
     if (cell.cellKey === variant) {
@@ -752,7 +752,7 @@ export function ensureComponentArenaFrameSizeForTargetScreenVariant(
 export function ensureComponentArenaColsOrder(
   site: Site,
   component: Component,
-  group: VariantGroup
+  group: VariantGroup,
 ) {
   const arena = getComponentArena(site, component);
 
@@ -762,7 +762,7 @@ export function ensureComponentArenaColsOrder(
     if (row) {
       replaceAll(
         row.cols,
-        sortAs(row.cols, getOrderedVariants(site, group), (c) => c.cellKey)
+        sortAs(row.cols, getOrderedVariants(site, group), (c) => c.cellKey),
       );
     }
   }
@@ -770,16 +770,16 @@ export function ensureComponentArenaColsOrder(
 
 export function ensureComponentArenaRowsOrder(
   site: Site,
-  component: Component
+  component: Component,
 ) {
   const arenaRows = getComponentArena(site, component)?.matrix.rows;
 
   if (arenaRows) {
     const variantGroupPositionByUid = Object.fromEntries(
-      component.variantGroups.map((it, i) => [it.uid, i])
+      component.variantGroups.map((it, i) => [it.uid, i]),
     );
     const orderedRows = orderBy(arenaRows, (it) =>
-      it.rowKey ? variantGroupPositionByUid[it.rowKey.uid] : 0
+      it.rowKey ? variantGroupPositionByUid[it.rowKey.uid] : 0,
     );
     arenaRows.splice(0, arenaRows.length, ...orderedRows);
   }
@@ -790,7 +790,7 @@ export function moveVariantCellInComponentArena(
   component: Component,
   variant: Variant,
   oldParent: VariantGroup,
-  newParent: VariantGroup
+  newParent: VariantGroup,
 ) {
   const arena = getComponentArena(site, component);
 
@@ -830,7 +830,7 @@ export function isBaseVariantFrame(site: Site, frame: ArenaFrame) {
 
 export function getComponentArenaRowLabel(
   component: Component,
-  row: ArenaFrameRow
+  row: ArenaFrameRow,
 ) {
   const group = ensureMaybeKnownVariantGroup(row.rowKey);
 
@@ -838,8 +838,8 @@ export function getComponentArenaRowLabel(
     return row.cols.length === 1
       ? "Base"
       : isTplRootWithCodeComponentVariants(component.tplTree)
-      ? "Base + Registered"
-      : "Base + Interactions";
+        ? "Base + Registered"
+        : "Base + Interactions";
   }
 
   if (component.variantGroups.includes(group as ComponentVariantGroup)) {

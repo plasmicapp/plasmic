@@ -48,7 +48,7 @@ export function deleteComponentState(
   opts: {
     site: Site;
     component: Component;
-  }
+  },
 ): DeleteComponentStateResult {
   const { site, component } = opts;
   const stateName = getStateVarName(state);
@@ -75,7 +75,7 @@ export function deleteComponentState(
   }
 
   const refs = findExprsInComponent(component).filter(({ expr }) =>
-    isStateUsedInExpr(state, expr)
+    isStateUsedInExpr(state, expr),
   );
   if (refs.length > 0) {
     return err({
@@ -84,7 +84,7 @@ export function deleteComponentState(
     });
   }
   const referencingComponents = uniq(
-    findImplicitUsages(site, state).map((usage) => usage.component)
+    findImplicitUsages(site, state).map((usage) => usage.component),
   );
   if (referencingComponents.length > 0) {
     return err({

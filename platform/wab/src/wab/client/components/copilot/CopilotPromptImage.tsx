@@ -13,7 +13,7 @@ export type CopilotPromptImageProps = DefaultCopilotPromptImageProps &
 
 function CopilotPromptImage_(
   props: CopilotPromptImageProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { img, onDelete, ...plasmicProps } = props;
   return (

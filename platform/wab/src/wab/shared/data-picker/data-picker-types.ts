@@ -81,7 +81,7 @@ export type DataPickerSupportedVariableType =
   (typeof dataPickerSupportedTypes)[number];
 
 export function isTypeSupported(
-  variableType: VariableType
+  variableType: VariableType,
 ): variableType is DataPickerSupportedVariableType {
   return (dataPickerSupportedTypes as readonly string[]).includes(variableType);
 }
@@ -90,7 +90,7 @@ export function dataPickerShouldHideKey(
   key: string,
   data: Record<string, any>,
   pathPrefix: (string | number)[] | undefined,
-  opts: DataPickerOpts
+  opts: DataPickerOpts,
 ) {
   if (key === "$$" && !pathPrefix?.length) {
     return true;

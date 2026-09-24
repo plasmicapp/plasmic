@@ -36,15 +36,15 @@ describe("hasInvalidUrl", () => {
     expect(hasInvalidUrl("url(https://example.com/hero.png)")).toBe(false);
     expect(hasInvalidUrl("URL(/images/hero.png)")).toBe(true);
     expect(hasInvalidUrl("Url(https://example.com/ok.cur), pointer")).toBe(
-      false
+      false,
     );
   });
 
   it("is true when any url() in a multi-layer value is invalid", () => {
     expect(
       hasInvalidUrl(
-        "linear-gradient(#fff, #000), url(https://example.com/a.png), url(/b.png)"
-      )
+        "linear-gradient(#fff, #000), url(https://example.com/a.png), url(/b.png)",
+      ),
     ).toBe(true);
   });
 });

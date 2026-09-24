@@ -18,7 +18,7 @@ export const initializePlasmicExtension = () => {
           assert(response.data === "plasmic-yes");
           plasmicExtensionInstalled = true;
         }
-      }
+      },
     );
   }
 };
@@ -33,16 +33,16 @@ export const takeScreenshot = (
   dom: HTMLElement,
   onScreenshotReady: (
     dataUrl: string | undefined,
-    error?: string
-  ) => Promise<void>
+    error?: string,
+  ) => Promise<void>,
 ) => {
   const domRectInFrame = dom.getBoundingClientRect();
   if (domRectInFrame.width === 0 || domRectInFrame.height === 0) {
     spawn(
       onScreenshotReady(
         undefined,
-        `no screenshot for width=${domRectInFrame.width}, height=${domRectInFrame.height}`
-      )
+        `no screenshot for width=${domRectInFrame.width}, height=${domRectInFrame.height}`,
+      ),
     );
     return;
   }
@@ -52,7 +52,7 @@ export const takeScreenshot = (
       html2canvas(dom).then((canvas) => {
         const dataUrl = canvas.toDataURL();
         spawn(onScreenshotReady(dataUrl));
-      })
+      }),
     );
     return;
   }
@@ -82,6 +82,6 @@ export const takeScreenshot = (
       if (oldScreenshoting !== sc.screenshotting) {
         sc.screenshotting = oldScreenshoting;
       }
-    }
+    },
   );
 };

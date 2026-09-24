@@ -18,7 +18,7 @@ interface ImageListItemProps extends Omit<DefaultImageListItemProps, "icon"> {
 }
 
 const ImageListItem = observer(function ImageListItem(
-  props: ImageListItemProps
+  props: ImageListItemProps,
 ) {
   const { icon, docsCtx, ...rest } = props;
   return (

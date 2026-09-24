@@ -38,7 +38,7 @@ function mkInstances(
   component: Component,
   deps: Record<string, Component>,
   example: PlumeDocsExample,
-  useLoader: boolean
+  useLoader: boolean,
 ): Record<string, string> {
   if (!example.instances) {
     return {};
@@ -49,7 +49,7 @@ function mkInstances(
     const comp = instance.plumeType
       ? ensure(
           deps[instance.plumeType],
-          `Instance in example has unknown dep "${instance.plumeType}"`
+          `Instance in example has unknown dep "${instance.plumeType}"`,
         )
       : component;
 
@@ -69,7 +69,7 @@ function mkInstances(
       instance.props,
       useLoader,
       true,
-      forceName
+      forceName,
     );
   }
 
@@ -84,7 +84,7 @@ export class CodePreviewCtx {
     site: Site,
     component: Component,
     example: PlumeDocsExample,
-    useLoader: boolean
+    useLoader: boolean,
   ) {
     this.uuid = mkUuid();
 
@@ -102,7 +102,7 @@ export class CodePreviewCtx {
       initialCode = initialCode.replace(
         // eslint-disable-next-line no-useless-escape
         /<Instance([^ \/]*) ?\/>/g,
-        (_, key) => instances[key]
+        (_, key) => instances[key],
       );
     }
 
@@ -137,14 +137,14 @@ interface CodePreviewSnippetProps extends DefaultCodePreviewSnippetProps {
 }
 
 const CodePreviewSnippet = observer(function CodePreviewSnippet(
-  props: CodePreviewSnippetProps
+  props: CodePreviewSnippetProps,
 ) {
   const { component, docsCtx, example, ...rest } = props;
   const codePreviewCtx = new CodePreviewCtx(
     docsCtx.studioCtx.site,
     component,
     example,
-    docsCtx.useLoader()
+    docsCtx.useLoader(),
   );
 
   return (

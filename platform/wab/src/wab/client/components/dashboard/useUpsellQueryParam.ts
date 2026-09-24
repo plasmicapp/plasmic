@@ -19,7 +19,7 @@ const UPSELL_QUERY_PARAM = "upsell";
 /** Redirects `?upsell=<tierName>` to an upgradeable org settings page. */
 export function shouldUpsellRedirect(
   appCtx: AppCtx,
-  location: { pathname: string; search: string }
+  location: { pathname: string; search: string },
 ): string | undefined {
   const { pathname, search } = location;
   if (
@@ -31,7 +31,7 @@ export function shouldUpsellRedirect(
 
   const [team] = sortBy(
     appCtx.teams.filter((t) => canUpgradeTeam(appCtx, t)),
-    (t) => new Date(t.createdAt).getTime()
+    (t) => new Date(t.createdAt).getTime(),
   );
   if (team) {
     return APP_ROUTES.orgSettings.fill({ teamId: team.id }, search);
@@ -53,7 +53,7 @@ export function useUpsellQueryParam(team: ApiTeam) {
     }
     const featureTiers = await appCtx.api.listCurrentFeatureTiers();
     const tier = featureTiers.tiers.find(
-      (t) => t.name.toLowerCase() === tierName.toLowerCase()
+      (t) => t.name.toLowerCase() === tierName.toLowerCase(),
     );
     if (!tier) {
       return;

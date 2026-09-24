@@ -91,7 +91,7 @@ export function toast(
   opts: {
     key?: string;
     duration?: number;
-  } = {}
+  } = {},
 ) {
   return notification.open({
     key: opts.key ?? common.mkShortId(),

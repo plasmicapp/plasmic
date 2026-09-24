@@ -3,7 +3,7 @@ import * as React from "react";
 /** Returns an element matching the query selector in the root element. */
 export function useQuerySelector(
   rootElOrSelector: Element | string,
-  selector: string
+  selector: string,
 ): Element | null {
   return useQuerySelectorAll(rootElOrSelector, selector)[0] || null;
 }
@@ -11,7 +11,7 @@ export function useQuerySelector(
 /** Returns the set of elements matching the query selector in the root element (order undefined). */
 export function useQuerySelectorAll(
   rootElOrSelector: Element | string,
-  selector: string
+  selector: string,
 ): Element[] {
   const [elements, setElements] = React.useState<Element[]>([]);
 
@@ -22,7 +22,7 @@ export function useQuerySelectorAll(
         : document.querySelector(rootElOrSelector);
     if (!rootEl) {
       throw new Error(
-        `useQuerySelectorAll root element with selector '${rootElOrSelector}' not found`
+        `useQuerySelectorAll root element with selector '${rootElOrSelector}' not found`,
       );
     }
 
@@ -35,15 +35,15 @@ export function useQuerySelectorAll(
         if (record.type === "childList") {
           const removedElements = nodeListQuerySelector(
             record.removedNodes,
-            selector
+            selector,
           );
           const addedElements = nodeListQuerySelector(
             record.addedNodes,
-            selector
+            selector,
           );
           setElements((oldElements) => {
             const newElements = oldElements.filter(
-              (element) => !removedElements.includes(element)
+              (element) => !removedElements.includes(element),
             );
             newElements.push(...addedElements);
             return newElements;
@@ -58,7 +58,7 @@ export function useQuerySelectorAll(
                 return [...oldElements, changedElement];
               } else if (oldMatches && !newMatches) {
                 return oldElements.filter(
-                  (element) => element !== changedElement
+                  (element) => element !== changedElement,
                 );
               } else {
                 return oldElements;
@@ -81,7 +81,7 @@ export function useQuerySelectorAll(
 
 function nodeListQuerySelector(
   nodeList: NodeList,
-  selector: string
+  selector: string,
 ): Element[] {
   const result: Element[] = [];
   nodeList.forEach((node) => {

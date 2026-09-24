@@ -16,7 +16,7 @@ export interface DraggableInsertableProps {
   onDragStart?: (spec: AddTplItem) => void;
   onDragEnd?: (
     spec: AddTplItem,
-    result: [ViewCtx, TplNode] | undefined
+    result: [ViewCtx, TplNode] | undefined,
   ) => void;
   minPx?: number;
 }
@@ -51,21 +51,21 @@ export function DraggableInsertable(props: DraggableInsertableProps) {
           sc.changeUnsafe(() => {
             const manager = ensure(
               dragManagerRef.current,
-              () => "Expected `dragManagerRef.current` to exist"
+              () => "Expected `dragManagerRef.current` to exist",
             );
             if (
               !Box.fromRect(
-                sc.canvasClipper().getBoundingClientRect()
+                sc.canvasClipper().getBoundingClientRect(),
               ).contains(new Pt(e.mouseEvent.clientX, e.mouseEvent.clientY))
             ) {
               manager.clear();
             } else {
               manager.drag(
                 new Pt(e.mouseEvent.pageX, e.mouseEvent.pageY),
-                e.mouseEvent
+                e.mouseEvent,
               );
             }
-          })
+          }),
         );
         await previousDragOps.current;
       }}
@@ -77,7 +77,7 @@ export function DraggableInsertable(props: DraggableInsertableProps) {
             sc.setIsDraggingObject(false);
             const result = ensure(
               dragManagerRef.current,
-              () => "Expected `dragManagerRef.current` to exist"
+              () => "Expected `dragManagerRef.current` to exist",
             ).endDrag();
             dragManagerRef.current = undefined;
             onDragEnd && onDragEnd(spec, result);
@@ -99,12 +99,12 @@ export function DraggableInsertable(props: DraggableInsertableProps) {
               if (vc) {
                 return ensure(
                   dragManagerRef.current,
-                  () => "Expected `dragManagerRef.current` to exist"
+                  () => "Expected `dragManagerRef.current` to exist",
                 ).endDrag(spec, extraInfo);
               }
               return ensure(
                 dragManagerRef.current,
-                () => "Expected `dragManagerRef.current` to exist"
+                () => "Expected `dragManagerRef.current` to exist",
               ).endDrag();
             })();
             if (!result) {

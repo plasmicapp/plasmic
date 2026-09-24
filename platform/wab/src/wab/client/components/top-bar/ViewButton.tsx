@@ -70,7 +70,7 @@ const ViewButton = observer(function ViewButton(props: ViewButtonProps) {
               />
               {showSlotPlaceholder ? "Hide " : "Show "} placeholders for empty
               slots
-            </Menu.Item>
+            </Menu.Item>,
           );
           push(
             <Menu.Item
@@ -87,7 +87,7 @@ const ViewButton = observer(function ViewButton(props: ViewButtonProps) {
               />
               {showContainerPlaceholder ? "Hide " : "Show "} placeholders for
               empty containers
-            </Menu.Item>
+            </Menu.Item>,
           );
           push(
             <Menu.Item
@@ -104,7 +104,7 @@ const ViewButton = observer(function ViewButton(props: ViewButtonProps) {
               />
               {showMultiplayerSelections ? "Hide " : "Show "} cursors and
               selections from other users
-            </Menu.Item>
+            </Menu.Item>,
           );
           push(
             <Menu.Item
@@ -121,7 +121,7 @@ const ViewButton = observer(function ViewButton(props: ViewButtonProps) {
               />
               {showAncestorsHoverBoxes ? "Hide " : "Show "} container outlines
               when hovering
-            </Menu.Item>
+            </Menu.Item>,
           );
 
           if (vc) {
@@ -136,7 +136,7 @@ const ViewButton = observer(function ViewButton(props: ViewButtonProps) {
                 <TextAndShortcut shortcut={getComboForAction("OUTLINE_MODE")}>
                   {isOutlineMode ? "Hide " : "Show "} outline mode
                 </TextAndShortcut>
-              </Menu.Item>
+              </Menu.Item>,
             );
           }
 
@@ -154,7 +154,7 @@ const ViewButton = observer(function ViewButton(props: ViewButtonProps) {
                 >
                   {isFocusedMode ? "Turn on " : "Turn off "} design mode
                 </TextAndShortcut>
-              </Menu.Item>
+              </Menu.Item>,
             );
           }
 
@@ -165,7 +165,7 @@ const ViewButton = observer(function ViewButton(props: ViewButtonProps) {
               key="toggle-auto-open-mode"
             >
               {isAutoOpenMode ? "Turn off " : "Turn on "} auto-open mode
-            </Menu.Item>
+            </Menu.Item>,
           );
 
           if (studioCtx.showComments()) {
@@ -176,7 +176,7 @@ const ViewButton = observer(function ViewButton(props: ViewButtonProps) {
                 key="toggle-show-comments-overlay"
               >
                 {showCommentsOverlay ? "Hide " : "Show "} comments overlay
-              </Menu.Item>
+              </Menu.Item>,
             );
           }
 
@@ -197,7 +197,7 @@ const ViewButton = observer(function ViewButton(props: ViewButtonProps) {
                   {studioCtx.contentEditorMode ? "Turn off " : "Turn on "}{" "}
                   content creator mode
                 </Tooltip>
-              </Menu.Item>
+              </Menu.Item>,
             );
           }
 
@@ -211,7 +211,7 @@ const ViewButton = observer(function ViewButton(props: ViewButtonProps) {
             >
               <Icon className="dimfg mr-sm" icon={Refresh2SvgIcon} />
               Refresh data
-            </Menu.Item>
+            </Menu.Item>,
           );
         });
 

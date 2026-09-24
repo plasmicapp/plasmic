@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class viewerProjectDefaultAccessLevel1744143247553
-  implements MigrationInterface
-{
+export class viewerProjectDefaultAccessLevel1744143247553 implements MigrationInterface {
   name = "viewerProjectDefaultAccessLevel1744143247553";
 
   public async up(queryRunner: QueryRunner): Promise<void> {

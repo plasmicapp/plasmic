@@ -71,12 +71,12 @@ export const MenuButtonPlugin: PlumePlugin = {
           Object.assign(impl, getCompMeta()),
           componentProps as BaseMenuButtonProps,
           menuButtonConfig as any,
-          ref
+          ref,
         );
         if (usingDefaultMenu) {
           assert(
             plasmicProps.args.menu === usingDefaultMenu,
-            () => `Expected menu to match slot stub`
+            () => `Expected menu to match slot stub`,
           );
           delete plasmicProps.args.menu;
         }
@@ -84,7 +84,7 @@ export const MenuButtonPlugin: PlumePlugin = {
           ...plasmicProps,
           ...internalProps,
         });
-      })
+      }),
     );
   },
 
@@ -107,7 +107,7 @@ export const MenuButtonPlugin: PlumePlugin = {
   genDefaultExternalProps(ctx: SerializerBaseContext, opts) {
     const { component } = ctx;
     const params = getExternalParams(ctx).filter(
-      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name))
+      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name)),
     );
     return `
       export interface ${
@@ -119,8 +119,8 @@ export const MenuButtonPlugin: PlumePlugin = {
               `"${paramToVarName(ctx.component, param)}"?: ${serializeParamType(
                 component,
                 param,
-                ctx.projectFlags
-              )}`
+                ctx.projectFlags,
+              )}`,
           )
           .join(";\n")}
       }
@@ -142,12 +142,12 @@ export const MenuButtonPlugin: PlumePlugin = {
     return `
       import * as React from "react";
       import {${plasmicComponentName}, ${defaultPropsName}} from "${
-      ctx.exportOpts.relPathFromImplToManagedDir
-    }/${makeComponentImportPath(
-      component,
-      ctx,
-      "render"
-    )}";  // plasmic-import: ${component.uuid}/render
+        ctx.exportOpts.relPathFromImplToManagedDir
+      }/${makeComponentImportPath(
+        component,
+        ctx,
+        "render",
+      )}";  // plasmic-import: ${component.uuid}/render
     ${this.genSkeletonImports(ctx).imports}
 
       ${componentSubstitutionApi}
@@ -177,7 +177,7 @@ export const MenuButtonPlugin: PlumePlugin = {
       imports: `
         import {MenuButtonRef} from "${getPlumePackageName(
           ctx.exportOpts,
-          "menu-button"
+          "menu-button",
         )}";`,
       refName: "MenuButtonRef",
     };
@@ -243,14 +243,14 @@ export const MenuButtonPlugin: PlumePlugin = {
     // default slot of menu prop references a Menu component; so make sure it exists
     const tplMgr = new TplMgr({ site });
     let menuComponent = site.components.filter(
-      (c) => c.plumeInfo?.type === "menu"
+      (c) => c.plumeInfo?.type === "menu",
     )[0];
     if (!menuComponent) {
       menuComponent = tplMgr.clonePlumeComponent(
         plumeSite,
         "Menu",
         "Menu",
-        true
+        true,
       );
     }
 
@@ -258,7 +258,7 @@ export const MenuButtonPlugin: PlumePlugin = {
     if (menuParam) {
       const slot = ensure(
         getTplSlotForParam(component, menuParam),
-        () => "Expected to find slot for `menu`"
+        () => "Expected to find slot for `menu`",
       );
       const menu = mkTplComponent(menuComponent, ensureBaseVariant(component));
       slot.defaultContents = [menu];

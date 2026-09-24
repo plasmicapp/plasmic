@@ -215,7 +215,7 @@ export class CssVarResolver {
       useCssVariables?: boolean;
       cssVariableInfix?: string;
     } = {},
-    private readonly vsh: VariantedStylesHelper = new VariantedStylesHelper()
+    private readonly vsh: VariantedStylesHelper = new VariantedStylesHelper(),
   ) {
     this.tokens = new Map(tokens.map((t) => [t.uuid, t]));
     this.assets = new Map(assets.map((t) => [t.uuid, t]));
@@ -254,11 +254,11 @@ export class CssVarResolver {
   resolveMixinRef(ref: string) {
     const [mixin, prop] = ensure(
       tryParseMixinPropRef(ref, this.mixins),
-      () => "Couldn't resolve mixin ref " + ref
+      () => "Couldn't resolve mixin ref " + ref,
     );
     return this.resolveMixinProp(
       ensure(mixin, () => "No mixin"),
-      prop
+      prop,
     );
   }
 
@@ -314,7 +314,7 @@ export const defaultStyleClassNames = (
   opts: {
     tag?: string;
     projectId: ProjectId;
-  }
+  },
 ) => {
   const { tag, projectId } = opts;
 
@@ -335,7 +335,7 @@ export const defaultStyleClassNames = (
 
 export function makeDefaultStylesRules(
   classNameBase: string,
-  opts: { targetEnv: TargetEnv }
+  opts: { targetEnv: TargetEnv },
 ) {
   const rules = getTagsWithCssOverrides().map((tag) => {
     const textSelector = `:where(.${makeWabHtmlTextClassName(opts)} ${tag})`;
@@ -359,7 +359,7 @@ export function makeDefaultStylesRules(
 
 export function makeDefaultStylesRuleBodyFor(
   tag: string,
-  forExprText?: boolean
+  forExprText?: boolean,
 ) {
   const defaults = getCssOverrides(tag, !!forExprText);
   // For inheritable css props, we are setting the defaults at
@@ -382,7 +382,7 @@ export function makeDefaultStylesRuleBodyFor(
   }
 
   const m = new Map<string, string>(
-    L.entries(defaults).map(([key, value]) => [key, value as string])
+    L.entries(defaults).map(([key, value]) => [key, value as string]),
   );
 
   addFontFamilyFallback(m);
@@ -401,12 +401,12 @@ export interface DefaultStyle {
 }
 
 export function getDefaultStyleTagAndPseudoClass(
-  defaultStyle: DefaultStyle
+  defaultStyle: DefaultStyle,
 ): [ThemableTag, string | undefined] {
   if (defaultStyle.selector) {
     return defaultStyle.selector.split(":").map((part) => part.trim()) as [
       ThemableTag,
-      string | undefined
+      string | undefined,
     ];
   } else {
     return [BASE_THEMABLE_TAG, undefined];
@@ -454,7 +454,7 @@ function addFontFamilyFallback(m: Map<string, string>) {
   if (m.has("font-family")) {
     const fontFamily = ensure(
       m.get("font-family"),
-      () => "Expected font-family value, but got " + m.get("font-family")
+      () => "Expected font-family value, but got " + m.get("font-family"),
     );
     m.set("font-family", extendFontFamilyWithFallbacks([fontFamily]));
   }
@@ -462,7 +462,7 @@ function addFontFamilyFallback(m: Map<string, string>) {
 
 export function mkComponentRootResetRule(
   rootClassName: string,
-  resolver: CssVarResolver
+  resolver: CssVarResolver,
 ) {
   const m = new Map<string, string>();
   componentRootResetProps.forEach((prop) => {
@@ -489,7 +489,7 @@ export function mkThemeStyleRule(
     targetEnv: TargetEnv;
     classNameBase: string;
     projectId: ProjectId;
-  }
+  },
 ) {
   const { selector, style: mixin } = themeStyle;
   const { classNameBase } = opts;
@@ -497,7 +497,7 @@ export function mkThemeStyleRule(
   const prefix = classNameBase ? `${classNameBase}__` : "";
   const m = new Map<string, string>();
   for (const [name, value] of Object.entries(
-    makeLayoutAwareRuleSet(mixin.rs, false).values
+    makeLayoutAwareRuleSet(mixin.rs, false).values,
   )) {
     m.set(name, resolver.resolveMixinProp(mixin, name));
     if (name === "background") {
@@ -544,7 +544,7 @@ export function mkThemeStyleRule(
     // directly, since they won't have `.plasmic-a` tags attached, but we still
     // think of them as under the domain of Plasmic content
     `:where(.${rootRuleName} .${makeWabHtmlTextClassName(
-      opts
+      opts,
     )}) ${tag}${pseudoSelector}`,
 
     // finally, also a variant that targets the tag directly, even those
@@ -562,7 +562,7 @@ export function mkThemeStyleRule(
 export function tplMatchThemeStyle(
   s: ThemeStyle,
   tpl: TplTag,
-  vsettings: VariantSetting[]
+  vsettings: VariantSetting[],
 ): boolean {
   const [styleTag, stylePseudoClass] = s.selector.split(":");
   if (tpl.tag !== styleTag) {
@@ -572,7 +572,7 @@ export function tplMatchThemeStyle(
     return true;
   }
   const elementPseudoClasses = vsettings.flatMap((vs) =>
-    vs.variants.flatMap((v) => v.selectors || [])
+    vs.variants.flatMap((v) => v.selectors || []),
   );
   return elementPseudoClasses.includes(`:${stylePseudoClass}`);
 }
@@ -583,7 +583,7 @@ export function sourceMatchThemeStyle(s: ThemeStyle, src: ThemeTagSource) {
 
 function shouldOutputThemePropStyle(
   theme: Theme | undefined | null,
-  prop: string
+  prop: string,
 ) {
   if (!theme) {
     return false;
@@ -609,7 +609,7 @@ function deriveCssRuleSetStyles(
   opts: {
     targetEnv: TargetEnv;
     whitespaceNormal?: boolean;
-  }
+  },
 ) {
   const resolver = ctx.resolver;
   const rs = vs.rs;
@@ -626,19 +626,19 @@ function deriveCssRuleSetStyles(
           if (ALWAYS_RESOLVE_MIXIN_PROPS.includes(name)) {
             m.set(
               name,
-              resolver ? resolver.resolveMixinProp(mixin, name) : val
+              resolver ? resolver.resolveMixinProp(mixin, name) : val,
             );
           } else {
             m.set(
               name,
               resolver
                 ? resolver.resolveMixinProp(mixin, name)
-                : mkMixinPropRef(mixin, name, /*tryIndirect=*/ false)
+                : mkMixinPropRef(mixin, name, /*tryIndirect=*/ false),
             );
           }
         }
-      }
-    )
+      },
+    ),
   );
   // Process animations
   if (rs.animations && !opts.targetEnv.startsWith("canvas")) {
@@ -649,7 +649,7 @@ function deriveCssRuleSetStyles(
           "animation",
           resolver
             ? resolver.tryResolveTokenRefs(animationPropVal)
-            : animationPropVal
+            : animationPropVal,
         );
       }
     } else {
@@ -673,7 +673,7 @@ function deriveCssRuleSetStyles(
         return;
       }
       m.set(name, resolver ? resolver.tryResolveTokenRefs(val) : val);
-    }
+    },
   );
 
   // If the element has a 3d transform, it should have transform-style: preserve-3d
@@ -693,7 +693,8 @@ function deriveCssRuleSetStyles(
   // Disable the outline when the element has a focused VariantSetting
   if (
     vs.variants.some(
-      (v) => isStyleVariant(v) && v.selectors?.some((s) => s.includes(":focus"))
+      (v) =>
+        isStyleVariant(v) && v.selectors?.some((s) => s.includes(":focus")),
     ) &&
     !hasOutlineStyle(m)
   ) {
@@ -741,15 +742,15 @@ type PostProcessStylesOpts = {
 
 function postProcessStyles(
   m: Map<string, string>,
-  opts: PostProcessStylesOpts
+  opts: PostProcessStylesOpts,
 ) {
   if (m.has("background")) {
     deriveBackgroundStyles(
       m,
       ensure(
         m.get("background"),
-        () => "Expected background value but got " + m.get("background")
-      )
+        () => "Expected background value but got " + m.get("background"),
+      ),
     );
   }
 
@@ -787,7 +788,7 @@ function postProcessStyles(
     const value = ensure(
       m.get("backdrop-filter"),
       () =>
-        "Expected backdrop-filter value, but got " + m.get("backdrop-filter")
+        "Expected backdrop-filter value, but got " + m.get("backdrop-filter"),
     );
     m.set("-webkit-backdrop-filter", value);
   }
@@ -814,14 +815,14 @@ function appendContentLayoutStyles(
   ctx: ComponentGenHelper,
   m: Map<string, string>,
   tpl: TplNode,
-  vs: VariantSetting
+  vs: VariantSetting,
 ) {
   if (isBaseVariant(vs.variants)) {
     if (isContentLayoutTpl(tpl)) {
       m.set("display", "grid");
       m.set(
         "grid-template-columns",
-        "var(--plsmc-viewport-gap) 1fr minmax(0, var(--plsmc-wide-chunk)) min(var(--plsmc-standard-width), calc(100% - var(--plsmc-viewport-gap) - var(--plsmc-viewport-gap))) minmax(0, var(--plsmc-wide-chunk)) 1fr var(--plsmc-viewport-gap) "
+        "var(--plsmc-viewport-gap) 1fr minmax(0, var(--plsmc-wide-chunk)) min(var(--plsmc-standard-width), calc(100% - var(--plsmc-viewport-gap) - var(--plsmc-viewport-gap))) minmax(0, var(--plsmc-wide-chunk)) 1fr var(--plsmc-viewport-gap) ",
       );
     }
 
@@ -850,7 +851,7 @@ function appendSizeStyles(
   ctx: ComponentGenHelper,
   m: Map<string, string>,
   tpl: TplNode,
-  vs: VariantSetting
+  vs: VariantSetting,
 ) {
   const derived = deriveSizeStylesForTpl(ctx, tpl, vs);
 
@@ -888,14 +889,14 @@ const PADDING_PROPS = standardSides.map((s) => `padding-${s}`);
 const MARGIN_PROPS = standardSides.map((s) => `margin-${s}`);
 const BORDER_PROPS = ["width", "style", "color"];
 const BORDER_SIDE_PROPS = BORDER_PROPS.map((prop) =>
-  standardSides.map((s) => `border-${s}-${prop}`)
+  standardSides.map((s) => `border-${s}-${prop}`),
 );
 const BORDER_SHORTHANDS = [
   "border",
   ...standardSides.map((s) => `border-${s}`),
 ].map(
   (shorthand) =>
-    [shorthand, BORDER_PROPS.map((p) => `${shorthand}-${p}`)] as const
+    [shorthand, BORDER_PROPS.map((p) => `${shorthand}-${p}`)] as const,
 );
 
 export function preferShorthand(m: Map<string, string>): Map<string, string> {
@@ -946,7 +947,7 @@ export function preferShorthand(m: Map<string, string>): Map<string, string> {
 
 export const parseCssValue = (
   prop: string | undefined,
-  input: /*TWZ*/ string
+  input: /*TWZ*/ string,
 ): string[] => {
   // This regexp removes only comments without *. It is intended to be used
   // only to remove comments generated for Plasmic tokens, which do not have
@@ -973,7 +974,7 @@ function showStyles(m: Map<string, string>) {
  */
 export function generateKeyframesRule(
   animationSequence: AnimationSequence,
-  resolver?: CssVarResolver
+  resolver?: CssVarResolver,
 ): string {
   const keyframeRules = animationSequence.keyframes
     .map((keyframe) => {
@@ -983,7 +984,7 @@ export function generateKeyframesRule(
       Object.entries(makeLayoutAwareRuleSet(keyframe.rs, false).values).forEach(
         ([name, val]) => {
           styles.set(name, resolver ? resolver.tryResolveTokenRefs(val) : val);
-        }
+        },
       );
 
       // Process keyframe RuleSet mixins
@@ -992,9 +993,9 @@ export function generateKeyframesRule(
           ([name, val]) => {
             styles.set(
               name,
-              resolver ? resolver.resolveMixinProp(mixin, name) : val
+              resolver ? resolver.resolveMixinProp(mixin, name) : val,
             );
-          }
+          },
         );
       });
 
@@ -1010,7 +1011,7 @@ export function generateKeyframesRule(
     .join("\n");
 
   return `@keyframes ${getAnimationSequenceIdentifier(
-    animationSequence
+    animationSequence,
   )} {\n${keyframeRules}\n}`;
 }
 
@@ -1021,7 +1022,7 @@ const ANIM_CSS_VAR_REGEX = /^var\(--anim-([^)]+)\)$/;
  * otherwise return null.
  */
 export function tryGetAnimationSequenceUuidFromCssVar(
-  value: string
+  value: string,
 ): string | null {
   const match = value.match(ANIM_CSS_VAR_REGEX);
   return match ? match[1] : null;
@@ -1032,7 +1033,7 @@ export function tryGetAnimationSequenceUuidFromCssVar(
  * AnimationSequence. uuid-keyed used by Plasmic-generated `animation:` rules.
  */
 export function makeAnimationKeyframeCssVarName(
-  animationSequence: AnimationSequence
+  animationSequence: AnimationSequence,
 ) {
   return `--anim-${animationSequence.uuid}`;
 }
@@ -1044,7 +1045,7 @@ export function makeAnimationKeyframeCssVarName(
  * (`--token-<uuid>` internal + `--plasmic-token-<name>` alias).
  */
 export function makePlasmicAnimationCssVarName(
-  animationSequence: AnimationSequence
+  animationSequence: AnimationSequence,
 ) {
   return `--plasmic-anim-${toVarName(animationSequence.name)}`;
 }
@@ -1066,7 +1067,7 @@ export function generateAnimationPropValue(animations: Animation[]) {
     animations.map((anim) => ({
       name: `var(${makeAnimationKeyframeCssVarName(anim.sequence)})`,
       ...anim,
-    }))
+    })),
   );
 }
 
@@ -1080,7 +1081,7 @@ export function generateAnimationPropValue(animations: Animation[]) {
  */
 export function makeProjectAnimationsBlocks(
   site: Site,
-  resolver?: CssVarResolver
+  resolver?: CssVarResolver,
 ): { keyframes: string; varDecls: string } {
   const localSequences = localAnimationSequences(site);
   if (localSequences.length === 0) {
@@ -1126,7 +1127,7 @@ function getComponentDepth(tpl: TplComponent) {
 
 function maybeRule(
   ruleName: string,
-  content: string | undefined
+  content: string | undefined,
 ): string | undefined {
   return content
     ? `${ruleName} {
@@ -1149,7 +1150,7 @@ function showSelectorRuleSet(
   srs: SelectorRuleSet,
   tokenRefResolver: TokenRefResolver,
   resolver?: CssVarResolver,
-  isStudio?: boolean
+  isStudio?: boolean,
 ) {
   const m = new Map<string, string>();
   for (const rule of Object.keys(srs.rs.values)) {
@@ -1176,7 +1177,7 @@ function showSelectorRuleSet(
 
   postProcessStyles(
     m,
-    isStudio ? { isStudio: true, tokenRefResolver } : { isStudio: false }
+    isStudio ? { isStudio: true, tokenRefResolver } : { isStudio: false },
   );
 
   const ruleContent = showStyles(m);
@@ -1192,15 +1193,15 @@ function makeRootClassName(tpl: TplComponent, ruleNamer: RuleNamer) {
     tpl,
     ensure(
       tryGetBaseVariantSetting(tpl),
-      `All tpls must have base variant settings`
-    )
+      `All tpls must have base variant settings`,
+    ),
   );
 }
 
 export function makeStyleScopeClassName(
   tpl: TplComponent,
   ruleNamer: RuleNamer,
-  scope: string
+  scope: string,
 ) {
   const rootClassName = makeRootClassName(tpl, ruleNamer);
   return `${rootClassName}__${toVarName(scope)}`;
@@ -1218,7 +1219,7 @@ function showClassPropRuleSets(
     resolver?: CssVarResolver;
     isStudio?: boolean;
     useCssModules?: boolean;
-  }
+  },
 ) {
   const rootClassName = makeRootClassName(tpl, ruleNamer);
 
@@ -1232,7 +1233,7 @@ function showClassPropRuleSets(
     customScopes.map((scope) => [
       scope,
       makeStyleScopeClassName(tpl, ruleNamer, scope),
-    ])
+    ]),
   );
 
   const makeRuleName = (expr: StyleExpr, srs: SelectorRuleSet) => {
@@ -1248,7 +1249,7 @@ function showClassPropRuleSets(
         opts?.useCssModules
           ? selector.replaceAll(
               /(\.-?[_a-zA-Z]+[_a-zA-Z0-9-]*)/g,
-              ":global($1)"
+              ":global($1)",
             )
           : selector
       )
@@ -1257,7 +1258,7 @@ function showClassPropRuleSets(
       for (const scope of customScopes) {
         selector = selector.replace(
           `:${scope}`,
-          `.${customScopeClassNames[scope]}`
+          `.${customScopeClassNames[scope]}`,
         );
       }
       return selector;
@@ -1272,7 +1273,7 @@ function showClassPropRuleSets(
     if (isKnownStyleExpr(arg.expr)) {
       assert(
         isKnownClassNamePropType(param.type),
-        "Only ClassNamePropType can have a StyleExpr arg"
+        "Only ClassNamePropType can have a StyleExpr arg",
       );
       const classNameType = param.type;
       const shouldGen = (sty: SelectorRuleSet) => {
@@ -1296,7 +1297,7 @@ function showClassPropRuleSets(
             sty,
             makeTokenRefResolver(site),
             opts?.resolver,
-            opts?.isStudio
+            opts?.isStudio,
           );
           if (rule) {
             rules.push(rule);
@@ -1317,7 +1318,7 @@ export const showSimpleCssRuleSet = (
     targetEnv: TargetEnv;
     useCssModules?: boolean;
     whitespaceNormal?: boolean;
-  }
+  },
 ): string[] => {
   const site = ctx.site;
   const resolver = ctx.resolver;
@@ -1368,21 +1369,21 @@ export const showSimpleCssRuleSet = (
             (r) =>
               `${r}${L.repeat(
                 getGlobalClassSelector(makeWabInstanceClassName(opts)),
-                getComponentDepth(tpl)
-              )}`
+                getComponentDepth(tpl),
+              )}`,
           )
           .join(","),
-        showStyles(styles)
+        showStyles(styles),
       ),
       ...showClassPropRuleSets(site, tpl, vs, ruleNamer, {
         resolver,
         isStudio,
         useCssModules,
-      })
+      }),
     );
   } else if (isStyledTplSlot(tpl)) {
     const uninheritedProps = [...styles.keys()].filter(
-      (p) => !inheritableCssProps.includes(p)
+      (p) => !inheritableCssProps.includes(p),
     );
 
     if (uninheritedProps.length === 0) {
@@ -1412,7 +1413,7 @@ export const showSimpleCssRuleSet = (
       // isTextArgNodeOfSlot branch below, we make sure the precedence is higher by
       // using !important.
       const inheritedProps = [...styles.keys()].filter(
-        (p) => !uninheritedProps.includes(p)
+        (p) => !uninheritedProps.includes(p),
       );
       const inheritedStyles = showStyles(
         new Map(
@@ -1421,29 +1422,29 @@ export const showSimpleCssRuleSet = (
               p,
               ensure(
                 styles.get(p),
-                () => `Expected ${p} value, but got ${styles.get(p)}`
-              )
-            )
-          )
-        )
+                () => `Expected ${p} value, but got ${styles.get(p)}`,
+              ),
+            ),
+          ),
+        ),
       );
       const uninheritedTextStyles = showStyles(
-        xpickExists(styles, ...nonInheritableTypographCssProps)
+        xpickExists(styles, ...nonInheritableTypographCssProps),
       );
       const otherUninheritedStyles = showStyles(
         xpickBy(
           styles,
           (val, key) =>
             !inheritedProps.includes(key) &&
-            !nonInheritableTypographCssProps.includes(key)
-        )
+            !nonInheritableTypographCssProps.includes(key),
+        ),
       );
       const textClass = getGlobalClassSelector(makeWabTextClassName(opts));
       const textHtmlClass = getGlobalClassSelector(
-        makeWabHtmlTextClassName(opts)
+        makeWabHtmlTextClassName(opts),
       );
       const slotStringWrapperClass = getGlobalClassSelector(
-        makeWabSlotStringWrapperClassName(opts)
+        makeWabSlotStringWrapperClassName(opts),
       );
       const slotClass = getGlobalClassSelector(makeWabSlotClassName(opts));
       const editorClass = getGlobalClassSelector("__wab_editor");
@@ -1482,7 +1483,7 @@ export const showSimpleCssRuleSet = (
             `${ruleName} > ${slotClass} > ${slotClass} > ${slotClass} > ${textHtmlClass}`,
             `${ruleName} > ${slotClass} > ${slotClass} > ${slotClass} > ${slotStringWrapperClass}`,
           ].join(","),
-          uninheritedTextStyles
+          uninheritedTextStyles,
         ),
 
         // We pass the other uninherited props to "> *".  There aren't many styles applied to TplSlots
@@ -1501,7 +1502,7 @@ export const showSimpleCssRuleSet = (
             `${ruleName} > ${slotClass} > ${slotClass} > picture > img`,
             `${ruleName} > ${slotClass} > ${slotClass} > ${slotClass} > picture > img `,
           ].join(","),
-          otherUninheritedStyles
+          otherUninheritedStyles,
         ),
 
         // If we're generating css for the canvas, not for codegen (if resolver is undefined),
@@ -1513,9 +1514,9 @@ export const showSimpleCssRuleSet = (
                 ? `${uninheritedTextStyles ?? ""}\n${
                     otherUninheritedStyles ?? ""
                   }`
-                : undefined
+                : undefined,
             )
-          : undefined
+          : undefined,
       );
     }
   } else if (ctx.isTextArgNodeOfSlot(tpl)) {
@@ -1534,27 +1535,27 @@ export const showSimpleCssRuleSet = (
       xMapValues(
         xpickBy(
           styles,
-          (val, key) => typographyCssProps.includes(key) || key === "overflow"
+          (val, key) => typographyCssProps.includes(key) || key === "overflow",
         ),
-        maybeAddImportant
-      )
+        maybeAddImportant,
+      ),
     );
     rules.push(
       maybeRule(ruleName, overridingStyles),
       !resolver
         ? maybeRule(
             `${ruleName} > ${getGlobalClassSelector("__wab_rich_text")} > *`,
-            overridingTypographyStyles
+            overridingTypographyStyles,
           )
-        : undefined
+        : undefined,
     );
   } else if (isTplPicture(tpl)) {
     rules.push(
       maybeRule(ruleName, showStyles(styles)),
       maybeRule(
         `${ruleName} > picture > img`,
-        showStyles(xpickExists(styles, ...imageCssProps))
-      )
+        showStyles(xpickExists(styles, ...imageCssProps)),
+      ),
     );
   } else if (isTplTextBlock(tpl)) {
     const getRichTextStyles = () => {
@@ -1565,7 +1566,9 @@ export const showSimpleCssRuleSet = (
       ]);
 
       return new Map(
-        [...styles.entries()].filter(([k]) => nonInheritedTextStyleProps.has(k))
+        [...styles.entries()].filter(([k]) =>
+          nonInheritedTextStyleProps.has(k),
+        ),
       );
     };
 
@@ -1578,9 +1581,9 @@ export const showSimpleCssRuleSet = (
       !resolver
         ? maybeRule(
             `${ruleName}:not(.__wab_editing) > .__wab_rich_text > *`,
-            showStyles(getRichTextStyles())
+            showStyles(getRichTextStyles()),
           )
-        : undefined
+        : undefined,
     );
   } else {
     // For "normal" elements, add the styles.
@@ -1600,9 +1603,9 @@ export const showSimpleCssRuleSet = (
       maybeRule(
         `${ruleName} *`,
         showStyles(
-          new Map([["transform-style", styles.get("transform-style")!]])
-        )
-      )
+          new Map([["transform-style", styles.get("transform-style")!]]),
+        ),
+      ),
     );
   }
 
@@ -1619,7 +1622,7 @@ type RuleNamer = {
  * pseudoelement selectors like ::placeholder.
  */
 export function makePseudoElementAwareRuleNamer(
-  ruleNamer: RuleNamer
+  ruleNamer: RuleNamer,
 ): RuleNamer {
   const namer = (tpl: TplNode, vs: VariantSetting) => {
     const maybeSv = tryGetPrivateStyleVariant(vs.variants);
@@ -1633,7 +1636,7 @@ export function makePseudoElementAwareRuleNamer(
 }
 
 export function makeBaseRuleNamer(
-  classNamer: RuleNamer["classNamer"]
+  classNamer: RuleNamer["classNamer"],
 ): RuleNamer {
   const ruleNamer = (tpl: TplNode, vs: VariantSetting) =>
     `.${classNamer(tpl, vs)}`;
@@ -1652,7 +1655,7 @@ export function makePseudoClassAwareRuleNamer(
   ruleNamer: RuleNamer,
   opts?: {
     targetEnv?: TargetEnv;
-  }
+  },
 ): RuleNamer {
   const namer = (tpl: TplNode, vs: VariantSetting) =>
     showPseudoClassSelector(component, tpl, vs, ruleNamer, opts);
@@ -1676,7 +1679,7 @@ function showPseudoClassSelector(
   ruleNamer: RuleNamer,
   opts?: {
     targetEnv?: TargetEnv;
-  }
+  },
 ) {
   const variants = vs.variants
     // We don't need to deal with screen variants, as they are dealt with via
@@ -1740,8 +1743,8 @@ function showPseudoClassSelector(
             : sv.selectors,
           `Expected variant ${sv.name} (${sv.uuid}) to have ${
             isCodeComponentVariant(sv) ? "variant keys" : "selectors"
-          }`
-        )
+          }`,
+        ),
       )
       .map((sel) => {
         const pseudoSelectorOption = getPseudoSelector(sel);
@@ -1789,17 +1792,17 @@ function showPseudoClassSelector(
 
   if (isRoot) {
     const styleOrCodeComponentVariants = variants.filter(
-      isStyleOrCodeComponentVariant
+      isStyleOrCodeComponentVariant,
     );
     const baseRuleVariants = getBaseRuleVariants(variants);
     const baseRuleVs = ensure(
       tryGetVariantSetting(root, baseRuleVariants),
       () =>
         `Expected VariantSettings in tpl ${root.uuid} for combo ` +
-        baseRuleVariants.map((v) => `${v.name} (${v.uuid})`).join(", ")
+        baseRuleVariants.map((v) => `${v.name} (${v.uuid})`).join(", "),
     );
     const interactionSelector = makeSelectorString(
-      styleOrCodeComponentVariants
+      styleOrCodeComponentVariants,
     );
     // Repeat the interaction selector to boost specificity: .cls:hover:hover is
     // (0,3,0), which beats TplComponent instance selectors .cls.__wab_instance at
@@ -1809,7 +1812,7 @@ function showPseudoClassSelector(
     // non-deterministically.
     return `${baseRuleName}${ruleNamer(
       root,
-      baseRuleVs
+      baseRuleVs,
     )}${interactionSelector}${interactionSelector}`;
   }
 
@@ -1819,13 +1822,13 @@ function showPseudoClassSelector(
     tryGetVariantSetting(root, nonStyleVariants),
     () =>
       `Expected VariantSettings in tpl ${root.uuid} for combo ` +
-      nonStyleVariants.map((v) => `${v.name} (${v.uuid})`).join(", ")
+      nonStyleVariants.map((v) => `${v.name} (${v.uuid})`).join(", "),
   );
   parts.push(
     `${ruleNamer(root, baseRootRuleVs)}${makeSelectorString([
       ...styleVariants,
       ...codeComponentVariants,
-    ])}`
+    ])}`,
   );
 
   const baseRuleVariants = getBaseRuleVariants([
@@ -1838,10 +1841,10 @@ function showPseudoClassSelector(
     tryGetVariantSetting(tpl, baseRuleVariants),
     () =>
       `Expected VariantSettings in tpl ${root.uuid} for combo ` +
-      baseRuleVariants.map((v) => `${v.name} (${v.uuid})`).join(", ")
+      baseRuleVariants.map((v) => `${v.name} (${v.uuid})`).join(", "),
   );
   parts.push(
-    `${ruleNamer(tpl, baseRuleVs)}${makeSelectorString(privateStyleVariants)}`
+    `${ruleNamer(tpl, baseRuleVs)}${makeSelectorString(privateStyleVariants)}`,
   );
 
   return parts.join(" ");
@@ -1849,7 +1852,7 @@ function showPseudoClassSelector(
 
 function deriveResponsiveColumnsSizesRules(
   vs: VariantSetting,
-  ruleName: string
+  ruleName: string,
 ) {
   if (!vs.columnsConfig) {
     return [];
@@ -1869,7 +1872,7 @@ function deriveResponsiveColumnsSizesRules(
     m.set("width", widthProp);
     return maybeRule(
       `${ruleName} > :nth-child(${numCols}n + ${idx + 1})`,
-      showStyles(m)
+      showStyles(m),
     );
   });
 }
@@ -1879,7 +1882,7 @@ export const classNameForRuleSet = (rs: RuleSet) => `uid-${rs.uid}`;
 export const classNameToRuleSetUid = (className: string) =>
   +ensure(
     /uid-(.*)/.exec(className),
-    () => "Failed to parse className " + className
+    () => "Failed to parse className " + className,
   )[1];
 
 export interface TriggerCondition {
@@ -1891,7 +1894,7 @@ export interface TriggerCondition {
 export function getTriggerableSelectors(sv: Variant) {
   return ensure(
     sv.selectors,
-    () => `Expected variant ${sv.name} (${sv.uuid}) to have selectors`
+    () => `Expected variant ${sv.name} (${sv.uuid}) to have selectors`,
   )
     .map(getPseudoSelector)
     .filter(notNil)
@@ -1912,12 +1915,12 @@ export class PseudoSelectorOption {
     readonly isWithin: boolean | undefined,
     // name of the selector as identifier
     readonly capitalName: string,
-    readonly trigger?: TriggerCondition
+    readonly trigger?: TriggerCondition,
   ) {}
   applicable(
     forTag: string,
     forPrivateStyleVariant: boolean,
-    forRoot: boolean
+    forRoot: boolean,
   ) {
     if (!forPrivateStyleVariant && this.isPseudoElement) {
       // Can only use pseudoElement selectors for private style variants
@@ -1946,7 +1949,7 @@ export const pseudoSelectors = (() => {
     cssSelector: string,
     applicableTags: string[] | undefined,
     isWithin: boolean,
-    trigger?: TriggerCondition
+    trigger?: TriggerCondition,
   ) => {
     const isPseudoElement = cssSelector.startsWith("::");
     const capitalName = capCamelCase(cssSelector);
@@ -1957,7 +1960,7 @@ export const pseudoSelectors = (() => {
       applicableTags,
       isWithin,
       capitalName,
-      trigger
+      trigger,
     );
     opts.push(option);
 
@@ -1975,7 +1978,7 @@ export const pseudoSelectors = (() => {
               isOpposite: true,
               alwaysByHook: trigger.alwaysByHook,
             }
-          : undefined
+          : undefined,
       );
       oppositeOption.opposite = option;
       option.opposite = oppositeOption;
@@ -2003,7 +2006,7 @@ export const pseudoSelectors = (() => {
     false,
     {
       hookName: "useFocused",
-    }
+    },
   );
   addSelector(
     "Focus Visible",
@@ -2014,7 +2017,7 @@ export const pseudoSelectors = (() => {
       hookName: "useFocusVisible",
       // No wide cross browser support yet
       alwaysByHook: true,
-    }
+    },
   );
   addSelector("Focused Within", ":focus-within", undefined, true, {
     hookName: "useFocusedWithin",
@@ -2028,7 +2031,7 @@ export const pseudoSelectors = (() => {
       hookName: "useFocusVisibleWithin",
       // Not a real selector; https://github.com/WICG/focus-visible/issues/151
       alwaysByHook: true,
-    }
+    },
   );
   addSelector("Disabled", ":disabled", ["input", "textarea", "button"], false);
   addSelector("Visited", ":visited", ["a"], false);
@@ -2039,27 +2042,27 @@ export const pseudoSelectors = (() => {
 export function getApplicableSelectors(
   forTag: string,
   forPrivateStyleVariant: boolean,
-  forRoot: boolean
+  forRoot: boolean,
 ) {
   return pseudoSelectors.filter((opt) =>
-    opt.applicable(forTag, forPrivateStyleVariant, forRoot)
+    opt.applicable(forTag, forPrivateStyleVariant, forRoot),
   );
 }
 
 /** Given a CSS selector, tries to find the preset option. */
 export function getPseudoSelector(
-  cssSelector: string
+  cssSelector: string,
 ): PseudoSelectorOption | undefined {
   return pseudoSelectors.find((s) => s.cssSelector === cssSelector);
 }
 
 export const tryAugmentRulesWithScreenVariant = (
   rules: string[],
-  vs: VariantSetting
+  vs: VariantSetting,
 ) => {
   // Add media query based on global screen variants
   const globalScreenVariants = getGlobalVariants(vs.variants).filter(
-    (v) => v.mediaQuery
+    (v) => v.mediaQuery,
   );
   return rules.map((rule) => {
     const pre = globalScreenVariants
@@ -2080,7 +2083,7 @@ const genMixinVarsRules = (
     onlyBoxShadow?: boolean;
     whitespace?: "enforce" | "normal";
     cssVariableInfix?: string;
-  }
+  },
 ) => {
   let values = opts?.onlyBoxShadow ? pick(rs.values, "box-shadow") : rs.values;
   if (opts?.whitespace === "enforce" && !("white-space" in values)) {
@@ -2094,18 +2097,18 @@ const genMixinVarsRules = (
         mixin,
         rule,
         false,
-        opts?.cssVariableInfix
+        opts?.cssVariableInfix,
       )}: ${
         rule === "white-space" && opts?.whitespace === "normal"
           ? normalizeWhitespace(val)
           : rule === "font-family"
-          ? extendFontFamilyWithFallbacks(splitCssValue("font-family", val))
-          : val
+            ? extendFontFamilyWithFallbacks(splitCssValue("font-family", val))
+            : val
       }`,
       vsh,
       externalVarRule: `${getExternalMixinPropVarName(
         mixin,
-        rule
+        rule,
       )}: ${mkMixinPropRef(mixin, rule, false)}`,
     };
   });
@@ -2122,7 +2125,7 @@ export const makeMixinVarsRules = (
     onlyBoxShadow?: boolean;
     whitespace?: "enforce" | "normal";
     cssVariableInfix?: string;
-  }
+  },
 ) => {
   if (!opts.whitespace) {
     opts.whitespace = getProjectFlags(site).useWhitespaceNormal
@@ -2136,15 +2139,15 @@ export const makeMixinVarsRules = (
         mixin,
         vRs.rs,
         new VariantedStylesHelper(site, vRs.variants),
-        opts
-      )
+        opts,
+      ),
     ) ?? []),
   ]);
 
   const groupedMixinVars = L.groupBy(mixinVars, (el) => el.vsh.key());
 
   const nonScreenGlobalVariants = site.globalVariantGroups.flatMap(
-    (variantGroup) => variantGroup.variants.filter((v) => !isScreenVariant(v))
+    (variantGroup) => variantGroup.variants.filter((v) => !isScreenVariant(v)),
   );
 
   const nonScreenGlobalVariantCssSelector = (variantCombo) =>
@@ -2171,7 +2174,7 @@ export const makeMixinVarsRules = (
           groupedMixinVars[key][0].vsh.globalVariants() ?? [];
 
         const activeNonScreenGlobalVariants = activeGlobalVariants.filter(
-          (v) => !isScreenVariant(v)
+          (v) => !isScreenVariant(v),
         );
 
         const selector =
@@ -2180,7 +2183,7 @@ export const makeMixinVarsRules = (
             : `${[
                 rootCssSelector,
                 ...nonScreenGlobalVariants.map((variant) =>
-                  nonScreenGlobalVariantCssSelector([variant])
+                  nonScreenGlobalVariantCssSelector([variant]),
                 ),
               ].join(", ")}`;
 
@@ -2190,7 +2193,7 @@ export const makeMixinVarsRules = (
             ? `@media ${
                 ensure(
                   activeGlobalVariants.find((v) => isScreenVariant(v)),
-                  () => "Couldn't find screen variant"
+                  () => "Couldn't find screen variant",
                 ).mediaQuery
               } {`
             : ""
@@ -2200,7 +2203,7 @@ export const makeMixinVarsRules = (
             .flatMap((t) =>
               opts?.generateExternalCssVar
                 ? [t.varRule, t.externalVarRule]
-                : [t.varRule]
+                : [t.varRule],
             )
             .join("; ")}
         }
@@ -2218,14 +2221,14 @@ type TokenVarData = {
 
 export const genTokenVarDataWithVariants = (
   token: FinalToken<StyleToken>,
-  site: Site
+  site: Site,
 ): TokenVarData[] => {
   const genData = (vsh = new VariantedStylesHelper()) => ({
     varRule: `${getTokenVarName(token.base)}: ${vsh.getActiveTokenValue(
-      token
+      token,
     )}`,
     plasmicExternalVarRule: `${getPlasmicExternalTokenVarName(
-      token.base
+      token.base,
     )}: ${mkTokenRef(token.base)}`,
     userExternalVarRule: isTokenNameValidCssVariable(token.base)
       ? `${token.name}: ${mkTokenRef(token.base)}`
@@ -2235,7 +2238,7 @@ export const genTokenVarDataWithVariants = (
   return [
     genData(),
     ...token.variantedValues.map((v) =>
-      genData(new VariantedStylesHelper(site, v.variants))
+      genData(new VariantedStylesHelper(site, v.variants)),
     ),
   ];
 };
@@ -2268,7 +2271,7 @@ export const makeCssTokenVarsRuleSets = (
     targetEnv: TargetEnv;
     generateExternalToken?: boolean;
     prefixClassName?: string;
-  }
+  },
 ) => {
   const groupedTokenVars = L.groupBy(tokenVars, (el) => el.vsh.key());
 
@@ -2293,7 +2296,7 @@ export const makeCssTokenVarsRuleSets = (
         const shouldGenerateExternalToken =
           opts.generateExternalToken && vsh.isActiveBaseVariant();
         const nonScreenGlobalVariants = globalVariants.filter(
-          (v) => !isScreenVariant(v)
+          (v) => !isScreenVariant(v),
         );
 
         return `
@@ -2302,7 +2305,7 @@ export const makeCssTokenVarsRuleSets = (
             ? `@media ${
                 ensure(
                   globalVariants.find((v) => isScreenVariant(v)),
-                  () => "Couldn't find screen variant"
+                  () => "Couldn't find screen variant",
                 ).mediaQuery
               } {`
             : ""
@@ -2314,7 +2317,7 @@ export const makeCssTokenVarsRuleSets = (
                   targetEnv: opts.targetEnv,
                   prefix: opts?.prefixClassName,
                 })}`,
-                2
+                2,
               )
             : ""
         } {
@@ -2339,7 +2342,7 @@ export const mkCssVarsRuleForCanvas = (
   mixins: Mixin[],
   themes: Theme[],
   assets: ImageAsset[],
-  activeTheme: Theme | null | undefined
+  activeTheme: Theme | null | undefined,
 ) => {
   const rootSelector = `.plasmic-tokens`;
   const tokenVarsRules = makeCssTokenVarsRuleSets(
@@ -2364,7 +2367,7 @@ export const mkCssVarsRuleForCanvas = (
       targetEnv: "canvas",
       prefixClassName: "__wab_",
       generateExternalToken: true,
-    }
+    },
   );
   const mixinVarsRules = makeMixinVarsRules(
     site,
@@ -2378,7 +2381,7 @@ export const mkCssVarsRuleForCanvas = (
       targetEnv: "canvas",
       prefixClassName: "__wab_",
       generateExternalCssVar: true,
-    }
+    },
   );
 
   const imageVars = assets.map((asset) => {
@@ -2398,7 +2401,7 @@ export const mkCssVarsRuleForCanvas = (
   });
 
   const nonScreenGlobalVariants = site.globalVariantGroups.flatMap(
-    (variantGroup) => variantGroup.variants.filter((v) => !isScreenVariant(v))
+    (variantGroup) => variantGroup.variants.filter((v) => !isScreenVariant(v)),
   );
 
   const selector = [
@@ -2408,7 +2411,7 @@ export const mkCssVarsRuleForCanvas = (
         `${rootSelector}:where(.${makeCssClassNameForVariantCombo([variant], {
           targetEnv: "canvas",
           prefix: "__wab_",
-        })})`
+        })})`,
     ),
   ].join(", ");
 
@@ -2420,7 +2423,7 @@ export const mkCssVarsRuleForCanvas = (
     Object.entries(makeLayoutAwareRuleSet(mixin.rs, false).values).forEach(
       ([rule, val]) => {
         m.set(rule, val);
-      }
+      },
     );
 
     addFontFamilyFallback(m);
@@ -2452,7 +2455,7 @@ export const mkCssVarsRuleForCanvas = (
           classNameBase: studioDefaultStylesClassNameBase,
           targetEnv: "canvas",
           projectId: canvasProjectId,
-        })
+        }),
       ),
     ];
   });
@@ -2501,12 +2504,12 @@ export function makeCanvasRuleNamers(component: Component) {
     interactive: makePseudoElementAwareRuleNamer(
       makePseudoClassAwareRuleNamer(component, baseRuleNamer, {
         targetEnv: "canvas-interactive",
-      })
+      }),
     ),
     nonInteractive: makePseudoElementAwareRuleNamer(
       makePseudoClassAwareRuleNamer(component, baseRuleNamer, {
         targetEnv: "canvas-non-interactive",
-      })
+      }),
     ),
   };
 }
@@ -2514,7 +2517,7 @@ export function makeCanvasRuleNamers(component: Component) {
 export function genCanvasRules(
   ctx: ComponentGenHelper,
   tpl: TplNode,
-  vs: VariantSetting
+  vs: VariantSetting,
 ) {
   const site = ctx.site;
   const component = ctx.owningComponent(tpl);
@@ -2527,12 +2530,12 @@ export function genCanvasRules(
       isTplComponent(tpl) &&
         tpl.vsettings.length <= 1 &&
         L.isEqual(vs.variants, [site.globalVariant]),
-      () => `No owner component found for non-arena-root tpl`
+      () => `No owner component found for non-arena-root tpl`,
     );
   }
 
   const ruleNamers = makeCanvasRuleNamers(
-    component ?? ensureKnownTplComponent(tpl).component
+    component ?? ensureKnownTplComponent(tpl).component,
   );
   const nonInteractiveRuleSet = showSimpleCssRuleSet(
     ctx,
@@ -2542,7 +2545,7 @@ export function genCanvasRules(
     {
       targetEnv: "canvas-non-interactive",
       useCssModules: false,
-    }
+    },
   );
 
   const interactiveRuleSet = showSimpleCssRuleSet(
@@ -2555,7 +2558,7 @@ export function genCanvasRules(
       // canvas is in interactive mode
       targetEnv: "canvas-interactive",
       useCssModules: false,
-    }
+    },
   );
 
   return [...nonInteractiveRuleSet, ...interactiveRuleSet];
@@ -2585,7 +2588,7 @@ export const cloneRuleSet = (rs: RuleSet) => {
 export function mkRuleSet(
   obj: {
     values?: Record<string, string>;
-  } = {}
+  } = {},
 ) {
   return new RuleSet({
     values: obj.values ?? {},
@@ -2610,7 +2613,7 @@ export function px(x: number) {
 
 export function createRuleSetMerger(
   rulesets: DeepReadonlyArray<RuleSet>,
-  tpl: TplNode
+  tpl: TplNode,
 ) {
   if (rulesets.length === 1) {
     return readonlyRSH(rulesets[0], tpl);
@@ -2623,7 +2626,7 @@ export class RuleSetMerger {
   private exps: ReadonlyIRuleSetHelpersX[];
   constructor(
     private rulesets: DeepReadonlyArray<RuleSet>,
-    private tplTag: TplNode
+    private tplTag: TplNode,
   ) {
     this.exps = rulesets.map((rs) => readonlyRSH(rs, tplTag));
   }
@@ -2657,7 +2660,7 @@ export class RuleSetMerger {
 
   props() {
     return L.uniq(
-      L.flatten(this.rulesets.map((rs) => getAllDefinedStyles(rs)))
+      L.flatten(this.rulesets.map((rs) => getAllDefinedStyles(rs))),
     );
   }
 }
@@ -2668,7 +2671,7 @@ export class RuleSetMerger {
  * before the owning RuleSet
  */
 export function expandRuleSets(
-  rulesets: DeepReadonlyArray<RuleSet>
+  rulesets: DeepReadonlyArray<RuleSet>,
 ): DeepReadonlyArray<RuleSet> {
   // Fast return case for when there's just a single RuleSet without
   // mixins applied
@@ -2690,7 +2693,7 @@ export function expandRuleSets(
  */
 export function createExpandedRuleSetMerger(
   rs: DeepReadonly<RuleSet>,
-  tpl: TplNode
+  tpl: TplNode,
 ) {
   return createRuleSetMerger(expandRuleSets([rs]), tpl);
 }
@@ -2760,7 +2763,7 @@ export function cloneTheme(theme: Theme) {
       Object.entries(theme.addItemPrefs).map(([key, rs]) => [
         key,
         cloneRuleSet(rs),
-      ])
+      ]),
     ),
   });
 }
@@ -2821,17 +2824,17 @@ export function changeTokenUsage(
   site: Site,
   token: StyleToken,
   usage: TokenUsage,
-  action: "inline" | "reset" | StyleToken
+  action: "inline" | "reset" | StyleToken,
 ) {
   const replaced = isKnownStyleToken(action)
     ? mkTokenRef(action)
     : action === "inline"
-    ? token.value
-    : tokenTypeDefaults(token.type);
+      ? token.value
+      : tokenTypeDefaults(token.type);
   if (usage.type === "rule") {
     usage.rs.values[usage.prop] = replaceAllTokenRefs(
       usage.value,
-      (tokenId: string) => (tokenId === token.uuid ? replaced : undefined)
+      (tokenId: string) => (tokenId === token.uuid ? replaced : undefined),
     );
   } else if (usage.type === "styleToken") {
     usage.styleToken.value = replaced;
@@ -2842,7 +2845,7 @@ export function changeTokenUsage(
       action === "inline"
         ? new VariantedStylesHelper(
             site,
-            usage.variantedValue.variants
+            usage.variantedValue.variants,
           ).getActiveTokenValue(toFinalToken(token, site))
         : replaced;
   } else if (usage.type === "prop") {
@@ -2866,7 +2869,7 @@ export interface TokenUsageSummary {
 
 export function extractTokenUsages(
   site: Site,
-  token: StyleToken
+  token: StyleToken,
 ): [Set<TokenUsage>, TokenUsageSummary] {
   const usages = new Set<TokenUsage>();
   const usingComponents = new Set<Component>();
@@ -2934,8 +2937,8 @@ export function extractTokenUsages(
   const usingFrames = [...usingComponents].filter(isFrameComponent).map((c) =>
     ensure(
       arenaFrames.find((frame) => frame.container.component === c),
-      () => `Couldn't find arenaFrame for component ${c.name} (${c.uuid})`
-    )
+      () => `Couldn't find arenaFrame for component ${c.name} (${c.uuid})`,
+    ),
   );
 
   const findUsagesInRs = (rs: RuleSet) => {
@@ -3009,7 +3012,7 @@ export function extractTokenUsages(
 
 export function extractMixinUsages(
   site: Site,
-  mixin: Mixin
+  mixin: Mixin,
 ): [Set<RuleSet>, GeneralUsageSummary] {
   const usages = new Set<RuleSet>();
   const usingComponents = new Set<Component>();
@@ -3032,8 +3035,8 @@ export function extractMixinUsages(
   const usingFrames = [...usingComponents].filter(isFrameComponent).map((c) =>
     ensure(
       arenaFrames.find((frame) => frame.container.component === c),
-      () => `Couldn't find arenaFrame for component ${c.name} (${c.uuid})`
-    )
+      () => `Couldn't find arenaFrame for component ${c.name} (${c.uuid})`,
+    ),
   );
 
   return tuple(usages, {
@@ -3044,7 +3047,7 @@ export function extractMixinUsages(
 
 export function extractAnimationSequenceUsages(
   site: Site,
-  animationSequence: AnimationSequence
+  animationSequence: AnimationSequence,
 ): [Set<RuleSet>, GeneralUsageSummary] {
   const usages = new Set<RuleSet>();
   const usingComponents = new Set<Component>();
@@ -3069,8 +3072,8 @@ export function extractAnimationSequenceUsages(
   const usingFrames = [...usingComponents].filter(isFrameComponent).map((c) =>
     ensure(
       arenaFrames.find((frame) => frame.container.component === c),
-      () => `Couldn't find arenaFrame for component ${c.name} (${c.uuid})`
-    )
+      () => `Couldn't find arenaFrame for component ${c.name} (${c.uuid})`,
+    ),
   );
 
   return tuple(usages, {
@@ -3097,7 +3100,10 @@ export function extendFontFamilyWithFallbacks(fonts: string[]) {
 export function cssPropsToRuleSet(props: CSSProperties) {
   return mkRuleSet({
     values: Object.fromEntries(
-      Object.entries(props).map(([name, value]) => [normProp(name), "" + value])
+      Object.entries(props).map(([name, value]) => [
+        normProp(name),
+        "" + value,
+      ]),
     ),
   });
 }
@@ -3109,7 +3115,7 @@ const derivedBackgroundStyles = new Map<
 
 export function deriveBackgroundStyles(
   stylesMap: Map<string, string>,
-  backgroundCssValue: string
+  backgroundCssValue: string,
 ) {
   let derived = derivedBackgroundStyles.get(backgroundCssValue);
   if (!derived) {
@@ -3153,7 +3159,7 @@ function deriveBackgroundStylesUncached(backgroundCssValue: string) {
       .map((l) =>
         l.clip === bgClipTextTag
           ? "text"
-          : l.clip || css.getCssInitial("background-clip", "div")
+          : l.clip || css.getCssInitial("background-clip", "div"),
       )
       .join(", ");
     return { background, clip };
@@ -3178,7 +3184,7 @@ const DEFAULT_STYLES_CODE_COMPONENT_STYLE_PROPS = [
 export function makeDefaultStyleValuesDict(
   site: Site,
   activeGlobalVariants: Variant[],
-  resolver = makeTokenRefResolver(site)
+  resolver = makeTokenRefResolver(site),
 ) {
   const theme = site.activeTheme;
   if (!theme) {
@@ -3192,7 +3198,7 @@ export function makeDefaultStyleValuesDict(
       const value = exp.get(prop);
       const resolved = resolver(value, vsh);
       return [camelCase(prop), resolved ?? value];
-    })
+    }),
   );
 }
 
@@ -3201,7 +3207,7 @@ export function getRelevantVariantCombosForToken(
   token: FinalToken<StyleToken>,
   allTokens: Readonly<{
     [uuid: string]: FinalToken<StyleToken>;
-  }> = siteFinalStyleTokensAllDepsDict(site)
+  }> = siteFinalStyleTokensAllDepsDict(site),
 ) {
   const addCombo = (combo: VariantCombo) =>
     map.set(variantComboKey(combo), combo);
@@ -3225,7 +3231,7 @@ export function getRelevantVariantCombosForTheme(
   site: Site,
   allTokens: Readonly<{
     [uuid: string]: FinalToken<StyleToken>;
-  }> = siteFinalStyleTokensAllDepsDict(site)
+  }> = siteFinalStyleTokensAllDepsDict(site),
 ) {
   if (!site.activeTheme) {
     return [];
@@ -3238,14 +3244,14 @@ export function getRelevantVariantCombosForTheme(
     const maybeToken = tryParseTokenRef(value, allTokens);
     if (maybeToken) {
       getRelevantVariantCombosForToken(site, maybeToken, allTokens).forEach(
-        (combo) => addCombo(combo)
+        (combo) => addCombo(combo),
       );
     }
   };
 
   const defaultExp = new RuleSetHelpers(
     site.activeTheme.defaultStyle.rs,
-    "div"
+    "div",
   );
   for (const prop of DEFAULT_STYLES_CODE_COMPONENT_STYLE_PROPS) {
     checkValue(defaultExp.get(prop));

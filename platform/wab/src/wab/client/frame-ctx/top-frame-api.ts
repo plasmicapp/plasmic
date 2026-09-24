@@ -42,7 +42,7 @@ export interface TopFrameApi {
   // component will re-render (because it will be a new object instance) even if
   // the value hasn't changed.
   setLatestPublishedVersionData(
-    data: { revisionId: string; version: string } | undefined
+    data: { revisionId: string; version: string } | undefined,
   ): Promise<void>;
   setSubjectComponentInfo(
     info:
@@ -50,7 +50,7 @@ export interface TopFrameApi {
           pathOrComponent: string;
           componentName: string;
         }
-      | undefined
+      | undefined,
   ): Promise<void>;
   setActivatedBranch(branch: ApiBranch | undefined): Promise<void>;
 
@@ -93,5 +93,5 @@ export type TopFrameApiArgs<Method extends keyof TopFrameApi> = Parameters<
 export type TopFrameApiReturnType<Method extends keyof TopFrameApi> =
   ReturnType<TopFrameApi[Method]>;
 export type TopFrameApiResolveType<Method extends keyof TopFrameApi> = (
-  result: Awaited<ReturnType<TopFrameApi[Method]>>
+  result: Awaited<ReturnType<TopFrameApi[Method]>>,
 ) => void;

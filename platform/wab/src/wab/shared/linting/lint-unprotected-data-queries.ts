@@ -39,13 +39,13 @@ export const lintUnprotectedDataQueries = maybeComputedFn(
     keepAlive: false,
     equals: lintIssuesEquals,
     name: "lintUnprotectedDataQueries",
-  }
+  },
 );
 
 function makeIssueKey(
   component: Component,
   expr: DataSourceOpExpr,
-  tpl?: TplNode
+  tpl?: TplNode,
 ) {
   return `${TYPE}-${component.uuid}-${expr.uid}-${tpl?.uuid}`;
 }

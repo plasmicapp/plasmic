@@ -25,45 +25,45 @@ function fixBundle(bundle: Bundle) {
     }) => {
       assert(
         bundle.map[referencedIid].__type === "TplComponent",
-        `Referenced instance is ${bundle.map[referencedIid].__type}`
+        `Referenced instance is ${bundle.map[referencedIid].__type}`,
       );
       const stateIid = maybeOne(
         ensure(
           weakRefParents.get(referencedIid),
-          `No parent for referencedIid ${referencedIid}`
-        )
+          `No parent for referencedIid ${referencedIid}`,
+        ),
       )!.iid;
       assert(
         bundle.map[stateIid].__type === "State",
-        `Parent instance is ${bundle.map[stateIid].__type}`
+        `Parent instance is ${bundle.map[stateIid].__type}`,
       );
       const paramIid = ensure(
         bundle.map[stateIid].param.__ref,
-        `No param in State[${stateIid}].param`
+        `No param in State[${stateIid}].param`,
       );
       const componentIid = maybeOne(
         ensure(
           strongRefParents.get(stateIid),
-          `No parent for parentIid ${stateIid}`
-        )
+          `No parent for parentIid ${stateIid}`,
+        ),
       )!.iid;
       assert(
         bundle.map[componentIid].__type === "Component",
-        `State parent instance is ${bundle.map[componentIid].__type}`
+        `State parent instance is ${bundle.map[componentIid].__type}`,
       );
       assert(
         bundle.map[componentIid].states.some((s: any) => s.__ref === stateIid),
-        `State ${stateIid} is not in component.states for Component ${componentIid}`
+        `State ${stateIid} is not in component.states for Component ${componentIid}`,
       );
       assert(
         bundle.map[componentIid].params.some((p: any) => p.__ref === paramIid),
-        `Param ${paramIid} is not in component.params for Component ${componentIid}`
+        `Param ${paramIid} is not in component.params for Component ${componentIid}`,
       );
       bundle.map[componentIid].states = bundle.map[componentIid].states.filter(
-        (s: any) => s.__ref !== stateIid
+        (s: any) => s.__ref !== stateIid,
       );
       bundle.map[componentIid].params = bundle.map[componentIid].params.filter(
-        (p: any) => p.__ref !== paramIid
+        (p: any) => p.__ref !== paramIid,
       );
     },
   });
@@ -113,7 +113,7 @@ export async function findDanglingWeakRefs(em: EntityManager) {
             // Check if bundle is fixed
             await checkIfBundleIsFixed(throwAwayBundle, dbMgr);
             logger().info(
-              `Successfully fixed project ${project.id}! Actually saving it...`
+              `Successfully fixed project ${project.id}! Actually saving it...`,
             );
 
             // We first check if the changes indeed fixed the bundle. Now we
@@ -151,7 +151,7 @@ export async function findDanglingWeakRefs(em: EntityManager) {
             await checkIfBundleIsFixed(throwAwayBundle, dbMgr);
 
             logger().info(
-              `Successfully fixed PkgVersion ${pkgVersionId}! Actually saving it...`
+              `Successfully fixed PkgVersion ${pkgVersionId}! Actually saving it...`,
             );
 
             // We first check if the changes indeed fixed the bundle. Now we
@@ -164,7 +164,7 @@ export async function findDanglingWeakRefs(em: EntityManager) {
           } catch (err2) {
             logger().error(
               `Failed to fix PkgVersion ${pkgVersionId}`,
-              err2 as any
+              err2 as any,
             );
           }
         }

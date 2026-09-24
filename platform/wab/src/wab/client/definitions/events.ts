@@ -8,7 +8,7 @@ function createCustomEvent<T>(name: string) {
       window.dispatchEvent(
         new CustomEvent<T>(name, {
           detail,
-        })
+        }),
       );
     },
 

@@ -320,7 +320,7 @@ Matrix.prototype = {
    */
   rotateFromVector: function (x, y) {
     return this.rotate(
-      typeof x === "number" ? Math.atan2(y, x) : Math.atan2(x.y, x.x)
+      typeof x === "number" ? Math.atan2(y, x) : Math.atan2(x.y, x.x),
     );
   },
 
@@ -429,7 +429,7 @@ Matrix.prototype = {
   skewDeg: function (ax, ay) {
     return this.shear(
       Math.tan((ax / 180) * Math.PI),
-      Math.tan((ay / 180) * Math.PI)
+      Math.tan((ay / 180) * Math.PI),
     );
   },
 
@@ -593,7 +593,7 @@ Matrix.prototype = {
     const me = this,
       m = new Matrix(
         cloneContext ? me.context : null,
-        cloneDOM ? me.element : null
+        cloneDOM ? me.element : null,
       ),
       dt = me.determinant();
 

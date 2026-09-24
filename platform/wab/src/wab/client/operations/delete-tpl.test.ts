@@ -92,7 +92,7 @@ describe("deleteTpl", () => {
     assert(result.isErr(), "expected error");
     expect(result.error.message).toContain("variable");
     expect(result.error.message).toContain(
-      "referenced in the current component"
+      "referenced in the current component",
     );
   });
 

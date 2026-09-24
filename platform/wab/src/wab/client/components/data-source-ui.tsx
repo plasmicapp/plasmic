@@ -6,7 +6,7 @@ import { DATA_SOURCE_LOWER } from "@/wab/shared/Labels";
 export async function confirmDeleteDataSource(
   appCtx: AppCtx,
   source: ApiDataSource,
-  onUpdate: () => Promise<any>
+  onUpdate: () => Promise<any>,
 ) {
   if (
     await reactConfirm({

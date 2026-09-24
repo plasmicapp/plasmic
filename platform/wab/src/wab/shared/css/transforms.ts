@@ -54,7 +54,7 @@ export abstract class CssTransform {
    * @returns A new transform instance with the updated value
    */
   abstract clone(
-    updates: Partial<Record<TransformDimension, string>>
+    updates: Partial<Record<TransformDimension, string>>,
   ): CssTransform;
 
   /**
@@ -80,7 +80,7 @@ export abstract class CssTransform {
     }
 
     const transformFunction = extractTransformFunction(
-      valueAst.children.toArray()
+      valueAst.children.toArray(),
     );
     if (!transformFunction) {
       return null;
@@ -110,7 +110,7 @@ export class TranslateTransform extends CssTransform {
   constructor(
     readonly X: LengthOrPercentage,
     readonly Y: LengthOrPercentage,
-    readonly Z: LengthOrPercentage
+    readonly Z: LengthOrPercentage,
   ) {
     super();
   }
@@ -120,12 +120,12 @@ export class TranslateTransform extends CssTransform {
   }
 
   clone(
-    updates: Partial<Record<TransformDimension, LengthOrPercentage>>
+    updates: Partial<Record<TransformDimension, LengthOrPercentage>>,
   ): TranslateTransform {
     return new TranslateTransform(
       updates.X ?? this.X,
       updates.Y ?? this.Y,
-      updates.Z ?? this.Z
+      updates.Z ?? this.Z,
     );
   }
 
@@ -156,7 +156,7 @@ export class RotateTransform extends CssTransform {
     readonly X: UnitlessNumber,
     readonly Y: UnitlessNumber,
     readonly Z: UnitlessNumber,
-    readonly angle: Angle
+    readonly angle: Angle,
   ) {
     super();
   }
@@ -171,13 +171,13 @@ export class RotateTransform extends CssTransform {
       Y: UnitlessNumber;
       Z: UnitlessNumber;
       angle: Angle;
-    }>
+    }>,
   ): RotateTransform {
     return new RotateTransform(
       updates.X ?? this.X,
       updates.Y ?? this.Y,
       updates.Z ?? this.Z,
-      updates.angle ?? this.angle
+      updates.angle ?? this.angle,
     );
   }
 
@@ -205,7 +205,7 @@ export class ScaleTransform extends CssTransform {
   constructor(
     readonly X: UnitlessNumber,
     readonly Y: UnitlessNumber,
-    readonly Z: UnitlessNumber
+    readonly Z: UnitlessNumber,
   ) {
     super();
   }
@@ -215,12 +215,12 @@ export class ScaleTransform extends CssTransform {
   }
 
   clone(
-    updates: Partial<Record<TransformDimension, UnitlessNumber>>
+    updates: Partial<Record<TransformDimension, UnitlessNumber>>,
   ): ScaleTransform {
     return new ScaleTransform(
       updates.X ?? this.X,
       updates.Y ?? this.Y,
-      updates.Z ?? this.Z
+      updates.Z ?? this.Z,
     );
   }
 
@@ -243,7 +243,10 @@ export class SkewTransform extends CssTransform {
     Y: false,
   };
 
-  constructor(readonly X: Angle, readonly Y: Angle) {
+  constructor(
+    readonly X: Angle,
+    readonly Y: Angle,
+  ) {
     super();
   }
 
@@ -281,7 +284,7 @@ export class PerspectiveTransform extends CssTransform {
   }
 
   clone(
-    updates: Partial<Record<TransformDimension, Length | "none">>
+    updates: Partial<Record<TransformDimension, Length | "none">>,
   ): PerspectiveTransform {
     return new PerspectiveTransform(updates.X ?? this.X);
   }
@@ -335,11 +338,11 @@ export class CssTransforms {
     }
 
     const transforms = withoutNils(
-      functionNodeValues.map((funcVal) => CssTransform.fromCss(funcVal))
+      functionNodeValues.map((funcVal) => CssTransform.fromCss(funcVal)),
     );
 
     const perspectiveTransform = transforms.find(
-      (t): t is PerspectiveTransform => t.type === "perspective"
+      (t): t is PerspectiveTransform => t.type === "perspective",
     );
     const restTransforms = transforms.filter((t) => t.type !== "perspective");
 
@@ -397,7 +400,7 @@ export type TransformFunctionKeyword =
   (typeof transformFunctionKeywords)[number];
 
 export function isTransformFunctionKeyword(
-  name: string
+  name: string,
 ): name is TransformFunctionKeyword {
   return transformFunctionKeywords.includes(name as TransformFunctionKeyword);
 }
@@ -512,7 +515,7 @@ function parseTransformFunction(func: TransformFunction): CssTransform | null {
       return new ScaleTransform(
         args[0],
         args.length === 2 ? args[1] : args[0], // scale(2) equals scale(2, 2)
-        "1"
+        "1",
       );
 
     case "scale3d":

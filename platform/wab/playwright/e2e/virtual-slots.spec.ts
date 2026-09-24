@@ -19,7 +19,7 @@ test.describe("virtual-slots", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -123,14 +123,14 @@ test.describe("virtual-slots", () => {
 
     const sourceNode = models.studio.leftPanel.focusedTreeNode;
     const targetLocator = models.studio.leftPanel.treeRoot.getByText(
-      `Slot Target: "hstack 2"`
+      `Slot Target: "hstack 2"`,
     );
     const sourceBox = await sourceNode.boundingBox();
     const targetBox = await targetLocator.boundingBox();
 
     await page.mouse.move(
       sourceBox!.x + sourceBox!.width / 2,
-      sourceBox!.y + sourceBox!.height / 2
+      sourceBox!.y + sourceBox!.height / 2,
     );
     await page.mouse.down();
     await page.mouse.move(targetBox!.x + targetBox!.width / 1.5, targetBox!.y, {
@@ -166,7 +166,7 @@ test.describe("virtual-slots", () => {
 
     await page.mouse.move(
       sourceBox2!.x + sourceBox2!.width / 2,
-      sourceBox2!.y + sourceBox2!.height / 2
+      sourceBox2!.y + sourceBox2!.height / 2,
     );
     await page.mouse.down();
     await page.mouse.move(targetBox2!.x + 100, targetBox2!.y + 15, {

@@ -74,7 +74,7 @@ describe("interpolatedStringToTemplatedString", () => {
 
   it("classifies complex JS as CustomCode", () => {
     const ts = interpolatedStringToTemplatedString(
-      "prefix {{ $ctx.first + ' ' + $ctx.second }}"
+      "prefix {{ $ctx.first + ' ' + $ctx.second }}",
     );
     expect(ts.text[0]).toEqual("prefix ");
     expect(ts.text[1]).toBeInstanceOf(CustomCode);
@@ -113,7 +113,7 @@ describe("interpolatedStringToExpr", () => {
 describe("objectLiteralToExpr", () => {
   it("stores a fully-static object as codeLit JSON", () => {
     const expr = objectLiteralToExpr(
-      '{ "url": "https://x", "method": "GET" }'
+      '{ "url": "https://x", "method": "GET" }',
     )!;
     expect(isKnownCompositeExpr(expr)).toBe(false);
     expect(expr).toBeInstanceOf(CustomCode);
@@ -123,8 +123,8 @@ describe("objectLiteralToExpr", () => {
   it("hoists a {{ }} leaf into a CompositeExpr substitution", () => {
     const composite = ensureKnownCompositeExpr(
       objectLiteralToExpr(
-        '{ "url": "{{ $ctx.params.api }}", "method": "GET" }'
-      )!
+        '{ "url": "{{ $ctx.params.api }}", "method": "GET" }',
+      )!,
     );
     expect(JSON.parse(composite.hostLiteral)).toEqual({
       url: null,
@@ -139,8 +139,8 @@ describe("objectLiteralToExpr", () => {
   it("hoists a nested dynamic leaf at its bracket path", () => {
     const composite = ensureKnownCompositeExpr(
       objectLiteralToExpr(
-        '{ "headers": { "Authorization": "{{ $ctx.token }}" } }'
-      )!
+        '{ "headers": { "Authorization": "{{ $ctx.token }}" } }',
+      )!,
     );
     expect(JSON.parse(composite.hostLiteral)).toEqual({
       headers: { Authorization: null },
@@ -152,7 +152,7 @@ describe("objectLiteralToExpr", () => {
 
   it("wraps a {{ }} non-string literal leaf as a CustomCode substitution", () => {
     const composite = ensureKnownCompositeExpr(
-      objectLiteralToExpr('{ "limit": "{{ 5 }}" }')!
+      objectLiteralToExpr('{ "limit": "{{ 5 }}" }')!,
     );
     expect(JSON.parse(composite.hostLiteral)).toEqual({ limit: null });
     const sub = composite.substitutions['["limit"]'];
@@ -174,19 +174,19 @@ describe("objectLiteralToExpr", () => {
 
   it("throws for a bare-JS leaf (must wrap in {{ }})", () => {
     expect(() => objectLiteralToExpr('{ "url": $ctx.params.api }')).toThrow(
-      EvaluationError
+      EvaluationError,
     );
   });
 
   it("throws for a spread in the object", () => {
     expect(() =>
-      objectLiteralToExpr('{ ...$ctx.base, "method": "GET" }')
+      objectLiteralToExpr('{ ...$ctx.base, "method": "GET" }'),
     ).toThrow(EvaluationError);
   });
 
   it("throws for non-JSON (unquoted keys)", () => {
     expect(() => objectLiteralToExpr('{ url: "https://x" }')).toThrow(
-      EvaluationError
+      EvaluationError,
     );
   });
 
@@ -205,7 +205,7 @@ describe("interpolatedStringToCodeExpr", () => {
 
   it("throws for a bare expression without the {{ }} wrapper", () => {
     expect(() => interpolatedStringToCodeExpr("$q.pokedex.data")).toThrow(
-      EvaluationError
+      EvaluationError,
     );
   });
 
@@ -217,25 +217,25 @@ describe("interpolatedStringToCodeExpr", () => {
 
   it("throws for a quoted static string", () => {
     expect(() => interpolatedStringToCodeExpr('"notAnArray"')).toThrow(
-      EvaluationError
+      EvaluationError,
     );
   });
 
   it("throws for a bare single-word identifier (footgun guard)", () => {
     expect(() => interpolatedStringToCodeExpr("pokemonList")).toThrow(
-      EvaluationError
+      EvaluationError,
     );
   });
 
   it("throws for a mixed templated string (static + dynamic)", () => {
     expect(() =>
-      interpolatedStringToCodeExpr("items: {{ $q.x.data }}")
+      interpolatedStringToCodeExpr("items: {{ $q.x.data }}"),
     ).toThrow(EvaluationError);
   });
 
   it("throws for malformed input", () => {
     expect(() => interpolatedStringToCodeExpr("{{ ?? }}")).toThrow(
-      EvaluationError
+      EvaluationError,
     );
   });
 });
@@ -279,14 +279,14 @@ describe("exprToInterpolatedString", () => {
   it("renders an ObjectPath with numeric index", () => {
     const expr = codeToDynExpr("$q.pokedex.data[0].name");
     expect(exprToInterpolatedString(expr)).toEqual(
-      "{{ $q.pokedex.data[0].name }}"
+      "{{ $q.pokedex.data[0].name }}",
     );
   });
 
   it("renders a real CustomCode with parens stripped", () => {
     const expr = customCode('$props.title ?? "Guest"');
     expect(exprToInterpolatedString(expr)).toEqual(
-      '{{ $props.title ?? "Guest" }}'
+      '{{ $props.title ?? "Guest" }}',
     );
   });
 
@@ -305,7 +305,7 @@ describe("exprToInterpolatedString", () => {
 
   it("returns undefined for expr kinds with no inline form", () => {
     expect(
-      exprToInterpolatedString(new EventHandler({ interactions: [] }))
+      exprToInterpolatedString(new EventHandler({ interactions: [] })),
     ).toBeUndefined();
   });
 
@@ -332,7 +332,7 @@ describe("exprToInterpolatedString", () => {
 
   it("renders a static PageHref as its raw path", () => {
     expect(exprToInterpolatedString(mkPageHref({ path: "/about" }))).toEqual(
-      "/about"
+      "/about",
     );
   });
 
@@ -347,7 +347,7 @@ describe("exprToInterpolatedString", () => {
       fragment: new VarRef({ variable: mkVar("section") }),
     });
     expect(exprToInterpolatedString(expr)).toEqual(
-      "/products/{{ $state.slug }}?ref={{ $props.ref }}&sort=price#{{ $props.section }}"
+      "/products/{{ $state.slug }}?ref={{ $props.ref }}&sort=price#{{ $props.section }}",
     );
   });
 
@@ -356,12 +356,12 @@ describe("exprToInterpolatedString", () => {
       path: "/blog/[...slug]",
       params: {
         "...slug": interpolatedStringToTemplatedString(
-          "cats & dogs/50% off/{{ $state.rest }}"
+          "cats & dogs/50% off/{{ $state.rest }}",
         ),
       },
     });
     expect(exprToInterpolatedString(expr)).toEqual(
-      "/blog/cats & dogs/50% off/{{ $state.rest }}"
+      "/blog/cats & dogs/50% off/{{ $state.rest }}",
     );
   });
 
@@ -374,16 +374,16 @@ describe("exprToInterpolatedString", () => {
     };
     const expected = "/products/{{ $state.slug }}?s=Cats & Dogs";
     expect(
-      exprToInterpolatedString(mkPageHref({ ...props, encode: true }))
+      exprToInterpolatedString(mkPageHref({ ...props, encode: true })),
     ).toEqual(expected);
     expect(
-      exprToInterpolatedString(mkPageHref({ ...props, encode: false }))
+      exprToInterpolatedString(mkPageHref({ ...props, encode: false })),
     ).toEqual(expected);
   });
 
   it("keeps the placeholder for a PageHref param with no value", () => {
     expect(
-      exprToInterpolatedString(mkPageHref({ path: "/blog/[slug]" }))
+      exprToInterpolatedString(mkPageHref({ path: "/blog/[slug]" })),
     ).toEqual("/blog/[slug]");
   });
 
@@ -414,13 +414,13 @@ describe("exprToDataQueryArg", () => {
         __type: "InterpolatedString",
         name: "url",
         value: "{{ $ctx.params.api }}",
-      }
+      },
     );
   });
 
   it("serializes a static object codeLit as a CompositeExpr JSON literal", () => {
     const expr = objectLiteralToExpr(
-      '{ "url": "https://x", "method": "GET" }'
+      '{ "url": "https://x", "method": "GET" }',
     )!;
     expect(exprToDataQueryArg("opts", expr)).toEqual({
       __type: "CompositeExpr",
@@ -431,7 +431,7 @@ describe("exprToDataQueryArg", () => {
 
   it("serializes a CompositeExpr with dynamic leaves back to inline {{ }}", () => {
     const expr = objectLiteralToExpr(
-      '{ "url": "{{ $ctx.params.api }}", "method": "GET" }'
+      '{ "url": "{{ $ctx.params.api }}", "method": "GET" }',
     )!;
     expect(exprToDataQueryArg("opts", expr)).toEqual({
       __type: "CompositeExpr",
@@ -444,13 +444,13 @@ describe("exprToDataQueryArg", () => {
     const raw = '{ "headers": { "Authorization": "{{ $ctx.token }}" } }';
     const arg = exprToDataQueryArg("opts", objectLiteralToExpr(raw)!)!;
     expect(exprToDataQueryArg("opts", objectLiteralToExpr(arg.value)!)).toEqual(
-      arg
+      arg,
     );
   });
 
   it("drops an arg whose expr has no inline form", () => {
     expect(
-      exprToDataQueryArg("onDone", new EventHandler({ interactions: [] }))
+      exprToDataQueryArg("onDone", new EventHandler({ interactions: [] })),
     ).toBeUndefined();
   });
 
@@ -514,7 +514,7 @@ describe("dynamic-value round trip (insertHtml <-> read)", () => {
     const serialized = exprToInterpolatedString(codeLit("/home"))!;
     expect(serialized).toEqual("/home");
     expect((interpolatedStringToExpr(serialized) as CustomCode).code).toEqual(
-      codeLit("/home").code
+      codeLit("/home").code,
     );
   });
 });

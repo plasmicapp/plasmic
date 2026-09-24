@@ -28,9 +28,9 @@ export type EditableLabelProps = {
       children: React.ReactNode;
       onClick: React.MouseEventHandler<any>;
       className: string;
-    }
+    },
   >(
-    props: T
+    props: T,
   ) => ReactElement;
   disabled?: boolean;
   doubleClickToEdit?: boolean;
@@ -54,7 +54,7 @@ const createInputBoxFactory = (
     Omit<React.ComponentProps<"textarea">, "ref"> & {
       isMultiline: boolean;
     },
-  ref: React.Ref<HTMLInputElement | HTMLTextAreaElement>
+  ref: React.Ref<HTMLInputElement | HTMLTextAreaElement>,
 ) => {
   const { isMultiline, cols, rows, ...rest } = props;
   if (isMultiline) {
@@ -117,7 +117,7 @@ const EditableLabel_: ForwardRefRenderFunction<
     }
     setShowTooltip(
       (labelRef.current as HTMLSpanElement).scrollWidth >
-        (labelRef.current as HTMLSpanElement).offsetWidth
+        (labelRef.current as HTMLSpanElement).offsetWidth,
     );
   }, [value, labelRef.current]);
 
@@ -140,7 +140,7 @@ const EditableLabel_: ForwardRefRenderFunction<
         return _setEditing(false);
       }
     },
-    [onEdit, _setEditing, onAbort]
+    [onEdit, _setEditing, onAbort],
   );
 
   const abort = useCallback(() => {
@@ -169,9 +169,9 @@ const EditableLabel_: ForwardRefRenderFunction<
       {
         leading: true,
         trailing: false,
-      }
+      },
     ),
-    []
+    [],
   );
 
   const handleClick = useCallback(
@@ -197,7 +197,7 @@ const EditableLabel_: ForwardRefRenderFunction<
         doEditing();
       }
     },
-    [doEditing, handleDebouncedClick]
+    [doEditing, handleDebouncedClick],
   );
 
   const handleDoubleClick = useCallback(
@@ -208,7 +208,7 @@ const EditableLabel_: ForwardRefRenderFunction<
         doEditing();
       }
     },
-    [handleDebouncedClick, doEditing]
+    [handleDebouncedClick, doEditing],
   );
 
   React.useEffect(() => {
@@ -231,7 +231,7 @@ const EditableLabel_: ForwardRefRenderFunction<
       (_editing || !shrinkLabel) && "flex-fill",
       "text-ellipsis-wrappable",
       _editing && styles.fullWidthLabelEditing,
-      { "selectable-text": isTextSelectable }
+      { "selectable-text": isTextSelectable },
     ),
     onClick: handleClick,
     onDoubleClick: handleDoubleClick,
@@ -271,7 +271,7 @@ const EditableLabel_: ForwardRefRenderFunction<
               },
             }),
           },
-          inputBoxRef
+          inputBoxRef,
         )}
       </OnClickAway>
     ) : (

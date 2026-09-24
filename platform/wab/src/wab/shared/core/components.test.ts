@@ -87,7 +87,7 @@ describe("extractComponent", () => {
     mkVariantSetting({
       variants: [large],
       styles: { "padding-left": "20px" },
-    })
+    }),
   );
 
   const tree1 = mkTplTagX(
@@ -152,7 +152,7 @@ describe("extractComponent", () => {
           variants: [mild, hover],
         }),
       ],
-    })
+    }),
   );
 
   const input = tree1.children[0] as TplTag;
@@ -160,7 +160,7 @@ describe("extractComponent", () => {
     mkVariantSetting({
       variants: [tplMgr.createPrivateStyleVariant(component, input, ["Hover"])],
       styles: { "font-weight": "bold" },
-    })
+    }),
   );
 
   $$$(root).append(tree1);
@@ -183,9 +183,9 @@ describe("extractComponent", () => {
           arg.param.variable.name,
           isKnownVariantsRef(arg.expr)
             ? arg.expr.variants.map((v) => v.uuid)
-            : tryExtractJson(arg.expr)
-        )
-      )
+            : tryExtractJson(arg.expr),
+        ),
+      ),
     ),
   });
 
@@ -416,8 +416,8 @@ describe("extractComponent", () => {
     // The new TplComponent pass $q.<name> and $queries.<name> as the corresponding args.
     const argByParam = Object.fromEntries(
       tpl.vsettings[0].args.map((arg) =>
-        tuple(arg.param.variable.name, arg.expr)
-      )
+        tuple(arg.param.variable.name, arg.expr),
+      ),
     );
     const serverArg = argByParam["myServerQuery"];
     expect(isKnownObjectPath(serverArg)).toBe(true);
@@ -474,7 +474,7 @@ describe("extractComponent", () => {
       containingComponent: localComponent,
       tpl: localTree,
       tplMgr: localTplMgr,
-      getCanvasEnvForTpl: () => ({ $ctx: {} } as CanvasEnv),
+      getCanvasEnvForTpl: () => ({ $ctx: {} }) as CanvasEnv,
     });
     consoleErrorSpy.mockRestore();
 
@@ -494,28 +494,28 @@ describe("getFolderComponentDisplayName", () => {
     });
   it("should return the correct display name for a component in a folder", () => {
     const result = getFolderComponentDisplayName(
-      makeComponentWithName("components/buttons/PrimaryButton")
+      makeComponentWithName("components/buttons/PrimaryButton"),
     );
     expect(result).toEqual("PrimaryButton");
   });
 
   it("should handle components in the root directory correctly", () => {
     const result = getFolderComponentDisplayName(
-      makeComponentWithName("SecondaryButton")
+      makeComponentWithName("SecondaryButton"),
     );
     expect(result).toEqual("SecondaryButton");
   });
 
   it("should trim leading and trailing slashes", () => {
     const result = getFolderComponentDisplayName(
-      makeComponentWithName("/components/modals/ConfirmModal/")
+      makeComponentWithName("/components/modals/ConfirmModal/"),
     );
     expect(result).toEqual("ConfirmModal");
   });
 
   it("should trim leading and trailing spaces", () => {
     const result = getFolderComponentDisplayName(
-      makeComponentWithName("components/modals/ ConfirmModal ")
+      makeComponentWithName("components/modals/ ConfirmModal "),
     );
     expect(result).toEqual("ConfirmModal");
   });
@@ -545,14 +545,14 @@ describe("getCodeComponentImportName", () => {
     expect(getCodeComponentImportName(mkCodeComponent({}))).toBe("HomeHere1");
     expect(
       getCodeComponentImportName(
-        mkCodeComponent({ importName: "my-component" })
-      )
+        mkCodeComponent({ importName: "my-component" }),
+      ),
     ).toBe("MyComponent");
     expect(
-      getCodeComponentImportName(mkCodeComponent({ importName: "1 - Home" }))
+      getCodeComponentImportName(mkCodeComponent({ importName: "1 - Home" })),
     ).toBe("_1Home");
     expect(
-      getCodeComponentImportName(mkCodeComponent({ importName: "await" }))
+      getCodeComponentImportName(mkCodeComponent({ importName: "await" })),
     ).toBe("Await");
   });
 
@@ -562,13 +562,13 @@ describe("getCodeComponentImportName", () => {
       importName: "invalid component name",
     });
     expect(getCodeComponentImportName(component)).toBe(
-      toClassName(`Comp${component.uuid}`)
+      toClassName(`Comp${component.uuid}`),
     );
   });
 
   it("leaves valid names alone", () => {
     expect(
-      getCodeComponentImportName(mkCodeComponent({ importName: "HomeHere" }))
+      getCodeComponentImportName(mkCodeComponent({ importName: "HomeHere" })),
     ).toBe("HomeHere");
   });
 });

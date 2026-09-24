@@ -233,9 +233,8 @@ export interface SimpleOpenAPIV2Spec {
 export const wordpressSpec = memoizeOne(() =>
   asReadablePromise(
     (async () => {
-      const { WordpressOpenapiRaw } = await import(
-        "./api-specs/wordpress-openapi"
-      );
+      const { WordpressOpenapiRaw } =
+        await import("./api-specs/wordpress-openapi");
       // Tell SwaggerParser to just read this string rather than open a file or
       // fetch a URL.
       const stringResolver: ResolverOptions = {
@@ -250,15 +249,15 @@ export const wordpressSpec = memoizeOne(() =>
           resolve: uncheckedCast<any>({
             str: stringResolver,
           }),
-        })
+        }),
       );
       return parsed;
-    })()
-  )
+    })(),
+  ),
 );
 
 export function getBuiltinDataSourceSpec(
-  type: BuiltinDataSourceQuery["type"]
+  type: BuiltinDataSourceQuery["type"],
 ): ReturnType<typeof wordpressSpec> {
   switch (type) {
     case "WordpressQuery":

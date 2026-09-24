@@ -44,7 +44,7 @@ function CopilotUiPrompt() {
         };
         if (modelProviderOverride) {
           payload.modelProviderOverride = JSON.parse(
-            fixJson(modelProviderOverride)
+            fixJson(modelProviderOverride),
           );
         }
         if (copilotSystemPromptOverride) {
@@ -66,7 +66,7 @@ function CopilotUiPrompt() {
           messageParts.push(
             `• ${newTokensCount} new token${
               newTokensCount > 1 ? "s" : ""
-            } is ready to be used`
+            } is ready to be used`,
           );
         }
 
@@ -94,11 +94,11 @@ function CopilotUiPrompt() {
                   studioCtx,
                   cursorClientPt: undefined,
                 });
-              })()
+              })(),
             );
 
             return ok();
-          })
+          }),
         );
       }}
     />

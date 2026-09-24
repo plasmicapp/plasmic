@@ -4,9 +4,6 @@
  * by default from now on, so this fixes existing Plume buttons to
  * retain their existing behavior.
  */
-import { isCodeComponent } from "@/wab/shared/core/components";
-import { codeLit } from "@/wab/shared/core/exprs";
-import { mkParam } from "@/wab/shared/core/lang";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
@@ -14,9 +11,12 @@ import {
 } from "@/wab/server/db/bundle-migration-utils";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
 import { Bundler } from "@/wab/shared/bundler";
+import { isCodeComponent } from "@/wab/shared/core/components";
+import { codeLit } from "@/wab/shared/core/exprs";
+import { mkParam } from "@/wab/shared/core/lang";
+import { flattenTpls, isTplComponent } from "@/wab/shared/core/tpls";
 import { Arg } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
-import { flattenTpls, isTplComponent } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();
@@ -24,11 +24,11 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   const plumeButtons = site.components.filter(
-    (comp) => comp.plumeInfo?.type === "button"
+    (comp) => comp.plumeInfo?.type === "button",
   );
 
   for (const comp of plumeButtons) {
@@ -48,7 +48,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
       .flatMap((c) =>
         flattenTpls(c.tplTree)
           .filter(isTplComponent)
-          .filter((t) => t.component === comp)
+          .filter((t) => t.component === comp),
       );
     for (const tpl of tpls) {
       const baseVs = ensureBaseVariantSetting(tpl);
@@ -60,7 +60,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
           new Arg({
             param,
             expr: codeLit(true),
-          })
+          }),
         );
       }
     }
@@ -69,7 +69,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "148-set-plume-buttons"
+    "148-set-plume-buttons",
   );
   Object.assign(bundle, newBundle);
 };

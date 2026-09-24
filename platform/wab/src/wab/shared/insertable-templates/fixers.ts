@@ -80,7 +80,7 @@ import { isString } from "lodash";
 export function ensureTplWithBaseAndScreenVariants(
   tpl: TplNode,
   targetBaseVariant: Variant,
-  screenVariant: Variant | undefined
+  screenVariant: Variant | undefined,
 ) {
   // Create a new array, since we can mutate tpl.vsettings
   for (const vs of [...tpl.vsettings]) {
@@ -94,7 +94,7 @@ export function ensureTplWithBaseAndScreenVariants(
       // Remove non-base/screen variant settings
       remove(tpl.vsettings, vs);
       console.warn(
-        `Node ${tpl.uuid} has a non-base/screen variant. Please remove this from the source project.`
+        `Node ${tpl.uuid} has a non-base/screen variant. Please remove this from the source project.`,
       );
     }
   }
@@ -102,7 +102,7 @@ export function ensureTplWithBaseAndScreenVariants(
   if (tpl.vsettings.length > 2) {
     console.warn(
       "Tpl node has more than 2 variant settings. Removing extra variant settings",
-      tpl
+      tpl,
     );
     tpl.vsettings.splice(2);
   }
@@ -113,7 +113,7 @@ export function fixGlobalVariants(
   vs: VariantSetting,
   opts: {
     screenVariant: Variant | undefined;
-  }
+  },
 ) {
   if (vs.variants.some((v) => isGlobalVariant(v))) {
     vs.variants = withoutNils(
@@ -125,7 +125,7 @@ export function fixGlobalVariants(
         } else {
           return v;
         }
-      })
+      }),
     );
 
     // If we end up with a empty variants list,
@@ -133,7 +133,7 @@ export function fixGlobalVariants(
     if (
       vs.variants.length === 0 ||
       tpl.vsettings.some(
-        (vs2) => vs2 !== vs && arrayEqIgnoreOrder(vs2.variants, vs.variants)
+        (vs2) => vs2 !== vs && arrayEqIgnoreOrder(vs2.variants, vs.variants),
       )
     ) {
       remove(tpl.vsettings, vs);
@@ -145,7 +145,7 @@ export function ensureNonGlobalVariants(
   tpl: TplNode,
   opts: {
     screenVariant: Variant | undefined;
-  }
+  },
 ) {
   for (const vs of [...tpl.vsettings]) {
     fixGlobalVariants(tpl, vs, opts);
@@ -158,7 +158,7 @@ export const fixBackgroundImage = (
   tpl: TplNode,
   vs: VariantSetting,
   allImageAssetsDict: Record<string, ImageAsset>,
-  addImageAsset: (e: ImageAsset) => ImageAsset | undefined
+  addImageAsset: (e: ImageAsset) => ImageAsset | undefined,
 ) => {
   // We have to handle background images in the templates by either adding the asset or deleting
   // the reference, so that it doesn't appear as a empty layer in the background section.
@@ -184,20 +184,20 @@ export const fixBackgroundImage = (
               const addedAsset = addImageAsset(asset);
               if (addedAsset) {
                 return [mkImageAssetRef(addedAsset), ...elements.slice(1)].join(
-                  " "
+                  " ",
                 );
               }
             }
             return null;
-          })
-        )
-      )
+          }),
+        ),
+      ),
     );
   }
 };
 
 export function makeImageAssetImporter(
-  site: Site
+  site: Site,
 ): (_: ImageAsset) => ImageAsset | undefined {
   const tplMgr = new TplMgr({ site });
 
@@ -231,7 +231,7 @@ export function makeImageAssetImporter(
 
 export function makeImageAssetFixer(
   site: Site,
-  allImageAssetsDict: Record<string, ImageAsset>
+  allImageAssetsDict: Record<string, ImageAsset>,
 ) {
   const getNewImageAsset = makeImageAssetImporter(site);
   const tplAssetFixer = (tpl: TplNode, vs: VariantSetting) => {
@@ -251,13 +251,13 @@ export function mkInsertableTokenImporter(
   targetTokens: ReadonlyArray<FinalToken<StyleToken>>,
   tokenResolution: InsertableTemplateTokenResolution | undefined,
   screenVariant: Variant | undefined,
-  onFontSeen: (font: string) => void
+  onFontSeen: (font: string) => void,
 ) {
   const oldToNewToken = new Map<StyleToken, FinalToken<StyleToken>>();
 
   function getOrAddToken(
     oldTokens: ReadonlyArray<FinalToken<StyleToken>>,
-    oldToken: FinalToken<StyleToken>
+    oldToken: FinalToken<StyleToken>,
   ) {
     if (oldToNewToken.has(oldToken.base)) {
       return oldToNewToken.get(oldToken.base)!;
@@ -306,7 +306,7 @@ export function mkInsertableTokenImporter(
         name: tplMgr.getUniqueStyleTokenName(oldToken.name),
         tokenType: oldToken.type,
         value: maybeDerefToken(targetTokens, oldTokens, oldToken),
-      })
+      }),
     );
 
     if (screenVariant) {
@@ -320,8 +320,8 @@ export function mkInsertableTokenImporter(
           derefToken(
             oldTokens,
             oldToken,
-            new VariantedStylesHelper(sourceSite, variantedValues.variants)
-          )
+            new VariantedStylesHelper(sourceSite, variantedValues.variants),
+          ),
         );
       }
     }
@@ -363,8 +363,8 @@ export function mkInsertableTokenImporter(
             onFontSeen(
               derefTokenRefs(
                 [...targetTokens, ...oldToNewToken.values()],
-                newVal
-              )
+                newVal,
+              ),
             );
           }
         }
@@ -398,7 +398,7 @@ export function mkInsertableTokenImporter(
  */
 export function assertValidInsertable(
   tplTree: TplNode,
-  allowedComponentUuids: Set<string> | null
+  allowedComponentUuids: Set<string> | null,
 ): void {
   walkTpls(tplTree, {
     pre(tpl, path) {
@@ -424,7 +424,7 @@ export const fixTextTplStyles = (
   tpl: TplTextTag,
   vs: VariantSetting,
   sourceComp: Component,
-  sourceSite: Site
+  sourceSite: Site,
 ) => {
   const fixedRsh = new RuleSetHelpers(
     new RuleSet({
@@ -432,7 +432,7 @@ export const fixTextTplStyles = (
       mixins: [],
       animations: null,
     }),
-    tpl.tag
+    tpl.tag,
   );
 
   if (isBaseVariant(vs.variants)) {
@@ -440,7 +440,7 @@ export const fixTextTplStyles = (
       tpl,
       vs.variants,
       sourceComp,
-      sourceSite
+      sourceSite,
     );
     const effectiveRsh = effectiveVs.rshWithThemeAndParentStyle();
     for (const prop of effectiveRsh.props()) {
@@ -493,7 +493,7 @@ export function mkAnimationSequenceImporter(targetSite: Site) {
   >();
 
   function getOrAddAnimationSequence(
-    oldSequence: AnimationSequence
+    oldSequence: AnimationSequence,
   ): AnimationSequence {
     // Check if we've already mapped this sequence
     if (oldToNewAnimationSequence.has(oldSequence)) {
@@ -502,7 +502,7 @@ export function mkAnimationSequenceImporter(targetSite: Site) {
 
     // Check if a sequence with the same name exists in the target site
     const existingSequence = targetSequencesByName.get(
-      toVarName(oldSequence.name)
+      toVarName(oldSequence.name),
     );
 
     if (existingSequence) {
@@ -555,7 +555,7 @@ type ContextHelpers = {
 
 function isInvalidTextOrDynamicExpression(
   expr: CustomCode | ObjectPath | TemplatedString,
-  invalidExprNames: string[]
+  invalidExprNames: string[],
 ) {
   // We've to figure it out if the expression is invalid or not, this can happen
   // to owned trees, which try to reference data source operations which have been
@@ -592,7 +592,7 @@ interface ExprFixerCtx {
 function getFixedExpr(
   ctx: ExprFixerCtx,
   expr: Expr,
-  helpers: Pick<ContextHelpers, "getNewImageAsset">
+  helpers: Pick<ContextHelpers, "getNewImageAsset">,
 ) {
   const { isOwned, invalidExprNames } = ctx;
 
@@ -619,7 +619,7 @@ function getFixedExpr(
         }
         // Remove interactions that have no args left
         _expr.interactions = _expr.interactions.filter(
-          (interaction) => interaction.args.length > 0
+          (interaction) => interaction.args.length > 0,
         );
         // Return null if no interactions left, otherwise return the fixed handler
         return _expr.interactions.length > 0 ? _expr : null;
@@ -675,7 +675,7 @@ function getFixedExpr(
               }
               return acc;
             },
-            {} as CompositeExpr["substitutions"]
+            {} as CompositeExpr["substitutions"],
           ),
         });
       })
@@ -687,7 +687,7 @@ export function fixTplTreeExprs(
   ctx: ExprFixerCtx,
   tpl: TplNode,
   vs: VariantSetting,
-  helpers: Pick<ContextHelpers, "getNewImageAsset">
+  helpers: Pick<ContextHelpers, "getNewImageAsset">,
 ) {
   const { invalidExprNames } = ctx;
 
@@ -739,7 +739,7 @@ export function fixTplTreeExprs(
 export function fixComponentExprs(
   ctx: ExprFixerCtx,
   comp: Component,
-  helpers: Pick<ContextHelpers, "getNewImageAsset">
+  helpers: Pick<ContextHelpers, "getNewImageAsset">,
 ) {
   for (const param of comp.params) {
     if (param.defaultExpr) {
@@ -782,7 +782,7 @@ function traverseAndFixTree(
   targetVariants: TargetVariants,
   filter: ValidVariantsFilter,
   specificFixes: TplVSettingFixer,
-  helpers: Omit<ContextHelpers, "fixTextTplStyles">
+  helpers: Omit<ContextHelpers, "fixTextTplStyles">,
 ) {
   // Fix animation sequence references before inlining mixins
   helpers.tplAnimationsFixer(tplTree);
@@ -808,7 +808,7 @@ export function ensureValidUnownedTree(
   tplTree: TplNode,
   targetVariants: TargetVariants,
   helpers: ContextHelpers,
-  invalidExprNames: string[]
+  invalidExprNames: string[],
 ) {
   for (const [vs, tpl] of findVariantSettingsUnderTpl(tplTree)) {
     // We need to fix text styles here as we aren't sure about the inherited values
@@ -832,16 +832,16 @@ export function ensureValidUnownedTree(
         },
         tpl,
         vs,
-        helpers
+        helpers,
       );
     },
-    helpers
+    helpers,
   );
 }
 
 export function getInvalidComponentNames(
   ownerComponent: Component,
-  isOwned: boolean
+  isOwned: boolean,
 ) {
   return [
     ...ownerComponent.dataQueries.map((q) => toVarName(q.name)),
@@ -867,7 +867,7 @@ A owned tree is a tree from a component that is being inserted into the project.
 export function ensureValidClonedComponent(
   ownerComponent: Component,
   targetVariants: TargetVariants,
-  helpers: Omit<ContextHelpers, "fixTextTplStyles">
+  helpers: Omit<ContextHelpers, "fixTextTplStyles">,
 ) {
   // Collect names of data queries to remove them from the component
   const invalidNames = getInvalidComponentNames(ownerComponent, true);
@@ -881,7 +881,7 @@ export function ensureValidClonedComponent(
       invalidExprNames: invalidNames,
     },
     ownerComponent,
-    helpers
+    helpers,
   );
 
   // Fix issues in the tree
@@ -903,9 +903,9 @@ export function ensureValidClonedComponent(
         },
         tpl,
         vs,
-        helpers
+        helpers,
       );
     },
-    helpers
+    helpers,
   );
 }

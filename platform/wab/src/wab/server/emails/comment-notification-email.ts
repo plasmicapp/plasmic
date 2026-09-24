@@ -59,7 +59,7 @@ export const getThreadUrl = (
   host: string,
   projectId: string,
   threadId: string,
-  branchName?: string
+  branchName?: string,
 ) => {
   const projectLocation = mkProjectLocation({
     projectId: projectId,
@@ -108,7 +108,7 @@ export async function sendUserNotificationEmail(
   projectWiseUserNotification: NotificationsByProject,
   host: string,
   mailFrom: string,
-  mailBcc?: string
+  mailBcc?: string,
 ) {
   // Process each project in the Map
   for (const [projectId, branchNotifications] of projectWiseUserNotification) {
@@ -163,7 +163,7 @@ export async function sendUserNotificationEmail(
               host,
               project.id,
               notificationCommentThread.id,
-              branchName
+              branchName,
             ),
           };
           const mentionedEmails = extractMentionedEmails(comment.body);
@@ -173,7 +173,7 @@ export async function sendUserNotificationEmail(
             templateProps.comments.push(commentData);
           } else {
             const existingRootComment = templateProps.replies.find(
-              (replyData) => replyData.rootComment.id === rootComment.id
+              (replyData) => replyData.rootComment.id === rootComment.id,
             );
             if (existingRootComment) {
               existingRootComment.replies.push(commentData);
@@ -189,7 +189,7 @@ export async function sendUserNotificationEmail(
                   host,
                   project.id,
                   notificationCommentThread.id,
-                  branchName
+                  branchName,
                 ),
                 replies: [commentData],
               });
@@ -200,7 +200,7 @@ export async function sendUserNotificationEmail(
           participantManager.addParticipant(reaction.createdBy);
           const name = getUserFullName(reaction.createdBy);
           const existingReactionData = templateProps.reactions.find(
-            (r) => r.commentId === reaction.commentId
+            (r) => r.commentId === reaction.commentId,
           );
           if (existingReactionData) {
             existingReactionData.reactions.push({
@@ -215,7 +215,7 @@ export async function sendUserNotificationEmail(
                 host,
                 project.id,
                 notificationCommentThread.id,
-                branchName
+                branchName,
               ),
               reactions: [{ name, emoji: REACTIONS[reaction.data.emojiName] }],
             });
@@ -231,7 +231,7 @@ export async function sendUserNotificationEmail(
               host,
               project.id,
               notificationCommentThread.id,
-              branchName
+              branchName,
             ),
             rootComment: {
               body: rootComment.body ?? "",

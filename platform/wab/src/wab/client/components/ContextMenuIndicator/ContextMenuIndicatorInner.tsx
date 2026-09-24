@@ -22,12 +22,13 @@ import * as React from "react";
 // You can also stop extending from DefaultContextMenuIndicatorInnerProps altogether and have
 // total control over the props for your component.
 export interface ContextMenuIndicatorInnerProps
-  extends DefaultContextMenuIndicatorInnerProps,
+  extends
+    DefaultContextMenuIndicatorInnerProps,
     PlasmicContextMenuIndicatorInner__OverridesType {}
 
 function ContextMenuIndicatorInner_(
   props: ContextMenuIndicatorInnerProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicContextMenuIndicatorInner to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

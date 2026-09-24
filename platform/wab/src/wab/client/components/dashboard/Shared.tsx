@@ -30,17 +30,17 @@ function Shared_(props: SharedProps, ref: HTMLElementRefOf<"button">) {
 
   const directPerms = filterDirectResourcePerms(
     perms,
-    convertToTaggedResourceId(resource)
+    convertToTaggedResourceId(resource),
   );
   const directUsers = L.uniqBy(
     filterMapTruthy(directPerms, (p) => p.user),
-    (u) => u.id
+    (u) => u.id,
   );
 
   const firstUsers = directUsers.slice(0, maxNumberOfAvatars - 1);
   const nextUser = directUsers.slice(
     maxNumberOfAvatars - 1,
-    maxNumberOfAvatars
+    maxNumberOfAvatars,
   )[0];
   const moreUsersCount = directUsers.length - firstUsers.length;
 
@@ -69,15 +69,15 @@ function Shared_(props: SharedProps, ref: HTMLElementRefOf<"button">) {
                 />,
               ]
             : moreUsersCount == 1
-            ? [
-                <Avatar
-                  key={nextUser.id}
-                  user={nextUser}
-                  size="small"
-                  className={styles.sharedAvatar}
-                />,
-              ]
-            : []),
+              ? [
+                  <Avatar
+                    key={nextUser.id}
+                    user={nextUser}
+                    size="small"
+                    className={styles.sharedAvatar}
+                  />,
+                ]
+              : []),
         ]}
         onClick={() => setModal(true)}
         {...rest}

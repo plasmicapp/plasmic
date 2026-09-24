@@ -39,7 +39,7 @@ export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
     const dbMgr = userDbMgr(req);
     const table = await dbMgr.getCmsTableByIdentifier(
       params.dbId,
-      params.tableIdentifier
+      params.tableIdentifier,
     );
 
     const cmsQuery = query.q || {};
@@ -66,21 +66,21 @@ export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
     const selectionTree = await makeSelectionTree(
       tableCache,
       table,
-      fieldPaths
+      fieldPaths,
     );
 
     // Resolve refs recursively, storing them in rowCache
     const resolveNested = async (
       prevRowIds: Set<CmsRowId>,
-      selection: RootSelection
+      selection: RootSelection,
     ): Promise<void> => {
       // Get previous row data, only projecting selected ref fields
       const refsOnlySelection: RootSelection = {
         table: selection.table,
         fields: new Map(
           [...selection.fields.entries()].filter(
-            ([_fieldPath, fieldSelection]) => fieldSelection.type === "ref"
-          )
+            ([_fieldPath, fieldSelection]) => fieldSelection.type === "ref",
+          ),
         ),
       };
       const prevRowDatas = [...prevRowIds]
@@ -145,7 +145,7 @@ export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
     const dbMgr = userDbMgr(req);
     const table = await dbMgr.getCmsTableByIdentifier(
       params.dbId,
-      params.tableIdentifier
+      params.tableIdentifier,
     );
 
     const cmsQuery = query.q || {};
@@ -183,7 +183,7 @@ export async function upsertDatabaseTables(req: Request, res: Response) {
   }
   for (const table of tables) {
     const existingTable = existingTables.find(
-      (t) => t.identifier === table.identifier
+      (t) => t.identifier === table.identifier,
     );
     if (existingTable) {
       await mgr.updateCmsTable(existingTable.id, table);
@@ -202,7 +202,7 @@ export async function upsertDatabaseTables(req: Request, res: Response) {
 function toWriteApiCmsRow(
   row: CmsRow,
   tableSchema: CmsTableSchema,
-  locales?: string[]
+  locales?: string[],
 ) {
   return {
     id: row.id,
@@ -253,7 +253,7 @@ export async function publicUpdateRow(req: Request, res: Response) {
     draftData: normalizeCmsData(
       req.body.data,
       makeFieldMetaMap(table.schema),
-      db.extraData.locales
+      db.extraData.locales,
     ),
   });
   if (shouldPublish(req)) {
@@ -284,12 +284,12 @@ export async function publicCreateRows(req: Request, res: Response) {
       const normalizedData = normalizeCmsData(
         row.data,
         makeFieldMetaMap(table.schema),
-        db.extraData.locales
+        db.extraData.locales,
       );
       return shouldPublish(req)
         ? { data: normalizedData, identifier: row.identifier }
         : { draftData: normalizedData, identifier: row.identifier };
-    })
+    }),
   );
   rows.forEach((row) => {
     req.analytics.track("Create cms row", {
@@ -301,7 +301,7 @@ export async function publicCreateRows(req: Request, res: Response) {
   });
   res.json({
     rows: rows.map((row) =>
-      toWriteApiCmsRow(row, table.schema, db.extraData.locales)
+      toWriteApiCmsRow(row, table.schema, db.extraData.locales),
     ),
   });
 }
@@ -317,7 +317,7 @@ function fixLocale(locale: string) {
 export function cachePublicCmsRead(
   req: Request,
   res: Response | null,
-  next: NextFunction
+  next: NextFunction,
 ) {
   // Instruct cloudfront to cache reads for 1 minute for
   // now to avoid huge spikes.  But we make an exception for

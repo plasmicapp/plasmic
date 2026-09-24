@@ -33,7 +33,7 @@ interface UpsellCheckoutProps extends DefaultUpsellCheckoutProps {
 
 function UpsellCheckout_(
   props: UpsellCheckoutProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const {
     appCtx,

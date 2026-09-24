@@ -12,7 +12,7 @@ export function reduceImageSize(
   width: number,
   height: number,
   maxWidth: number,
-  maxHeight: number
+  maxHeight: number,
 ) {
   const aspectRatio = width / height;
   if (width > maxWidth) {

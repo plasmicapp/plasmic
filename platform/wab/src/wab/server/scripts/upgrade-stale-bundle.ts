@@ -20,7 +20,7 @@ async function migrate() {
   const path = "playwright/bundles/stale-bundle.json";
   // Support both a single bundle or an array with bundles and their IDs
   const bundleArray = JSON.parse(
-    fs.readFileSync(path, { encoding: "utf8" })
+    fs.readFileSync(path, { encoding: "utf8" }),
   ) as [string, Bundle][];
   assert(Array.isArray(bundleArray), "bundles is not an array");
 
@@ -57,17 +57,17 @@ async function migrate() {
     const bundle = bundles[bundleId];
     const allMigrations = await getAllMigrations();
     const targetMigrationIndex = allMigrations.findIndex(
-      (m) => m.name === targetMigration
+      (m) => m.name === targetMigration,
     );
     assert(
       targetMigrationIndex !== -1,
-      () => `Couldn't find migration ${targetMigration}`
+      () => `Couldn't find migration ${targetMigration}`,
     );
     const migrationsToIgnore = new Set(
-      allMigrations.slice(targetMigrationIndex + 1).map((m) => m.name)
+      allMigrations.slice(targetMigrationIndex + 1).map((m) => m.name),
     );
     const migrations = (await getMigrationsToExecute(bundle.version)).filter(
-      (migration) => !migrationsToIgnore.has(migration.name)
+      (migration) => !migrationsToIgnore.has(migration.name),
     );
     for (const migration of migrations) {
       const entity = { id: "id" } as PkgVersion | ProjectRevision;
@@ -96,12 +96,12 @@ async function migrate() {
           bundler,
           bundle,
           db,
-          entity
+          entity,
         );
         bundler.bundle(
           siteOrProjectDep,
           entity.id,
-          bundle.version || "0-new-version"
+          bundle.version || "0-new-version",
         );
       }
       bundle.version = migration.name;
@@ -129,12 +129,12 @@ async function migrate() {
         tmpBundler,
         bundle,
         db,
-        entity
+        entity,
       );
       tmpBundler.bundle(
         siteOrProjectDep,
         entity.id,
-        bundle.version || "0-new-version"
+        bundle.version || "0-new-version",
       );
     }
     bundle.version = allMigrations[targetMigrationIndex].name;
@@ -144,7 +144,7 @@ async function migrate() {
     await Prettier.format(JSON.stringify([...Object.entries(bundles)]), {
       parser: "json",
       trailingComma: "none",
-    })
+    }),
   );
   logger().info("All done!");
   process.exit(0);

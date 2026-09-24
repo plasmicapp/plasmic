@@ -11,7 +11,7 @@ test.describe("Can use stale bundle", () => {
       await apiClient.removeProjectAfterTest(
         projectId,
         "user2@example.com",
-        "!53kr3tz!"
+        "!53kr3tz!",
       );
     }
   });
@@ -21,7 +21,7 @@ test.describe("Can use stale bundle", () => {
     await goToProject(page, `/projects/${projectId}?ccStubs=true`);
 
     const framesViewport = models.studio.frame.locator(
-      ".canvas-editor__frames .canvas-editor__viewport"
+      ".canvas-editor__frames .canvas-editor__viewport",
     );
     await framesViewport.first().waitFor({ state: "visible" });
 

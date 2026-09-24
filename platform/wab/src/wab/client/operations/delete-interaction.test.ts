@@ -23,7 +23,7 @@ describe("deleteInteraction", () => {
   function addStep(
     fixture: ReturnType<typeof setup>,
     name: string,
-    code: string
+    code: string,
   ) {
     const result = createInteraction({
       component: fixture.page,
@@ -50,7 +50,7 @@ describe("deleteInteraction", () => {
     assert(result.isOk(), "expected success result");
     expect(first.parent.interactions).toEqual([first]);
     expect(
-      ensureBaseVariantSetting(fixture.root).attrs["onClick"]
+      ensureBaseVariantSetting(fixture.root).attrs["onClick"],
     ).toBeDefined();
   });
 
@@ -66,14 +66,14 @@ describe("deleteInteraction", () => {
 
     assert(result.isOk(), "expected success result");
     expect(
-      ensureBaseVariantSetting(fixture.root).attrs["onClick"]
+      ensureBaseVariantSetting(fixture.root).attrs["onClick"],
     ).toBeUndefined();
   });
 
   it("removes the arg slot for component instance handlers", () => {
     const fixture = setup();
     fixture.button.params.push(
-      mkParam({ name: "onSave", type: typeFactory.func(), paramType: "prop" })
+      mkParam({ name: "onSave", type: typeFactory.func(), paramType: "prop" }),
     );
     const created = createInteraction({
       component: fixture.page,
@@ -84,7 +84,7 @@ describe("deleteInteraction", () => {
     });
     assert(created.isOk(), "setup failed");
     const param = fixture.button.params.find(
-      (p) => p.variable.name === "onSave"
+      (p) => p.variable.name === "onSave",
     )!;
 
     const result = deleteInteraction({
@@ -96,8 +96,8 @@ describe("deleteInteraction", () => {
     assert(result.isOk(), "expected success result");
     expect(
       ensureBaseVariantSetting(fixture.instance).args.find(
-        (a) => a.param === param
-      )
+        (a) => a.param === param,
+      ),
     ).toBeUndefined();
   });
 
@@ -116,7 +116,7 @@ describe("deleteInteraction", () => {
       err({
         message:
           'Interaction "Save" cannot be deleted: step "Log" reads its result via $steps.',
-      })
+      }),
     );
     expect(first.parent.interactions).toHaveLength(2);
   });

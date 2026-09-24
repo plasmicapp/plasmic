@@ -112,7 +112,7 @@ function getExprDisplayText(expr?: Expr, text?: RichText): string {
   } else if (isKnownTemplatedString(expr)) {
     const code = expr.text
       .map((part) =>
-        typeof part === "string" ? part : getExprDisplayText(part)
+        typeof part === "string" ? part : getExprDisplayText(part),
       )
       .join("");
     return trimCodeParens(code);
@@ -154,7 +154,7 @@ function buildLocationPath(
   component: Component,
   tpl?: TplTag | TplComponent,
   param?: Param,
-  isTextContent?: boolean
+  isTextContent?: boolean,
 ): string {
   const name = getComponentDisplayName(component);
   const parts: string[] = [name.length > 24 ? truncate(name, 21) : name];
@@ -203,7 +203,7 @@ const ExpressionListItem = observer(function ExpressionListItem({
     await studioCtx.setStudioFocusOnTpl(
       component,
       tpl,
-      variantSetting?.variants
+      variantSetting?.variants,
     );
 
     // After the Tpl is focused, highlight param
@@ -252,7 +252,7 @@ function pushValidExpr(
   tpl: TplComponent | TplTag | undefined,
   param: Param | undefined,
   component: Component,
-  location: string
+  location: string,
 ) {
   // Don't include templated strings that only have code
   if (isKnownTemplatedString(expr)) {
@@ -313,7 +313,7 @@ function collectAllExprs(site: Site): ExpressionItem[] {
                 tpl,
                 param,
                 ownerComponent,
-                location
+                location,
               );
             }
           }
@@ -325,7 +325,7 @@ function collectAllExprs(site: Site): ExpressionItem[] {
           tpl,
           param,
           ownerComponent,
-          location
+          location,
         );
       }
     }
@@ -342,13 +342,13 @@ function collectAllExprs(site: Site): ExpressionItem[] {
       expr: Expr | undefined,
       text: RichText | undefined,
       param: Param | undefined,
-      isTextContent: boolean = false
+      isTextContent: boolean = false,
     ) => {
       const location = buildLocationPath(
         component,
         targetTpl,
         param,
-        isTextContent
+        isTextContent,
       );
       const displayText = getExprDisplayText(expr, text);
       const exprType = getExprType(expr, text);
@@ -429,10 +429,10 @@ const LeftExprsSearchPanel = observer(function LeftExprsSearchPanel() {
   const studioCtx = useStudioCtx();
   const [searchQuery, setSearchQuery] = React.useState("");
   const [groupBy, setGroupBy] = React.useState<"none" | "component" | "type">(
-    "component"
+    "component",
   );
   const [expressions, setExpressions] = React.useState<ExpressionItem[]>(() =>
-    collectAllExprs(studioCtx.site)
+    collectAllExprs(studioCtx.site),
   );
 
   // Initialize with all available types from the current expressions
@@ -479,7 +479,7 @@ const LeftExprsSearchPanel = observer(function LeftExprsSearchPanel() {
       debouncedSearch.trim()
         ? new Matcher(debouncedSearch, { matchMiddleOfWord: true })
         : undefined,
-    [debouncedSearch]
+    [debouncedSearch],
   );
 
   // Update expressions when revisionNum changes (site is updated)
@@ -497,7 +497,7 @@ const LeftExprsSearchPanel = observer(function LeftExprsSearchPanel() {
       selectedExprTypes.length < AllExprTypes.length
     ) {
       filtered = filtered.filter((item) =>
-        selectedExprTypes.includes(item.exprType)
+        selectedExprTypes.includes(item.exprType),
       );
     }
 
@@ -507,7 +507,7 @@ const LeftExprsSearchPanel = observer(function LeftExprsSearchPanel() {
         ({ displayText, location, exprType }) =>
           (displayText && matcher.matches(displayText)) ||
           matcher.matches(location) ||
-          matcher.matches(exprType)
+          matcher.matches(exprType),
       );
     }
 
@@ -599,12 +599,12 @@ const LeftExprsSearchPanel = observer(function LeftExprsSearchPanel() {
           filterOptions={(opts, input) => {
             // Filter out selected items
             const availableOpts = opts.filter(
-              (opt) => !selectedExprTypes.includes(opt)
+              (opt) => !selectedExprTypes.includes(opt),
             );
             return !input
               ? availableOpts
               : availableOpts.filter((o) =>
-                  o.toLowerCase().includes(input.toLowerCase())
+                  o.toLowerCase().includes(input.toLowerCase()),
                 );
           }}
         />
@@ -668,7 +668,7 @@ const LeftExprsSearchPanel = observer(function LeftExprsSearchPanel() {
               itemHeight={50}
               renderGroupHeader={(groupName: string) => {
                 const groupItem = virtualItems.find(
-                  (v) => v.type === "group" && v.group === groupName
+                  (v) => v.type === "group" && v.group === groupName,
                 );
                 const itemCount =
                   groupItem?.type === "group" ? groupItem.items.length : 0;

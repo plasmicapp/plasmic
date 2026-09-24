@@ -10,7 +10,7 @@ export const migrate: BundledMigrationFn = async (bundle) => {
         inst.children.map((ruleRef) => {
           const rule = bundle.map[ruleRef.__ref];
           return [rule.name, joinCssValues(rule.name, rule.values)];
-        })
+        }),
       );
       delete inst["children"];
     }

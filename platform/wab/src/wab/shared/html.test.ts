@@ -27,7 +27,7 @@ describe("normalizeHtmlWhitespace", () => {
 
   it("keeps the single space that separates text from a nested element", () => {
     expect(
-      normalizeHtmlWhitespace(["Hello ", mkInlineContent("World")])
+      normalizeHtmlWhitespace(["Hello ", mkInlineContent("World")]),
     ).toEqual(["Hello ", mkInlineContent("World")]);
   });
 
@@ -35,20 +35,24 @@ describe("normalizeHtmlWhitespace", () => {
     // The extra space hides inside the nested element, like
     // "Hello <strong> World</strong>".
     expect(
-      normalizeHtmlWhitespace(["Hello ", mkInlineContent(" World")])
+      normalizeHtmlWhitespace(["Hello ", mkInlineContent(" World")]),
     ).toEqual(["Hello ", mkInlineContent("World")]);
   });
 
   it("removes a trailing space even when it sits inside a trailing nested element", () => {
     expect(
-      normalizeHtmlWhitespace(["Hello ", mkInlineContent("World ")])
+      normalizeHtmlWhitespace(["Hello ", mkInlineContent("World ")]),
     ).toEqual(["Hello ", mkInlineContent("World")]);
   });
 
   it("cleans up source formatting around a nested element", () => {
     // "<p>\n  Hello\n  <strong>World</strong>\n</p>" after reading the element's parts.
     expect(
-      normalizeHtmlWhitespace(["\n  Hello\n  ", mkInlineContent("World"), "\n"])
+      normalizeHtmlWhitespace([
+        "\n  Hello\n  ",
+        mkInlineContent("World"),
+        "\n",
+      ]),
     ).toEqual(["Hello ", mkInlineContent("World")]);
   });
 
@@ -68,7 +72,7 @@ describe("normalizeHtmlWhitespace", () => {
       normalizeHtmlWhitespace([
         "Read ",
         mkInlineContent("the ", mkInlineContent(" docs ")),
-      ])
+      ]),
     ).toEqual(["Read ", mkInlineContent("the ", mkInlineContent("docs"))]);
   });
 });
@@ -76,7 +80,7 @@ describe("normalizeHtmlWhitespace", () => {
 describe("trimAsciiWhitespace", () => {
   it("removes edge whitespace but keeps edge non-breaking spaces", () => {
     expect(trimAsciiWhitespace("\n \u00a0Go\u00a0 \t")).toEqual(
-      "\u00a0Go\u00a0"
+      "\u00a0Go\u00a0",
     );
   });
 });

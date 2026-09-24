@@ -28,7 +28,7 @@ export interface LineItemProps extends DefaultLineItemProps {
 
 function LineItem_(
   { icon, ...props }: LineItemProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicLineItem to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

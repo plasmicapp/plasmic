@@ -25,7 +25,7 @@ import * as React from "react";
 type VariantsComboSelectProps = DefaultVariantsComboSelectProps;
 
 const VariantsComboSelect = observer(function VariantsComboSelect(
-  props: VariantsComboSelectProps
+  props: VariantsComboSelectProps,
 ) {
   const studioCtx = useStudioCtx();
   const previewCtx = usePreviewCtx();
@@ -49,7 +49,7 @@ const VariantsComboSelect = observer(function VariantsComboSelect(
       !isStyleOrCodeComponentVariant(v) &&
       !isScreenVariant(v) &&
       !isPrivateStyleVariant(v) &&
-      !isBaseVariant(v)
+      !isBaseVariant(v),
   );
 
   const [standaloneVariants, splitVariants, compVariants, globalVariants] =
@@ -70,7 +70,7 @@ const VariantsComboSelect = observer(function VariantsComboSelect(
       })),
       ...[
         ...xGroupBy(compVariants, (v) =>
-          ensure(v.parent, `Variant ${v.name} (uuid ${v.uuid}) has no parent`)
+          ensure(v.parent, `Variant ${v.name} (uuid ${v.uuid}) has no parent`),
         ).entries(),
       ].map(([vg, vs]) => ({
         type: vg.multi ? ("multi" as const) : ("single" as const),
@@ -88,7 +88,7 @@ const VariantsComboSelect = observer(function VariantsComboSelect(
         : []),
       ...[
         ...xGroupBy(globalVariants, (v) =>
-          ensure(v.parent, `Variant ${v.name} (uuid ${v.uuid}) has no parent`)
+          ensure(v.parent, `Variant ${v.name} (uuid ${v.uuid}) has no parent`),
         ).entries(),
       ].map(([vg, vs]) => ({
         type: vg.multi ? ("multi" as const) : ("single" as const),

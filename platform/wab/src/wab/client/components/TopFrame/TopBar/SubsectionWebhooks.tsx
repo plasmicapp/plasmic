@@ -14,12 +14,12 @@ import {
   DefaultSubsectionWebhooksProps,
   PlasmicSubsectionWebhooks,
 } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicSubsectionWebhooks";
-import { spawn } from "@/wab/shared/common";
 import {
   ApiProject,
   ApiProjectWebhook,
   ProjectWebhookEventsResponse,
 } from "@/wab/shared/ApiSchema";
+import { spawn } from "@/wab/shared/common";
 import * as React from "react";
 
 export type SetupWebhooks = {
@@ -35,7 +35,7 @@ export type StatusWebhooks = {
 };
 
 export function mkWebhooksPublishState(
-  status: StatusWebhooks | undefined
+  status: StatusWebhooks | undefined,
 ): PublishState {
   if (!status?.enabled) {
     return undefined;
@@ -56,8 +56,7 @@ export function mkWebhooksPublishState(
 }
 
 interface SubsectionWebhooksProps
-  extends DefaultSubsectionWebhooksProps,
-    VisibleEnableBlock {
+  extends DefaultSubsectionWebhooksProps, VisibleEnableBlock {
   appCtx: AppCtx;
   project: ApiProject;
   fetchWebhooks: () => void;
@@ -102,7 +101,7 @@ function SubsectionWebhooks(props: SubsectionWebhooksProps) {
     async (webhook: ToggleWebhook) => {
       await appCtx.api.deleteProjectWebhook(projectId, webhook.id);
       fetchWebhooks();
-    }
+    },
   )[1];
 
   const setWebhook = (webhook: ToggleWebhook) => {
@@ -110,7 +109,7 @@ function SubsectionWebhooks(props: SubsectionWebhooksProps) {
     spawn(
       (async () => {
         await appCtx.api.updateProjectWebhook(projectId, webhook);
-      })()
+      })(),
     );
   };
 

@@ -59,7 +59,7 @@ describe("Matcher", () => {
         const text = "short searchable text";
         const matcher = new Matcher("search");
         expect(getTextWithScrolling(text, 30, matcher)).toBe(
-          "short searchable text"
+          "short searchable text",
         );
       });
 
@@ -157,7 +157,7 @@ describe("Matcher", () => {
       it("handles newlines and tabs", () => {
         const text = "text\nwith\nnewlines\tand\ttabs";
         expect(getTextWithScrolling(text, 50)).toBe(
-          "text with newlines and tabs"
+          "text with newlines and tabs",
         );
       });
 
@@ -183,7 +183,7 @@ describe("Matcher", () => {
       const matcher = new Matcher("needs");
       const result = matcher.boldSnippetsWithScrolling(
         "This is a very long text that needs truncation for display",
-        30
+        30,
       );
 
       console.log("R1", result);
@@ -195,7 +195,7 @@ describe("Matcher", () => {
       const matcher = new Matcher("notfound");
       const result = matcher.boldSnippetsWithScrolling(
         "This is a text without the search term",
-        20
+        20,
       );
       expect(result).toBeTruthy();
     });

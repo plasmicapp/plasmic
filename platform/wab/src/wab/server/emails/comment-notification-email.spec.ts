@@ -15,8 +15,8 @@ import {
 } from "@/wab/server/__testonly__/comments-util";
 import { setupEmailTest } from "@/wab/server/emails/__testonly__/email-test-util";
 import {
-  getThreadUrl,
   Notification,
+  getThreadUrl,
   sendUserNotificationEmail,
 } from "@/wab/server/emails/comment-notification-email";
 import {
@@ -62,7 +62,7 @@ function getProjectLink(projectId: string, branchName?: string) {
 
 function assertLinks(
   links: { href: string | null }[],
-  expectedLinks: { url: string; count: number }[]
+  expectedLinks: { url: string; count: number }[],
 ) {
   // Extract the first link as header (Plasmic website link)
   const [headerLink] = links;
@@ -76,7 +76,7 @@ function assertLinks(
 
   const totalExpectedLinks = expectedLinks.reduce(
     (sum, link) => sum + link.count,
-    (headerLink ? 1 : 0) + (footerLink ? 1 : 0)
+    (headerLink ? 1 : 0) + (footerLink ? 1 : 0),
   );
   expect(links).toHaveLength(totalExpectedLinks);
 
@@ -102,7 +102,7 @@ describe("sendUserNotificationEmail", () => {
             location: { subject: { uuid: "", iid: "" }, variants: [] },
             commentId: uuid.v4() as CommentId,
             commentThreadId: uuid.v4() as CommentThreadId,
-          }
+          },
         );
 
         // Mock input
@@ -119,7 +119,7 @@ describe("sendUserNotificationEmail", () => {
                     project,
                     user1Comment.createdAt,
                     { type: "COMMENT", comment: user1Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -132,12 +132,12 @@ describe("sendUserNotificationEmail", () => {
           notifications,
           req.config.host,
           config.mailFrom,
-          req.config.mailBcc // Optional BCC
+          req.config.mailBcc, // Optional BCC
         );
 
         // Get the actual email body sent
         const { text: receivedHtmlContent, links } = extractTextAndLinks(
-          mailer.sendMail.mock.calls[0][0].html
+          mailer.sendMail.mock.calls[0][0].html,
         );
 
         const projectLink = getProjectLink(projectId);
@@ -147,14 +147,14 @@ describe("sendUserNotificationEmail", () => {
             url: getThreadUrl(
               req.config.host,
               project.id,
-              user1Comment.commentThreadId
+              user1Comment.commentThreadId,
             ),
             count: 1,
           },
         ]);
 
         expect(receivedHtmlContent).toEqual(
-          `My ProjectYangtwo Zhang left a commentYangtwo ZhangThis looks great!View in Plasmic${FOOTER_TEXT}`
+          `My ProjectYangtwo Zhang left a commentYangtwo ZhangThis looks great!View in Plasmic${FOOTER_TEXT}`,
         );
 
         expect(mailer.sendMail).toHaveBeenCalledTimes(1);
@@ -166,7 +166,7 @@ describe("sendUserNotificationEmail", () => {
           subject: "New activity in My Project from Yangtwo Z.",
           html: expect.any(String), // Already tested above
         });
-      }
+      },
     );
   });
   it("can send a reply notification email", async () => {
@@ -183,7 +183,7 @@ describe("sendUserNotificationEmail", () => {
             location: { subject: { uuid: "", iid: "" }, variants: [] },
             commentId: uuid.v4() as CommentId,
             commentThreadId: uuid.v4() as CommentThreadId,
-          }
+          },
         );
 
         // user 1 replies to user 0 comment
@@ -193,7 +193,7 @@ describe("sendUserNotificationEmail", () => {
             body: "I agree...",
             id: uuid.v4() as CommentId,
             threadId: rootComment.commentThreadId as CommentThreadId,
-          }
+          },
         );
 
         // Mock input
@@ -210,7 +210,7 @@ describe("sendUserNotificationEmail", () => {
                     project,
                     reply.createdAt,
                     { type: "COMMENT", comment: reply },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -223,12 +223,12 @@ describe("sendUserNotificationEmail", () => {
           notifications,
           req.config.host,
           config.mailFrom,
-          req.config.mailBcc // Optional BCC
+          req.config.mailBcc, // Optional BCC
         );
 
         // Get the actual email body sent
         const { text: receivedHtmlContent, links } = extractTextAndLinks(
-          mailer.sendMail.mock.calls[0][0].html
+          mailer.sendMail.mock.calls[0][0].html,
         );
 
         const projectLink = getProjectLink(projectId);
@@ -238,7 +238,7 @@ describe("sendUserNotificationEmail", () => {
             url: getThreadUrl(
               req.config.host,
               project.id,
-              reply.commentThreadId
+              reply.commentThreadId,
             ),
             count: 1,
           },
@@ -247,7 +247,7 @@ describe("sendUserNotificationEmail", () => {
         expect(receivedHtmlContent).toEqual(
           `My ProjectYangtwo Zhang replied to a commentYangone ZhangThis looks great!
 NEW COMMENTSYangtwo ZhangI agree...
-View in Plasmic${FOOTER_TEXT}`
+View in Plasmic${FOOTER_TEXT}`,
         );
 
         expect(mailer.sendMail).toHaveBeenCalledTimes(1);
@@ -259,7 +259,7 @@ View in Plasmic${FOOTER_TEXT}`
           subject: "New activity in My Project from Yangtwo Z.",
           html: expect.any(String), // Already tested above
         });
-      }
+      },
     );
   });
   it("can send a reaction notification email", async () => {
@@ -276,7 +276,7 @@ View in Plasmic${FOOTER_TEXT}`
             location: { subject: { uuid: "", iid: "" }, variants: [] },
             commentId: uuid.v4() as CommentId,
             commentThreadId: uuid.v4() as CommentThreadId,
-          }
+          },
         );
 
         // User 1 reacts to user 0 comment
@@ -285,7 +285,7 @@ View in Plasmic${FOOTER_TEXT}`
           user1Comment.id,
           {
             emojiName: "1f4af",
-          }
+          },
         );
 
         // Mock input
@@ -302,7 +302,7 @@ View in Plasmic${FOOTER_TEXT}`
                     project,
                     reaction.createdAt,
                     { type: "REACTION", reaction },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -315,12 +315,12 @@ View in Plasmic${FOOTER_TEXT}`
           notifications,
           req.config.host,
           config.mailFrom,
-          req.config.mailBcc // Optional BCC
+          req.config.mailBcc, // Optional BCC
         );
 
         // Get the actual email body sent
         const { text: receivedHtmlContent, links } = extractTextAndLinks(
-          mailer.sendMail.mock.calls[0][0].html
+          mailer.sendMail.mock.calls[0][0].html,
         );
 
         const projectLink = getProjectLink(projectId);
@@ -330,7 +330,7 @@ View in Plasmic${FOOTER_TEXT}`
             url: getThreadUrl(
               req.config.host,
               project.id,
-              user1Comment.commentThreadId
+              user1Comment.commentThreadId,
             ),
             count: 1,
           },
@@ -338,7 +338,7 @@ View in Plasmic${FOOTER_TEXT}`
 
         expect(receivedHtmlContent).toEqual(
           `My ProjectYangtwo Zhang reacted to your comment💯Yangone ZhangThis looks great!
-View in Plasmic${FOOTER_TEXT}`
+View in Plasmic${FOOTER_TEXT}`,
         );
 
         expect(mailer.sendMail).toHaveBeenCalledTimes(1);
@@ -350,7 +350,7 @@ View in Plasmic${FOOTER_TEXT}`
           subject: "New activity in My Project from Yangtwo Z.",
           html: expect.any(String), // Already tested above
         });
-      }
+      },
     );
   });
   it("can send a mention notification email", async () => {
@@ -367,7 +367,7 @@ View in Plasmic${FOOTER_TEXT}`
             location: { subject: { uuid: "", iid: "" }, variants: [] },
             commentId: uuid.v4() as CommentId,
             commentThreadId: uuid.v4() as CommentThreadId,
-          }
+          },
         );
 
         // Mock input
@@ -384,7 +384,7 @@ View in Plasmic${FOOTER_TEXT}`
                     project,
                     user1Comment.createdAt,
                     { type: "COMMENT", comment: user1Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -397,12 +397,12 @@ View in Plasmic${FOOTER_TEXT}`
           notifications,
           req.config.host,
           config.mailFrom,
-          req.config.mailBcc // Optional BCC
+          req.config.mailBcc, // Optional BCC
         );
 
         // Get the actual email body sent
         const { text: receivedHtmlContent, links } = extractTextAndLinks(
-          mailer.sendMail.mock.calls[0][0].html
+          mailer.sendMail.mock.calls[0][0].html,
         );
 
         const projectLink = getProjectLink(projectId);
@@ -413,7 +413,7 @@ View in Plasmic${FOOTER_TEXT}`
             url: getThreadUrl(
               req.config.host,
               project.id,
-              user1Comment.commentThreadId
+              user1Comment.commentThreadId,
             ),
             count: 1,
           },
@@ -421,7 +421,7 @@ View in Plasmic${FOOTER_TEXT}`
 
         expect(receivedHtmlContent).toEqual(
           `My ProjectYangtwo Zhang mentioned you in a commentYangtwo ZhangHey @yang1@test.com, can you look into this?
-View in Plasmic${FOOTER_TEXT}`
+View in Plasmic${FOOTER_TEXT}`,
         );
 
         expect(mailer.sendMail).toHaveBeenCalledTimes(1);
@@ -433,7 +433,7 @@ View in Plasmic${FOOTER_TEXT}`
           subject: "New activity in My Project from Yangtwo Z.",
           html: expect.any(String), // Already tested above
         });
-      }
+      },
     );
   });
   it("can send a resolution notification", async () => {
@@ -449,14 +449,14 @@ View in Plasmic${FOOTER_TEXT}`
             location: { subject: { uuid: "", iid: "" }, variants: [] },
             commentId: uuid.v4() as CommentId,
             commentThreadId: uuid.v4() as CommentThreadId,
-          }
+          },
         );
 
         // User 1 resolves user 0 comment
         const resolution = await userDbs[1]().resolveThreadInProject(
           uuid.v4() as ThreadHistoryId,
           user1Comment.commentThreadId,
-          true
+          true,
         );
 
         // Mock input
@@ -473,7 +473,7 @@ View in Plasmic${FOOTER_TEXT}`
                     project,
                     resolution.createdAt,
                     { type: "THREAD_HISTORY", history: resolution },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -486,12 +486,12 @@ View in Plasmic${FOOTER_TEXT}`
           notifications,
           req.config.host,
           config.mailFrom,
-          req.config.mailBcc // Optional BCC
+          req.config.mailBcc, // Optional BCC
         );
 
         // Get the actual email body sent
         const { text: receivedHtmlContent, links } = extractTextAndLinks(
-          mailer.sendMail.mock.calls[0][0].html
+          mailer.sendMail.mock.calls[0][0].html,
         );
 
         const projectLink = getProjectLink(projectId);
@@ -501,7 +501,7 @@ View in Plasmic${FOOTER_TEXT}`
             url: getThreadUrl(
               req.config.host,
               project.id,
-              user1Comment.commentThreadId
+              user1Comment.commentThreadId,
             ),
             count: 1,
           },
@@ -509,7 +509,7 @@ View in Plasmic${FOOTER_TEXT}`
 
         expect(receivedHtmlContent).toEqual(
           `My ProjectYangtwo Zhang resolved a commentYangone ZhangThis looks great!
-View in Plasmic${FOOTER_TEXT}`
+View in Plasmic${FOOTER_TEXT}`,
         );
 
         expect(mailer.sendMail).toHaveBeenCalledTimes(1);
@@ -521,7 +521,7 @@ View in Plasmic${FOOTER_TEXT}`
           subject: "New activity in My Project from Yangtwo Z.",
           html: expect.any(String), // Already tested above
         });
-      }
+      },
     );
   });
   it("can send comment, reply, reaction, resolution, and mention notifications in the same email", async () => {
@@ -544,8 +544,8 @@ View in Plasmic${FOOTER_TEXT}`
               location: { subject: { uuid: "", iid: "" }, variants: [] },
               commentId: uuid.v4() as CommentId,
               commentThreadId: uuid.v4() as CommentThreadId,
-            }
-          )
+            },
+          ),
         );
 
         // User 0 another root comment
@@ -557,8 +557,8 @@ View in Plasmic${FOOTER_TEXT}`
               location: { subject: { uuid: "", iid: "" }, variants: [] },
               commentId: uuid.v4() as CommentId,
               commentThreadId: uuid.v4() as CommentThreadId,
-            }
-          )
+            },
+          ),
         );
 
         // User 1 root comment
@@ -570,8 +570,8 @@ View in Plasmic${FOOTER_TEXT}`
               location: { subject: { uuid: "", iid: "" }, variants: [] },
               commentId: uuid.v4() as CommentId,
               commentThreadId: uuid.v4() as CommentThreadId,
-            }
-          )
+            },
+          ),
         );
 
         // User 2 root comment
@@ -583,8 +583,8 @@ View in Plasmic${FOOTER_TEXT}`
               location: { subject: { uuid: "", iid: "" }, variants: [] },
               commentId: uuid.v4() as CommentId,
               commentThreadId: uuid.v4() as CommentThreadId,
-            }
-          )
+            },
+          ),
         );
 
         // user 2 reply to User 0 comment
@@ -595,8 +595,8 @@ View in Plasmic${FOOTER_TEXT}`
               body: "I agree...",
               id: uuid.v4() as CommentId,
               threadId: rootComments[0].commentThreadId as CommentThreadId,
-            }
-          )
+            },
+          ),
         );
 
         // user 1 reply to User 0 comment
@@ -607,8 +607,8 @@ View in Plasmic${FOOTER_TEXT}`
               body: "Thanks",
               id: uuid.v4() as CommentId,
               threadId: rootComments[0].commentThreadId as CommentThreadId,
-            }
-          )
+            },
+          ),
         );
 
         // User 2 reply to another User 0 comment
@@ -619,8 +619,8 @@ View in Plasmic${FOOTER_TEXT}`
               body: "20px?",
               id: uuid.v4() as CommentId,
               threadId: rootComments[1].commentThreadId as CommentThreadId,
-            }
-          )
+            },
+          ),
         );
 
         // User 1 reaction to User 0 comment
@@ -630,8 +630,8 @@ View in Plasmic${FOOTER_TEXT}`
             rootComments[0].id as CommentId,
             {
               emojiName: "1f44d",
-            }
-          )
+            },
+          ),
         );
         // User 1 reaction to User 0 comment
         reactions.push(
@@ -640,8 +640,8 @@ View in Plasmic${FOOTER_TEXT}`
             rootComments[0].id as CommentId,
             {
               emojiName: "1f525",
-            }
-          )
+            },
+          ),
         );
         // User 2 reaction to User 0 comment
         reactions.push(
@@ -650,8 +650,8 @@ View in Plasmic${FOOTER_TEXT}`
             rootComments[0].id as CommentId,
             {
               emojiName: "1f525",
-            }
-          )
+            },
+          ),
         );
         // User 2 reaction to another User 0 comment
         reactions.push(
@@ -660,8 +660,8 @@ View in Plasmic${FOOTER_TEXT}`
             rootComments[1].id as CommentId,
             {
               emojiName: "2705",
-            }
-          )
+            },
+          ),
         );
         // User 1 mention (in root comment) to User 0 comment
         rootComments.push(
@@ -672,8 +672,8 @@ View in Plasmic${FOOTER_TEXT}`
               location: { subject: { uuid: "", iid: "" }, variants: [] },
               commentId: uuid.v4() as CommentId,
               commentThreadId: uuid.v4() as CommentThreadId,
-            }
-          )
+            },
+          ),
         );
         // User 2 mention (in thread) to User 0 comment
         replies.push(
@@ -683,24 +683,24 @@ View in Plasmic${FOOTER_TEXT}`
               body: "cc: @<yang1@test.com>",
               id: uuid.v4() as CommentId,
               threadId: rootComments[0].commentThreadId as CommentThreadId,
-            }
-          )
+            },
+          ),
         );
 
         resolutions.push(
           await userDbs[2]().resolveThreadInProject(
             uuid.v4() as ThreadHistoryId,
             rootComments[0].commentThreadId,
-            false
-          )
+            false,
+          ),
         );
 
         resolutions.push(
           await userDbs[2]().resolveThreadInProject(
             uuid.v4() as ThreadHistoryId,
             rootComments[1].commentThreadId,
-            true
-          )
+            true,
+          ),
         );
 
         // Mock input
@@ -711,7 +711,7 @@ View in Plasmic${FOOTER_TEXT}`
               await Promise.all(
                 rootComments.map(
                   async (
-                    rootComment
+                    rootComment,
                   ): Promise<[CommentThreadId, Notification[]]> => [
                     rootComment.commentThreadId,
                     await Promise.all([
@@ -719,7 +719,7 @@ View in Plasmic${FOOTER_TEXT}`
                         .filter(
                           (comment) =>
                             comment.id === rootComment.id &&
-                            comment.createdById !== users[0].id
+                            comment.createdById !== users[0].id,
                         )
                         .map(
                           async (comment): Promise<Notification> =>
@@ -729,14 +729,14 @@ View in Plasmic${FOOTER_TEXT}`
                               project,
                               comment.createdAt,
                               { type: "COMMENT", comment },
-                              sudo
-                            )
+                              sudo,
+                            ),
                         ),
                       ...replies
                         .filter(
                           (reply) =>
                             reply.commentThreadId ===
-                            rootComment.commentThreadId
+                            rootComment.commentThreadId,
                         )
                         .map(
                           async (reply): Promise<Notification> =>
@@ -746,14 +746,14 @@ View in Plasmic${FOOTER_TEXT}`
                               project,
                               reply.createdAt,
                               { type: "COMMENT", comment: reply },
-                              sudo
-                            )
+                              sudo,
+                            ),
                         ),
                       ...resolutions
                         .filter(
                           (resolution) =>
                             resolution.commentThreadId ===
-                            rootComment.commentThreadId
+                            rootComment.commentThreadId,
                         )
                         .map(
                           async (resolution): Promise<Notification> =>
@@ -763,14 +763,14 @@ View in Plasmic${FOOTER_TEXT}`
                               project,
                               resolution.createdAt,
                               { type: "THREAD_HISTORY", history: resolution },
-                              sudo
-                            )
+                              sudo,
+                            ),
                         ),
                       ...reactions
                         .filter(
                           (reaction) =>
                             reaction.comment?.commentThreadId ===
-                            rootComment.commentThreadId
+                            rootComment.commentThreadId,
                         )
                         .map(
                           async (reaction): Promise<Notification> =>
@@ -780,13 +780,13 @@ View in Plasmic${FOOTER_TEXT}`
                               project,
                               reaction.createdAt,
                               { type: "REACTION", reaction },
-                              sudo
-                            )
+                              sudo,
+                            ),
                         ),
                     ]),
-                  ]
-                )
-              )
+                  ],
+                ),
+              ),
             ),
           },
         ]);
@@ -796,12 +796,12 @@ View in Plasmic${FOOTER_TEXT}`
           notifications,
           req.config.host,
           config.mailFrom,
-          req.config.mailBcc // Optional BCC
+          req.config.mailBcc, // Optional BCC
         );
 
         // Get the actual email body sent
         const { text: receivedHtmlContent, links } = extractTextAndLinks(
-          mailer.sendMail.mock.calls[0][0].html
+          mailer.sendMail.mock.calls[0][0].html,
         );
         const projectLink = getProjectLink(projectId);
         assertLinks(links, [
@@ -811,7 +811,7 @@ View in Plasmic${FOOTER_TEXT}`
             url: getThreadUrl(
               req.config.host,
               project.id,
-              rootComments[0].commentThreadId
+              rootComments[0].commentThreadId,
             ),
             count: 4,
           },
@@ -819,7 +819,7 @@ View in Plasmic${FOOTER_TEXT}`
             url: getThreadUrl(
               req.config.host,
               project.id,
-              rootComments[1].commentThreadId
+              rootComments[1].commentThreadId,
             ),
             count: 3,
           },
@@ -827,7 +827,7 @@ View in Plasmic${FOOTER_TEXT}`
             url: getThreadUrl(
               req.config.host,
               project.id,
-              rootComments[2].commentThreadId
+              rootComments[2].commentThreadId,
             ),
             count: 1,
           },
@@ -835,7 +835,7 @@ View in Plasmic${FOOTER_TEXT}`
             url: getThreadUrl(
               req.config.host,
               project.id,
-              rootComments[3].commentThreadId
+              rootComments[3].commentThreadId,
             ),
             count: 1,
           },
@@ -843,7 +843,7 @@ View in Plasmic${FOOTER_TEXT}`
             url: getThreadUrl(
               req.config.host,
               project.id,
-              rootComments[4].commentThreadId
+              rootComments[4].commentThreadId,
             ),
             count: 1,
           },
@@ -863,7 +863,7 @@ View in PlasmicYangtwo Zhang and 1 others reacted to your comment👍Yangone Zha
 View in PlasmicYangthree Zhang reacted to your comment✅Yangone ZhangCan you increase the font size?
 View in PlasmicYangthree Zhang reopened a commentYangone ZhangThis looks great!
 View in PlasmicYangthree Zhang resolved a commentYangone ZhangCan you increase the font size?
-View in Plasmic${FOOTER_TEXT}`
+View in Plasmic${FOOTER_TEXT}`,
         );
 
         expect(mailer.sendMail).toHaveBeenCalledTimes(1);
@@ -875,7 +875,7 @@ View in Plasmic${FOOTER_TEXT}`
           subject: "New activity in My Project from Yangthree Z. and others",
           html: expect.any(String), // Already tested above
         });
-      }
+      },
     );
   });
   it("sends a separate email for each project", async () => {
@@ -898,7 +898,7 @@ View in Plasmic${FOOTER_TEXT}`
             location: { subject: { uuid: "", iid: "" }, variants: [] },
             commentId: uuid.v4() as CommentId,
             commentThreadId: uuid.v4() as CommentThreadId,
-          }
+          },
         );
 
         // user 0 comment in project 2
@@ -910,7 +910,7 @@ View in Plasmic${FOOTER_TEXT}`
               location: { subject: { uuid: "", iid: "" }, variants: [] },
               commentId: uuid.v4() as CommentId,
               commentThreadId: uuid.v4() as CommentThreadId,
-            }
+            },
           );
 
         // Mock input
@@ -927,7 +927,7 @@ View in Plasmic${FOOTER_TEXT}`
                     project,
                     user0Comment.createdAt,
                     { type: "COMMENT", comment: user0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -945,7 +945,7 @@ View in Plasmic${FOOTER_TEXT}`
                     project2,
                     user0CommentInProject2.createdAt,
                     { type: "COMMENT", comment: user0CommentInProject2 },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -958,7 +958,7 @@ View in Plasmic${FOOTER_TEXT}`
           notifications,
           req.config.host,
           config.mailFrom,
-          req.config.mailBcc // Optional BCC
+          req.config.mailBcc, // Optional BCC
         );
 
         expect(mailer.sendMail).toHaveBeenCalledTimes(2);
@@ -978,14 +978,14 @@ View in Plasmic${FOOTER_TEXT}`
             url: getThreadUrl(
               req.config.host,
               project.id,
-              user0Comment.commentThreadId
+              user0Comment.commentThreadId,
             ),
             count: 1,
           },
         ]);
         expect(receivedHtmlForProject1).toEqual(
           `My ProjectYangone Zhang left a commentYangone Zhangcomment text in project 1
-View in Plasmic${FOOTER_TEXT}`
+View in Plasmic${FOOTER_TEXT}`,
         );
 
         const {
@@ -999,14 +999,14 @@ View in Plasmic${FOOTER_TEXT}`
             url: getThreadUrl(
               req.config.host,
               project2.id,
-              user0CommentInProject2.commentThreadId
+              user0CommentInProject2.commentThreadId,
             ),
             count: 1,
           },
         ]);
         expect(receivedHtmlForProject2).toEqual(
           `My Project 2Yangone Zhang left a commentYangone Zhangcomment text in project 2
-View in Plasmic${FOOTER_TEXT}`
+View in Plasmic${FOOTER_TEXT}`,
         );
 
         // Assert other email properties
@@ -1024,7 +1024,7 @@ View in Plasmic${FOOTER_TEXT}`
           subject: "New activity in My Project 2 from Yangone Z.",
           html: expect.any(String), // Already tested above
         });
-      }
+      },
     );
   });
   it("sends a separate email for each branch of the same project", async () => {
@@ -1037,7 +1037,7 @@ View in Plasmic${FOOTER_TEXT}`
           project.id,
           {
             name: "feat/branch",
-          }
+          },
         );
 
         // user 0 comment in main branch
@@ -1048,7 +1048,7 @@ View in Plasmic${FOOTER_TEXT}`
             location: { subject: { uuid: "", iid: "" }, variants: [] },
             commentId: uuid.v4() as CommentId,
             commentThreadId: uuid.v4() as CommentThreadId,
-          }
+          },
         );
 
         // user 0 comment in branch
@@ -1060,7 +1060,7 @@ View in Plasmic${FOOTER_TEXT}`
               location: { subject: { uuid: "", iid: "" }, variants: [] },
               commentId: uuid.v4() as CommentId,
               commentThreadId: uuid.v4() as CommentThreadId,
-            }
+            },
           );
 
         // Mock input
@@ -1077,7 +1077,7 @@ View in Plasmic${FOOTER_TEXT}`
                     project,
                     user0comment.createdAt,
                     { type: "COMMENT", comment: user0comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1096,7 +1096,7 @@ View in Plasmic${FOOTER_TEXT}`
                     project,
                     user0commentInBranch.createdAt,
                     { type: "COMMENT", comment: user0commentInBranch },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1109,7 +1109,7 @@ View in Plasmic${FOOTER_TEXT}`
           notifications,
           req.config.host,
           config.mailFrom,
-          req.config.mailBcc // Optional BCC
+          req.config.mailBcc, // Optional BCC
         );
 
         expect(mailer.sendMail).toHaveBeenCalledTimes(2);
@@ -1128,7 +1128,7 @@ View in Plasmic${FOOTER_TEXT}`
             url: getThreadUrl(
               req.config.host,
               project.id,
-              user0comment.commentThreadId
+              user0comment.commentThreadId,
             ),
             count: 1,
           },
@@ -1136,7 +1136,7 @@ View in Plasmic${FOOTER_TEXT}`
 
         expect(receivedHtmlMainBranch).toEqual(
           `My ProjectYangone Zhang left a commentYangone Zhangcomment text in main branch
-View in Plasmic${FOOTER_TEXT}`
+View in Plasmic${FOOTER_TEXT}`,
         );
 
         const call2 = mailer.sendMail.mock.calls[1][0];
@@ -1149,7 +1149,7 @@ View in Plasmic${FOOTER_TEXT}`
 
         const projectLinkFeatureBranch = getProjectLink(
           project.id,
-          "feat/branch"
+          "feat/branch",
         );
 
         assertLinks(linksFeatureBranch, [
@@ -1159,7 +1159,7 @@ View in Plasmic${FOOTER_TEXT}`
               req.config.host,
               project.id,
               user0commentInBranch.commentThreadId,
-              branch2.name
+              branch2.name,
             ),
             count: 1,
           },
@@ -1167,7 +1167,7 @@ View in Plasmic${FOOTER_TEXT}`
 
         expect(receivedHtmlFeatureBranchBranch).toEqual(
           `My ProjectYangone Zhang left a commentYangone Zhangcomment text in feature branch
-View in Plasmic${FOOTER_TEXT}`
+View in Plasmic${FOOTER_TEXT}`,
         );
 
         expect(mailer.sendMail).toHaveBeenCalledTimes(2);
@@ -1187,7 +1187,7 @@ View in Plasmic${FOOTER_TEXT}`
           subject: `New activity in My Project (feat/branch) from Yangone Z.`,
           html: expect.any(String), // Already tested above
         });
-      }
+      },
     );
   });
 });

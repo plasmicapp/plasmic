@@ -8,8 +8,8 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     entity instanceof ProjectRevision
       ? entity.projectId
       : db instanceof DbMgr
-      ? (await db.getPkgById(entity.pkgId)).projectId
-      : "";
+        ? (await db.getPkgById(entity.pkgId)).projectId
+        : "";
 
   for (const inst of Object.values(bundle.map)) {
     if (inst.__type === "ProjectDependency") {

@@ -24,6 +24,6 @@ export function isValidSubdomainPart(subdomain: string) {
 export function smartHumanize(text: string) {
   return capitalize(underscored(text).replace(/_/g, " ").trim()).replace(
     /\bid\b/gi,
-    "ID"
+    "ID",
   );
 }

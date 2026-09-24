@@ -63,7 +63,7 @@ export const DocsPortalEditor = observer(function DocsPortalEditor(props: {
     const targetUri = monaco.Uri.parse(
       `file:///script_${component?.uuid || icon?.uuid}_${
         codePreviewCtx?.uuid
-      }.tsx`
+      }.tsx`,
     );
     const model = upsertModel(monaco, targetUri, "");
     if (editor.getModel() !== model) {
@@ -103,7 +103,7 @@ export const DocsPortalEditor = observer(function DocsPortalEditor(props: {
         for (const dep of modules) {
           if (dep.lang === "tsx") {
             const depUri = monaco.Uri.parse(
-              `file:///${ensure(dep.name, "has name")}`
+              `file:///${ensure(dep.name, "has name")}`,
             );
             upsertModel(monaco, depUri, dep.source);
           }
@@ -116,8 +116,8 @@ export const DocsPortalEditor = observer(function DocsPortalEditor(props: {
           (isPlumeComponent(component) || isCodeComponent(component))
             ? getExportedComponentName(component)
             : component
-            ? makePlasmicComponentName(component)
-            : makeAssetClassName(ensure(icon, "picked icon"));
+              ? makePlasmicComponentName(component)
+              : makeAssetClassName(ensure(icon, "picked icon"));
         const injectedCode = markInjectedCode(`
 import React from "react";
 import ${componentOrIconName} from "./${
@@ -129,20 +129,20 @@ ${component ? makePlumeDepsImports(docsCtx.studioCtx.site, component) : ""}
         `);
 
         const docsCtxCode = component
-          ? docsCtx.getComponentCustomCode(component) ??
+          ? (docsCtx.getComponentCustomCode(component) ??
             "// Try directly editing this code to pass in different props and overrides\n" +
               serializeToggledComponent(
                 component,
                 docsCtx.getComponentToggles(component),
-                docsCtx.useLoader()
-              )
-          : docsCtx.getIconCustomCode(ensure(icon, "picked icon")) ??
+                docsCtx.useLoader(),
+              ))
+          : (docsCtx.getIconCustomCode(ensure(icon, "picked icon")) ??
             "// Try directly editing this code to pass in different props\n" +
               serializeToggledIcon(
                 ensure(icon, "picked icon"),
                 docsCtx.getIconToggles(ensure(icon, "picked icon")),
-                docsCtx.useLoader()
-              );
+                docsCtx.useLoader(),
+              ));
 
         if (component && !docsCtx.getComponentCustomCode(component)) {
           runInAction(() => {
@@ -159,7 +159,7 @@ ${codePreviewCtx?.getCode() ?? docsCtxCode}
           hideInjectedCode(editor);
         }
       },
-      { name: "DocsPortalEditor" }
+      { name: "DocsPortalEditor" },
     );
 
     return () => {
@@ -227,16 +227,16 @@ ${codePreviewCtx?.getCode() ?? docsCtxCode}
         // See https://github.com/microsoft/monaco-editor/issues/264#issuecomment-654578687
         monaco_.languages.typescript.typescriptDefaults.addExtraLib(
           REACT_TYPES as any,
-          `file:///node_modules/@types/react/index.d.ts`
+          `file:///node_modules/@types/react/index.d.ts`,
         );
         monaco_.languages.typescript.typescriptDefaults.addExtraLib(
           REACT_WEB_TYPES as any,
-          `file:///node_modules/@plasmicapp/react-web/index.d.ts`
+          `file:///node_modules/@plasmicapp/react-web/index.d.ts`,
         );
         monaco_.languages.typescript.typescriptDefaults.addExtraLib(
           `function PlasmicComponent(props: {component: string, componentProps?: Record<string, any>}) {
             return <div />;
-          }`
+          }`,
         );
       }}
     />
@@ -250,7 +250,7 @@ ${codePreviewCtx?.getCode() ?? docsCtxCode}
 function upsertModel(
   monaco: MonacoType,
   uri: monacoEditor.Uri,
-  content: string
+  content: string,
 ) {
   const existing = monaco.editor
     .getModels()
@@ -313,7 +313,7 @@ function removeInjectedCode(code: string) {
 function hideInjectedCode(editor: monacoEditor.editor.IStandaloneCodeEditor) {
   const code = ensure(editor.getModel(), "has model").getValue();
   const lastIndex = L.findLastIndex(code.split("\n"), (line) =>
-    line.trim().endsWith(PLASMIC_INJECTED_IMPORT_MARKER)
+    line.trim().endsWith(PLASMIC_INJECTED_IMPORT_MARKER),
   );
 
   // We currently assume there's just a block of injected stuff in the

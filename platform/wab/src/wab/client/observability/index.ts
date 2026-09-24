@@ -11,7 +11,7 @@ export function analytics(): Analytics {
 export function initObservability(): void {
   ensure(
     globalAnalytics === undefined,
-    "Cannot initialize observability twice"
+    "Cannot initialize observability twice",
   );
   globalAnalytics = methodForwarder<Analytics>();
 }

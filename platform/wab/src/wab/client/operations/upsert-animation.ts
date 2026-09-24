@@ -16,7 +16,7 @@ export type UpsertAnimationResult = Result<
 
 const parseCss = Result.fromThrowable(
   cssParse,
-  (): GenericError => ({ message: `Failed to parse provided CSS` })
+  (): GenericError => ({ message: `Failed to parse provided CSS` }),
 );
 
 /**
@@ -56,7 +56,7 @@ export function upsertAnimation(opts: {
 
     const { sequence: wiSequence, errors: wiErrors } =
       yield* processKeyframesRule(keyframesAtrule).mapErr(
-        (e): GenericError => ({ message: formatWIError(e) })
+        (e): GenericError => ({ message: formatWIError(e) }),
       );
 
     if (!wiSequence.name.trim()) {

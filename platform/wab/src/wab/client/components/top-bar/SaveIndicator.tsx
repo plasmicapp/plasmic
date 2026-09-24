@@ -15,7 +15,7 @@ export type SaveIndicatorProps = DefaultSaveIndicatorProps;
 
 function SaveIndicator_(
   props: SaveIndicatorProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const studioCtx = useStudioCtx();
 
@@ -30,8 +30,8 @@ function SaveIndicator_(
           studioCtx.isUnlogged()
             ? "unlogged"
             : studioCtx.needsSaving()
-            ? "dirty"
-            : undefined
+              ? "dirty"
+              : undefined
         }
         {...props}
       />

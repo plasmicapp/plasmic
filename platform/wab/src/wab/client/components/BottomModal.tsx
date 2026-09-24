@@ -73,7 +73,7 @@ export function BottomModalsProvider(props: { children?: React.ReactNode }) {
     {
       focusedIndex: undefined,
       modals: {},
-    }
+    },
   );
 
   const store = React.useMemo(() => ({ state, dispatch }), [state, dispatch]);
@@ -88,7 +88,7 @@ export function BottomModalsProvider(props: { children?: React.ReactNode }) {
 function useBottomModalsContext() {
   return ensure(
     React.useContext(BottomModalsContext),
-    `Missing <BottomModalsProvider/>`
+    `Missing <BottomModalsProvider/>`,
   );
 }
 
@@ -113,7 +113,7 @@ export function useBottomModalActions() {
         });
       },
     }),
-    [ctx]
+    [ctx],
   );
   return actions;
 }
@@ -124,11 +124,11 @@ interface BottomModalsState {
 }
 
 const BottomModalsContext = React.createContext<BottomModalsStore | undefined>(
-  undefined
+  undefined,
 );
 
 const BottomModalContext = React.createContext<BottomModalConfig | undefined>(
-  undefined
+  undefined,
 );
 
 interface BottomModalProps {
@@ -280,7 +280,7 @@ function BottomModalInternal(props: {
 export function BottomModalButtons(props: { children?: React.ReactNode }) {
   const config = ensure(
     React.useContext(BottomModalContext),
-    "BottomModalButtons can only be used in a BottomModal"
+    "BottomModalButtons can only be used in a BottomModal",
   );
 
   return <config.buttonsTunnel.In>{props.children}</config.buttonsTunnel.In>;

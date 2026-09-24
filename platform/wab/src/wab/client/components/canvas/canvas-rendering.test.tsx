@@ -103,7 +103,7 @@ function mkEnv() {
 function mkCtx(
   env: ReturnType<typeof mkEnv>,
   registeredFunctions: Map<string, any>,
-  stateSpecs: $StateSpec<any>[] = []
+  stateSpecs: $StateSpec<any>[] = [],
 ) {
   return {
     env,
@@ -132,7 +132,7 @@ describe("useComponentLevelQueries", () => {
         uuid: "sq1",
         name: "My Query",
         op: new CustomCode({ code: "(async () => [1, 2])", fallback: null }),
-      })
+      }),
     );
     // A mid-migrating project with a legacy op that reads a migrated server query.
     component.dataQueries.push(mkLegacyDataQuery());
@@ -255,10 +255,10 @@ describe("useComponentLevelQueries", () => {
   it("gives a legacy op the results of the legacy queries before it", async () => {
     const component = mkEmptyComponent();
     component.dataQueries.push(
-      mkLegacyDataQuery("{{ $state.filter }}", "First")
+      mkLegacyDataQuery("{{ $state.filter }}", "First"),
     );
     component.dataQueries.push(
-      mkLegacyDataQuery("{{ $queries.first.data }}", "Second")
+      mkLegacyDataQuery("{{ $queries.first.data }}", "Second"),
     );
 
     const resolved: { op?: any; err?: unknown }[] = [];
@@ -386,7 +386,7 @@ describe("useComponentLevelQueries", () => {
       try {
         expect(() => rerender(<Fetcher />)).toThrow(TypeError);
         expect(consoleError.mock.calls.flat().join("\n")).toMatch(
-          /change in the order of Hooks/
+          /change in the order of Hooks/,
         );
       } finally {
         window.removeEventListener("error", cancelErrorEvent);

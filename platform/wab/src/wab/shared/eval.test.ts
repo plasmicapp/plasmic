@@ -3,7 +3,7 @@ import { evalExprInSandbox, tryEvalExpr } from "@/wab/shared/eval";
 describe("evalExprInSandbox", () => {
   it("evaluates expressions using variables from the sandbox env", () => {
     expect(evalExprInSandbox("$props.name", { $props: { name: "foo" } })).toBe(
-      "foo"
+      "foo",
     );
   });
 
@@ -11,10 +11,10 @@ describe("evalExprInSandbox", () => {
     expect(evalExprInSandbox(`encodeURIComponent("a&b")`, {})).toBe("a%26b");
     expect(evalExprInSandbox(`decodeURIComponent("a%26b")`, {})).toBe("a&b");
     expect(evalExprInSandbox(`encodeURI("http://x.com/a b")`, {})).toBe(
-      "http://x.com/a%20b"
+      "http://x.com/a%20b",
     );
     expect(evalExprInSandbox(`decodeURI("http://x.com/a%20b")`, {})).toBe(
-      "http://x.com/a b"
+      "http://x.com/a b",
     );
   });
 
@@ -29,16 +29,16 @@ describe("evalExprInSandbox", () => {
     expect(
       evalExprInSandbox(`encodeURIComponent($props.q)`, {
         $props: { q: "a&b" },
-      })
+      }),
     ).toBe("a%26b");
   });
 
   it("throws ReferenceError for unknown identifiers", () => {
     expect(() =>
-      evalExprInSandbox("someGlobalThatDoesNotExist", {})
+      evalExprInSandbox("someGlobalThatDoesNotExist", {}),
     ).toThrowError(ReferenceError);
     expect(() =>
-      evalExprInSandbox("someGlobalThatDoesNotExist", {})
+      evalExprInSandbox("someGlobalThatDoesNotExist", {}),
     ).toThrowError("someGlobalThatDoesNotExist is not defined");
   });
 
@@ -46,7 +46,7 @@ describe("evalExprInSandbox", () => {
     expect(
       evalExprInSandbox("encodeURIComponent", {
         encodeURIComponent: "shadowed",
-      })
+      }),
     ).toBe(encodeURIComponent);
   });
 });

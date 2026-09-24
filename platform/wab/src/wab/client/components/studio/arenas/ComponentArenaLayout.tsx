@@ -81,7 +81,7 @@ export const ComponentArenaLayout = observer(
     const allowCombos =
       componentVariants.length + globalVariantGroups.length > 2;
     const framesHeight = maybe(arena.matrix.rows[0]?.cols[0]?.frame, (frame) =>
-      getFrameHeight(frame)
+      getFrameHeight(frame),
     );
     const framesWidth = arena.matrix.rows[0]?.cols[0]?.frame.width;
 
@@ -99,11 +99,11 @@ export const ComponentArenaLayout = observer(
                 .siteOps()
                 .createVariant(
                   component,
-                  ensureKnownComponentVariantGroup(row.rowKey)
+                  ensureKnownComponentVariantGroup(row.rowKey),
                 );
             }
           }
-        })
+        }),
       );
     };
 
@@ -127,21 +127,21 @@ export const ComponentArenaLayout = observer(
       studioCtx.changeUnsafe(() =>
         studioCtx
           .siteOps()
-          .createVariantGroup(component, VariantOptionsType.standalone)
+          .createVariantGroup(component, VariantOptionsType.standalone),
       );
 
     const handleAddSingleSelectVariantGroup = () =>
       studioCtx.changeUnsafe(() =>
         studioCtx
           .siteOps()
-          .createVariantGroup(component, VariantOptionsType.singleChoice)
+          .createVariantGroup(component, VariantOptionsType.singleChoice),
       );
 
     const handleAddMultiSelectVariantGroup = () =>
       studioCtx.changeUnsafe(() =>
         studioCtx
           .siteOps()
-          .createVariantGroup(component, VariantOptionsType.multiChoice)
+          .createVariantGroup(component, VariantOptionsType.multiChoice),
       );
 
     const handleAddVariantToGroup = (group: VariantGroup) => () =>
@@ -157,12 +157,12 @@ export const ComponentArenaLayout = observer(
       studioCtx.changeUnsafe(() =>
         studioCtx.switchLeftTab("responsiveness", {
           highlight: true,
-        })
+        }),
       );
 
     const { orderedScreenVariants } = useResponsiveBreakpoints();
     const isShowingScreenVariantsGroup = arena.matrix.rows.some(
-      (it) => isKnownVariantGroup(it.rowKey) && isScreenVariantGroup(it.rowKey)
+      (it) => isKnownVariantGroup(it.rowKey) && isScreenVariantGroup(it.rowKey),
     );
 
     const vController = makeVariantsController(studioCtx);
@@ -179,7 +179,7 @@ export const ComponentArenaLayout = observer(
               wrapper={(children) => (
                 <EditableLabel
                   ref={variantGroupsEditableLabelRefs(
-                    row.rowKey as VariantGroup
+                    row.rowKey as VariantGroup,
                   )}
                   onEdit={handleRowLabelChanged(row)}
                   value={getComponentArenaRowLabel(component, row)}
@@ -206,13 +206,13 @@ export const ComponentArenaLayout = observer(
                         <Menu.Item
                           onClick={() => {
                             variantGroupsEditableLabelRefs(
-                              row.rowKey as VariantGroup
+                              row.rowKey as VariantGroup,
                             )?.current?.setEditing(true);
                           }}
                         >
                           Rename
                         </Menu.Item>
-                      </Menu>
+                      </Menu>,
                     );
                   }
                 }}
@@ -252,9 +252,9 @@ export const ComponentArenaLayout = observer(
                             .siteOps()
                             .createCodeComponentVariant(
                               component,
-                              tplRoot.component.name
+                              tplRoot.component.name,
                             )
-                        : studioCtx.siteOps().createStyleVariant(component)
+                        : studioCtx.siteOps().createStyleVariant(component),
                     )
                   }
                   data-event="component-arena-add-interaction-variant"
@@ -330,7 +330,7 @@ export const ComponentArenaLayout = observer(
                               key={it.variant.uuid}
                               onClick={async () =>
                                 studioCtx.changeUnsafe(() =>
-                                  vController?.onClickVariant(it.variant)
+                                  vController?.onClickVariant(it.variant),
                                 )
                               }
                             >
@@ -377,7 +377,7 @@ export const ComponentArenaLayout = observer(
         )}
       </div>
     );
-  }
+  },
 );
 
 export const VariantComboGhostFrame = observer(
@@ -389,7 +389,7 @@ export const VariantComboGhostFrame = observer(
     const [visible, setVisible] = React.useState(false);
 
     const framesHeight = maybe(arena.matrix.rows[0]?.cols[0]?.frame, (frame) =>
-      getFrameHeight(frame)
+      getFrameHeight(frame),
     );
     const framesWidth = arena.matrix.rows[0]?.cols[0]?.frame.width;
 
@@ -410,7 +410,7 @@ export const VariantComboGhostFrame = observer(
                   const frame = ensureCustomFrameForActivatedVariants(
                     studioCtx.site,
                     arena,
-                    new Set(combo)
+                    new Set(combo),
                   );
                   studioCtx.setStudioFocusOnFrame({ frame: frame });
                   setVisible(false);
@@ -430,7 +430,7 @@ export const VariantComboGhostFrame = observer(
         />
       </Popover>
     );
-  }
+  },
 );
 
 function VariantComboForm(props: {

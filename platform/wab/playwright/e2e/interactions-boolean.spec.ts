@@ -19,7 +19,7 @@ test.describe("state-management-boolean-interactions", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -81,7 +81,7 @@ test.describe("state-management-boolean-interactions", () => {
         liveFrame
           .locator("#plasmic-app div")
           .filter({ hasText: "true" })
-          .first()
+          .first(),
       ).toBeVisible();
 
       await liveFrame.getByRole("button", { name: "Set to false" }).click();
@@ -89,7 +89,7 @@ test.describe("state-management-boolean-interactions", () => {
         liveFrame
           .locator("#plasmic-app div")
           .filter({ hasText: "false" })
-          .first()
+          .first(),
       ).toBeVisible();
 
       await liveFrame.getByRole("button", { name: "Set to true" }).click();
@@ -97,7 +97,7 @@ test.describe("state-management-boolean-interactions", () => {
         liveFrame
           .locator("#plasmic-app div")
           .filter({ hasText: "true" })
-          .first()
+          .first(),
       ).toBeVisible();
 
       await liveFrame.getByRole("button", { name: "Toggle" }).click();
@@ -105,7 +105,7 @@ test.describe("state-management-boolean-interactions", () => {
         liveFrame
           .locator("#plasmic-app div")
           .filter({ hasText: "false" })
-          .first()
+          .first(),
       ).toBeVisible();
 
       await liveFrame.getByRole("button", { name: "Toggle" }).click();
@@ -113,7 +113,7 @@ test.describe("state-management-boolean-interactions", () => {
         liveFrame
           .locator("#plasmic-app div")
           .filter({ hasText: "true" })
-          .first()
+          .first(),
       ).toBeVisible();
 
       await liveFrame.getByRole("button", { name: "Clear" }).click();
@@ -121,7 +121,7 @@ test.describe("state-management-boolean-interactions", () => {
         liveFrame
           .locator("#plasmic-app div")
           .filter({ hasText: "undefined" })
-          .first()
+          .first(),
       ).toBeVisible();
     });
   });

@@ -16,7 +16,7 @@ export type CmsContentPageProps = DefaultCmsContentPageProps;
 
 function CmsContentPage_(
   props: CmsContentPageProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const m = useMatchedRoute(APP_ROUTES.cmsContentRoot);
   const database = useCmsDatabase(m?.pathParams.databaseId);
@@ -30,8 +30,8 @@ function CmsContentPage_(
     a.isArchived == b.isArchived
       ? b.id.localeCompare(a.id)
       : a.isArchived
-      ? 1
-      : -1
+        ? 1
+        : -1,
   );
   return (
     <Switch

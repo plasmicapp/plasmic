@@ -31,7 +31,7 @@ function serializeDataTokenExport(token: FinalToken<DataToken>): string {
 export function makeDataTokensBundle(
   site: Site,
   projectId: ProjectId,
-  exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">
+  exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">,
 ): DataTokensBundle | undefined {
   const localTokens = siteFinalDataTokens(site);
 

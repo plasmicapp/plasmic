@@ -58,7 +58,7 @@ const LeftPane = observer(function LeftPane(props: LeftPaneProps) {
   const wrapTab = (
     tabKey: LeftTabKey,
     panel: React.ReactNode,
-    unmount = false
+    unmount = false,
   ) => {
     return (
       (!unmount || studioCtx.leftTabKey === tabKey) && (
@@ -81,16 +81,16 @@ const LeftPane = observer(function LeftPane(props: LeftPaneProps) {
         spawn(
           studioCtx.changeUnsafe(() => {
             studioCtx.leftPaneWidth = newWidth;
-          })
+          }),
         );
       },
-      [studioCtx]
+      [studioCtx],
     ),
   });
 
   const [dismissVersionsCTA, setDismissVersionsCTA] = useLocalStorage(
     `${studioCtx.siteInfo.id}-dismissVersionsCTA`,
-    false
+    false,
   );
 
   // revision number of latest published version
@@ -103,10 +103,10 @@ const LeftPane = observer(function LeftPane(props: LeftPaneProps) {
       (async () => {
         const { rev: latestPublishedRev } = await studioCtx.getLatestVersion(
           latestPublishedVersion?.revisionId,
-          latestPublishedVersion?.branchId ?? undefined
+          latestPublishedVersion?.branchId ?? undefined,
         );
         setLatestPublishedRevNum(latestPublishedRev?.revision);
-      })()
+      })(),
     );
   }, [studioCtx, latestPublishedVersion]);
 
@@ -208,7 +208,7 @@ const LeftPane = observer(function LeftPane(props: LeftPaneProps) {
                         useVersionsCTA={useVersionsCTA}
                         dismissVersionsCTA={() => setDismissVersionsCTA(true)}
                       />,
-                      true
+                      true,
                     )}
                   {wrapTab("settings", <LeftProjectSettingsPanel />)}
                   {wrapTab("splits", <LeftSplitsPanel />)}
@@ -231,17 +231,17 @@ const LeftPane = observer(function LeftPane(props: LeftPaneProps) {
               studioCtx.findReferencesComponent,
               studioCtx.findReferencesStyleToken,
               studioCtx.findReferencesDataToken,
-            ].find((x) => x != null) as Component | StyleToken | DataToken
+            ].find((x) => x != null) as Component | StyleToken | DataToken,
           )}
         />
       )}
-    </SidebarModalProvider>
+    </SidebarModalProvider>,
   );
 });
 
 const getFindReferencesProps = (
   studioCtx: StudioCtx,
-  reference: Component | StyleToken | DataToken
+  reference: Component | StyleToken | DataToken,
 ) => {
   return switchType(reference)
     .when(Component, (component) => ({
@@ -281,7 +281,7 @@ const getFindReferencesProps = (
       usageSummary: extractDataTokenUsages(
         studioCtx.siteInfo.id,
         studioCtx.site,
-        token
+        token,
       ),
       onClose: () => {
         studioCtx.findReferencesDataToken = undefined;

@@ -7,7 +7,7 @@ export async function sendSupportWelcomeEmail(
   args: {
     toEmail: string;
     team: Team;
-  }
+  },
 ) {
   await req.mailer.sendMail({
     from: req.config.mailFrom,

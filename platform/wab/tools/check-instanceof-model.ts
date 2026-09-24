@@ -7,14 +7,14 @@ function main() {
   // Omit Type because there are legitimate uses of it.
   const classNames = without(
     Object.keys(instUtil.meta.clsByName),
-    "Type"
+    "Type",
   ).sort();
   const patternString = `${classNames.join("|")}`;
   const pattern = new RegExp(escapeRegExp(patternString), "g");
   if (!content.split("\n")[0].match(pattern)) {
     console.error(
       "Please update the .eslintrc.js with the following regex expression in `const TYPES =` for checking model types:\n\n" +
-        patternString
+        patternString,
     );
     process.exit(1);
   }

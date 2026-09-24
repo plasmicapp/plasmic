@@ -43,13 +43,13 @@ export async function profileCodegen(em: EntityManager, projectId: ProjectId) {
   };
 
   logger().info(
-    "====================== FIRST TIME ==========================="
+    "====================== FIRST TIME ===========================",
   );
   await codegenIt();
 
   debugger;
   logger().info(
-    "====================== SECOND TIME ==========================="
+    "====================== SECOND TIME ===========================",
   );
   await codegenIt();
   debugger;

@@ -59,7 +59,7 @@ describe("flattenTpls", () =>
         (xs[2] = Tpls.mkTplTag("span")),
         (xs[3] = Tpls.mkTplTag("span")),
         (xs[4] = STpls.mkTplTestText("goodbye")),
-      ]))
+      ])),
     );
     return expect(flattened).toEqual(xs);
   }));
@@ -75,7 +75,7 @@ function ancestorsThroughComponentsUtils() {
       {
         name: "basicComponent-root",
       },
-      []
+      [],
     ),
     type: ComponentType.Plain,
   });
@@ -94,7 +94,7 @@ function ancestorsThroughComponentsUtils() {
       {
         name: `${name}-root`,
       },
-      [tplSlot]
+      [tplSlot],
     );
 
     const component = Components.mkComponent({
@@ -114,11 +114,11 @@ function ancestorsThroughComponentsUtils() {
 
   const plainComponent = createComponentWithSlot(
     "plainComponent",
-    ComponentType.Plain
+    ComponentType.Plain,
   );
   const codeComponent = createComponentWithSlot(
     "codeComponent",
-    ComponentType.Code
+    ComponentType.Code,
   );
 
   const tree = Tpls.mkTplTagX(
@@ -140,7 +140,7 @@ function ancestorsThroughComponentsUtils() {
           }),
         ],
       }),
-    ]
+    ],
   );
 
   function describeNode({ node, layer }: Tpls.NodeWithLayer) {
@@ -186,8 +186,8 @@ describe("ancestorsThroughComponentsWithSlotSelections", () => {
 
     expect(
       Tpls.ancestorsThroughComponentsWithSlotSelections(
-        basicComponentInstance
-      ).map(describeNode)
+        basicComponentInstance,
+      ).map(describeNode),
     ).toEqual([
       { type: "node", name: "basicComponent-instance", layer: 0 },
       { type: "slotSelection", slotName: "children", layer: 0 },
@@ -204,8 +204,8 @@ describe("ancestorsThroughComponentsWithSlotSelections", () => {
         basicComponentInstance,
         {
           includeTplComponentRoot: true,
-        }
-      ).map(describeNode)
+        },
+      ).map(describeNode),
     ).toEqual([
       { type: "node", name: "basicComponent-root", layer: 1 },
       { type: "node", name: "basicComponent-instance", layer: 0 },
@@ -226,14 +226,14 @@ describe("ancestorsThroughComponentsWithSlotSelections", () => {
 
     expect(
       Tpls.ancestorsThroughComponentsWithSlotSelections(
-        codeComponentInstance
-      ).map(describeNode)
+        codeComponentInstance,
+      ).map(describeNode),
     ).toEqual([{ type: "node", name: "codeComponent-instance", layer: 0 }]);
 
     expect(
       Tpls.ancestorsThroughComponentsWithSlotSelections(codeComponentInstance, {
         includeTplComponentRoot: true,
-      }).map(describeNode)
+      }).map(describeNode),
     ).toEqual([{ type: "node", name: "codeComponent-instance", layer: 0 }]);
   });
 
@@ -265,8 +265,8 @@ describe("ancestorsThroughComponentsWithSlotSelections", () => {
           component: outerComponent,
           baseVariant,
         }),
-        { includeTplComponentRoot: true }
-      ).map(describeNode)
+        { includeTplComponentRoot: true },
+      ).map(describeNode),
     ).toEqual([
       { type: "node", name: "codeComponent-instance", layer: 2 },
       { type: "node", name: "innerComponent-instance", layer: 1 },
@@ -287,7 +287,7 @@ describe("computeAncestorsValKey", () => {
     } = ancestorsThroughComponentsUtils();
 
     const ancestors = Tpls.ancestorsThroughComponentsWithSlotSelections(
-      basicComponentInstance
+      basicComponentInstance,
     );
     /**
      * The order of the output is
@@ -304,21 +304,21 @@ describe("computeAncestorsValKey", () => {
     expect(ancestorsValKey).toEqual(
       [ancestors[7], ancestors[6], ancestors[4], ancestors[0]]
         .map((el) => ensureKnownTplNode(el.node).uuid)
-        .join(".")
+        .join("."),
     );
 
     const ancestorsValKey2 = Tpls.computeAncestorsValKey(ancestors.slice(2));
     expect(ancestorsValKey2).toEqual(
       [ancestors[7], ancestors[6], ancestors[4], ancestors[3], ancestors[2]]
         .map((el) => ensureKnownTplNode(el.node).uuid)
-        .join(".")
+        .join("."),
     );
 
     const ancestorsValKey3 = Tpls.computeAncestorsValKey(ancestors.slice(3));
     expect(ancestorsValKey3).toEqual(
       [ancestors[7], ancestors[6], ancestors[4], ancestors[3]]
         .map((el) => ensureKnownTplNode(el.node).uuid)
-        .join(".")
+        .join("."),
     );
   });
 });
@@ -334,7 +334,7 @@ describe("replaceNestedExprInExpr", () => {
     const result = Tpls.replaceNestedExprInExpr(
       templatedString,
       oldExpr,
-      newExpr
+      newExpr,
     );
 
     expect(result).toBe(true);
@@ -352,7 +352,7 @@ describe("replaceNestedExprInExpr", () => {
     const result = Tpls.replaceNestedExprInExpr(
       templatedString,
       oldExpr,
-      newExpr
+      newExpr,
     );
 
     expect(result).toBe(false);
@@ -379,7 +379,7 @@ describe("replaceNestedExprInExpr", () => {
     const result = Tpls.replaceNestedExprInExpr(
       customFunctionExpr,
       oldExpr,
-      newExpr
+      newExpr,
     );
 
     expect(result).toBe(true);
@@ -449,7 +449,7 @@ describe("replaceNestedExprInExpr", () => {
     const result = Tpls.replaceNestedExprInExpr(
       dataSourceOpExpr,
       oldExpr,
-      newExpr
+      newExpr,
     );
 
     expect(result).toBe(true);
@@ -548,7 +548,7 @@ describe("replaceNestedExprInExpr", () => {
     const result = Tpls.replaceNestedExprInExpr(
       templatedString,
       oldExpr,
-      newExpr
+      newExpr,
     );
 
     expect(result).toBe(false);

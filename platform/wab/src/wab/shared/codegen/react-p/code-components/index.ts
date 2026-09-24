@@ -19,7 +19,7 @@ import { Component, TplNode } from "@/wab/shared/model/classes";
 export function generateCodeComponentsHelpersFromRegistry(
   components: Component[],
   aliases: ImportAliasesMap,
-  opts: ExportOpts
+  opts: ExportOpts,
 ) {
   return components
     .filter(
@@ -28,13 +28,13 @@ export function generateCodeComponentsHelpersFromRegistry(
         !(
           isHostLessCodeComponent(c) &&
           opts.hostLessComponentsConfig === "package"
-        )
+        ),
     )
     .map((c) => {
       assert(isCodeComponentWithHelpers(c), "checked before");
       return `const ${getImportedCodeComponentHelperName(
         aliases,
-        c
+        c,
       )} = getCodeComponentHelper__${getImportedComponentName(aliases, c)}()`;
     });
 }
@@ -45,7 +45,7 @@ export function serializeCodeComponentVariantsTriggers(tplRoot: TplNode) {
   }
 
   const ccVariantKeys = Object.keys(
-    tplRoot.component.codeComponentMeta.variants
+    tplRoot.component.codeComponentMeta.variants,
   );
 
   return `
@@ -66,16 +66,16 @@ export function serializeCodeComponentVariantsTriggers(tplRoot: TplNode) {
 export function makeCodeComponentHelperImportName(
   c: CodeComponentWithHelpers,
   opts: ExportOpts,
-  aliases: ImportAliasesMap
+  aliases: ImportAliasesMap,
 ) {
   if (opts.useCodeComponentHelpersRegistry && !isHostLessCodeComponent(c)) {
     return `{ getCodeComponentHelper as getCodeComponentHelper__${getImportedComponentName(
       aliases,
-      c
+      c,
     )}}`;
   } else {
     return `{ ${getCodeComponentHelperImportName(
-      c
+      c,
     )} as ${getImportedCodeComponentHelperName(aliases, c)}}`;
   }
 }

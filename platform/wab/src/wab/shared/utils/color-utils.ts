@@ -14,8 +14,8 @@ function adjustChromaFunction(maybeFunction: any) {
           ...args.map((arg: any) =>
             typeof arg === "string" && Chroma.isLiteralTransparent(arg)
               ? "#00000000"
-              : arg
-          )
+              : arg,
+          ),
         )
     : maybeFunction;
 }

@@ -40,19 +40,19 @@ type VariantComboRank = [
   number, // # of comp variants
   number, // sum of comp variant ranks
   number, // # of global variants
-  number // sum of global variant ranks
+  number, // sum of global variant ranks
 ];
 
 export function sortedVariantCombos(
   combos: VariantCombo[],
-  sorter: VariantComboSorter
+  sorter: VariantComboSorter,
 ) {
   return sortByKeys(combos, sorter);
 }
 
 export function sortedVariantSettings(
   vsettings: VariantSetting[],
-  sorter: VariantComboSorter
+  sorter: VariantComboSorter,
 ) {
   return sortByKeys(vsettings, (vs) => sorter(vs.variants));
 }
@@ -69,7 +69,7 @@ export function sortedVariantSettings(
 // TODO: Test this in variant-sort.test.ts. Also update it to registered variants
 export function isAncestorCombo(
   combo: VariantCombo,
-  maybeAncestorCombo: VariantCombo
+  maybeAncestorCombo: VariantCombo,
 ) {
   if (isBaseVariant(maybeAncestorCombo)) {
     return true;
@@ -79,11 +79,11 @@ export function isAncestorCombo(
         return true;
       } else if (isStyleVariant(v)) {
         return combo.some(
-          (cv) => isStyleVariant(cv) && isAncestorStyleVariant(cv, v)
+          (cv) => isStyleVariant(cv) && isAncestorStyleVariant(cv, v),
         );
       } else if (isScreenVariant(v)) {
         return combo.some(
-          (cv) => isScreenVariant(cv) && isAncestorScreenVariant(cv, v)
+          (cv) => isScreenVariant(cv) && isAncestorScreenVariant(cv, v),
         );
       } else {
         return false;
@@ -109,14 +109,15 @@ export function isAncestorCombo(
  */
 export function isAncestorStyleVariant(
   styleVariant: Variant,
-  maybeAncestorStyleVariant: Variant
+  maybeAncestorStyleVariant: Variant,
 ) {
   return (
     styleVariant.forTpl === maybeAncestorStyleVariant.forTpl &&
     ensure(maybeAncestorStyleVariant.selectors, "Must be style variant")
       .length > 0 &&
     ensure(maybeAncestorStyleVariant.selectors, "Must be style variant").every(
-      (s) => ensure(styleVariant.selectors, "Must be style variant").includes(s)
+      (s) =>
+        ensure(styleVariant.selectors, "Must be style variant").includes(s),
     )
   );
 }
@@ -132,13 +133,13 @@ export function isAncestorStyleVariant(
  */
 export function isAncestorScreenVariant(
   screenVariant: Variant,
-  maybeAncestorScreenVariant: Variant
+  maybeAncestorScreenVariant: Variant,
 ) {
   const spec = parseScreenSpec(
-    ensure(screenVariant.mediaQuery, "Must be screen variant")
+    ensure(screenVariant.mediaQuery, "Must be screen variant"),
   );
   const maybeAncestorSpec = parseScreenSpec(
-    ensure(maybeAncestorScreenVariant.mediaQuery, "Must be screen variant")
+    ensure(maybeAncestorScreenVariant.mediaQuery, "Must be screen variant"),
   );
   return (
     (!spec.minWidth ||
@@ -157,11 +158,11 @@ export function isAncestorScreenVariant(
 export function sortedVariantSettingStack(
   vsettings: VariantSetting[],
   activeCombo: VariantCombo,
-  sorter: VariantComboSorter
+  sorter: VariantComboSorter,
 ) {
   // Only keep vsettings that are ancestors of the current combo
   vsettings = vsettings.filter((vs) =>
-    isAncestorCombo(activeCombo, vs.variants)
+    isAncestorCombo(activeCombo, vs.variants),
   );
   return sortedVariantSettings(vsettings, sorter);
 }
@@ -169,7 +170,7 @@ export function sortedVariantSettingStack(
 export function getDependentVariantSettings(
   vsettings: VariantSetting[],
   combo: VariantCombo,
-  ignorePrivateStyleVariants = true
+  ignorePrivateStyleVariants = true,
 ) {
   const filteredCombo = ignorePrivateStyleVariants
     ? combo.filter((v) => !isPrivateStyleVariant(v))
@@ -198,7 +199,7 @@ export const makeGlobalVariantComboSorter = maybeComputedFn(
       ...site.projectDependencies.flatMap((dep) =>
         dep.site.globalVariantGroups
           .sort(compareGlobalVariantGroup)
-          .flatMap((vg) => sortedGlobalVariants(site, vg))
+          .flatMap((vg) => sortedGlobalVariants(site, vg)),
       ),
       ...site.globalVariantGroups
         .slice()
@@ -209,7 +210,7 @@ export const makeGlobalVariantComboSorter = maybeComputedFn(
       return [combo.length, L.sum(combo.map((v) => globalVariantRanks.get(v)))];
     }
     return makeKey as VariantComboSorter;
-  }
+  },
 );
 
 export const makeVariantComboSorter = maybeComputedFn(
@@ -218,17 +219,17 @@ export const makeVariantComboSorter = maybeComputedFn(
       getBaseVariant(component),
       ...component.variantGroups.flatMap((vg) => vg.variants),
       ...getSuperComponents(component).flatMap((superComp) =>
-        superComp.variantGroups.flatMap((g) => g.variants)
+        superComp.variantGroups.flatMap((g) => g.variants),
       ),
     ]);
     const globalVariantRanks = xIndexMap([
       ...site.projectDependencies.flatMap((dep) =>
         dep.site.globalVariantGroups.flatMap((vg) =>
-          sortedGlobalVariants(site, vg)
-        )
+          sortedGlobalVariants(site, vg),
+        ),
       ),
       ...site.globalVariantGroups.flatMap((vg) =>
-        sortedGlobalVariants(site, vg)
+        sortedGlobalVariants(site, vg),
       ),
     ]);
     function makeKey(combo: VariantCombo) {
@@ -241,7 +242,7 @@ export const makeVariantComboSorter = maybeComputedFn(
       ] = partitionVariants(component, combo, true);
       assert(
         privateStyleVariants.length <= 1,
-        "can only have one private style variant in a combo"
+        "can only have one private style variant in a combo",
       );
       return [
         L.sum(privateStyleVariants.map((v) => v.selectors?.length)),
@@ -255,13 +256,13 @@ export const makeVariantComboSorter = maybeComputedFn(
       ];
     }
     return makeKey as VariantComboSorter;
-  }
+  },
 );
 
 export function partitionVariants(
   component: Component,
   variants: Variant[],
-  ensureBase?: boolean
+  ensureBase?: boolean,
 ) {
   const [
     privateStyleVariants,

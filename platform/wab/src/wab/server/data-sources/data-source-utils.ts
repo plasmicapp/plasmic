@@ -72,7 +72,7 @@ export async function executeDataSourceOperation(
     paginate?: RawPagination;
   },
   currentUser: DataSourceUser | undefined,
-  isStudioOp: boolean
+  isStudioOp: boolean,
 ) {
   const fetcher = await makeFetcher(dbCon, source);
   const sourceMeta = getDataSourceMeta(source.source);
@@ -103,7 +103,7 @@ export async function executeDataSourceOperation(
     opMeta,
     operation.templates,
     userArgs ?? {},
-    currentUser
+    currentUser,
   );
 
   try {
@@ -118,7 +118,7 @@ export async function executeDataSourceOperation(
 
 export async function makeFetcher(
   dbCon: Connection,
-  source: GenericDataSource
+  source: GenericDataSource,
   // eslint-disable-next-line @typescript-eslint/ban-types
 ): Promise<Object> {
   switch (source.source) {
@@ -144,7 +144,7 @@ export function substituteArgs(
   op: OperationMeta,
   templatedArgs: Record<string, string>,
   userArgs: Record<string, unknown>,
-  currentUser?: DataSourceUser
+  currentUser?: DataSourceUser,
 ) {
   const newArgs: Record<string, any> = {};
   for (const [key, argMeta] of Object.entries(op.args)) {
@@ -167,8 +167,8 @@ export function substituteArgs(
           argMeta.isParamString
             ? "paramString"
             : isJsonType(argMeta.type)
-            ? "json"
-            : "string"
+              ? "json"
+              : "string",
         );
         if (typeof substitutedArg === "string") {
           newArgs[key] = coerceArgStringToType(substitutedArg, argMeta);
@@ -189,7 +189,7 @@ export function substituteArgs(
       if (argMeta.type === "filter[]" && !isNil(userArgs[key])) {
         throw new DataSourceError(
           `Operation argument "${key}" must be configured in the op, not supplied at request time`,
-          400
+          400,
         );
       }
       newArgs[key] = userArgs[key];
@@ -202,16 +202,16 @@ export function substituteTemplate(
   template: string,
   values: unknown[],
   currentUser: DataSourceUser | undefined,
-  strategy: "paramString" | "string" | "json"
+  strategy: "paramString" | "string" | "json",
 ) {
   const bindings = getDynamicStringSegments(template).filter((seg) =>
-    isDynamicValue(seg)
+    isDynamicValue(seg),
   );
   const finalValues = withCurrentUserValues(
     template,
     bindings,
     values,
-    currentUser
+    currentUser,
   ).map((v) => substitutePlaceholder(v));
   if (strategy === "paramString") {
     return parameterSubstituteDynamicValues(template, bindings, finalValues);
@@ -227,7 +227,7 @@ export function substituteTemplate(
 export const parameterSubstituteDynamicValues = (
   binding: string,
   subBindings: string[],
-  subValues: unknown[]
+  subValues: unknown[],
 ) => {
   // if only one binding is provided in the whole string, we need to throw an error
   let finalBinding = removeQuotesFromBindings(binding);
@@ -287,11 +287,11 @@ const encryptor = makeStableEncryptor(getDataSourceOperationEncryptionKey());
 export async function makeDataSourceOperationId(
   mgr: DbMgr,
   dataSourceId: string,
-  op: OperationTemplate
+  op: OperationTemplate,
 ): Promise<string> {
   const dataSourceOperation = await mgr.existsDataSourceOperation(
     op,
-    dataSourceId
+    dataSourceId,
   );
   if (dataSourceOperation) {
     return dataSourceOperation.id;
@@ -302,14 +302,14 @@ export async function makeDataSourceOperationId(
 export async function getDataSourceOperation(
   mgr: DbMgr,
   dataSourceId: string,
-  str: string
+  str: string,
 ) {
   if (isUUID(str)) {
     const dataSourceOperation = await mgr.getDataSourceOperation(str);
     assert(
       dataSourceOperation !== undefined &&
         dataSourceOperation.dataSourceId === dataSourceId,
-      `Unable to find data source operation ${str} for data source ${dataSourceId}`
+      `Unable to find data source operation ${str} for data source ${dataSourceId}`,
     );
     return dataSourceOperation.operationInfo;
   }
@@ -325,12 +325,12 @@ export const JSON_LOGIC_REVERSE_OPERATORS = {
 
 export function toJsonLogicFormat(
   tree: JsonTree,
-  config: Config
+  config: Config,
 ): FiltersLogic | undefined {
   const res = QbUtils.jsonLogicFormat(QbUtils.loadTree(tree), config);
   assert(
     !res.errors?.length,
-    () => `Failed to convert to JsonLogic: ${(res.errors ?? []).join("; ")}`
+    () => `Failed to convert to JsonLogic: ${(res.errors ?? []).join("; ")}`,
   );
   return res.logic as FiltersLogic | undefined;
 }
@@ -340,13 +340,13 @@ async function updateDataSourceExprSourceId(
   expr: DataSourceOpExpr,
   oldToNewSourceIds: Record<string, string>,
   exprCtx: ExprCtx,
-  oldToNewRoleIds: Record<string, string> = {}
+  oldToNewRoleIds: Record<string, string> = {},
 ) {
   const operation: OperationTemplate = {
     name: expr.opName,
     roleId: expr.roleId,
     templates: mapValues(expr.templates, (v) =>
-      dataSourceTemplateToString(v, exprCtx)
+      dataSourceTemplateToString(v, exprCtx),
     ),
   };
 
@@ -376,14 +376,14 @@ async function updateDataSourceExprSourceId(
         const newOpId = await makeDataSourceOperationId(
           dbMgr,
           sourceId,
-          operation
+          operation,
         );
         expr.opId = newOpId;
       } catch (err) {
         // We won't fail here, as this state of project even though it is not properly represeting
         // the expression, it may still be valid as a template
         logger().error(
-          `Error trying to issue dataSourceOpId user does not have permission to access data source ${sourceId}`
+          `Error trying to issue dataSourceOpId user does not have permission to access data source ${sourceId}`,
         );
       }
     }
@@ -394,7 +394,7 @@ export async function reevaluateDataSourceExprOpIds(
   dbMgr: DbMgr,
   site: Site,
   oldToNewSourceIds: Record<string, string>,
-  oldToNewRoleIds: Record<string, string> = {}
+  oldToNewRoleIds: Record<string, string> = {},
 ) {
   await Promise.all(
     site.components.map(async (component) => {
@@ -409,11 +409,11 @@ export async function reevaluateDataSourceExprOpIds(
               component,
               inStudio: true,
             },
-            oldToNewRoleIds
+            oldToNewRoleIds,
           );
-        })
+        }),
       );
-    })
+    }),
   );
 }
 
@@ -424,7 +424,7 @@ export async function reevaluateAppAuthUserPropsOpId(
   fromProjectId: ProjectId,
   toProjectId: ProjectId,
   oldToNewSourceIds: Record<string, string>,
-  oldToNewRoleIds: Record<string, string> = {}
+  oldToNewRoleIds: Record<string, string> = {},
 ) {
   const appConfig = await dbMgr.getAppAuthConfig(fromProjectId, true);
   if (!appConfig || !appConfig.userPropsBundledOp) {
@@ -436,12 +436,12 @@ export async function reevaluateAppAuthUserPropsOpId(
   const migratedBundle = await getMigratedUserPropsOpBundle(
     dbMgr,
     fromProjectId,
-    userPropsBundledOp
+    userPropsBundledOp,
   );
   const bundler = new FastBundler();
   const expr = bundler.unbundle(
     migratedBundle,
-    USER_PROPS_BUNDLE_UUID
+    USER_PROPS_BUNDLE_UUID,
   ) as DataSourceOpExpr;
 
   await updateDataSourceExprSourceId(
@@ -453,13 +453,13 @@ export async function reevaluateAppAuthUserPropsOpId(
       component: null,
       inStudio: true,
     },
-    oldToNewRoleIds
+    oldToNewRoleIds,
   );
 
   const updatedBundle = bundler.bundle(
     expr,
     USER_PROPS_BUNDLE_UUID,
-    await getLastBundleVersion()
+    await getLastBundleVersion(),
   );
 
   await dbMgr.upsertAppAuthConfig(toProjectId, {
@@ -478,14 +478,14 @@ export async function reevaluateAppAuthUserPropsOpId(
  */
 export function normalizeOperationTemplate(
   sourceMeta: DataSourceMeta,
-  opTemplate: OperationTemplate
+  opTemplate: OperationTemplate,
 ): OperationTemplate {
   const op = sourceMeta.ops.find((op_) => op_.name === opTemplate.name);
 
   const normalized = {
     ...opTemplate,
     templates: mapValues(opTemplate.templates, (val, key) =>
-      normTemplate(op?.args[key], val)
+      normTemplate(op?.args[key], val),
     ),
   };
   logger().info("NORMALIZED", normalized);
@@ -496,7 +496,7 @@ function normTemplate(argMeta: ArgMeta | undefined, template: any) {
   let bindingCount = 0;
   if (typeof template === "string" && isDynamicValue(template)) {
     const bindings = getDynamicStringSegments(template).filter((seg) =>
-      isDynamicValue(seg)
+      isDynamicValue(seg),
     );
     for (const binding of bindings) {
       // We want to replace all dynamic bindings with placeholder
@@ -522,7 +522,7 @@ function normTemplate(argMeta: ArgMeta | undefined, template: any) {
         template,
         fakeUserArgs,
         undefined,
-        "json"
+        "json",
       ) as string;
 
       const extractIdMapping = () => {
@@ -557,7 +557,7 @@ function normTemplate(argMeta: ArgMeta | undefined, template: any) {
           return mapped;
         } catch (err) {
           logger().error(
-            `Error parsing react-query-builder template: ${err}: ${substituted}`
+            `Error parsing react-query-builder template: ${err}: ${substituted}`,
           );
           return undefined;
         }
@@ -577,16 +577,16 @@ function normTemplate(argMeta: ArgMeta | undefined, template: any) {
 export function getOperationCurrentUserUsage(op: OperationTemplate) {
   const opDynamicStrings = Object.values(op.templates).flatMap((template) => {
     return getDynamicStringSegments(template).filter((seg) =>
-      isDynamicValue(seg)
+      isDynamicValue(seg),
     );
   });
   return {
     usesAuth: !!op.roleId,
     usesCurrentUser: opDynamicStrings.some((seg) =>
-      isCurrentUserBinding(seg.substring(2, seg.length - 2))
+      isCurrentUserBinding(seg.substring(2, seg.length - 2)),
     ),
     usesCurrentUserCustomProperties: opDynamicStrings.some((seg) =>
-      isCurrentUserCustomPropertiesBinding(seg.substring(2, seg.length - 2))
+      isCurrentUserCustomPropertiesBinding(seg.substring(2, seg.length - 2)),
     ),
   };
 }

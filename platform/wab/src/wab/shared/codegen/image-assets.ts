@@ -52,7 +52,7 @@ import { makeImportedPictureRef } from "src/wab/shared/codegen/react-p/image";
 
 export function extractUsedIconAssetsForComponents(
   site: Site,
-  components: Component[]
+  components: Component[],
 ) {
   const assets = new Set<ImageAsset>();
   for (const component of components) {
@@ -66,7 +66,7 @@ export function extractUsedIconAssetsForComponents(
 export function collectUsedIconAssetsForTpl(
   assets: Set<ImageAsset>,
   component: Component,
-  tpl: TplNode
+  tpl: TplNode,
 ) {
   if (isTplIcon(tpl)) {
     collectUsedImageAssetsForTplByAttrs(assets, component, tpl);
@@ -76,13 +76,13 @@ export function collectUsedIconAssetsForTpl(
 export function collectUsedImageAssetsForTplByAttrs(
   assets: Set<ImageAsset>,
   component: Component,
-  tpl: TplNode
+  tpl: TplNode,
 ) {
   const assetType = isTplIcon(tpl)
     ? ImageAssetType.Icon
     : isTplPicture(tpl)
-    ? ImageAssetType.Picture
-    : undefined;
+      ? ImageAssetType.Picture
+      : undefined;
   if (assetType) {
     for (const vs of tpl.vsettings) {
       const expr = vs.attrs[getTagAttrForImageAsset(assetType)];
@@ -100,7 +100,7 @@ export function collectUsedImageAssetsForTplByAttrs(
 export function collectUsedImageAssetsByExpr(
   assets: Set<ImageAsset>,
   component: Component,
-  rootExpr: Expr
+  rootExpr: Expr,
 ) {
   const exprs: Expr[] = [];
   pushExprs(exprs, rootExpr);
@@ -121,14 +121,14 @@ export function extractUsedPictureAssetsForComponents(
   components: Component[],
   opts:
     | { includeRuleSets: false }
-    | { includeRuleSets: true; expandMixins: boolean }
+    | { includeRuleSets: true; expandMixins: boolean },
 ) {
   const opts_ = opts.includeRuleSets
     ? {
         ...opts,
         allAssetsDict: L.keyBy(
           allImageAssets(site, { includeDeps: "all" }),
-          "uuid"
+          "uuid",
         ),
       }
     : opts;
@@ -163,7 +163,7 @@ export function collectUsedPictureAssetsForTpl(
         includeRuleSets: true;
         expandMixins: boolean;
         allAssetsDict?: Readonly<{ [uuid: string]: ImageAsset }>;
-      }
+      },
 ) {
   if (isTplPicture(tpl)) {
     collectUsedImageAssetsForTplByAttrs(assets, component, tpl);
@@ -185,7 +185,7 @@ export function collectUsedPictureAssetsForTpl(
       const rulesets = opts.expandMixins ? expandRuleSets([vs.rs]) : [vs.rs];
       for (const rs of rulesets) {
         for (const refId of extractPictureAssetRefsFromExp(
-          readonlyRSH(rs, tpl)
+          readonlyRSH(rs, tpl),
         )) {
           if (L.has(allAssetsDict, refId)) {
             assets.add(allAssetsDict[refId]);
@@ -198,16 +198,16 @@ export function collectUsedPictureAssetsForTpl(
 
 export function extractUsedPictureAssetsFromMixins(
   site: Site,
-  mixins: Mixin[]
+  mixins: Mixin[],
 ) {
   const allAssets = L.keyBy(
     allImageAssets(site, { includeDeps: "all" }),
-    (x) => x.uuid
+    (x) => x.uuid,
   );
   const assets = new Set<ImageAsset>();
   for (const mixin of mixins) {
     for (const refId of extractPictureAssetRefsFromExp(
-      new RuleSetHelpers(mixin.rs, "div")
+      new RuleSetHelpers(mixin.rs, "div"),
     )) {
       if (L.has(allAssets, refId)) {
         assets.add(allAssets[refId]);
@@ -234,11 +234,11 @@ export interface PictureAssetExport {
 
 export function exportPictureAsset(
   asset: ImageAsset,
-  opts: { idFileNames?: boolean; data?: string } = {}
+  opts: { idFileNames?: boolean; data?: string } = {},
 ): PictureAssetExport {
   assert(
     asset.type === ImageAssetType.Picture,
-    () => `Should only be called for Picture assets`
+    () => `Should only be called for Picture assets`,
   );
   assert(asset.dataUri, () => `Must not be an empty asset`);
 
@@ -247,7 +247,7 @@ export function exportPictureAsset(
   if (asset.dataUri.startsWith("http")) {
     const key = ensure(
       last(asset.dataUri.split("/")),
-      () => `Must be a valid url`
+      () => `Must be a valid url`,
     );
     const extension = key.split(".")[1];
     fileName = `${
@@ -282,7 +282,7 @@ export interface IconAssetExport {
 
 export function exportIconAsset(
   asset: ImageAsset,
-  opts: { idFileNames?: boolean; skinnyReactWeb?: boolean } = {}
+  opts: { idFileNames?: boolean; skinnyReactWeb?: boolean } = {},
 ): IconAssetExport {
   assert(asset.type === ImageAssetType.Icon, () => `Only called for icons`);
   assert(asset.dataUri, `Must not be an empty asset`);
@@ -463,7 +463,7 @@ function toReactAttrVal(attr: string, value: string) {
 
 export function makeImportedAssetClassName(
   asset: ImageAsset,
-  aliases: ReadonlyMap<Component | ImageAsset, string>
+  aliases: ReadonlyMap<Component | ImageAsset, string>,
 ) {
   const alias = aliases.get(asset);
   return alias ?? makeAssetClassName(asset);
@@ -488,7 +488,7 @@ export function makePictureAssetFileName(
   opts: {
     includeId?: boolean;
     parsed?: ParsedDataUrl;
-  }
+  },
 ) {
   assert(asset.dataUri, "Must not be an empty asset");
   return `${toVarName(asset.name)}${
@@ -507,7 +507,7 @@ export function makeIconImports(
   component: Component,
   opts: ExportOpts,
   from: "skeleton" | "managed",
-  aliases: ImportAliasesMap
+  aliases: ImportAliasesMap,
 ) {
   const iconAssets = [
     ...extractUsedIconAssetsForComponents(site, [component]),
@@ -539,10 +539,10 @@ export function makeIconImports(
       (asset) =>
         `import ${makeImportedAssetClassName(
           asset,
-          aliases
+          aliases,
         )} from "${makeImportPath(asset)}";  // plasmic-import: ${
           asset.uuid
-        }/icon`
+        }/icon`,
     )
     .join("\n");
 }
@@ -551,7 +551,7 @@ export function makePictureImports(
   site: Site,
   component: Component,
   opts: ExportOpts,
-  from: "skeleton" | "managed"
+  from: "skeleton" | "managed",
 ) {
   if (opts.imageOpts.scheme !== "files") {
     return "";
@@ -576,10 +576,10 @@ export function makePictureImports(
     .map(
       (asset) =>
         `import ${makeImportedPictureRef(
-          asset
+          asset,
         )} from "${relPath}/${makeImportPath(asset)}";  // plasmic-import: ${
           asset.uuid
-        }/picture`
+        }/picture`,
     )
     .join("\n");
 }

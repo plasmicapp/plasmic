@@ -12,7 +12,7 @@ export interface SpecificityWithPosition {
 
 export function compareSpecificity(
   a: SpecificityWithPosition,
-  b: SpecificityWithPosition
+  b: SpecificityWithPosition,
 ) {
   if (a.isDirectlyOnElement && !b.isDirectlyOnElement) {
     return 1;
@@ -37,7 +37,7 @@ export function compareSpecificity(
 
 export function getSpecificity(
   selector: string,
-  loc?: CssLocation
+  loc?: CssLocation,
 ): SpecificityWithPosition {
   if (selector === SELF_SELECTOR) {
     return {

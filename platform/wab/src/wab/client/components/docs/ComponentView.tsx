@@ -31,18 +31,18 @@ function PlumeComponentView(docsCtx: DocsPortalCtx) {
   const variantGroups = component.variantGroups.filter(
     (vg) =>
       vg.variants.length > 0 &&
-      !codePropNames.has(toVarName(vg.param.variable.name))
+      !codePropNames.has(toVarName(vg.param.variable.name)),
   );
 
   const slots = getTplSlots(component).filter(
-    (s) => !codePropNames.has(toVarName(s.param.variable.name))
+    (s) => !codePropNames.has(toVarName(s.param.variable.name)),
   );
 
   const otherProps = component.params.filter(
     (p) =>
       !slots.some((s) => s.param === p) &&
       !component.variantGroups.some((g) => g.param === p) &&
-      !codePropNames.has(toVarName(p.variable.name))
+      !codePropNames.has(toVarName(p.variable.name)),
   );
 
   const customProps: PlumeDocsProp[] = [
@@ -64,7 +64,7 @@ function PlumeComponentView(docsCtx: DocsPortalCtx) {
   ];
 
   const allPropNames = new Set<string>(
-    component.params.map((p) => toVarName(p.variable.name))
+    component.params.map((p) => toVarName(p.variable.name)),
   );
 
   return (

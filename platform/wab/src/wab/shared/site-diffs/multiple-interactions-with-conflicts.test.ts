@@ -32,12 +32,12 @@ describe("Multiple interactions with conflicts", () => {
      */
     const result = testMergeFromJsonBundle(
       hackyCast<ProjectFullDataResponse>(multipleInteractionsWithConflicts),
-      { skipConflictsChecks: true }
+      { skipConflictsChecks: true },
     );
 
     assert(
       result.status === "needs-resolution",
-      "Expected needs-resolution status"
+      "Expected needs-resolution status",
     );
 
     expect(result.genericDirectConflicts).toHaveLength(1);
@@ -51,7 +51,7 @@ describe("Multiple interactions with conflicts", () => {
         .map(({ leftUpdate }) => {
           const updatedInst = ensureKnownInteraction(leftUpdate.updatedInst);
           return updatedInst.actionName;
-        })
+        }),
     ).toMatchObject([
       "updateVariable",
       "updateVariant",
@@ -70,62 +70,62 @@ describe("Multiple interactions with conflicts", () => {
   it("should merge elements with conflicts", () => {
     const result = testMergeFromJsonBundle(
       hackyCast<ProjectFullDataResponse>(multipleInteractionsWithConflicts),
-      { conflictPicks: ["left"] }
+      { conflictPicks: ["left"] },
     );
 
     assert(
       result.status === "merged",
-      "Expected merge to be successful after resolving conflicts"
+      "Expected merge to be successful after resolving conflicts",
     );
 
     const { mergedSite } = result;
     const component = ensure(
       mergedSite.components.find((c) => c.name === "InteractionsWithConflicts"),
-      "Component InteractionsWithConflicts not found"
+      "Component InteractionsWithConflicts not found",
     );
     const tpls = flattenTpls(component.tplTree).filter(
-      (tpl): tpl is TplNamable => isTplNamable(tpl) && !!tpl.name
+      (tpl): tpl is TplNamable => isTplNamable(tpl) && !!tpl.name,
     );
     const tplsByName = groupBy(tpls, (tpl) => tpl.name);
 
     const changeStateOnClickEventHandler = ensureKnownEventHandler(
-      tplsByName["changeState"][0].vsettings[0].attrs.onClick
+      tplsByName["changeState"][0].vsettings[0].attrs.onClick,
     );
     expect(changeStateOnClickEventHandler.interactions).toHaveLength(1);
     expect(changeStateOnClickEventHandler.interactions[0].actionName).toEqual(
-      "updateVariable"
+      "updateVariable",
     );
     expect(changeStateOnClickEventHandler.interactions[0].args).toHaveLength(3);
     expect(
       ensureKnownCustomCode(
-        changeStateOnClickEventHandler.interactions[0].args[2].expr
-      ).code
+        changeStateOnClickEventHandler.interactions[0].args[2].expr,
+      ).code,
     ).toEqual('("First version branch")');
 
     const updateVariantOnClickEventHandler = ensureKnownEventHandler(
-      tplsByName["updateVariant"][0].vsettings[0].attrs.onClick
+      tplsByName["updateVariant"][0].vsettings[0].attrs.onClick,
     );
     expect(updateVariantOnClickEventHandler.interactions).toHaveLength(1);
     expect(updateVariantOnClickEventHandler.interactions[0].actionName).toEqual(
-      "updateVariant"
+      "updateVariant",
     );
     expect(updateVariantOnClickEventHandler.interactions[0].args).toHaveLength(
-      2
+      2,
     );
     expect(
       ensureKnownCustomCode(
-        updateVariantOnClickEventHandler.interactions[0].args[1].expr
-      ).code
+        updateVariantOnClickEventHandler.interactions[0].args[1].expr,
+      ).code,
     ).toEqual("2");
 
     const combinedActionsOnClickEventHandler = ensureKnownEventHandler(
-      tplsByName["combinedActions"][0].vsettings[0].attrs.onClick
+      tplsByName["combinedActions"][0].vsettings[0].attrs.onClick,
     );
     expect(combinedActionsOnClickEventHandler.interactions).toHaveLength(2);
     expect(
       combinedActionsOnClickEventHandler.interactions.map(
-        (interaction) => interaction.actionName
-      )
+        (interaction) => interaction.actionName,
+      ),
     ).toEqual(["updateVariable", "customFunction"]);
   });
 });

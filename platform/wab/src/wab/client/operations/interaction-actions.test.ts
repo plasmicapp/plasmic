@@ -81,13 +81,13 @@ describe("built-in interaction actions", () => {
       const interaction = result.value;
       expect(interaction.actionName).toEqual("updateVariable");
       expect(
-        ensureKnownObjectPath(argExpr(interaction, "variable"))
+        ensureKnownObjectPath(argExpr(interaction, "variable")),
       ).toMatchObject({ path: ["$state", "count"] });
       expect(
-        ensureKnownCustomCode(argExpr(interaction, "operation"))
+        ensureKnownCustomCode(argExpr(interaction, "operation")),
       ).toMatchObject({ code: `${UpdateVariableOperations.NewValue}` });
       expect(
-        ensureKnownCustomCode(argExpr(interaction, "value"))
+        ensureKnownCustomCode(argExpr(interaction, "value")),
       ).toMatchObject({ code: "5" });
     });
 
@@ -108,7 +108,7 @@ describe("built-in interaction actions", () => {
 
       assert(result.isOk(), "expected success result");
       expect(
-        ensureKnownObjectPath(argExpr(result.value, "variable"))
+        ensureKnownObjectPath(argExpr(result.value, "variable")),
       ).toMatchObject({ path: ["$state", "count"] });
       expect(result.value.args.find((a) => a.name === "value")).toBeUndefined();
     });
@@ -116,7 +116,7 @@ describe("built-in interaction actions", () => {
     it("rejects unknown states and mispaired fields", () => {
       const fixture = setupWithState();
       const create = (
-        action: Parameters<typeof createInteraction>[0]["action"]
+        action: Parameters<typeof createInteraction>[0]["action"],
       ) =>
         createInteraction({
           component: fixture.page,
@@ -132,29 +132,29 @@ describe("built-in interaction actions", () => {
           variable: ["total"],
           operation: "NewValue",
           value: "5",
-        })
+        }),
       ).toEqual(
         err({
           message: `State "total" not found on component "UnnamedComponent". Available states: count, items.`,
-        })
+        }),
       );
       expect(
         create({
           actionName: "updateVariable",
           variable: ["count"],
           operation: "Toggle",
-        })
+        }),
       ).toEqual(
         err({
           message: `Operation "Toggle" is not available for state "count" of type "number". Available operations: Increment, Decrement, NewValue, ClearValue.`,
-        })
+        }),
       );
       expect(
         create({
           actionName: "updateVariable",
           variable: ["count"],
           operation: "NewValue",
-        })
+        }),
       ).toEqual(err({ message: `Operation "NewValue" requires a "value".` }));
       expect(
         create({
@@ -162,20 +162,20 @@ describe("built-in interaction actions", () => {
           variable: ["count"],
           operation: "Increment",
           value: "5",
-        })
+        }),
       ).toEqual(
-        err({ message: `Operation "Increment" does not take a "value".` })
+        err({ message: `Operation "Increment" does not take a "value".` }),
       );
       expect(
         create({
           actionName: "updateVariable",
           variable: ["items"],
           operation: "Splice",
-        })
+        }),
       ).toEqual(
         err({
           message: `Operation "Splice" requires "startIndex" and "deleteCount".`,
-        })
+        }),
       );
       expect(
         create({
@@ -184,11 +184,11 @@ describe("built-in interaction actions", () => {
           operation: "NewValue",
           value: "5",
           startIndex: 0,
-        })
+        }),
       ).toEqual(
         err({
           message: `Only the "Splice" operation takes "startIndex"/"deleteCount".`,
-        })
+        }),
       );
     });
   });
@@ -203,7 +203,7 @@ describe("built-in interaction actions", () => {
       const state = mkValueStateForTextInput(
         emailInput,
         fixture.page,
-        fixture.tplMgr
+        fixture.tplMgr,
       );
       addComponentState(fixture.site, fixture.page, state);
 
@@ -223,7 +223,7 @@ describe("built-in interaction actions", () => {
         });
         assert(result.isOk(), "expected success result");
         expect(
-          ensureKnownObjectPath(argExpr(result.value, "variable"))
+          ensureKnownObjectPath(argExpr(result.value, "variable")),
         ).toMatchObject({ path: ["$state", "email", "value"] });
       }
     });
@@ -243,12 +243,12 @@ describe("built-in interaction actions", () => {
       const state = mkValueStateForTextInput(
         emailInput,
         fixture.page,
-        fixture.tplMgr
+        fixture.tplMgr,
       );
       addComponentState(fixture.site, fixture.page, state);
 
       const create = (
-        action: Parameters<typeof createInteraction>[0]["action"]
+        action: Parameters<typeof createInteraction>[0]["action"],
       ) =>
         createInteraction({
           component: fixture.page,
@@ -264,11 +264,11 @@ describe("built-in interaction actions", () => {
           variable: ["email[]", "value"],
           operation: "NewValue",
           value: "hello",
-        })
+        }),
       ).toEqual(
         err({
           message: `State "email[].value" belongs to a repeated element and holds one value per row, so it is not supported by updateVariable. Use a "customFunction" step to target an exact row index in code (e.g. $state.email[0].value).`,
-        })
+        }),
       );
     });
   });
@@ -294,15 +294,15 @@ describe("built-in interaction actions", () => {
       const interaction = result.value;
       expect(interaction.actionName).toEqual("updateVariant");
       expect(ensureKnownVarRef(argExpr(interaction, "vgroup")).variable).toBe(
-        fixture.sizeGroup.param.variable
+        fixture.sizeGroup.param.variable,
       );
       expect(
-        ensureKnownCustomCode(argExpr(interaction, "operation"))
+        ensureKnownCustomCode(argExpr(interaction, "operation")),
       ).toMatchObject({ code: `${UpdateVariantOperations.NewValue}` });
       expect(
         ensureKnownVariantsRef(argExpr(interaction, "value")).variants.map(
-          (v) => v.name
-        )
+          (v) => v.name,
+        ),
       ).toEqual(["large"]);
     });
 
@@ -338,7 +338,7 @@ describe("built-in interaction actions", () => {
 
       assert(result.isOk(), "expected success result");
       expect(ensureKnownVarRef(argExpr(result.value, "vgroup")).variable).toBe(
-        groupResult.value.param.variable
+        groupResult.value.param.variable,
       );
     });
 
@@ -359,7 +359,7 @@ describe("built-in interaction actions", () => {
 
       assert(result.isOk(), "expected success result");
       expect(
-        ensureKnownCustomCode(argExpr(result.value, "operation"))
+        ensureKnownCustomCode(argExpr(result.value, "operation")),
       ).toMatchObject({ code: `${UpdateVariantOperations.Toggle}` });
       expect(result.value.args.find((a) => a.name === "value")).toBeUndefined();
     });
@@ -367,7 +367,7 @@ describe("built-in interaction actions", () => {
     it("rejects unknown groups, unavailable operations, and unknown variants", () => {
       const fixture = setup();
       const create = (
-        action: Parameters<typeof createInteraction>[0]["action"]
+        action: Parameters<typeof createInteraction>[0]["action"],
       ) =>
         createInteraction({
           component: fixture.button,
@@ -383,11 +383,11 @@ describe("built-in interaction actions", () => {
           vgroup: "theme",
           operation: "NewValue",
           value: ["large"],
-        })
+        }),
       ).toEqual(
         err({
           message: `Variant group "theme" not found on component "Button". Available groups: size, features, dark.`,
-        })
+        }),
       );
       expect(
         create({
@@ -395,11 +395,11 @@ describe("built-in interaction actions", () => {
           vgroup: "dark",
           operation: "NewValue",
           value: ["dark"],
-        })
+        }),
       ).toEqual(
         err({
           message: `Operation "NewValue" is not available for variant group "dark". Available operations: Toggle, Activate, Deactivate.`,
-        })
+        }),
       );
       expect(
         create({
@@ -407,11 +407,11 @@ describe("built-in interaction actions", () => {
           vgroup: "size",
           operation: "MultiToggle",
           value: ["large"],
-        })
+        }),
       ).toEqual(
         err({
           message: `Operation "MultiToggle" is not available for variant group "size". Available operations: NewValue, ClearValue.`,
-        })
+        }),
       );
       expect(
         create({
@@ -419,11 +419,11 @@ describe("built-in interaction actions", () => {
           vgroup: "size",
           operation: "NewValue",
           value: ["small", "large"],
-        })
+        }),
       ).toEqual(
         err({
           message: `Variant group "size" is single-select; "value" must contain exactly one variant name.`,
-        })
+        }),
       );
       expect(
         create({
@@ -431,11 +431,11 @@ describe("built-in interaction actions", () => {
           vgroup: "size",
           operation: "NewValue",
           value: ["huge"],
-        })
+        }),
       ).toEqual(
         err({
           message: `Variant "huge" not found in group "size". Available variants: small, large.`,
-        })
+        }),
       );
       expect(
         create({
@@ -443,9 +443,9 @@ describe("built-in interaction actions", () => {
           vgroup: "size",
           operation: "ClearValue",
           value: ["large"],
-        })
+        }),
       ).toEqual(
-        err({ message: `Operation "ClearValue" does not take a "value".` })
+        err({ message: `Operation "ClearValue" does not take a "value".` }),
       );
     });
   });
@@ -493,7 +493,8 @@ describe("built-in interaction actions", () => {
       assert(back.isOk(), "expected success result");
       expect(interaction.actionName).toEqual("customFunction");
       expect(
-        ensureKnownFunctionExpr(argExpr(interaction, "customFunction")).bodyExpr
+        ensureKnownFunctionExpr(argExpr(interaction, "customFunction"))
+          .bodyExpr,
       ).toMatchObject({ code: "(console.log(1))" });
     });
 
@@ -522,7 +523,7 @@ describe("built-in interaction actions", () => {
       expect(result).toEqual(
         err({
           message: `State "missing" not found on component "UnnamedComponent". Available states: none.`,
-        })
+        }),
       );
       expect(interaction.interactionName).toEqual("Save");
       expect(interaction.actionName).toEqual("customFunction");

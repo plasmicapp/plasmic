@@ -38,7 +38,7 @@ export function applySanitizedTplStyles(opts: {
     safe,
     tpl,
     effectiveRsh,
-    ccRegistry
+    ccRegistry,
   );
   RSH(vs.rs, tpl).merge(valid);
 
@@ -77,7 +77,7 @@ export interface TplStylesOpts {
 export function setTplStyles(
   tpl: TplNode,
   styles: Record<string, string | null>,
-  opts: TplStylesOpts
+  opts: TplStylesOpts,
 ): Result<string[], GenericError> {
   const { studioCtx, vtm, variantCombo } = opts;
   const vs = vtm.ensureVariantSetting(tpl, variantCombo);
@@ -106,7 +106,7 @@ export function setTplStyles(
     const inRs = keys.some((key) => rsh.has(key));
     rsh.clearAll(keys);
     const inAttr = Object.keys(unsafeStyles).filter((key) =>
-      keySet.has(normProp(key))
+      keySet.has(normProp(key)),
     );
     for (const key of inAttr) {
       delete unsafeStyles[key];
@@ -137,8 +137,8 @@ export function setTplStyles(
   if (invalid.length > 0) {
     messages.push(
       `Ignored properties not applicable to this element: ${quoteProps(
-        invalid
-      )}.`
+        invalid,
+      )}.`,
     );
   }
   useWrittenFont(studioCtx, applied);

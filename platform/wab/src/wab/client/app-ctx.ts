@@ -58,14 +58,14 @@ export class NonAuthCtx {
         "router",
         "change",
         "bundler",
-        "lastBundleVersion"
-      )
+        "lastBundleVersion",
+      ),
     );
   }
 }
 
 export const NonAuthCtxContext = React.createContext<NonAuthCtx | undefined>(
-  undefined
+  undefined,
 );
 
 export const useNonAuthCtx = () =>
@@ -77,7 +77,7 @@ export interface NonAuthComponentProps {
 
 export abstract class NonAuthComponentBase<
   P = {},
-  S = {}
+  S = {},
 > extends React.Component<P, S> {
   abstract nonAuthCtx(): NonAuthCtx;
   api() {
@@ -102,7 +102,7 @@ export abstract class NonAuthComponentBase<
 
 export class NonAuthComponent<
   P extends NonAuthComponentProps = NonAuthComponentProps,
-  S = {}
+  S = {},
 > extends NonAuthComponentBase<P, S> {
   nonAuthCtx() {
     return this.props.nonAuthCtx;
@@ -177,9 +177,9 @@ export class AppCtx {
     return L.sortBy(
       L.uniqBy(
         [...this.teams, ...this.workspaces.map((w) => w.team)],
-        (t) => t.id
+        (t) => t.id,
       ),
-      (t) => t.name
+      (t) => t.name,
     ).filter((it) => !it.personalTeamOwnerId);
   }
 
@@ -214,7 +214,7 @@ interface AppComponentProps {
 
 export class AppComponent<
   P extends AppComponentProps = AppComponentProps,
-  S = {}
+  S = {},
 > extends React.Component<P, S> {
   appCtx() {
     return this.props.appCtx;
@@ -254,12 +254,11 @@ export class AppComponent<
 export class AppOps extends AppComponent {
   async renameSite(siteId: string, name: string) {
     // Lazy since PricingModal reaches the whole pricing UI, and this the only use in app-ctx.
-    const { maybeShowPaywall } = await import(
-      "@/wab/client/components/modals/PricingModal"
-    );
+    const { maybeShowPaywall } =
+      await import("@/wab/client/components/modals/PricingModal");
     await maybeShowPaywall(
       this.appCtx(),
-      async () => await this.api().setSiteInfo(siteId, { name })
+      async () => await this.api().setSiteInfo(siteId, { name }),
     );
     await this.reloadAll();
   }
@@ -304,7 +303,7 @@ export class AppOps extends AppComponent {
       ],
       {
         type: "text/plain;charset=utf-8",
-      }
+      },
     );
 
     if (this.lastDownloadUrl) {
@@ -339,7 +338,7 @@ export class AppOps extends AppComponent {
     $link.attr("href", this.lastDownloadUrl);
     $link.attr(
       "download",
-      `${L.kebabCase(data.project.name)}_${new Date().toISOString()}.json`
+      `${L.kebabCase(data.project.name)}_${new Date().toISOString()}.json`,
     );
     $link[0].click();
   }
@@ -358,7 +357,7 @@ interface Starters {
 export function loadStarters(
   api: PromisifyMethods<Api>,
   user: ApiUser | null,
-  appConfig: DevFlagsType
+  appConfig: DevFlagsType,
 ): Starters {
   if (isHostFrame() || !user) {
     return {
@@ -391,12 +390,12 @@ export function loadStarters(
       (s) =>
         s.tag === DEFAULT_STARTER_TAG &&
         s.title !== "" && // TODO: remove after prod devflag update
-        (!s.isPlasmicOnly || showAdminTeamOnlySections)
+        (!s.isPlasmicOnly || showAdminTeamOnlySections),
     ),
   ];
 
   const appSections = appConfig.starterSections.filter(
-    (s) => s.tag === DEFAULT_APP_TAG
+    (s) => s.tag === DEFAULT_APP_TAG,
   );
 
   return {
@@ -409,7 +408,7 @@ export async function withHostFrameCache<T>(
   key: string,
   useCaching: boolean,
   baseApi: PromisifyMethods<Api>,
-  f: () => Promise<T>
+  f: () => Promise<T>,
 ): Promise<T> {
   const realKey = loadCacheKey(key);
   if (isHostFrame()) {
@@ -431,7 +430,7 @@ export async function withHostFrameCache<T>(
 
 export async function loadAppCtx(
   nonAuthCtx: NonAuthCtx,
-  useCaching: boolean = false
+  useCaching: boolean = false,
 ) {
   const baseApi = nonAuthCtx.api;
 
@@ -453,10 +452,10 @@ export async function loadAppCtx(
       { teams, workspaces, perms },
     ] = await Promise.all([
       withHostFrameCache("selfInfo", useCaching, baseApi, () =>
-        swallowAsync(baseApi.getSelfInfo())
+        swallowAsync(baseApi.getSelfInfo()),
       ),
       withHostFrameCache("appConfig", useCaching, baseApi, () =>
-        baseApi.getAppConfig()
+        baseApi.getAppConfig(),
       ),
       getAppCtx(),
     ]);

@@ -1,12 +1,12 @@
-import { ParamExportType } from "@/wab/shared/core/lang";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { Bundler } from "@/wab/shared/bundler";
-import { convertVariableTypeToWabType } from "@/wab/shared/model/model-util";
+import { ParamExportType } from "@/wab/shared/core/lang";
 import { StateVariableType } from "@/wab/shared/core/states";
+import { convertVariableTypeToWabType } from "@/wab/shared/model/model-util";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();
@@ -14,7 +14,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   for (const component of site.components) {
@@ -23,7 +23,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
         state.param.exportType = ParamExportType.External;
       }
       state.param.type = convertVariableTypeToWabType(
-        state.variableType as StateVariableType
+        state.variableType as StateVariableType,
       );
     }
   }
@@ -31,7 +31,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "83-specific-type-for-states"
+    "83-specific-type-for-states",
   );
   Object.assign(bundle, newBundle);
 };

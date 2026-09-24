@@ -78,9 +78,9 @@ function evalTpl(tpl: TplNode, ctx: EvalCtxForTests): ValNode {
           .map((arg) => [
             arg.param,
             ensureKnownRenderExpr(arg.expr).tpl.map((child) =>
-              evalTpl(child, { ...ctx, valKey: updatedKey })
+              evalTpl(child, { ...ctx, valKey: updatedKey }),
             ),
-          ])
+          ]),
       );
       const root = evalTpl(tplComp.component.tplTree, {
         owner: val,
@@ -94,9 +94,9 @@ function evalTpl(tpl: TplNode, ctx: EvalCtxForTests): ValNode {
           writeableValNode(valChild).slotInfo = new SlotInfo(
             param,
             ensureInstance(valChild.parent, ValSlot),
-            val
+            val,
           );
-        })
+        }),
       );
       writeableValNode(val).slotArgs = slots;
       return val;
@@ -125,7 +125,7 @@ function evalTpl(tpl: TplNode, ctx: EvalCtxForTests): ValNode {
       writeableValNode(val).contents = (
         ctx.slots.get(tplSlot.param) ??
         tplSlot.defaultContents.map((child) =>
-          evalTpl(child, { ...ctx, valKey: updatedKey })
+          evalTpl(child, { ...ctx, valKey: updatedKey }),
         )
       ).map((valChild) => {
         writeableValNode(valChild).parent = val;

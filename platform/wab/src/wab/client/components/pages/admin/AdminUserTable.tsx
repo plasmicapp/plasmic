@@ -65,7 +65,7 @@ export function AdminUserTable<T extends Item = Item>({
               ...(key === "email"
                 ? { defaultSortOrder: "ascend" as const }
                 : {}),
-            })
+            }),
           ),
           {
             title: "Action",

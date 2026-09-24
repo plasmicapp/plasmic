@@ -16,13 +16,13 @@ interface TeamSettingsPageProps extends DefaultTeamSettingsPageProps {
 
 function TeamSettingsPage_(
   props: TeamSettingsPageProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { teamId, ...rest } = props;
   const appCtx = useAppCtx();
   const team = ensure(
     appCtx.teams.find((t) => t.id === teamId),
-    `Org ${teamId} must be affiliated with the current user`
+    `Org ${teamId} must be affiliated with the current user`,
   );
   useUpsellQueryParam(team);
   return (

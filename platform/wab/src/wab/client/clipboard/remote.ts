@@ -16,7 +16,7 @@ import { ok } from "neverthrow";
 
 export async function pasteRemote(
   copyState: CopyState,
-  { studioCtx, insertRelLoc }: PasteArgs
+  { studioCtx, insertRelLoc }: PasteArgs,
 ): Promise<PasteResult> {
   const viewCtx = ensureViewCtxOrThrowUserError(studioCtx);
   const extraInfo = await buildCopyStateExtraInfo(studioCtx, copyState);
@@ -32,7 +32,7 @@ export async function pasteRemote(
           getBaseVariant(currentComponent),
           studioCtx.getPlumeSite(),
           currentComponent,
-          viewCtx.viewOps.adaptTplNodeForPaste
+          viewCtx.viewOps.adaptTplNodeForPaste,
         );
 
         // `cloneCopyState` only handles a single node for now
@@ -50,7 +50,7 @@ export async function pasteRemote(
           // to figure out insertion points, by calling `getOwningComponent`
           // an error is thrown, as the component is not in the current site.
           // To avoid this, we specify the insertion point explicitly.
-          insertRelLoc ?? InsertRelLoc.append
+          insertRelLoc ?? InsertRelLoc.append,
         );
         if (result) {
           postInsertableTemplate(studioCtx, seenFonts);
@@ -58,7 +58,7 @@ export async function pasteRemote(
         } else {
           return ok(false);
         }
-      })
+      }),
     ),
   };
 }

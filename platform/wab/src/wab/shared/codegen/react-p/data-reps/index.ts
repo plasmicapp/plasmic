@@ -22,14 +22,14 @@ export function getRepetitionUuidInternalName(uuid: string) {
 
 export function serializeDataRepsIndexName(node: TplTag | TplComponent) {
   return [...Array(getNumberOfRepeatingAncestors(node))].map((_, i) =>
-    getRepetitionIndexInternalName(i)
+    getRepetitionIndexInternalName(i),
   );
 }
 
 export function serializeDataReps(
   ctx: SerializerBaseContext,
   node: TplTag | TplComponent,
-  serializedContent: string
+  serializedContent: string,
 ) {
   const baseVs = node.vsettings.find((vs) => isBaseVariant(vs.variants));
   if (!baseVs?.dataRep) {

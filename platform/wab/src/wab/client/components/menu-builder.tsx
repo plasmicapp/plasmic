@@ -59,7 +59,7 @@ export class MenuBuilder {
         this.pushItem(
           <Menu.ItemGroup title={frame.name as string} key={this.makeKey()}>
             {frame.items}
-          </Menu.ItemGroup>
+          </Menu.ItemGroup>,
         );
       } else {
         this.pushItem(...frame.items);
@@ -71,14 +71,14 @@ export class MenuBuilder {
           key={this.makeKey()}
         >
           {frame.items}
-        </Menu.SubMenu>
+        </Menu.SubMenu>,
       );
     }
   }
 
   genSection(
     name: React.ReactNode | undefined,
-    func: (push: (...item: React.ReactNode[]) => void) => void
+    func: (push: (...item: React.ReactNode[]) => void) => void,
   ): this {
     this.newStack("group", name);
     func(this.pushItem);
@@ -88,7 +88,7 @@ export class MenuBuilder {
 
   genSub(
     name: React.ReactNode,
-    func: (push: (...item: React.ReactNode[]) => void) => void
+    func: (push: (...item: React.ReactNode[]) => void) => void,
   ) {
     this.newStack("sub", name);
     func(this.pushItem);
@@ -104,7 +104,7 @@ export class MenuBuilder {
       onMenuClick?: onMenuClick;
       subMenuCloseDelay?: number;
       menuName?: string;
-    } = {}
+    } = {},
   ) {
     while (this.stack.length > 1) {
       this.popStack();
@@ -184,7 +184,7 @@ function normalizeCombo(combo: string) {
         {label}
       </span>
     )),
-    "+"
+    "+",
   );
 }
 
@@ -193,7 +193,7 @@ export function menuSection(
   ...items: (JSX.Element | undefined | false | null)[]
 ): JSX.Element[] {
   const filteredItems = items.filter(
-    (it): it is JSX.Element => !!it && !it.props.hidden
+    (it): it is JSX.Element => !!it && !it.props.hidden,
   );
   if (filteredItems.length === 0) {
     return [];
@@ -202,7 +202,7 @@ export function menuSection(
     <Menu.Divider
       className="hiddenIfLastChild"
       key={`${sectionName}-divider`}
-    />
+    />,
   );
   return filteredItems;
 }

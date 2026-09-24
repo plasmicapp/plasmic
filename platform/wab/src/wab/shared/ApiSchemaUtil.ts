@@ -32,7 +32,7 @@ export function fullNameLastAbbreviated(user: ApiUser) {
 
 function firstLast(
   first: string | null | undefined,
-  last: string | null | undefined
+  last: string | null | undefined,
 ) {
   if (first && last) {
     return `${first} ${last}`;
@@ -60,7 +60,7 @@ export function getExtraData(user: ApiUser): UserExtraData {
 
 export function updateExtraDataJson(
   user: ApiUser,
-  updates: DeepMergeable<UserExtraData>
+  updates: DeepMergeable<UserExtraData>,
 ): { extraData: string } {
   const extraData = getExtraData(user);
   return {
@@ -78,20 +78,20 @@ export function parseProjectBranchId(spec: string): ProjectAndBranchId {
 
 export function showProjectBranchId(
   projectId: ProjectId,
-  branchId?: BranchId
+  branchId?: BranchId,
 ): string {
   return branchId ? `${projectId}@${branchId}` : `${projectId}`;
 }
 
 export function isMainBranchId(
-  maybeBranchId: BranchId | MainBranchId
+  maybeBranchId: BranchId | MainBranchId,
 ): maybeBranchId is MainBranchId {
   return maybeBranchId === MainBranchId;
 }
 
 export function validateBranchName(
   name: string,
-  allBranches: ApiBranch[]
+  allBranches: ApiBranch[],
 ): string | undefined {
   if (["main", "master"].includes(name)) {
     return `${name} is a reserved branch name`;

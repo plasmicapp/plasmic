@@ -5,24 +5,24 @@
 Roughly...
 
 1. Top frame renders
-    ```tsx
+   ```tsx
    const browserHistory = createBrowserHistory();
-    <Shell history={browserHistory}>
-      <TopFrameCtxProvider>
-        <StudioFrame />
-      </TopFrameCtxProvider>
-    </Shell>
-    ```
+   <Shell history={browserHistory}>
+     <TopFrameCtxProvider>
+       <StudioFrame />
+     </TopFrameCtxProvider>
+   </Shell>;
+   ```
 2. Top frame listens for PLASMIC_HOST_REGISTERED message
 3. Host frame renders
-    ```tsx
+   ```tsx
    const memoryHistory = createMemtoryHistory();
-    <HostFrameCtxProvider history={memoryHistory}>
-      <Shell history={memoryHistory}>
-        <StudioInitializer />
-      </Shell>
-    </HostFrameCtxProvider>
-    ```
+   <HostFrameCtxProvider history={memoryHistory}>
+     <Shell history={memoryHistory}>
+       <StudioInitializer />
+     </Shell>
+   </HostFrameCtxProvider>;
+   ```
 4. Host frame sends PLASMIC_HOST_REGISTERED message
 5. Top frame receives PLASMIC_HOST_REGISTER message, exposes API to host frame
 6. Host frame calls `registerLocationListener` with a callback

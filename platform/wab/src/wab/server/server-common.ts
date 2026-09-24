@@ -7,7 +7,7 @@ import http from "http";
 
 export function runExpressApp(
   app: Application,
-  setupServer?: (server: http.Server) => void
+  setupServer?: (server: http.Server) => void,
 ) {
   const server = http.createServer(app);
   const config = loadConfig();
@@ -45,7 +45,7 @@ export function runExpressApp(
       // This has to be greater than the number of seconds defined
       // in the readiness probe "periodSeconds"
       return new Promise((resolve) =>
-        setTimeout(resolve, config.terminationGracePeriodMs)
+        setTimeout(resolve, config.terminationGracePeriodMs),
       );
     },
     onSignal: async () => {
@@ -66,7 +66,7 @@ export function runExpressApp(
   return server.listen(app.get("port"), process.env.BIND_HOST, () => {
     logger().info(`
 App ${app.get("name")} is running at http://localhost:${app.get(
-      "port"
+      "port",
     )} in ${app.get("env")} mode
 Press CTRL-C to stop immediately.
 Send SIGINT to shutdown gracefully: kill -INT ${process.pid}
@@ -85,7 +85,7 @@ export function setupServerCli(argv: string[] = process.argv) {
     .option(
       "--freshDb <n>",
       "Start an ephemeral pg instance that self-terminates in n seconds",
-      Number
+      Number,
     )
     .parse(argv)
     .opts();

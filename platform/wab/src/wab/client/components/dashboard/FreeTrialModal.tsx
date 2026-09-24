@@ -14,7 +14,7 @@ export interface FreeTrialModalProps extends DefaultFreeTrialModalProps {
 
 function FreeTrialModal_(
   props: FreeTrialModalProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { onConfirm, ...rest } = props;
   return (

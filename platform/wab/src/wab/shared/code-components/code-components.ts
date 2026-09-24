@@ -505,7 +505,7 @@ type ComponentInteractionToClear = {
 export class CodeComponentsRegistry {
   constructor(
     private win: Window | typeof globalThis,
-    private builtinComponents: BuiltinComponentsType
+    private builtinComponents: BuiltinComponentsType,
   ) {}
 
   getRegisteredCodeComponents = memoizeOne((removeDuplicates = true) => {
@@ -515,7 +515,7 @@ export class CodeComponentsRegistry {
     const registeredCodeComponents: ComponentRegistration[] = [
       ...ensure(
         uncheckedCast<any>(this.win).__PlasmicComponentRegistry,
-        "Plasmic Components Registry not found"
+        "Plasmic Components Registry not found",
       ),
       ...Object.values(this.builtinComponents),
     ];
@@ -528,9 +528,9 @@ export class CodeComponentsRegistry {
     () =>
       new Map(
         this.getRegisteredCodeComponents().map(({ component, meta }) =>
-          tuple(meta.name, { impl: component, meta })
-        )
-      )
+          tuple(meta.name, { impl: component, meta }),
+        ),
+      ),
   );
 
   getRegisteredContexts = memoizeOne((removeDuplicates = true) => {
@@ -539,7 +539,7 @@ export class CodeComponentsRegistry {
     }
     const registeredContexts: GlobalContextRegistration[] = ensure(
       uncheckedCast<any>(this.win).__PlasmicContextRegistry,
-      "Plasmic Components Registry not found"
+      "Plasmic Components Registry not found",
     );
     registeredContexts.forEach((cc) => ((cc.meta as any).__isContext = true));
     return removeDuplicates
@@ -551,9 +551,9 @@ export class CodeComponentsRegistry {
     () =>
       new Map(
         this.getRegisteredContexts().map(({ component, meta }) =>
-          tuple(meta.name, { impl: component, meta })
-        )
-      )
+          tuple(meta.name, { impl: component, meta }),
+        ),
+      ),
   );
 
   getRegisteredComponentsAndContexts = memoizeOne((removeDuplicates = true) => {
@@ -563,7 +563,7 @@ export class CodeComponentsRegistry {
             ...this.getRegisteredCodeComponents(removeDuplicates),
             ...this.getRegisteredContexts(removeDuplicates),
           ],
-          (c) => c.meta.name
+          (c) => c.meta.name,
         )
       : [
           ...this.getRegisteredCodeComponents(removeDuplicates),
@@ -575,12 +575,12 @@ export class CodeComponentsRegistry {
     () =>
       new Map([
         ...this.getRegisteredCodeComponents().map(({ component, meta }) =>
-          tuple(meta.name, { impl: component, meta })
+          tuple(meta.name, { impl: component, meta }),
         ),
         ...this.getRegisteredContexts().map(({ component, meta }) =>
-          tuple(meta.name, { impl: component, meta })
+          tuple(meta.name, { impl: component, meta }),
         ),
-      ])
+      ]),
   );
 
   getRegisteredTokens = memoizeOne((_burstCache?: number) => {
@@ -600,7 +600,7 @@ export class CodeComponentsRegistry {
 
   getRegisteredFunctionsMap = memoizeOne(() => {
     return new Map(
-      this.getRegisteredFunctions().map((f) => [registeredFunctionId(f), f])
+      this.getRegisteredFunctions().map((f) => [registeredFunctionId(f), f]),
     );
   });
 
@@ -634,7 +634,7 @@ interface SiteCtx {
   codeComponentsRegistry: CodeComponentsRegistry;
   change<E = never>(
     f: () => Result<void, E>,
-    opts?: { noUndoRecord?: boolean }
+    opts?: { noUndoRecord?: boolean },
   ): Promise<Result<void, E>>;
   observeComponents(components: Component[]): boolean;
   getRootSubReact(): typeof React;
@@ -647,22 +647,22 @@ export interface CodeComponentSyncCallbackFns {
   onMissingCodeComponents: (
     ctx: SiteCtx,
     missingComponents: CodeComponent[],
-    missingContexts: CodeComponent[]
+    missingContexts: CodeComponent[],
   ) => Promise<Result<void, never>>;
   onInvalidReactVersion: (
     ctx: SiteCtx,
-    hostLessPkgInfo: HostLessPackageInfo
+    hostLessPkgInfo: HostLessPackageInfo,
   ) => Promise<Result<void, never>>;
   onCreateCodeComponent?: (
     name: string,
-    meta: CodeComponentRegistrationMeta<any> | GlobalContextMeta<any>
+    meta: CodeComponentRegistrationMeta<any> | GlobalContextMeta<any>,
   ) => void;
   onInvalidComponentImportNames: (componentNames: string[]) => void;
   onAddedNewProps?: () => void;
   onStaleProps: (
     ctx: SiteCtx,
     userStaleDiffs: CodeComponentMetaDiffWithComponent[],
-    opts?: { force?: boolean }
+    opts?: { force?: boolean },
   ) => Promise<boolean>;
   onNewDefaultComponents: (message: string) => void;
   onSchemaToTplWarnings: (warnings: SchemaWarning[]) => void;
@@ -686,10 +686,10 @@ export interface CodeComponentSyncCallbackFns {
     removedLibraries: CodeLibrary[];
   }) => void;
   confirmRemovedCodeComponentVariants?: (
-    removedSelectorsByComponent: [Component, string[]][]
+    removedSelectorsByComponent: [Component, string[]][],
   ) => Promise<Result<void, never>>;
   confirmRemovedTokens?: (
-    removedSelectorsByComponent: StyleToken[]
+    removedSelectorsByComponent: StyleToken[],
   ) => Promise<boolean | undefined>;
 }
 
@@ -699,7 +699,7 @@ export class DuplicateCodeComponentError extends CustomError {
   constructor(name: string) {
     super(
       "Detected multiple code components registered with the same unique name: " +
-        name
+        name,
     );
     this.componentName = name;
   }
@@ -712,7 +712,10 @@ export class CodeComponentRegistrationTypeError extends CustomError {
 }
 export class InvalidTokenError extends CustomError {
   name: "InvalidTokenError";
-  constructor(public tokenName: string, message: string) {
+  constructor(
+    public tokenName: string,
+    message: string,
+  ) {
     super(message);
   }
 }
@@ -734,7 +737,7 @@ export class InvalidCodeLibraryError extends CustomError {
 export async function syncCodeComponents(
   ctx: SiteCtx,
   fns: CodeComponentSyncCallbackFns,
-  opts?: { force?: boolean }
+  opts?: { force?: boolean },
 ) {
   return safeTry<
     void,
@@ -781,8 +784,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
       if (!isString(meta.name)) {
         return err(
           new CodeComponentRegistrationTypeError(
-            `meta.name is not a string. Received: ${meta.name}`
-          )
+            `meta.name is not a string. Received: ${meta.name}`,
+          ),
         );
       }
       const errorPrefix = `Failed to register code component named "${meta.name}". `;
@@ -790,15 +793,16 @@ function typeCheckRegistrations(ctx: SiteCtx) {
         return err(
           new CodeComponentRegistrationTypeError(
             errorPrefix +
-              `meta.importPath is not a string. Received: ${meta.importPath}`
-          )
+              `meta.importPath is not a string. Received: ${meta.importPath}`,
+          ),
         );
       }
       if (isNil(meta.props)) {
         return err(
           new CodeComponentRegistrationTypeError(
-            errorPrefix + `meta.props is not an object. Received: ${meta.props}`
-          )
+            errorPrefix +
+              `meta.props is not an object. Received: ${meta.props}`,
+          ),
         );
       }
       const optionalStringProps = [
@@ -813,8 +817,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
           return err(
             new CodeComponentRegistrationTypeError(
               errorPrefix +
-                `meta.${prop} is not a string. Received: ${meta[prop]}`
-            )
+                `meta.${prop} is not a string. Received: ${meta[prop]}`,
+            ),
           );
         }
       }
@@ -876,8 +880,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
           return err(
             new CodeComponentRegistrationTypeError(
               errorPrefix +
-                `Unknown type for prop ${propName}. Received: ${propType}`
-            )
+                `Unknown type for prop ${propName}. Received: ${propType}`,
+            ),
           );
         }
         if (isReactImplControl(propType)) {
@@ -885,8 +889,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
             return err(
               new CodeComponentRegistrationTypeError(
                 errorPrefix +
-                  `Unknown type for prop ${propName}. Received: ${propType}`
-              )
+                  `Unknown type for prop ${propName}. Received: ${propType}`,
+              ),
             );
           }
         } else if (
@@ -896,8 +900,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
           return err(
             new CodeComponentRegistrationTypeError(
               errorPrefix +
-                `Unknown type for prop ${propName}. Received: ${propType}`
-            )
+                `Unknown type for prop ${propName}. Received: ${propType}`,
+            ),
           );
         }
         if (isPlainObjectPropType(propType)) {
@@ -905,16 +909,16 @@ function typeCheckRegistrations(ctx: SiteCtx) {
             return err(
               new CodeComponentRegistrationTypeError(
                 errorPrefix +
-                  `Unknown type for prop ${propName}. Received: ${propType.type}`
-              )
+                  `Unknown type for prop ${propName}. Received: ${propType.type}`,
+              ),
             );
           }
           if (propType.hidden && typeof propType.hidden !== "function") {
             return err(
               new CodeComponentRegistrationTypeError(
                 errorPrefix +
-                  `Prop ${propName} has invalid "hidden" value - expects a function but got: ${propType.hidden}`
-              )
+                  `Prop ${propName} has invalid "hidden" value - expects a function but got: ${propType.hidden}`,
+              ),
             );
           }
 
@@ -926,8 +930,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
               return err(
                 new CodeComponentRegistrationTypeError(
                   errorPrefix +
-                    `Prop ${propName} has invalid "uncontrolled prop". \`PropType.uncontrolledProp\` expects a string, but received: ${propType.uncontrolledProp}`
-                )
+                    `Prop ${propName} has invalid "uncontrolled prop". \`PropType.uncontrolledProp\` expects a string, but received: ${propType.uncontrolledProp}`,
+                ),
               );
             }
           }
@@ -935,16 +939,16 @@ function typeCheckRegistrations(ctx: SiteCtx) {
             return err(
               new CodeComponentRegistrationTypeError(
                 errorPrefix +
-                  `Prop ${propName} has invalid "display name". \`PropType.displayName\` expects a string, but received: ${propType.displayName}`
-              )
+                  `Prop ${propName} has invalid "display name". \`PropType.displayName\` expects a string, but received: ${propType.displayName}`,
+              ),
             );
           }
           if (!isNil(propType.description) && !isString(propType.description)) {
             return err(
               new CodeComponentRegistrationTypeError(
                 errorPrefix +
-                  `Prop ${propName} has invalid "description". \`PropType.description\` expects a string, but received: ${propType.description}`
-              )
+                  `Prop ${propName} has invalid "description". \`PropType.description\` expects a string, but received: ${propType.description}`,
+              ),
             );
           }
 
@@ -957,8 +961,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                 return err(
                   new CodeComponentRegistrationTypeError(
                     errorPrefix +
-                      `Prop ${propName} has invalid "slot" type. \`PropType.allowedComponents\` expects an array of strings, but received: ${propType.allowedComponents}`
-                  )
+                      `Prop ${propName} has invalid "slot" type. \`PropType.allowedComponents\` expects an array of strings, but received: ${propType.allowedComponents}`,
+                  ),
                 );
               }
               break;
@@ -970,8 +974,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                 return err(
                   new CodeComponentRegistrationTypeError(
                     errorPrefix +
-                      `Prop ${propName} has invalid "data" type. \`PropType.data\` expects an object or a function, but received: ${propType.data}`
-                  )
+                      `Prop ${propName} has invalid "data" type. \`PropType.data\` expects an object or a function, but received: ${propType.data}`,
+                  ),
                 );
               }
               break;
@@ -984,8 +988,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                     (option) =>
                       typeof option.label === "string" &&
                       ["number", "string", "boolean"].includes(
-                        typeof option.value
-                      )
+                        typeof option.value,
+                      ),
                   )
                 ) &&
                 !(typeof propType.options === "function")
@@ -993,8 +997,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                 return err(
                   new CodeComponentRegistrationTypeError(
                     errorPrefix +
-                      `Prop ${propName} has invalid "choice" type. \`PropType.options\` expects an array of strings, a label-value pair or a function, but received: ${propType.options}`
-                  )
+                      `Prop ${propName} has invalid "choice" type. \`PropType.options\` expects an array of strings, a label-value pair or a function, but received: ${propType.options}`,
+                  ),
                 );
               }
               break;
@@ -1003,8 +1007,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                 return err(
                   new CodeComponentRegistrationTypeError(
                     errorPrefix +
-                      `Prop ${propName} has invalid "code" type. \`PropType.lang\` expects a string, but received: ${propType.lang}`
-                  )
+                      `Prop ${propName} has invalid "code" type. \`PropType.lang\` expects a string, but received: ${propType.lang}`,
+                  ),
                 );
               }
               break;
@@ -1013,8 +1017,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                 return err(
                   new CodeComponentRegistrationTypeError(
                     errorPrefix +
-                      `Prop ${propName} has invalid "dataSource" type. \`PropType.dataSource\` expects a string, but received: ${propType.dataSource}`
-                  )
+                      `Prop ${propName} has invalid "dataSource" type. \`PropType.dataSource\` expects a string, but received: ${propType.dataSource}`,
+                  ),
                 );
               }
               break;
@@ -1023,8 +1027,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                 return err(
                   new CodeComponentRegistrationTypeError(
                     errorPrefix +
-                      `Numeric prop ${propName} has invalid "control" attr. \`PropType.control\` expects a string, but received: ${propType.control}`
-                  )
+                      `Numeric prop ${propName} has invalid "control" attr. \`PropType.control\` expects a string, but received: ${propType.control}`,
+                  ),
                 );
               }
               const checkNumberOrFunction = (attr: string) => {
@@ -1036,8 +1040,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                   return err(
                     new CodeComponentRegistrationTypeError(
                       errorPrefix +
-                        `Prop ${propName} has invalid "${attr}" attr. \`PropType.${attr}\` expects a number or function, but received: ${val}`
-                    )
+                        `Prop ${propName} has invalid "${attr}" attr. \`PropType.${attr}\` expects a number or function, but received: ${val}`,
+                    ),
                   );
                 }
                 return undefined;
@@ -1066,8 +1070,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                 return err(
                   new CodeComponentRegistrationTypeError(
                     errorPrefix +
-                      `Numeric prop ${propName} has invalid "control" attr. \`PropType.control\` expects a string, but received: ${propType.control}`
-                  )
+                      `Numeric prop ${propName} has invalid "control" attr. \`PropType.control\` expects a string, but received: ${propType.control}`,
+                  ),
                 );
               }
               break;
@@ -1076,8 +1080,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                 return err(
                   new CodeComponentRegistrationTypeError(
                     errorPrefix +
-                      `Custom control prop ${propName} has invalid "control" attr. \`PropType.control\` expects a React component to render the custom control, but received: ${propType.control}`
-                  )
+                      `Custom control prop ${propName} has invalid "control" attr. \`PropType.control\` expects a React component to render the custom control, but received: ${propType.control}`,
+                  ),
                 );
               }
               break;
@@ -1086,8 +1090,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                 return err(
                   new CodeComponentRegistrationTypeError(
                     errorPrefix +
-                      `Event handler prop ${propName} has invalid "argTypes" attr. \`PropType.argTypes\` expects an array of objects, but received: ${propType.argTypes}`
-                  )
+                      `Event handler prop ${propName} has invalid "argTypes" attr. \`PropType.argTypes\` expects an array of objects, but received: ${propType.argTypes}`,
+                  ),
                 );
               }
               break;
@@ -1098,7 +1102,7 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                   propType.options.every(
                     (option) =>
                       typeof option.value === "string" &&
-                      typeof option.imgUrl === "string"
+                      typeof option.imgUrl === "string",
                   )
                 ) &&
                 !(typeof propType.options === "function")
@@ -1106,8 +1110,8 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                 return err(
                   new CodeComponentRegistrationTypeError(
                     errorPrefix +
-                      `Prop ${propName} has invalid "cardPicker" type. \`PropType.options\` expects an array of value-imgUrl pair or a function, but received: ${propType.options}`
-                  )
+                      `Prop ${propName} has invalid "cardPicker" type. \`PropType.options\` expects an array of value-imgUrl pair or a function, but received: ${propType.options}`,
+                  ),
                 );
               }
               break;
@@ -1141,7 +1145,7 @@ function typeCheckRegistrations(ctx: SiteCtx) {
  */
 async function addNewRegisteredComponents(
   ctx: SiteCtx,
-  fns: CodeComponentSyncCallbackFns
+  fns: CodeComponentSyncCallbackFns,
 ) {
   return safeTry<
     CodeComponent[],
@@ -1160,10 +1164,10 @@ async function addNewRegisteredComponents(
     const existingCodeComponents = new Set(
       ctx.site.components
         .filter((c) => isCodeComponent(c) && !isContextCodeComponent(c))
-        .map((c) => c.name)
+        .map((c) => c.name),
     );
     const existingContexts = new Set(
-      ctx.site.components.filter(isContextCodeComponent).map((c) => c.name)
+      ctx.site.components.filter(isContextCodeComponent).map((c) => c.name),
     );
 
     const registrations = [...codeComponents, ...contexts];
@@ -1192,10 +1196,10 @@ async function addNewRegisteredComponents(
                 [
                   r.meta,
                   createCodeComponent(ctx.site, r.meta.name, r.meta, fns),
-                ] as const
+                ] as const,
             );
             newComponents.forEach(([_meta, c]) =>
-              ctx.tplMgr().attachComponent(c)
+              ctx.tplMgr().attachComponent(c),
             );
             ctx.observeComponents(newComponents.map(([_, c]) => c));
 
@@ -1210,16 +1214,16 @@ async function addNewRegisteredComponents(
             }
             return ok();
           }),
-        { noUndoRecord: true }
+        { noUndoRecord: true },
       );
     }
     const newComponentNames = new Set(
-      newComponentRegistrations.map((r) => r.meta.name)
+      newComponentRegistrations.map((r) => r.meta.name),
     );
     return ok(
       ctx.site.components
         .filter(isCodeComponent)
-        .filter((c) => newComponentNames.has(c.name))
+        .filter((c) => newComponentNames.has(c.name)),
     );
   });
 }
@@ -1228,7 +1232,7 @@ function createCodeComponent(
   site: Site,
   name: string,
   meta: CodeComponentRegistrationMeta<any> | GlobalContextMeta<any>,
-  fns: CodeComponentSyncCallbackFns
+  fns: CodeComponentSyncCallbackFns,
 ) {
   const prefs = site.activeTheme?.addItemPrefs as AddItemPrefs | undefined;
   const styles =
@@ -1250,28 +1254,30 @@ function createCodeComponent(
 
 export async function fixMissingCodeComponents(
   ctx: SiteCtx,
-  fns: CodeComponentSyncCallbackFns
+  fns: CodeComponentSyncCallbackFns,
 ) {
   return safeTry<void, never>(async function* () {
     const missingComponents = ctx.site.components.filter(
       (c): c is CodeComponent =>
         !isContextCodeComponent(c) &&
         isCodeComponent(c) &&
-        !ctx.codeComponentsRegistry.getRegisteredCodeComponentsMap().has(c.name)
+        !ctx.codeComponentsRegistry
+          .getRegisteredCodeComponentsMap()
+          .has(c.name),
     );
 
     const missingContexts = ctx.site.components.filter(
       (c): c is CodeComponent =>
         isContextCodeComponent(c) &&
-        !ctx.codeComponentsRegistry.getRegisteredContextsMap().has(c.name)
+        !ctx.codeComponentsRegistry.getRegisteredContextsMap().has(c.name),
     );
 
     return ok(
       yield* await fns.onMissingCodeComponents(
         ctx,
         missingComponents,
-        missingContexts
-      )
+        missingContexts,
+      ),
     );
   });
 }
@@ -1295,7 +1301,7 @@ async function syncCodeComponentsVariants(ctx: SiteCtx) {
               !instUtil.deepEquals(
                 c.codeComponentMeta.variants,
                 ccVariants,
-                true
+                true,
               )
             ) {
               c.codeComponentMeta.variants = ccVariants;
@@ -1304,7 +1310,7 @@ async function syncCodeComponentsVariants(ctx: SiteCtx) {
         });
         return ok();
       },
-      { noUndoRecord: true }
+      { noUndoRecord: true },
     );
 
     return ok();
@@ -1313,7 +1319,7 @@ async function syncCodeComponentsVariants(ctx: SiteCtx) {
 
 async function fixCodeComponentsVariants(
   ctx: SiteCtx,
-  fns: CodeComponentSyncCallbackFns
+  fns: CodeComponentSyncCallbackFns,
 ) {
   return safeTry<void, never>(async function* () {
     const removedSelectorsByComponent: [Component, string[]][] = [];
@@ -1341,7 +1347,7 @@ async function fixCodeComponentsVariants(
 
     if (removedSelectorsByComponent.length > 0) {
       await fns.confirmRemovedCodeComponentVariants?.(
-        removedSelectorsByComponent
+        removedSelectorsByComponent,
       );
     }
 
@@ -1354,7 +1360,7 @@ async function fixCodeComponentsVariants(
         });
         return ok();
       },
-      { noUndoRecord: true }
+      { noUndoRecord: true },
     );
 
     return ok();
@@ -1375,7 +1381,7 @@ async function checkCodeComponentRefActions(ctx: SiteCtx) {
       const newActions = new Set(Object.keys(metaRefActions));
 
       const removedActions = currentActions.filter(
-        (action) => !newActions.has(action)
+        (action) => !newActions.has(action),
       );
       if (removedActions.length > 0) {
         removedRefActions.set(component, removedActions);
@@ -1411,7 +1417,7 @@ async function checkCodeComponentRefActions(ctx: SiteCtx) {
             continue;
           }
           const componentRemovedRefActions = removedRefActions.get(
-            firstArg.expr.tpl.component
+            firstArg.expr.tpl.component,
           );
           const actionName = tryExtractString(secondArg.expr);
           if (
@@ -1451,13 +1457,13 @@ async function checkCodeComponentRefActions(ctx: SiteCtx) {
       }
       return ok();
     },
-    { noUndoRecord: true }
+    { noUndoRecord: true },
   );
 }
 
 async function refreshCodeComponentMetas(
   ctx: SiteCtx,
-  fns: CodeComponentSyncCallbackFns
+  fns: CodeComponentSyncCallbackFns,
 ) {
   const tplMgr = new TplMgr({ site: ctx.site });
   const componentsToUpdate = withoutNils(
@@ -1474,7 +1480,7 @@ async function refreshCodeComponentMetas(
         return undefined;
       }
       return { component: c, meta };
-    })
+    }),
   );
   const componentsToRename: Component[] = [];
   return ctx.change<never>(
@@ -1485,7 +1491,7 @@ async function refreshCodeComponentMetas(
             ctx.site,
             component,
             meta,
-            fns
+            fns,
           );
           if (mustBeNamed) {
             componentsToRename.push(component);
@@ -1503,8 +1509,8 @@ async function refreshCodeComponentMetas(
           allComponentInstances.flatMap(({ allInstances }) =>
             allInstances
               .filter(({ tpl }) => !tpl.name)
-              .map(({ referencedComponent }) => referencedComponent)
-          )
+              .map(({ referencedComponent }) => referencedComponent),
+          ),
         );
         allComponentInstances.forEach(({ allInstances }) => {
           allInstances.forEach(({ referencedComponent, tpl }) => {
@@ -1512,7 +1518,7 @@ async function refreshCodeComponentMetas(
               tplMgr.renameTpl(
                 referencedComponent,
                 tpl,
-                getComponentDisplayName(tpl.component)
+                getComponentDisplayName(tpl.component),
               );
             }
           });
@@ -1520,7 +1526,7 @@ async function refreshCodeComponentMetas(
 
         return ok();
       }),
-    { noUndoRecord: true }
+    { noUndoRecord: true },
   );
 }
 
@@ -1528,7 +1534,7 @@ function refreshCodeComponentMeta(
   site: Site,
   c: Component,
   meta: CodeComponentRegistrationMeta<any>,
-  fns: Pick<CodeComponentSyncCallbackFns, "onElementStyleWarnings">
+  fns: Pick<CodeComponentSyncCallbackFns, "onElementStyleWarnings">,
 ): Result<boolean, never> {
   let mustBeNamed = false;
   if (isCodeComponent(c)) {
@@ -1571,7 +1577,7 @@ function refreshCodeComponentMeta(
         !instUtil.deepEquals(
           c.codeComponentMeta.helpers,
           componentHelpers,
-          true
+          true,
         )
       ) {
         c.codeComponentMeta.helpers = componentHelpers;
@@ -1588,7 +1594,7 @@ function refreshCodeComponentMeta(
     const defaultStyles = maybeStylesObj
       ? mkRuleSet({
           values: Object.fromEntries(
-            Object.entries(maybeStylesObj).map(([key, val]) => [key, "" + val])
+            Object.entries(maybeStylesObj).map(([key, val]) => [key, "" + val]),
           ),
         })
       : null;
@@ -1596,7 +1602,7 @@ function refreshCodeComponentMeta(
       !instUtil.deepEquals(
         c.codeComponentMeta.defaultStyles,
         defaultStyles,
-        true
+        true,
       )
     ) {
       c.codeComponentMeta.defaultStyles = defaultStyles;
@@ -1608,7 +1614,7 @@ function refreshCodeComponentMeta(
     (m) =>
       new FigmaComponentMapping({
         figmaComponentName: m.figmaComponentName,
-      })
+      }),
   );
   if (!instUtil.deepEquals(c.figmaMappings, figmaMappings, true)) {
     c.figmaMappings = figmaMappings;
@@ -1620,11 +1626,11 @@ function refreshCodeComponentMeta(
 }
 
 function checkUniqueCodeComponentNames(
-  ctx: SiteCtx
+  ctx: SiteCtx,
 ): Result<void, DuplicateCodeComponentError> {
   const namesToMetas = new Map<string, CodeComponentRegistrationMeta<any>>();
   for (const registration of ctx.codeComponentsRegistry.getRegisteredComponentsAndContexts(
-    false
+    false,
   )) {
     const name = registration.meta.name;
     const existingMeta = namesToMetas.get(name);
@@ -1647,7 +1653,7 @@ function checkUniqueCodeComponentNames(
 
 function checkWhitespacesInImportNames(
   ctx: SiteCtx,
-  fns: CodeComponentSyncCallbackFns
+  fns: CodeComponentSyncCallbackFns,
 ): Result<void, never> {
   const badComponents = ctx.site.components
     .filter(isCodeComponent)
@@ -1656,7 +1662,7 @@ function checkWhitespacesInImportNames(
     .filter((c) => !isValidJsIdentifier(getCodeComponentExportName(c)));
   if (badComponents.length > 0) {
     fns.onInvalidComponentImportNames(
-      badComponents.map((c) => getComponentDisplayName(c))
+      badComponents.map((c) => getComponentDisplayName(c)),
     );
   }
   return ok();
@@ -1664,7 +1670,7 @@ function checkWhitespacesInImportNames(
 
 async function fixMissingDefaultComponents(
   ctx: SiteCtx,
-  fns: CodeComponentSyncCallbackFns
+  fns: CodeComponentSyncCallbackFns,
 ): Promise<Result<void, never>> {
   const components = ctx.site.components.filter(isCodeComponent);
   const missingDefaultComponents = new Map<string, Component[]>();
@@ -1673,7 +1679,7 @@ async function fixMissingDefaultComponents(
       ctx.codeComponentsRegistry
         .getRegisteredComponentsAndContextsMap()
         .get(c.name),
-      "Missing code component " + c.name
+      "Missing code component " + c.name,
     );
     Object.entries(meta.props).forEach(([_, metaProp]) => {
       if (
@@ -1690,7 +1696,7 @@ async function fixMissingDefaultComponents(
             if (
               !defaultComponent &&
               !ctx.site.components.find(
-                (component) => component.plumeInfo?.type === schema.kind
+                (component) => component.plumeInfo?.type === schema.kind,
               )
             ) {
               if (!missingDefaultComponents.has(schema.kind)) {
@@ -1698,7 +1704,7 @@ async function fixMissingDefaultComponents(
               }
               ensure(
                 missingDefaultComponents.get(schema.kind),
-                `The key ${schema.kind} should be added previously`
+                `The key ${schema.kind} should be added previously`,
               ).push(c);
             }
           }
@@ -1714,7 +1720,7 @@ async function fixMissingDefaultComponents(
       () => {
         missingDefaultComponents.forEach((missingComponents, kind) => {
           const plumeComponent = plumeSite?.components.find(
-            (component) => component.plumeInfo?.type === kind
+            (component) => component.plumeInfo?.type === kind,
           );
           assert(plumeComponent, `Not found Plume component of kind ${kind}`);
           ctx
@@ -1723,19 +1729,19 @@ async function fixMissingDefaultComponents(
               plumeSite,
               plumeComponent.uuid,
               plumeComponent.name,
-              true
+              true,
             );
           fns.onNewDefaultComponents?.(
             `A ${kind} component was added to your project because it will be used as default component for ${missingComponents
               .map((c) => getComponentDisplayName(c))
-              .join(",")}.`
+              .join(",")}.`,
           );
         });
         return ok();
       },
       {
         noUndoRecord: true,
-      }
+      },
     );
   }
   return ok();
@@ -1760,8 +1766,8 @@ async function checkParentComponents(ctx: SiteCtx) {
             if (status === inProgess) {
               return err(
                 new CyclicComponentReferencesError(
-                  "Some registered components cyclically depend on each other via `meta.parentComponentName`"
-                )
+                  "Some registered components cyclically depend on each other via `meta.parentComponentName`",
+                ),
               );
             }
             const parentMeta = ccMap.get(meta.parentComponentName)?.meta;
@@ -1772,7 +1778,7 @@ async function checkParentComponents(ctx: SiteCtx) {
             yield* dfs(parentMeta);
             compStatus.set(meta.name, completed);
             return ok();
-          }
+          },
         );
       for (const meta of metas) {
         yield* dfs(meta);
@@ -1781,7 +1787,7 @@ async function checkParentComponents(ctx: SiteCtx) {
         () => {
           const codeComponents = ctx.site.components.filter(isCodeComponent);
           const codeComponentsByName = new Map<string, CodeComponent>(
-            codeComponents.map((c) => [c.name, c] as const)
+            codeComponents.map((c) => [c.name, c] as const),
           );
           const removeSuperComp = (c: Component) => {
             if (c.superComp) {
@@ -1792,7 +1798,7 @@ async function checkParentComponents(ctx: SiteCtx) {
           codeComponents.forEach((c) => {
             const parent = maybe(
               ccMap.get(c.name)?.meta.parentComponentName,
-              (parentName) => codeComponentsByName.get(parentName)
+              (parentName) => codeComponentsByName.get(parentName),
             );
             if (parent && parent !== c.superComp) {
               removeSuperComp(c);
@@ -1804,23 +1810,23 @@ async function checkParentComponents(ctx: SiteCtx) {
           });
           return ok();
         },
-        { noUndoRecord: true }
+        { noUndoRecord: true },
       );
       return ok();
-    }
+    },
   );
 }
 
 async function checkReactVersion(
   ctx: SiteCtx,
-  fns: CodeComponentSyncCallbackFns
+  fns: CodeComponentSyncCallbackFns,
 ): Promise<Result<void, never>> {
   for (const dep of ctx.site.projectDependencies) {
     if (
       dep.site.hostLessPackageInfo?.minimumReactVersion &&
       semver.lt(
         ctx.getRootSubReact().version,
-        dep.site.hostLessPackageInfo.minimumReactVersion
+        dep.site.hostLessPackageInfo.minimumReactVersion,
       )
     ) {
       await fns.onInvalidReactVersion(ctx, dep.site.hostLessPackageInfo);
@@ -1841,7 +1847,7 @@ interface StateChanges {
 export function compareComponentStatesWithMeta(
   site: Site,
   component: Component,
-  meta: CodeComponentRegistrationMeta<any>
+  meta: CodeComponentRegistrationMeta<any>,
 ) {
   return safeTry<
     StateChanges,
@@ -1849,10 +1855,10 @@ export function compareComponentStatesWithMeta(
   >(function* () {
     const states = yield* metaToComponentStates(component, meta);
     const registeredStates = new Map(
-      states.map((s) => tuple(s.param.variable.name, s))
+      states.map((s) => tuple(s.param.variable.name, s)),
     );
     const existingStates = new Map(
-      component.states.map((s) => tuple(s.param.variable.name, s))
+      component.states.map((s) => tuple(s.param.variable.name, s)),
     );
 
     const addedStates = yield* getNewStates(site, component, meta);
@@ -1861,7 +1867,7 @@ export function compareComponentStatesWithMeta(
         if (registeredStates.has(name)) {
           const registered = ensure(
             registeredStates.get(name),
-            "Couldn't find state " + name
+            "Couldn't find state " + name,
           );
           // Code component states don't have implicit states and initial expressions
           // So it's enough to make a shallow comparison between the registered state
@@ -1876,7 +1882,7 @@ export function compareComponentStatesWithMeta(
         before: s,
         after: ensure(
           registeredStates.get(name),
-          "Couldn't find state " + name
+          "Couldn't find state " + name,
         ),
       }));
     const removedStates = !isPlumeComponent(component)
@@ -1906,14 +1912,14 @@ function refreshComponentStates(ctx: SiteCtx) {
         }[];
       }[] = [];
       for (const c of ctx.site.components.filter(
-        (comp) => isCodeComponent(comp) || isPlumeComponent(comp)
+        (comp) => isCodeComponent(comp) || isPlumeComponent(comp),
       )) {
         const meta = isCodeComponent(c)
           ? ensure(
               ctx.codeComponentsRegistry
                 .getRegisteredComponentsAndContextsMap()
                 .get(c.name),
-              "Missing code component " + c.name
+              "Missing code component " + c.name,
             ).meta
           : makePlumeComponentMeta(c);
         const stateChange = {
@@ -1926,17 +1932,17 @@ function refreshComponentStates(ctx: SiteCtx) {
       }
 
       const changedComponents = Array.from(
-        new Set(stateChanges.map(({ component }) => component))
+        new Set(stateChanges.map(({ component }) => component)),
       );
       const parentComponents = changedComponents.flatMap((c) =>
-        Array.from(componentToReferencers(ctx.site).get(c) ?? [])
+        Array.from(componentToReferencers(ctx.site).get(c) ?? []),
       );
       ctx.observeComponents([...parentComponents, ...changedComponents]);
       stateChanges.forEach((changes) => {
         doUpdateComponentStates(ctx.site, changes.component, changes);
       });
       return ok();
-    }
+    },
   );
 }
 
@@ -1959,7 +1965,7 @@ function hasStateChanges(changes: StateChanges) {
 function doUpdateComponentStates(
   site: Site,
   component: Component,
-  changes: StateChanges
+  changes: StateChanges,
 ) {
   const { addedStates, removedStates, updatedStates } = changes;
   addedStates.forEach((state) => {
@@ -1974,7 +1980,7 @@ function doUpdateComponentStates(
       // For code components, params and states are registered separately,
       // and we don't auto-create params for states. So we only need
       // to remove the state without removing the params
-      removeComponentStateOnly(site, component, s)
+      removeComponentStateOnly(site, component, s),
     );
   }
   updatedStates.forEach((updateState) => {
@@ -1986,7 +1992,7 @@ function doUpdateComponentStates(
         updateState.after.accessType as StateAccessType,
         {
           onChangeProp: updateState.after.onChangeParam?.variable.name,
-        }
+        },
       );
     }
     Object.assign(updateState.before, omit(updateState.after, "uid"));
@@ -2007,7 +2013,7 @@ async function checkComponentPropsAndStates(
   ctx: SiteCtx,
   newComponents: CodeComponent[],
   fns: CodeComponentSyncCallbackFns,
-  opts?: { force?: boolean }
+  opts?: { force?: boolean },
 ) {
   return safeTry<void, CodeComponentPropsError>(async function* () {
     const componentToMeta = buildComponentToMeta(ctx, { includePlume: true });
@@ -2024,12 +2030,12 @@ async function checkComponentPropsAndStates(
       change.addedProps.map((p) => ({
         component: change.component,
         param: p,
-      }))
+      })),
     );
 
     const staleDiffs = changes.filter(
       (change) =>
-        change.updatedProps.length > 0 || change.removedProps.length > 0
+        change.updatedProps.length > 0 || change.removedProps.length > 0,
     );
 
     // Some diffs we auto-apply -- for new components, or built-in components
@@ -2039,7 +2045,7 @@ async function checkComponentPropsAndStates(
         isBuiltinCodeComponent(diff.component) ||
         isPlumeComponent(diff.component) ||
         (isCodeComponent(diff.component) &&
-          newComponents.includes(diff.component))
+          newComponents.includes(diff.component)),
     );
 
     const doUpdateNeedsPermissionProps =
@@ -2051,10 +2057,10 @@ async function checkComponentPropsAndStates(
       () =>
         safeTry(function* () {
           const changedComponents = Array.from(
-            new Set(changes.map(({ component }) => component))
+            new Set(changes.map(({ component }) => component)),
           );
           const parentComponents = changedComponents.flatMap((c) =>
-            Array.from(componentToReferencers(ctx.site).get(c) ?? [])
+            Array.from(componentToReferencers(ctx.site).get(c) ?? []),
           );
           ctx.observeComponents([...parentComponents, ...changedComponents]);
           // First pass registers all new props (which are safe and needed
@@ -2069,7 +2075,7 @@ async function checkComponentPropsAndStates(
           // We've already added the new params, no don't pass in addedProps
           yield* doUpdateComponentsProps(
             ctx,
-            autoApplyDiffs.map((diff) => ({ ...diff, addedProps: [] }))
+            autoApplyDiffs.map((diff) => ({ ...diff, addedProps: [] })),
           );
 
           if (doUpdateNeedsPermissionProps) {
@@ -2078,7 +2084,7 @@ async function checkComponentPropsAndStates(
               needsPermissionDiffs.map((diff) => ({
                 ...diff,
                 addedProps: [],
-              }))
+              })),
             );
           }
 
@@ -2087,7 +2093,7 @@ async function checkComponentPropsAndStates(
           yield* refreshComponentStates(ctx);
           return ok();
         }),
-      { noUndoRecord: true }
+      { noUndoRecord: true },
     );
     return ok();
   });
@@ -2096,7 +2102,7 @@ async function checkComponentPropsAndStates(
 function checkDefaultSlotContents(
   ctx: SiteCtx,
   component: Component,
-  contents: Record<string, PlasmicElement | PlasmicElement[]>
+  contents: Record<string, PlasmicElement | PlasmicElement[]>,
 ) {
   return safeTry<
     void,
@@ -2123,7 +2129,7 @@ function buildComponentToMeta(
   ctx: SiteCtx,
   opts?: {
     includePlume?: boolean;
-  }
+  },
 ) {
   const map = new Map<
     Component,
@@ -2135,7 +2141,7 @@ function buildComponentToMeta(
         ctx.codeComponentsRegistry
           .getRegisteredComponentsAndContextsMap()
           .get(comp.name),
-        "Missing code component " + comp.name
+        "Missing code component " + comp.name,
       );
       map.set(comp, meta);
     } else if (opts?.includePlume && isPlumeComponent(comp)) {
@@ -2148,7 +2154,7 @@ function buildComponentToMeta(
 function checkElementSchemaToTpl(
   site: Site,
   component: Component,
-  rootSchema: PlasmicElement
+  rootSchema: PlasmicElement,
 ) {
   return safeTry<
     TplNode,
@@ -2165,7 +2171,7 @@ function checkElementSchemaToTpl(
       {
         codeComponentsOnly: true,
         ignoreDefaultComponents: isHostLessPackage(site),
-      }
+      },
     );
     if (warnings.length > 0) {
       const warning = warnings[0];
@@ -2173,8 +2179,8 @@ function checkElementSchemaToTpl(
         new BadElementSchemaError(
           warning.message,
           warning.description,
-          warning.shouldLogError
-        )
+          warning.shouldLogError,
+        ),
       );
     }
     return ok(tpl);
@@ -2190,15 +2196,14 @@ export interface CodeComponentMetaDiff {
   }[];
 }
 
-export interface CodeComponentMetaDiffWithComponent
-  extends CodeComponentMetaDiff {
+export interface CodeComponentMetaDiffWithComponent extends CodeComponentMetaDiff {
   component: Component;
 }
 
 export function compareComponentPropsWithMeta(
   site: Site,
   component: Component,
-  meta: CodeComponentRegistrationMeta<any>
+  meta: CodeComponentRegistrationMeta<any>,
 ) {
   return safeTry<
     CodeComponentMetaDiff,
@@ -2223,7 +2228,7 @@ export function compareComponentPropsWithMeta(
         if (registeredParams.has(name)) {
           const registered = ensure(
             registeredParams.get(name),
-            "Couldn't find param " + name
+            "Couldn't find param " + name,
           );
           if (
             registered.constructor !== p.constructor ||
@@ -2300,7 +2305,7 @@ export function compareComponentPropsWithMeta(
         before: p,
         after: ensure(
           registeredParams.get(name),
-          "Couldn't find param " + name
+          "Couldn't find param " + name,
         ),
       }));
 
@@ -2345,7 +2350,7 @@ function findDuplicateParams(component: Component, name: string) {
 
 function doUpdateComponentsProps(
   ctx: SiteCtx,
-  changes: CodeComponentMetaDiffWithComponent[]
+  changes: CodeComponentMetaDiffWithComponent[],
 ) {
   return safeTry<void, never>(function* () {
     for (const change of changes) {
@@ -2363,11 +2368,11 @@ function updateChangedClassNameProp(
   ctx: SiteCtx,
   component: Component,
   before: Param,
-  after: Param
+  after: Param,
 ) {
   assert(
     isKnownClassNamePropType(before.type),
-    "Params must be of ClassNamePropType"
+    "Params must be of ClassNamePropType",
   );
   const newSelectors = isKnownClassNamePropType(after.type)
     ? after.type.selectors
@@ -2403,7 +2408,7 @@ function updateChangedClassNameProp(
 function mergeComponentParams(
   component: Component,
   before: Param,
-  after: Param
+  after: Param,
 ) {
   // Updates that don't require deleting and adding a new param
   // For Plume, we don't update variable name, so you still see "Is checked" instead
@@ -2426,7 +2431,7 @@ function mergeComponentParams(
 
 function doUpdateComponentProps(
   ctx: SiteCtx,
-  changes: CodeComponentMetaDiffWithComponent
+  changes: CodeComponentMetaDiffWithComponent,
 ): Result<void, never> {
   const { component, addedProps, updatedProps, removedProps } = changes;
 
@@ -2435,14 +2440,14 @@ function doUpdateComponentProps(
   // When we update the type from/to slot, we need to clear the
   // existing args
   const hardUpdatedProps = updatedProps.filter(
-    ({ before, after }) => isSlot(before) !== isSlot(after)
+    ({ before, after }) => isSlot(before) !== isSlot(after),
   );
   hardUpdatedProps.forEach(({ before: p }) =>
-    removeComponentParam(ctx.site, component, p)
+    removeComponentParam(ctx.site, component, p),
   );
   component.params.push(
     ...addedProps,
-    ...hardUpdatedProps.map(({ after }) => after)
+    ...hardUpdatedProps.map(({ after }) => after),
   );
   xDifference(updatedProps, hardUpdatedProps).forEach(({ before, after }) => {
     if (isKnownClassNamePropType(before.type)) {
@@ -2493,7 +2498,7 @@ function parseStylesAndHandleErrors(
   rawStyles: React.CSSProperties,
   elementType: Exclude<PlasmicElement, string>["type"],
   fns: Pick<CodeComponentSyncCallbackFns, "onElementStyleWarnings">,
-  opts: { prefs?: AddItemPrefs }
+  opts: { prefs?: AddItemPrefs },
 ): React.CSSProperties {
   const { styles, warnings } = parseStyles(rawStyles, elementType, opts);
   if (warnings.length > 0) {
@@ -2557,7 +2562,7 @@ export class BadElementSchemaError extends CustomError {
   constructor(
     message: string,
     public description?: string,
-    public shouldLog?: boolean
+    public shouldLog?: boolean,
   ) {
     super(message);
   }
@@ -2580,7 +2585,7 @@ export class DuplicatedComponentParamError extends CustomError {
   propName: string;
   constructor(prop: string, component: string) {
     super(
-      `Conflict between state and prop name "${prop}" of code component "${component}"`
+      `Conflict between state and prop name "${prop}" of code component "${component}"`,
     );
     this.componentName = component;
     this.propName = prop;
@@ -2607,19 +2612,19 @@ type NormalizedCustomFunctionParam = {
 
 /** Normalize params to full param types, which have a name and type. */
 export function normalizeCustomFunctionParams(
-  params: readonly CustomFunctionParam[] | undefined
+  params: readonly CustomFunctionParam[] | undefined,
 ): NormalizedCustomFunctionParam[] {
   return (params ?? []).map((param) =>
     // When the param is a string, it represents the name of the param.
     // We don't know the type, so we use "any".
     typeof param === "string"
       ? { name: param, type: "any" }
-      : (param as NormalizedCustomFunctionParam)
+      : (param as NormalizedCustomFunctionParam),
   );
 }
 
 function mapParamTypeToArgType(
-  propType: ParamType<any[], any>
+  propType: ParamType<any[], any>,
 ): ArgType["type"] {
   // `ParamType` includes a bare-`"string"` member; narrow it out so the rich
   // object members (which carry `.type`/`.options`) are accessible below.
@@ -2650,7 +2655,7 @@ function mapParamTypeToArgType(
 
 export function createCustomFunctionFromRegistration(
   functionReg: CustomFunctionRegistration,
-  existingFunction?: CustomFunction
+  existingFunction?: CustomFunction,
 ) {
   const existingParams = existingFunction?.params ?? [];
   return new CustomFunction({
@@ -2665,14 +2670,14 @@ export function createCustomFunctionFromRegistration(
         // `NormalizedCustomFunctionParam` for why the unions aren't assignable.
         const argType = mapParamTypeToArgType(param as ParamType<any[], any>);
         const existingParam = existingParams.find(
-          (p) => p.argName === param.name
+          (p) => p.argName === param.name,
         );
         if (existingParam && existingParam.type.name === argType.name) {
           return existingParam;
         }
 
         return typeFactory.arg(param.name, argType, undefined);
-      }
+      },
     ),
     isQuery: functionReg.meta.isQuery ?? false,
     isMutation: functionReg.meta.isMutation ?? false,
@@ -2680,7 +2685,7 @@ export function createCustomFunctionFromRegistration(
 }
 
 export function createCodeLibraryFromRegistration(
-  libRegistration: CodeLibraryRegistration
+  libRegistration: CodeLibraryRegistration,
 ) {
   return new CodeLibrary({
     name: libRegistration.meta.name,
@@ -2701,7 +2706,7 @@ export function elementSchemaToTpl(
     codeComponentsOnly: boolean;
     baseVariant?: Variant;
     ignoreDefaultComponents?: boolean;
-  }
+  },
 ): Result<
   { tpl: TplNode; warnings: SchemaWarning[] },
   | BadPresetSchemaError
@@ -2746,8 +2751,8 @@ export function elementSchemaToTpl(
             "PlasmicElement schema of type invalid type " +
               (typeof schema).toString() +
               ":" +
-              maybe(schema, (s: any) => s.toString())
-          )
+              maybe(schema, (s: any) => s.toString()),
+          ),
         );
       }
       const { styles, warnings: styleWarnings } = parseStyles(
@@ -2755,18 +2760,18 @@ export function elementSchemaToTpl(
         schema.type,
         {
           prefs: site.activeTheme?.addItemPrefs as AddItemPrefs | undefined,
-        }
+        },
       );
       styleWarnings.forEach((e) => warnings.push(e));
 
       const findSchemaPropErrors = (
         compSchema: DefaultComponentElement<{}> | CodeComponentElement<{}>,
-        comp: Component
+        comp: Component,
       ) => {
         const compParams = new Set(
           getRealParams(comp, { includeSlots: true }).map(
-            (param) => param.variable.name
-          )
+            (param) => param.variable.name,
+          ),
         );
         const componentName = getComponentDisplayName(comp);
         if (compSchema.props) {
@@ -2780,7 +2785,7 @@ export function elementSchemaToTpl(
       };
       const mkComponentArgsFromSchema = (
         compSchema: DefaultComponentElement<{}> | CodeComponentElement<{}>,
-        comp: Component
+        comp: Component,
       ) =>
         safeTry(function* () {
           const componentName = getComponentDisplayName(comp);
@@ -2809,7 +2814,7 @@ export function elementSchemaToTpl(
                 const param = comp.params.find(
                   (p) =>
                     paramToVarName(comp, p, { useControlledProp: true }) ===
-                    prop
+                    prop,
                 );
                 if (!param || !isSlot(param)) {
                   warnings.push({
@@ -2860,7 +2865,7 @@ export function elementSchemaToTpl(
           const defaultComponent = getDefaultComponent(site, kind);
           const schemaPropErrors = findSchemaPropErrors(
             schema,
-            defaultComponent
+            defaultComponent,
           );
           if (schemaPropErrors) {
             return schemaPropErrors;
@@ -2878,7 +2883,7 @@ export function elementSchemaToTpl(
           const finalAttrs: {} = assign(
             {},
             schema.attrs,
-            schema.type === "img" ? { src: schema.src } : {}
+            schema.type === "img" ? { src: schema.src } : {},
           );
           const tpl = mkTplTagX("img", {
             type: TplTagType.Image,
@@ -2905,8 +2910,8 @@ export function elementSchemaToTpl(
           RSH(vs.rs, tpl).merge(
             getDefaultStyles(
               schema.type === "text" ? AddItemKey.text : AddItemKey.button,
-              prefs
-            )
+              prefs,
+            ),
           );
           RSH(vs.rs, tpl).merge(styles);
           return ok({ tpl, warnings });
@@ -2932,7 +2937,7 @@ export function elementSchemaToTpl(
           const tpl = mkTplTagX(
             tag,
             { type: TplTagType.Other, attrs: schema.attrs, baseVariant },
-            childTpls
+            childTpls,
           );
           const vs = ensureVariantSetting(tpl, baseCombo);
           RSH(vs.rs, tpl).merge(
@@ -2941,12 +2946,12 @@ export function elementSchemaToTpl(
               schema.type === "page-section"
                 ? AddItemKey.section
                 : schema.type === "box"
-                ? AddItemKey.box
-                : schema.type === "vbox"
-                ? AddItemKey.vstack
-                : AddItemKey.hstack,
-              prefs
-            )
+                  ? AddItemKey.box
+                  : schema.type === "vbox"
+                    ? AddItemKey.vstack
+                    : AddItemKey.hstack,
+              prefs,
+            ),
           );
           RSH(vs.rs, tpl).merge(styles);
           return ok({ tpl, warnings });
@@ -2974,30 +2979,30 @@ export function elementSchemaToTpl(
               schema.type === "input"
                 ? AddItemKey.textbox
                 : schema.type === "password"
-                ? AddItemKey.password
-                : AddItemKey.textarea,
-              prefs
-            )
+                  ? AddItemKey.password
+                  : AddItemKey.textarea,
+              prefs,
+            ),
           );
           RSH(vs.rs, tpl).merge(styles);
           return ok({ tpl, warnings });
         }
         case "component": {
           const referencedComponent = siteComponents.find(
-            (comp) => comp.name === schema.name
+            (comp) => comp.name === schema.name,
           );
           if (!referencedComponent) {
             return err(new UnknownComponentError(schema.name));
           }
           if (referencedComponent === component) {
             return err(
-              new SelfReferencingComponent(getComponentDisplayName(component))
+              new SelfReferencingComponent(getComponentDisplayName(component)),
             );
           }
 
           const schemaPropErrors = findSchemaPropErrors(
             schema,
-            referencedComponent
+            referencedComponent,
           );
           if (schemaPropErrors) {
             return schemaPropErrors;
@@ -3024,8 +3029,8 @@ export function elementSchemaToTpl(
                 component?.name
               }, encountered unexpected value ${
                 (schema as any).type
-              } for \`PlasmicElement\`.type`
-            )
+              } for \`PlasmicElement\`.type`,
+            ),
           );
       }
     });
@@ -3044,17 +3049,17 @@ const LAYOUT_VALUES = ["vbox", "hbox", "box", "page-section"];
 
 function layoutTypeToStyles(
   layout: LayoutType,
-  opts: { prefs?: AddItemPrefs }
+  opts: { prefs?: AddItemPrefs },
 ) {
   return getDefaultStyles(
     layout === "page-section"
       ? AddItemKey.section
       : layout === "box"
-      ? AddItemKey.box
-      : layout === "vbox"
-      ? AddItemKey.vstack
-      : AddItemKey.hstack,
-    opts.prefs
+        ? AddItemKey.box
+        : layout === "vbox"
+          ? AddItemKey.vstack
+          : AddItemKey.hstack,
+    opts.prefs,
   );
 }
 
@@ -3062,7 +3067,7 @@ function layoutTypeToStyles(
 export function parseStyles(
   rawStyles: React.CSSProperties,
   elementType: Exclude<PlasmicElement, String>["type"],
-  opts: { prefs?: AddItemPrefs }
+  opts: { prefs?: AddItemPrefs },
 ): {
   styles: Record<string, string>;
   warnings: SchemaWarning[];
@@ -3073,7 +3078,7 @@ export function parseStyles(
       normProp(prop),
       // Remove comments
       stripCssComments(`${val}`),
-    ])
+    ]),
   );
   const sanitized: Record<string, string> = {};
   const warnings: SchemaWarning[] = [];
@@ -3103,7 +3108,7 @@ export function parseStyles(
       standardSides.map((s) => [
         `border-${s}`,
         expandedBorderProps.map((p) => `border-${s}-${p}`),
-      ])
+      ]),
     ),
   };
 
@@ -3123,12 +3128,12 @@ export function parseStyles(
     [...transitionProps].map((prop) => [
       prop,
       (styles[prop] && parseCssValue(prop, styles[prop])) || [],
-    ])
+    ]),
   );
 
   const transitionLayers = Math.max(
     0,
-    ...Object.values(transitionStyles).map((vals) => vals.length)
+    ...Object.values(transitionStyles).map((vals) => vals.length),
   );
 
   if (transitionLayers > 0) {
@@ -3141,7 +3146,7 @@ export function parseStyles(
         while (transitionStyles[prop].length < transitionLayers) {
           // Repeat the provided values cyclically until the length is correct
           transitionStyles[prop].push(
-            transitionStyles[prop][transitionStyles[prop].length % cycleLength]
+            transitionStyles[prop][transitionStyles[prop].length % cycleLength],
           );
         }
       }
@@ -3158,7 +3163,7 @@ export function parseStyles(
       expandedBorderProps.map((p) => [
         `border-${p}`,
         standardSides.map((s) => `border-${s}-${p}`),
-      ])
+      ]),
     ),
   };
 
@@ -3177,7 +3182,7 @@ export function parseStyles(
       sanitized["box-shadow"] = styles["box-shadow"];
     } catch {
       const err = new Error(
-        `Failed to parse CSS value for "box-shadow": ${styles["box-shadow"]}`
+        `Failed to parse CSS value for "box-shadow": ${styles["box-shadow"]}`,
       );
       warnings.push({ message: err.message, shouldLogError: true });
     }
@@ -3199,12 +3204,12 @@ export function parseStyles(
     ["background", ...bgAtomicProps].map((prop) => [
       prop,
       styles[prop] ? parseCssValue(prop, styles[prop]) : [],
-    ])
+    ]),
   );
 
   const bgLayers = Math.max(
     0,
-    ...Object.values(bgStyles).map((vals) => vals?.length ?? 0)
+    ...Object.values(bgStyles).map((vals) => vals?.length ?? 0),
   );
 
   if (bgLayers > 0) {
@@ -3226,7 +3231,7 @@ export function parseStyles(
                 if (color) {
                   layerStr = layerStr.replace(
                     color,
-                    new ColorFill({ color }).showCss()
+                    new ColorFill({ color }).showCss(),
                   );
                   layer = parseCss(layerStr, {
                     startRule: "backgroundLayer",
@@ -3271,8 +3276,8 @@ export function parseStyles(
                   return [param, propBgStyles[i % propBgStyles.length]];
                 }
                 return null;
-              })
-            )
+              }),
+            ),
           );
 
           return new BackgroundLayer({
@@ -3290,7 +3295,7 @@ export function parseStyles(
     } catch (e) {
       console.log(
         "Parse error - bgStyles:",
-        JSON.stringify(bgStyles, undefined, 2)
+        JSON.stringify(bgStyles, undefined, 2),
       );
       warnings.push({
         message:
@@ -3377,7 +3382,7 @@ export function parseStyles(
       message:
         "Some code-defined CSS properties aren't currently supported on Plasmic Elements",
       description: `The values provided to the following props will be ignored: ${invalidProps.join(
-        ", "
+        ", ",
       )}`,
     });
   }
@@ -3389,24 +3394,24 @@ export function parseStyles(
 }
 
 export const isContainerElement = (
-  schema: PlasmicElement
+  schema: PlasmicElement,
 ): schema is ContainerElement =>
   typeof schema === "object" && "children" in schema;
 
 export const flattenElementSchema = (
-  rootSchema: PlasmicElement | PlasmicElement[] | undefined
+  rootSchema: PlasmicElement | PlasmicElement[] | undefined,
 ) =>
   ensureArray(rootSchema).flatMap((schema) =>
     typeof schema === "object" && isContainerElement(schema)
       ? flattenElementSchema(schema.children)
-      : schema
+      : schema,
   );
 
 export function propMetasToComponentParams(
   props: { [p: string]: StudioPropType<any> },
   site: Site,
   componentDisplayName: string,
-  meta: CodeComponentRegistrationMeta<any>
+  meta: CodeComponentRegistrationMeta<any>,
 ) {
   return safeTry<
     Param[],
@@ -3415,9 +3420,9 @@ export function propMetasToComponentParams(
     const valueParamNamesForWriteableStates = new Set(
       withoutNils(
         Object.entries(meta.states ?? {}).map(([stateName, stateSpec]) =>
-          stateSpec.type === "writable" ? stateSpec.valueProp : null
-        )
-      )
+          stateSpec.type === "writable" ? stateSpec.valueProp : null,
+        ),
+      ),
     );
     const params: (Param | null)[] = [];
     for (const [prop, type] of Object.entries(props)) {
@@ -3430,7 +3435,7 @@ export function propMetasToComponentParams(
           defaultExpr: yield* maybePropTypeToDefaultExpr(
             type,
             prop,
-            componentDisplayName
+            componentDisplayName,
           ),
           propEffect: maybePropTypeToPropEffect(type),
           displayName: maybePropTypeToDisplayName(type),
@@ -3450,14 +3455,14 @@ export function propMetasToComponentParams(
                 paramType: "slot",
               })
             : valueParamNamesForWriteableStates.has(prop)
-            ? mkParam({
-                ...commonProps,
-                paramType: "state",
-              })
-            : mkParam({
-                ...commonProps,
-                paramType: "prop",
-              })
+              ? mkParam({
+                  ...commonProps,
+                  paramType: "state",
+                })
+              : mkParam({
+                  ...commonProps,
+                  paramType: "prop",
+                }),
         );
       } else {
         params.push(null);
@@ -3469,7 +3474,7 @@ export function propMetasToComponentParams(
 
 export function stateMetasToComponentParams(
   states: { [p: string]: StateSpec<any> },
-  componentDisplayName: string
+  componentDisplayName: string,
 ) {
   return safeTry<
     Param[],
@@ -3477,7 +3482,7 @@ export function stateMetasToComponentParams(
   >(function* () {
     const params: (Param | null | undefined)[] = [];
     for (const [stateName, stateSpec] of Object.entries(states).filter(
-      ([_, stateSpec]) => stateSpec.type === "readonly"
+      ([_, stateSpec]) => stateSpec.type === "readonly",
     )) {
       params.push(
         stateSpec &&
@@ -3489,10 +3494,10 @@ export function stateMetasToComponentParams(
             defaultExpr: yield* maybeStateMetaToDefaultExpr(
               stateSpec,
               stateName,
-              componentDisplayName
+              componentDisplayName,
             ),
             // previewExpr: ...
-          }).valueParam
+          }).valueParam,
       );
     }
     return ok(withoutNils(params));
@@ -3501,7 +3506,7 @@ export function stateMetasToComponentParams(
 
 export function componentMetaToComponentParams(
   site: Site,
-  meta: CodeComponentRegistrationMeta<any>
+  meta: CodeComponentRegistrationMeta<any>,
 ) {
   return safeTry<
     Param[],
@@ -3518,11 +3523,11 @@ export function componentMetaToComponentParams(
         props,
         site,
         meta.displayName ?? meta.name,
-        meta
+        meta,
       )),
       ...(yield* stateMetasToComponentParams(
         meta.states ?? {},
-        meta.displayName ?? meta.name
+        meta.displayName ?? meta.name,
       )),
     ];
     const groupedParams = groupBy(params, (p) => p.variable.name);
@@ -3537,7 +3542,7 @@ export function componentMetaToComponentParams(
 
 function metaToComponentStates(
   component: Component,
-  meta: CodeComponentRegistrationMeta<any>
+  meta: CodeComponentRegistrationMeta<any>,
 ) {
   return Result.combine(
     Object.entries(meta.states ?? {}).map(
@@ -3551,7 +3556,7 @@ function metaToComponentStates(
 
         if (!valueParam) {
           return err(
-            new UnknownComponentPropError(valueParamName, component.name)
+            new UnknownComponentPropError(valueParamName, component.name),
           );
         }
         const onChangeParam = component.params
@@ -3561,8 +3566,8 @@ function metaToComponentStates(
           return err(
             new UnknownComponentPropError(
               stateSpec.onChangeProp,
-              component.name
-            )
+              component.name,
+            ),
           );
         }
         return ok(
@@ -3572,10 +3577,10 @@ function metaToComponentStates(
             onChangeParam,
             accessType: stateSpec.type,
             variableType: stateSpec.variableType,
-          })
+          }),
         );
-      }
-    )
+      },
+    ),
   );
 }
 
@@ -3585,14 +3590,14 @@ export function mkCodeComponent(
   opts: {
     prefs?: AddItemPrefs;
     parsedDefaultStyles?: CSSProperties;
-  }
+  },
 ) {
   const styles = opts.parsedDefaultStyles
     ? opts.parsedDefaultStyles
     : "defaultStyles" in meta
-    ? meta.defaultStyles &&
-      parseStyles(meta.defaultStyles, "component", opts).styles
-    : undefined;
+      ? meta.defaultStyles &&
+        parseStyles(meta.defaultStyles, "component", opts).styles
+      : undefined;
 
   const component = mkComponent({
     name: name,
@@ -3611,7 +3616,7 @@ export function mkCodeComponent(
       defaultStyles: styles
         ? mkRuleSet({
             values: Object.fromEntries(
-              Object.entries(styles).map(([key, val]) => [key, "" + val])
+              Object.entries(styles).map(([key, val]) => [key, "" + val]),
             ),
           })
         : null,
@@ -3636,15 +3641,15 @@ export function mkCodeComponent(
     }),
     figmaMappings: (isGlobalContextMeta(meta)
       ? []
-      : meta.figmaMappings ?? []
+      : (meta.figmaMappings ?? [])
     ).map(
       (m) =>
-        new FigmaComponentMapping({ figmaComponentName: m.figmaComponentName })
+        new FigmaComponentMapping({ figmaComponentName: m.figmaComponentName }),
     ),
     alwaysAutoName: (meta as any).alwaysAutoName ?? false,
     // Keeping `trapsSelection` for backwards compatibility with Antd5/Plume which uses this name
     trapsFocus: !isGlobalContextMeta(meta)
-      ? meta.trapsFocus ?? (meta as any).trapsSelection ?? false
+      ? (meta.trapsFocus ?? (meta as any).trapsSelection ?? false)
       : undefined,
   });
 
@@ -3662,7 +3667,7 @@ export function mkCodeComponent(
 }
 
 export function isGlobalContextMeta(
-  meta: CodeComponentRegistrationMeta<any> | GlobalContextMeta<any>
+  meta: CodeComponentRegistrationMeta<any> | GlobalContextMeta<any>,
 ): meta is GlobalContextMeta<any> {
   if ((meta as any).__isContext) {
     return true;
@@ -3671,7 +3676,7 @@ export function isGlobalContextMeta(
 }
 
 export function isReactImplControl(
-  propType: StudioPropType<any> | undefined
+  propType: StudioPropType<any> | undefined,
 ): propType is CustomControl<any> {
   return (
     !!propType &&
@@ -3688,7 +3693,7 @@ export type ObjectStudioPropType<T> = Exclude<
 >;
 
 export function isExprValuePropType(
-  propType: StudioPropType<any> | undefined
+  propType: StudioPropType<any> | undefined,
 ): propType is ObjectStudioPropType<any> {
   const type = getPropTypeType(propType);
   if (!type) {
@@ -3709,7 +3714,7 @@ export function isExprValuePropType(
 
 /** Whether a prop type should NOT allow dynamic values. */
 export function isDynamicValueDisabledInPropType(
-  propType: StudioPropType<any> | undefined
+  propType: StudioPropType<any> | undefined,
 ) {
   return (
     isExprValuePropType(propType) ||
@@ -3720,7 +3725,7 @@ export function isDynamicValueDisabledInPropType(
 }
 
 export function isPlainObjectPropType(
-  propType: StudioPropType<any> | undefined
+  propType: StudioPropType<any> | undefined,
 ): propType is ObjectStudioPropType<any> {
   return (
     !!propType && !isReactImplControl(propType) && typeof propType !== "string"
@@ -3728,7 +3733,7 @@ export function isPlainObjectPropType(
 }
 
 export function getPropTypeType(
-  propType: StudioPropType<any> | undefined
+  propType: StudioPropType<any> | undefined,
 ): StudioPropTypeType | undefined {
   if (!propType) {
     return undefined;
@@ -3742,7 +3747,7 @@ export function getPropTypeType(
 }
 
 export function isFlattenedObjectPropType(
-  propType: StudioPropType<any> | undefined
+  propType: StudioPropType<any> | undefined,
 ): propType is ObjectType<any> {
   return (
     isPlainObjectPropType(propType) &&
@@ -3772,7 +3777,7 @@ export function getPropTypeLayout(propType: StudioPropType<any> | undefined) {
 }
 
 export function isCustomControlType(
-  propType: StudioPropType<any> | undefined
+  propType: StudioPropType<any> | undefined,
 ): propType is CustomType<any> {
   return (
     isReactImplControl(propType) ||
@@ -3782,7 +3787,7 @@ export function isCustomControlType(
 
 export function isAdvancedProp(
   propType: StudioPropType<any> | undefined,
-  param: Param | undefined
+  param: Param | undefined,
 ) {
   return (
     (isKnownPropParam(param) && param.advanced) ||
@@ -3890,7 +3895,7 @@ function maybePropTypeToIsLocalizable(type: StudioPropType<any>) {
 function maybeStateMetaToDefaultExpr(
   stateSpec: StateSpec<any>,
   stateName: string,
-  componentName: string
+  componentName: string,
 ): Result<Expr | undefined, CodeComponentRegistrationTypeError> {
   if ("initVal" in stateSpec && stateSpec.initVal !== undefined) {
     try {
@@ -3898,16 +3903,16 @@ function maybeStateMetaToDefaultExpr(
         new CustomCode({
           code: ensure(
             JSON.stringify(stateSpec.initVal),
-            "Must be JSON serializable, maybe trying to serialize a function or similar"
+            "Must be JSON serializable, maybe trying to serialize a function or similar",
           ),
           fallback: undefined,
-        })
+        }),
       );
     } catch {
       return err(
         new CodeComponentRegistrationTypeError(
-          `Initial value for state ${stateName} of component ${componentName} is not JSON-compatible`
-        )
+          `Initial value for state ${stateName} of component ${componentName} is not JSON-compatible`,
+        ),
       );
     }
   }
@@ -3926,7 +3931,7 @@ export const getPropTypeDefaultValue = (
     componentPropValues?: any;
     ccContextData?: any;
     controlExtras?: DefaultValueControlExtras;
-  }
+  },
 ) => {
   if (!isPlainObjectPropType(propType)) {
     return undefined;
@@ -3938,8 +3943,8 @@ export const getPropTypeDefaultValue = (
       defaultValue(
         context.componentPropValues ?? {},
         context.ccContextData,
-        context.controlExtras
-      )
+        context.controlExtras,
+      ),
     );
   }
   if (propType.type !== "object" || propType.fields === undefined) {
@@ -3971,7 +3976,7 @@ export const getPropTypeDefaultValue = (
 export function maybePropTypeToDefaultExpr(
   type: StudioPropType<any>,
   propName: string,
-  componentName: string
+  componentName: string,
 ): Result<Expr | undefined, CodeComponentRegistrationTypeError> {
   if (isPlainObjectPropType(type) && type.type !== "slot") {
     if ("defaultExpr" in type && type.defaultExpr !== undefined) {
@@ -3979,7 +3984,7 @@ export function maybePropTypeToDefaultExpr(
         new CustomCode({
           code: `(${type.defaultExpr})`,
           fallback: undefined,
-        })
+        }),
       );
     } else if ("defaultValue" in type && type.defaultValue !== undefined) {
       try {
@@ -3987,16 +3992,16 @@ export function maybePropTypeToDefaultExpr(
           new CustomCode({
             code: ensure(
               JSON.stringify(getPropTypeDefaultValue(type)),
-              "Must be JSON serializable, maybe trying to serialize a function or similar"
+              "Must be JSON serializable, maybe trying to serialize a function or similar",
             ),
             fallback: undefined,
-          })
+          }),
         );
       } catch {
         return err(
           new CodeComponentRegistrationTypeError(
-            `Default value for prop ${propName} of component ${componentName} is not JSON-compatible`
-          )
+            `Default value for prop ${propName} of component ${componentName} is not JSON-compatible`,
+          ),
         );
       }
     }
@@ -4005,7 +4010,7 @@ export function maybePropTypeToDefaultExpr(
 }
 
 export function mkCodeComponentHelperFromMeta(
-  meta: CodeComponentRegistrationMeta<any> | GlobalContextMeta<any>
+  meta: CodeComponentRegistrationMeta<any> | GlobalContextMeta<any>,
 ) {
   if (!("componentHelpers" in meta) || !meta.componentHelpers) {
     return undefined;
@@ -4025,7 +4030,7 @@ export function mkCodeComponentHelperFromMeta(
 
 function typeCheckVariantsFromMeta(
   meta: CodeComponentRegistrationMeta<any> | GlobalContextMeta<any>,
-  errorPrefix: string
+  errorPrefix: string,
 ): Result<void, CodeComponentRegistrationTypeError> {
   if (!("variants" in meta) || !meta.variants) {
     return ok();
@@ -4034,8 +4039,8 @@ function typeCheckVariantsFromMeta(
   if (!isObject(meta.variants)) {
     return err(
       new CodeComponentRegistrationTypeError(
-        `${errorPrefix} variants must be an object`
-      )
+        `${errorPrefix} variants must be an object`,
+      ),
     );
   }
 
@@ -4044,14 +4049,14 @@ function typeCheckVariantsFromMeta(
       return (
         !isString(selector) || !isString(cssSelector) || !isString(displayName)
       );
-    }
+    },
   );
 
   if (hasInvalidVariant) {
     return err(
       new CodeComponentRegistrationTypeError(
-        `${errorPrefix} variants selector, cssSelector, displayName are required to be strings`
-      )
+        `${errorPrefix} variants selector, cssSelector, displayName are required to be strings`,
+      ),
     );
   }
 
@@ -4059,7 +4064,7 @@ function typeCheckVariantsFromMeta(
 }
 
 export function mkCodeComponentVariantsFromMeta(
-  meta: CodeComponentRegistrationMeta<any> | GlobalContextMeta<any>
+  meta: CodeComponentRegistrationMeta<any> | GlobalContextMeta<any>,
 ) {
   if (!("variants" in meta) || !meta.variants) {
     return {};
@@ -4069,12 +4074,12 @@ export function mkCodeComponentVariantsFromMeta(
     Object.entries(meta.variants).map(
       ([selector, { cssSelector, displayName }]): [
         string,
-        CodeComponentVariantMeta
+        CodeComponentVariantMeta,
       ] => [
         selector,
         new CodeComponentVariantMeta({ cssSelector, displayName }),
-      ]
-    )
+      ],
+    ),
   );
 }
 
@@ -4086,7 +4091,7 @@ export function ensurePropTypeToWabType(site: Site, type: StudioPropType<any>) {
 
 export function propTypeToWabType(
   site: Site,
-  type: StudioPropType<any>
+  type: StudioPropType<any>,
 ): Result<Param["type"], UnknownComponentError> {
   return safeTry<Param["type"], UnknownComponentError>(function* () {
     if (typeof type === "string") {
@@ -4095,11 +4100,11 @@ export function propTypeToWabType(
           type === "slot"
             ? "ReactNode"
             : type === "object"
-            ? "any"
-            : type === "imageUrl"
-            ? "img"
-            : type
-        )
+              ? "any"
+              : type === "imageUrl"
+                ? "img"
+                : type,
+        ),
       );
     } else if (isReactImplControl(type)) {
       // Custom control react component
@@ -4113,7 +4118,7 @@ export function propTypeToWabType(
           const components: ComponentInstance[] = [];
           for (const name of type.allowedComponents ?? []) {
             const component = site.components.find(
-              (c) => isCodeComponent(c) && c.name === name
+              (c) => isCodeComponent(c) && c.name === name,
             );
             if (!component) {
               err(new UnknownComponentError(name));
@@ -4127,18 +4132,18 @@ export function propTypeToWabType(
             return ok(
               typeFactory.renderFunc({
                 params: type2.renderPropParams.map((p) =>
-                  typeFactory.arg(p, typeFactory.any())
+                  typeFactory.arg(p, typeFactory.any()),
                 ),
                 allowed: components,
                 allowRootWrapper: type.allowRootWrapper,
-              })
+              }),
             );
           } else {
             return ok(
               typeFactory.renderable({
                 params: components,
                 allowRootWrapper: type.allowRootWrapper,
-              })
+              }),
             );
           }
         }
@@ -4157,7 +4162,7 @@ export function propTypeToWabType(
             // is treated as single.
             type.multiSelect === true
               ? typeFactory.multiChoice(options)
-              : typeFactory.choice(options)
+              : typeFactory.choice(options),
           );
         }
         case "cardPicker":
@@ -4173,8 +4178,8 @@ export function propTypeToWabType(
               })),
               type.defaultStyles
                 ? parseStyles(type.defaultStyles, "component", {}).styles
-                : {}
-            )
+                : {},
+            ),
           );
         case "target":
           return ok(typeFactory.target());
@@ -4183,8 +4188,8 @@ export function propTypeToWabType(
         case "themeResetClass":
           return ok(
             typeFactory.defaultStylesClassNamePropType(
-              type.targetAllTags ?? false
-            )
+              type.targetAllTags ?? false,
+            ),
           );
         case "themeStyles":
           return ok(typeFactory.defaultStyles());
@@ -4192,7 +4197,7 @@ export function propTypeToWabType(
           const eventHandlerKey = type.eventHandlerKey;
           if (isEventHandlerKeyForAttr(eventHandlerKey)) {
             return ok(
-              typeFactory.func(typeFactory.arg("event", typeFactory.any()))
+              typeFactory.func(typeFactory.arg("event", typeFactory.any())),
             );
           } else if (isEventHandlerKeyForParam(eventHandlerKey)) {
             return ok(cloneType(eventHandlerKey.param.type));
@@ -4203,15 +4208,18 @@ export function propTypeToWabType(
         case "eventHandler": {
           const argWabTypes = yield* Result.combine(
             type.argTypes.map((argType) =>
-              propTypeToWabType(site, argType.type)
-            )
+              propTypeToWabType(site, argType.type),
+            ),
           );
           return ok(
             typeFactory.func(
               ...type.argTypes.map((argType, i) =>
-                typeFactory.arg(argType.name, argWabTypes[i] as ArgType["type"])
-              )
-            )
+                typeFactory.arg(
+                  argType.name,
+                  argWabTypes[i] as ArgType["type"],
+                ),
+              ),
+            ),
           );
         }
         case "color":
@@ -4254,11 +4262,11 @@ export function propTypeToWabType(
               ["object", "custom", "dataSource"].includes(type.type)
                 ? "any"
                 : type.type === "imageUrl"
-                ? "img"
-                : type.type === "code"
-                ? "string"
-                : type.type
-            )
+                  ? "img"
+                  : type.type === "code"
+                    ? "string"
+                    : type.type,
+            ),
           );
       }
       throw unexpected();
@@ -4344,14 +4352,14 @@ export function wabTypeToPropType(type: Type): StudioPropType<any> {
       })),
     }))
     .elseUnsafe(() =>
-      unexpected(`can't convert wab type ${type.name} to studio prop type`)
+      unexpected(`can't convert wab type ${type.name} to studio prop type`),
     );
 }
 
 export function getNewProps(
   site: Site,
   component: Component,
-  meta: CodeComponentRegistrationMeta<any>
+  meta: CodeComponentRegistrationMeta<any>,
 ) {
   return safeTry<
     {
@@ -4365,12 +4373,12 @@ export function getNewProps(
   >(function* () {
     const params = yield* componentMetaToComponentParams(site, meta);
     const registeredParams = new Map(
-      params.map((p) => tuple(p.variable.name, p))
+      params.map((p) => tuple(p.variable.name, p)),
     );
     const existingParams = new Map(
       component.params.map((p) =>
-        tuple(paramToVarName(component, p, { useControlledProp: true }), p)
-      )
+        tuple(paramToVarName(component, p, { useControlledProp: true }), p),
+      ),
     );
 
     return ok({
@@ -4386,29 +4394,29 @@ export function getNewProps(
 export function getNewStates(
   site: Site,
   component: Component,
-  meta: CodeComponentRegistrationMeta<any>
+  meta: CodeComponentRegistrationMeta<any>,
 ) {
   return safeTry<State[], UnknownComponentError | UnknownComponentPropError>(
     function* () {
       const states = yield* metaToComponentStates(component, meta);
       const registeredStates = new Map(
-        states.map((s) => tuple(s.param.variable.name, s))
+        states.map((s) => tuple(s.param.variable.name, s)),
       );
       const existingStates = new Map(
-        component.states.map((s) => tuple(s.param.variable.name, s))
+        component.states.map((s) => tuple(s.param.variable.name, s)),
       );
 
       return ok(
         [...registeredStates.entries()]
           .filter(([name]) => !existingStates.has(name))
-          .map(([_, s]) => s)
+          .map(([_, s]) => s),
       );
-    }
+    },
   );
 }
 
 function getReferencedComponentsFromDefaultSlotContents(
-  slotContents: Record<string, PlasmicElement | PlasmicElement[]>
+  slotContents: Record<string, PlasmicElement | PlasmicElement[]>,
 ) {
   const referenced = new Set<string>();
   for (const contents of Object.values(slotContents)) {
@@ -4430,7 +4438,7 @@ function walkPlasmicElementTree(
   opts: {
     pre?: (elt: PlasmicElement) => void;
     post?: (elt: PlasmicElement) => void;
-  }
+  },
 ) {
   const { pre, post } = opts;
   const rec = (elt: PlasmicElement) => {
@@ -4473,9 +4481,9 @@ function buildCodeComponentsReferenceGraph(site: Site) {
         comp.name,
         Array.from(
           getReferencedComponentsFromDefaultSlotContents(
-            comp.codeComponentMeta.defaultSlotContents
-          )
-        )
+            comp.codeComponentMeta.defaultSlotContents,
+          ),
+        ),
       );
     }
   }
@@ -4483,7 +4491,7 @@ function buildCodeComponentsReferenceGraph(site: Site) {
 }
 
 export function checkForCyclesInSlotsDefaultValue(
-  ctx: SiteCtx
+  ctx: SiteCtx,
 ): Result<void, CyclicComponentReferencesError> {
   const graph = buildCodeComponentsReferenceGraph(ctx.site);
 
@@ -4506,8 +4514,8 @@ export function checkForCyclesInSlotsDefaultValue(
     if (checkCycles(c)) {
       return err(
         new CyclicComponentReferencesError(
-          "Some registered components cyclically depend on each other"
-        )
+          "Some registered components cyclically depend on each other",
+        ),
       );
     }
   }
@@ -4560,12 +4568,12 @@ export function createStyleTokenFromRegistration(tokenReg: TokenRegistration) {
  */
 async function upsertRegisteredTokens(
   ctx: SiteCtx,
-  fns: CodeComponentSyncCallbackFns
+  fns: CodeComponentSyncCallbackFns,
 ) {
   return safeTry<void, InvalidTokenError>(async function* () {
     const site = ctx.site;
     const existingTokens = new Map(
-      site.styleTokens.map((token) => [token.regKey, token])
+      site.styleTokens.map((token) => [token.regKey, token]),
     );
     let cacheBurst = 0;
     let shouldDelete: boolean | undefined = false;
@@ -4580,7 +4588,7 @@ async function upsertRegisteredTokens(
       const registeredTokens = new Map(
         ctx.codeComponentsRegistry
           .getRegisteredTokens(cacheBurst++)
-          .map((token) => [token.name, token])
+          .map((token) => [token.name, token]),
       );
 
       for (const tokenReg of registeredTokens.values()) {
@@ -4591,8 +4599,8 @@ async function upsertRegisteredTokens(
           return err(
             new InvalidTokenError(
               tokenReg.name,
-              `Invalid token type for token "${tokenReg.name}": ${tokenReg.type}`
-            )
+              `Invalid token type for token "${tokenReg.name}": ${tokenReg.type}`,
+            ),
           );
         }
         const existing = existingTokens.get(tokenReg.name);
@@ -4608,8 +4616,8 @@ async function upsertRegisteredTokens(
             return err(
               new InvalidTokenError(
                 tokenReg.name,
-                `Cannot register a token named "${tokenReg.name}" because there is already a token with that name.`
-              )
+                `Cannot register a token named "${tokenReg.name}" because there is already a token with that name.`,
+              ),
             );
           }
         } else {
@@ -4669,7 +4677,7 @@ async function upsertRegisteredTokens(
           for (const tokenReg of updatedTokenRegs) {
             const existing = ensure(
               existingTokens.get(tokenReg.name),
-              "Previously checked"
+              "Previously checked",
             );
             existing.value = tokenReg.value;
             if (existing.type !== registeredTypeToTokenType(tokenReg.type)) {
@@ -4690,7 +4698,7 @@ async function upsertRegisteredTokens(
           });
           return ok();
         },
-        { noUndoRecord: true }
+        { noUndoRecord: true },
       );
     }
 
@@ -4700,14 +4708,14 @@ async function upsertRegisteredTokens(
 
 async function upsertRegisteredFunctions(
   ctx: SiteCtx,
-  fns: CodeComponentSyncCallbackFns
+  fns: CodeComponentSyncCallbackFns,
 ): Promise<Result<void, InvalidCustomFunctionError>> {
   const site = ctx.site;
   const existingFunctions = new Map(
-    site.customFunctions.map((f) => [customFunctionId(f), f])
+    site.customFunctions.map((f) => [customFunctionId(f), f]),
   );
   const registeredFunctions = new Map(
-    ctx.codeComponentsRegistry.getRegisteredFunctionsMap()
+    ctx.codeComponentsRegistry.getRegisteredFunctionsMap(),
   );
 
   const newFunctionRegs: CustomFunctionRegistration[] = [];
@@ -4751,18 +4759,18 @@ async function upsertRegisteredFunctions(
     if (!isString(functionReg.meta.name)) {
       return err(
         new InvalidCustomFunctionError(
-          `Error registering custom function: expected \`meta.name\` to be a string, but got: ${functionReg.meta.name}`
-        )
+          `Error registering custom function: expected \`meta.name\` to be a string, but got: ${functionReg.meta.name}`,
+        ),
       );
     }
     const errorPrefix = `Error registering custom function ${registeredFunctionId(
-      functionReg
+      functionReg,
     )}:`;
     if (!isValidJsIdentifier(functionReg.meta.name)) {
       return err(
         new InvalidCustomFunctionError(
-          `${errorPrefix} the function name must be a valid JavaScript identifier, but got: ${functionReg.meta.name}`
-        )
+          `${errorPrefix} the function name must be a valid JavaScript identifier, but got: ${functionReg.meta.name}`,
+        ),
       );
     }
     if (
@@ -4771,8 +4779,8 @@ async function upsertRegisteredFunctions(
     ) {
       return err(
         new InvalidCustomFunctionError(
-          `${errorPrefix} the function namespace must be a valid JavaScript identifier, but got: ${functionReg.meta.namespace}`
-        )
+          `${errorPrefix} the function namespace must be a valid JavaScript identifier, but got: ${functionReg.meta.namespace}`,
+        ),
       );
     }
     for (const prop of [
@@ -4784,24 +4792,24 @@ async function upsertRegisteredFunctions(
       if (!isString(functionReg.meta[prop]) && !isNil(functionReg.meta[prop])) {
         return err(
           new InvalidCustomFunctionError(
-            `${errorPrefix} expected \`meta.${prop}\` to be a string, but got: ${functionReg.meta[prop]}`
-          )
+            `${errorPrefix} expected \`meta.${prop}\` to be a string, but got: ${functionReg.meta[prop]}`,
+          ),
         );
       }
     }
     if (!isString(functionReg.meta.importPath)) {
       return err(
         new InvalidCustomFunctionError(
-          `${errorPrefix} expected \`meta.importPath\` to be a string, but got: ${functionReg.meta.importPath}`
-        )
+          `${errorPrefix} expected \`meta.importPath\` to be a string, but got: ${functionReg.meta.importPath}`,
+        ),
       );
     }
     if (!isNil(functionReg.meta.params)) {
       if (!isArray(functionReg.meta.params)) {
         return err(
           new InvalidCustomFunctionError(
-            `${errorPrefix} expected \`meta.params\` to be an array, but got: ${functionReg.meta.params}`
-          )
+            `${errorPrefix} expected \`meta.params\` to be an array, but got: ${functionReg.meta.params}`,
+          ),
         );
       }
       for (const param of functionReg.meta.params as (
@@ -4812,16 +4820,16 @@ async function upsertRegisteredFunctions(
           if (!isValidJsIdentifier(param)) {
             return err(
               new InvalidCustomFunctionError(
-                `${errorPrefix} expected \`meta.params\` to be an array with param names, but the provided name is not a valid JavaScript identifier: ${param}`
-              )
+                `${errorPrefix} expected \`meta.params\` to be an array with param names, but the provided name is not a valid JavaScript identifier: ${param}`,
+              ),
             );
           }
         } else {
           if (!isString(param.name) || !isValidJsIdentifier(param.name)) {
             return err(
               new InvalidCustomFunctionError(
-                `${errorPrefix} Param name is not a valid JavaScript identifier: ${param.name}`
-              )
+                `${errorPrefix} Param name is not a valid JavaScript identifier: ${param.name}`,
+              ),
             );
           }
           const paramErrorPrefix = `Error registering param ${
@@ -4830,8 +4838,8 @@ async function upsertRegisteredFunctions(
           if (!isNil(param.description) && !isString(param.description)) {
             return err(
               new InvalidCustomFunctionError(
-                `${paramErrorPrefix} expected \`description\` to be a string, but got: ${param.description}`
-              )
+                `${paramErrorPrefix} expected \`description\` to be a string, but got: ${param.description}`,
+              ),
             );
           }
           if (!isNil(param.type) && !isValidType(param.type)) {
@@ -4839,8 +4847,8 @@ async function upsertRegisteredFunctions(
               new InvalidCustomFunctionError(
                 `${paramErrorPrefix} \`type\` is not a supported type: ${
                   isArray(param.type) ? param.type.join(" | ") : param.type
-                }`
-              )
+                }`,
+              ),
             );
           }
         }
@@ -4853,8 +4861,8 @@ async function upsertRegisteredFunctions(
       ) {
         return err(
           new InvalidCustomFunctionError(
-            `${errorPrefix} expected \`meta.returnValue.description\` to be a string, but got: ${functionReg.meta.returnValue.description}`
-          )
+            `${errorPrefix} expected \`meta.returnValue.description\` to be a string, but got: ${functionReg.meta.returnValue.description}`,
+          ),
         );
       }
       const returnType = functionReg.meta.returnValue.type;
@@ -4863,8 +4871,8 @@ async function upsertRegisteredFunctions(
           new InvalidCustomFunctionError(
             `${errorPrefix} expected \`meta.returnValue.type\` is not a supported type: ${
               isArray(returnType) ? returnType.join(" | ") : returnType
-            }`
-          )
+            }`,
+          ),
         );
       }
     }
@@ -4884,7 +4892,7 @@ async function upsertRegisteredFunctions(
       ]);
       if (
         Object.entries(updateableFields).some(
-          ([key, value]) => !isEqual(value, existing[key])
+          ([key, value]) => !isEqual(value, existing[key]),
         )
       ) {
         updatedFunctionRegs.push(functionReg);
@@ -4903,28 +4911,28 @@ async function upsertRegisteredFunctions(
   const functionIds = new Set<string>(
     site.customFunctions
       .filter((customFunction) => !removedFunctions.has(customFunction))
-      .map((customFunction) => customFunctionId(customFunction))
+      .map((customFunction) => customFunctionId(customFunction)),
   );
 
   const functionNamespaces = new Set<string>(
     withoutNils(
       allCustomFunctions(site)
         .filter(({ customFunction }) => !removedFunctions.has(customFunction))
-        .map(({ customFunction }) => customFunction.namespace)
-    )
+        .map(({ customFunction }) => customFunction.namespace),
+    ),
   );
 
   for (const functionReg of newFunctionRegs) {
     const errorPrefix = `Error registering custom function ${registeredFunctionId(
-      functionReg
+      functionReg,
     )}:`;
     if (functionIds.has(registeredFunctionId(functionReg))) {
       return err(
         new InvalidCustomFunctionError(
           `${errorPrefix} Multiple functions registered as ${registeredFunctionId(
-            functionReg
-          )}`
-        )
+            functionReg,
+          )}`,
+        ),
       );
     }
     if (
@@ -4933,17 +4941,17 @@ async function upsertRegisteredFunctions(
     ) {
       return err(
         new InvalidCustomFunctionError(
-          `${errorPrefix} Conflicting namespace with the same name as another registered function.`
-        )
+          `${errorPrefix} Conflicting namespace with the same name as another registered function.`,
+        ),
       );
     }
     if (functionNamespaces.has(registeredFunctionId(functionReg))) {
       return err(
         new InvalidCustomFunctionError(
           `${errorPrefix} ${registeredFunctionId(
-            functionReg
-          )} is already registered as a namespace. Please rename the function or add a namespace to it.`
-        )
+            functionReg,
+          )} is already registered as a namespace. Please rename the function or add a namespace to it.`,
+        ),
       );
     }
     functionIds.add(registeredFunctionId(functionReg));
@@ -4969,7 +4977,7 @@ async function upsertRegisteredFunctions(
         for (const functionReg of updatedFunctionRegs) {
           const existing = ensure(
             existingFunctions.get(registeredFunctionId(functionReg)),
-            "Previously checked"
+            "Previously checked",
           );
           const updateableFields: Omit<
             CustomFunction,
@@ -4983,7 +4991,7 @@ async function upsertRegisteredFunctions(
               "isQuery",
               "isMutation",
               "displayName",
-            ]
+            ],
           );
 
           Object.assign(existing, updateableFields);
@@ -4991,7 +4999,7 @@ async function upsertRegisteredFunctions(
         }
         return ok();
       },
-      { noUndoRecord: true }
+      { noUndoRecord: true },
     );
 
     await fns.onUpdatedCustomFunctions?.({
@@ -5007,15 +5015,15 @@ async function upsertRegisteredFunctions(
 
 async function upsertRegisteredLibs(
   ctx: SiteCtx,
-  fns: CodeComponentSyncCallbackFns
+  fns: CodeComponentSyncCallbackFns,
 ) {
   return safeTry<void, InvalidCodeLibraryError>(async function* () {
     const site = ctx.site;
     const existingLibs = new Map(
-      site.codeLibraries.map((lib) => [lib.name, lib])
+      site.codeLibraries.map((lib) => [lib.name, lib]),
     );
     const registeredLibs = new Map(
-      ctx.codeComponentsRegistry.getRegisteredLibrariesMap()
+      ctx.codeComponentsRegistry.getRegisteredLibrariesMap(),
     );
     const newLibraryRegs: CodeLibraryRegistration[] = [];
     const updatedLibraryRegs: CodeLibraryRegistration[] = [];
@@ -5026,37 +5034,37 @@ async function upsertRegisteredLibs(
         if (!isString(registration.meta[prop])) {
           return err(
             new InvalidCodeLibraryError(
-              `${errorPrefix} Expected \`meta.${prop}\` to be a String, but got: ${registration.meta[prop]}`
-            )
+              `${errorPrefix} Expected \`meta.${prop}\` to be a String, but got: ${registration.meta[prop]}`,
+            ),
           );
         }
       }
       if (
         !(["namespace", "default", "named"] as const).includes(
-          registration.meta.importType
+          registration.meta.importType,
         )
       ) {
         return err(
           new InvalidCodeLibraryError(
-            `${errorPrefix} Expected \`meta.importType\` to be a 'namespace', 'default' or 'named', but got: ${registration.meta.importType}`
-          )
+            `${errorPrefix} Expected \`meta.importType\` to be a 'namespace', 'default' or 'named', but got: ${registration.meta.importType}`,
+          ),
         );
       }
       if (!Array.isArray(registration.meta.files)) {
         return err(
           new InvalidCodeLibraryError(
-            `${errorPrefix} Expected \`meta.files\` to be an array, but got: ${registration.meta.files}`
-          )
+            `${errorPrefix} Expected \`meta.files\` to be an array, but got: ${registration.meta.files}`,
+          ),
         );
       }
       const wrongFileIdx = registration.meta.files.findIndex(
-        (f) => !isString(f.contents) || !isString(f.fileName)
+        (f) => !isString(f.contents) || !isString(f.fileName),
       );
       if (wrongFileIdx >= 0) {
         return err(
           new InvalidCodeLibraryError(
-            `${errorPrefix} Unexpect data for \`meta.files[${wrongFileIdx}]\`: ${registration.meta.files[wrongFileIdx]}`
-          )
+            `${errorPrefix} Unexpect data for \`meta.files[${wrongFileIdx}]\`: ${registration.meta.files[wrongFileIdx]}`,
+          ),
         );
       }
 
@@ -5073,7 +5081,7 @@ async function upsertRegisteredLibs(
 
         if (
           Object.entries(updateableFields).some(
-            ([key, value]) => value !== existing[key]
+            ([key, value]) => value !== existing[key],
           )
         ) {
           updatedLibraryRegs.push(registration);
@@ -5106,7 +5114,7 @@ async function upsertRegisteredLibs(
         for (const registration of updatedLibraryRegs) {
           const existing = ensure(
             existingLibs.get(registration.meta.name),
-            "Previously checked"
+            "Previously checked",
           );
           const updateableFields: Omit<
             CodeLibrary,
@@ -5159,7 +5167,7 @@ export function syncPlumeComponent(siteCtx: SiteCtx, comp: Component) {
     const stateChanges = yield* compareComponentStatesWithMeta(
       siteCtx.site,
       comp,
-      compMeta
+      compMeta,
     );
     if (hasStateChanges(stateChanges)) {
       doUpdateComponentStates(siteCtx.site, comp, stateChanges);
@@ -5169,7 +5177,7 @@ export function syncPlumeComponent(siteCtx: SiteCtx, comp: Component) {
 }
 
 export function makePlumeComponentMeta(
-  comp: Component
+  comp: Component,
 ): CodeComponentRegistrationMeta<any> {
   const plugin = getPlumeEditorPlugin(comp);
   const codeMeta = plugin?.codeComponentMeta?.(comp);
@@ -5188,14 +5196,14 @@ export interface CodeComponentWithHelpers extends CodeComponent {
 }
 
 export function isCodeComponentWithHelpers(
-  c: Component
+  c: Component,
 ): c is CodeComponentWithHelpers {
   return !!c.codeComponentMeta?.helpers;
 }
 
 export function tryGetStateHelpers(
   c: CodeComponentRegistrationMeta<any>,
-  state: NamedState
+  state: NamedState,
 ) {
   return c.componentHelpers?.helpers.states?.[state.name];
 }
@@ -5249,12 +5257,12 @@ async function refreshDefaultSlotContents(siteCtx: SiteCtx) {
         slot.defaultContents = [];
       }
       return ok();
-    })
+    }),
   );
 }
 
 export function extractDefaultSlotContents(
-  meta: CodeComponentRegistrationMeta<any>
+  meta: CodeComponentRegistrationMeta<any>,
 ) {
   return Object.fromEntries(
     withoutNils(
@@ -5268,8 +5276,8 @@ export function extractDefaultSlotContents(
         } else {
           return undefined;
         }
-      })
-    )
+      }),
+    ),
   );
 }
 
@@ -5299,14 +5307,14 @@ export function forkAllTplCodeComponentVirtualArgs(site: Site) {
 
 export function appendCodeComponentMetaToModel(
   site: Site,
-  codeComponentRegistrations: ComponentRegistration[]
+  codeComponentRegistrations: ComponentRegistration[],
 ) {
   const codeComponents = allComponents(site, { includeDeps: "all" }).filter(
-    (c) => isCodeComponent(c)
+    (c) => isCodeComponent(c),
   );
   for (const component of codeComponents) {
     const meta = codeComponentRegistrations.find(
-      (c) => c.meta.name === component.name
+      (c) => c.meta.name === component.name,
     )?.meta;
     if (isCodeComponent(component) && meta) {
       component._meta = meta;

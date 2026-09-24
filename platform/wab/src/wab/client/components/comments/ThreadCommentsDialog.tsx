@@ -30,7 +30,7 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog({
       commentsCtx
         .computedData()
         .allThreads.find((t) => t.id === openedThread.threadId),
-    [commentsCtx.computedData().allThreads, openedThread.threadId]
+    [commentsCtx.computedData().allThreads, openedThread.threadId],
   );
   if (!selectedThread) {
     commentsCtx.closeCommentThreadDialog();
@@ -74,7 +74,7 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog({
                         subjectInfo.subject,
                         openedThread.viewCtx
                           .effectiveCurrentVariantSetting(subjectInfo.subject)
-                          .rsh()
+                          .rsh(),
                       )
                     : "",
                 }

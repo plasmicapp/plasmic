@@ -15,7 +15,7 @@ export function getClientDevFlagOverrides(): DevFlagsType {
     params = new URLSearchParams(location.search);
   } else {
     params = new URLSearchParams(
-      `?${getPlasmicStudioArgs().appConfigOverrides}`
+      `?${getPlasmicStudioArgs().appConfigOverrides}`,
     );
   }
 
@@ -31,14 +31,14 @@ export function getClientDevFlagOverrides(): DevFlagsType {
           v === "true"
             ? true
             : v === "false"
-            ? false
-            : // Using equals check because Number([]) returns 0 otherwise it returns NaN
-            String(Number(v)) === v
-            ? Number(v)
-            : v,
+              ? false
+              : // Using equals check because Number([]) returns 0 otherwise it returns NaN
+                String(Number(v)) === v
+                ? Number(v)
+                : v,
         ];
-      })
-    )
+      }),
+    ),
   ) as DevFlagsType;
 
   if (flags.demo && params.get("autoSave") !== "true") {

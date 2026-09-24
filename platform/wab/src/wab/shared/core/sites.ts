@@ -388,8 +388,8 @@ function cloneArenaFrameGrid(
                 ensureMaybeKnownVariantGroup(row.rowKey),
               )
             : mappingFns.getNewRowKeyVariant
-            ? mappingFns.getNewRowKeyVariant(ensureKnownVariant(row.rowKey))
-            : undefined,
+              ? mappingFns.getNewRowKeyVariant(ensureKnownVariant(row.rowKey))
+              : undefined,
           cols: row.cols.map(
             (cell) =>
               new ArenaFrameCell({
@@ -584,7 +584,7 @@ export function cloneSite(fromSite: Site) {
     // reference the new copy -- or it may have been imported, in which
     // case we reference the same instance.
     activeTheme: fromSite.activeTheme
-      ? newThemes.get(fromSite.activeTheme) ?? fromSite.activeTheme
+      ? (newThemes.get(fromSite.activeTheme) ?? fromSite.activeTheme)
       : null,
     globalVariantGroups: newGlobalVariantGroups,
     userManagedFonts: fromSite.userManagedFonts.slice(0),
@@ -595,9 +595,9 @@ export function cloneSite(fromSite: Site) {
     // a new cloned screen variant group, or if it was referencing an
     // imported screen variant group instead, be kept the same
     activeScreenVariantGroup: fromSite.activeScreenVariantGroup
-      ? ensureMaybeKnownGlobalVariantGroup(
+      ? (ensureMaybeKnownGlobalVariantGroup(
           oldToNewGlobalVariantGroup.get(fromSite.activeScreenVariantGroup),
-        ) ?? fromSite.activeScreenVariantGroup
+        ) ?? fromSite.activeScreenVariantGroup)
       : null,
     flags: { ...fromSite.flags },
     hostLessPackageInfo: null,
@@ -819,8 +819,8 @@ export function cloneSite(fromSite: Site) {
     const newRef = isKnownTplNode(ref)
       ? oldToNewTpls.get(ref)
       : isKnownComponentServerQuery(ref)
-      ? oldToNewComponentServerQuery.get(ref)
-      : oldToNewComponentQuery.get(ref);
+        ? oldToNewComponentServerQuery.get(ref)
+        : oldToNewComponentQuery.get(ref);
     queryRef.ref = newRef ?? queryRef.ref;
   };
 
@@ -1496,8 +1496,8 @@ export function getReferencingFrames(site: Site, component: Component) {
   const selfArena = isFrameComponent(component)
     ? undefined
     : isPageComponent(component)
-    ? getPageArena(site, component)
-    : getComponentArena(site, component);
+      ? getPageArena(site, component)
+      : getComponentArena(site, component);
   const arenas = getSiteArenas(site).filter((x) => x !== selfArena);
   return arenas
     .flatMap((arena) => getArenaFrames(arena))

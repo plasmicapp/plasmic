@@ -37,7 +37,7 @@ import memoizeOne from "memoize-one";
 
 function resolveRichTextToJsx(
   ctx: SerializerBaseContext,
-  text: RichText | null | undefined
+  text: RichText | null | undefined,
 ) {
   if (!text) {
     return { content: "", isDynamic: false };
@@ -48,14 +48,14 @@ function resolveRichTextToJsx(
       isKnownCustomCode(text.expr) ||
         isKnownObjectPath(text.expr) ||
         isKnownTemplatedString(text.expr),
-      "Expected CustomCode, ObjectPath, or TemplatedString expr"
+      "Expected CustomCode, ObjectPath, or TemplatedString expr",
     );
     const textCode = isKnownTemplatedString(text.expr)
       ? asCode(text.expr, ctx.exprCtx).code
       : getCodeExpressionWithFallback(text.expr, ctx.exprCtx);
 
     const className = serializeGlobalCssClass(
-      makeWabHtmlTextClassName(ctx.exportOpts)
+      makeWabHtmlTextClassName(ctx.exportOpts),
     );
     const code = text.html
       ? `<div className={${className}} dangerouslySetInnerHTML={{ __html: ${textCode} }} />`
@@ -82,7 +82,7 @@ function resolveRichTextToJsx(
     {
       tag: "span",
       projectId: ctx.projectConfig.projectId,
-    }
+    },
   ).join(" ");
 
   const whitespaceNormal = !!ctx.exportOpts.whitespaceNormal;
@@ -100,11 +100,11 @@ function resolveRichTextToJsx(
       styledRun: (textPart, cssRules, className) =>
         // Make sure these spans have default class names, to override global span styles.
         `<span className={"${className}"} style={${JSON.stringify(
-          cssRules
+          cssRules,
         )}}>${wrapInner(textPart)}</span>`,
       nodeMarker: (tpl) => `{${ctx.serializeTplNode(ctx, tpl)}}`,
     },
-    { spanClassName, whitespaceNormal }
+    { spanClassName, whitespaceNormal },
   );
   if (richTextRoot) {
     ctx.insideRichTextBlock = false;
@@ -143,19 +143,19 @@ function serializeLocalizationKey(ctx: SerializerBaseContext, tpl: TplTextTag) {
           tpl,
           variantCombo: combo,
         },
-        opts
-      )
+        opts,
+      ),
     ),
     combo,
   ]);
 
   const baseValue = ensure(
     comboValues.find(([_str, combo]) => isBaseVariant(combo)),
-    `There must be a base variant`
+    `There must be a base variant`,
   )[0];
 
   const nonBaseValues = comboValues.filter(
-    ([_str, combo]) => !isBaseVariant(combo)
+    ([_str, combo]) => !isBaseVariant(combo),
   );
 
   return joinVariantVals(nonBaseValues, variantComboChecker, baseValue).value;
@@ -164,7 +164,7 @@ function serializeLocalizationKey(ctx: SerializerBaseContext, tpl: TplTextTag) {
 export function serializeTplTextBlockContent(
   ctx: SerializerBaseContext,
   node: TplTextTag,
-  orderedVsettings: VariantSetting[]
+  orderedVsettings: VariantSetting[],
 ) {
   const { variantComboChecker } = ctx;
   const textSettings = orderedVsettings.filter((vs) => !!vs.text);
@@ -180,10 +180,10 @@ export function serializeTplTextBlockContent(
   });
   const r = joinVariantVals(
     rawStringAndVariants.map(([rawString, variants]) =>
-      tuple(rawString, variants)
+      tuple(rawString, variants),
     ),
     variantComboChecker,
-    jsString("")
+    jsString(""),
   );
 
   let value = r.value;

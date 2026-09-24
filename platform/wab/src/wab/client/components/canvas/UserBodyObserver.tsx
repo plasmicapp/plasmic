@@ -9,7 +9,7 @@ import * as React from "react";
 export function useRerenderOnUserBodyChange(
   studioCtx: StudioCtx,
   viewCtx: ViewCtx | undefined,
-  skip = false
+  skip = false,
 ) {
   const [forceRecomputeKey, setForceRecomputeKey] = React.useState(0);
   const [needsRecompute, setNeedsRecompute] = React.useState(false);
@@ -41,10 +41,10 @@ export function useRerenderOnUserBodyChange(
 
   React.useEffect(() => {
     const stylesListener = studioCtx.styleChanged.add(() =>
-      setNeedsRecompute(true)
+      setNeedsRecompute(true),
     );
     const framesListener = studioCtx.framesChanged.add(() =>
-      setNeedsRecompute(true)
+      setNeedsRecompute(true),
     );
 
     return () => {

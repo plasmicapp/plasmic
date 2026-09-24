@@ -93,7 +93,7 @@ export function mkStyleToken({
 export function isStyleTokenEditable(
   token: FinalToken<StyleToken>,
   vsh: VariantedStylesHelper | undefined,
-  uiConfig: UiConfig
+  uiConfig: UiConfig,
 ): token is MutableToken<StyleToken> | OverrideableToken<StyleToken> {
   const canOverride = token.isRegistered
     ? canOverrideRegisteredTokens(uiConfig)
@@ -206,7 +206,7 @@ export const tryParseTokenRef = (
     | ReadonlyArray<FinalToken<StyleToken>>
     | (() => ReadonlyArray<FinalToken<StyleToken>>)
     | Readonly<Record<string, FinalToken<StyleToken>>>
-    | ReadonlyMap<string, FinalToken<StyleToken>>
+    | ReadonlyMap<string, FinalToken<StyleToken>>,
 ): FinalToken<StyleToken> | undefined => {
   const m = ref.match(RE_TOKENREF);
   if (!m) {
@@ -237,11 +237,11 @@ export const parseTokenRef = (
     | ReadonlyArray<FinalToken<StyleToken>>
     | (() => ReadonlyArray<FinalToken<StyleToken>>)
     | Readonly<Record<string, FinalToken<StyleToken>>>
-    | ReadonlyMap<string, FinalToken<StyleToken>>
+    | ReadonlyMap<string, FinalToken<StyleToken>>,
 ) => {
   return ensure(
     tryParseTokenRef(ref, tokensProvider),
-    `Expected to be a token ref`
+    `Expected to be a token ref`,
   );
 };
 
@@ -259,7 +259,7 @@ export const resolveAllTokenRefs = (
     | ReadonlyArray<FinalToken<StyleToken>>
     | ReadonlyMap<string, FinalToken<StyleToken>>,
   valMissingToken?: string,
-  vsh?: VariantedStylesHelper
+  vsh?: VariantedStylesHelper,
 ) => {
   const finder = isReadonlyArray(tokens)
     ? (tokenId: string) => tokens.find((t) => t.uuid === tokenId)
@@ -276,7 +276,7 @@ export const resolveAllTokenRefs = (
 
 export const replaceAllTokenRefs = (
   str: string,
-  getVal: (tokenId: string) => string | undefined
+  getVal: (tokenId: string) => string | undefined,
 ) => {
   return str.replace(RE_TOKENREF_ALL, (sub, tokenId) => {
     const replace = getVal(tokenId);
@@ -286,7 +286,7 @@ export const replaceAllTokenRefs = (
 
 export function tryParseAllTokenRefs(
   str: string,
-  tokens: StyleToken[] | Record<string, StyleToken>
+  tokens: StyleToken[] | Record<string, StyleToken>,
 ) {
   return withoutNils(
     [...str.matchAll(RE_TOKENREF_ALL)].map((m) => {
@@ -295,13 +295,13 @@ export function tryParseAllTokenRefs(
       } else {
         return tokens[m[1]];
       }
-    })
+    }),
   );
 }
 
 export const extractAllReferencedTokens = (
   str: string,
-  tokens: StyleToken[]
+  tokens: StyleToken[],
 ) => {
   const tokenIds = extractAllReferencedTokenIds(str);
   return withoutNils(tokenIds.map((m) => tokens.find((t) => t.uuid === m)));
@@ -319,7 +319,7 @@ export const getMixinPropVarName = (
   mixin: Mixin,
   p: string,
   tryIndirect: boolean,
-  infix?: string
+  infix?: string,
 ) =>
   `--mixin-${tryIndirect && mixin.forTheme ? "default" : mixin.uuid}${
     infix ? `-${infix}` : ""
@@ -329,14 +329,14 @@ export const mkMixinPropRef = (
   mixin: Mixin,
   p: string,
   tryIndirect: boolean,
-  infix?: string
+  infix?: string,
 ) => `var(${getMixinPropVarName(mixin, p, tryIndirect, infix)})`;
 
 export const isMixinPropRef = (ref: string) => ref.startsWith("var(--mixin-");
 
 export const tryParseMixinPropRef = (
   ref: string,
-  mixins: Mixin[] | Map<string, Mixin>
+  mixins: Mixin[] | Map<string, Mixin>,
 ) => {
   const m = ref.match(/var\(--mixin-(.+)_(.*)\)$/);
   if (!m) {
@@ -361,7 +361,7 @@ export function resolveToken(
     | ReadonlyArray<FinalToken<StyleToken>>
     | ReadonlyMap<string, FinalToken<StyleToken>>,
   token: FinalToken<StyleToken>,
-  vsh?: VariantedStylesHelper
+  vsh?: VariantedStylesHelper,
 ): ResolvedToken {
   const seenTokens = new Set<StyleToken>();
   vsh = vsh ?? new VariantedStylesHelper();
@@ -387,7 +387,7 @@ export function resolveTokenRef(
     | ReadonlyArray<FinalToken<StyleToken>>
     | ReadonlyMap<string, FinalToken<StyleToken>>,
   value: StyleTokenValue,
-  vsh?: VariantedStylesHelper
+  vsh?: VariantedStylesHelper,
 ): SetOptional<ResolvedToken, "token"> {
   if (isTokenRef(value)) {
     return resolveToken(tokens, parseTokenRef(value, tokens), vsh);
@@ -401,7 +401,7 @@ export function derefTokenRefs(
     | ReadonlyArray<FinalToken<StyleToken>>
     | ReadonlyMap<string, FinalToken<StyleToken>>,
   value: string,
-  vsh?: VariantedStylesHelper
+  vsh?: VariantedStylesHelper,
 ): StyleTokenValue {
   return resolveTokenRef(tokens, value as StyleTokenValue, vsh).value;
 }
@@ -411,7 +411,7 @@ export function derefToken(
     | ReadonlyArray<FinalToken<StyleToken>>
     | ReadonlyMap<string, FinalToken<StyleToken>>,
   token: FinalToken<StyleToken>,
-  vsh?: VariantedStylesHelper
+  vsh?: VariantedStylesHelper,
 ): StyleTokenValue {
   return resolveToken(tokens, token, vsh).value;
 }
@@ -437,7 +437,7 @@ export function maybeDerefToken(
     | ReadonlyArray<FinalToken<StyleToken>>
     | ReadonlyMap<string, FinalToken<StyleToken>>,
   token: FinalToken<StyleToken>,
-  vsh?: VariantedStylesHelper
+  vsh?: VariantedStylesHelper,
 ): StyleTokenValue {
   // If its a token ref and the ref is present in the current project, then don't de-ref it, because the ref in value is known
   if (tryParseTokenRef(token.value, currentTokens)) {
@@ -453,7 +453,7 @@ export function lazyDerefTokenRefs(
   site: Site,
   tokenType: StyleTokenType,
   opts: { includeDeps?: DependencyWalkScope } = {},
-  vsh?: VariantedStylesHelper
+  vsh?: VariantedStylesHelper,
 ): StyleTokenValue {
   if (!isTokenRef(value)) {
     return value as StyleTokenValue;
@@ -466,24 +466,24 @@ export function lazyDerefTokenRefsWithDeps(
   value: string,
   site: Site,
   tokenType: StyleTokenType,
-  vsh?: VariantedStylesHelper
+  vsh?: VariantedStylesHelper,
 ): StyleTokenValue {
   return lazyDerefTokenRefs(
     value,
     site,
     tokenType,
     { includeDeps: "all" },
-    vsh
+    vsh,
   );
 }
 
 export function addOrUpsertTokens(site: Site, tokens: UpsertTokenReq[]) {
   const normalize = toVarName;
   const tokenByNormalizedName = new Map(
-    site.styleTokens.map((token) => [normalize(token.name), token])
+    site.styleTokens.map((token) => [normalize(token.name), token]),
   );
   const mixinByNormalizedName = new Map(
-    site.mixins.map((mixin) => [normalize(mixin.name), mixin])
+    site.mixins.map((mixin) => [normalize(mixin.name), mixin]),
   );
   const tplMgr = new TplMgr({ site });
 
@@ -493,7 +493,7 @@ export function addOrUpsertTokens(site: Site, tokens: UpsertTokenReq[]) {
     }
     if (typeof token.value !== "string") {
       throw new Error(
-        `Token ${token.name} has unexpected value ${token.value}`
+        `Token ${token.name} has unexpected value ${token.value}`,
       );
     }
     const normalizedName = normalize(token.name);
@@ -502,7 +502,7 @@ export function addOrUpsertTokens(site: Site, tokens: UpsertTokenReq[]) {
         parseCss(token.value, { startRule: "boxShadows" });
       } catch {
         throw new BadRequestError(
-          `Couldn't parse BoxShadow value: ${token.value}`
+          `Couldn't parse BoxShadow value: ${token.value}`,
         );
       }
 
@@ -522,7 +522,7 @@ export function addOrUpsertTokens(site: Site, tokens: UpsertTokenReq[]) {
       } else {
         if (!tokenTypes.includes(token.type)) {
           throw new Error(
-            `Token ${token.name} has unexpected type ${token.type}`
+            `Token ${token.name} has unexpected type ${token.type}`,
           );
         }
         const newToken = tplMgr.addStyleToken({
@@ -546,7 +546,7 @@ export function addOrUpsertTokens(site: Site, tokens: UpsertTokenReq[]) {
     if (token.type === "BoxShadow") {
       const mixin = ensure(
         mixinByNormalizedName.get(normalizedName),
-        `${MIXIN_CAP} should exist`
+        `${MIXIN_CAP} should exist`,
       );
 
       const exp = new RuleSetHelpers(mixin.rs, "div");
@@ -566,7 +566,7 @@ export function addOrUpsertTokens(site: Site, tokens: UpsertTokenReq[]) {
     } else {
       const m = ensure(
         token.value.match(varRegex),
-        "Style token should be a reference (i.e be in `var(name)` format"
+        "Style token should be a reference (i.e be in `var(name)` format",
       );
       const referencedTokenName = normalize(m[1]);
       const referencedToken = tokenByNormalizedName.get(referencedTokenName);
@@ -575,7 +575,7 @@ export function addOrUpsertTokens(site: Site, tokens: UpsertTokenReq[]) {
       }
       const tokenToFix = ensure(
         tokenByNormalizedName.get(normalizedName),
-        "Style Token should exist"
+        "Style Token should exist",
       );
       tokenToFix.value = mkTokenRef(referencedToken);
     }
@@ -585,6 +585,7 @@ export function addOrUpsertTokens(site: Site, tokens: UpsertTokenReq[]) {
 export function findTokenByNameOrUuid(searchStr: string, opts: { site: Site }) {
   return opts.site.styleTokens.find(
     (token) =>
-      toVarName(token.name) === toVarName(searchStr) || token.uuid === searchStr
+      toVarName(token.name) === toVarName(searchStr) ||
+      token.uuid === searchStr,
   );
 }

@@ -54,10 +54,10 @@ export const APP_ROUTES = {
   content: route("/content/:databaseId/:tableId"),
   contentEntry: route("/content/:databaseId/:tableId/:rowId"),
   contentEntryRevisions: route(
-    "/content/:databaseId/:tableId/:rowId/revisions"
+    "/content/:databaseId/:tableId/:rowId/revisions",
   ),
   contentEntryRevision: route(
-    "/content/:databaseId/:tableId/:rowId/revisions/:revisionId"
+    "/content/:databaseId/:tableId/:rowId/revisions/:revisionId",
   ),
 
   //
@@ -75,10 +75,10 @@ export const APP_ROUTES = {
   cmsModelContent: route("/cms/:databaseId/content/models/:tableId"),
   cmsEntry: route("/cms/:databaseId/content/models/:tableId/entries/:rowId"),
   cmsEntryRevisions: route(
-    "/cms/:databaseId/content/models/:tableId/entries/:rowId/revisions"
+    "/cms/:databaseId/content/models/:tableId/entries/:rowId/revisions",
   ),
   cmsEntryRevision: route(
-    "/cms/:databaseId/content/models/:tableId/entries/:rowId/revisions/:revisionId"
+    "/cms/:databaseId/content/models/:tableId/entries/:rowId/revisions/:revisionId",
   ),
   cmsSchemaRoot: route("/cms/:databaseId/schemas"),
   cmsModelSchema: route("/cms/:databaseId/schemas/:tableId"),
@@ -97,14 +97,14 @@ export const APP_ROUTES = {
   projectFullPreview: route("/projects/:projectId/preview-full{/*previewPath}"),
   projectDocs: route("/projects/:projectId/docs"),
   projectDocsComponents: route(
-    "/projects/:projectId/docs/:codegenType/components"
+    "/projects/:projectId/docs/:codegenType/components",
   ),
   projectDocsComponent: route(
-    "/projects/:projectId/docs/:codegenType/component/:componentIdOrClassName"
+    "/projects/:projectId/docs/:codegenType/component/:componentIdOrClassName",
   ),
   projectDocsIcons: route("/projects/:projectId/docs/:codegenType/icons"),
   projectDocsIcon: route(
-    "/projects/:projectId/docs/:codegenType/icon/:iconIdOrClassName"
+    "/projects/:projectId/docs/:codegenType/icon/:iconIdOrClassName",
   ),
   projectDocsCodegenType: route("/projects/:projectId/docs/:codegenType"),
   starter: route("/starters/:starterTag"),

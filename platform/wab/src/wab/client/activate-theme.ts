@@ -10,7 +10,7 @@ export function activateTheme(studioCtx: StudioCtx, theme: Theme) {
   // get() would fall back to "initial", which useFont registers as a missing
   // font.
   const fontFamily = new RuleSetHelpers(theme.defaultStyle.rs, "div").getRaw(
-    "font-family"
+    "font-family",
   );
   if (fontFamily) {
     studioCtx.fontManager.useFont(studioCtx, fontFamily);

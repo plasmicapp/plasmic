@@ -21,7 +21,7 @@ test.describe("dynamic-pages-simplified", () => {
       request,
       context,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
 
     projectId = await apiClient.setupNewProject({ name: "dynamic-pages" });
@@ -39,7 +39,7 @@ test.describe("dynamic-pages-simplified", () => {
           await apiClient.removeProjectAfterTest(
             projectId,
             "user2@example.com",
-            "!53kr3tz!"
+            "!53kr3tz!",
           );
         }
       }
@@ -64,7 +64,7 @@ test.describe("dynamic-pages-simplified", () => {
 
         await models.studio.rightPanel.waitForProductIdButton();
         await models.studio.rightPanel.clickCreateDynamicPageButton();
-      }
+      },
     );
 
     const framed = models.studio.frame.locator("iframe").first().contentFrame();
@@ -76,9 +76,8 @@ test.describe("dynamic-pages-simplified", () => {
     const selectedElt = framed.locator(".__wab_rich_text");
     await expect(selectedElt).toHaveText("1");
 
-    const pageParamInput = await models.studio.rightPanel.getPageParamInput(
-      "product_id"
-    );
+    const pageParamInput =
+      await models.studio.rightPanel.getPageParamInput("product_id");
     await expect(pageParamInput).toHaveValue("1");
 
     await models.studio.rightPanel.clickViewDifferentRecord();

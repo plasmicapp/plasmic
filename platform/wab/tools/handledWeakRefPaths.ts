@@ -196,11 +196,11 @@ type MaybeWithSuffix<T extends string | null> = T extends null
 type KeysFiltered<
   T,
   Prefix extends string | null = null,
-  Suffix extends string | null = null
+  Suffix extends string | null = null,
 > = {
   [K in keyof T]-?: K extends MaybeWithPrefix<Prefix>
     ? never
     : K extends MaybeWithSuffix<Suffix>
-    ? never
-    : K;
+      ? never
+      : K;
 }[keyof T];

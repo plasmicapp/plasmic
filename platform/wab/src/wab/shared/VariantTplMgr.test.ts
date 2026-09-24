@@ -39,7 +39,7 @@ describe("VariantTplMgr.mkTplComponentWithDefaults", () => {
 
   it("respects registered defaultStyles instead of clobbering them", () => {
     const exp = instantiate(
-      mkCodeComponent({ "max-width": "none", "object-fit": "contain" })
+      mkCodeComponent({ "max-width": "none", "object-fit": "contain" }),
     );
     expect(exp.getRaw("max-width")).toBe("none");
     expect(exp.getRaw("object-fit")).toBe("contain");

@@ -1,7 +1,7 @@
-import { assert } from "@/wab/shared/common";
-import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { BundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { PkgVersion } from "@/wab/server/entities/Entities";
+import { assert } from "@/wab/shared/common";
 
 const stateManagementWorskpaceId = "kZp2bNnMvBuSKZXYYP1rye";
 export const migrate: BundledMigrationFn = async (bundle, entity) => {
@@ -19,7 +19,7 @@ export const migrate: BundledMigrationFn = async (bundle, entity) => {
     assert(
       inst._type !== "EventHandler" ||
         stateManagementWorskpaceId !== workspaceId,
-      `project ${projectId} doesn't belong to the state management workspace so it shouldn't have an EventHandler`
+      `project ${projectId} doesn't belong to the state management workspace so it shouldn't have an EventHandler`,
     );
   }
 };

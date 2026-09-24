@@ -26,7 +26,7 @@ export function withUndoBatching<T extends Editor>(
   }: {
     HistoryEditor: typeof slateHistory.HistoryEditor;
     DOMEditor: typeof slateDom.DOMEditor;
-  }
+  },
 ): T {
   const { apply } = editor;
   let lastTypingTime = 0;

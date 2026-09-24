@@ -1,3 +1,14 @@
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import {
+  BundleMigrationType,
+  unbundleSite,
+} from "@/wab/server/db/bundle-migration-utils";
+import {
+  Bundle,
+  BundledInst,
+  Bundler,
+  FastBundler,
+} from "@/wab/shared/bundler";
 import {
   assert,
   ensure,
@@ -7,22 +18,8 @@ import {
   xDifference,
   xGroupBy,
 } from "@/wab/shared/common";
-import { isPlumeComponent, PlumeComponent } from "@/wab/shared/core/components";
+import { PlumeComponent, isPlumeComponent } from "@/wab/shared/core/components";
 import { mkOnChangeParamForState } from "@/wab/shared/core/lang";
-import {
-  BundleMigrationType,
-  unbundleSite,
-} from "@/wab/server/db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
-import {
-  Bundle,
-  BundledInst,
-  Bundler,
-  FastBundler,
-} from "@/wab/shared/bundler";
-import { isKnownNamedState, Site, State } from "@/wab/shared/model/classes";
-import { meta } from "@/wab/shared/model/classes-metas";
-import { Class, Field, MetaRuntime, Type } from "@/wab/shared/model/model-meta";
 import { writeable } from "@/wab/shared/core/sites";
 import {
   genOnChangeParamName,
@@ -30,6 +27,9 @@ import {
   removeComponentState,
 } from "@/wab/shared/core/states";
 import { trackComponentRoot, trackComponentSite } from "@/wab/shared/core/tpls";
+import { Site, State, isKnownNamedState } from "@/wab/shared/model/classes";
+import { meta } from "@/wab/shared/model/classes-metas";
+import { Class, Field, MetaRuntime, Type } from "@/wab/shared/model/model-meta";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   for (const inst of Object.values(bundle.map)) {
@@ -81,14 +81,14 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
       inst.__type = "GlobalVariantGroup";
       assert(
         inst.linkedState == null,
-        () => "GlobalVariantGroup shouldn't have linkedState"
+        () => "GlobalVariantGroup shouldn't have linkedState",
       );
       delete inst.linkedState;
     } else if (inst.__type === "Component") {
       inst.states.forEach((state) => {
         assert(
           typeof state.__ref === "string",
-          () => "Unexpected state to be " + state
+          () => "Unexpected state to be " + state,
         );
         if (!!inst.codeComponentMeta || !!inst.plumeInfo) {
           codeComponentStates.add(state.__ref);
@@ -117,17 +117,17 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     if (inst.__type === "ComponentVariantGroup") {
       assert(
         "__ref" in inst.param,
-        () => "Missing ComponentVariantGroup.param ref"
+        () => "Missing ComponentVariantGroup.param ref",
       );
       const paramIid = inst.param.__ref;
       componentVariantGroupParams.add(paramIid);
       const stateIid = ensure(
         inst.linkedState?.__ref,
-        () => `Missing ComponentVariantGroup.linkedState`
+        () => `Missing ComponentVariantGroup.linkedState`,
       );
       assert(
         bundle.map[stateIid].__type === "State",
-        () => `linkedState is of type ${bundle.map[stateIid].__type}`
+        () => `linkedState is of type ${bundle.map[stateIid].__type}`,
       );
       bundle.map[stateIid].__type = "VariantGroupState";
       bundle.map[stateIid].variantGroup = { __ref: key };
@@ -135,7 +135,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     if (inst.__type === "GlobalVariantGroup") {
       assert(
         "__ref" in inst.param,
-        () => "Missing GlobalVariantGroup.param ref"
+        () => "Missing GlobalVariantGroup.param ref",
       );
       const paramIid = inst.param.__ref;
       globalVariantGroupParams.add(paramIid);
@@ -154,7 +154,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
       if (inst.onChangeParam) {
         assert(
           "__ref" in inst.onChangeParam,
-          () => "Missing State.onChangeParam ref"
+          () => "Missing State.onChangeParam ref",
         );
         const changeHandlerParamIid = inst.onChangeParam.__ref;
         if (!codeComponentStates.has(key)) {
@@ -187,7 +187,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
         () =>
           `Sets not disjoint: ${i} and ${j} have common elements ${[
             ...intersection.keys(),
-          ].join(",")}`
+          ].join(",")}`,
       );
     }
   }
@@ -199,7 +199,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     () =>
       `The following component variant group params are not state params: ${
         [...difference.keys()].length
-      }`
+      }`,
   );
 
   for (const inst of Object.values(bundle.map)) {
@@ -216,41 +216,41 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const mkStateHandlerParam = (stateIid: string, stateJson: BundledInst) => {
     const componentIid = ensure(
       stateToComponent.get(stateIid),
-      () => `Couldn't find component for ${stateIid}`
+      () => `Couldn't find component for ${stateIid}`,
     );
     assert(
       ["State", "VariantGroupState", "NamedState"].includes(stateJson.__type),
-      () => `Unexpected ${stateJson.__type}, expected state`
+      () => `Unexpected ${stateJson.__type}, expected state`,
     );
     assert(
       stateJson.onChangeParam == null,
-      () => `State already has onChange param`
+      () => `State already has onChange param`,
     );
     const stateParam = ensure(
       ensure(
         bundle.map[stateJson.param.__ref],
-        () => `Couldn't find state param ref`
+        () => `Couldn't find state param ref`,
       ),
-      () => `Coulnd't find stateParam`
+      () => `Coulnd't find stateParam`,
     );
     const variable = ensure(
       ensure(
         bundle.map[stateParam.variable.__ref],
-        () => `Couldn't find state variable ref`
+        () => `Couldn't find state variable ref`,
       ),
-      () => `Coulnd't find state variable`
+      () => `Coulnd't find state variable`,
     );
     const onChangeParam = mkOnChangeParamForState(
       stateJson.variableType,
       genOnChangeParamName(variable.name),
-      { privateState: true }
+      { privateState: true },
     );
     // We can assign to null here because `tmpBundler` uses `fakeMetaRuntime`
     writeable(onChangeParam).state = null as any;
     const tmpBundle = tmpBundler.bundle(
       onChangeParam,
       "id",
-      bundle.version || "0-new-version"
+      bundle.version || "0-new-version",
     );
     assert(tmpBundle.deps.length === 0, () => `Shouldn't have any deps`);
     Object.assign(bundle.map, tmpBundle.map);
@@ -277,7 +277,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     finalBundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   for (const component of site.components) {
@@ -294,8 +294,8 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     finalBundler.bundle(
       siteOrProjectDep,
       entity.id,
-      bundle.version || "0-new-version"
-    )
+      bundle.version || "0-new-version",
+    ),
   );
 
   finalBundler.unbundleAndRecomputeParents(bundle as Bundle, entity.id);
@@ -304,7 +304,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
 // Fake meta runtime where `state` param is nullable so we can bundle in `tmpBundle`
 const changeHandlerParamCls = ensure(
   meta.schema.find((cls) => cls.name === "StateChangeHandlerParam"),
-  () => `Couldn't find StateChangeHandlerParam cls`
+  () => `Couldn't find StateChangeHandlerParam cls`,
 );
 const fakeMetaRuntime = new MetaRuntime(
   [
@@ -329,7 +329,7 @@ const fakeMetaRuntime = new MetaRuntime(
       ],
     }),
   ],
-  3000000
+  3000000,
 );
 
 // Due to an old bug, some plume components have duplicated states
@@ -365,10 +365,10 @@ function fixPlumeComponents(site: Site) {
           assert(
             !isPublicState(newImplicitState) ||
               component.states.some(
-                (state2) => state2.implicitState === newImplicitState
+                (state2) => state2.implicitState === newImplicitState,
               ),
             () =>
-              `Could not find implicit state for public state ${newImplicitState.param.variable.name}`
+              `Could not find implicit state for public state ${newImplicitState.param.variable.name}`,
           );
           // Dedupe
           removeComponentState(site, component, state);

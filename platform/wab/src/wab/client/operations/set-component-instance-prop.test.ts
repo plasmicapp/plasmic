@@ -61,12 +61,12 @@ describe("setComponentInstanceProp", () => {
       instance,
       "features",
       ["rounded", "shadow"],
-      opts
+      opts,
     );
 
     expect(result.isOk()).toBe(true);
     const variantsRef = ensureKnownVariantsRef(
-      getArg(instance, "features")!.expr
+      getArg(instance, "features")!.expr,
     );
     expect(variantsRef.variants).toEqual(featuresGroup.variants);
   });
@@ -88,7 +88,7 @@ describe("setComponentInstanceProp", () => {
       instance,
       "tone",
       "secondary",
-      opts
+      opts,
     );
 
     expect(result.isOk()).toBe(true);
@@ -102,12 +102,12 @@ describe("setComponentInstanceProp", () => {
       instance,
       "publishedAt",
       "2024-01-01T00:00:00.000Z",
-      opts
+      opts,
     );
 
     expect(result.isOk()).toBe(true);
     expect(tryExtractJson(getArg(instance, "publishedAt")!.expr)).toEqual(
-      "2024-01-01T00:00:00.000Z"
+      "2024-01-01T00:00:00.000Z",
     );
   });
 
@@ -122,11 +122,11 @@ describe("setComponentInstanceProp", () => {
         instance,
         "activeRange",
         range,
-        opts
+        opts,
       );
       expect(result.isOk()).toBe(true);
       expect(tryExtractJson(getArg(instance, "activeRange")!.expr)).toEqual(
-        range
+        range,
       );
     }
   });
@@ -147,7 +147,7 @@ describe("setComponentInstanceProp", () => {
       instance,
       "children",
       "content",
-      opts
+      opts,
     );
 
     assert(result.isErr(), "expected error");

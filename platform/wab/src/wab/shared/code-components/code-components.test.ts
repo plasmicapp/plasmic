@@ -46,38 +46,38 @@ describe("code-components", () => {
     const plumeSite = unbundled.site;
     expect(unbundled.depPkgs).toBeEmpty();
     plumeComponent = plumeSite.components.find(
-      (c) => c.name === "TextInput"
+      (c) => c.name === "TextInput",
     ) as PlumeComponent;
     expect(plumeComponent).toBeInstanceOf(Component);
     expect(plumeComponent.plumeInfo).toBeDefined();
     plumeNameParam = plumeComponent.params.find(
-      (p) => p.variable.name === "name"
+      (p) => p.variable.name === "name",
     ) as PropParam;
     expect(plumeNameParam).toBeInstanceOf(PropParam);
     plumeValueParam = plumeComponent.params.find(
-      (p) => p.variable.name === "value"
+      (p) => p.variable.name === "value",
     ) as StateParam;
     expect(plumeValueParam).toBeInstanceOf(StateParam);
     plumeOnChangeParam = plumeComponent.params.find(
-      (p) => p.variable.name === "onChange"
+      (p) => p.variable.name === "onChange",
     ) as PropParam;
     expect(plumeOnChangeParam).toBeInstanceOf(PropParam);
     plumeIsDisabledParam = plumeComponent.params.find(
-      (p) => p.variable.name === "Is Disabled"
+      (p) => p.variable.name === "Is Disabled",
     ) as StateParam;
     expect(plumeIsDisabledParam).toBeInstanceOf(StateParam);
     plumeOnIsDisabledChangeParam = plumeComponent.params.find(
-      (p) => p.variable.name === "On Is Disabled change"
+      (p) => p.variable.name === "On Is Disabled change",
     ) as StateChangeHandlerParam;
     expect(plumeOnIsDisabledChangeParam).toBeInstanceOf(
-      StateChangeHandlerParam
+      StateChangeHandlerParam,
     );
     plumeAriaLabelParam = plumeComponent.params.find(
-      (p) => p.variable.name === "aria-label"
+      (p) => p.variable.name === "aria-label",
     ) as PropParam;
     expect(plumeAriaLabelParam).toBeInstanceOf(PropParam);
     plumeAriaLabelledByParam = plumeComponent.params.find(
-      (p) => p.variable.name === "aria-labelledby"
+      (p) => p.variable.name === "aria-labelledby",
     ) as PropParam;
     expect(plumeAriaLabelledByParam).toBeInstanceOf(PropParam);
 
@@ -98,14 +98,14 @@ describe("code-components", () => {
   describe("getNewProps", () => {
     it("returns no params for the full component", () => {
       const paramNames = unwrap(
-        getNewProps(site, plumeComponent, plumePluginComponentMeta)
+        getNewProps(site, plumeComponent, plumePluginComponentMeta),
       ).newProps.map((p) => p.variable.name);
       expect(paramNames).toBeEmpty();
     });
     it("returns all params for a component with no params", () => {
       plumeComponent.params = [];
       const paramNames = unwrap(
-        getNewProps(site, plumeComponent, plumePluginComponentMeta)
+        getNewProps(site, plumeComponent, plumePluginComponentMeta),
       ).newProps.map((p) => p.variable.name);
       expect(paramNames).toEqual([
         "value",
@@ -120,7 +120,7 @@ describe("code-components", () => {
       arrayRemove(plumeComponent.params, plumeValueParam);
       arrayRemove(plumeComponent.params, plumeAriaLabelParam);
       const paramNames = unwrap(
-        getNewProps(site, plumeComponent, plumePluginComponentMeta)
+        getNewProps(site, plumeComponent, plumePluginComponentMeta),
       ).newProps.map((p) => p.variable.name);
       expect(paramNames).toEqual(["value", "aria-label"]);
     });
@@ -150,7 +150,7 @@ describe("code-components", () => {
       ]);
       expect(dupAriaLabelParam.uid).toBeGreaterThan(plumeAriaLabelParam.uid);
       expect(dupAriaLabelledByParam.uid).toBeGreaterThan(
-        plumeAriaLabelledByParam.uid
+        plumeAriaLabelledByParam.uid,
       );
     });
     it("returns the params with 2 highest uids for 3 params", () => {
@@ -169,12 +169,12 @@ describe("code-components", () => {
         ...dupAriaLabelledByParams,
       ]);
       expect(
-        dupAriaLabelParams.every((p) => p.uid > plumeAriaLabelParam.uid)
+        dupAriaLabelParams.every((p) => p.uid > plumeAriaLabelParam.uid),
       ).toBeTrue();
       expect(
         dupAriaLabelledByParams.every(
-          (p) => p.uid > plumeAriaLabelledByParam.uid
-        )
+          (p) => p.uid > plumeAriaLabelledByParam.uid,
+        ),
       ).toBeTrue();
     });
   });

@@ -8,23 +8,23 @@ export class ChangeCommentSchema1729805882051 implements MigrationInterface {
     await queryRunner.query(`TRUNCATE TABLE "comment" CASCADE`);
     await queryRunner.query(`ALTER TABLE "comment" DROP COLUMN "data"`);
     await queryRunner.query(
-      `ALTER TABLE "comment" ADD "resolved" boolean NOT NULL DEFAULT false`
+      `ALTER TABLE "comment" ADD "resolved" boolean NOT NULL DEFAULT false`,
     );
     await queryRunner.query(
-      `ALTER TABLE "comment" ADD "location" jsonb NOT NULL`
+      `ALTER TABLE "comment" ADD "location" jsonb NOT NULL`,
     );
     await queryRunner.query(`ALTER TABLE "comment" ADD "body" text NOT NULL`);
     await queryRunner.query(
-      `ALTER TABLE "comment" ADD "threadId" text NOT NULL`
+      `ALTER TABLE "comment" ADD "threadId" text NOT NULL`,
     );
     await queryRunner.query(
-      `CREATE INDEX "IDX_f7f39dec77c39953338d2701ae" ON "comment" ("threadId") `
+      `CREATE INDEX "IDX_f7f39dec77c39953338d2701ae" ON "comment" ("threadId") `,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `DROP INDEX "public"."IDX_f7f39dec77c39953338d2701ae"`
+      `DROP INDEX "public"."IDX_f7f39dec77c39953338d2701ae"`,
     );
     await queryRunner.query(`ALTER TABLE "comment" DROP COLUMN "threadId"`);
     await queryRunner.query(`ALTER TABLE "comment" DROP COLUMN "body"`);

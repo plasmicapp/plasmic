@@ -27,7 +27,7 @@ export type CommentPostFormProps = DefaultCommentPostFormProps & {
 };
 
 const CommentPostForm = observer(function CommentPostForm(
-  props: CommentPostFormProps
+  props: CommentPostFormProps,
 ) {
   const {
     id,

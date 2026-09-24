@@ -10,7 +10,7 @@ export function pngData() {
     "image/png": new File(
       [getParsedDataUrlBuffer(parseDataUrl(dataUri))],
       "tiny.png",
-      { type: "image/png" }
+      { type: "image/png" },
     ),
   };
   return {

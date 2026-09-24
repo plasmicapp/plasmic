@@ -63,7 +63,7 @@ export function interpolatedStringToExpr(str: string): Expr {
  * for repeat / visibility conditions. Throws EvaluationError otherwise.
  */
 export function interpolatedStringToCodeExpr(
-  str: string
+  str: string,
 ): ObjectPath | CustomCode {
   const expr = interpolatedStringToExpr(str.trim());
   if (isRealCodeExprEnsuringType(expr)) {
@@ -71,7 +71,7 @@ export function interpolatedStringToCodeExpr(
   }
   const badStr = JSON.stringify(str);
   throw new EvaluationError(
-    `Expected a JS expression (e.g. {{ $q.myQuery.data }}), not static text. Got: ${badStr}`
+    `Expected a JS expression (e.g. {{ $q.myQuery.data }}), not static text. Got: ${badStr}`,
   );
 }
 
@@ -92,7 +92,7 @@ export function interpolatedStringToRichText(str: string): RichText {
  * Throws `EvaluationError` on a malformed `{{ }}` body.
  */
 export function parseInterpolatedString(
-  str: string
+  str: string,
 ): TemplatedStringPropEditorValue {
   return simplifyTemplatedString(interpolatedStringToTemplatedString(str));
 }
@@ -111,7 +111,7 @@ export function codeToDynExpr(code: string): ObjectPath | CustomCode {
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     throw new EvaluationError(
-      `Invalid interpolation: ${msg}. Code was: ${JSON.stringify(code)}`
+      `Invalid interpolation: ${msg}. Code was: ${JSON.stringify(code)}`,
     );
   }
   return customCode(code);
@@ -137,7 +137,7 @@ export function objectLiteralToExpr(input: string): Expr | undefined {
     const msg = e instanceof Error ? e.message : String(e);
     throw new EvaluationError(
       `Object/array arg values must be valid JSON with each dynamic leaf as a quoted {{ }} string, ` +
-        `e.g. { "url": "{{ $ctx.params.api }}", "method": "GET" }. Parse error: ${msg}`
+        `e.g. { "url": "{{ $ctx.params.api }}", "method": "GET" }. Parse error: ${msg}`,
     );
   }
   return serCompositeExprMaybe(jsonToValueOrExpr(json));
@@ -181,7 +181,7 @@ function jsonToValueOrExpr(value: JsonValue): ValueOrExpr {
  * Dynamic segments with simple member-access become ObjectPath instead of CustomCode.
  */
 export function interpolatedStringToTemplatedString(
-  str: string
+  str: string,
 ): TemplatedString {
   // Preserves leading/trailing whitespace in static content.
   // Only the `{{ }}` expression body is trimmed.
@@ -190,7 +190,7 @@ export function interpolatedStringToTemplatedString(
     text: segments.map((seg) =>
       isDynamicValue(seg)
         ? codeToDynExpr(seg.substring(2, seg.length - 2))
-        : seg
+        : seg,
     ),
   });
 }
@@ -229,9 +229,9 @@ export function exprToInterpolatedString(expr: Expr): string | undefined {
     .when(TemplatedString, (templatedString) =>
       templatedString.text
         .map((seg) =>
-          typeof seg === "string" ? seg : exprToInterpolation(seg)
+          typeof seg === "string" ? seg : exprToInterpolation(seg),
         )
-        .join("")
+        .join(""),
     )
     .when([CustomCode, ObjectPath], (dynExpr) => {
       const json = tryExtractJson(dynExpr);
@@ -240,7 +240,7 @@ export function exprToInterpolatedString(expr: Expr): string | undefined {
     .when(VarRef, (varRef) =>
       varRef.variable
         ? `{{ $props.${toVarName(varRef.variable.name)} }}`
-        : undefined
+        : undefined,
     )
     .when(PageHref, (pageHref) => pageHrefToInterpolatedString(pageHref))
     .elseUnsafe(() => undefined);
@@ -257,7 +257,7 @@ function pageHrefToInterpolatedString(pageHref: PageHref): string | undefined {
   // Parts are all renderable, only a dangling VarRef reads as an empty segment.
   return renderPageHrefUrl(
     pageHref,
-    (value) => exprToInterpolatedString(value) ?? ""
+    (value) => exprToInterpolatedString(value) ?? "",
   );
 }
 
@@ -274,7 +274,7 @@ export function dataQueryArgSchema() {
       value: z
         .string()
         .describe(
-          "Object/array value: a JSON literal whose dynamic leaves are inline `{{ }}` strings."
+          "Object/array value: a JSON literal whose dynamic leaves are inline `{{ }}` strings.",
         ),
     }),
   ]);
@@ -288,14 +288,14 @@ export type DataQueryArgJson = z.infer<ReturnType<typeof dataQueryArgSchema>>;
  */
 export function exprToDataQueryArg(
   name: string,
-  expr: Expr
+  expr: Expr,
 ): DataQueryArgJson | undefined {
   if (isKnownCompositeExpr(expr)) {
     return {
       __type: "CompositeExpr",
       name,
       value: JSON.stringify(
-        exprLeavesToInterpolations(deserCompositeExpr(expr))
+        exprLeavesToInterpolations(deserCompositeExpr(expr)),
       ),
     };
   }

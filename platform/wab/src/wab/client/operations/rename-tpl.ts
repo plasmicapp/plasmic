@@ -21,7 +21,7 @@ export type RenameTplResult = Result<string | null, GenericError>;
 export function renameTpl(
   tpl: TplNamable,
   name: string | null,
-  opts: { component: Component; tplMgr: TplMgr }
+  opts: { component: Component; tplMgr: TplMgr },
 ): RenameTplResult {
   const { component, tplMgr } = opts;
 

@@ -4,8 +4,10 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicListSection";
 import * as React from "react";
 
-interface ListSectionProps
-  extends Omit<DefaultListSectionProps, "collapseState"> {
+interface ListSectionProps extends Omit<
+  DefaultListSectionProps,
+  "collapseState"
+> {
   isCollapsible?: boolean;
   defaultCollapsed?: boolean;
   style?: React.CSSProperties;

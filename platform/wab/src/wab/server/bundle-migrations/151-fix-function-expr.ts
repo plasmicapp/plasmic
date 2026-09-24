@@ -32,7 +32,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   const fixFunctionExpr = (expr: Expr) => {
@@ -73,12 +73,12 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
           }
           if (isKnownFunctionExpr(expr.mapExpr["custom"])) {
             expr.mapExpr["custom"].bodyExpr = fixFunctionExpr(
-              expr.mapExpr["custom"].bodyExpr
+              expr.mapExpr["custom"].bodyExpr,
             );
           } else {
             logger().info(
               "function expr error: form rules",
-              expr.mapExpr.custom
+              expr.mapExpr.custom,
             );
             unexpected();
           }
@@ -118,7 +118,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "151-fix-function-exprs"
+    "151-fix-function-exprs",
   );
   Object.assign(bundle, newBundle);
 };

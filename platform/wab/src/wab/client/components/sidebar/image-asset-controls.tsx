@@ -61,7 +61,7 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
   const { filterDeps, filterProps } = useDepFilterButton({
     studioCtx,
     deps: studioCtx.site.projectDependencies.filter(
-      (dep) => dep.site.imageAssets.length > 0
+      (dep) => dep.site.imageAssets.length > 0,
     ),
   });
 
@@ -71,11 +71,11 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
   const matcher = new Matcher(query);
 
   const [editAsset, setEditAsset] = React.useState<ImageAsset | undefined>(
-    undefined
+    undefined,
   );
 
   const [justAdded, setJustAdded] = React.useState<ImageAsset | undefined>(
-    undefined
+    undefined,
   );
 
   const [findReferenceAsset, setFindReferenceAsset] = React.useState<
@@ -125,7 +125,7 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
       assets = assets.filter(
         (asset) =>
           asset.type === type &&
-          (matcher.matches(asset.name) || justAdded === asset)
+          (matcher.matches(asset.name) || justAdded === asset),
       );
       assets = naturalSort(assets, (asset) => asset.name);
       return assets.map((asset) => ({
@@ -137,10 +137,10 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
 
     const makeDepsItems = (deps: ProjectDependency[]) => {
       deps = deps.filter(
-        (dep) => filterDeps.length === 0 || filterDeps.includes(dep)
+        (dep) => filterDeps.length === 0 || filterDeps.includes(dep),
       );
       deps = naturalSort(deps, (dep) =>
-        studioCtx.projectDependencyManager.getNiceDepName(dep)
+        studioCtx.projectDependencyManager.getNiceDepName(dep),
       );
       return deps.map((dep) => ({
         type: "group" as const,
@@ -157,18 +157,18 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
         : []),
       ...makeDepsItems(
         studioCtx.site.projectDependencies.filter(
-          (d) => !isHostLessPackage(d.site)
-        )
+          (d) => !isHostLessPackage(d.site),
+        ),
       ),
       ...makeDepsItems(
         studioCtx.site.projectDependencies.filter((d) =>
-          isHostLessPackage(d.site)
-        )
+          isHostLessPackage(d.site),
+        ),
       ),
     ];
 
     const selectableAssets = makeAssetsItems(studioCtx.site.imageAssets).map(
-      (asset) => asset.key
+      (asset) => asset.key,
     );
 
     return (
@@ -204,7 +204,7 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
           itemHeight={32}
           renderGroupHeader={(dep) =>
             `Imported from "${studioCtx.projectDependencyManager.getNiceDepName(
-              dep
+              dep,
             )}"`
           }
           headerHeight={50}
@@ -237,7 +237,7 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
             ? {
                 children: imageAssetsSection(
                   ImageAssetType.Icon,
-                  canWriteIcons
+                  canWriteIcons,
                 ),
               }
             : { render: () => null }
@@ -263,7 +263,7 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
             ? {
                 children: imageAssetsSection(
                   ImageAssetType.Picture,
-                  canWriteImages
+                  canWriteImages,
                 ),
               }
             : { render: () => null }
@@ -345,13 +345,13 @@ const ImageAssetControl = observer(function ImageAssetControl(props: {
       push(
         <Menu.Item key="references" onClick={onFindReferences}>
           Find all references
-        </Menu.Item>
+        </Menu.Item>,
       );
       if (asset.dataUri) {
         push(
           <Menu.Item key="download" onClick={() => downloadImageAsset(asset)}>
             Download image
-          </Menu.Item>
+          </Menu.Item>,
         );
       }
       if (editable) {
@@ -364,7 +364,7 @@ const ImageAssetControl = observer(function ImageAssetControl(props: {
               }
             >
               Start bulk selection
-            </Menu.Item>
+            </Menu.Item>,
           );
           push(
             <Menu.Item
@@ -372,7 +372,7 @@ const ImageAssetControl = observer(function ImageAssetControl(props: {
               onClick={() => studioCtx.siteOps().tryDeleteImageAssets([asset])}
             >
               Delete
-            </Menu.Item>
+            </Menu.Item>,
           );
         }
       }
@@ -452,9 +452,9 @@ export const ImageAssetSidebarPopup = observer(
             studioCtx.appCtx,
             image,
             asset.type as ImageAssetType,
-            file
+            file,
           );
-        })()
+        })(),
       );
       if (!imageResult || !opts) {
         return;
@@ -485,7 +485,7 @@ export const ImageAssetSidebarPopup = observer(
               disabled={!editable}
               onValueChange={(name) =>
                 studioCtx.changeUnsafe(() =>
-                  studioCtx.tplMgr().renameImageAsset(asset, name)
+                  studioCtx.tplMgr().renameImageAsset(asset, name),
                 )
               }
               placeholder={"(unnamed asset)"}
@@ -533,7 +533,7 @@ export const ImageAssetSidebarPopup = observer(
         </div>
       </SidebarModal>
     );
-  }
+  },
 );
 
 export function getCmsImageUrl(uploaded: ImageUploadResponse) {

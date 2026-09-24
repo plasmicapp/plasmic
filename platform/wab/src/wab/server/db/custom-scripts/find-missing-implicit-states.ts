@@ -16,12 +16,12 @@ export async function findMissingImplicitStates(em: EntityManager) {
     logger().info(
       numberOfProjects === processedProjects
         ? "FINISHED"
-        : `${((100 * processedProjects) / numberOfProjects).toFixed(2)}%`
+        : `${((100 * processedProjects) / numberOfProjects).toFixed(2)}%`,
     );
     logger().info(`# of projects to check ${numberOfProjects}`);
     logger().info(`# of processed projects ${processedProjects}`);
     logger().info(
-      `# of projects with missing implicit states: ${badProjects.length}`
+      `# of projects with missing implicit states: ${badProjects.length}`,
     );
     logger().info("Bad projects", { badProjectsSummary: badProjects });
   };

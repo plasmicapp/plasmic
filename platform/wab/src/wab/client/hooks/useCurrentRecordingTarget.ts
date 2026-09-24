@@ -7,7 +7,7 @@ export function useCurrentRecordingTarget(): "baseVariant" | "nonBaseVariant" {
   const variantsController = makeVariantsController(studioCtx);
   const activeVariants = variantsController?.getActiveNonBaseVariants() ?? [];
   const targetedVariants = activeVariants?.filter((it) =>
-    variantsController?.isTargeted(it)
+    variantsController?.isTargeted(it),
   );
 
   return targetedVariants.length > 0 ? "nonBaseVariant" : "baseVariant";

@@ -16,22 +16,22 @@ export interface PlasmicWorkerPool {
   // since we are calling exec with a string and not a typed function
   exec(
     method: "codegen",
-    params: Parameters<typeof workerGenCode>
+    params: Parameters<typeof workerGenCode>,
   ): ReturnType<typeof workerGenCode>;
   exec(
     method: "loader-assets",
-    params: Parameters<typeof workerBuildAssets>
+    params: Parameters<typeof workerBuildAssets>,
   ): ReturnType<typeof workerBuildAssets>;
   exec(
     method: "localization-strings",
-    params: Parameters<typeof workerLocalizationStrings>
+    params: Parameters<typeof workerLocalizationStrings>,
   ): ReturnType<typeof workerLocalizationStrings>;
 }
 
 class WorkerPoolWrapper {
   constructor(
     private loaderPool: WorkerPool,
-    private genericPool: WorkerPool
+    private genericPool: WorkerPool,
   ) {}
 
   exec(method: string, params: any) {

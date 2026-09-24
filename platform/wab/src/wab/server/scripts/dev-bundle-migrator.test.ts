@@ -18,7 +18,7 @@ describe("bundle-migrations", () => {
   fs.readdirSync(FIXTURES_DIR)
     .filter(
       (fileName) =>
-        fileName.endsWith(".json") && !fileName.endsWith(EXPECTED_EXT)
+        fileName.endsWith(".json") && !fileName.endsWith(EXPECTED_EXT),
     )
     .forEach((fileName) => {
       it(`migrates ${fileName}`, async () => {

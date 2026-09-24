@@ -29,7 +29,7 @@ export function validateCodeComponentParams(opts: {
     const meta = tplNode.component._meta;
     const ccContextData = frameUid
       ? globalHookCtx.frameValKeyToContextData.get(
-          mkFrameValKeyToContextDataKey(frameUid, instanceKey)
+          mkFrameValKeyToContextDataKey(frameUid, instanceKey),
         )
       : undefined;
     const invalidArgs: InvalidArgMeta[] = withoutNils(
@@ -55,7 +55,7 @@ export function validateCodeComponentParams(opts: {
             valNode.codeComponentProps[p.variable.name],
             valNode.codeComponentProps,
             ccContextData,
-            { path: [p.variable.name] }
+            { path: [p.variable.name] },
           );
           if (res !== true) {
             return {
@@ -67,7 +67,7 @@ export function validateCodeComponentParams(opts: {
           }
         }
         return undefined;
-      })
+      }),
     );
     if (invalidArgs.length > 0) {
       valNode.invalidArgs = invalidArgs;

@@ -31,7 +31,7 @@ const Preview = observer(function Preview(props: PreviewProps) {
             spawn(previewCtx.toggleLiveMode());
           },
         }
-      : {}
+      : {},
   );
   return (
     <div

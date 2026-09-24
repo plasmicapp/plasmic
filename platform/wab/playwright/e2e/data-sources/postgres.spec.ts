@@ -45,7 +45,7 @@ test.describe("Postgres Data Source", () => {
     testDatabase = await createPostgresTestDatabase();
     await apiClient.createPostgresDataSource(
       dataSourceName,
-      testDatabase.connection
+      testDatabase.connection,
     );
 
     await apiClient.login("user2@example.com", "!53kr3tz!");
@@ -192,7 +192,7 @@ test.describe("Postgres Data Source", () => {
       throw new Error(
         `Expected both actions on Update button, got: ${[
           ...updateActionLabels,
-        ].join(", ")}`
+        ].join(", ")}`,
       );
     }
 
@@ -226,14 +226,14 @@ test.describe("Postgres Data Source", () => {
 
 async function configureCustomersQuery(
   studio: StudioModel,
-  dataSourceName: string
+  dataSourceName: string,
 ) {
   await studio.rightPanel.switchToComponentDataTab();
   await studio.rightPanel.addComponentQuery();
   await studio.rightPanel.pickDataSource(dataSourceName);
 
   const resourceBtn = studio.rightPanel.frame.locator(
-    '[data-plasmic-prop="data-source-modal-pick-resource-btn"]'
+    '[data-plasmic-prop="data-source-modal-pick-resource-btn"]',
   );
   await resourceBtn.click();
   await studio.rightPanel.frame
@@ -241,7 +241,7 @@ async function configureCustomersQuery(
     .click();
 
   const sortBtn = studio.rightPanel.frame.locator(
-    '[data-plasmic-prop="data-source-sort"]'
+    '[data-plasmic-prop="data-source-sort"]',
   );
   await sortBtn.click();
   await studio.rightPanel.frame.locator('[data-key="customer_id"]').click();
@@ -251,7 +251,7 @@ async function configureCustomersQuery(
     "5",
     {
       reset: true,
-    }
+    },
   );
   await studio.rightPanel.saveDataSourceModal();
 }
@@ -265,7 +265,7 @@ async function setupCustomersList(studio: StudioModel) {
 
 async function expectCustomersInDesign(
   studio: StudioModel,
-  customers: string[]
+  customers: string[],
 ) {
   const frame = studio.getComponentFrameByIndex(0);
   await expectCustomersInFrame(frame, customers);
@@ -273,7 +273,7 @@ async function expectCustomersInDesign(
 
 async function expectCustomersInFrame(
   frame: FrameLocator,
-  customers: string[]
+  customers: string[],
 ) {
   for (const customer of customers) {
     await expect(frame.locator(`text="${customer}"`)).toBeVisible();
@@ -284,7 +284,7 @@ async function configureButtonInteractions(
   studio: StudioModel,
   page: Page,
   label: string,
-  actions: InteractionConfig[]
+  actions: InteractionConfig[],
 ) {
   await studio.leftPanel.insertNode("Button");
   await studio.rightPanel.bindTextContentToCustomCode(`"${label}"`);
@@ -294,7 +294,7 @@ async function configureButtonInteractions(
 async function addOnClickActions(
   studio: StudioModel,
   page: Page,
-  actions: InteractionConfig[]
+  actions: InteractionConfig[],
 ) {
   const { rightPanel } = studio;
   const actionLabels = new Set<string>();
@@ -335,7 +335,7 @@ async function addOnClickActions(
       await page.waitForTimeout(2000);
 
       const integrationBtn = rightPanel.frame.locator(
-        '[data-plasmic-prop="data-source-modal-pick-integration-btn"]'
+        '[data-plasmic-prop="data-source-modal-pick-integration-btn"]',
       );
       await integrationBtn.click();
       await page.waitForTimeout(300);
@@ -345,7 +345,7 @@ async function addOnClickActions(
       await page.waitForTimeout(500);
 
       const operationBtn = rightPanel.frame.locator(
-        '[data-plasmic-prop="data-source-modal-pick-operation-btn"]'
+        '[data-plasmic-prop="data-source-modal-pick-operation-btn"]',
       );
       await operationBtn.click();
       await page.waitForTimeout(300);
@@ -359,7 +359,7 @@ async function addOnClickActions(
 
       if (dsOp.args.resource) {
         const resourceBtn = rightPanel.frame.locator(
-          '[data-plasmic-prop="data-source-modal-pick-resource-btn"]'
+          '[data-plasmic-prop="data-source-modal-pick-resource-btn"]',
         );
         await resourceBtn.click();
         await page.waitForTimeout(300);
@@ -396,7 +396,7 @@ async function addOnClickActions(
         page,
         action.args.variable || [],
         action.args.operation || "newValue",
-        action.args.value || ""
+        action.args.value || "",
       );
     }
   }
@@ -410,7 +410,7 @@ async function addOnClickActions(
 async function selectAction(
   studio: StudioModel,
   page: Page,
-  actionKey: string
+  actionKey: string,
 ) {
   const { rightPanel } = studio;
   const actionDropdown = rightPanel.frame
@@ -433,7 +433,7 @@ async function configureUpdateVariable(
   page: Page,
   variable: string[],
   operation: string,
-  valueExpression: string
+  valueExpression: string,
 ) {
   const { rightPanel } = studio;
 

@@ -28,7 +28,7 @@ export function useCanvasForceUpdate(sub: SubDeps, sync = true) {
       sync
         ? isMounted() && setState([])
         : defer(() => isMounted() && setState([])),
-    [sub, sync]
+    [sub, sync],
   );
 
   return forceUpdate;

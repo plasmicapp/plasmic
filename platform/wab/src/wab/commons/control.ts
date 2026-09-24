@@ -15,7 +15,7 @@ export type ReadablePromise<T, E = Error> = Readonly<WriteablePromise<T, E>>;
  * Plays well with PLazy (will only lazily trigger the PLazy).
  */
 export function asReadablePromise<T, E = Error>(
-  promise: Promise<T>
+  promise: Promise<T>,
 ): ReadablePromise<T, E> {
   const rp: WriteablePromise<T, E> = {
     promise: promise.then(
@@ -26,7 +26,7 @@ export function asReadablePromise<T, E = Error>(
       (error) => {
         rp.result = err(error);
         throw error;
-      }
+      },
     ),
     result: undefined,
   };
@@ -46,23 +46,23 @@ export function asReadablePromise<T, E = Error>(
  * consistently and correctly, together with callbackify.
  */
 export function safeCallbackify<Args extends any[], Result>(
-  fn: (...args: Args) => Promise<Result>
+  fn: (...args: Args) => Promise<Result>,
 ): (
   ...args: [
     ...args: Args,
-    cb: (err: Error | undefined | null, result?: Result) => void
+    cb: (err: Error | undefined | null, result?: Result) => void,
   ]
 ) => void {
   return (
     ...args: [
       ...args: Args,
-      cb: (err: Error | undefined | null, result?: Result) => void
+      cb: (err: Error | undefined | null, result?: Result) => void,
     ]
   ) => {
     const [realArgs, cb] = spanLast(args);
     fn(...hackyCast(realArgs)).then(
       (result) => cb(null, result),
-      (reason) => cb(reason)
+      (reason) => cb(reason),
     );
   };
 }

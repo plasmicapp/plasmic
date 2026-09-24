@@ -51,7 +51,7 @@ describe("todo app codegen", () => {
     ];
 
     const rootElement = document.querySelector(
-      `[data-testid="root"]`
+      `[data-testid="root"]`,
     ) as HTMLElement;
     const root = within(rootElement);
 
@@ -60,29 +60,29 @@ describe("todo app codegen", () => {
 
     const checkPeopleList = async () => {
       expect(root.getByTestId("stringified-state")).toHaveTextContent(
-        JSON.stringify(expectedPeople)
+        JSON.stringify(expectedPeople),
       );
       expect(root.getAllByTestId("person-container")).toHaveLength(
-        expectedPeople.length
+        expectedPeople.length,
       );
       expectedPeople.forEach((expectedPerson, i) => {
         const person = getPerson(i);
         expect(person.getByTestId("firstName-input")).toHaveValue(
-          expectedPerson.firstName
+          expectedPerson.firstName,
         );
         expect(person.getByTestId("lastName-input")).toHaveValue(
-          expectedPerson.lastName
+          expectedPerson.lastName,
         );
         if (!expectedPerson.nicknames.length) {
           expect(person.queryByTestId("nickname-input")).toBeNil();
         } else {
           expect(person.getAllByTestId("nickname-input")).toHaveLength(
-            expectedPerson.nicknames.length
+            expectedPerson.nicknames.length,
           );
         }
         expectedPerson.nicknames.forEach((expectedNickname, j) => {
           expect(person.getAllByTestId("nickname-input")[j]).toHaveValue(
-            expectedNickname
+            expectedNickname,
           );
         });
       });
@@ -90,7 +90,7 @@ describe("todo app codegen", () => {
 
     const changeFirstName = async (
       personIndex: number,
-      newFirstName: string
+      newFirstName: string,
     ) => {
       const person = getPerson(personIndex);
       const input = person.getByTestId("firstName-input") as HTMLInputElement;
@@ -110,7 +110,7 @@ describe("todo app codegen", () => {
     const changeNickname = async (
       personIndex: number,
       nicknameIndex: number,
-      newNickname: string
+      newNickname: string,
     ) => {
       const person = getPerson(personIndex);
       const input = person.getAllByTestId("nickname-input")[
@@ -126,7 +126,7 @@ describe("todo app codegen", () => {
       await userEvent.click(person.getByTestId("add-nickname"));
       await userEvent.type(
         last(person.getAllByTestId("nickname-input")),
-        nickname
+        nickname,
       );
       expectedPeople[personIndex].nicknames.push(nickname);
     };
@@ -144,11 +144,11 @@ describe("todo app codegen", () => {
 
     const removeNickname = async (
       personIndex: number,
-      nicknameIndex: number
+      nicknameIndex: number,
     ) => {
       const person = getPerson(personIndex);
       await userEvent.click(
-        person.getAllByTestId("remove-nickname")[nicknameIndex]
+        person.getAllByTestId("remove-nickname")[nicknameIndex],
       );
       expectedPeople[personIndex].nicknames.splice(nicknameIndex, 1);
     };

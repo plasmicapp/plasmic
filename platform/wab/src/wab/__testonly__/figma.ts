@@ -9,7 +9,7 @@ export const createSiteOps = (tplMgr: TplMgr) => {
   return {
     createImageAsset: (
       img: ResizableImage,
-      opts: { type?: ImageAssetType; name?: string }
+      opts: { type?: ImageAssetType; name?: string },
     ) => {
       const dataUri = img.url;
       const type = opts.type!;
@@ -41,7 +41,7 @@ export const getTestFigmaData = (id) => {
     __dirname,
     "figma",
     "files",
-    `${id}-figdata.json`
+    `${id}-figdata.json`,
   );
   const raw = fs.readFileSync(figdataPath);
   // @ts-ignore

@@ -81,13 +81,13 @@ export function mkOnChangeParamForState(
   onChangeProp: string,
   opts: {
     privateState: boolean;
-  }
+  },
 ) {
   return mkParam({
     name: onChangeProp,
     paramType: "stateChangeHandler",
     type: typeFactory.func(
-      typeFactory.arg("val", convertVariableTypeToWabType(variableType))
+      typeFactory.arg("val", convertVariableTypeToWabType(variableType)),
     ),
     description: "EventHandler",
     exportType: opts.privateState
@@ -119,8 +119,8 @@ export function mkParamsForState({
       accessType === "writable"
         ? ParamExportType.External
         : variableType === "variant"
-        ? ParamExportType.Internal
-        : ParamExportType.ToolsOnly,
+          ? ParamExportType.Internal
+          : ParamExportType.ToolsOnly,
     defaultExpr,
     previewExpr,
     description: variableType,
@@ -134,7 +134,7 @@ export function mkParamsForState({
 export function mkParamsForImplicitState(
   state: State,
   name: string,
-  onChangeProp: string
+  onChangeProp: string,
 ) {
   const valueParam = mkParam({
     name,
@@ -147,7 +147,7 @@ export function mkParamsForImplicitState(
   const onChangeParam = mkOnChangeParamForState(
     state.variableType as StateVariableType,
     onChangeProp,
-    { privateState: true }
+    { privateState: true },
   );
   return { valueParam, onChangeParam };
 }
@@ -175,17 +175,17 @@ type PropParamOpts = mkParamProps<PropParam, ParamTypes.Prop> & {
 };
 
 export function mkParam(
-  opts: mkParamProps<SlotParam, ParamTypes.Slot>
+  opts: mkParamProps<SlotParam, ParamTypes.Slot>,
 ): SlotParam;
 export function mkParam(opts: PropParamOpts): PropParam;
 export function mkParam(
-  opts: mkParamProps<GlobalVariantGroupParam, ParamTypes.GlobalVariantGroup>
+  opts: mkParamProps<GlobalVariantGroupParam, ParamTypes.GlobalVariantGroup>,
 ): GlobalVariantGroupParam;
 export function mkParam(
-  opts: mkParamProps<StateParam, ParamTypes.State>
+  opts: mkParamProps<StateParam, ParamTypes.State>,
 ): StateParam;
 export function mkParam(
-  opts: mkParamProps<StateChangeHandlerParam, ParamTypes.StateChangeHandler>
+  opts: mkParamProps<StateChangeHandlerParam, ParamTypes.StateChangeHandler>,
 ): StateChangeHandlerParam;
 
 export function mkParam(opts: mkParamProps<Param, ParamTypes>) {
@@ -290,7 +290,7 @@ export function cloneParamAndVar<T extends Param>(param_: T): T {
           ...commonProps,
           type: cloneType(p.type),
           tplSlot: UNINITIALIZED_VALUE,
-        })
+        }),
     )
     .when(
       PropParam,
@@ -299,7 +299,7 @@ export function cloneParamAndVar<T extends Param>(param_: T): T {
           ...commonProps,
           type: cloneType(p.type),
           advanced: p.advanced,
-        })
+        }),
     )
     .when(
       GlobalVariantGroupParam,
@@ -307,7 +307,7 @@ export function cloneParamAndVar<T extends Param>(param_: T): T {
         new GlobalVariantGroupParam({
           ...commonProps,
           type: cloneType(p.type),
-        })
+        }),
     )
     .when(
       StateParam,
@@ -316,7 +316,7 @@ export function cloneParamAndVar<T extends Param>(param_: T): T {
           ...commonProps,
           type: cloneType(p.type),
           state: UNINITIALIZED_VALUE,
-        })
+        }),
     )
     .when(
       StateChangeHandlerParam,
@@ -325,7 +325,7 @@ export function cloneParamAndVar<T extends Param>(param_: T): T {
           ...commonProps,
           type: cloneType(p.type),
           state: UNINITIALIZED_VALUE,
-        })
+        }),
     )
     .result() as T;
 }

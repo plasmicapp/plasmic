@@ -4,7 +4,10 @@ class DeepMapEntry<T> {
   private closestIdx: number = 0;
   isDisposed = false;
 
-  constructor(private base: Map<any, any>, private args: any[]) {
+  constructor(
+    private base: Map<any, any>,
+    private args: any[],
+  ) {
     let current: undefined | Map<any, any> = (this.closest = this.root = base);
     let i = 0;
     for (; i < this.args.length - 1; i++) {
@@ -87,7 +90,7 @@ export class DeepMap<T> {
       this.argsLength = args.length;
     } else if (this.argsLength !== args.length) {
       throw new Error(
-        `DeepMap should be used with functions with a consistent length, expected: ${this.argsLength}, got: ${args.length}`
+        `DeepMap should be used with functions with a consistent length, expected: ${this.argsLength}, got: ${args.length}`,
       );
     }
     if (this.last) {
@@ -120,7 +123,7 @@ export function deepMapMemoized<T extends (...args: any[]) => any>(
   opts: {
     funcKey: string;
     argKeys?: (args: Parameters<T>) => any[];
-  }
+  },
 ) {
   const funcKey = opts.funcKey;
   if (!funcKey || funcKey.length === 0) {

@@ -20,11 +20,11 @@ async function checkBundleFiles({ files }: CheckArgs) {
     if (i + 1 < files.length) {
       const id = +ensure(
         last(file.split("/")),
-        () => `Unexpected file ${file}`
+        () => `Unexpected file ${file}`,
       ).split("-")[0];
       const nextId = +ensure(
         last(files[i + 1].split("/")),
-        () => `Unexpected file ${files[i + 1]}`
+        () => `Unexpected file ${files[i + 1]}`,
       ).split("-")[0];
       if (id + 1 !== nextId) {
         throw new Error("Invalid migration index");
@@ -49,11 +49,11 @@ async function checkBundleFiles({ files }: CheckArgs) {
       content.includes("db.");
     if (content.includes(`= "bundled"`) && maybeUnbundling) {
       throw new Error(
-        `Migration marked as bundled, but seems to be unbundling: ${file}`
+        `Migration marked as bundled, but seems to be unbundling: ${file}`,
       );
     } else if (content.includes(`= "unbundled"`) && !maybeUnbundling) {
       throw new Error(
-        `Migration marked as unbundled, but doesn't seem to be unbundling: ${file}`
+        `Migration marked as unbundled, but doesn't seem to be unbundling: ${file}`,
       );
     }
   });
@@ -73,7 +73,7 @@ async function checkBundleFiles({ files }: CheckArgs) {
   if (!arrayEq(files, savedList)) {
     fs.writeFileSync(
       path.join(__dirname, "migrations-list.txt"),
-      files.join("\n")
+      files.join("\n"),
     );
     throw new Error("Stale migrations list");
   }
@@ -94,8 +94,8 @@ export async function main() {
         checkBundleFiles(args).catch((err) => {
           logger().error("Error on check list of bundle migrations", err);
           process.exit(1);
-        })
-      )
+        }),
+      ),
     )
     .demandCommand()
     .help("h")
@@ -107,6 +107,6 @@ if (require.main === module) {
     main().catch((err) => {
       logger().error("Error on check-bundle-migrations", err);
       process.exit(1);
-    })
+    }),
   );
 }

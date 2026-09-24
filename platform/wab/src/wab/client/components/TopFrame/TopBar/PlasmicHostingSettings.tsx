@@ -33,8 +33,7 @@ import { FaUpload } from "react-icons/fa";
 import useSWR, { mutate } from "swr";
 import * as tldts from "tldts";
 
-export interface PlasmicHostingSettingsProps
-  extends DefaultPlasmicHostingSettingsProps {
+export interface PlasmicHostingSettingsProps extends DefaultPlasmicHostingSettingsProps {
   project: ApiProject;
   refreshProjectAndPerms: () => void;
   onRemove: () => void;
@@ -60,7 +59,7 @@ function withoutWww(domain: string) {
  */
 export function pickDomainCards(
   savedDomain: string | undefined,
-  failedDomain: string | undefined
+  failedDomain: string | undefined,
 ) {
   // www.example.com and example.com register as a pair. Either form may be the
   // saved canonical, and each needs DNS instructions, they get their own cards.
@@ -85,8 +84,8 @@ export function pickDomainCards(
     erroredDomain: !isAboutSavedDomain
       ? undefined
       : failedDomain === secondaryDomain
-      ? secondaryDomain
-      : savedDomain,
+        ? secondaryDomain
+        : savedDomain,
   };
 }
 
@@ -108,7 +107,7 @@ function PlasmicHostingSettings_(
     onRemove: _onRemove,
     ...rest
   }: PlasmicHostingSettingsProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const appCtx = useAppCtx();
   const appConfig = appCtx.appConfig;
@@ -131,13 +130,13 @@ function PlasmicHostingSettings_(
   });
 
   const domainValidator = new DomainValidator(
-    appConfig.plasmicHostingSubdomainSuffix
+    appConfig.plasmicHostingSubdomainSuffix,
   );
 
   const settings: HostingSettings = {
     subdomain:
       domainValidator.parseSubdomainPart(
-        domainValidator.extractSubdomain(domainsResult?.domains ?? []) ?? ""
+        domainValidator.extractSubdomain(domainsResult?.domains ?? []) ?? "",
       ) ?? "",
     customDomain:
       domainValidator.extractCustomDomain(domainsResult?.domains ?? []) ?? "",
@@ -150,7 +149,7 @@ function PlasmicHostingSettings_(
   }, [JSON.stringify(settings)]);
 
   const [showDomainCardFor, setShowDomainCardFor] = useState<string | null>(
-    null
+    null,
   );
 
   useEffect(() => {
@@ -184,7 +183,7 @@ function PlasmicHostingSettings_(
     },
     {
       shouldRetryOnError: false,
-    }
+    },
   );
 
   async function handleCustomDomain() {
@@ -197,7 +196,7 @@ function PlasmicHostingSettings_(
     try {
       const response = await api.setCustomDomainForProject(
         customDomain || undefined,
-        projectId
+        projectId,
       );
 
       const failure = getSetCustomDomainFailure(response);
@@ -244,8 +243,8 @@ function PlasmicHostingSettings_(
         domainStatus && !domainStatus.status.isValid
           ? "error"
           : saving
-          ? "loading"
-          : undefined
+            ? "loading"
+            : undefined
       }
       subdomainSuffix={"." + appConfig.plasmicHostingSubdomainSuffix}
       subdomainForm={{
@@ -260,7 +259,7 @@ function PlasmicHostingSettings_(
               subdomain
                 ? `${subdomain}.${appConfig.plasmicHostingSubdomainSuffix}`
                 : undefined,
-              projectId
+              projectId,
             );
             await mutate(apiKey("getDomainsForProject", projectId));
           } finally {
@@ -301,10 +300,10 @@ function PlasmicHostingSettings_(
         settings.customDomain || showDomainCardFor
           ? "added"
           : adding
-          ? "loading"
-          : error
-          ? "preliminaryError"
-          : undefined
+            ? "loading"
+            : error
+              ? "preliminaryError"
+              : undefined
       }
       customDomainForm={{
         onSubmit: (e) => {
@@ -344,13 +343,13 @@ function PlasmicHostingSettings_(
             erroredDomain,
           } = pickDomainCards(
             settings.customDomain || undefined,
-            error ? error.domain || undefined : undefined
+            error ? error.domain || undefined : undefined,
           );
           if (!savedDomain && !candidateDomain) {
             return null;
           }
           const setErrorFor = (
-            cardDomain: string
+            cardDomain: string,
           ): DomainCardError | undefined =>
             error && cardDomain === erroredDomain
               ? mkDomainCardError(error)
@@ -406,7 +405,7 @@ function PlasmicHostingSettings_(
             (async function () {
               await api.setShowHostingBadge(projectId, newValue);
               refreshProjectAndPerms();
-            })()
+            })(),
           );
         },
         isDisabled: isTeamOnFreeTierOrTrial,
@@ -458,7 +457,7 @@ function PlasmicHostingSettings_(
                     },
                   });
                   await mutateHostingSettings();
-                })()
+                })(),
               );
             }}
             accept={"image"}

@@ -20,11 +20,11 @@ async function main() {
       "-d, --days <days>",
       "Number of days after soft-deletion to permanently delete",
       parseInt,
-      28
+      28,
     )
     .option(
       "-f, --force",
-      "Force delete related entities even if they have not been soft-deleted"
+      "Force delete related entities even if they have not been soft-deleted",
     )
     .option("--id [ids...]", "Specify entity IDs to delete")
     .parse(process.argv)
@@ -32,7 +32,7 @@ async function main() {
 
   const days = opts.days ?? 28;
   logger().info(
-    `PERMANENTLY deleting things that have been soft-deleted since ${days} ago... Force: ${opts.force}`
+    `PERMANENTLY deleting things that have been soft-deleted since ${days} ago... Force: ${opts.force}`,
   );
 
   const ids = opts.id as string[] | undefined;
@@ -51,7 +51,7 @@ async function main() {
     ] as [string, string][];
 
     const listWorkspaceItems = (
-      items: { workspace: Workspace | null; name: string; id: string }[]
+      items: { workspace: Workspace | null; name: string; id: string }[],
     ) => {
       const strings: string[] = [];
       const groupedByTeam = groupBy(items, (item) => item.workspace?.team?.id);
@@ -60,7 +60,7 @@ async function main() {
         strings.push(`Team: "${team?.name}" (${team?.id}):`);
         const groupedByWorkspace = groupBy(
           teamGroup,
-          (item) => item.workspace?.id
+          (item) => item.workspace?.id,
         );
         for (const workspaceGroup of Object.values(groupedByWorkspace)) {
           const workspace = workspaceGroup[0].workspace;
@@ -76,11 +76,11 @@ async function main() {
     const projects = maybeFiltered(
       await dbMgr.getObsoleteDeletedEntities(Project, days, {
         leftJoins: workspaceJoins,
-      })
+      }),
     );
     if (projects.length > 0) {
       await ensureYes(
-        `PERMANENTLY DELETING projects: \n${listWorkspaceItems(projects)}`
+        `PERMANENTLY DELETING projects: \n${listWorkspaceItems(projects)}`,
       );
       for (const project of projects) {
         await dbMgr.permanentlyDeleteProject(project.id, { force: opts.force });
@@ -90,11 +90,11 @@ async function main() {
     const databases = maybeFiltered(
       await dbMgr.getObsoleteDeletedEntities(CmsDatabase, days, {
         leftJoins: workspaceJoins,
-      })
+      }),
     );
     if (databases.length > 0) {
       await ensureYes(
-        `PERMANENTLY DELETING CMS databases: \n${listWorkspaceItems(databases)}`
+        `PERMANENTLY DELETING CMS databases: \n${listWorkspaceItems(databases)}`,
       );
       for (const db of databases) {
         await dbMgr.permanentlyDeleteCms(db.id, { force: opts.force });
@@ -104,11 +104,11 @@ async function main() {
     const sources = maybeFiltered(
       await dbMgr.getObsoleteDeletedEntities(DataSource, days, {
         leftJoins: workspaceJoins,
-      })
+      }),
     );
     if (sources.length > 0) {
       await ensureYes(
-        `PERMANENTLY DELETING data sources:\n${listWorkspaceItems(sources)}`
+        `PERMANENTLY DELETING data sources:\n${listWorkspaceItems(sources)}`,
       );
       for (const source of sources) {
         await dbMgr.permanentlyDeleteDataSource(source.id, {
@@ -120,13 +120,13 @@ async function main() {
     const workspaces = maybeFiltered(
       await dbMgr.getObsoleteDeletedEntities(Workspace, days, {
         leftJoins: [["x.team", "t"]],
-      })
+      }),
     );
     if (workspaces.length > 0) {
       await ensureYes(
         `PERMANENTLY DELETING workspaces:\n${workspaces
           .map((w) => `"${w.team?.name}" (${w.teamId}) > "${w.name}" (${w.id})`)
-          .join("\n")}`
+          .join("\n")}`,
       );
       for (const workspace of workspaces) {
         await dbMgr.permanentlyDeleteWorkspace(workspace.id, {
@@ -136,13 +136,13 @@ async function main() {
     }
 
     const teams = maybeFiltered(
-      await dbMgr.getObsoleteDeletedEntities(Team, days)
+      await dbMgr.getObsoleteDeletedEntities(Team, days),
     );
     if (teams.length > 0) {
       await ensureYes(
         `PERMANENTLY DELETING teams:\n${teams
           .map((t) => `"${t.name}" (${t.id})`)
-          .join("\n")}`
+          .join("\n")}`,
       );
       for (const team of teams) {
         await dbMgr.permanentlyDeleteTeam(team.id, { force: opts.force });
@@ -150,13 +150,13 @@ async function main() {
     }
 
     const users = maybeFiltered(
-      await dbMgr.getObsoleteDeletedEntities(User, days)
+      await dbMgr.getObsoleteDeletedEntities(User, days),
     );
     if (users.length > 0) {
       await ensureYes(
         `PERMANENTLY DELETING users:\n${users
           .map((u) => `${u.email} (${u.id})`)
-          .join("\n")}`
+          .join("\n")}`,
       );
       for (const user of users) {
         await dbMgr.permanentlyDeleteUser(user.id, { force: opts.force });
@@ -185,6 +185,6 @@ if (require.main === module) {
     main().catch((error) => {
       logger().error("Unable to permanently delete things.", error);
       process.exit(1);
-    })
+    }),
   );
 }

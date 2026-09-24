@@ -75,7 +75,7 @@ function VariantsMenu_({
           ? matcher.matches(v.name)
           : matcher.matches(v.name) ||
             matcher.matches(g.name) ||
-            matcher.matches(v.parent?.param.variable.name ?? "")
+            matcher.matches(v.parent?.param.variable.name ?? ""),
       ),
     }))
     .filter((g) => g.variants.length !== 0);
@@ -87,20 +87,20 @@ function VariantsMenu_({
 
   const flattenedVariants = useMemo(
     () => groupedVariants.flatMap((it) => it.variants),
-    [groupedVariants]
+    [groupedVariants],
   );
   const groupByVariantUuid = useMemo(
     () =>
       new Map(
         groupedVariants.flatMap((g) =>
-          g.variants.map((v) => [v.uuid, g] as const)
-        )
+          g.variants.map((v) => [v.uuid, g] as const),
+        ),
       ),
-    [groupedVariants]
+    [groupedVariants],
   );
   const variantIndices = useMemo(
     () => new Map(flattenedVariants.map((it, index) => [it, index])),
-    [flattenedVariants]
+    [flattenedVariants],
   );
 
   const handleDismiss = () => {
@@ -151,7 +151,7 @@ function VariantsMenu_({
           !isStyleOrCodeComponentVariant(v) &&
           !isScreenVariant(v) &&
           !isBaseVariant(v) &&
-          uuidSet.has(v.uuid)
+          uuidSet.has(v.uuid),
       );
       spawn(previewCtx.pushComponent(previewCtx.component, variantsInput));
     }
@@ -159,7 +159,7 @@ function VariantsMenu_({
 
   const onRemoveVariant = (uuid: string) => {
     updatePreviewVariantsByUuids(
-      [...targetedVariants.keys()].filter((v) => v !== uuid)
+      [...targetedVariants.keys()].filter((v) => v !== uuid),
     );
   };
 
@@ -170,7 +170,7 @@ function VariantsMenu_({
       group?.variants.forEach((v) => variantsToRemove.add(v.uuid));
     }
     const otherVariants = [...targetedVariants.keys()].filter(
-      (v) => !variantsToRemove.has(v)
+      (v) => !variantsToRemove.has(v),
     );
     updatePreviewVariantsByUuids([...otherVariants, uuid]);
   };
@@ -253,13 +253,13 @@ function VariantsMenu_({
               onMouseEnter={handleRowMouseEnter(
                 ensure(
                   variantIndices.get(variant),
-                  `missing variant ${variant.name}`
-                )
+                  `missing variant ${variant.name}`,
+                ),
               )}
               onMouseLeave={handleRowMouseEnter(-1)}
             >
               {matcher.boldSnippets(
-                getVariantLabel(studioCtx.site, variant) || "UnnamedVariant"
+                getVariantLabel(studioCtx.site, variant) || "UnnamedVariant",
               )}
             </VariantRow>
           ))}

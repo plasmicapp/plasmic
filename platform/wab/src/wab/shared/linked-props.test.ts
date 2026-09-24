@@ -7,7 +7,7 @@ describe("isLinkCompatible", () => {
     expect(isLinkCompatible(typeFactory.num(), typeFactory.num())).toBe(true);
     expect(isLinkCompatible(typeFactory.bool(), typeFactory.bool())).toBe(true);
     expect(isLinkCompatible(typeFactory.bool(), typeFactory.text())).toBe(
-      false
+      false,
     );
   });
 
@@ -15,16 +15,16 @@ describe("isLinkCompatible", () => {
     expect(isLinkCompatible(typeFactory.text(), typeFactory.num())).toBe(false);
     expect(isLinkCompatible(typeFactory.num(), typeFactory.text())).toBe(false);
     expect(isLinkCompatible(typeFactory.text(), typeFactory.bool())).toBe(
-      false
+      false,
     );
     expect(
-      isLinkCompatible(typeFactory.bool(), typeFactory.choice(["a"]))
+      isLinkCompatible(typeFactory.bool(), typeFactory.choice(["a"])),
     ).toBe(false);
     expect(isLinkCompatible(typeFactory.num(), typeFactory.choice(["a"]))).toBe(
-      false
+      false,
     );
     expect(isLinkCompatible(typeFactory.choice(["a"]), typeFactory.num())).toBe(
-      false
+      false,
     );
   });
 
@@ -41,10 +41,10 @@ describe("isLinkCompatible", () => {
   it("only widens text ← choice for string-valued choices", () => {
     // A numeric/boolean choice value would reach the text prop as a non-string.
     expect(
-      isLinkCompatible(typeFactory.text(), typeFactory.choice([1, 2]))
+      isLinkCompatible(typeFactory.text(), typeFactory.choice([1, 2])),
     ).toBe(false);
     expect(
-      isLinkCompatible(typeFactory.text(), typeFactory.choice([true, false]))
+      isLinkCompatible(typeFactory.text(), typeFactory.choice([true, false])),
     ).toBe(false);
   });
 
@@ -58,8 +58,8 @@ describe("isLinkCompatible", () => {
     expect(
       isLinkCompatible(
         typeFactory.choice(["a", "b"]),
-        typeFactory.choice(["b", "a"])
-      )
+        typeFactory.choice(["b", "a"]),
+      ),
     ).toBe(true);
   });
 
@@ -67,14 +67,14 @@ describe("isLinkCompatible", () => {
     expect(
       isLinkCompatible(
         typeFactory.choice(["a", "b"]),
-        typeFactory.choice(["a", "c"])
-      )
+        typeFactory.choice(["a", "c"]),
+      ),
     ).toBe(false);
     expect(
       isLinkCompatible(
         typeFactory.choice(["a", "b"]),
-        typeFactory.choice(["a"])
-      )
+        typeFactory.choice(["a"]),
+      ),
     ).toBe(false);
   });
 
@@ -82,11 +82,11 @@ describe("isLinkCompatible", () => {
     expect(
       isLinkCompatible(
         typeFactory.choice([1, 2]),
-        typeFactory.choice(["1", "2"])
-      )
+        typeFactory.choice(["1", "2"]),
+      ),
     ).toBe(false);
     expect(
-      isLinkCompatible(typeFactory.choice([1, 2]), typeFactory.choice([1, 2]))
+      isLinkCompatible(typeFactory.choice([1, 2]), typeFactory.choice([1, 2])),
     ).toBe(true);
   });
 
@@ -94,8 +94,8 @@ describe("isLinkCompatible", () => {
     expect(
       isLinkCompatible(
         typeFactory.choice(["a", "b"]),
-        typeFactory.multiChoice(["a", "b"])
-      )
+        typeFactory.multiChoice(["a", "b"]),
+      ),
     ).toBe(false);
   });
 
@@ -103,20 +103,20 @@ describe("isLinkCompatible", () => {
     expect(
       isLinkCompatible(
         typeFactory.multiChoice(["a", "b"]),
-        typeFactory.multiChoice(["a", "b"])
-      )
+        typeFactory.multiChoice(["a", "b"]),
+      ),
     ).toBe(true);
   });
 
   it("matches functions with the same positional arg types", () => {
     const a = typeFactory.func(
       typeFactory.arg("x", typeFactory.text()),
-      typeFactory.arg("y", typeFactory.num())
+      typeFactory.arg("y", typeFactory.num()),
     );
     // Arg names differ but positional types match.
     const b = typeFactory.func(
       typeFactory.arg("p", typeFactory.text()),
-      typeFactory.arg("q", typeFactory.num())
+      typeFactory.arg("q", typeFactory.num()),
     );
     expect(isLinkCompatible(a, b)).toBe(true);
   });
@@ -124,12 +124,12 @@ describe("isLinkCompatible", () => {
   it("rejects functions with different arity or arg types", () => {
     const two = typeFactory.func(
       typeFactory.arg("x", typeFactory.text()),
-      typeFactory.arg("y", typeFactory.num())
+      typeFactory.arg("y", typeFactory.num()),
     );
     const one = typeFactory.func(typeFactory.arg("x", typeFactory.text()));
     const swapped = typeFactory.func(
       typeFactory.arg("x", typeFactory.num()),
-      typeFactory.arg("y", typeFactory.text())
+      typeFactory.arg("y", typeFactory.text()),
     );
     expect(isLinkCompatible(two, one)).toBe(false);
     expect(isLinkCompatible(two, swapped)).toBe(false);

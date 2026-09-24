@@ -62,7 +62,7 @@ export async function genLoaderHtmlBundle(opts: {
           prefetchedData: data,
           componentProps,
           globalVariants,
-        }
+        },
       )
     : undefined;
 
@@ -74,7 +74,7 @@ export async function genLoaderHtmlBundle(opts: {
       componentProps,
       globalVariants,
       prefetchedQueryData,
-    }
+    },
   );
 
   const outerElement = React.createElement(
@@ -100,7 +100,7 @@ export async function genLoaderHtmlBundle(opts: {
       React.createElement("script", {
         async: true,
         src: `${publicCodegenUrl}/static/js/loader-hydrate.js`,
-      })
+      }),
   );
 
   const outerHtml = ReactDOMServer.renderToStaticMarkup(outerElement);
@@ -122,7 +122,7 @@ async function main(argv = process.argv) {
     const args = JSON.parse(argv[2]);
     const { html } = await context.with(
       propagation.extract(context.active(), pickTraceCarrier(process.env)),
-      () => genLoaderHtmlBundle(args)
+      () => genLoaderHtmlBundle(args),
     );
     // The profiler keeps a long-poll open and can't be stopped, so force-exit
     // once stdout is flushed to avoid leaving the subprocess alive.

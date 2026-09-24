@@ -116,7 +116,7 @@ export async function buildPublishedLoaderAssets(req: Request, res: Response) {
   const resolvedProjectIdSpecs = await getResolvedProjectVersions(
     mgr,
     projectIdSpecs,
-    { prefilledOnly: true }
+    { prefilledOnly: true },
   );
 
   const query = makeCacheableVersionedLoaderQuery({
@@ -138,7 +138,7 @@ export async function buildPublishedLoaderAssets(req: Request, res: Response) {
   // Return 200 with redirect URL - https://linear.app/plasmic/issue/PLA-12576
   const polyfillProjectId = ANGULAR_POLYFILL_PROJECT_ID;
   const isPolyfillProject = projectIdSpecs.some(
-    (spec) => parseProjectIdSpec(spec).projectId === polyfillProjectId
+    (spec) => parseProjectIdSpec(spec).projectId === polyfillProjectId,
   );
 
   if (isPolyfillProject) {
@@ -214,21 +214,21 @@ export async function buildVersionedLoaderAssets(req: Request, res: Response) {
   for (const { projectId, version } of projectVersions) {
     if (!version) {
       throw new BadRequestError(
-        `Project ${projectId} does not have a specified version`
+        `Project ${projectId} does not have a specified version`,
       );
     }
   }
 
   await Promise.all(
     projectVersions.map(({ projectId }) =>
-      mgr.checkProjectPerms(projectId, "viewer", "get")
-    )
+      mgr.checkProjectPerms(projectId, "viewer", "get"),
+    ),
   );
 
   const projects = await Promise.all(
     projectVersions.map(
-      async ({ projectId }) => await mgr.getProjectById(projectId)
-    )
+      async ({ projectId }) => await mgr.getProjectById(projectId),
+    ),
   );
   trackLoaderCodegenEvent(req, projects, {
     versionType: "versioned",
@@ -248,9 +248,9 @@ export async function buildVersionedLoaderAssets(req: Request, res: Response) {
         projectVersions.map(({ projectId, version }) => [
           projectId,
           mkVersionToSync(
-            ensure(version, "Unexpected nullish version in projectVersions")
+            ensure(version, "Unexpected nullish version in projectVersions"),
           ),
-        ])
+        ]),
       ),
       i18n: {
         keyScheme: i18nKeyScheme,
@@ -259,7 +259,7 @@ export async function buildVersionedLoaderAssets(req: Request, res: Response) {
       loaderVersion,
       browserOnly,
       skipHead,
-    })
+    }),
   );
 
   const projectIds = projectVersions.map(({ projectId }) => projectId);
@@ -345,7 +345,7 @@ export async function buildLatestLoaderAssets(req: Request, res: Response) {
         // We need to check if pv.tag is a branch name or a pkgversion tag.
         // The only way to know is to try to find a branch with the same name...
         const branches = await mgr.listBranchesForProject(
-          pv.projectId as ProjectId
+          pv.projectId as ProjectId,
         );
         if (branches.some((b) => b.name === pv.tag)) {
           // Found it!
@@ -364,12 +364,12 @@ export async function buildLatestLoaderAssets(req: Request, res: Response) {
       } else {
         return { id: pv.projectId, branchName: undefined };
       }
-    })
+    }),
   );
   await Promise.all(
     projectIdsBranches.map(({ id }) =>
-      mgr.checkProjectPerms(id, "viewer", "get")
-    )
+      mgr.checkProjectPerms(id, "viewer", "get"),
+    ),
   );
 
   // We set the projectIds and their current revisions as weak e-tag.  If the browser
@@ -377,7 +377,7 @@ export async function buildLatestLoaderAssets(req: Request, res: Response) {
   // been updated, and skip re-generating code if so.
   const projectRevs = await resolveLatestProjectRevisions(
     mgr,
-    projectIdsBranches
+    projectIdsBranches,
   );
   const etag = `W/"${LOADER_CACHE_BUST}-${Object.entries(projectRevs)
     .map(([pid, rev]) => `${pid}@${rev}`)
@@ -388,7 +388,7 @@ export async function buildLatestLoaderAssets(req: Request, res: Response) {
   }
 
   const projects = await Promise.all(
-    projectIdsBranches.map(async ({ id }) => await mgr.getProjectById(id))
+    projectIdsBranches.map(async ({ id }) => await mgr.getProjectById(id)),
   );
 
   req.promLabels.projectId = projects.map((p) => p.id).join(",");
@@ -429,7 +429,7 @@ export async function getLoaderChunk(req: Request, res: Response) {
 
   if (!Array.isArray(fileNames)) {
     throw new BadRequestError(
-      "Invalid `fileName` param: " + req.query.fileName
+      "Invalid `fileName` param: " + req.query.fileName,
     );
   }
 
@@ -443,11 +443,11 @@ export async function getLoaderChunk(req: Request, res: Response) {
     new GetObjectCommand({
       Bucket: LOADER_ASSETS_BUCKET,
       Key: bundleKey,
-    })
+    }),
   );
   const serialized = await ensure(
     obj.Body,
-    "Unexpected empty loader bundle body"
+    "Unexpected empty loader bundle body",
   ).transformToString("utf8");
 
   const bundle: LoaderBundleOutput = JSON.parse(serialized);
@@ -455,7 +455,7 @@ export async function getLoaderChunk(req: Request, res: Response) {
   const modules = (
     Array.isArray(bundle.modules) ? bundle.modules : bundle.modules.browser
   ).filter(
-    (m): m is CodeModule => m.type === "code" && fileNamesSet.has(m.fileName)
+    (m): m is CodeModule => m.type === "code" && fileNamesSet.has(m.fileName),
   );
 
   if (!modules.length || !fileNames) {
@@ -470,11 +470,11 @@ export async function getLoaderChunk(req: Request, res: Response) {
       ${modules
         .map((module) =>
           `globalThis.__PLASMIC_CHUNKS[${JSON.stringify(
-            module.fileName
+            module.fileName,
           )}] = ${JSON.stringify(module.code)};
           globalThis.__PlasmicBundlePromises[${JSON.stringify(
-            "__promise_resolve_" + module.fileName
-          )}]();`.trim()
+            "__promise_resolve_" + module.fileName,
+          )}]();`.trim(),
         )
         .join("\n")}
     })()`.trim();
@@ -502,7 +502,7 @@ export async function buildPublishedLoaderHtml(req: Request, res: Response) {
         req.query.globalVariants ? (req.query.componentProps as string) : "[]",
       ],
       ["prepass", req.query.prepass === "1" ? "1" : "0"],
-    ]).toString()
+    ]).toString(),
   );
 }
 
@@ -524,7 +524,7 @@ async function buildLoader(
   versionType: "preview" | "versioned",
   platform: "html" | "repr-v2" | "repr-v3",
   componentRequired: true,
-  func: (props: ComponentLoaderProps) => Promise<void>
+  func: (props: ComponentLoaderProps) => Promise<void>,
 ): Promise<void>;
 async function buildLoader(
   req: Request,
@@ -532,7 +532,7 @@ async function buildLoader(
   versionType: "preview" | "versioned",
   platform: "html" | "repr-v2" | "repr-v3",
   componentRequired: false,
-  func: (props: ProjectLoaderProps) => Promise<void>
+  func: (props: ProjectLoaderProps) => Promise<void>,
 ): Promise<void>;
 async function buildLoader(
   req: Request,
@@ -542,7 +542,7 @@ async function buildLoader(
   componentRequired: boolean,
   func:
     | ((props: ProjectLoaderProps) => Promise<void>)
-    | ((props: ComponentLoaderProps) => Promise<void>)
+    | ((props: ComponentLoaderProps) => Promise<void>),
 ): Promise<void> {
   const mgr = userDbMgr(req);
   const projectIdSpec = req.params.projectId as string | undefined;
@@ -561,12 +561,12 @@ async function buildLoader(
 
   if (!version && versionType !== "preview") {
     throw new BadRequestError(
-      `Project ${projectId} does not have specified version`
+      `Project ${projectId} does not have specified version`,
     );
   }
 
   const token = mgr.projectIdsAndTokens?.find(
-    (p) => p.projectId === projectId
+    (p) => p.projectId === projectId,
   )?.projectApiToken;
   if (!token) {
     throw new BadRequestError(`No project token specified for ${projectId}`);
@@ -611,7 +611,7 @@ async function buildLoader(
 }
 
 export async function genLoaderHtmlBundleSandboxed(
-  args: Parameters<typeof genLoaderHtmlBundle>[0]
+  args: Parameters<typeof genLoaderHtmlBundle>[0],
 ) {
   return withSpan("genLoaderHtmlBundleSandboxed", async () => {
     const profilerService = process.env.GCLOUD_PROFILER_SERVICE;
@@ -632,7 +632,7 @@ export async function genLoaderHtmlBundleSandboxed(
         process.env,
         (value, key) =>
           value !== undefined &&
-          (key === "NODE_OPTIONS" || key.startsWith("OTEL_"))
+          (key === "NODE_OPTIONS" || key.startsWith("OTEL_")),
       ),
       ...profilerEnv,
     };
@@ -684,7 +684,7 @@ export async function genLoaderHtmlBundleSandboxed(
         : await execa("bwrap", bwrapArgs, { reject: false });
     if (stderr.trim().length > 0 && exitCode === 0) {
       logger().error(
-        `Sandboxed loader subprocess succeeded with exit code 0 but got unexpected stderr ${stderr}`
+        `Sandboxed loader subprocess succeeded with exit code 0 but got unexpected stderr ${stderr}`,
       );
     } else if (exitCode !== 0) {
       // This error comes from @plasmicapp/loader-react
@@ -694,7 +694,7 @@ export async function genLoaderHtmlBundleSandboxed(
       }
 
       logger().error(
-        `Sandboxed loader subprocess failed with exit code ${exitCode} with stderr: ${stderr}`
+        `Sandboxed loader subprocess failed with exit code ${exitCode} with stderr: ${stderr}`,
       );
     }
     if (stdout.length === 0) {
@@ -757,7 +757,7 @@ export async function buildLatestLoaderHtml(req: Request, res: Response) {
 async function genReprV2(
   req: Request,
   res: Response,
-  props: ProjectLoaderProps
+  props: ProjectLoaderProps,
 ) {
   const { projectId, project } = props;
 
@@ -767,11 +767,11 @@ async function genReprV2(
   const { site } = await mgr.tryGetPkgVersionByProjectVersionOrTag(
     bundler,
     projectId,
-    props.version || "latest"
+    props.version || "latest",
   );
 
   const componentReprs = site.components.map((c) =>
-    tuple(c.name, tplToPlasmicElements(c.tplTree))
+    tuple(c.name, tplToPlasmicElements(c.tplTree)),
   );
 
   res.json({ site: { components: Object.fromEntries(componentReprs) } });
@@ -780,7 +780,7 @@ async function genReprV2(
 async function genReprV3(
   req: Request,
   res: Response,
-  props: ProjectLoaderProps
+  props: ProjectLoaderProps,
 ) {
   const { projectId } = props;
 
@@ -790,7 +790,7 @@ async function genReprV3(
   const { site } = await mgr.tryGetPkgVersionByProjectVersionOrTag(
     bundler,
     projectId,
-    props.version || "latest"
+    props.version || "latest",
   );
 
   res.json({ site: toJson(site, bundler) });
@@ -801,7 +801,7 @@ async function buildPublishedLoaderRedirect(
   res: Response,
   loaderType: `repr-v2` | `repr-v3` | `html`,
   componentRequired: boolean,
-  query: string
+  query: string,
 ) {
   const mgr = userDbMgr(req);
   const projectIdSpec = req.params.projectId as string | undefined;
@@ -828,7 +828,7 @@ async function buildPublishedLoaderRedirect(
     res,
     `/api/v1/loader/${loaderType}/versioned/${resolvedProjectIdSpec}${
       component ? "/" + normComponentName(component) : ""
-    }?${query}`
+    }?${query}`,
   );
 }
 
@@ -838,7 +838,7 @@ export async function buildPublishedLoaderReprV2(req: Request, res: Response) {
     res,
     "repr-v2",
     true,
-    new URLSearchParams([["cb", LOADER_CACHE_BUST]]).toString()
+    new URLSearchParams([["cb", LOADER_CACHE_BUST]]).toString(),
   );
 }
 
@@ -851,7 +851,7 @@ export async function buildVersionedLoaderReprV2(req: Request, res: Response) {
     false,
     async (props) => {
       await genReprV2(req, res, props);
-    }
+    },
   );
 }
 
@@ -864,7 +864,7 @@ export async function buildLatestLoaderReprV2(req: Request, res: Response) {
     false,
     async (props) => {
       await genReprV2(req, res, props);
-    }
+    },
   );
 }
 
@@ -874,7 +874,7 @@ export async function buildPublishedLoaderReprV3(req: Request, res: Response) {
     res,
     "repr-v3",
     false,
-    new URLSearchParams([["cb", LOADER_CACHE_BUST]]).toString()
+    new URLSearchParams([["cb", LOADER_CACHE_BUST]]).toString(),
   );
 }
 
@@ -887,7 +887,7 @@ export async function buildVersionedLoaderReprV3(req: Request, res: Response) {
     false,
     async (props) => {
       await genReprV3(req, res, props);
-    }
+    },
   );
 }
 
@@ -900,7 +900,7 @@ export async function buildLatestLoaderReprV3(req: Request, res: Response) {
     false,
     async (props) => {
       await genReprV3(req, res, props);
-    }
+    },
   );
 }
 
@@ -937,7 +937,7 @@ function setAsCacheableResource(res: Response, maxAge = 31536000) {
   // browser cache.
   res.setHeader(
     "Cache-Control",
-    `max-age=${Math.min(3600, maxAge)}, s-maxage=${maxAge}`
+    `max-age=${Math.min(3600, maxAge)}, s-maxage=${maxAge}`,
   );
 }
 
@@ -971,7 +971,7 @@ export function checkEtagSkippable(req: Request, res: Response, etag: string) {
     return true;
   }
   logger().info(
-    `Preview request no match ${etag} ${req.headers["if-none-match"]}`
+    `Preview request no match ${etag} ${req.headers["if-none-match"]}`,
   );
   return false;
 }
@@ -986,7 +986,7 @@ function trackLoaderCodegenEvent(
   opts: {
     versionType: "versioned" | "preview" | "chunk";
     platform: string;
-  }
+  },
 ) {
   const { versionType, platform } = opts;
   req.analytics.track(
@@ -1000,18 +1000,18 @@ function trackLoaderCodegenEvent(
       platform,
       versionType,
     },
-    { sampleThreshold: 0.1 }
+    { sampleThreshold: 0.1 },
   );
 }
 
 const getHydrationScriptInfo = () => {
   const dir = path.resolve(
-    path.join(process.cwd(), "..", "loader-html-hydrate")
+    path.join(process.cwd(), "..", "loader-html-hydrate"),
   );
   const buildDir = path.join(dir, "build");
   const files = fs.readdirSync(buildDir);
   const filename = files.filter(
-    (file) => file.startsWith("loader-") && file.endsWith(".js")
+    (file) => file.startsWith("loader-") && file.endsWith(".js"),
   )[0];
 
   if (!filename) {
@@ -1028,7 +1028,7 @@ const getHydrationScriptInfo = () => {
 export function getHydrationScript(_: Request, res: Response) {
   res.setHeader("Cache-Control", "max-age=60, s-maxage=60");
   res.redirect(
-    `${getCodegenUrl()}/static/js/${getHydrationScriptInfo().filename}`
+    `${getCodegenUrl()}/static/js/${getHydrationScriptInfo().filename}`,
   );
 }
 
@@ -1036,7 +1036,7 @@ export function getHydrationScriptVersioned(req: Request, res: Response) {
   const { dir, filename, hash } = getHydrationScriptInfo();
   if (hash !== req.params.hash) {
     throw new NotFoundError(
-      `Hydration script with hash=${req.params.hash} is unavailable`
+      `Hydration script with hash=${req.params.hash} is unavailable`,
     );
   }
   res.setHeader("Cache-Control", "max-age=31536000, s-maxage=31536000");

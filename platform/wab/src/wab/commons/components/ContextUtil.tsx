@@ -15,17 +15,17 @@ export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
  */
 export function withConsumer<PropName extends string, PropType>(
   Consumer: React.ComponentType<React.ConsumerProps<PropType>>,
-  propKey: PropName
+  propKey: PropName,
 ) {
   type InjectedProps = { [key in PropName]?: PropType };
   type PublicProps<T extends InjectedProps> = Omit<T, keyof InjectedProps>;
   return function <InnerProps extends InjectedProps>(
-    Component: React.ComponentClass<InnerProps>
+    Component: React.ComponentClass<InnerProps>,
   ): React.ComponentClass<PublicProps<InnerProps>> {
     return class extends UnwrappableComponent<PublicProps<InnerProps>> {
       static displayName = buildWrapperName(
         `with${getComponentName(Consumer, capitalizeFirst(propKey))}`,
-        Component
+        Component,
       );
       render() {
         return (
@@ -36,7 +36,7 @@ export function withConsumer<PropName extends string, PropType>(
               const props = Object.assign(
                 {},
                 otherProps,
-                injectedProps
+                injectedProps,
               ) as InnerProps;
               return <Component ref={this.setInnerRef} {...(props as any)} />;
             }}
@@ -60,7 +60,7 @@ export function withConsumer<PropName extends string, PropType>(
  * ```
  */
 export function withProvider<PropType>(
-  Provider: React.ComponentType<React.ProviderProps<PropType>>
+  Provider: React.ComponentType<React.ProviderProps<PropType>>,
 ) {
   return function (value: PropType, key?: string) {
     return function (children: React.ReactNode) {

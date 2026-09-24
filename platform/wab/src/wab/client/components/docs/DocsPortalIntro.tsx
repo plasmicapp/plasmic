@@ -58,14 +58,14 @@ function DocsPortalIntro(props: DocsPortalIntroProps) {
     props: DetailedHTMLProps<
       React.HTMLAttributes<HTMLDivElement>,
       HTMLDivElement
-    >
+    >,
   ) {
     return replaceLink(props, (linkText) => (
       <PublicLink
         href={APP_ROUTES.projectDocsCodegenType.fill({
           projectId,
           codegenType: codegenTypeToRoute(
-            oppCodegenType(docsPortalCtx.getCodegenType())
+            oppCodegenType(docsPortalCtx.getCodegenType()),
           ),
         })}
       >

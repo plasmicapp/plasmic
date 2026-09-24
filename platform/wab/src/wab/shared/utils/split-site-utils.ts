@@ -15,7 +15,7 @@ import { isKnownPageHref, PageHref, Site } from "@/wab/shared/model/classes";
  */
 export function fixPageHrefsToLocal(site: Site) {
   const pathToPage = Object.fromEntries(
-    site.components.filter(isPageComponent).map((c) => [c.pageMeta.path, c])
+    site.components.filter(isPageComponent).map((c) => [c.pageMeta.path, c]),
   );
 
   for (const comp of site.components) {

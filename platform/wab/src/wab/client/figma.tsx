@@ -100,10 +100,10 @@ import { Matrix } from "transformation-matrix";
 
 export async function pasteFromFigma(
   text: string,
-  { studioCtx, cursorClientPt, insertRelLoc }: PasteArgs
+  { studioCtx, cursorClientPt, insertRelLoc }: PasteArgs,
 ): Promise<PasteResult> {
   const figmaData = await studioCtx.app.withSpinner(
-    readFigmaClipboard(studioCtx, text)
+    readFigmaClipboard(studioCtx, text),
   );
   if (!figmaData) {
     return {
@@ -155,7 +155,7 @@ export async function pasteFromFigma(
             figmaData.uploadedImages,
             figmaData.nodeImages,
             figmaData.imagesToRename,
-            replaceComponentInstances
+            replaceComponentInstances,
           );
           if (maybeNode) {
             const pasteSuccess = vc
@@ -165,7 +165,7 @@ export async function pasteFromFigma(
               extractUsedFontsFromComponents(studioCtx.site, [
                 vc.component,
               ]).forEach((usage) =>
-                studioCtx.fontManager.useFont(studioCtx, usage.fontFamily)
+                studioCtx.fontManager.useFont(studioCtx, usage.fontFamily),
               );
               return ok(true);
             } else {
@@ -175,7 +175,7 @@ export async function pasteFromFigma(
             showFigmaError();
             return ok(false);
           }
-        })
+        }),
       ),
     };
   } else {
@@ -206,7 +206,7 @@ export async function pasteFromFigma(
             [new RootComponentVariantFrame(newFrame)],
             studioCtx.site,
             studioCtx.tplMgr(),
-            new GlobalVariantFrame(studioCtx.site, newFrame)
+            new GlobalVariantFrame(studioCtx.site, newFrame),
           );
           const maybeNode = tplNodeFromFigmaData(
             studioCtx,
@@ -217,7 +217,7 @@ export async function pasteFromFigma(
             figmaData.uploadedImages,
             figmaData.nodeImages,
             figmaData.imagesToRename,
-            replaceComponentInstances
+            replaceComponentInstances,
           );
           if (!maybeNode) {
             // Paste was unsuccessful, so delete the new frame / component we made :-/
@@ -232,7 +232,7 @@ export async function pasteFromFigma(
           if (isTplVariantable(newComponent.tplTree)) {
             const rsh = RSH(
               vtm.ensureBaseVariantSetting(newComponent.tplTree).rs,
-              newComponent.tplTree
+              newComponent.tplTree,
             );
             const widthParsed = parseCssNumericNew(rsh.get("width"));
             const heightParsed = parseCssNumericNew(rsh.get("height"));
@@ -264,10 +264,10 @@ export async function pasteFromFigma(
           extractUsedFontsFromComponents(studioCtx.site, [
             newComponent,
           ]).forEach((usage) =>
-            studioCtx.fontManager.useFont(studioCtx, usage.fontFamily)
+            studioCtx.fontManager.useFont(studioCtx, usage.fontFamily),
           );
           return ok(true);
-        })
+        }),
       ),
     };
   }
@@ -275,7 +275,7 @@ export async function pasteFromFigma(
 
 async function readFigmaClipboard(
   sc: StudioCtx,
-  clipboardText: string
+  clipboardText: string,
 ): Promise<FigmaClipboard | null> {
   const figmaData = await getFigmaData(sc, clipboardText);
   if (!figmaData) {
@@ -351,7 +351,7 @@ export const tplNodeFromFigmaData = (
     { imageResult: ResizableImage; opts: ImageAssetOpts }
   >,
   imagesToRename: Map<string, string>,
-  replaceComponentInstances: boolean
+  replaceComponentInstances: boolean,
 ): TplNode | undefined => {
   const imageAssets = createImageAssets(uploadedImages, siteOps);
   const nodeAssets = createNodeAssets(nodeImages, siteOps);
@@ -362,10 +362,10 @@ export const tplNodeFromFigmaData = (
     vtm,
     imageAssets,
     nodeAssets,
-    replaceComponentInstances
+    replaceComponentInstances,
   );
   const nodeToTpl = new Map(
-    withoutNilTuples(nodes.map((node) => tuple(node, maker(node))))
+    withoutNilTuples(nodes.map((node) => tuple(node, maker(node)))),
   );
   const wrapped = wrapTplNodes(nodeToTpl, vtm);
   if (wrapped) {
@@ -391,12 +391,12 @@ function ensureUniqueNames(node: TplNode) {
 }
 
 export const denormalizeFigmaData = (
-  data: FigmaData
+  data: FigmaData,
 ): { nodes: Array<SceneNode>; imagesToRename: Map<string, string> } => {
   const imagesToRename: Map<string, string> = new Map();
   const denormalize = (
     object: any,
-    parent: { [key: string]: Serializable } | null = null
+    parent: { [key: string]: Serializable } | null = null,
   ) => {
     if (Array.isArray(object)) {
       return object.map((obj) => denormalize(obj, parent));
@@ -406,8 +406,8 @@ export const denormalizeFigmaData = (
         ([key, value]) =>
           (denormalized[data.k[parseInt(key, 36)]] = denormalize(
             value,
-            denormalized
-          ))
+            denormalized,
+          )),
       );
       if (typeof denormalized.imageHash === "string") {
         // Set the imageAsset's name to the first named using node.
@@ -458,12 +458,12 @@ const getNodeToTplNode = (
   vtm: VariantTplMgr,
   imageAssets: Map<string, ImageAsset>,
   nodeAssets: Map<SceneNode, { asset: ImageAsset; iconColor?: string }>,
-  replaceComponentInstances: boolean
+  replaceComponentInstances: boolean,
 ) => {
   const setNodeStyle = (
     node: SceneNode,
     tpl: TplTag | TplComponent,
-    styles: Array<Style>
+    styles: Array<Style>,
   ) => {
     const vs = vtm.ensureBaseVariantSetting(tpl);
     RSH(vs.rs, tpl).merge(flattenStyles(styles));
@@ -477,7 +477,7 @@ const getNodeToTplNode = (
     const firstMaskNode =
       "children" in node
         ? ensure(node.children, "checked before").find(
-            (child) => "isMask" in child && child.isMask
+            (child) => "isMask" in child && child.isMask,
           )
         : undefined;
     const asset = firstMaskNode ? nodeAssets.get(firstMaskNode) : undefined;
@@ -495,7 +495,7 @@ const getNodeToTplNode = (
 
   const adjustedChildren = (
     children: ReadonlyArray<SceneNode>,
-    isAutoLayoutParent = false
+    isAutoLayoutParent = false,
   ) => {
     const tplChildren = children.map(nodeToTplNode);
 
@@ -568,11 +568,11 @@ const getNodeToTplNode = (
     ...site.components,
     ...site.projectDependencies.flatMap((dep) => dep.site.components),
   ].filter(
-    (comp) => isReusableComponent(comp) && !isContextCodeComponent(comp)
+    (comp) => isReusableComponent(comp) && !isContextCodeComponent(comp),
   );
 
   const nodeToTplNode = (
-    node: SceneNode
+    node: SceneNode,
   ): TplTag | TplComponent | undefined => {
     if ("isMask" in node && node.isMask) {
       return undefined; // Masks will be handled by the parent.
@@ -587,13 +587,13 @@ const getNodeToTplNode = (
         const propsArgs = fromFigmaComponentToTplProps(
           studioCtx,
           component,
-          node
+          node,
         );
 
         const slotsArgs = Object.entries(
           getAllSlotsInNode(node, nodeToTplNode, {
             includeRoot: false,
-          })
+          }),
         ).filter(([key]) => {
           const param = component.params.find((p) => p.variable.name === key);
           return !!param && param.type.name === "renderable";
@@ -608,7 +608,7 @@ const getNodeToTplNode = (
         });
         setNodeStyle(node, tplComponent, [
           filterValidCodeComponentStyles(
-            styleForLayoutMixinAndConstraintMixin(node)
+            styleForLayoutMixinAndConstraintMixin(node),
           ),
         ]);
         return tplComponent;
@@ -633,7 +633,7 @@ const getNodeToTplNode = (
         const tag = mkTplTagX(
           "div",
           { name: node.name },
-          adjustedChildren(node.children || [], node.layoutMode !== "NONE")
+          adjustedChildren(node.children || [], node.layoutMode !== "NONE"),
         );
         setNodeStyle(node, tag, [styleForDefaultFrameMixin(node, imageAssets)]);
         setMaskForTag(node, tag);
@@ -643,7 +643,7 @@ const getNodeToTplNode = (
         const tag = mkTplTagX(
           "div",
           { name: node.name },
-          adjustedChildren(node.children || [])
+          adjustedChildren(node.children || []),
         );
         setNodeStyle(node, tag, [
           styleForBlendMixin(node),
@@ -690,7 +690,7 @@ const getNodeToTplNode = (
         const styles = flattenStyles(
           styleForDefaultShapeMixin(node, imageAssets),
           styleForLayoutMixinAndConstraintMixin(node),
-          styleForText
+          styleForText,
         );
 
         if (!styleForText || styleForText["color"] !== "transparent") {
@@ -725,7 +725,7 @@ const getNodeToTplNode = (
             height,
             transform,
             transformOrigin,
-          }).filter(([_, value]) => typeof value !== "undefined")
+          }).filter(([_, value]) => typeof value !== "undefined"),
         );
 
         // Only set the text styles for now

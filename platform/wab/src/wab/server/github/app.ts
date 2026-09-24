@@ -1,5 +1,5 @@
-import { ensure } from "@/wab/shared/common";
 import { getGithubSecrets } from "@/wab/server/secrets";
+import { ensure } from "@/wab/shared/common";
 import { App } from "@octokit/app";
 
 let githubApp: App | null;

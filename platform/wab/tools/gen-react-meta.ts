@@ -48,7 +48,7 @@ async function main() {
   const idMap = new Map(allObjs.map((x) => [x.id, x] as [number, any]));
   // Note: names are not unique.
   const nameMap = new Map(
-    [...idMap.values()].map((x) => [x.name, x] as [string, any])
+    [...idMap.values()].map((x) => [x.name, x] as [string, any]),
   );
   const parentMap = new Map<number, any>();
   for (const x of idMap.values()) {
@@ -120,7 +120,7 @@ async function main() {
       (x) =>
         x.kindString === "Class" &&
         x.sources[0].fileName.match(pkgPathPattern) &&
-        (x.extendedTypes || []).find((t: any) => t.name === "Component")
+        (x.extendedTypes || []).find((t: any) => t.name === "Component"),
     );
     for (const comp of components) {
       console.log(comp.name, comp.sources[0].fileName);
@@ -173,7 +173,7 @@ async function main() {
     const sortedMeta = L.sortBy(outMeta, (x) => x.component);
     fs.writeFileSync(
       "src/wab/shared/foreign-components/foreign-react-" + pkg + "-gen.ts",
-      genSource(sortedMeta)
+      genSource(sortedMeta),
     );
   }
 
@@ -182,7 +182,7 @@ async function main() {
     const outElts: any[] = [];
     for (const elt of getByName("IntrinsicElements").children) {
       const propType = reflect(
-        elt.type.name === "SVGProps" ? elt.type : elt.type.typeArguments[0]
+        elt.type.name === "SVGProps" ? elt.type : elt.type.typeArguments[0],
       );
       const outProps: any[] = [];
       for (const prop of propType.children) {
@@ -202,7 +202,7 @@ async function main() {
 
     fs.writeFileSync(
       "src/wab/component-metas/react-meta-gen.ts",
-      genSource(outElts)
+      genSource(outElts),
     );
   } else if (pkg === "bootstrap") {
     genPkgMeta("bootstrap", /\/react-bootstrap\//);

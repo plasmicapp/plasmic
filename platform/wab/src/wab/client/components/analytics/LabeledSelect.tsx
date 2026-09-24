@@ -33,7 +33,7 @@ export interface LabeledSelectProps extends DefaultLabeledSelectProps {
 
 function LabeledSelect_(
   props: LabeledSelectProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { options, selected, onChange, groups, isDisabled, info, ...rest } =
     props;
@@ -41,7 +41,7 @@ function LabeledSelect_(
   const SelectChildren = (() => {
     if (groups) {
       const elementsWithoutGroup = (options ?? []).filter(
-        (option) => !option.group
+        (option) => !option.group,
       );
       return [
         ...elementsWithoutGroup.map((option) => (

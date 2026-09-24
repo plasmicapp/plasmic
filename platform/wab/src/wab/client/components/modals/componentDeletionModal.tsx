@@ -3,7 +3,7 @@ import { confirm } from "@/wab/client/components/quick-modals";
 export async function promptDeleteComponent(
   itemType,
   itemName,
-  commentCount = 0
+  commentCount = 0,
 ) {
   const commentLabel = commentCount > 1 ? "comments" : "comment";
   return confirm({

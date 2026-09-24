@@ -14,7 +14,7 @@ test.describe("Right panel", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -71,7 +71,7 @@ test.describe("Right panel", () => {
 async function testSizeSection(
   models: PageModels,
   page: Page,
-  artboardFrame: FrameLocator
+  artboardFrame: FrameLocator,
 ) {
   const selectedElt = artboardFrame.locator(".__wab_instance > div").first();
 
@@ -164,7 +164,7 @@ async function testSizeSection(
 async function testVisibilitySection(
   models: PageModels,
   page: Page,
-  artboardFrame: FrameLocator
+  artboardFrame: FrameLocator,
 ) {
   const selectedElt = artboardFrame.locator(".__wab_instance > div").first();
 
@@ -179,7 +179,7 @@ async function testVisibilitySection(
   await expect(selectedElt).toHaveCSS("display", "none");
 
   const visibilityChoices = models.studio.rightPanel.frame.locator(
-    '[data-test-id="visibility-choices"]'
+    '[data-test-id="visibility-choices"]',
   );
   await visibilityChoices.click({ button: "right" });
   await models.studio.rightPanel.clickDataPlasmicProp("display-not-rendered");

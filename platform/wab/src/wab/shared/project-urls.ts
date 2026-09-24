@@ -1,6 +1,6 @@
+import { ApiProject } from "@/wab/shared/ApiSchema";
 import { maybe } from "@/wab/shared/common";
 import { DevFlagsType } from "@/wab/shared/devflags";
-import { ApiProject } from "@/wab/shared/ApiSchema";
 import { DomainValidator } from "@/wab/shared/hosting";
 
 /**
@@ -9,10 +9,10 @@ import { DomainValidator } from "@/wab/shared/hosting";
 export function prodUrlForProject(
   devflags: DevFlagsType,
   project: Pick<ApiProject, "extraData" | "hostUrl">,
-  plasmicHostingDomains: string[]
+  plasmicHostingDomains: string[],
 ) {
   const domainValidator = new DomainValidator(
-    devflags.plasmicHostingSubdomainSuffix
+    devflags.plasmicHostingSubdomainSuffix,
   );
 
   return (
@@ -20,11 +20,11 @@ export function prodUrlForProject(
     maybe(project.hostUrl, (url) => new URL(url).origin) ||
     maybe(
       domainValidator.extractCustomDomain(plasmicHostingDomains),
-      (u) => "https://" + u
+      (u) => "https://" + u,
     ) ||
     maybe(
       domainValidator.extractSubdomain(plasmicHostingDomains),
-      (u) => "https://" + u
+      (u) => "https://" + u,
     )
   );
 }

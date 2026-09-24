@@ -30,7 +30,7 @@ export interface ConflictProps extends DefaultConflictProps {
 
 function Conflict_(
   { side, onPickSide, icon, ...props }: ConflictProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicConflict to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

@@ -52,17 +52,17 @@ describe("serializeTplTagBase", () => {
     const renderModule = readFromProject("PlasmicButtons.tsx");
 
     const plainButtonStart = renderModule.indexOf(
-      'data-plasmic-name={"plainButton"}'
+      'data-plasmic-name={"plainButton"}',
     );
     const submitButtonStart = renderModule.indexOf(
-      'data-plasmic-name={"submitButton"}'
+      'data-plasmic-name={"submitButton"}',
     );
     expect(plainButtonStart).toBeGreaterThan(-1);
     expect(submitButtonStart).toBeGreaterThan(plainButtonStart);
 
     const plainButtonJsx = renderModule.slice(
       plainButtonStart,
-      submitButtonStart
+      submitButtonStart,
     );
     expect(plainButtonJsx).toContain('type={"button"}');
 
@@ -78,14 +78,14 @@ function expectMakeCssClassNameForVariantCombo(
   expected: {
     loader: string;
     nonLoader: string;
-  }
+  },
 ) {
   expect(
     makeCssClassNameForVariantCombo(variantCombo, {
       targetEnv: "loader",
       prefix,
       superComp,
-    })
+    }),
   ).toEqual(expected.loader);
 
   ["canvas" as const, "codegen" as const, "preview" as const].forEach(
@@ -95,9 +95,9 @@ function expectMakeCssClassNameForVariantCombo(
           targetEnv,
           prefix,
           superComp,
-        })
+        }),
       ).toEqual(expected.nonLoader);
-    }
+    },
   );
 }
 
@@ -109,7 +109,7 @@ describe("makeCssClassNameForVariantCombo", () => {
       {
         loader: "",
         nonLoader: "",
-      }
+      },
     );
   });
 
@@ -131,7 +131,7 @@ describe("makeCssClassNameForVariantCombo", () => {
         }),
       ],
       opts,
-      expected
+      expected,
     );
     expectMakeCssClassNameForVariantCombo(
       [
@@ -143,7 +143,7 @@ describe("makeCssClassNameForVariantCombo", () => {
         }),
       ],
       opts,
-      expected
+      expected,
     );
   });
 
@@ -161,7 +161,7 @@ describe("makeCssClassNameForVariantCombo", () => {
         {
           loader: "_12345",
           nonLoader: "___hovered",
-        }
+        },
       );
     });
     it("works for variant with 2 selectors", () => {
@@ -177,7 +177,7 @@ describe("makeCssClassNameForVariantCombo", () => {
         {
           loader: "_12345",
           nonLoader: "___hovered__focusedWithin",
-        }
+        },
       );
     });
   });
@@ -197,7 +197,7 @@ describe("makeCssClassNameForVariantCombo", () => {
         {
           loader: "_12345",
           nonLoader: "___hovered",
-        }
+        },
       );
     });
     it("works for variant with 2 varaint keys", () => {
@@ -214,7 +214,7 @@ describe("makeCssClassNameForVariantCombo", () => {
         {
           loader: "_12345",
           nonLoader: "___hovered__focusedWithin",
-        }
+        },
       );
     });
   });
@@ -260,7 +260,7 @@ describe("makeCssClassNameForVariantCombo", () => {
         {
           loader: "var1",
           nonLoader: "MyComponent__componentVariantGroup_variant1",
-        }
+        },
       );
     });
     it("works for 2 component variants", () => {
@@ -273,7 +273,7 @@ describe("makeCssClassNameForVariantCombo", () => {
           loader: "var1_var2",
           nonLoader:
             "MyComponent__componentVariantGroup_variant1_MyComponent__componentVariantGroup_variant2",
-        }
+        },
       );
     });
   });
@@ -301,7 +301,7 @@ describe("makeCssClassNameForVariantCombo", () => {
         {
           loader: "_123mo",
           nonLoader: "global_screen_mobile",
-        }
+        },
       );
       expectMakeCssClassNameForVariantCombo(
         [desktopVariant],
@@ -309,7 +309,7 @@ describe("makeCssClassNameForVariantCombo", () => {
         {
           loader: "_456de",
           nonLoader: "global_screen_desktop",
-        }
+        },
       );
     });
     it("works for 2 global variants by sorting uuid", () => {
@@ -319,7 +319,7 @@ describe("makeCssClassNameForVariantCombo", () => {
         {
           loader: "_123mo_456de",
           nonLoader: "global_screen_mobile_global_screen_desktop",
-        }
+        },
       );
     });
   });

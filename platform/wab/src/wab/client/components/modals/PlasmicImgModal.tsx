@@ -85,7 +85,7 @@ export async function showPlasmicImgModal(studioCtx: StudioCtx) {
       });
       setTimeout(
         spawnWrapper(() => studioCtx.appCtx.api.reloadLocation()),
-        5000
+        5000,
       );
     }
   }

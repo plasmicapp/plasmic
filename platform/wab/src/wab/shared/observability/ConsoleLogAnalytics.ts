@@ -29,11 +29,11 @@ export class ConsoleLogAnalytics extends BaseAnalytics implements Analytics {
   track(
     eventName: string,
     eventProperties: Properties,
-    opts?: TrackOptions
+    opts?: TrackOptions,
   ): void {
     if (opts?.sampleThreshold !== undefined) {
       console.log(
-        `[analytics] "${eventName}" sample threshold ${opts.sampleThreshold}`
+        `[analytics] "${eventName}" sample threshold ${opts.sampleThreshold}`,
       );
     }
     super.track(eventName, eventProperties, opts);
@@ -45,7 +45,7 @@ export class ConsoleLogAnalytics extends BaseAnalytics implements Analytics {
         this.userId || "anonymous"
       }" event "${eventName}"`,
       eventProperties,
-      new Error()
+      new Error(),
     );
   }
 

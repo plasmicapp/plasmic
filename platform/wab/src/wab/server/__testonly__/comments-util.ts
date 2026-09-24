@@ -28,9 +28,9 @@ function getUniqueUsersWithCommentAccess(permissions: Permission[]): User[] {
   const users = withoutNils(
     permissions
       .filter(
-        (p) => accessLevelRank(p.accessLevel) >= accessLevelRank("commenter")
+        (p) => accessLevelRank(p.accessLevel) >= accessLevelRank("commenter"),
       )
-      .map((permission) => permission.user)
+      .map((permission) => permission.user),
   );
   return [...new Map(users.map((user) => [user.id, user])).values()];
 }
@@ -43,7 +43,7 @@ export async function withEndUserNotificationSetup(
     project: Project;
     userDbs: (() => DbMgr)[];
     branch: Branch;
-  }) => Promise<void>
+  }) => Promise<void>,
 ) {
   await withBranch(
     async (branch, _helpers, sudo, users, userDbs, project, em) => {
@@ -51,24 +51,24 @@ export async function withEndUserNotificationSetup(
       await user1Db.grantProjectPermissionByEmail(
         project.id,
         users[1].email,
-        "editor"
+        "editor",
       );
       await user1Db.grantProjectPermissionByEmail(
         project.id,
         users[2].email,
-        "editor"
+        "editor",
       );
       await user1Db.grantProjectPermissionByEmail(
         project.id,
         users[3].email,
-        "editor"
+        "editor",
       );
 
       // Need to get entities in a specific way for send-comments-notifications.spec.ts
       // TODO: fix the test to be less specific
       const permissions = await sudo.getPermissionsForProject(project.id);
       const projectUsers = getUniqueUsersWithCommentAccess(permissions).sort(
-        (a, b) => a.email.localeCompare(b.email)
+        (a, b) => a.email.localeCompare(b.email),
       );
       const threadProject = await sudo.getProjectById(project.id);
 
@@ -83,7 +83,7 @@ export async function withEndUserNotificationSetup(
     },
     {
       numUsers: 4,
-    }
+    },
   );
 }
 
@@ -93,14 +93,14 @@ export function createNotificationsByUser(
     branchId?: BranchId;
     userId: UserId;
     notificationsByThread: Map<CommentThreadId, Notification[]>;
-  }[]
+  }[],
 ): NotificationsByUser {
   const groupedByUser = xGroupBy(data, (d) => d.userId);
   return new Map(
     Array.from(groupedByUser.entries()).map(([userId, items]) => [
       userId,
       createNotificationsByProject(items),
-    ])
+    ]),
   );
 }
 
@@ -109,7 +109,7 @@ export function createNotificationsByProject(
     projectId: ProjectId;
     branchId?: BranchId;
     notificationsByThread: Map<CommentThreadId, Notification[]>;
-  }[]
+  }[],
 ): NotificationsByProject {
   const groupedByProject = xGroupBy(data, (d) => d.projectId);
   return new Map(
@@ -119,9 +119,9 @@ export function createNotificationsByProject(
         items.map(({ branchId, notificationsByThread: notifications }) => [
           branchId ?? "main",
           notifications,
-        ])
+        ]),
       ),
-    ])
+    ]),
   );
 }
 
@@ -131,19 +131,19 @@ export async function createNotification(
   project: Project,
   timestamp: Date,
   entry: Entry,
-  sudo: DbMgr
+  sudo: DbMgr,
 ): Promise<Notification> {
   const threadComments = await sudo.getCommentsForThread(commentThreadId);
   const commentThreads = await sudo.getUnnotifiedCommentThreads(new Date());
   const commentThread = ensure(
     commentThreads.find((thread) => thread.id === commentThreadId),
-    "commentThread must exist"
+    "commentThread must exist",
   );
   if (entry.type === "COMMENT") {
     let comment = entry.comment;
     const unnotifiedComments = await sudo.getUnnotifiedCommentsByThreadIds(
       [commentThreadId],
-      new Date()
+      new Date(),
     );
     comment = unnotifiedComments.find((c) => c.id === comment.id) || comment;
     return {
@@ -163,7 +163,7 @@ export async function createNotification(
     const unnotifiedHistories =
       await sudo.getUnnotifiedCommentsThreadHistoriesByThreadIds(
         [commentThreadId],
-        new Date()
+        new Date(),
       );
     history = unnotifiedHistories.find((th) => th.id === history.id) || history;
     return {
@@ -183,7 +183,7 @@ export async function createNotification(
   const unnotifiedReactions =
     await sudo.getUnnotifiedCommentsReactionsByThreadIds(
       [commentThreadId],
-      new Date()
+      new Date(),
     );
   reaction = unnotifiedReactions.find((r) => r.id === reaction.id) || reaction;
   return {

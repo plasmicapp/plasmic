@@ -16,14 +16,14 @@ import { useLocalStorage } from "react-use";
 type IconTogglesPanelProps = DefaultIconTogglesPanelProps;
 
 const IconTogglesPanel = observer(function IconTogglesPanel(
-  props: IconTogglesPanelProps
+  props: IconTogglesPanelProps,
 ) {
   const docsCtx = useDocsPortalCtx();
   const icon = docsCtx.tryGetFocusedIcon();
 
   const [dismissed, setDismissed] = useLocalStorage(
     "IconTogglesPanel--dismissIconInfo",
-    false
+    false,
   );
 
   if (!icon) {

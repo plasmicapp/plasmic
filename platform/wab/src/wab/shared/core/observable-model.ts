@@ -76,7 +76,7 @@ interface ArraySpliceChange<T = any> extends BaseChange {
 
 export const mkArrayBeforeSplice = <T = any>(
   curValue: Array<T>,
-  change: ArraySpliceChange<T>
+  change: ArraySpliceChange<T>,
 ) => {
   const v = curValue.slice(0);
   v.splice(change.index, change.added.length, ...change.removed);
@@ -243,7 +243,7 @@ export function observeModel(
     localObject?: typeof Object;
     quiet?: boolean;
     incremental?: boolean;
-  }
+  },
 ): ObservableState {
   const {
     instUtil: _instUtil,
@@ -318,21 +318,21 @@ export function observeModel(
   // Returns false or a string explaining why the instance is in invalid state
   const isInInvalidState = (
     inst: ObjInst,
-    flags: VisitFlags
+    flags: VisitFlags,
   ): (() => string) | false => {
     const getRefs = (
-      parents: Map<ObjInst, Map<ObjInst, Map<string, number>>>
+      parents: Map<ObjInst, Map<ObjInst, Map<string, number>>>,
     ) => {
       return [
         ...ensure(
           parents.get(inst),
-          "Couldn't find parent for inst " + inst.uid
+          "Couldn't find parent for inst " + inst.uid,
         ).entries(),
       ]
         .map(([p, fields]) =>
           [...fields.keys()].map(
-            (f) => `${_instUtil.getInstClassName(p)}[${p.uid}].${f}`
-          )
+            (f) => `${_instUtil.getInstClassName(p)}[${p.uid}].${f}`,
+          ),
         )
         .join(", ");
     };
@@ -350,7 +350,7 @@ export function observeModel(
       if (instParents.has(inst)) {
         return () =>
           `Instance ${inst.uid} (${_instUtil.getInstClassName(
-            inst
+            inst,
           )}) has unexpected parent refs:\n` + getRefs(instParents);
       } else {
         return false;
@@ -360,14 +360,14 @@ export function observeModel(
       // Inst is invalid because became unreachable but still has WeakRefs
       return () =>
         `Unreachable instance ${inst.uid} (${_instUtil.getInstClassName(
-          inst
+          inst,
         )}) has unexpected refs:\n` + getRefs(inst2Weakrefs);
     }
     if (instParents.has(inst) && !hasOneParent(inst)) {
       // Invalid because it has more than one parent
       return () =>
         `Instance ${inst.uid} (${_instUtil.getInstClassName(
-          inst
+          inst,
         )}) has more than one parent:\n` + getRefs(instParents);
     }
     return false;
@@ -405,7 +405,7 @@ export function observeModel(
    */
   const observeInst = (
     inst: ObjInst,
-    flags: VisitFlags
+    flags: VisitFlags,
   ): Lambda | undefined => {
     if (instStates.has(inst)) {
       // We've seen this `inst` before...  So exit early
@@ -459,13 +459,13 @@ export function observeModel(
             ...flags,
             incrementalObserve: false,
             modelUpdate: true,
-          })
+          }),
         );
       }
     });
 
     for (const field of allFields.filter(
-      (f) => !opts.skipInitialObserveFields?.includes(f)
+      (f) => !opts.skipInitialObserveFields?.includes(f),
     )) {
       // Furthermore, we also want to observe the current field value itself
       // -- the field value may be another `ObjInst` to be tracked, or an array
@@ -473,7 +473,7 @@ export function observeModel(
       addInstChildDispose(
         fieldValueDisposes,
         field.name,
-        visitFieldValue(inst, field, inst[field.name], flags)
+        visitFieldValue(inst, field, inst[field.name], flags),
       );
     }
 
@@ -488,7 +488,7 @@ export function observeModel(
     inst: ObjInst,
     field: Field,
     value: any,
-    flags: VisitFlags
+    flags: VisitFlags,
   ): Lambda | undefined => {
     if (value == null) {
       return undefined;
@@ -524,7 +524,7 @@ export function observeModel(
     inst: ObjInst,
     field: Field,
     value: ObjInst,
-    flags: VisitFlags
+    flags: VisitFlags,
   ): Lambda | undefined => {
     visitNodeListener?.(inst);
 
@@ -563,7 +563,7 @@ export function observeModel(
       // Each inst should be referenced either by a StrongRef or a WeakRef!
       assert(
         isWeakRefField(field),
-        `Expected WeakRef field ${field.name} to be WeakRef`
+        `Expected WeakRef field ${field.name} to be WeakRef`,
       );
 
       if (firstRun) {
@@ -597,7 +597,7 @@ export function observeModel(
     field: Field,
     array: any[],
 
-    flags: VisitFlags
+    flags: VisitFlags,
   ): Lambda => {
     const childDisposes = new Map<any, Lambda[]>();
     // Support repeated children in the array
@@ -613,7 +613,7 @@ export function observeModel(
         addCollectionChildDispose(
           childDisposes,
           child,
-          visitFieldValue(inst, field, child, newFlags)
+          visitFieldValue(inst, field, child, newFlags),
         );
       }
       childCount.set(child, (childCount.get(child) ?? 0) + 1);
@@ -676,7 +676,7 @@ export function observeModel(
       // On dispose, we inform all children that the parent inst is
       // no longer referencing them via this field
       childDisposes.forEach((disposes) =>
-        disposes.forEach((dispose) => dispose())
+        disposes.forEach((dispose) => dispose()),
       );
       arrayDispose();
     });
@@ -690,7 +690,7 @@ export function observeModel(
     inst: ObjInst,
     field: Field,
     obj: Record<string, any>,
-    flags: VisitFlags
+    flags: VisitFlags,
   ): Lambda => {
     // Disposes for children value stores mapping from child value to
     // a list of dispose functions.  It's a list because the same
@@ -707,7 +707,7 @@ export function observeModel(
       addCollectionChildDispose(
         childDisposes,
         val,
-        visitFieldValue(inst, field, val, flags)
+        visitFieldValue(inst, field, val, flags),
       );
     }
 
@@ -716,13 +716,13 @@ export function observeModel(
       addCollectionChildDispose(
         childDisposes,
         val,
-        visitFieldValue(inst, field, val, flags)
+        visitFieldValue(inst, field, val, flags),
       );
     }
 
     assert(
       localObject.getPrototypeOf(obj) === localObject.prototype,
-      "local object prototype didn't match"
+      "local object prototype didn't match",
     );
 
     // Now, observe the object itself, so we get notified when new entries
@@ -744,12 +744,12 @@ export function observeModel(
         addCollectionChildDispose(
           childDisposes,
           event.newValue,
-          visitFieldValue(inst, field, event.newValue, newFlags)
+          visitFieldValue(inst, field, event.newValue, newFlags),
         );
         addCollectionChildDispose(
           childDisposes,
           event.name,
-          visitFieldValue(inst, field, event.name, newFlags)
+          visitFieldValue(inst, field, event.name, newFlags),
         );
       } else if (event.type === "update") {
         fireFieldChange(inst, field.name, {
@@ -763,7 +763,7 @@ export function observeModel(
         addCollectionChildDispose(
           childDisposes,
           event.newValue,
-          visitFieldValue(inst, field, event.newValue, newFlags)
+          visitFieldValue(inst, field, event.newValue, newFlags),
         );
       } else if (event.type === "remove") {
         fireFieldChange(inst, field.name, {
@@ -783,7 +783,7 @@ export function observeModel(
       // On dispose, we tell each child that parent inst is no
       // longer referencing them via this field
       childDisposes.forEach((disposes) =>
-        disposes.forEach((dispose) => dispose())
+        disposes.forEach((dispose) => dispose()),
       );
       objDispose();
     });
@@ -802,13 +802,13 @@ export function observeModel(
       // Internal insts however should be disposed only once
       assert(
         instStates.has(inst),
-        `Tried to dispose inst ${inst.uid} without instState`
+        `Tried to dispose inst ${inst.uid} without instState`,
       );
       if (!instParents.get(inst)) {
         const doDispose = () => {
           const state = ensure(
             instStates.get(inst),
-            `Expected inst ${inst.uid} to have instState`
+            `Expected inst ${inst.uid} to have instState`,
           );
           // Inform each child that this inst is being disposed
           state.fieldValueDisposes.forEach((dispose) => dispose());
@@ -851,7 +851,7 @@ export function observeModel(
       add: boolean;
       flags: VisitFlags;
       weakRef?: boolean;
-    }
+    },
   ) => {
     const { add, weakRef = false, flags } = updateOpts;
     const mapOfParents = weakRef ? inst2Weakrefs : instParents;
@@ -873,7 +873,7 @@ export function observeModel(
       assert(
         fields.has(field),
         () =>
-          `updateInstParent tried to delete non-existing child ${child.uid} of parent ${parent.uid} via field ${field}`
+          `updateInstParent tried to delete non-existing child ${child.uid} of parent ${parent.uid} via field ${field}`,
       );
       const count =
         ensure(fields.get(field), "Expected at least one field") - 1;
@@ -917,10 +917,10 @@ export function observeModel(
 
   const updateAndGetAllCachedInsts = <T extends ObjInst & { uuid: string }>(
     insts: ReadonlyArray<T> | Dictionary<T>,
-    instCache: Map<string, T>
+    instCache: Map<string, T>,
   ): T[] => {
     (Array.isArray(insts) ? insts : Object.values(insts)).forEach((inst) =>
-      instCache.set(inst.uuid, inst)
+      instCache.set(inst.uuid, inst),
     );
     return [...instCache.values()];
   };
@@ -933,12 +933,12 @@ export function observeModel(
         }
         return updateAndGetAllCachedInsts(
           firstRunData.allStyleTokens,
-          tokensCache
+          tokensCache,
         );
       } else {
         return updateAndGetAllCachedInsts(
           siteStyleTokensAllDepsDict(site),
-          tokensCache
+          tokensCache,
         );
       }
     };
@@ -952,12 +952,12 @@ export function observeModel(
         }
         return updateAndGetAllCachedInsts(
           firstRunData.allImageAssets,
-          imageAssetsCache
+          imageAssetsCache,
         );
       } else {
         return updateAndGetAllCachedInsts(
           siteToAllImageAssetsDict(site),
-          imageAssetsCache
+          imageAssetsCache,
         );
       }
     };
@@ -971,12 +971,12 @@ export function observeModel(
         }
         return updateAndGetAllCachedInsts(
           firstRunData.allGlobalVariants,
-          globalVariantsCache
+          globalVariantsCache,
         );
       } else {
         return updateAndGetAllCachedInsts(
           siteToAllGlobalVariants(site),
-          globalVariantsCache
+          globalVariantsCache,
         );
       }
     };
@@ -990,14 +990,14 @@ export function observeModel(
           xSetDefault(firstRunData.allComponentVariants, component, () =>
             allComponentVariants(component, {
               includeSuperVariants: true,
-            })
+            }),
           ),
-          xSetDefault(componentVariantsCache, component, () => new Map())
+          xSetDefault(componentVariantsCache, component, () => new Map()),
         );
       } else {
         return updateAndGetAllCachedInsts(
           componentToAllVariants(component),
-          xSetDefault(componentVariantsCache, component, () => new Map())
+          xSetDefault(componentVariantsCache, component, () => new Map()),
         );
       }
     };
@@ -1031,7 +1031,7 @@ export function observeModel(
     inst: ObjInst,
     fieldName: string,
     value: string,
-    flags: VisitFlags
+    flags: VisitFlags,
   ) => {
     // Unfortunately we need to handle those case-by-case :/
     const classesToTest = [ArenaFrame, StyleToken, RuleSet, VariantedValue];
@@ -1053,7 +1053,7 @@ export function observeModel(
       .when(ArenaFrame, (frame) => {
         if (fieldName === "pinnedVariants") {
           return getAllComponentVariants(frame.container.component).find(
-            (v) => v.uuid === value
+            (v) => v.uuid === value,
           );
         } else if (fieldName === "pinnedGlobalVariants") {
           return getAllGlobalVariants().find((v) => v.uuid === value);
@@ -1085,7 +1085,7 @@ export function observeModel(
     // The same rule value string can reference several tokens
     const childArray = ensureArray(child);
     childArray.forEach((c) =>
-      updateInstParent(inst, fieldName, c, { add: true, weakRef: true, flags })
+      updateInstParent(inst, fieldName, c, { add: true, weakRef: true, flags }),
     );
     return namedDispose(makeInstFieldKey(inst, fieldName), () => {
       childArray.forEach((c) =>
@@ -1096,7 +1096,7 @@ export function observeModel(
             incrementalObserve: false,
             modelUpdate: false,
           },
-        })
+        }),
       );
     });
   };
@@ -1108,7 +1108,7 @@ export function observeModel(
   // Finally, we begin by observing the root instance!
   const rootDispose = ensure(
     observeInst(rootInst, rootFlags),
-    "Expected root dispose"
+    "Expected root dispose",
   );
 
   firstRun = false;
@@ -1122,8 +1122,8 @@ export function observeModel(
     assert(
       instParents.has(inst) || shouldNotHaveParents(inst, rootFlags),
       `Child ${inst.uid} (${_instUtil.getInstClassName(
-        inst
-      )}) has no parent node`
+        inst,
+      )}) has no parent node`,
     );
   });
 
@@ -1131,7 +1131,7 @@ export function observeModel(
     console.log(
       `Finished instrumenting model in ${new Date().getTime() - start}ms; saw ${
         instStates.size
-      } instances`
+      } instances`,
     );
   }
 
@@ -1150,7 +1150,7 @@ export function observeModel(
           return valid();
         }
         return null;
-      })
+      }),
     );
     const errorStr = modelErrors.join("\n");
     assert(modelErrors.length === 0, `Invariant failed: ${errorStr}`);
@@ -1209,7 +1209,7 @@ export function observeModel(
           }
           toBeDeleted.add(val);
           [...state.fieldValueDisposes.keys()].forEach((field) =>
-            visit(val[field])
+            visit(val[field]),
           );
         } else if (Array.isArray(val)) {
           val.forEach((v) => visit(v));
@@ -1229,13 +1229,13 @@ export function observeModel(
     getRefsToInst: (inst: ObjInst, all: boolean) => {
       return [
         ...(instParents.get(inst)?.keys() ?? []),
-        ...(all ? inst2Weakrefs.get(inst)?.keys() ?? [] : []),
+        ...(all ? (inst2Weakrefs.get(inst)?.keys() ?? []) : []),
       ];
     },
     observeInstField: (inst: ObjInst, field: Field) => {
       const state = ensure(
         instStates.get(inst),
-        "The parent instance should exist"
+        "The parent instance should exist",
       );
 
       const instClass = _instUtil.getInstClass(inst);
@@ -1243,7 +1243,7 @@ export function observeModel(
 
       const fieldToUpdate = ensure(
         allFields.find((f) => f === field),
-        "Should observe an existing field"
+        "Should observe an existing field",
       );
 
       // If this inst was added in the same .change as we are trying to incrementally observe
@@ -1256,13 +1256,13 @@ export function observeModel(
         visitFieldValue(inst, fieldToUpdate, inst[fieldToUpdate.name], {
           incrementalObserve: !isNewInst,
           modelUpdate: false,
-        })
+        }),
       );
     },
     disposeInstField: (inst: ObjInst, field: Field) => {
       const state = ensure(
         instStates.get(inst),
-        "The parent instance should exist"
+        "The parent instance should exist",
       );
 
       const instClass = _instUtil.getInstClass(inst);
@@ -1270,7 +1270,7 @@ export function observeModel(
 
       const fieldToDispose = ensure(
         allFields.find((f) => f === field),
-        "Should observe an existing field"
+        "Should observe an existing field",
       );
 
       manuallyDisposedInsts.add(inst[fieldToDispose.name]);
@@ -1283,7 +1283,7 @@ export function observeModel(
 function addCollectionChildDispose<T>(
   childDisposes: Map<T, Lambda[]>,
   child: T,
-  dispose: Lambda | undefined
+  dispose: Lambda | undefined,
 ) {
   if (dispose) {
     if (childDisposes.has(child)) {
@@ -1308,7 +1308,7 @@ function disposeCollectionChild(childDisposes: Map<any, Lambda[]>, child: any) {
 function addInstChildDispose(
   childDisposes: Map<string, Lambda>,
   field: string,
-  dispose: Lambda | undefined
+  dispose: Lambda | undefined,
 ) {
   if (dispose) {
     assert(!childDisposes.has(field), `Field already has dispose function`);
@@ -1333,7 +1333,7 @@ function getPathToChild(
   child: ObjInst,
   rootNode: ObjInst,
   instParents: Map<ObjInst, Map<ObjInst, Map<string, number>>>,
-  opts?: { allowMultiplePaths?: boolean }
+  opts?: { allowMultiplePaths?: boolean },
 ): ChangeNode[] | undefined {
   const seenNodes = new Set<ObjInst>();
 
@@ -1443,7 +1443,7 @@ export function mergeRecordedChanges(...changes: RecordedChanges[]) {
 
 function doMergeRecordedChanges(
   existingChanges: RecordedChanges,
-  newChanges: RecordedChanges
+  newChanges: RecordedChanges,
 ): RecordedChanges {
   const newlyAdded = new Set(newChanges.newInsts);
   const newlyRemoved = new Set(newChanges.removedInsts);
@@ -1453,13 +1453,13 @@ function doMergeRecordedChanges(
       new Set([
         ...existingChanges.newInsts.filter((inst) => !newlyRemoved.has(inst)),
         ...newChanges.newInsts,
-      ]).keys()
+      ]).keys(),
     ),
     removedInsts: Array.from(
       new Set([
         ...existingChanges.removedInsts.filter((inst) => !newlyAdded.has(inst)),
         ...newChanges.removedInsts,
-      ]).keys()
+      ]).keys(),
     ),
   };
 }
@@ -1483,7 +1483,7 @@ export interface IChangeRecorder {
   setExtraListener(newListener: (change: ModelChange) => void): void;
   maybeObserveComponents(
     components: Component[],
-    componentContext?: ComponentContext
+    componentContext?: ComponentContext,
   ): boolean;
   isRecording: boolean;
 }
@@ -1543,7 +1543,7 @@ export class ChangeRecorder implements IChangeRecorder {
    */
   maybeObserveComponents(
     components: Component[],
-    componentContext?: ComponentContext
+    componentContext?: ComponentContext,
   ) {
     if (componentContext != null) {
       this.componentsInContext[componentContext] = components[0];
@@ -1556,7 +1556,7 @@ export class ChangeRecorder implements IChangeRecorder {
       if (!mobxHack.isObserved(component.tplTree)) {
         this.observableState.observeInstField(
           component,
-          meta.getFieldByName("Component", "tplTree")
+          meta.getFieldByName("Component", "tplTree"),
         );
         return true;
       }
@@ -1580,13 +1580,13 @@ export class ChangeRecorder implements IChangeRecorder {
     components.forEach((component) => {
       if (!mobxHack.isObserved(component)) {
         throw new Error(
-          `Component ${component.name} is not observed, but it should be`
+          `Component ${component.name} is not observed, but it should be`,
         );
       }
       if (!mobxHack.isObserved(component.tplTree)) {
         this.observableState.observeInstField(
           component,
-          meta.getFieldByName("Component", "tplTree")
+          meta.getFieldByName("Component", "tplTree"),
         );
       }
     });
@@ -1597,7 +1597,7 @@ export class ChangeRecorder implements IChangeRecorder {
       return;
     }
     const allowedLastTime = new Date(
-      Date.now() - (this.observedCompsCache.size > 20 ? 5 : 10) * 60_000
+      Date.now() - (this.observedCompsCache.size > 20 ? 5 : 10) * 60_000,
     );
     this.observedCompsCache.forEach((date, comp, map) => {
       if (this.componentsInContext.includes(comp)) {
@@ -1607,7 +1607,7 @@ export class ChangeRecorder implements IChangeRecorder {
         console.log(`Tried to dispose ${comp.name}`);
         this.observableState.disposeInstField(
           comp,
-          meta.getFieldByName("Component", "tplTree")
+          meta.getFieldByName("Component", "tplTree"),
         );
         map.delete(comp);
       } else if (!mobxHack.isObserved(comp.tplTree)) {
@@ -1662,7 +1662,7 @@ export class ChangeRecorder implements IChangeRecorder {
     return {
       changes: this.changes,
       newInsts: Array.from(this.observableState.getNewInsts().keys()).filter(
-        (inst) => !deletedInsts.has(inst)
+        (inst) => !deletedInsts.has(inst),
       ),
       removedInsts: Array.from(deletedInsts.keys()),
     };
@@ -1671,7 +1671,7 @@ export class ChangeRecorder implements IChangeRecorder {
   withRecording(f: () => void): RecordedChanges;
   withRecording<E>(f: () => Result<void, E>): Result<RecordedChanges, E>;
   withRecording<E>(
-    f: () => void | Result<void, E>
+    f: () => void | Result<void, E>,
   ): RecordedChanges | Result<RecordedChanges, E> {
     this._isRecording = true;
     const onError = () => {
@@ -1756,7 +1756,7 @@ export class FakeChangeRecorder implements IChangeRecorder {
   withRecording(f: () => void): RecordedChanges;
   withRecording<E>(f: () => Result<void, E>): Result<RecordedChanges, E>;
   withRecording<E>(
-    f: () => void | Result<void, E>
+    f: () => void | Result<void, E>,
   ): RecordedChanges | Result<RecordedChanges, E> {
     const maybeResult = f();
     if (maybeResult instanceof Ok || maybeResult instanceof Err) {
@@ -1903,7 +1903,7 @@ function hackyMobxUtils() {
             }
           },
         },
-      ])
+      ]),
     );
   });
 
@@ -1914,7 +1914,7 @@ function hackyMobxUtils() {
   function makeInstObservable(
     inst: ObjInst,
     instClass: Class,
-    allFields: Field[]
+    allFields: Field[],
   ) {
     // The observable version of field values
     const values: Record<string, any> = {};

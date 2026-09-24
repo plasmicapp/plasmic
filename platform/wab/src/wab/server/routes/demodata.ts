@@ -7,8 +7,7 @@ export async function getFakeTweets(req: Request, res: Response) {
     {
       id: "5cd4bf2798704442ac8ff098",
       createdAt: "Wed Aug 04 1971 12:23:04 GMT+0000 (UTC)",
-      body:
-        "Officia consectetur aliquip esse ad dolor duis magna enim Lorem aute irure. Nostrud nulla ad in aute. Irure esse in sint ut. In ipsum sit labore reprehenderit nulla. Aliquip deserunt nisi irure ullamco voluptate aliqua ad aliquip id ex labore cupidatat Lorem. Ut ex nulla cupidatat commodo id dolore labore.",
+      body: "Officia consectetur aliquip esse ad dolor duis magna enim Lorem aute irure. Nostrud nulla ad in aute. Irure esse in sint ut. In ipsum sit labore reprehenderit nulla. Aliquip deserunt nisi irure ullamco voluptate aliqua ad aliquip id ex labore cupidatat Lorem. Ut ex nulla cupidatat commodo id dolore labore.",
       user: {
         id: "5cd4bf27e85904ed885b430f",
         picture: "https://randomuser.me/portraits/women/0.jpg",
@@ -23,8 +22,7 @@ export async function getFakeTweets(req: Request, res: Response) {
     {
       id: "5cd4bf2735c9c34ec1685864",
       createdAt: "Sat Jun 10 2006 17:34:55 GMT+0000 (UTC)",
-      body:
-        "Aliquip voluptate ex incididunt officia minim. Mollit reprehenderit commodo duis ea consectetur aliqua proident laborum eiusmod tempor. Adipisicing exercitation sit tempor eu magna minim pariatur quis deserunt nulla consequat nisi ullamco.",
+      body: "Aliquip voluptate ex incididunt officia minim. Mollit reprehenderit commodo duis ea consectetur aliqua proident laborum eiusmod tempor. Adipisicing exercitation sit tempor eu magna minim pariatur quis deserunt nulla consequat nisi ullamco.",
       user: {
         id: "5cd4bf2760bfc30c9a3bd25c",
         picture: "https://randomuser.me/portraits/women/1.jpg",
@@ -39,8 +37,7 @@ export async function getFakeTweets(req: Request, res: Response) {
     {
       id: "5cd4bf27230c6b19fc36d1f3",
       createdAt: "Fri Oct 19 2007 13:08:47 GMT+0000 (UTC)",
-      body:
-        "Lorem ullamco proident occaecat eu culpa laboris exercitation in duis nostrud ad. Cupidatat pariatur enim id magna eu irure nulla quis sit irure elit Lorem qui. Anim in nostrud voluptate reprehenderit veniam amet labore dolore elit nulla incididunt id. Ullamco ullamco eu laborum enim deserunt elit. Sunt amet id ut fugiat cupidatat eiusmod aute aliqua do eiusmod pariatur qui. Fugiat ullamco ipsum ex sint nostrud amet eu est eiusmod nostrud.",
+      body: "Lorem ullamco proident occaecat eu culpa laboris exercitation in duis nostrud ad. Cupidatat pariatur enim id magna eu irure nulla quis sit irure elit Lorem qui. Anim in nostrud voluptate reprehenderit veniam amet labore dolore elit nulla incididunt id. Ullamco ullamco eu laborum enim deserunt elit. Sunt amet id ut fugiat cupidatat eiusmod aute aliqua do eiusmod pariatur qui. Fugiat ullamco ipsum ex sint nostrud amet eu est eiusmod nostrud.",
       user: {
         id: "5cd4bf2787ca19107525c494",
         picture: "https://randomuser.me/portraits/women/2.jpg",
@@ -55,8 +52,7 @@ export async function getFakeTweets(req: Request, res: Response) {
     {
       id: "5cd4bf27a49f31cefe2b6146",
       createdAt: "Wed Nov 05 1997 23:16:26 GMT+0000 (UTC)",
-      body:
-        "Labore sint enim culpa amet ullamco non Lorem amet cillum duis. Ipsum ullamco laboris ipsum cillum consequat quis. Adipisicing magna aute est cupidatat labore proident irure eu. Quis voluptate et labore non fugiat est aliquip dolor. Ea dolor quis amet officia occaecat sit mollit quis officia minim. Lorem consequat dolore consequat deserunt voluptate adipisicing fugiat eu mollit ex Lorem do.",
+      body: "Labore sint enim culpa amet ullamco non Lorem amet cillum duis. Ipsum ullamco laboris ipsum cillum consequat quis. Adipisicing magna aute est cupidatat labore proident irure eu. Quis voluptate et labore non fugiat est aliquip dolor. Ea dolor quis amet officia occaecat sit mollit quis officia minim. Lorem consequat dolore consequat deserunt voluptate adipisicing fugiat eu mollit ex Lorem do.",
       user: {
         id: "5cd4bf27b7b50b4c05e22bb0",
         picture: "https://randomuser.me/portraits/women/3.jpg",
@@ -71,8 +67,7 @@ export async function getFakeTweets(req: Request, res: Response) {
     {
       id: "5cd4bf27f183dff76290a858",
       createdAt: "Sat Jan 24 1981 00:39:42 GMT+0000 (UTC)",
-      body:
-        "Sint dolore laboris minim fugiat cillum id voluptate officia aliquip. Irure dolor et tempor consectetur ex laboris. Pariatur ad ipsum officia cupidatat id magna consectetur esse dolor cupidatat Lorem nulla in duis. Aliquip ea est magna adipisicing do. Sunt enim ad reprehenderit et cillum dolore. Commodo reprehenderit ea anim exercitation sint mollit quis. Ullamco commodo magna ut labore consectetur adipisicing culpa nulla irure elit nisi.",
+      body: "Sint dolore laboris minim fugiat cillum id voluptate officia aliquip. Irure dolor et tempor consectetur ex laboris. Pariatur ad ipsum officia cupidatat id magna consectetur esse dolor cupidatat Lorem nulla in duis. Aliquip ea est magna adipisicing do. Sunt enim ad reprehenderit et cillum dolore. Commodo reprehenderit ea anim exercitation sint mollit quis. Ullamco commodo magna ut labore consectetur adipisicing culpa nulla irure elit nisi.",
       user: {
         id: "5cd4bf27cb55079637a65688",
         picture: "https://randomuser.me/portraits/women/4.jpg",
@@ -87,8 +82,7 @@ export async function getFakeTweets(req: Request, res: Response) {
     {
       id: "5cd4bf2796a0c42fc36d098e",
       createdAt: "Sun Jul 06 1980 00:48:51 GMT+0000 (UTC)",
-      body:
-        "Enim dolor et nostrud quis sunt. Anim sint ad ipsum eu voluptate esse ea quis culpa aliquip id ut. Cillum cillum veniam ea incididunt culpa mollit cupidatat commodo culpa non amet incididunt sunt enim. Laborum laboris nisi id aliquip aute deserunt ipsum excepteur occaecat veniam incididunt cupidatat commodo in. Pariatur amet incididunt quis anim excepteur quis qui proident do. Velit cillum deserunt dolore cupidatat mollit aliqua ea sint reprehenderit id sunt proident Lorem. Occaecat officia laborum exercitation id consequat aute enim aliquip culpa proident duis.",
+      body: "Enim dolor et nostrud quis sunt. Anim sint ad ipsum eu voluptate esse ea quis culpa aliquip id ut. Cillum cillum veniam ea incididunt culpa mollit cupidatat commodo culpa non amet incididunt sunt enim. Laborum laboris nisi id aliquip aute deserunt ipsum excepteur occaecat veniam incididunt cupidatat commodo in. Pariatur amet incididunt quis anim excepteur quis qui proident do. Velit cillum deserunt dolore cupidatat mollit aliqua ea sint reprehenderit id sunt proident Lorem. Occaecat officia laborum exercitation id consequat aute enim aliquip culpa proident duis.",
       user: {
         id: "5cd4bf27a30b27dbf30c1078",
         picture: "https://randomuser.me/portraits/women/5.jpg",
@@ -187,26 +181,22 @@ export async function getFakeBlurbs(req: Request, res: Response) {
     {
       image:
         "https://gatsby-netlify-cms.netlify.app/static/277733984de58dd6d27eed18b510250d/1a97c/coffee.png",
-      text:
-        "We sell green and roasted coffee beans that are sourced directly from independent farmers and farm cooperatives. We’re proud to offer a variety of coffee beans grown with great care for the environment and local communities. Check our post or contact us directly for current availability.\n",
+      text: "We sell green and roasted coffee beans that are sourced directly from independent farmers and farm cooperatives. We’re proud to offer a variety of coffee beans grown with great care for the environment and local communities. Check our post or contact us directly for current availability.\n",
     },
     {
       image:
         "https://gatsby-netlify-cms.netlify.app/static/ec437153a2bd67b99cd975bf10c03292/1a97c/coffee-gear.png",
-      text:
-        "We offer a small, but carefully curated selection of brewing gear and tools for every taste and experience level. No matter if you roast your own beans or just bought your first french press, you’ll find a gadget to fall in love with in our shop.\n",
+      text: "We offer a small, but carefully curated selection of brewing gear and tools for every taste and experience level. No matter if you roast your own beans or just bought your first french press, you’ll find a gadget to fall in love with in our shop.\n",
     },
     {
       image:
         "https://gatsby-netlify-cms.netlify.app/static/7de80b5f57f779d116b3a186b9a9268e/1a97c/tutorials.png",
-      text:
-        "Love a great cup of coffee, but never knew how to make one? Bought a fancy new Chemex but have no clue how to use it? Don't worry, we’re here to help. You can schedule a custom 1-on-1 consultation with our baristas to learn anything you want to know about coffee roasting and brewing. Email us or call the store for details.\n",
+      text: "Love a great cup of coffee, but never knew how to make one? Bought a fancy new Chemex but have no clue how to use it? Don't worry, we’re here to help. You can schedule a custom 1-on-1 consultation with our baristas to learn anything you want to know about coffee roasting and brewing. Email us or call the store for details.\n",
     },
     {
       image:
         "https://gatsby-netlify-cms.netlify.app/static/d2f97849ad334b9280651604a80a01a6/1a97c/meeting-space.png",
-      text:
-        "We believe that good coffee has the power to bring people together. That’s why we decided to turn a corner of our shop into a cozy meeting space where you can hang out with fellow coffee lovers and learn about coffee making techniques. All of the artwork on display there is for sale. The full price you pay goes to the artist.\n",
+      text: "We believe that good coffee has the power to bring people together. That’s why we decided to turn a corner of our shop into a cozy meeting space where you can hang out with fellow coffee lovers and learn about coffee making techniques. All of the artwork on display there is for sale. The full price you pay goes to the artist.\n",
     },
   ]);
 }

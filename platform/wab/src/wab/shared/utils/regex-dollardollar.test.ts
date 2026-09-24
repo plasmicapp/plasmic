@@ -28,7 +28,7 @@ describe("$$ functions", () => {
           .uuid
           .v4();
     `,
-      ["lodash", "uuid.v4"]
+      ["lodash", "uuid.v4"],
     );
   });
   it("should return $$ property accesses", () => {

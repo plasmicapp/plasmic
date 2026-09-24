@@ -1,16 +1,16 @@
-import { ensure } from "@/wab/shared/common";
+import { DbMgr } from "@/wab/server/db/DbMgr";
 import {
   BundleMigrationType,
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
-import { DbMgr } from "@/wab/server/db/DbMgr";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
 import { Bundler } from "@/wab/shared/bundler";
 import { UnsafeBundle } from "@/wab/shared/bundles";
-import { isKnownTplTag, TplTag } from "@/wab/shared/model/classes";
+import { ensure } from "@/wab/shared/common";
 import { createDefaultTheme } from "@/wab/shared/core/sites";
 import { cloneMixin, cloneThemeStyle } from "@/wab/shared/core/styles";
 import { flattenTpls } from "@/wab/shared/core/tpls";
+import { TplTag, isKnownTplTag } from "@/wab/shared/model/classes";
 
 const defaultTagStyles = createDefaultTheme().styles;
 
@@ -22,7 +22,7 @@ const defaultTagStyles = createDefaultTheme().styles;
 export async function migrate(
   bundle: UnsafeBundle,
   db: DbMgr,
-  entity: PkgVersion | ProjectRevision
+  entity: PkgVersion | ProjectRevision,
 ) {
   if (entity instanceof PkgVersion) {
     console.log(`Skipping PkgVersion ${entity.id}.`);
@@ -34,14 +34,14 @@ export async function migrate(
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   const usedTags = new Set(
     site.components
       .flatMap((c) => flattenTpls(c.tplTree))
       .filter((t) => isKnownTplTag(t))
-      .map((t) => (t as TplTag).tag)
+      .map((t) => (t as TplTag).tag),
   );
 
   if (!site.activeTheme) {
@@ -62,7 +62,7 @@ export async function migrate(
 
     const activeTheme = ensure(site.activeTheme, "just created");
     const existing = activeTheme.styles.find(
-      (s) => s.selector === themeStyle.selector
+      (s) => s.selector === themeStyle.selector,
     );
     if (existing) {
       existing.style = cloneMixin(themeStyle.style);
@@ -74,7 +74,7 @@ export async function migrate(
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "35-update-default-tag-styles"
+    "35-update-default-tag-styles",
   );
   Object.assign(bundle, newBundle);
 }

@@ -62,7 +62,7 @@ export type ResolvedMarkers = {
 };
 export function resolveNodesToMarkers(
   nodes: Descendant[],
-  lineBreaks: boolean
+  lineBreaks: boolean,
 ): ResolvedMarkers {
   const rawText: string[] = [];
   const markers: Marker[] = [];
@@ -93,7 +93,7 @@ export function resolveNodesToMarkers(
         if (node.type === "TplTag") {
           const child = resolveNodesToMarkers(
             node.children,
-            !isTagInline(node.tag)
+            !isTagInline(node.tag),
           );
           if (tpl.type === TplTagType.Text) {
             tpl.vsettings[0].text = new RawText({
@@ -114,7 +114,7 @@ export function resolveNodesToMarkers(
             position: rawText.join("").length,
             length: nodeMarkerText.length,
             tpl,
-          })
+          }),
         );
         rawText.push(nodeMarkerText);
       } else {
@@ -127,7 +127,7 @@ export function resolveNodesToMarkers(
         Object.entries(node)
           .filter(([name, value]) => name !== "text" && value)
           // Rule names are kebab case
-          .map(([name, value]) => [normProp(name), "" + value])
+          .map(([name, value]) => [normProp(name), "" + value]),
       );
 
       if (Object.keys(cssRules).length > 0) {
@@ -136,7 +136,7 @@ export function resolveNodesToMarkers(
             position: rawText.join("").length,
             rs: new RuleSet({ values: cssRules, mixins: [], animations: null }),
             length: node.text.length,
-          })
+          }),
         );
       }
       rawText.push(node.text);
@@ -163,7 +163,7 @@ export function resizePlaceholder(
   opts: {
     forceAutoHeight: boolean;
     isContainerSized: boolean;
-  }
+  },
 ) {
   const { isContainerSized, forceAutoHeight } = opts;
 

@@ -32,7 +32,7 @@ export interface ExperimentToggleProps extends DefaultExperimentToggleProps {
 
 function ExperimentToggle_(
   props: ExperimentToggleProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { split } = props;
   const studioCtx = useStudioCtx();
@@ -50,7 +50,7 @@ function ExperimentToggle_(
               split.status = SplitStatus.Stopped;
             }
             return ok();
-          })
+          }),
         );
       }}
     />

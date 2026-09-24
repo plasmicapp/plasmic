@@ -6,16 +6,16 @@ export class AllowUnattributedUsage1789588037000 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "usage" DROP CONSTRAINT "CHK_2aefc5ece89fdc383c749e5faf"`
+      `ALTER TABLE "usage" DROP CONSTRAINT "CHK_2aefc5ece89fdc383c749e5faf"`,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `DELETE FROM "usage" WHERE "teamId" IS NULL AND "userId" IS NULL`
+      `DELETE FROM "usage" WHERE "teamId" IS NULL AND "userId" IS NULL`,
     );
     await queryRunner.query(
-      `ALTER TABLE "usage" ADD CONSTRAINT "CHK_2aefc5ece89fdc383c749e5faf" CHECK ("teamId" is not null OR "userId" is not null)`
+      `ALTER TABLE "usage" ADD CONSTRAINT "CHK_2aefc5ece89fdc383c749e5faf" CHECK ("teamId" is not null OR "userId" is not null)`,
     );
   }
 }

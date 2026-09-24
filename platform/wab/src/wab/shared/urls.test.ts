@@ -4,13 +4,13 @@ describe("extractProjectIdFromUrlOrId", () => {
   it("works", () => {
     expect(extractProjectIdFromUrlOrId("abc")).toBe("abc");
     expect(extractProjectIdFromUrlOrId(`${getPublicUrl()}/projects/abc`)).toBe(
-      "abc"
+      "abc",
     );
     expect(
-      extractProjectIdFromUrlOrId(`${getPublicUrl()}/projects/abc/docs`)
+      extractProjectIdFromUrlOrId(`${getPublicUrl()}/projects/abc/docs`),
     ).toBe("abc");
     expect(
-      extractProjectIdFromUrlOrId(`${getPublicUrl()}/projects/abc?foo=true`)
+      extractProjectIdFromUrlOrId(`${getPublicUrl()}/projects/abc?foo=true`),
     ).toBe("abc");
   });
 });

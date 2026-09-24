@@ -13,7 +13,7 @@ describe("tokens", () => {
         name: "primary",
         type: "Color",
         value: "#FF0000",
-      })
+      }),
     );
 
     expect(token.value).toBe("#FF0000");
@@ -71,7 +71,7 @@ describe("tokens", () => {
         new VariantedValue({
           variants: [variantWebsite],
           value: "#AA0000",
-        })
+        }),
       );
       overridableToken = new OverrideableToken(styleToken, site);
     });
@@ -90,7 +90,7 @@ describe("tokens", () => {
         it("setVariantedValue with same value as base token value - should not create override", () => {
           overridableToken.setVariantedValue(
             [variantDark],
-            overridableToken.base.value
+            overridableToken.base.value,
           );
           expect(overridableToken.override).toBeNull();
         });
@@ -98,7 +98,7 @@ describe("tokens", () => {
         it("setVariantedValue with same value as another imported varianted value for the same variant - should not create override", () => {
           overridableToken.setVariantedValue(
             [variantWebsite],
-            overridableToken.base.variantedValues[0].value
+            overridableToken.base.variantedValues[0].value,
           );
           expect(overridableToken.override).toBeNull();
 
@@ -108,14 +108,14 @@ describe("tokens", () => {
           expect(overridableToken.override?.value).toBeNull();
           expect(overridableToken.override?.variantedValues).toHaveLength(1);
           expect(overridableToken.override?.variantedValues[0].value).toBe(
-            "#123456"
+            "#123456",
           );
         });
         it("setVariantedValue with different value - should create override", () => {
           overridableToken.setVariantedValue([variantDark], "#00FF00");
           expect(overridableToken.override?.variantedValues).toHaveLength(1);
           expect(overridableToken.override?.variantedValues[0].value).toBe(
-            "#00FF00"
+            "#00FF00",
           );
         });
       });
@@ -138,34 +138,34 @@ describe("tokens", () => {
           it("setVariantedValue to same as original base value - should create varianted value", () => {
             overridableToken.setVariantedValue(
               [variantDark],
-              overridableToken.base.value
+              overridableToken.base.value,
             );
             expect(overridableToken.override?.value).toBe(
-              originalOverrideValue
+              originalOverrideValue,
             );
             expect(overridableToken.override?.variantedValues).toHaveLength(1);
             expect(overridableToken.override?.variantedValues[0].value).toBe(
-              overridableToken.base.value
+              overridableToken.base.value,
             );
           });
           it("setVariantedValue to same as existing override value - should not create varianted value", () => {
             overridableToken.setVariantedValue(
               [variantDark],
-              originalOverrideValue
+              originalOverrideValue,
             );
             expect(overridableToken.override?.value).toBe(
-              originalOverrideValue
+              originalOverrideValue,
             );
             expect(overridableToken.override?.variantedValues).toHaveLength(0);
           });
           it("setVariantedValue to different value - should create varianted value", () => {
             overridableToken.setVariantedValue([variantDark], "#0000FF");
             expect(overridableToken.override?.value).toBe(
-              originalOverrideValue
+              originalOverrideValue,
             );
             expect(overridableToken.override?.variantedValues).toHaveLength(1);
             expect(overridableToken.override?.variantedValues[0].value).toBe(
-              "#0000FF"
+              "#0000FF",
             );
           });
         });
@@ -180,25 +180,25 @@ describe("tokens", () => {
             expect(overridableToken.override?.value).toBeNull();
             expect(overridableToken.override?.variantedValues).toHaveLength(2);
             expect(overridableToken.override?.variantedValues[0].value).toBe(
-              "#0000FF"
+              "#0000FF",
             );
             expect(overridableToken.override?.variantedValues[1].value).toBe(
-              "#FFFF00"
+              "#FFFF00",
             );
             // now set one of the varianted values to the original base value
             overridableToken.setVariantedValue(
               [variantDark],
-              overridableToken.base.value
+              overridableToken.base.value,
             );
             // expect the override to be removed
             expect(overridableToken.override?.variantedValues).toHaveLength(1);
             expect(overridableToken.override?.variantedValues[0].value).toBe(
-              "#FFFF00"
+              "#FFFF00",
             );
             // now set the other varianted values to the original base value
             overridableToken.setVariantedValue(
               [variantLight],
-              overridableToken.base.value
+              overridableToken.base.value,
             );
             // expect the override to be removed
             expect(overridableToken.override).toBeNull();
@@ -208,7 +208,7 @@ describe("tokens", () => {
             expect(overridableToken.override?.value).toBeNull();
             expect(overridableToken.override?.variantedValues).toHaveLength(1);
             expect(overridableToken.override?.variantedValues[0].value).toBe(
-              "#FFFF00"
+              "#FFFF00",
             );
           });
           it("setVariantedValue for different variant - should not affect existing varianted values, and create the new varianted value", () => {
@@ -216,10 +216,10 @@ describe("tokens", () => {
             expect(overridableToken.override?.value).toBeNull();
             expect(overridableToken.override?.variantedValues).toHaveLength(2);
             expect(overridableToken.override?.variantedValues[0].value).toBe(
-              "#0000FF"
+              "#0000FF",
             );
             expect(overridableToken.override?.variantedValues[1].value).toBe(
-              "#FFFF00"
+              "#FFFF00",
             );
           });
           it("setValue to same as original base value - should not set value", () => {
@@ -227,7 +227,7 @@ describe("tokens", () => {
             expect(overridableToken.override?.value).toBeNull();
             expect(overridableToken.override?.variantedValues).toHaveLength(1);
             expect(overridableToken.override?.variantedValues[0].value).toBe(
-              "#0000FF"
+              "#0000FF",
             );
           });
           it("setValue to same as a varianted value - should set value, but remove the varianted value thats the same", () => {
@@ -240,7 +240,7 @@ describe("tokens", () => {
             expect(overridableToken.override?.value).toBe("#FFFF00");
             expect(overridableToken.override?.variantedValues).toHaveLength(1);
             expect(overridableToken.override?.variantedValues[0].value).toBe(
-              "#0000FF"
+              "#0000FF",
             );
           });
         });
@@ -255,7 +255,7 @@ describe("tokens", () => {
             expect(overridableToken.override?.value).toBeNull();
             expect(overridableToken.override?.variantedValues).toHaveLength(1);
             expect(overridableToken.override?.variantedValues[0].value).toBe(
-              "#0000FF"
+              "#0000FF",
             );
           });
           it("setVariantedValue to same as existing override value - should remove varianted value but keep the override value", () => {
@@ -285,7 +285,7 @@ describe("tokens", () => {
         expect(overridableToken.override?.value).toBeNull();
         expect(overridableToken.override?.variantedValues).toHaveLength(1);
         expect(overridableToken.override?.variantedValues[0].value).toBe(
-          "#0000FF"
+          "#0000FF",
         );
       });
       it("removeValue - should remove override as well if no varianted values exist", () => {
@@ -297,16 +297,16 @@ describe("tokens", () => {
         overridableToken.setVariantedValue([variantLight], "#0000FF");
         expect(overridableToken.override?.variantedValues).toHaveLength(2);
         expect(overridableToken.override?.variantedValues[0].value).toBe(
-          styleToken.value
+          styleToken.value,
         );
         expect(overridableToken.override?.variantedValues[1].value).toBe(
-          "#0000FF"
+          "#0000FF",
         );
 
         overridableToken.removeValue();
         expect(overridableToken.override?.variantedValues).toHaveLength(1);
         expect(overridableToken.override?.variantedValues[0].value).toBe(
-          "#0000FF"
+          "#0000FF",
         );
       });
       it("removeVariantedValue - should remove just the varianted value for the given variant", () => {
@@ -314,17 +314,17 @@ describe("tokens", () => {
         overridableToken.setVariantedValue([variantLight], "#FFFF00");
         expect(overridableToken.override?.variantedValues).toHaveLength(2);
         expect(overridableToken.override?.variantedValues[0].value).toBe(
-          "#0000FF"
+          "#0000FF",
         );
         expect(overridableToken.override?.variantedValues[1].value).toBe(
-          "#FFFF00"
+          "#FFFF00",
         );
 
         overridableToken.removeVariantedValue([variantDark]);
         expect(overridableToken.override?.value).toBe("#00FF00");
         expect(overridableToken.override?.variantedValues).toHaveLength(1);
         expect(overridableToken.override?.variantedValues[0].value).toBe(
-          "#FFFF00"
+          "#FFFF00",
         );
       });
       it("removeVariantedValue - should remove override if no values remain", () => {

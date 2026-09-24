@@ -15,12 +15,12 @@ describe("encodeUriParams", () => {
         ["boolean", true],
         ["null", null],
         ["undefined", undefined],
-      ])
+      ]),
     ).toEqual("string=foo&number=1&boolean=true&null=null&undefined=undefined");
   });
   it("escapes symbols", () => {
     expect(encodeUriParams([["params", "foo=bar&baz=qux"]])).toEqual(
-      "params=foo%3Dbar%26baz%3Dqux"
+      "params=foo%3Dbar%26baz%3Dqux",
     );
   });
 });

@@ -34,7 +34,7 @@ export abstract class BaseAnalytics {
   track(
     eventName: string,
     eventProperties?: Properties,
-    opts?: TrackOptions
+    opts?: TrackOptions,
   ): void {
     const sampleThreshold = opts?.sampleThreshold;
     if (sampleThreshold === undefined || Math.random() < sampleThreshold) {
@@ -51,14 +51,14 @@ export abstract class BaseAnalytics {
             ? {
                 _sampleThreshold: sampleThreshold,
               }
-            : undefined
-        )
+            : undefined,
+        ),
       );
     }
   }
 
   protected abstract doTrack(
     eventName: string,
-    eventProperties?: Properties
+    eventProperties?: Properties,
   ): void;
 }

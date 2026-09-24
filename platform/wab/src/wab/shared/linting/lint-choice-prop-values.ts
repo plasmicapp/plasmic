@@ -39,12 +39,12 @@ export const lintChoicePropValues = maybeComputedFn(
     keepAlive: false,
     equals: lintIssuesEquals,
     name: "lintChoicePropValues",
-  }
+  },
 );
 
 export const valueInOptions = (
   options: ChoiceOptions | undefined,
-  value: any
+  value: any,
 ): boolean => {
   if (!options) {
     return true;
@@ -56,17 +56,17 @@ export const valueInOptions = (
     isString(option) || isNumber(option) || isBoolean(option)
       ? option === value
       : isObject(option) && "value" in option
-      ? option.value === value
-      : isObject(option) && "values" in option
-      ? (option.values as ChoiceObject[]).some((v) => v.value === value)
-      : false
+        ? option.value === value
+        : isObject(option) && "values" in option
+          ? (option.values as ChoiceObject[]).some((v) => v.value === value)
+          : false,
   );
 };
 
 // Retrieves options if propType is a Choice prop
 export const getChoicePropOptions = (
   evalContext: Omit<ComponentEvalContext, "invalidArgs">,
-  propType: StudioPropType<any>
+  propType: StudioPropType<any>,
 ): ChoiceOptions | undefined => {
   if (isPlainObjectPropType(propType) && propType.type === "choice") {
     const { componentPropValues, ccContextData } = evalContext;
@@ -74,7 +74,7 @@ export const getChoicePropOptions = (
       propType.options,
       componentPropValues,
       ccContextData,
-      { path: [] }
+      { path: [] },
     );
   }
   return undefined;
@@ -106,7 +106,7 @@ const lintComponent = maybeComputedFn(
             studioCtx,
             viewCtx,
             tpl,
-            arg.param
+            arg.param,
           );
           exprCtx.component = tpl.component;
           const expr = arg.expr;
@@ -138,7 +138,7 @@ const lintComponent = maybeComputedFn(
     keepAlive: false,
     equals: lintIssuesEquals,
     name: "lintChoicePropValuesComponent",
-  }
+  },
 );
 
 function makeIssueKey(component: Component, tpl: TplNode) {

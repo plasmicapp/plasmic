@@ -117,7 +117,7 @@ export const FindReferencesModal = observer(
       MutableToken<StyleToken> | OverrideableToken<StyleToken> | undefined
     >(undefined);
     const [editMixin, setEditMixin] = React.useState<Mixin | undefined>(
-      undefined
+      undefined,
     );
     const [editDefaultStyle, setEditDefaultStyle] = React.useState<
       DefaultStyle | undefined
@@ -139,7 +139,7 @@ export const FindReferencesModal = observer(
               studioCtx.change(() => {
                 studioCtx.switchToComponentArena(component);
                 return ok();
-              })
+              }),
             ),
           isSelected: arena === currentArena,
           getUsageSummary:
@@ -158,7 +158,7 @@ export const FindReferencesModal = observer(
               studioCtx.change(() => {
                 studioCtx.switchToArena(arena);
                 return ok();
-              })
+              }),
             ),
           isSelected: arena === currentArena,
         };
@@ -166,11 +166,11 @@ export const FindReferencesModal = observer(
         const token = isKnownStyleToken(item)
           ? toFinalToken(item, studioCtx.site)
           : isKnownStyleTokenOverride(item)
-          ? toFinalToken(item.token, studioCtx.site)
-          : unexpected();
+            ? toFinalToken(item.token, studioCtx.site)
+            : unexpected();
         assert(
           token instanceof MutableToken || token instanceof OverrideableToken,
-          "token must be editable"
+          "token must be editable",
         );
         return {
           displayName: token.name,
@@ -212,7 +212,7 @@ export const FindReferencesModal = observer(
       ...getSection("page", usageSummary.components.filter(isPageComponent)),
       ...getSection(
         "component",
-        usageSummary.components.filter((c) => !isPageComponent(c))
+        usageSummary.components.filter((c) => !isPageComponent(c)),
       ),
       ...getSection("frame", usageSummary.frames),
       ...getSection("token", usageSummary.styleTokens ?? []),
@@ -322,7 +322,7 @@ export const FindReferencesModal = observer(
             icon={typeToIcon(findReferenceItem.type)}
             usageSummary={ensure(
               findReferenceItem.getUsageSummary,
-              "setFindReferenceItem should only be used for itens with getUsageSummary"
+              "setFindReferenceItem should only be used for itens with getUsageSummary",
             )()}
             onClose={() => {
               setFindReferenceItem(undefined);
@@ -331,7 +331,7 @@ export const FindReferencesModal = observer(
         )}
       </SidebarModal>
     );
-  }
+  },
 );
 
 function getReferenceItemMenuRenderer({
@@ -350,7 +350,7 @@ function getReferenceItemMenuRenderer({
           "references",
           <Menu.Item key="references" onClick={onFindReferences}>
             Find all references
-          </Menu.Item>
+          </Menu.Item>,
         )}
       </Menu>
     );

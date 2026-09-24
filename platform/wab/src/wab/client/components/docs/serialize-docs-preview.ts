@@ -459,7 +459,11 @@ export function __run() {
 }
 
 type ComponentPropType =
-  "plasmicIntrinsic" | "variant" | "arg" | "override" | "rootProp";
+  | "plasmicIntrinsic"
+  | "variant"
+  | "arg"
+  | "override"
+  | "rootProp";
 const intrinsicProps = ["variants", "args", "overrides"];
 
 function variantAndArgNamesForComponent(component: Component) {

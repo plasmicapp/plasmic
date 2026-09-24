@@ -90,7 +90,7 @@ describe("mkApiTeam", () => {
     const apiTeam = mkApiTeam(team);
     expect(apiTeam.name).toEqual("Child Team");
     expect(apiTeam.uiConfig.brand?.logoImgSrc).toEqual(
-      "https://child.com/logo"
+      "https://child.com/logo",
     );
     expect(apiTeam.uiConfig.brand?.logoAlt).toEqual("Parent Logo Alt");
     expect(apiTeam.uiConfig.canInsertBasics).toEqual(true);

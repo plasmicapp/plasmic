@@ -1,6 +1,7 @@
+import { computedProjectFlags } from "@/wab/shared/cached-selectors";
 import { removeWhere } from "@/wab/shared/common";
 import * as exprs from "@/wab/shared/core/exprs";
-import { computedProjectFlags } from "@/wab/shared/cached-selectors";
+import { clone, cloneArgs } from "@/wab/shared/core/tpls";
 import mobx from "@/wab/shared/import-mobx";
 import {
   isKnownTplComponent,
@@ -8,7 +9,6 @@ import {
   TplComponent,
 } from "@/wab/shared/model/classes";
 import { isSlot } from "@/wab/shared/SlotUtils";
-import { clone, cloneArgs } from "@/wab/shared/core/tpls";
 
 export class ContextFactory {
   private knownContexts: Record<string, TplComponent> = {};
@@ -66,7 +66,7 @@ export class ContextFactory {
       targetArgs,
       (arg) =>
         arg.param.variable.name !== "children" &&
-        !sourceArgParams.has(arg.param)
+        !sourceArgParams.has(arg.param),
     );
     const exprCtx: exprs.ExprCtx = {
       projectFlags: computedProjectFlags(this.site),
@@ -94,7 +94,7 @@ export class ContextFactory {
 export function observeRelevantFields(clonedContext: TplComponent) {
   const maybeMakeObservable: typeof mobx.makeObservable = (
     node,
-    decorators
+    decorators,
   ) => {
     if (!mobx.isObservable(node)) {
       mobx.makeObservable(node, decorators);
@@ -116,6 +116,6 @@ export function observeRelevantFields(clonedContext: TplComponent) {
     // then.
     maybeMakeObservable(arg, {
       expr: mobx.observable,
-    })
+    }),
   );
 }

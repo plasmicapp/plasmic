@@ -6,7 +6,7 @@ export type Operation<CtxType, ArgsType, ReturnType = void> = {
 };
 
 export function mkOperation<ArgsType, ReturnType = void>(
-  fn: Operation<OperationCtx, ArgsType, ReturnType>
+  fn: Operation<OperationCtx, ArgsType, ReturnType>,
 ): Operation<OperationCtx, ArgsType, ReturnType> {
   ensure(fn.name, "operations must be named");
   return fn;

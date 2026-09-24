@@ -57,7 +57,7 @@ interface PriceTierPickerProps extends DefaultPriceTierPickerProps {
 
 function PriceTierPicker_(
   props: PriceTierPickerProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const {
     appCtx,
@@ -82,7 +82,7 @@ function PriceTierPicker_(
   const tierData: Record<string, ApiFeatureTier> = {};
   newTiers.forEach((tier) => {
     const currentTier = availableTiers.find((t) =>
-      t.name.toLowerCase().includes(tier)
+      t.name.toLowerCase().includes(tier),
     );
     if (currentTier) {
       tierData[tier] = currentTier;
@@ -118,14 +118,14 @@ function PriceTierPicker_(
     const status: PriceTierStatus = overrideStatus
       ? overrideStatus
       : isCurrent && isFreeTrialTeam
-      ? "freeTrialCurrent"
-      : isCurrent
-      ? currentStatus
-      : featureTier === DEVFLAGS.freeTier || disabled
-      ? "unavailable"
-      : canStartFreeTrial && isOnFreeTier && appCtx.appConfig.freeTrial
-      ? "startFreeTrial"
-      : "upgrade";
+        ? "freeTrialCurrent"
+        : isCurrent
+          ? currentStatus
+          : featureTier === DEVFLAGS.freeTier || disabled
+            ? "unavailable"
+            : canStartFreeTrial && isOnFreeTier && appCtx.appConfig.freeTrial
+              ? "startFreeTrial"
+              : "upgrade";
     const hide =
       (!!hideCurrentTier && status === currentStatus) ||
       (!!hideFree && featureTier === DEVFLAGS.freeTier) ||
@@ -208,7 +208,7 @@ function PriceTierPicker_(
             if (!isEnterprise(currentFeatureTier)) {
               window.open(
                 "https://www.plasmic.app/enterprise-contact",
-                "_blank"
+                "_blank",
               );
             }
           },

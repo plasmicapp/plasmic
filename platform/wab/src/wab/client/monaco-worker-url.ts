@@ -8,7 +8,7 @@ import memoizeOne from "memoize-one";
 export const fixWorkerUrl = memoizeOne(() => {
   (window as any).MonacoEnvironment.getWorkerUrl = function (
     _moduleId: any,
-    label: any
+    label: any,
   ) {
     if (label === "typescript" || label === "javascript") {
       return `data:text/javascript;charset=utf-8,${encodeURIComponent(`

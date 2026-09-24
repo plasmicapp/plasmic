@@ -10,12 +10,12 @@ test.describe("clone project", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
     await apiClient.removeProjectAfterTest(
       clonedProjectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -45,15 +45,15 @@ test.describe("clone project", () => {
       const pagePanel = models.studio.rightPanel.pagePanel;
       await expect(
         pagePanel.locator(
-          '[data-test-id="prop-editor-row-title"] .value-preview'
-        )
+          '[data-test-id="prop-editor-row-title"] .value-preview',
+        ),
       ).toHaveText('"test code"');
       await pagePanel.locator('[data-test-id="page-settings-button"]').click();
       const descriptionPreview = models.studio.frame.locator(
-        '[data-test-id="prop-editor-row-description"] .value-preview'
+        '[data-test-id="prop-editor-row-description"] .value-preview',
       );
       await expect(descriptionPreview).toHaveText(
-        '"Description: This is a second dep!"'
+        '"Description: This is a second dep!"',
       );
       await page.keyboard.press("Escape");
     };

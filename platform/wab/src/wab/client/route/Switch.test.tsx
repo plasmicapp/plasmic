@@ -31,13 +31,13 @@ function ShowMatch() {
           : `useMatchedRoute(): undefined`}
       </div>
       <div>{`useMatchedRoute("${listRoute.pattern}"): ${params(
-        matchedList
+        matchedList,
       )}`}</div>
       <div>{`useMatchedRoute("${detailRoute.pattern}"): ${params(
-        matchedDetail
+        matchedDetail,
       )}`}</div>
       <div>{`useMatchedRoute("${previewRoute.pattern}"): ${params(
-        matchedPreview
+        matchedPreview,
       )}`}</div>
     </div>
   );
@@ -112,43 +112,43 @@ describe("Switch", () => {
     expectIncludes(`useMatchedRoute("/projects"): {}`);
     expectIncludes(`useMatchedRoute("/projects/:id"): {"id":"42"}`);
     expectIncludes(
-      `useMatchedRoute("/projects/:id{/*previewPath}"): {"id":"42"}`
+      `useMatchedRoute("/projects/:id{/*previewPath}"): {"id":"42"}`,
     );
   });
 
   it("matches routes by prefix by default", () => {
     const { expectIncludes } = renderAt("/projects/42/details");
     expectIncludes(
-      `useMatchedRoute(): /projects/:id{/*previewPath} {"id":"42","previewPath":["details"]}`
+      `useMatchedRoute(): /projects/:id{/*previewPath} {"id":"42","previewPath":["details"]}`,
     );
     expectIncludes(`useMatchedRoute("/projects"): {}`);
     expectIncludes(`useMatchedRoute("/projects/:id"): {"id":"42"}`);
     expectIncludes(
-      `useMatchedRoute("/projects/:id{/*previewPath}"): {"id":"42","previewPath":["details"]}`
+      `useMatchedRoute("/projects/:id{/*previewPath}"): {"id":"42","previewPath":["details"]}`,
     );
   });
 
   it("splits / in splat param", () => {
     const { expectIncludes } = renderAt("/projects/42/a/b");
     expectIncludes(
-      `useMatchedRoute(): /projects/:id{/*previewPath} {"id":"42","previewPath":["a","b"]}`
+      `useMatchedRoute(): /projects/:id{/*previewPath} {"id":"42","previewPath":["a","b"]}`,
     );
     expectIncludes(`useMatchedRoute("/projects"): {}`);
     expectIncludes(`useMatchedRoute("/projects/:id"): {"id":"42"}`);
     expectIncludes(
-      `useMatchedRoute("/projects/:id{/*previewPath}"): {"id":"42","previewPath":["a","b"]}`
+      `useMatchedRoute("/projects/:id{/*previewPath}"): {"id":"42","previewPath":["a","b"]}`,
     );
   });
 
   it("decodes %2F in splat param", () => {
     const { expectIncludes } = renderAt("/projects/42/a%2Fb");
     expectIncludes(
-      `useMatchedRoute(): /projects/:id{/*previewPath} {"id":"42","previewPath":["a/b"]}`
+      `useMatchedRoute(): /projects/:id{/*previewPath} {"id":"42","previewPath":["a/b"]}`,
     );
     expectIncludes(`useMatchedRoute("/projects"): {}`);
     expectIncludes(`useMatchedRoute("/projects/:id"): {"id":"42"}`);
     expectIncludes(
-      `useMatchedRoute("/projects/:id{/*previewPath}"): {"id":"42","previewPath":["a/b"]}`
+      `useMatchedRoute("/projects/:id{/*previewPath}"): {"id":"42","previewPath":["a/b"]}`,
     );
   });
 
@@ -164,7 +164,7 @@ describe("Switch", () => {
     expectIncludes(`useMatchedRoute("/projects"): {}`);
     expectIncludes(`useMatchedRoute("/projects/:id"): ${params}`);
     expectIncludes(
-      `useMatchedRoute("/projects/:id{/*previewPath}"): ${params}`
+      `useMatchedRoute("/projects/:id{/*previewPath}"): ${params}`,
     );
   });
 
@@ -181,7 +181,7 @@ describe("Switch", () => {
     expectIncludes(`useMatchedRoute(): /projects/:id {"id":"43"}`);
     expectIncludes(`useMatchedRoute("/projects/:id"): {"id":"43"}`);
     expectIncludes(
-      `useMatchedRoute("/projects/:id{/*previewPath}"): {"id":"43"}`
+      `useMatchedRoute("/projects/:id{/*previewPath}"): {"id":"43"}`,
     );
   });
 });
@@ -190,12 +190,12 @@ describe("useMatchedRoute", () => {
   it("provides the matched route and explicit re-matches", () => {
     const { expectIncludes } = renderAt("/projects/42/details");
     expectIncludes(
-      `useMatchedRoute(): /projects/:id{/*previewPath} {"id":"42","previewPath":["details"]}`
+      `useMatchedRoute(): /projects/:id{/*previewPath} {"id":"42","previewPath":["details"]}`,
     );
     expectIncludes(`useMatchedRoute("/projects"): {}`);
     expectIncludes(`useMatchedRoute("/projects/:id"): {"id":"42"}`);
     expectIncludes(
-      `useMatchedRoute("/projects/:id{/*previewPath}"): {"id":"42","previewPath":["details"]}`
+      `useMatchedRoute("/projects/:id{/*previewPath}"): {"id":"42","previewPath":["details"]}`,
     );
   });
 
@@ -215,12 +215,12 @@ describe("Redirect", () => {
   it("replaces the location with a string target", async () => {
     const { history, expectIncludes } = renderAt("/projects");
     await waitFor(() =>
-      expectIncludes(`useMatchedRoute(): /projects/:id {"id":"first"}`)
+      expectIncludes(`useMatchedRoute(): /projects/:id {"id":"first"}`),
     );
     expectIncludes(`useMatchedRoute("/projects"): {}`);
     expectIncludes(`useMatchedRoute("/projects/:id"): {"id":"first"}`);
     expectIncludes(
-      `useMatchedRoute("/projects/:id{/*previewPath}"): {"id":"first"}`
+      `useMatchedRoute("/projects/:id{/*previewPath}"): {"id":"first"}`,
     );
     expect(history.location.pathname).toBe("/projects/first");
     expect(history.index).toBe(0);
@@ -232,7 +232,7 @@ describe("Redirect", () => {
     render(
       <HistoryProvider history={history}>
         <Redirect to="/start" />
-      </HistoryProvider>
+      </HistoryProvider>,
     );
     await act(() => Promise.resolve());
     expect(replaceSpy).not.toHaveBeenCalled();
@@ -243,7 +243,7 @@ describe("RedirectAsync", () => {
   it("redirects via an async function target", async () => {
     const { history } = renderAt(
       "/start",
-      <RedirectAsync to={async () => "/next"} />
+      <RedirectAsync to={async () => "/next"} />,
     );
     await waitFor(() => expect(history.location.pathname).toBe("/next"));
     expect(history.index).toBe(0);
@@ -252,12 +252,12 @@ describe("RedirectAsync", () => {
   it("ignores a rerender with a different async function", async () => {
     let resolveFirst!: (url: string) => void;
     const first = vitest.fn(
-      () => new Promise<string>((resolve) => (resolveFirst = resolve))
+      () => new Promise<string>((resolve) => (resolveFirst = resolve)),
     );
     const second = vitest.fn(async () => "/second");
     const { history, rerender } = renderAt(
       "/start",
-      <RedirectAsync to={first} />
+      <RedirectAsync to={first} />,
     );
     rerender(<RedirectAsync to={second} />);
     await act(async () => resolveFirst("/first"));
@@ -271,7 +271,7 @@ describe("RedirectAsync", () => {
     const pending = new Promise<string>((resolve) => (resolveTo = resolve));
     const { history, unmount } = renderAt(
       "/start",
-      <RedirectAsync to={() => pending} />
+      <RedirectAsync to={() => pending} />,
     );
     unmount();
     await act(async () => resolveTo("/late"));

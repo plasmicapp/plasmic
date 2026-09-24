@@ -39,7 +39,7 @@ export interface InteractionChanges {
 export function updateInteraction(
   component: Component,
   interaction: Interaction,
-  changes: InteractionChanges
+  changes: InteractionChanges,
 ): UpdateInteractionResult {
   const { name, action } = changes;
 
@@ -82,7 +82,7 @@ export function updateInteraction(
   if (action !== undefined && interactionArgs !== undefined) {
     interaction.actionName = action.actionName;
     interaction.args = Object.entries(interactionArgs).map(([argName, expr]) =>
-      mkNameArg({ name: argName, expr })
+      mkNameArg({ name: argName, expr }),
     );
   }
   return ok(undefined);

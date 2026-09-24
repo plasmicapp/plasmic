@@ -30,7 +30,7 @@ export type DefaultStylesPanelProps = DefaultDefaultStylesPanelProps;
 const DefaultStylesPanel = observer(
   React.forwardRef(function DefaultStylesPanel(
     props: DefaultStylesPanelProps,
-    ref: HTMLElementRefOf<"div">
+    ref: HTMLElementRefOf<"div">,
   ) {
     const studioCtx = useStudioCtx();
     const site = studioCtx.site;
@@ -64,7 +64,7 @@ const DefaultStylesPanel = observer(
       if (
         pseudoClass &&
         !getApplicableSelectors(tag, true, false).some(
-          (op) => op.cssSelector === pseudoClass
+          (op) => op.cssSelector === pseudoClass,
         )
       ) {
         setPseudoClass("");
@@ -85,22 +85,23 @@ const DefaultStylesPanel = observer(
     }, [activeTheme, tag, pseudoClass]);
 
     const nonScreenGlobalVariants = studioCtx.site.globalVariantGroups.flatMap(
-      (variantGroup) => variantGroup.variants.filter((v) => !isScreenVariant(v))
+      (variantGroup) =>
+        variantGroup.variants.filter((v) => !isScreenVariant(v)),
     );
 
     if (
       selectedGlobalVariants.some(
         (v) =>
           !nonScreenGlobalVariants.includes(v) &&
-          !studioCtx.site.activeScreenVariantGroup?.variants.includes(v)
+          !studioCtx.site.activeScreenVariantGroup?.variants.includes(v),
       )
     ) {
       setSelectedGlobalVariants(
         selectedGlobalVariants.filter(
           (v) =>
             nonScreenGlobalVariants.includes(v) ||
-            studioCtx.site.activeScreenVariantGroup?.variants.includes(v)
-        )
+            studioCtx.site.activeScreenVariantGroup?.variants.includes(v),
+        ),
       );
     }
 
@@ -112,13 +113,13 @@ const DefaultStylesPanel = observer(
           nonScreenGlobalVariants.some((v) => v.uuid === variantId)
             ? ensure(
                 nonScreenGlobalVariants.find((v) => v.uuid === variantId),
-                "Could not find global variant"
+                "Could not find global variant",
               )
             : ensure(
                 studioCtx.site.activeScreenVariantGroup?.variants.find(
-                  (v) => v.uuid === variantId
+                  (v) => v.uuid === variantId,
                 ),
-                "Could not find screen variant"
+                "Could not find screen variant",
               ),
         ]);
       }
@@ -141,7 +142,7 @@ const DefaultStylesPanel = observer(
                 (themeTag) => ({
                   value: themeTag,
                   label: tagDisplayLabel(themeTag),
-                })
+                }),
               ),
             ],
             onChange: (_tag) =>
@@ -180,7 +181,7 @@ const DefaultStylesPanel = observer(
                           (variant) => ({
                             value: variant.uuid,
                             label: variant.name,
-                          })
+                          }),
                         ),
                     },
                   ]
@@ -225,7 +226,7 @@ const DefaultStylesPanel = observer(
         {...props}
       />
     );
-  })
+  }),
 );
 
 export default DefaultStylesPanel;

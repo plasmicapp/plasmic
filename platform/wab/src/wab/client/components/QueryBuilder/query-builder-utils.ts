@@ -11,7 +11,7 @@ export function getEmptyTree(
   config: Config,
   opts?: {
     appendFirstField?: boolean;
-  }
+  },
 ) {
   const firstRule: JsonItem = {
     id: QbUtils.uuid(),
@@ -45,7 +45,7 @@ export function getEmptyTree(
 }
 
 function getFirstAvailableField(
-  config: Config
+  config: Config,
 ): { key: string; field: Field } | undefined {
   for (const [key, field] of Object.entries(config.fields)) {
     if (isSimpleField(field)) {

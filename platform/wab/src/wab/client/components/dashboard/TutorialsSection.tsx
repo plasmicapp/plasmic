@@ -39,8 +39,8 @@ export function TutorialsSection({ ...props }: TutorialsSectionProps) {
         onIsCollapsedChange={(value) =>
           spawn(
             appCtx.api.updateSelfInfo(
-              updateExtraDataJson(selfInfo, { collapseStarters: !!value })
-            )
+              updateExtraDataJson(selfInfo, { collapseStarters: !!value }),
+            ),
           )
         }
         starterGroup={{ as: PlasmicStarterGroup }}

@@ -19,7 +19,7 @@ export const lintInvisibleElements = maybeComputedFn(
     keepAlive: false,
     equals: lintIssuesEquals,
     name: "lintInvisibleElements",
-  }
+  },
 );
 
 const lintComponent = maybeComputedFn(
@@ -41,7 +41,7 @@ const lintComponent = maybeComputedFn(
     keepAlive: false,
     equals: lintIssuesEquals,
     name: "lintInvisibleElementsComponent",
-  }
+  },
 );
 
 function makeIssueKey(component: Component, tpl: TplNode) {

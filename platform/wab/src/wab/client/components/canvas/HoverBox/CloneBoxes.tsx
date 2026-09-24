@@ -9,8 +9,8 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { maybes } from "@/wab/shared/common";
 import { Selectable } from "@/wab/shared/core/selection";
-import Chroma from "@/wab/shared/utils/color-utils";
 import { isTplVariantable } from "@/wab/shared/core/tpls";
+import Chroma from "@/wab/shared/utils/color-utils";
 import $ from "jquery";
 import { computed } from "mobx";
 import { observer } from "mobx-react";
@@ -21,7 +21,7 @@ export const CloneBoxes = observer(function CloneBoxes() {
   const selectable = viewCtx?.focusedSelectable();
   const cloneKeys = viewCtx?.studioCtx.isUnlogged()
     ? []
-    : viewCtx?.selectableToCloneKeys(selectable) ?? [];
+    : (viewCtx?.selectableToCloneKeys(selectable) ?? []);
 
   const skip = !selectable;
   const needsRecompute = useRerenderOnUserBodyChange(studioCtx, viewCtx, skip);
@@ -57,14 +57,14 @@ const CloneBox = observer(function CloneBox({
 }: CloneBoxProps) {
   const cloneSelectable = viewCtx.renderState.sel2clone(selectable, cloneKey);
   const $elt = maybes(cloneSelectable)((sel) =>
-    viewCtx.renderState.sel2dom(sel, viewCtx.canvasCtx, cloneKey)
+    viewCtx.renderState.sel2dom(sel, viewCtx.canvasCtx, cloneKey),
   )((dom) => $(dom))();
   const isTargetingSomeNonBaseVariant =
     isTplVariantable(selectable.tpl) &&
     viewCtx.variantTplMgr().isTargetingNonBaseVariant(selectable.tpl);
 
   const isFocusedClone = computed(
-    () => viewCtx.focusedCloneKey() === cloneKey
+    () => viewCtx.focusedCloneKey() === cloneKey,
   ).get();
   const isFocusedElt = computed(() => {
     const focusedElt = viewCtx.focusedDomElt();

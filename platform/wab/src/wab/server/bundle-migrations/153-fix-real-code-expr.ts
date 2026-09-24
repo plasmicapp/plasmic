@@ -3,15 +3,19 @@
  * check if the expression starts with `(`.
  * Ideally, we should have a specific expression for the data picker code.
  */
-import { unexpected } from "@/wab/shared/common";
-import { isCodeComponent } from "@/wab/shared/core/components";
-import { isRealCodeExpr, isRealCodeExprEnsuringType } from "@/wab/shared/core/exprs";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
 import { Bundler } from "@/wab/shared/bundler";
+import { unexpected } from "@/wab/shared/common";
+import { isCodeComponent } from "@/wab/shared/core/components";
+import {
+  isRealCodeExpr,
+  isRealCodeExprEnsuringType,
+} from "@/wab/shared/core/exprs";
+import { flattenTpls, isTplComponent } from "@/wab/shared/core/tpls";
 import {
   CustomCode,
   Expr,
@@ -21,7 +25,6 @@ import {
   isKnownMapExpr,
   isKnownObjectPath,
 } from "@/wab/shared/model/classes";
-import { flattenTpls, isTplComponent } from "@/wab/shared/core/tpls";
 
 export function hasSyntaxError(val: string) {
   try {
@@ -40,7 +43,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   const fixRealCodeExprInBodyExpr = (expr: Expr) => {
@@ -83,7 +86,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
           }
           if (isKnownFunctionExpr(expr.mapExpr["custom"])) {
             expr.mapExpr["custom"].bodyExpr = fixRealCodeExprInBodyExpr(
-              expr.mapExpr["custom"].bodyExpr
+              expr.mapExpr["custom"].bodyExpr,
             );
           } else {
             console.log("function expr error: form rules", expr.mapExpr.custom);
@@ -125,7 +128,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "153-fix-real-code-expr"
+    "153-fix-real-code-expr",
   );
   Object.assign(bundle, newBundle);
 };

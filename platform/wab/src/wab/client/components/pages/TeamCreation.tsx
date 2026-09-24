@@ -28,8 +28,8 @@ export function TeamCreation() {
     continueToPath && isPlasmicPath(continueToPath)
       ? continueToPath
       : team
-      ? APP_ROUTES.org.fill({ teamId: team.id })
-      : APP_ROUTES.dashboard.fill({});
+        ? APP_ROUTES.org.fill({ teamId: team.id })
+        : APP_ROUTES.dashboard.fill({});
   const [form] = Form.useForm();
 
   async function onSubmit({ teamName }) {
@@ -84,7 +84,7 @@ export function TeamCreation() {
             title: "Upgrade to grant new permissions",
             description:
               "This organization does not have enough seats to grant permissions to new users. Please increase the number of seats to be able to perform this action.",
-          }
+          },
         );
       }
       appCtx.router.routeTo(nextPath.toString());
@@ -169,8 +169,8 @@ export function TeamCreation() {
                       (value?.length ?? 0) > MAX_GRANTS_PER_REQUEST
                         ? Promise.reject(
                             new Error(
-                              `You can invite at most ${MAX_GRANTS_PER_REQUEST} people at a time.`
-                            )
+                              `You can invite at most ${MAX_GRANTS_PER_REQUEST} people at a time.`,
+                            ),
                           )
                         : Promise.resolve(),
                   },

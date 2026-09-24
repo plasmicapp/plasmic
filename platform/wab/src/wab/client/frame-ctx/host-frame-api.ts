@@ -17,13 +17,13 @@ import { ExtendedKeyboardEvent } from "mousetrap";
 export type HostFrameApi = {
   switchLeftTab(
     tabKey: LeftTabKey | undefined,
-    opts?: { highlight?: boolean }
+    opts?: { highlight?: boolean },
   ): Promise<void>;
   refreshSiteInfo(): Promise<void>;
   publishVersion(
     versionTags: string[],
     versionDesc: string,
-    branchId: BranchId | undefined
+    branchId: BranchId | undefined,
   ): Promise<PublishResult>;
   getLatestPublishedVersionId(): Promise<string | undefined>;
   getProjectReleases(opts?: {
@@ -42,12 +42,12 @@ export type HostFrameApi = {
     e: Pick<
       ExtendedKeyboardEvent,
       "key" | "shiftKey" | "ctrlKey" | "metaKey" | "code" | "keyCode"
-    >
+    >,
   ): Promise<void>;
   updateLocalizationProjectFlags(
     localization: boolean,
     keyScheme?: string,
-    tagPrefix?: string
+    tagPrefix?: string,
   ): Promise<void>;
   switchToBranch(branch: ApiBranch | undefined): Promise<void>;
   mutateSWRKeys(keys: string[]): Promise<void>;
@@ -58,7 +58,7 @@ export type HostFrameApi = {
   /** This helps execute an Copilot tool call in the HostFrame where StudioCtx is available */
   executeCopilotToolCall(
     toolName: string,
-    toolArgs: Record<string, unknown>
+    toolArgs: Record<string, unknown>,
   ): Promise<CopilotToolCallResult>;
   /** Store the AI agent's preferred copilot tool output format on StudioCtx. */
   setPreferredAiOutputFormat(format: AiOutputFormat): Promise<void>;
@@ -73,7 +73,7 @@ export type HostFrameApi = {
   findMissingMentions(text: string): Promise<string[]>;
   navigateToMentionedResource(
     kind: MentionableResourceKind,
-    uuid: string
+    uuid: string,
   ): Promise<void>;
   onFileDragEventInTop(event: RemoteFileDragEvent): Promise<void>;
 };

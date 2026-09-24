@@ -61,7 +61,7 @@ export function makeCssClassNameForVariantCombo(
     targetEnv: TargetEnv;
     prefix?: string;
     superComp?: Component;
-  }
+  },
 ): JsIdentifier | "" {
   const isBase = isBaseVariant(variantCombo);
   if (isBase || variantCombo.length == 0) {
@@ -87,7 +87,7 @@ export function makeCssClassNameForVariantCombo(
 
           if (!keys?.length) {
             throw new Error(
-              "Error naming variant. Requires either a parent or non-empty list of selectors/variant keys."
+              "Error naming variant. Requires either a parent or non-empty list of selectors/variant keys.",
             );
           }
 
@@ -104,7 +104,7 @@ export function makeCssClassNameForVariantCombo(
           superComp.variantGroups.includes(group as ComponentVariantGroup)
         ) {
           parentName = ensureJsIdentifier(
-            `${toClassName(superComp.name)}__${parentName}`
+            `${toClassName(superComp.name)}__${parentName}`,
           );
         }
 
@@ -113,18 +113,18 @@ export function makeCssClassNameForVariantCombo(
             throw new Error("Unknown variant group");
           case VariantGroupType.Component:
             return ensureJsIdentifier(
-              isStandalone ? parentName : `${parentName}_${variantName}`
+              isStandalone ? parentName : `${parentName}_${variantName}`,
             );
           case VariantGroupType.GlobalScreen:
           case VariantGroupType.GlobalUserDefined:
             return ensureJsIdentifier(
               isStandalone
                 ? `global_${parentName}`
-                : `global_${parentName}_${variantName}`
+                : `global_${parentName}_${variantName}`,
             );
         }
       })
-      .join("_")}`
+      .join("_")}`,
   );
 }
 
@@ -136,7 +136,7 @@ export function makeCssClassName(
   opts: {
     targetEnv: TargetEnv;
     useSimpleClassname?: boolean;
-  }
+  },
 ): JsIdentifier {
   const nodeName = nodeNamer(node);
   const namePart = nodeName
@@ -162,7 +162,7 @@ export function makeCssClassName(
         : sortBy(variants, (v) => v.uuid)
             .map((v) => v.uuid.substring(0, 5))
             .join("_")
-    }`
+    }`,
   );
 
   // We don't use a unique ID only if there's a node name, and useSimpleClassname
@@ -177,14 +177,14 @@ export function makeCssClassName(
   return ensureJsIdentifier(
     useSimpleClassname
       ? localClassName
-      : `${getExportedComponentName(component)}__${localClassName}`
+      : `${getExportedComponentName(component)}__${localClassName}`,
   );
 }
 
 export function getCssClassName(
   ctx: SerializerBaseContext,
   node: TplNode,
-  vs: VariantSetting
+  vs: VariantSetting,
 ): JsIdentifier {
   const map = (ctx.cache.cssClassName ??= new DeepMap<JsIdentifier>());
   const entry = map.entry([node, vs]);
@@ -193,7 +193,7 @@ export function getCssClassName(
       makeCssClassName(ctx.component, node, vs, ctx.nodeNamer, {
         targetEnv: ctx.exportOpts.targetEnv,
         useSimpleClassname: ctx.exportOpts.stylesOpts.scheme === "css-modules",
-      })
+      }),
     );
   }
   return entry.get();
@@ -220,7 +220,7 @@ export function serializeClassNames(
   ctx: SerializerBaseContext,
   node: TplNode,
   orderedVsettings: VariantSetting[],
-  additionalClassExpr?: string[]
+  additionalClassExpr?: string[],
 ) {
   const { component, variantComboChecker } = ctx;
   const useCssModules = ctx.exportOpts.stylesOpts.scheme === "css-modules";
@@ -240,7 +240,7 @@ export function serializeClassNames(
       {
         tag,
         projectId: ctx.projectConfig.projectId,
-      }
+      },
     );
 
     for (const name of defaultClassnames) {
@@ -249,18 +249,18 @@ export function serializeClassNames(
 
     if (isTplTextBlock(node)) {
       unconditionalClassExprs.push(
-        serializeGlobalCssClass(makeWabTextClassName(ctx.exportOpts))
+        serializeGlobalCssClass(makeWabTextClassName(ctx.exportOpts)),
       );
     }
 
     if (isTplTextBlock(node.parent) && isTagInline(node.tag)) {
       unconditionalClassExprs.push(
-        serializeGlobalCssClass(makeDefaultInlineClassName(ctx.exportOpts))
+        serializeGlobalCssClass(makeDefaultInlineClassName(ctx.exportOpts)),
       );
     }
   } else if (isTplComponent(node)) {
     unconditionalClassExprs.push(
-      jsLiteral(makeWabInstanceClassName(ctx.exportOpts))
+      jsLiteral(makeWabInstanceClassName(ctx.exportOpts)),
     );
   }
 
@@ -283,7 +283,7 @@ export function serializeClassNames(
     const generatedClass = getCssClassName(ctx, node, vs);
     if (isBaseVariant(vs.variants)) {
       unconditionalClassExprs.push(
-        useCssModules ? `sty.${generatedClass}` : jsLiteral(generatedClass)
+        useCssModules ? `sty.${generatedClass}` : jsLiteral(generatedClass),
       );
     } else {
       const key = useCssModules
@@ -291,7 +291,7 @@ export function serializeClassNames(
         : jsLiteral(generatedClass);
 
       conditionalClassExprs.push(
-        tuple(key, variantComboChecker(vs.variants, true))
+        tuple(key, variantComboChecker(vs.variants, true)),
       );
     }
   }
@@ -302,13 +302,13 @@ export function serializeClassNames(
 
   return serializeClassNamesCall(
     unconditionalClassExprs,
-    conditionalClassExprs
+    conditionalClassExprs,
   );
 }
 
 export function serializeClassNamesCall(
   unconditionalClassExprs: string[],
-  conditionalClassExprs: [string, string][]
+  conditionalClassExprs: [string, string][],
 ) {
   const hasUnconditionals = unconditionalClassExprs.length > 0;
   const hasConditionals = conditionalClassExprs.length > 0;
@@ -319,14 +319,14 @@ export function serializeClassNamesCall(
 
 export function serializeComponentRootResetClasses(
   ctx: SerializerBaseContext,
-  includeTagStyles: boolean
+  includeTagStyles: boolean,
 ) {
   const unconditionalClassExprs: string[] = [];
   const conditionalClassExprs: [string, string][] = [];
 
   const resetName = makeRootResetClassName(
     ctx.projectConfig.projectId,
-    ctx.exportOpts
+    ctx.exportOpts,
   );
 
   unconditionalClassExprs.push(serializeGlobalCssClass(resetName));
@@ -336,15 +336,15 @@ export function serializeComponentRootResetClasses(
   }
 
   unconditionalClassExprs.push(
-    serializeGlobalCssClass(makePlasmicDefaultStylesClassName(ctx.exportOpts))
+    serializeGlobalCssClass(makePlasmicDefaultStylesClassName(ctx.exportOpts)),
   );
   unconditionalClassExprs.push(
-    serializeGlobalCssClass(makePlasmicMixinsClassName(ctx.exportOpts))
+    serializeGlobalCssClass(makePlasmicMixinsClassName(ctx.exportOpts)),
   );
 
   const cssProjectDependencies = uniqBy(
     ctx.siteCtx.cssProjectDependencies,
-    "projectName"
+    "projectName",
   );
 
   if (ctx.projectConfig.styleTokensProviderBundle) {
@@ -353,8 +353,8 @@ export function serializeComponentRootResetClasses(
   } else {
     unconditionalClassExprs.push(
       serializeGlobalCssClass(
-        makePlasmicTokensClassName(ctx.projectConfig.projectId, ctx.exportOpts)
-      )
+        makePlasmicTokensClassName(ctx.projectConfig.projectId, ctx.exportOpts),
+      ),
     );
 
     unconditionalClassExprs.push(
@@ -363,11 +363,11 @@ export function serializeComponentRootResetClasses(
           serializeGlobalCssClass(
             makePlasmicTokensClassName(
               dep.projectId as ProjectId,
-              ctx.exportOpts
-            )
-          )
-        )
-      )
+              ctx.exportOpts,
+            ),
+          ),
+        ),
+      ),
     );
 
     // Context global variants require className to render their CSS changes.
@@ -382,10 +382,10 @@ export function serializeComponentRootResetClasses(
         const comboClassNameExpr = jsLiteral(
           `${makeCssClassNameForVariantCombo(vc, {
             targetEnv: ctx.exportOpts.targetEnv,
-          })}`
+          })}`,
         );
         conditionalClassExprs.push(
-          tuple(comboClassNameExpr, ctx.variantComboChecker(vc, true))
+          tuple(comboClassNameExpr, ctx.variantComboChecker(vc, true)),
         );
       });
     }
@@ -400,7 +400,7 @@ export function serializeComponentRootResetClasses(
 export function makeSerializedClassNameRef(
   ctx: SerializerBaseContext,
   className: string,
-  importedStyleObj = "sty"
+  importedStyleObj = "sty",
 ) {
   const useCssModules = ctx.exportOpts.stylesOpts.scheme === "css-modules";
   return useCssModules

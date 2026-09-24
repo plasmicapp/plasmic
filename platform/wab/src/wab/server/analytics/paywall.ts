@@ -11,13 +11,13 @@ export async function isUnderMonthlyViewsLimit(
     team?: Team;
     projectId?: string;
   },
-  req: Request
+  req: Request,
 ) {
   const { team, projectId } = resource;
   try {
     const { start, end } = await getTeamCurrentPeriodRange(
       team,
-      team?.trialDays ?? req.devflags.freeTrialDays
+      team?.trialDays ?? req.devflags.freeTrialDays,
     );
 
     const renders = await getRendersInTimestampRange({
@@ -34,8 +34,8 @@ export async function isUnderMonthlyViewsLimit(
             team?.id ?? "null"
           }/Project=${projectId} would be blocked by paywall (${renders} / ${
             featureTier.monthlyViews
-          })`
-        )
+          })`,
+        ),
       );
       return {
         valid: !req.devflags.monthlyViewsPaywall,

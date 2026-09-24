@@ -4,7 +4,7 @@ import { Signal } from "signals";
 export function useSignalListener<T>(
   signal: Signal<T>,
   listener: (args: T) => void,
-  deps: any[] = []
+  deps: any[] = [],
 ) {
   return useEffect(() => {
     signal.add(listener);

@@ -1,6 +1,6 @@
-import { uncheckedCast } from "@/wab/shared/common";
 import { PromotionCode } from "@/wab/server/entities/Entities";
 import { superDbMgr } from "@/wab/server/routes/util";
+import { uncheckedCast } from "@/wab/shared/common";
 import { Request, Response } from "express-serve-static-core";
 
 export async function getPromotionCodeById(req: Request, res: Response) {

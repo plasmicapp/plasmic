@@ -16,7 +16,7 @@ import { EntityManager } from "typeorm";
 
 export async function fixDuplicatedComponents(
   em: EntityManager,
-  projectId: string
+  projectId: string,
 ) {
   const dbMgr = new DbMgr(em, SUPER_USER);
   const rev = await dbMgr.getLatestProjectRev(projectId);
@@ -46,7 +46,7 @@ export async function fixDuplicatedComponents(
     components.sort(
       (a, b) =>
         extractComponentUsages(site, b).components.length -
-        extractComponentUsages(site, a).components.length
+        extractComponentUsages(site, a).components.length,
     );
     components.forEach((component, index) => {
       if (index === 0) {

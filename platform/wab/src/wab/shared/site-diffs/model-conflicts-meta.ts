@@ -53,13 +53,13 @@ export type MaybeWithSuffix<T extends string | null> = T extends null
 export type KeysFiltered<
   T,
   Prefix extends string | null = null,
-  Suffix extends string | null = null
+  Suffix extends string | null = null,
 > = {
   [K in keyof T]: K extends MaybeWithPrefix<Prefix>
     ? never
     : K extends MaybeWithSuffix<Suffix>
-    ? never
-    : K;
+      ? never
+      : K;
 }[keyof T];
 
 /**
@@ -85,7 +85,7 @@ export type ModelConflictsMeta = {
 };
 
 export type MergeSpecialFieldHandler<
-  Cls extends classes.ObjInst = classes.ObjInst
+  Cls extends classes.ObjInst = classes.ObjInst,
 > = (
   ancestorCtx: NodeCtx<Cls>,
   leftCtx: NodeCtx<Cls>,
@@ -93,12 +93,12 @@ export type MergeSpecialFieldHandler<
   mergedCtx: NodeCtx<Cls>,
   bundler: Bundler,
   picks: DirectConflictPickMap | undefined,
-  recorder: ChangeRecorder
+  recorder: ChangeRecorder,
 ) => DirectConflict[];
 
 export type FieldConflictDescriptorMeta<
   Cls extends classes.ObjInst = classes.ObjInst,
-  P extends keyof Cls = any
+  P extends keyof Cls = any,
 > =
   | "harmless"
   | "unexpected"
@@ -120,14 +120,14 @@ export type FieldConflictDescriptorMeta<
               | { conflictType: "unexpected" }
               | (E extends classes.ObjInst
                   ? // `walkAndFixNames` expects array values to be `ObjInst`s
-                    | {
+                      | {
                           conflictType: "rename";
                           /** nameKey should never traverse WeakRefs */
                           nameKey: Leaves<E>;
                           customRenameFn?: (
                             site: classes.Site,
                             node: E,
-                            newName: string
+                            newName: string,
                           ) => void;
                           excludeFromRename?: (node: E, parent: Cls) => boolean;
                         }
@@ -152,7 +152,7 @@ export type FieldConflictDescriptorMeta<
                       handleUpdatedValues: (
                         newVals: E[],
                         parent: Cls,
-                        bundler: Bundler
+                        bundler: Bundler,
                       ) => E[];
                     }
                   | {
@@ -163,7 +163,7 @@ export type FieldConflictDescriptorMeta<
                       handleUpdatedValues: (
                         newVals: E[],
                         parent: Cls,
-                        bundler: Bundler
+                        bundler: Bundler,
                       ) => E[];
                     }
                 ))
@@ -200,12 +200,12 @@ const tplVariantableMeta = {
  */
 function shallowCloneArrayValuesAndAddToBundle<
   T extends classes.ObjInst | string | number | boolean | null | undefined,
-  U extends new (arg: any) => any
+  U extends new (arg: any) => any,
 >(
   vals: T[],
   parent: classes.ObjInst,
   bundler: Bundler,
-  types: U[]
+  types: U[],
 ): Exclude<
   T,
   InstanceType<U> | string | number | boolean | null | undefined
@@ -395,7 +395,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
           merged,
           bundler,
           picks,
-          recorder
+          recorder,
         ),
     },
     defaultComponents: "generic",
@@ -412,7 +412,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
           merged,
           bundler,
           picks,
-          recorder
+          recorder,
         ),
     },
     globalVariant: "unexpected",
@@ -818,10 +818,10 @@ export const modelConflictsMeta: ModelConflictsMeta = {
         const tplMgr = new TplMgr({ site });
         const component = ensure(
           site.components.find((c) => c.params.includes(param)),
-          "Param should belong to some component in site"
+          "Param should belong to some component in site",
         );
         const maybeGroup = component.variantGroups.find(
-          (vg) => vg.param === param
+          (vg) => vg.param === param,
         );
         if (maybeGroup) {
           tplMgr.renameVariantGroup(maybeGroup, newName);
@@ -865,7 +865,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
           merged,
           bundler,
           picks,
-          recorder
+          recorder,
         ),
     },
     dataQueries: {
@@ -1363,7 +1363,7 @@ function checkMetas() {
           const field = meta.getFieldByName(startingFromType, path[0]);
           assert(
             !isWeakRefField(field),
-            `nameKeys cannot traverse WeakRefs, but ${cls}.${fieldName} has nameKey of ${_meta.nameKey} and ${field.name} is a weakRef`
+            `nameKeys cannot traverse WeakRefs, but ${cls}.${fieldName} has nameKey of ${_meta.nameKey} and ${field.name} is a weakRef`,
           );
           const elementTypeName = getCoreType(field.type).type;
           if (path.length === 1) {
@@ -1371,7 +1371,7 @@ function checkMetas() {
           }
           return pathContainsWeakRef(
             meta.clsByName[elementTypeName].name,
-            path.slice(1)
+            path.slice(1),
           );
         }
         pathContainsWeakRef(cls, [fieldName, ..._meta.nameKey.split(".")]);

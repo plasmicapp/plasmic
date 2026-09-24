@@ -30,7 +30,7 @@ export function getFontSpec(fontFamily: string): FontInstallSpec {
 }
 
 export function toGoogleFontInstallSpec(
-  meta: GoogFontMeta
+  meta: GoogFontMeta,
 ): GoogleFontInstallSpec {
   return {
     fontType: "google-font",
@@ -41,22 +41,22 @@ export function toGoogleFontInstallSpec(
         weight: s.includes("100")
           ? 100
           : s.includes("200")
-          ? 200
-          : s.includes("300")
-          ? 300
-          : s.includes("500")
-          ? 500
-          : s.includes("600")
-          ? 600
-          : s.includes("700")
-          ? 700
-          : s.includes("800")
-          ? 800
-          : s.includes("900")
-          ? 900
-          : s.includes("regular") || s.includes("italic")
-          ? 400
-          : unexpected(),
+            ? 200
+            : s.includes("300")
+              ? 300
+              : s.includes("500")
+                ? 500
+                : s.includes("600")
+                  ? 600
+                  : s.includes("700")
+                    ? 700
+                    : s.includes("800")
+                      ? 800
+                      : s.includes("900")
+                        ? 900
+                        : s.includes("regular") || s.includes("italic")
+                          ? 400
+                          : unexpected(),
       };
     }),
   };

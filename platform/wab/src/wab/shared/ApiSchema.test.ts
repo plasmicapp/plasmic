@@ -9,7 +9,7 @@ describe("PublicStyleSection", () => {
     // Test that the public version of StyleSection in @plasmicapp/host
     // is assignable to PublicStyleSection.
     function testStyleSectionAssignableToPublicStyleSection(
-      x: StyleSection
+      x: StyleSection,
     ): PublicStyleSectionValues {
       return x;
     }

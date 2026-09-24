@@ -49,13 +49,13 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
 
   const author = ensure(
     commentsCtx.computedData().usersMap.get(ensureString(comment.createdById)),
-    `Author of comment ${comment.createdById} should be present in usersMap`
+    `Author of comment ${comment.createdById} should be present in usersMap`,
   );
 
   const reactionsByEmoji =
     maybe(
       commentsCtx.computedData().reactionsByCommentId.get(comment.id),
-      (xs) => groupBy(xs, (x) => x.data.emojiName)
+      (xs) => groupBy(xs, (x) => x.data.emojiName),
     ) ?? {};
 
   const popoverTargetRef = React.useRef<HTMLDivElement>(null);

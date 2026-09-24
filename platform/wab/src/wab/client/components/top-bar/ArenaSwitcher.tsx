@@ -23,7 +23,7 @@ import * as React from "react";
 export type ArenaSwitcherProps = DefaultArenaSwitcherProps;
 
 const ArenaSwitcher = observer(function ArenaSwitcher(
-  props: ArenaSwitcherProps
+  props: ArenaSwitcherProps,
 ) {
   const studioCtx = useStudioCtx();
   const [visible, setVisible] = React.useState(false);
@@ -37,7 +37,7 @@ const ArenaSwitcher = observer(function ArenaSwitcher(
         studioCtx.focusOnProjectSearchInput();
       }, 100);
     },
-    [studioCtx]
+    [studioCtx],
   );
 
   useInteractOutsideWithCommonExceptions({
@@ -61,7 +61,7 @@ const ArenaSwitcher = observer(function ArenaSwitcher(
       onChange: (width) => {
         setPopoverWidth(width);
       },
-    }
+    },
   );
 
   const contextMenuProps = useContextMenu({
@@ -107,8 +107,8 @@ const ArenaSwitcher = observer(function ArenaSwitcher(
           isComponentArena(currentArena)
             ? "component"
             : isPageArena(currentArena)
-            ? "page"
-            : "mixed"
+              ? "page"
+              : "mixed"
         }
         root={{
           children: (

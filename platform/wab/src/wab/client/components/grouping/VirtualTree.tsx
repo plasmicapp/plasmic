@@ -66,7 +66,7 @@ export interface VirtualTreeHandle {
 
 export const VirtualTree = React.forwardRef(function <T>(
   props: VirtualTreeProps<T>,
-  ref: React.Ref<VirtualTreeHandle>
+  ref: React.Ref<VirtualTreeHandle>,
 ) {
   const { nodeData, nodeKey, nodeHeights } = props;
 
@@ -86,7 +86,7 @@ export const VirtualTree = React.forwardRef(function <T>(
         }
       },
     }),
-    [nodeData]
+    [nodeData],
   );
 
   const getItemSize = React.useMemo(() => {
@@ -123,15 +123,15 @@ export const VirtualTree = React.forwardRef(function <T>(
     </ListSpace>
   );
 }) as <T>(
-  props: VirtualTreeProps<T> & { ref?: React.Ref<VirtualTreeHandle> }
+  props: VirtualTreeProps<T> & { ref?: React.Ref<VirtualTreeHandle> },
 ) => React.JSX.Element;
 
 const genericMemo: <T>(
   component: T,
   propsAreEqual?: (
     prevProps: React.PropsWithChildren<T>,
-    nextProps: React.PropsWithChildren<T>
-  ) => boolean
+    nextProps: React.PropsWithChildren<T>,
+  ) => boolean,
 ) => T = React.memo;
 
 const Row = genericMemo(
@@ -164,7 +164,7 @@ const Row = genericMemo(
       />
     );
   },
-  areEqual
+  areEqual,
 );
 
 interface TreeNodeRowProps<T> {
@@ -261,13 +261,13 @@ type KeyChanges = { oldKey: NodeKey; newKey: NodeKey }[];
  */
 export function getFolderKeyChanges(
   folders: { key: string }[],
-  pathChange: ReplacedFolderName
+  pathChange: ReplacedFolderName,
 ): KeyChanges {
   return folders.map((f) => ({
     oldKey: f.key,
     newKey: f.key.replace(
       getFolderTrimmed(pathChange.oldPath),
-      getFolderTrimmed(pathChange.newPath)
+      getFolderTrimmed(pathChange.newPath),
     ),
   }));
 }
@@ -291,8 +291,8 @@ export function useTreeData<T>({
     new Set(
       defaultOpenKeys === "all"
         ? getAllNodeKeys(nodes, getNodeKey, getNodeChildren)
-        : defaultOpenKeys ?? []
-    )
+        : (defaultOpenKeys ?? []),
+    ),
   );
   const toggleExpand = React.useCallback(
     (key: NodeKey) => {
@@ -305,7 +305,7 @@ export function useTreeData<T>({
         return new Set(set);
       });
     },
-    [setExpandedNodes]
+    [setExpandedNodes],
   );
 
   const renameGroup = React.useCallback(
@@ -320,7 +320,7 @@ export function useTreeData<T>({
         return new Set(set);
       });
     },
-    [setExpandedNodes]
+    [setExpandedNodes],
   );
 
   const visibleNodes = React.useMemo<LinearTreeNode<T>[]>(
@@ -331,7 +331,7 @@ export function useTreeData<T>({
         expandedNodes,
         getNodeKey,
         getNodeChildren,
-        getNodeSearchText
+        getNodeSearchText,
       ),
     [
       nodes,
@@ -340,7 +340,7 @@ export function useTreeData<T>({
       getNodeKey,
       getNodeChildren,
       getNodeSearchText,
-    ]
+    ],
   );
 
   const [selectedIndex, setSelectedIndex] = React.useState<number>();
@@ -390,11 +390,11 @@ export function useTreeData<T>({
         nodeAction,
       },
     }),
-    [visibleNodes, matcher, toggleExpand, selectedIndex]
+    [visibleNodes, matcher, toggleExpand, selectedIndex],
   );
   const nodeKey = React.useCallback(
     (index: number, data: TreeRowData<T>) => data.treeData.nodes[index].key,
-    []
+    [],
   );
   const expandTo = React.useCallback(
     (key: NodeKey) => {
@@ -402,7 +402,7 @@ export function useTreeData<T>({
         key,
         nodes,
         getNodeKey,
-        getNodeChildren
+        getNodeChildren,
       );
       if (ancestors) {
         setExpandedNodes((set) => {
@@ -419,11 +419,11 @@ export function useTreeData<T>({
         });
       }
     },
-    [nodes, setExpandedNodes, getNodeKey, getNodeChildren]
+    [nodes, setExpandedNodes, getNodeKey, getNodeChildren],
   );
   const expandAll = React.useCallback(() => {
     setExpandedNodes(
-      new Set(getAllNodeKeys(nodes, getNodeKey, getNodeChildren))
+      new Set(getAllNodeKeys(nodes, getNodeKey, getNodeChildren)),
     );
   }, [nodes, setExpandedNodes, getNodeKey, getNodeChildren]);
   const collapseAll = React.useCallback(() => {
@@ -431,7 +431,7 @@ export function useTreeData<T>({
   }, [setExpandedNodes]);
   const nodeHeights: number[] = React.useMemo(
     () => visibleNodes.map((node) => getNodeHeight(node.value)),
-    [visibleNodes]
+    [visibleNodes],
   );
 
   const selectNextRow = React.useCallback(
@@ -454,7 +454,7 @@ export function useTreeData<T>({
         return selectable[nextPos].idx;
       });
     },
-    [visibleNodes, isNodeSelectable]
+    [visibleNodes, isNodeSelectable],
   );
 
   return {
@@ -476,7 +476,7 @@ function buildVisibleNodes<T>(
   expandedNodes: Set<NodeKey>,
   getNodeKey: (node: T) => NodeKey,
   getNodeChildren: (node: T) => T[],
-  getNodeSearchText: (node: T) => string
+  getNodeSearchText: (node: T) => string,
 ): LinearTreeNode<T>[] {
   const visibleNodes: LinearTreeNode<T>[] = [];
   const hasQuery = matcher.hasQuery();
@@ -485,7 +485,7 @@ function buildVisibleNodes<T>(
     node: T,
     parentKey: NodeKey | undefined,
     depth: number,
-    addAllChildren: boolean
+    addAllChildren: boolean,
   ): boolean => {
     const key = getNodeKey(node);
     const children = getNodeChildren(node);
@@ -506,7 +506,7 @@ function buildVisibleNodes<T>(
           child,
           key,
           depth + 1,
-          addAllChildren || matchedText
+          addAllChildren || matchedText,
         );
         shouldAddNode = shouldAddNode || pushedChildren;
       });
@@ -525,7 +525,7 @@ function getAncestorNodeKeys<T>(
   searchKey: NodeKey,
   rootNodes: T[],
   getNodeKey: (node: T) => NodeKey,
-  getNodeChildren: (node: T) => T[]
+  getNodeChildren: (node: T) => T[],
 ): NodeKey[] | null {
   const search = (nodes: T[], ancestors: NodeKey[]): NodeKey[] | null => {
     for (const node of nodes) {
@@ -547,7 +547,7 @@ function getAncestorNodeKeys<T>(
 function getAllNodeKeys<T>(
   rootNodes: T[],
   getNodeKey: (node: T) => string,
-  getNodeChildren: (node: T) => T[]
+  getNodeChildren: (node: T) => T[],
 ): NodeKey[] {
   const keys: NodeKey[] = [];
 

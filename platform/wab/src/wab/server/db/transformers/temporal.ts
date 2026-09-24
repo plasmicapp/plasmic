@@ -43,14 +43,14 @@ export const tstzTransformer: Transformer<Temporal.Instant> = {
     // - "2025-01-01 00:00:00.123456+00:00"
     const match = ensure(
       PG_TSTZ_REGEXP.exec(x),
-      `failed to parse timestamptz: ${x}`
+      `failed to parse timestamptz: ${x}`,
     );
     const groups = match.groups!;
     const ms = Number.parseInt(groups["microsecond"]);
     return new Temporal.PlainDate(
       Number.parseInt(groups["year"]),
       Number.parseInt(groups["month"]),
-      Number.parseInt(groups["day"])
+      Number.parseInt(groups["day"]),
     )
       .toZonedDateTime({
         plainTime: new Temporal.PlainTime(
@@ -58,7 +58,7 @@ export const tstzTransformer: Transformer<Temporal.Instant> = {
           Number.parseInt(groups["minute"]),
           Number.parseInt(groups["second"]),
           isNaN(ms) ? 0 : Math.floor(ms / 1000),
-          isNaN(ms) ? 0 : ms % 1000
+          isNaN(ms) ? 0 : ms % 1000,
         ),
         timeZone: groups["offset"],
       })

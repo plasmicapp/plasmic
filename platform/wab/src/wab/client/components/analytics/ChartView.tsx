@@ -38,7 +38,7 @@ const ORIGINAL_STROKE_COLOR = "#3182bd";
 const OVERRIDE_STROKE_COLOR = "#ff82bd";
 
 function AnalyticsChartResult(
-  props: ReturnType<typeof useChartData> & ChartFilters
+  props: ReturnType<typeof useChartData> & ChartFilters,
 ) {
   const { event, splitId, analyticsQuery, projectMeta } = props;
 
@@ -102,11 +102,11 @@ function AnalyticsChartResult(
   const split = projectMeta.splits.find((s) => s.id === splitId);
   const sliceOriginal = ensure(
     split?.slices[0].id,
-    "SplitSliceId shouldn't be null for ChartView"
+    "SplitSliceId shouldn't be null for ChartView",
   );
   const sliceOverride = ensure(
     split?.slices[1].id,
-    "SplitSliceId shouldn't be null for ChartView"
+    "SplitSliceId shouldn't be null for ChartView",
   );
   const originalData = analyticsData[sliceOriginal];
   const overrideData = analyticsData[sliceOverride];

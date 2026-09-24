@@ -96,13 +96,13 @@ export type ParsedExprInfo = {
 export function emptyParsedExprInfo(): ParsedExprInfo {
   return {
     usesDollarVars: Object.fromEntries(
-      DOLLAR_VARS.map((key) => [key, false])
+      DOLLAR_VARS.map((key) => [key, false]),
     ) as Record<DollarVar, boolean>,
     usesUnknownDollarVarKeys: Object.fromEntries(
-      DOLLAR_VARS.map((key) => [key, false])
+      DOLLAR_VARS.map((key) => [key, false]),
     ) as Record<DollarVar, boolean>,
     usedDollarVarKeys: Object.fromEntries(
-      DOLLAR_VARS.map((key) => [key, new Set<string>()])
+      DOLLAR_VARS.map((key) => [key, new Set<string>()]),
     ) as Record<DollarVar, Set<string>>,
     usedFreeVars: new Set<string>(),
   };
@@ -118,7 +118,7 @@ export function emptyParsedExprInfo(): ParsedExprInfo {
  * Numeric literal keys are preserved as numbers (e.g. `arr[0]` → 0, not "0").
  */
 function getMemberExpressionKey(
-  node: ast.MemberExpression
+  node: ast.MemberExpression,
 ): string | number | undefined {
   if (!node.computed && node.property.type === "Identifier") {
     // This is an expression like `obj.name`.
@@ -146,7 +146,7 @@ function getMemberExpressionKey(
  * stringified (e.g. `arr[0]` → "0").
  */
 function parseMemberExpression(
-  node: ast.MemberExpression
+  node: ast.MemberExpression,
 ): Array<string | undefined> {
   const right = getMemberExpressionKey(node)?.toString();
   if (node.object.type === "Identifier") {
@@ -164,7 +164,7 @@ function parseMemberExpression(
  * dynamic accessors or non-identifier roots.
  */
 function parseMemberExpressionPreservingType(
-  node: ast.MemberExpression
+  node: ast.MemberExpression,
 ): Array<string | number | undefined> {
   const right = getMemberExpressionKey(node);
   if (node.object.type === "Identifier") {
@@ -204,7 +204,7 @@ function parseVisibleMemberExpression(node: ast.MemberExpression): string[] {
  * stores ObjectPath.path for array accessors).
  */
 export function tryParseAsObjectPath(
-  code: string
+  code: string,
 ): (string | number)[] | undefined {
   let parsed: ast.Program;
   try {
@@ -284,7 +284,7 @@ function annotateScopeLocals(program: WithLocals<ast.Program>) {
         node.properties.forEach((prop) => {
           declarePattern(
             prop.type === "Property" ? prop.value : prop.argument,
-            parent
+            parent,
           );
         });
         break;
@@ -384,18 +384,18 @@ function annotateScopeLocals(program: WithLocals<ast.Program>) {
  */
 function resolvesToLocal(
   name: string,
-  parents: WithLocals<ast.Node>[]
+  parents: WithLocals<ast.Node>[],
 ): boolean {
   return parents.some(
     (parent) =>
       (name === "arguments" && declaresArguments(parent)) ||
-      (!!parent.locals && name in parent.locals)
+      (!!parent.locals && name in parent.locals),
   );
 }
 
 export function parseCodeExpression(
   code: string,
-  options?: ParseCodeExpressionOptions
+  options?: ParseCodeExpressionOptions,
 ): ParsedExprInfo {
   code = wrapJavaScriptCodeInParens(code);
 
@@ -409,7 +409,7 @@ export function parseCodeExpression(
 
   const identifier = (
     node: ast.Identifier,
-    parents: WithLocals<ast.Node>[]
+    parents: WithLocals<ast.Node>[],
   ) => {
     const name = node.name;
     if (name === "undefined" || resolvesToLocal(name, parents)) {
@@ -484,7 +484,7 @@ export function mergeParsedExprInfos(infos: ParsedExprInfo[]): ParsedExprInfo {
         info.usesUnknownDollarVarKeys[key];
       full.usedDollarVarKeys[key] = xUnion(
         full.usedDollarVarKeys[key],
-        info.usedDollarVarKeys[key]
+        info.usedDollarVarKeys[key],
       );
     }
     full.usedFreeVars = xUnion(full.usedFreeVars, info.usedFreeVars);
@@ -502,7 +502,7 @@ function generateCode(ast: ast.Program): string {
 
 function mkMemberExpression(
   parts: string[],
-  optional = false
+  optional = false,
 ): ast.MemberExpression {
   const key = parts[parts.length - 1];
   return {
@@ -544,7 +544,7 @@ function hasOptionalAccess(node: ast.MemberExpression): boolean {
 
 export function replaceMemberExpression(
   node: ast.MemberExpression,
-  newPath: string[]
+  newPath: string[],
 ) {
   const newExpr = mkMemberExpression(newPath);
   node.object = newExpr.object;
@@ -567,7 +567,7 @@ export function renameObjectKey(
   oldObject: string,
   newObject: string,
   oldKey: string,
-  newKey: string
+  newKey: string,
 ): string {
   const oldParts = [oldObject, ...oldKey.split(".")];
   const newParts = [newObject, ...newKey.split(".")];
@@ -587,7 +587,7 @@ export function renameObjectKey(
         ) {
           const newMemberExpression = mkMemberExpression(
             newParts,
-            hasOptionalAccess(node)
+            hasOptionalAccess(node),
           );
           node.object = newMemberExpression.object;
           node.property = newMemberExpression.property;
@@ -597,7 +597,7 @@ export function renameObjectKey(
         }
       },
     },
-    true
+    true,
   );
 
   // Leave code as is if there's nothing to rename.
@@ -614,7 +614,7 @@ export function renameObjectKey(
 export function findMemberChainsInCode(
   code: string,
   object: string,
-  key: string
+  key: string,
 ): string[][] {
   const chains: string[][] = [];
   traverseCode(
@@ -636,7 +636,7 @@ export function findMemberChainsInCode(
         }
       },
     },
-    true
+    true,
   );
   return chains;
 }
@@ -655,7 +655,7 @@ export function extractStringLiteralsFromCode(code: string): string[] {
     },
     TemplateLiteral: (node) => {
       node.quasis.forEach((quasi) =>
-        literals.push(quasi.value.cooked ?? quasi.value.raw)
+        literals.push(quasi.value.cooked ?? quasi.value.raw),
       );
     },
   });
@@ -669,7 +669,7 @@ export function extractStringLiteralsFromCode(code: string): string[] {
 export function replaceVarWithProp(
   code: string,
   varName: string,
-  propName: string
+  propName: string,
 ): string {
   code = wrapJavaScriptCodeInParens(code);
 
@@ -701,7 +701,7 @@ export function pathToString(path: (string | number)[]) {
 }
 
 export function isPathDataToken(
-  path: (string | number | undefined)[]
+  path: (string | number | undefined)[],
 ): path is string[] {
   return typeof path[0] === "string" && path[0].startsWith("$dataTokens_");
 }
@@ -745,7 +745,7 @@ export function parseObjectPath(obj: ObjectPath): ParsedExprInfo {
 
 export function parseTemplatedString(expr: TemplatedString): ParsedExprInfo {
   const infos = expr.text.map((part) =>
-    isKnownExpr(part) ? parseExpr(part) : emptyParsedExprInfo()
+    isKnownExpr(part) ? parseExpr(part) : emptyParsedExprInfo(),
   );
   return mergeParsedExprInfos(infos);
 }
@@ -764,7 +764,7 @@ export function parseExpr(expr: Expr): ParsedExprInfo {
         component: null,
         projectFlags: DEVFLAGS,
         inStudio: true,
-      }).code
+      }).code,
     );
   }
   return emptyParsedExprInfo();
@@ -798,7 +798,7 @@ function traverseCode(code: string, visitors: Visitors, withLocals = false) {
  */
 export function tryCodeWritesToGlobalVariable(
   code: string,
-  name: string
+  name: string,
 ): boolean | undefined {
   let foundWrite = false;
   const targetContainsName = (target: ast.Node): boolean => {
@@ -808,12 +808,12 @@ export function tryCodeWritesToGlobalVariable(
       case "ObjectPattern":
         return target.properties.some((property) =>
           targetContainsName(
-            property.type === "Property" ? property.value : property.argument
-          )
+            property.type === "Property" ? property.value : property.argument,
+          ),
         );
       case "ArrayPattern":
         return target.elements.some(
-          (element) => !!element && targetContainsName(element)
+          (element) => !!element && targetContainsName(element),
         );
       case "AssignmentPattern":
         return targetContainsName(target.left);
@@ -827,7 +827,7 @@ export function tryCodeWritesToGlobalVariable(
   };
   const writesNonLocalTarget = (
     target: ast.Node,
-    parents: WithLocals<ast.Node>[]
+    parents: WithLocals<ast.Node>[],
   ) => targetContainsName(target) && !resolvesToLocal(name, parents);
 
   try {
@@ -853,7 +853,7 @@ export function tryCodeWritesToGlobalVariable(
           }
         },
       },
-      true
+      true,
     );
   } catch (error) {
     if (error instanceof EvaluationError) {
@@ -907,7 +907,7 @@ export interface ParsedDataToken {
  * Parses a data token identifier with format $dataTokens_<projectShortId>_<tokenName>
  */
 export function parseDataTokenIdentifier(
-  identifier: string | undefined
+  identifier: string | undefined,
 ): ParsedDataToken | undefined {
   if (!identifier || !identifier.startsWith("$dataTokens_")) {
     return undefined;
@@ -927,7 +927,7 @@ export function parseDataTokenIdentifier(
 type TransforDataTokenFunction = (
   node: ast.MemberExpression | ast.Identifier,
   token: ParsedDataToken,
-  nestedProps: string[]
+  nestedProps: string[],
 ) => void;
 
 /**
@@ -935,7 +935,7 @@ type TransforDataTokenFunction = (
  */
 export function transformDataTokensInExpr(
   expr: CustomCode,
-  visitor: TransforDataTokenFunction
+  visitor: TransforDataTokenFunction,
 ) {
   const newCode = transformDataTokens(expr.code, visitor);
 
@@ -954,7 +954,7 @@ export function transformDataTokensInExpr(
  */
 export function transformDataTokens(
   code: string,
-  visitor: TransforDataTokenFunction
+  visitor: TransforDataTokenFunction,
 ) {
   if (!code.includes("$dataTokens_")) {
     return undefined;
@@ -1000,10 +1000,10 @@ export function transformDataTokens(
 export function extractDataTokenIdentifiers(expr: DataTokenExpr): string[] {
   return switchType(expr)
     .when(ObjectPath, (objectPath) =>
-      isPathDataToken(objectPath.path) ? [objectPath.path[0]] : []
+      isPathDataToken(objectPath.path) ? [objectPath.path[0]] : [],
     )
     .when(CustomCode, (customCode) =>
-      extractDataTokenIdentifiersFromCode(customCode.code)
+      extractDataTokenIdentifiersFromCode(customCode.code),
     )
     .result();
 }
@@ -1043,7 +1043,7 @@ export function extractDataTokenIdentifiersFromCode(code: string): string[] {
  */
 export function makeDataTokenIdentifier(
   projectShortId: string,
-  tokenName: string
+  tokenName: string,
 ): string {
   return `$dataTokens_${projectShortId}_${tokenName}`;
 }
@@ -1056,7 +1056,7 @@ export function makeDataTokenIdentifier(
  */
 function replaceWithIdentifier(
   _node: ast.MemberExpression,
-  identifier: string
+  identifier: string,
 ) {
   const node = _node as any;
   node.type = "Identifier";
@@ -1107,7 +1107,7 @@ function replaceIdentifierWithMemberExpr(node: ast.Identifier, path: string[]) {
 export function transformDataTokensInCode(
   code: string,
   site: Site,
-  projectId: ProjectId
+  projectId: ProjectId,
 ): { code: string; error?: Error } {
   try {
     return { code: transformDataTokensInCodeUnsafe(code, site, projectId) };
@@ -1119,7 +1119,7 @@ export function transformDataTokensInCode(
 function transformDataTokensInCodeUnsafe(
   code: string,
   site: Site,
-  projectId: ProjectId
+  projectId: ProjectId,
 ): string {
   code = wrapJavaScriptCodeInParens(code);
   const shortProjectId = makeShortProjectId(projectId);
@@ -1146,7 +1146,7 @@ function transformDataTokensInCodeUnsafe(
         // Local token: $dataTokens.tokenName → $dataTokens_12345_tokenName
         replaceWithIdentifier(
           node,
-          makeDataTokenIdentifier(shortProjectId, tokenName)
+          makeDataTokenIdentifier(shortProjectId, tokenName),
         );
       } else if (parts.length >= 3) {
         // $dataTokens.depName.tokenName.a.b OR $dataTokens.tokenName.a.b
@@ -1201,7 +1201,7 @@ function transformDataTokensInCodeUnsafe(
 export function transformDataTokensToDisplay(
   code: string,
   site: Site,
-  currentProjectId: ProjectId
+  currentProjectId: ProjectId,
 ): string {
   const shortProjectId = makeShortProjectId(currentProjectId);
 
@@ -1250,7 +1250,7 @@ export function transformDataTokensToDisplay(
 export function transformDataTokenPathToDisplay(
   path: (string | number)[],
   site: Site,
-  projectId: ProjectId
+  projectId: ProjectId,
 ): (string | number)[] {
   if (path.length === 0 || typeof path[0] !== "string") {
     return path;
@@ -1283,7 +1283,7 @@ export function transformDataTokenPathToDisplay(
 export function pathToDisplayString(
   path: (string | number)[],
   site: Site,
-  projectId: ProjectId
+  projectId: ProjectId,
 ): string {
   return pathToString(transformDataTokenPathToDisplay(path, site, projectId));
 }
@@ -1300,7 +1300,7 @@ export function pathToDisplayString(
 export function transformDataTokenPathToBundle(
   path: (string | number)[],
   site: Site,
-  projectId: ProjectId
+  projectId: ProjectId,
 ): (string | number)[] {
   if (path.length < 2 || path[0] !== "$dataTokens") {
     return path;

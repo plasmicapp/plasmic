@@ -18,7 +18,7 @@ type AllProjectsPageProps = DefaultAllProjectsPageProps;
 
 function AllProjectsPage_(
   props: AllProjectsPageProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const appCtx = useAppCtx();
   const [showNewProjectModal, setShowNewProjectModal] = React.useState(false);

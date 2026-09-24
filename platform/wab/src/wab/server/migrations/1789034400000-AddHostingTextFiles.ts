@@ -5,13 +5,13 @@ export class AddHostingTextFiles1789034400000 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "plasmic_hosting_settings" ADD "textFiles" jsonb`
+      `ALTER TABLE "plasmic_hosting_settings" ADD "textFiles" jsonb`,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "plasmic_hosting_settings" DROP COLUMN "textFiles"`
+      `ALTER TABLE "plasmic_hosting_settings" DROP COLUMN "textFiles"`,
     );
   }
 }

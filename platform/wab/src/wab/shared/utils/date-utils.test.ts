@@ -14,7 +14,7 @@ describe("date-utils.spec.ts", () => {
 describe("formatDateMediumTimeShort", () => {
   it("formats date with medium date and short time", () => {
     expect(formatDateMediumTimeShort(TEST_DATE)).toEqual(
-      "Dec 31, 2026, 11:34 PM"
+      "Dec 31, 2026, 11:34 PM",
     );
   });
 });

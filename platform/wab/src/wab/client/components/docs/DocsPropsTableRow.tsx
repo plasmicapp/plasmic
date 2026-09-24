@@ -9,7 +9,8 @@ import { PlumeDocsProp } from "@/wab/shared/plume/plume-registry";
 import * as React from "react";
 
 interface DocsPropsTableRowProps
-  extends DefaultDocsPropsTableRowProps,
+  extends
+    DefaultDocsPropsTableRowProps,
     PlasmicDocsPropsTableRow__OverridesType {
   prop: PlumeDocsProp;
   site: Site;

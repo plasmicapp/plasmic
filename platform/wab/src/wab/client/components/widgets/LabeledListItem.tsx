@@ -12,11 +12,10 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 
-export interface LabeledListItemProps
-  extends Omit<
-    DefaultLabeledListItemProps,
-    "clickable" | "withMenu" | "onClick" | "withIndicator"
-  > {
+export interface LabeledListItemProps extends Omit<
+  DefaultLabeledListItemProps,
+  "clickable" | "withMenu" | "onClick" | "withIndicator"
+> {
   uiId?: UiId;
   menu?: React.ReactNode | MenuMaker;
   noMenuButton?: boolean;
@@ -30,7 +29,7 @@ export interface LabeledListItemProps
 
 function LabeledListItem_(
   props: LabeledListItemProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const [hover, setHover] = React.useState(false);
   const {

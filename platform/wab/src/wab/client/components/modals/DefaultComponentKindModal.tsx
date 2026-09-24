@@ -39,7 +39,7 @@ export function DefaultComponentKindModal<T>({
           <Select placeholder="Set as the default component for this category">
             {naturalSort(
               Object.entries(defaultComponentKinds),
-              ([_kind, label]) => label
+              ([_kind, label]) => label,
             ).map(([kind, label]) => (
               <Select.Option value={kind}>{label}</Select.Option>
             ))}

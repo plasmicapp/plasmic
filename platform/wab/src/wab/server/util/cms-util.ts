@@ -30,7 +30,7 @@ import L from "lodash";
 
 export function traverseSchemaFields(
   fields: CmsFieldMeta[],
-  processFieldCallback: (f: CmsFieldMeta) => void
+  processFieldCallback: (f: CmsFieldMeta) => void,
 ): CmsFieldMeta[] {
   for (const field of fields) {
     processFieldCallback(field);
@@ -94,12 +94,12 @@ export interface RefSelection {
 export async function makeSelectionTree(
   tableCache: CmsTableCache,
   table: CmsTable,
-  fieldPaths: string[]
+  fieldPaths: string[],
 ): Promise<RootSelection> {
   const partitionedPaths: PartitionedPath[] = [];
   for (const fieldPath of fieldPaths) {
     partitionedPaths.push(
-      await toPartitionedPath(tableCache, table, fieldPath)
+      await toPartitionedPath(tableCache, table, fieldPath),
     );
   }
 
@@ -107,7 +107,7 @@ export async function makeSelectionTree(
     tableCache,
     table,
     partitionedPaths.filter(notNil),
-    0
+    0,
   );
 }
 
@@ -116,7 +116,7 @@ async function makeSelectionTreeInternal(
   tableCache: CmsTableCache,
   table: CmsTable,
   partitionedPaths: PartitionedPath[],
-  depth: number
+  depth: number,
 ): Promise<RootSelection> {
   // For each partitioned path, group them either into result or refPaths.
   const result = new Map<string, LeafSelection | RefSelection>();
@@ -160,7 +160,7 @@ async function makeSelectionTreeInternal(
       tableCache,
       refPartition.table,
       paths,
-      depth + 1
+      depth + 1,
     );
     result.set(path, {
       type: "ref",
@@ -187,13 +187,13 @@ type TerminalPartition = "*" | CmsFieldMeta;
 type PartitionedPath = [...RefPartition[], TerminalPartition];
 
 function isRefPartition(
-  x: RefPartition | TerminalPartition
+  x: RefPartition | TerminalPartition,
 ): x is RefPartition {
   return typeof x === "object" && "table" in x;
 }
 
 function shiftPartitionedPath(
-  x: PartitionedPath
+  x: PartitionedPath,
 ): TerminalPartition | [RefPartition, PartitionedPath] {
   const [firstPartition, ...restPartitions] = x;
   if (restPartitions.length === 0) {
@@ -227,7 +227,7 @@ interface ToPartitionedPathContext {
 export async function toPartitionedPath(
   tableCache: CmsTableCache,
   rootTable: CmsTable,
-  fieldPath: string
+  fieldPath: string,
 ): Promise<PartitionedPath> {
   const refPartitions: RefPartition[] = [];
   const fieldIds = fieldPath.split(".");
@@ -245,7 +245,7 @@ export async function toPartitionedPath(
       refPartitions.push(partition);
       if (refPartitions.length > SELECTION_MAX_DEPTH) {
         throw new BadRequestError(
-          `Validation error for "${fieldPath}": cannot select more than ${SELECTION_MAX_DEPTH} levels deep`
+          `Validation error for "${fieldPath}": cannot select more than ${SELECTION_MAX_DEPTH} levels deep`,
         );
       }
     } else {
@@ -260,7 +260,7 @@ export async function toPartitionedPath(
 /** Consumes fieldIds until next partition is found, or throw on error. */
 async function iterateUntilPartition(
   ctx: ToPartitionedPathContext,
-  table: CmsTable
+  table: CmsTable,
 ): Promise<RefPartition | TerminalPartition> {
   const { tableCache, fieldPath, fieldIds } = ctx;
 
@@ -270,7 +270,7 @@ async function iterateUntilPartition(
       return "*";
     } else {
       throw new BadRequestError(
-        `Validation error for "${fieldPath}": cannot subfield "*"`
+        `Validation error for "${fieldPath}": cannot subfield "*"`,
       );
     }
   }
@@ -291,7 +291,7 @@ async function iterateUntilPartition(
     return iterateNestedUntilPartition(ctx, fieldMeta);
   } else {
     throw new BadRequestError(
-      `Validation error for "${fieldPath}": cannot subfield "${fieldId}"`
+      `Validation error for "${fieldPath}": cannot subfield "${fieldId}"`,
     );
   }
 }
@@ -299,7 +299,7 @@ async function iterateUntilPartition(
 /** Consumes fieldIds until next partition in nested field is found, or throw on error. */
 async function iterateNestedUntilPartition(
   ctx: ToPartitionedPathContext,
-  rootFieldMeta: CmsNestedFieldMeta
+  rootFieldMeta: CmsNestedFieldMeta,
 ): Promise<RefPartition | TerminalPartition> {
   const { tableCache, fieldPath, fieldIds } = ctx;
   const nestedFieldPath: string[] = [];
@@ -328,7 +328,7 @@ async function iterateNestedUntilPartition(
       curNestedField = fieldMeta;
     } else {
       throw new BadRequestError(
-        `Validation error for "${fieldPath}": cannot subfield "${fieldId}"`
+        `Validation error for "${fieldPath}": cannot subfield "${fieldId}"`,
       );
     }
   }
@@ -339,12 +339,12 @@ async function iterateNestedUntilPartition(
 function findFieldMetaOrThrow(
   { fieldIds }: ToPartitionedPathContext,
   schema: { fields: CmsFieldMeta[] },
-  fieldId: string
+  fieldId: string,
 ) {
   const fieldMeta = schema.fields.find((f) => f.identifier === fieldId);
   if (!fieldMeta) {
     throw new BadRequestError(
-      `Validation error for "${fieldIds}": cannot find "${fieldId}"`
+      `Validation error for "${fieldIds}": cannot find "${fieldId}"`,
     );
   }
 
@@ -360,10 +360,10 @@ export function projectCmsData(
   locale: string,
   useDraft: boolean,
   selection: RootSelection,
-  rowCache?: CmsRowCache
+  rowCache?: CmsRowCache,
 ): CmsLocaleSpecificData {
   const result: CmsLocaleSpecificData = {};
-  const rowData = useDraft ? row.draftData ?? row.data : row.data;
+  const rowData = useDraft ? (row.draftData ?? row.data) : row.data;
 
   for (const fieldSelection of selection.fields.values()) {
     const field = fieldSelection.field;
@@ -392,7 +392,7 @@ export function projectCmsData(
           row: rowCache.getCached(fieldSelection.table.id, ref.value),
         }))
         .filter((x): x is { path: (string | number)[]; row: CmsRow } =>
-          notNil(x.row)
+          notNil(x.row),
         );
 
       if (refsToReplace.length > 0) {
@@ -405,7 +405,7 @@ export function projectCmsData(
           pathSet(
             result,
             [field.identifier, ...refPath],
-            projectCmsData(refRow, locale, useDraft, fieldSelection, rowCache)
+            projectCmsData(refRow, locale, useDraft, fieldSelection, rowCache),
           );
         }
       }
@@ -417,24 +417,24 @@ export function projectCmsData(
 
 export function getRefIds(
   value: unknown,
-  refSelection: RefSelection
+  refSelection: RefSelection,
 ): CmsRowId[] {
   return getRefPathsAndIds(value, refSelection).map((x) => x.value);
 }
 
 function getRefPathsAndIds(
   value: unknown,
-  refSelection: RefSelection
+  refSelection: RefSelection,
 ): { path: (string | number)[]; value: CmsRowId }[] {
   return getNestedPathsAndValues(value, refSelection).filter(
     (x): x is { path: (string | number)[]; value: CmsRowId } =>
-      typeof x.value === "string" && !!x.value
+      typeof x.value === "string" && !!x.value,
   );
 }
 
 function getNestedPathsAndValues(
   value: unknown,
-  refSelection: RefSelection
+  refSelection: RefSelection,
 ): { path: (string | number)[]; value: unknown }[] {
   switch (refSelection.field.type) {
     case CmsMetaType.REF:
@@ -472,7 +472,7 @@ function getNestedPathsAndValues(
 export function normalizeCmsData(
   data: CmsRowData | undefined,
   fieldMetaMap: Record<string, CmsFieldMeta>,
-  locales?: string[]
+  locales?: string[],
 ): CmsRowData {
   if (!data) {
     return { "": {} };
@@ -501,17 +501,17 @@ export function normalizeCmsData(
               return [key, field![locale]];
             }
             return undefined;
-          })
-        )
+          }),
+        ),
       ),
-    ])
+    ]),
   ) as CmsRowData;
 }
 
 export function denormalizeCmsData(
   data: CmsRowData | null,
   tableSchema: CmsFieldMeta[],
-  locales?: string[]
+  locales?: string[],
 ): Dict<unknown> | null {
   if (!data) {
     return null;
@@ -523,15 +523,15 @@ export function denormalizeCmsData(
           ["", ...(locales ?? [])].map((locale) => [
             locale,
             data[locale]?.[meta.identifier],
-          ])
+          ]),
         );
         if (entries.length === 0) {
           return undefined;
         }
         const fieldDict = Object.fromEntries(entries);
         return [meta.identifier, meta.localized ? fieldDict : fieldDict[""]];
-      })
-    )
+      }),
+    ),
   );
 }
 
@@ -600,7 +600,7 @@ const UNDERSCORE_INTERNAL_FIELDS = ["_id", "_createdAt", "_updatedAt"];
 export const makeTypedFieldSql = (
   field: string,
   fieldMetaMap: FieldMetaMap,
-  opts: { useDraft?: boolean }
+  opts: { useDraft?: boolean },
 ) => {
   const dataRef = makeDataRef(opts);
 
@@ -612,7 +612,7 @@ export const makeTypedFieldSql = (
   const meta = fieldMetaMap[field];
   if (meta) {
     return `(${dataRef}->''->>'${meta.identifier}')::${typeToPgType(
-      meta.type
+      meta.type,
     )}`;
   }
 
@@ -624,7 +624,7 @@ export const makeTypedFieldSql = (
     const objectFieldMeta = fieldMetaMap[objectField];
     if (objectFieldMeta && objectFieldMeta.type === CmsMetaType.OBJECT) {
       const nestedFieldMeta = objectFieldMeta.fields.find(
-        (f) => f.identifier === nestedField
+        (f) => f.identifier === nestedField,
       );
 
       if (nestedFieldMeta) {
@@ -641,7 +641,7 @@ export const makeTypedFieldSql = (
 export function makeSqlCondition(
   table: CmsTable,
   condition: FilterClause,
-  opts: { useDraft?: boolean }
+  opts: { useDraft?: boolean },
 ) {
   const fieldMetaMap = makeFieldMetaMap(table.schema);
 
@@ -671,7 +671,7 @@ export function makeSqlCondition(
         const vals = cond.$in;
         if (!Array.isArray(vals)) {
           throw new BadRequestError(
-            `Unexpected "in" operand: ${JSON.stringify(vals)}`
+            `Unexpected "in" operand: ${JSON.stringify(vals)}`,
           );
         } else if (vals.length === 0) {
           return "FALSE";
@@ -691,7 +691,7 @@ export function makeSqlCondition(
       }
     }
     throw new BadRequestError(
-      `Unknown filter condition ${JSON.stringify(cond)}`
+      `Unknown filter condition ${JSON.stringify(cond)}`,
     );
   };
 
@@ -703,7 +703,7 @@ export function makeSqlCondition(
         const sub = clause[key];
         if (!Array.isArray(sub)) {
           throw new BadRequestError(
-            `Unexpected "and" operand: ${JSON.stringify(sub)}`
+            `Unexpected "and" operand: ${JSON.stringify(sub)}`,
           );
         }
         ands.push(andSql(sub.map(buildFilterClause)));
@@ -711,7 +711,7 @@ export function makeSqlCondition(
         const sub = clause[key];
         if (!Array.isArray(sub)) {
           throw new BadRequestError(
-            `Unexpected "or" operand: ${JSON.stringify(sub)}`
+            `Unexpected "or" operand: ${JSON.stringify(sub)}`,
           );
         }
         ands.push(orSql(sub.map(buildFilterClause)));
@@ -722,7 +722,7 @@ export function makeSqlCondition(
         const fieldSql = makeTypedFieldSql(key, fieldMetaMap, opts);
         if (!fieldSql) {
           throw new BadRequestError(
-            `Unknown field or logical operator "${key}"`
+            `Unknown field or logical operator "${key}"`,
           );
         }
 
@@ -801,7 +801,7 @@ export class CmsRowCache {
 
   constructor(
     private readonly dbMgr: Pick<DbMgr, "queryCmsRows">,
-    private readonly queryOpts: Parameters<DbMgr["queryCmsRows"]>[2]
+    private readonly queryOpts: Parameters<DbMgr["queryCmsRows"]>[2],
   ) {}
 
   fill(tableId: CmsTableId, rows: CmsRow[]): void {
@@ -829,7 +829,7 @@ export class CmsRowCache {
       const newRows = await this.dbMgr.queryCmsRows(
         tableId,
         { where: { _id: { $in: Array.from(uncachedRowIds) } } },
-        this.queryOpts
+        this.queryOpts,
       );
 
       this.fill(tableId, newRows);

@@ -2,10 +2,10 @@ import { XMultiSelect } from "@/wab/client/components/XMultiSelect";
 import { DocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
 import Select from "@/wab/client/components/widgets/Select";
 import { PlasmicVariantProp } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicVariantProp";
-import { ensureArray } from "@/wab/shared/common";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { serializeVariantGroupMembersType } from "@/wab/shared/codegen/variants";
+import { ensureArray } from "@/wab/shared/common";
 import { Variant, VariantGroup } from "@/wab/shared/model/classes";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
@@ -22,7 +22,7 @@ const VariantProp = observer(function VariantProp(props: VariantPropProps) {
   const component = docsCtx.getFocusedComponent();
   const name = toVarName(param.variable.name);
   const value = ensureArray(
-    docsCtx.getComponentToggle(component, param)
+    docsCtx.getComponentToggle(component, param),
   ) as Variant[];
   const tsType = typeString(group);
   const isToggle = isStandaloneVariantGroup(group);
@@ -44,7 +44,7 @@ const VariantProp = observer(function VariantProp(props: VariantPropProps) {
                   docsCtx.setComponentToggle(
                     component,
                     param,
-                    group.variants[0]
+                    group.variants[0],
                   );
                 } else {
                   docsCtx.setComponentToggle(component, param, undefined);
@@ -68,7 +68,7 @@ const VariantProp = observer(function VariantProp(props: VariantPropProps) {
             docsCtx.setComponentToggle(
               component,
               param,
-              value.filter((v) => v !== item)
+              value.filter((v) => v !== item),
             );
           }}
           filterOptions={(options, input) => {
@@ -76,7 +76,7 @@ const VariantProp = observer(function VariantProp(props: VariantPropProps) {
               return options;
             }
             return options.filter((op) =>
-              op.name.toLowerCase().includes(input.toLowerCase())
+              op.name.toLowerCase().includes(input.toLowerCase()),
             );
           }}
           renderOption={(option) => option.name}

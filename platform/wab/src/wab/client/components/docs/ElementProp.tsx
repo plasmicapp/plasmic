@@ -3,8 +3,8 @@ import { DocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
 import { createNodeIcon } from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import { PlasmicElementProp } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicElementProp";
 import { toClassName } from "@/wab/shared/codegen/util";
-import { TplNode } from "@/wab/shared/model/classes";
 import { isTplComponent, isTplTag, TplNamable } from "@/wab/shared/core/tpls";
+import { TplNode } from "@/wab/shared/model/classes";
 import { Dropdown, Menu } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -31,7 +31,7 @@ const ElementProp = observer(function ElementProp(props: ElementPropProps) {
                 isRoot ? "onClick" : name,
                 isRoot ? [] : ["props", "onClick"],
                 "(e) => null",
-                isRoot
+                isRoot,
               )
             }
           >
@@ -47,7 +47,7 @@ const ElementProp = observer(function ElementProp(props: ElementPropProps) {
                 isRoot ? "children" : name,
                 isRoot ? [] : ["props", "children"],
                 "null",
-                isRoot
+                isRoot,
               )
             }
           >
@@ -62,7 +62,7 @@ const ElementProp = observer(function ElementProp(props: ElementPropProps) {
               name,
               ["props"],
               "{}",
-              false
+              false,
             )
           }
         >
@@ -75,7 +75,7 @@ const ElementProp = observer(function ElementProp(props: ElementPropProps) {
               name,
               ["wrap"],
               "(content) => content",
-              false
+              false,
             )
           }
         >
@@ -88,7 +88,7 @@ const ElementProp = observer(function ElementProp(props: ElementPropProps) {
               name,
               ["render"],
               "() => null",
-              false
+              false,
             )
           }
         >
@@ -102,7 +102,7 @@ const ElementProp = observer(function ElementProp(props: ElementPropProps) {
                 name,
                 ["wrapChildren"],
                 '(children) => <>{children}{"new children"}</>',
-                false
+                false,
               )
             }
           >
@@ -118,7 +118,7 @@ const ElementProp = observer(function ElementProp(props: ElementPropProps) {
                 name,
                 ["as"],
                 '"div"',
-                false
+                false,
               )
             }
           >

@@ -30,13 +30,13 @@ export async function uploadFigmaImages(figmaData: FigmaData, appCtx: AppCtx) {
           appCtx,
           image,
           ImageAssetType.Picture,
-          "(unnamed)"
+          "(unnamed)",
         )
       : { imageResult: undefined, opts: undefined };
     uploadedImages.set(hash, {
       imageResult: ensure(
         imageResult,
-        "There should be a resulting image after upload"
+        "There should be a resulting image after upload",
       ),
       opts: ensure(opts, "There should be a resulting opts after upload"),
     });
@@ -49,7 +49,7 @@ export function createImageAssets(
     string,
     { imageResult: ResizableImage; opts: ImageAssetOpts }
   >,
-  siteOps: SiteOps
+  siteOps: SiteOps,
 ) {
   const imageAssets: Map<string, ImageAsset> = new Map();
   uploadedImages.forEach((imageParams, hash) => {
@@ -63,12 +63,12 @@ export function createImageAssets(
 export function renameImageAssets(
   siteOps: SiteOps,
   imagesToRename: Map<string, string>,
-  imageAssets: Map<string, ImageAsset>
+  imageAssets: Map<string, ImageAsset>,
 ) {
   imagesToRename.forEach((name, hash) => {
     const imageAsset = ensure(
       imageAssets.get(hash),
-      "Should have image asset created for hash"
+      "Should have image asset created for hash",
     );
     siteOps.renameImageAsset(imageAsset, name);
   });
@@ -93,12 +93,12 @@ async function uploadAssetFromNode(node: SceneNode, appCtx: AppCtx) {
     nodeWidth,
     nodeHeight,
     appCtx,
-    node.name
+    node.name,
   );
   return {
     imageResult: ensure(
       imageResult,
-      "There should be a resulting image after upload"
+      "There should be a resulting image after upload",
     ),
     opts: ensure(opts, "There should be a resulting opts after upload"),
   };
@@ -140,7 +140,7 @@ export function createNodeAssets(
     SceneNode,
     { imageResult: ResizableImage; opts: ImageAssetOpts }
   >,
-  siteOps: SiteOps
+  siteOps: SiteOps,
 ) {
   const nodeAssets: Map<SceneNode, { asset: ImageAsset; iconColor?: string }> =
     new Map();

@@ -11,7 +11,7 @@ describe("updateComponentProp", () => {
     const findParam = (name: string): Param =>
       ensure(
         fixture.button.params.find((p) => p.variable.name === name),
-        `param "${name}" must exist`
+        `param "${name}" must exist`,
       );
     return {
       ...fixture,
@@ -37,7 +37,7 @@ describe("updateComponentProp", () => {
     const set = updateComponentProp(
       param,
       { defaultValue: codeLit("hi") },
-      opts
+      opts,
     );
     assert(set.isOk(), "expected success result");
     expect(tryExtractJson(param.defaultExpr!)).toEqual("hi");
@@ -54,7 +54,7 @@ describe("updateComponentProp", () => {
     const result = updateComponentProp(
       param,
       { options: ["primary", "danger"], defaultValue: codeLit("danger") },
-      opts
+      opts,
     );
 
     assert(result.isOk(), "expected success result");
@@ -69,19 +69,19 @@ describe("updateComponentProp", () => {
     const set = updateComponentProp(
       param,
       { defaultValue: codeLit("primary") },
-      opts
+      opts,
     );
     assert(set.isOk(), "expected success result");
 
     const result = updateComponentProp(
       param,
       { options: ["muted", "danger"] },
-      opts
+      opts,
     );
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toEqual(
-      'Default value "primary" is not among the allowed options for this "choice" prop. Provide defaultValue together with the new options (null unsets it).'
+      'Default value "primary" is not among the allowed options for this "choice" prop. Provide defaultValue together with the new options (null unsets it).',
     );
     expect(param.type).toMatchObject({ options: ["primary", "secondary"] });
     expect(tryExtractJson(param.defaultExpr!)).toEqual("primary");
@@ -94,14 +94,14 @@ describe("updateComponentProp", () => {
     const set = updateComponentProp(
       param,
       { defaultValue: codeLit("primary") },
-      opts
+      opts,
     );
     assert(set.isOk(), "expected success result");
 
     const result = updateComponentProp(
       param,
       { options: ["primary", "muted"] },
-      opts
+      opts,
     );
 
     assert(result.isOk(), "expected success result");
@@ -116,12 +116,12 @@ describe("updateComponentProp", () => {
     const result = updateComponentProp(
       param,
       { defaultValue: codeLit("oops") },
-      opts
+      opts,
     );
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toEqual(
-      'Default value "oops" is not valid for a "num" prop.'
+      'Default value "oops" is not valid for a "num" prop.',
     );
     expect(param.defaultExpr).toBeUndefined();
   });
@@ -152,7 +152,7 @@ describe("updateComponentProp", () => {
     const set = updateComponentProp(
       param,
       { defaultValue: codeLit("initial") },
-      opts
+      opts,
     );
     assert(set.isOk(), "expected success result");
     expect(tryExtractJson(param.defaultExpr!)).toEqual("initial");
@@ -160,17 +160,17 @@ describe("updateComponentProp", () => {
     const dynamic = updateComponentProp(
       param,
       { defaultValue: customCode("$props.label") },
-      opts
+      opts,
     );
     assert(dynamic.isErr(), "expected error result");
     expect(dynamic.error.message).toEqual(
-      "Initial value for read-and-write state cannot contain references to dynamic values that are available only in the current component context."
+      "Initial value for read-and-write state cannot contain references to dynamic values that are available only in the current component context.",
     );
 
     const renamedHandler = updateComponentProp(
       created.value.onChangeParam,
       { name: "onQueryUpdated" },
-      opts
+      opts,
     );
     assert(renamedHandler.isOk(), "expected success result");
     expect(created.value.onChangeParam.variable.name).toEqual("onQueryUpdated");
@@ -190,11 +190,11 @@ describe("updateComponentProp", () => {
     const renamed = updateComponentProp(
       created.value.onChangeParam,
       { name: "onStatusChanged" },
-      opts
+      opts,
     );
     assert(renamed.isOk(), "expected success result");
     expect(created.value.onChangeParam.variable.name).toEqual(
-      "onStatusChanged"
+      "onStatusChanged",
     );
   });
 
@@ -205,7 +205,7 @@ describe("updateComponentProp", () => {
     const result = updateComponentProp(
       param,
       { previewValue: codeLit("Preview"), advanced: true, isLocalizable: true },
-      opts
+      opts,
     );
 
     assert(result.isOk(), "expected success result");
@@ -227,7 +227,7 @@ describe("updateComponentProp", () => {
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toEqual(
-      'Prop "label" is not a choice or multiChoice prop, so it has no options.'
+      'Prop "label" is not a choice or multiChoice prop, so it has no options.',
     );
   });
 
@@ -245,37 +245,37 @@ describe("updateComponentProp", () => {
       updateComponentProp(
         created.value.param,
         { name: "x" },
-        opts
-      )._unsafeUnwrapErr().message
+        opts,
+      )._unsafeUnwrapErr().message,
     ).toEqual(
-      'Param "visits" is a state value param; manage it through state operations.'
+      'Param "visits" is a state value param; manage it through state operations.',
     );
     expect(
       updateComponentProp(
         created.value.onChangeParam,
         { name: "x" },
-        opts
-      )._unsafeUnwrapErr().message
+        opts,
+      )._unsafeUnwrapErr().message,
     ).toEqual(
-      'Param "On visits change" is a state change handler; it is derived from its state.'
+      'Param "On visits change" is a state change handler; it is derived from its state.',
     );
     expect(
       updateComponentProp(
         findParam("children"),
         { name: "x" },
-        opts
-      )._unsafeUnwrapErr().message
+        opts,
+      )._unsafeUnwrapErr().message,
     ).toEqual(
-      'Param "children" is a slot; slots are managed through the element tree.'
+      'Param "children" is a slot; slots are managed through the element tree.',
     );
     expect(
       updateComponentProp(
         sizeGroup.param,
         { name: "x" },
-        opts
-      )._unsafeUnwrapErr().message
+        opts,
+      )._unsafeUnwrapErr().message,
     ).toEqual(
-      'Param "size" backs a variant group; manage it through variant group operations.'
+      'Param "size" backs a variant group; manage it through variant group operations.',
     );
   });
 
@@ -286,7 +286,7 @@ describe("updateComponentProp", () => {
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toEqual(
-      'No changes provided for prop "label".'
+      'No changes provided for prop "label".',
     );
   });
 });

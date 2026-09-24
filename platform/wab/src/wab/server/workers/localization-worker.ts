@@ -24,7 +24,7 @@ interface LocalizationStringsOpts {
 
 export async function workerLocalizationStrings(
   opts: LocalizationStringsOpts,
-  traceCarrier?: TraceCarrier
+  traceCarrier?: TraceCarrier,
 ) {
   const ctx = traceCarrier
     ? propagation.extract(context.active(), traceCarrier)
@@ -36,7 +36,7 @@ export async function workerLocalizationStrings(
       "worker-localization-db-connect",
       async () => {
         return await getDefaultConnection();
-      }
+      },
     );
     try {
       return await withSpan("worker-localization-db-transaction", async () => {
@@ -59,13 +59,13 @@ export async function workerLocalizationStrings(
 
 async function doGenLocalizationStringsForProject(
   mgr: DbMgr,
-  { projectId, maybeVersion, keyScheme, tagPrefix }: LocalizationStringsOpts
+  { projectId, maybeVersion, keyScheme, tagPrefix }: LocalizationStringsOpts,
 ): Promise<Record<string, string>> {
   const bundler = new Bundler();
   const { site } = await mgr.tryGetPkgVersionByProjectVersionOrTag(
     bundler,
     projectId,
-    maybeVersion
+    maybeVersion,
   );
   return genLocalizationStringsForProject(projectId, site, {
     keyScheme,

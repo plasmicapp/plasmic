@@ -7,10 +7,10 @@ export async function sendResetPasswordEmail(
   appInfo?: {
     appName: string;
     nextPath: string;
-  }
+  },
 ) {
   const resetPasswordFields = `email=${encodeURIComponent(
-    email
+    email,
   )}&token=${encodeURIComponent(secret)}`;
 
   const resetPasswordLink = appInfo

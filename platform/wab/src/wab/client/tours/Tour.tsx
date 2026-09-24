@@ -47,12 +47,12 @@ export const Tour = observer(function Tour<T>({
           !seen &&
           !!studioCtx.appCtx.selfInfo &&
           moment(studioCtx.appCtx.selfInfo.createdAt).isBefore(
-            moment(onlyUsersCreatedBefore)
+            moment(onlyUsersCreatedBefore),
           );
         if (shouldRender && isMounted()) {
           setTourState((x) => ({ ...x, run: true }));
         }
-      })()
+      })(),
     );
   }, [studioCtx, isMounted]);
 

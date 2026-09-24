@@ -24,7 +24,7 @@ export type HiliteTabButtonProps = DefaultHiliteTabButtonProps;
 
 function HiliteTabButton_(
   props: HiliteTabButtonProps,
-  ref: HTMLElementRefOf<"button">
+  ref: HTMLElementRefOf<"button">,
 ) {
   // Use PlasmicHiliteTabButton to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

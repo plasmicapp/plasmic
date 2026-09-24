@@ -110,7 +110,7 @@ describe("createInteraction", () => {
     assert(second.isOk(), "expected success result");
     expect(second.value.interactionName).toEqual("Save step 2");
     const varNames = getHandler(root, "onClick").interactions.map((it) =>
-      toVarName(it.interactionName)
+      toVarName(it.interactionName),
     );
     expect(new Set(varNames).size).toEqual(varNames.length);
   });
@@ -136,7 +136,7 @@ describe("createInteraction", () => {
   it("creates on a component instance's function-typed prop", () => {
     const { page, button, instance } = setup();
     button.params.push(
-      mkParam({ name: "onSave", type: typeFactory.func(), paramType: "prop" })
+      mkParam({ name: "onSave", type: typeFactory.func(), paramType: "prop" }),
     );
 
     const result = createInteraction({
@@ -149,7 +149,7 @@ describe("createInteraction", () => {
 
     assert(result.isOk(), "expected success result");
     const arg = ensureBaseVariantSetting(instance).args.find(
-      (a) => a.param.variable.name === "onSave"
+      (a) => a.param.variable.name === "onSave",
     );
     assert(arg && isKnownEventHandler(arg.expr), "expected handler arg");
     expect(arg.expr.interactions).toHaveLength(1);
@@ -168,7 +168,7 @@ describe("createInteraction", () => {
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toMatch(
-      /^Event "onTeleport" is not available on this element\. Available events: /
+      /^Event "onTeleport" is not available on this element\. Available events: /,
     );
   });
 
@@ -184,7 +184,7 @@ describe("createInteraction", () => {
     });
 
     expect(result).toEqual(
-      err({ message: "Interaction code cannot be empty." })
+      err({ message: "Interaction code cannot be empty." }),
     );
   });
 
@@ -200,7 +200,7 @@ describe("createInteraction", () => {
     });
 
     expect(result).toEqual(
-      err({ message: "Interaction code is not valid JavaScript" })
+      err({ message: "Interaction code is not valid JavaScript" }),
     );
   });
 
@@ -219,7 +219,7 @@ describe("createInteraction", () => {
       err({
         message:
           "$state cannot be reassigned. Update one of its properties instead, for example: $state.count = value.",
-      })
+      }),
     );
   });
 
@@ -236,7 +236,7 @@ describe("createInteraction", () => {
           actionName: "customFunction",
           code: "using resource = acquire()",
         },
-      }).isOk()
+      }).isOk(),
     ).toBe(true);
   });
 
@@ -244,7 +244,7 @@ describe("createInteraction", () => {
     const { page, root } = setup();
     vi.spyOn(
       expressionParser,
-      "tryCodeWritesToGlobalVariable"
+      "tryCodeWritesToGlobalVariable",
     ).mockReturnValueOnce(undefined);
 
     expect(
@@ -257,9 +257,9 @@ describe("createInteraction", () => {
           actionName: "customFunction",
           code: "return importModuleSource()",
         },
-      })
+      }),
     ).toEqual(
-      err({ message: "Interaction code uses unsupported JavaScript syntax" })
+      err({ message: "Interaction code uses unsupported JavaScript syntax" }),
     );
   });
 
@@ -280,7 +280,7 @@ describe("createInteraction", () => {
       err({
         message:
           'The "onClick" handler of this element is a custom expression, not an interaction list; edit it in Studio instead.',
-      })
+      }),
     );
   });
 });

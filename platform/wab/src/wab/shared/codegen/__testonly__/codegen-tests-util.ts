@@ -37,7 +37,7 @@ export async function codegen(
     platformVersion: undefined,
     codegenScheme: "blackbox",
     stylesScheme: "css-modules",
-  }
+  },
 ) {
   console.log(`Codegen output dir`, dir, opts);
 
@@ -93,7 +93,7 @@ export async function codegen(
     "latest",
     exportOpts,
     false,
-    opts.codegenScheme
+    opts.codegenScheme,
   );
   const defaultStylesBundle = exportStyleConfig(exportOpts);
   const { componentBundles, globalVariantBundles, iconAssets } =
@@ -111,28 +111,28 @@ export async function codegen(
   // Write the bundles out to disk
   fs.writeFileSync(
     path.join(dir, defaultStylesBundle.defaultStyleCssFileName),
-    defaultStylesBundle.defaultStyleCssRules
+    defaultStylesBundle.defaultStyleCssRules,
   );
   fs.writeFileSync(
     path.join(dir, projectConfig.cssFileName),
-    projectConfig.cssRules
+    projectConfig.cssRules,
   );
   if (projectConfig.projectModuleBundle) {
     fs.writeFileSync(
       path.join(dir, projectConfig.projectModuleBundle.fileName),
-      projectConfig.projectModuleBundle.module
+      projectConfig.projectModuleBundle.module,
     );
   }
   if (projectConfig.styleTokensProviderBundle) {
     fs.writeFileSync(
       path.join(dir, projectConfig.styleTokensProviderBundle.fileName),
-      projectConfig.styleTokensProviderBundle.module
+      projectConfig.styleTokensProviderBundle.module,
     );
   }
   if (projectConfig.dataTokensBundle) {
     fs.writeFileSync(
       path.join(dir, projectConfig.dataTokensBundle.fileName),
-      projectConfig.dataTokensBundle.module
+      projectConfig.dataTokensBundle.module,
     );
   }
 
@@ -140,29 +140,29 @@ export async function codegen(
     if (bundle.renderModuleFileName && bundle.renderModule) {
       fs.writeFileSync(
         path.join(dir, bundle.renderModuleFileName),
-        bundle.renderModule
+        bundle.renderModule,
       );
     }
     fs.writeFileSync(path.join(dir, bundle.cssFileName), bundle.cssRules);
     fs.writeFileSync(
       path.join(dir, bundle.skeletonModuleFileName),
-      bundle.skeletonModule
+      bundle.skeletonModule,
     );
     if (bundle.rscMetadata) {
       const { pageWrappers, serverQueriesExecFunc } = bundle.rscMetadata;
       if (serverQueriesExecFunc) {
         fs.writeFileSync(
           path.join(dir, serverQueriesExecFunc.fileName),
-          serverQueriesExecFunc.module
+          serverQueriesExecFunc.module,
         );
       }
       fs.writeFileSync(
         path.join(dir, pageWrappers.server.fileName),
-        pageWrappers.server.module
+        pageWrappers.server.module,
       );
       fs.writeFileSync(
         path.join(dir, pageWrappers.client.fileName),
-        pageWrappers.client.module
+        pageWrappers.client.module,
       );
     }
   }
@@ -170,7 +170,7 @@ export async function codegen(
   for (const bundle of globalVariantBundles) {
     fs.writeFileSync(
       path.join(dir, bundle.contextFileName),
-      bundle.contextModule
+      bundle.contextModule,
     );
   }
 
@@ -193,7 +193,7 @@ export async function codegen(
   };
   fs.writeFileSync(
     path.join(dir, "tsconfig.json"),
-    JSON.stringify(tsConfig, undefined, 2)
+    JSON.stringify(tsConfig, undefined, 2),
   );
 
   // Write type declarations to support CSS modules. Based on:
@@ -207,7 +207,7 @@ export async function codegen(
 declare module '*.module.css' {
   const classes: { readonly [key: string]: string }
   export default classes
-}`
+}`,
   );
 
   // Link node_modules against the wab node_modules, so we don't have to install
@@ -215,7 +215,7 @@ declare module '*.module.css' {
   if (!fs.existsSync(path.join(dir, "node_modules"))) {
     await promisify(exec)(
       `ln -s ${path.join(process.cwd(), "node_modules")} node_modules`,
-      { cwd: dir }
+      { cwd: dir },
     );
   }
 
@@ -232,7 +232,7 @@ declare module '*.module.css' {
         "  export type Metadata = Record<string, unknown>;",
         "  export type ResolvingMetadata = Promise<Metadata>;",
         "}",
-      ].join("\n")
+      ].join("\n"),
     );
   }
   try {
@@ -244,7 +244,7 @@ declare module '*.module.css' {
   } catch (err) {
     // tsc writes diagnostics to stdout, a failure to start only reaches stderr.
     throw new Error(
-      `Typescript compilation failed: ${err.stdout || err.stderr || err}`
+      `Typescript compilation failed: ${err.stdout || err.stderr || err}`,
     );
   }
   return { importFromProject, readFromProject, existsInProject };

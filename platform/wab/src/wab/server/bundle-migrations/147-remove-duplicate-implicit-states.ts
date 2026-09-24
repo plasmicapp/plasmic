@@ -19,15 +19,15 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   for (const component of site.components) {
     const tplNodeToStates: Record<string, NamedState[]> = groupBy(
       component.states.filter(
-        (s) => isKnownTplTag(s.tplNode) && isKnownNamedState(s)
+        (s) => isKnownTplTag(s.tplNode) && isKnownNamedState(s),
       ) as NamedState[],
-      (s) => ensure(s.tplNode, "Just filtered").uuid
+      (s) => ensure(s.tplNode, "Just filtered").uuid,
     );
     for (const states of Object.values(tplNodeToStates)) {
       const seen = new Set<string>();
@@ -44,7 +44,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "147-remove-duplicate-implicit-states"
+    "147-remove-duplicate-implicit-states",
   );
   Object.assign(bundle, newBundle);
 };

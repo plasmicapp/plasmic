@@ -76,11 +76,11 @@ export function useCopilot<Response>({
         }
         throw err;
       }
-    }
+    },
   );
 
   const suggestionHistory = studioCtx.getCopilotHistory(
-    type
+    type,
   ) as CopilotInteraction<Response>[];
 
   const state: CopilotState = showHistory
@@ -88,12 +88,12 @@ export function useCopilot<Response>({
       ? "history"
       : "historyEmpty"
     : copilotResponse.loading
-    ? "loading"
-    : copilotResponse.error !== undefined
-    ? "error"
-    : copilotResponse.value === "CopilotRateLimitExceededError"
-    ? "quotaExceeded"
-    : "ready";
+      ? "loading"
+      : copilotResponse.error !== undefined
+        ? "error"
+        : copilotResponse.value === "CopilotRateLimitExceededError"
+          ? "quotaExceeded"
+          : "ready";
 
   const copilotData =
     copilotResponse.value &&
@@ -139,10 +139,10 @@ function trackCopilotQuery({
             Object.entries(data).map(([k, v]) =>
               k.startsWith("$") && v && typeof v === "object"
                 ? [k, Object.keys(v)]
-                : [k, typeof v]
+                : [k, typeof v],
             ),
             undefined,
-            2
+            2,
           )
         : undefined,
     result: truncateCode(result),

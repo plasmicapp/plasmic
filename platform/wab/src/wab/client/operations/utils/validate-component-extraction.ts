@@ -31,7 +31,7 @@ type ComponentExtractionError = {
 export function validateComponentExtraction(
   tpl: TplNode,
   containingComponent: Component,
-  site: Site
+  site: Site,
 ): ComponentExtractionError | null {
   if (Tpls.isBodyTpl(tpl)) {
     return {
@@ -57,20 +57,20 @@ export function validateComponentExtraction(
   const flattenedTplsSet = new Set(Tpls.flattenTpls(tpl));
 
   const removedImplicitStates = new Set(
-    findImplicitStatesOfNodesInTree(containingComponent, tpl)
+    findImplicitStatesOfNodesInTree(containingComponent, tpl),
   );
   const containingComponentExprs = Tpls.findExprsInTree(
     containingComponent.tplTree,
-    [tpl]
+    [tpl],
   );
   for (const state of removedImplicitStates) {
     const refs = containingComponentExprs.filter(({ expr }) =>
-      isStateUsedInExpr(state, expr)
+      isStateUsedInExpr(state, expr),
     );
     if (refs.length > 0) {
       return {
         message: `Selected elements contain variable "${getStateDisplayName(
-          state
+          state,
         )}" which is referenced in the current component.`,
         referencingNode: refs.find((r) => r.node)?.node,
       };
@@ -80,7 +80,7 @@ export function validateComponentExtraction(
       const components = L.uniq(implicitUsages.map((usage) => usage.component));
       return {
         message: `Selected nodes contain variable "${getStateDisplayName(
-          state
+          state,
         )}" which is referenced in ${components
           .map((c) => getComponentDisplayName(c))
           .join(", ")}.`,
@@ -94,30 +94,30 @@ export function validateComponentExtraction(
     .flatMap(({ expr }) => {
       const eventHandler = ensureKnownEventHandler(expr);
       return eventHandler.interactions.flatMap((interaction) =>
-        Tpls.findExprsInInteraction(interaction)
+        Tpls.findExprsInInteraction(interaction),
       );
     });
   const remainingStates = containingComponent.states.filter(
-    (s) => !removedImplicitStates.has(s)
+    (s) => !removedImplicitStates.has(s),
   );
   for (const state of remainingStates) {
     // We try to extract the component if the state is not referenced in any
     // interaction. We guess that this state is read-only in this context and
     // can be passed in as a prop of the new component.
     const refsInInteractions = new Set(
-      exprsInInteractions.filter((expr) => isStateUsedInExpr(state, expr))
+      exprsInInteractions.filter((expr) => isStateUsedInExpr(state, expr)),
     );
     if (refsInInteractions.size === 0) {
       continue;
     }
     const refs = tplExprs.filter(
       ({ expr }) =>
-        isStateUsedInExpr(state, expr) && refsInInteractions.has(expr)
+        isStateUsedInExpr(state, expr) && refsInInteractions.has(expr),
     );
     if (refs.length > 0) {
       return {
         message: `Selected elements contain reference to "${getStateDisplayName(
-          state
+          state,
         )}".`,
         referencingNode: refs.find((r) => r.node)?.node,
       };

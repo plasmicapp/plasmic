@@ -48,14 +48,14 @@ export class UnwrappableComponent<P, S = {}> extends React.Component<P, S> {
 
 export function getComponentName(
   Component: React.ComponentType<any>,
-  defaultName: string = "Component"
+  defaultName: string = "Component",
 ) {
   return Component.displayName || Component.name || defaultName;
 }
 
 export function buildWrapperName(
   wrapper: string,
-  WrappedComponent: React.ComponentClass<any>
+  WrappedComponent: React.ComponentClass<any>,
 ) {
   const componentName = getComponentName(WrappedComponent);
   return `${wrapper}(${componentName})`;

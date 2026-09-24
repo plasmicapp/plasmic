@@ -74,7 +74,7 @@ export async function runAppServer(config: Config) {
         logger().info(`No socket host found; serving sockets from app backend`);
         ({ attach } = addSocketRoutes(application, config));
       }
-    }
+    },
   );
 
   // runs every 10 minutes
@@ -123,12 +123,12 @@ async function prepareFreshDb(opts: any, config: Config) {
 
   const expressSessionSchema = path.resolve(
     appDir,
-    "node_modules/connect-pg-simple/table.sql"
+    "node_modules/connect-pg-simple/table.sql",
   );
   const createSessionRes = childProcess.spawnSync(
     "psql",
     [dburi, "-f", expressSessionSchema],
-    { env: process.env }
+    { env: process.env },
   );
   if (createSessionRes.status !== 0) {
     logger().error("Failed to create express session table.");

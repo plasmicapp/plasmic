@@ -66,7 +66,7 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
   const userAccessLevel = getAccessLevelToResource(
     { type: "team", resource: team },
     appCtx.selfInfo,
-    perms
+    perms,
   );
   const readOnly = accessLevelRank(userAccessLevel) < accessLevelRank("editor");
   const hasOwnership =

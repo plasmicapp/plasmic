@@ -70,7 +70,7 @@ async function switchToStyleTokensTab(page: Page, models: PageModels) {
   await assetsTab.hover();
 
   const tokensTab = models.studio.frame.locator(
-    'button[data-test-tabkey="tokens"]'
+    'button[data-test-tabkey="tokens"]',
   );
   await tokensTab.waitFor({ state: "visible", timeout: 5000 });
 
@@ -108,7 +108,7 @@ async function switchToStyleTokensTab(page: Page, models: PageModels) {
 
 async function expandAllTokensPanel(models: PageModels) {
   const expandButton = models.studio.frame.locator(
-    '[data-test-id="tokens-panel-expand-all"]'
+    '[data-test-id="tokens-panel-expand-all"]',
   );
   if (await expandButton.isVisible({ timeout: 1000 }).catch(() => false)) {
     await expandButton.click({ force: true });
@@ -121,7 +121,7 @@ async function getTokensPanel(models: PageModels) {
 
 async function changeTokensTarget(models: PageModels, targetName: string) {
   const variantSelect = models.studio.frame.locator(
-    '[data-test-id="global-variant-select"]'
+    '[data-test-id="global-variant-select"]',
   );
   await variantSelect.waitFor({ state: "visible", timeout: 5000 });
   await variantSelect.click();
@@ -149,7 +149,7 @@ async function createToken(
   models: PageModels,
   tokenType: "Color" | "FontSize",
   name: string,
-  value: string
+  value: string,
 ) {
   const isTokensPanelVisible = await models.studio.leftPanel.frame
     .locator('[data-test-id="tokens-panel-content"]')
@@ -158,7 +158,7 @@ async function createToken(
     await switchToStyleTokensTab(page, models);
   }
   const addButton = models.studio.frame.locator(
-    `[data-test-id="add-token-button-${tokenType}"]`
+    `[data-test-id="add-token-button-${tokenType}"]`,
   );
   await models.studio.frame.locator("li").filter({ has: addButton }).hover();
   await addButton.waitFor();
@@ -170,7 +170,7 @@ async function createToken(
   await page.keyboard.type(name);
 
   const input = modal.locator(
-    `.panel-popup-content [data-test-id="${tokenType}-input"]`
+    `.panel-popup-content [data-test-id="${tokenType}-input"]`,
   );
   await input.click();
   await input.fill("");
@@ -189,7 +189,7 @@ async function updateToken(
   opts: {
     globalVariant?: string;
     override?: boolean;
-  } = {}
+  } = {},
 ) {
   const isTokensPanelVisible = await models.studio.leftPanel.frame
     .locator('[data-test-id="tokens-panel-content"]')
@@ -202,7 +202,7 @@ async function updateToken(
   await changeTokensTarget(models, opts.globalVariant ?? "Base");
 
   const variantSelect = models.studio.frame.locator(
-    '[data-test-id="global-variant-select"]'
+    '[data-test-id="global-variant-select"]',
   );
   const expectedValue = opts.globalVariant ?? "Base";
   await variantSelect
@@ -251,7 +251,7 @@ async function updateToken(
   }
 
   const input = modal.locator(
-    `.panel-popup-content [data-test-id="${tokenType}-input"]`
+    `.panel-popup-content [data-test-id="${tokenType}-input"]`,
   );
 
   // Wait for input to be ready
@@ -302,7 +302,7 @@ async function removeTokenOverride(
   page: Page,
   models: PageModels,
   tokenName: string,
-  opts: { globalVariant?: string } = {}
+  opts: { globalVariant?: string } = {},
 ) {
   const isTokensPanelVisible = await models.studio.leftPanel.frame
     .locator('[data-test-id="tokens-panel-content"]')
@@ -349,7 +349,7 @@ async function assertTokenIndicator(
     | "override-both"
     | "override-none",
   baseVariantName: "Base",
-  globalVariantName?: string
+  globalVariantName?: string,
 ) {
   const isTokensPanelVisible = await models.studio.leftPanel.frame
     .locator('[data-test-id="tokens-panel-content"]')
@@ -375,7 +375,7 @@ async function assertTokenIndicator(
         await changeTokensTarget(models, globalVariantName);
         const variantIndicator = await getIndicatorElement();
         await expect(variantIndicator).toHaveClass(
-          /DefinedIndicator--inherited/
+          /DefinedIndicator--inherited/,
         );
       }
       break;
@@ -386,7 +386,7 @@ async function assertTokenIndicator(
         await changeTokensTarget(models, globalVariantName);
         const variantIndicator = await getIndicatorElement();
         await expect(variantIndicator).toHaveClass(
-          /DefinedIndicator--overriding/
+          /DefinedIndicator--overriding/,
         );
       }
       break;
@@ -400,7 +400,7 @@ async function assertTokenIndicator(
         await changeTokensTarget(models, globalVariantName);
         const variantIndicator = await getIndicatorElement();
         await expect(variantIndicator).toHaveClass(
-          /DefinedIndicator--inherited/
+          /DefinedIndicator--inherited/,
         );
       }
       break;
@@ -414,7 +414,7 @@ async function assertTokenIndicator(
         await changeTokensTarget(models, globalVariantName);
         const variantIndicator = await getIndicatorElement();
         await expect(variantIndicator).toHaveClass(
-          /DefinedIndicator--inherited/
+          /DefinedIndicator--inherited/,
         );
       }
       break;
@@ -428,7 +428,7 @@ async function assertTokenIndicator(
         await changeTokensTarget(models, globalVariantName);
         const variantIndicator = await getIndicatorElement();
         await expect(variantIndicator).toHaveClass(
-          /DefinedIndicator--overriding/
+          /DefinedIndicator--overriding/,
         );
       }
       break;
@@ -442,7 +442,7 @@ async function assertTokenIndicator(
         await changeTokensTarget(models, globalVariantName);
         const variantIndicator = await getIndicatorElement();
         await expect(variantIndicator).toHaveClass(
-          /DefinedIndicator--overriding/
+          /DefinedIndicator--overriding/,
         );
       }
       break;
@@ -452,12 +452,12 @@ async function assertTokenIndicator(
 async function chooseColor(
   page: Page,
   models: PageModels,
-  opts: { color?: string; tokenName?: string }
+  opts: { color?: string; tokenName?: string },
 ) {
   await models.studio.rightPanel.designTabButton.click();
 
   const colorSelector = models.studio.frame.locator(
-    `.canvas-editor__right-pane [data-test-id='color-selector'] button`
+    `.canvas-editor__right-pane [data-test-id='color-selector'] button`,
   );
   await colorSelector.first().click({ force: true });
 
@@ -469,7 +469,7 @@ async function chooseColor(
     await page.waitForTimeout(100);
   } else if (opts?.tokenName) {
     const searchInput = models.studio.frame.locator(
-      'input[placeholder="Search for token"]'
+      'input[placeholder="Search for token"]',
     );
     await page.waitForTimeout(100);
     await searchInput.type(`${opts.tokenName}`);
@@ -485,12 +485,12 @@ async function createGlobalVariantGroup(
   page: Page,
   models: PageModels,
   groupName: string,
-  variantName: string
+  variantName: string,
 ) {
   await models.studio.rightPanel.switchToComponentDataTab();
 
   const addButton = models.studio.frame.locator(
-    '[data-test-id="add-global-variant-group-button"]'
+    '[data-test-id="add-global-variant-group-button"]',
   );
   await addButton.click();
   await page.waitForTimeout(200);
@@ -508,14 +508,14 @@ async function selectVariant(
   models: PageModels,
   groupName: string,
   variantName: string,
-  isGlobal: boolean = false
+  isGlobal: boolean = false,
 ) {
   await models.studio.rightPanel.switchToComponentDataTab();
   await page.waitForTimeout(300);
 
   if (isGlobal) {
     const globalVariantsExpand = models.studio.frame.locator(
-      '[data-test-id="test-id_2"] [data-show-extra-content="false"]'
+      '[data-test-id="test-id_2"] [data-show-extra-content="false"]',
     );
     const isVisible = await globalVariantsExpand.isVisible();
     if (isVisible) {
@@ -534,7 +534,7 @@ async function selectVariant(
   await page.waitForTimeout(200);
 
   const startButton = variantRow.locator(
-    '[data-test-class="variant-record-button-start"]'
+    '[data-test-class="variant-record-button-start"]',
   );
   await startButton.click();
   await page.waitForTimeout(300);
@@ -542,7 +542,7 @@ async function selectVariant(
 
 async function resetVariants(page: Page, models: PageModels) {
   const variantsBarTrigger = models.studio.frame.locator(
-    '[data-test-id="variants-bar-dropdown-trigger"]'
+    '[data-test-id="variants-bar-dropdown-trigger"]',
   );
   await variantsBarTrigger.click();
   await page.waitForTimeout(200);
@@ -557,7 +557,7 @@ async function assertTokenClickOpensModal(
   models: PageModels,
   tokenName: string,
   shouldOpen: boolean,
-  opts?: { globalVariant?: string }
+  opts?: { globalVariant?: string },
 ) {
   await changeTokensTarget(models, opts?.globalVariant ?? "Base");
 
@@ -583,7 +583,7 @@ test.describe("Imported token overrides", () => {
     async function setupDependencyProjects(
       page: Page,
       models: PageModels,
-      apiClient: ApiClient
+      apiClient: ApiClient,
     ) {
       const dep1ProjectId = await apiClient.setupNewProject({
         name: "Dep Project",
@@ -606,14 +606,14 @@ test.describe("Imported token overrides", () => {
         models,
         "Color",
         TOKEN_NAMES.PRIMARY,
-        TEST_COLORS.PRIMARY
+        TEST_COLORS.PRIMARY,
       );
       await createToken(
         page,
         models,
         "FontSize",
         TOKEN_NAMES.LARGE,
-        TEST_FONT_SIZES.LARGE
+        TEST_FONT_SIZES.LARGE,
       );
 
       await updateToken(
@@ -624,7 +624,7 @@ test.describe("Imported token overrides", () => {
         TEST_COLORS.PRIMARY_DARK,
         {
           globalVariant: "Dark",
-        }
+        },
       );
 
       await assertTokenIndicator(
@@ -633,7 +633,7 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.PRIMARY,
         "local-varianted",
         "Base",
-        "Dark"
+        "Dark",
       );
       await assertTokenIndicator(
         page,
@@ -641,7 +641,7 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.LARGE,
         "local",
         "Base",
-        "Dark"
+        "Dark",
       );
 
       await models.studio.insertTextWithDynamic("$props.text");
@@ -660,7 +660,7 @@ test.describe("Imported token overrides", () => {
         TEST_TEXTS.FROM_DEP_COMP_PARENT,
         {
           reset: true,
-        }
+        },
       );
 
       await models.studio.leftPanel.selectTreeNode(["Dep Comp"]);
@@ -681,7 +681,7 @@ test.describe("Imported token overrides", () => {
         models,
         "Color",
         TOKEN_NAMES.SECONDARY,
-        TEST_COLORS.SECONDARY
+        TEST_COLORS.SECONDARY,
       );
       await page.waitForTimeout(1000);
       await models.studio.publishVersion("New tokens");
@@ -694,7 +694,7 @@ test.describe("Imported token overrides", () => {
       models: PageModels,
       apiClient: ApiClient,
       dep1ProjectId: string,
-      dep2ProjectId: string
+      dep2ProjectId: string,
     ) {
       const mainProjectId = await apiClient.setupNewProject({
         name: "Main Project",
@@ -754,14 +754,14 @@ test.describe("Imported token overrides", () => {
       const { dep1ProjectId, dep2ProjectId } = await setupDependencyProjects(
         page,
         models,
-        apiClient
+        apiClient,
       );
       const mainProjectId = await setupMainProject(
         page,
         models,
         apiClient,
         dep1ProjectId,
-        dep2ProjectId
+        dep2ProjectId,
       );
       const frame = models.studio.componentFrame;
 
@@ -769,19 +769,19 @@ test.describe("Imported token overrides", () => {
         TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
         TEST_COLORS.PRIMARY,
         TEST_FONT_SIZES.LARGE,
-        frame
+        frame,
       );
       await assertTextStyling(
         TEST_TEXTS.FROM_DEP_COMP,
         TEST_COLORS.PRIMARY,
         TEST_FONT_SIZES.LARGE,
-        frame
+        frame,
       );
       await assertTextStyling(
         TEST_TEXTS.FROM_DEP_COMP_PARENT,
         TEST_COLORS.PRIMARY,
         TEST_FONT_SIZES.LARGE,
-        frame
+        frame,
       );
 
       await models.studio.withinLiveMode(async (liveFrame: FrameLocator) => {
@@ -789,19 +789,19 @@ test.describe("Imported token overrides", () => {
           TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
           TEST_COLORS.PRIMARY,
           TEST_FONT_SIZES.LARGE,
-          liveFrame
+          liveFrame,
         );
         await assertTextStyling(
           TEST_TEXTS.FROM_DEP_COMP,
           TEST_COLORS.PRIMARY,
           TEST_FONT_SIZES.LARGE,
-          liveFrame
+          liveFrame,
         );
         await assertTextStyling(
           TEST_TEXTS.FROM_DEP_COMP_PARENT,
           TEST_COLORS.PRIMARY,
           TEST_FONT_SIZES.LARGE,
-          liveFrame
+          liveFrame,
         );
       });
 
@@ -814,7 +814,7 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.PRIMARY,
         "override-none",
         "Base",
-        "Website"
+        "Website",
       );
 
       await assertTokenIndicator(
@@ -823,21 +823,21 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.LARGE,
         "override-none",
         "Base",
-        "Website"
+        "Website",
       );
 
       await assertTokenClickOpensModal(
         page,
         models,
         TOKEN_NAMES.PRIMARY,
-        false
+        false,
       );
       await assertTokenClickOpensModal(
         page,
         models,
         TOKEN_NAMES.PRIMARY,
         false,
-        { globalVariant: "Website" }
+        { globalVariant: "Website" },
       );
       await assertTokenClickOpensModal(page, models, TOKEN_NAMES.LARGE, false);
       await assertTokenClickOpensModal(page, models, TOKEN_NAMES.LARGE, false, {
@@ -852,7 +852,7 @@ test.describe("Imported token overrides", () => {
         TEST_COLORS.PRIMARY_OVERRIDE_BASE,
         {
           override: true,
-        }
+        },
       );
 
       await updateToken(
@@ -863,7 +863,7 @@ test.describe("Imported token overrides", () => {
         TEST_COLORS.SECONDARY_OVERRIDE,
         {
           override: true,
-        }
+        },
       );
 
       await assertTokenIndicator(
@@ -872,7 +872,7 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.PRIMARY,
         "override-base",
         "Base",
-        "Website"
+        "Website",
       );
 
       await assertTokenClickOpensModal(page, models, TOKEN_NAMES.PRIMARY, true);
@@ -881,7 +881,7 @@ test.describe("Imported token overrides", () => {
         models,
         TOKEN_NAMES.PRIMARY,
         false,
-        { globalVariant: "Website" }
+        { globalVariant: "Website" },
       );
 
       await updateToken(
@@ -893,7 +893,7 @@ test.describe("Imported token overrides", () => {
         {
           globalVariant: "Website",
           override: true,
-        }
+        },
       );
 
       await assertTokenIndicator(
@@ -902,7 +902,7 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.PRIMARY,
         "override-both",
         "Base",
-        "Website"
+        "Website",
       );
 
       await updateToken(
@@ -914,7 +914,7 @@ test.describe("Imported token overrides", () => {
         {
           globalVariant: "Website",
           override: true,
-        }
+        },
       );
       await assertTokenIndicator(
         page,
@@ -922,7 +922,7 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.LARGE,
         "override-varianted",
         "Base",
-        "Website"
+        "Website",
       );
 
       await assertTokenClickOpensModal(page, models, TOKEN_NAMES.PRIMARY, true);
@@ -931,7 +931,7 @@ test.describe("Imported token overrides", () => {
         models,
         TOKEN_NAMES.PRIMARY,
         true,
-        { globalVariant: "Website" }
+        { globalVariant: "Website" },
       );
       await assertTokenClickOpensModal(page, models, TOKEN_NAMES.LARGE, false);
       await assertTokenClickOpensModal(page, models, TOKEN_NAMES.LARGE, true, {
@@ -946,7 +946,7 @@ test.describe("Imported token overrides", () => {
         TEST_FONT_SIZES.LARGE_OVERRIDE_BASE,
         {
           override: true,
-        }
+        },
       );
       await assertTokenIndicator(
         page,
@@ -954,14 +954,14 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.LARGE,
         "override-both",
         "Base",
-        "Website"
+        "Website",
       );
 
       await assertTextStyling(
         TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
         TEST_COLORS.PRIMARY_OVERRIDE_BASE,
         TEST_FONT_SIZES.LARGE_OVERRIDE_BASE,
-        frame
+        frame,
       );
 
       await selectVariant(page, models, "Theme", "Dark", true);
@@ -969,7 +969,7 @@ test.describe("Imported token overrides", () => {
         TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
         TEST_COLORS.PRIMARY_DARK,
         TEST_FONT_SIZES.LARGE_OVERRIDE_BASE,
-        frame
+        frame,
       );
 
       await selectVariant(page, models, "Platform", "Website", true);
@@ -977,24 +977,24 @@ test.describe("Imported token overrides", () => {
         TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
         TEST_COLORS.PRIMARY_OVERRIDE_VARIANT,
         TEST_FONT_SIZES.LARGE_OVERRIDE_VARIANT,
-        frame
+        frame,
       );
 
       await removeAllDependencies(page, models.studio);
       await apiClient.removeProjectAfterTest(
         mainProjectId,
         "user2@example.com",
-        "!53kr3tz!"
+        "!53kr3tz!",
       );
       await apiClient.removeProjectAfterTest(
         dep2ProjectId,
         "user2@example.com",
-        "!53kr3tz!"
+        "!53kr3tz!",
       );
       await apiClient.removeProjectAfterTest(
         dep1ProjectId,
         "user2@example.com",
-        "!53kr3tz!"
+        "!53kr3tz!",
       );
     });
 
@@ -1006,14 +1006,14 @@ test.describe("Imported token overrides", () => {
       const { dep1ProjectId, dep2ProjectId } = await setupDependencyProjects(
         page,
         models,
-        apiClient
+        apiClient,
       );
       const mainProjectId = await setupMainProject(
         page,
         models,
         apiClient,
         dep1ProjectId,
-        dep2ProjectId
+        dep2ProjectId,
       );
       const frame = models.studio.componentFrame;
 
@@ -1028,7 +1028,7 @@ test.describe("Imported token overrides", () => {
         TEST_COLORS.PRIMARY_OVERRIDE_BASE,
         {
           override: true,
-        }
+        },
       );
       await updateToken(
         page,
@@ -1038,7 +1038,7 @@ test.describe("Imported token overrides", () => {
         TEST_COLORS.SECONDARY_OVERRIDE,
         {
           override: true,
-        }
+        },
       );
 
       await updateToken(
@@ -1050,7 +1050,7 @@ test.describe("Imported token overrides", () => {
         {
           globalVariant: "Website",
           override: true,
-        }
+        },
       );
 
       await updateToken(
@@ -1062,7 +1062,7 @@ test.describe("Imported token overrides", () => {
         {
           globalVariant: "Website",
           override: true,
-        }
+        },
       );
 
       await updateToken(
@@ -1073,7 +1073,7 @@ test.describe("Imported token overrides", () => {
         TEST_FONT_SIZES.LARGE_OVERRIDE_BASE,
         {
           override: true,
-        }
+        },
       );
 
       await resetVariants(page, models);
@@ -1085,14 +1085,14 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.PRIMARY,
         "override-varianted",
         "Base",
-        "Website"
+        "Website",
       );
 
       await assertTextStyling(
         TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
         TEST_COLORS.PRIMARY,
         TEST_FONT_SIZES.LARGE_OVERRIDE_BASE,
-        frame
+        frame,
       );
 
       await selectVariant(page, models, "Platform", "Website", true);
@@ -1100,7 +1100,7 @@ test.describe("Imported token overrides", () => {
         TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
         TEST_COLORS.PRIMARY_OVERRIDE_VARIANT,
         TEST_FONT_SIZES.LARGE_OVERRIDE_VARIANT,
-        frame
+        frame,
       );
 
       await removeTokenOverride(page, models, TOKEN_NAMES.PRIMARY, {
@@ -1113,7 +1113,7 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.LARGE,
         "override-both",
         "Base",
-        "Website"
+        "Website",
       );
       await assertTokenIndicator(
         page,
@@ -1121,7 +1121,7 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.PRIMARY,
         "override-none",
         "Base",
-        "Website"
+        "Website",
       );
       await assertTokenIndicator(
         page,
@@ -1129,14 +1129,14 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.SECONDARY,
         "override-base",
         "Base",
-        "Website"
+        "Website",
       );
 
       await assertTextStyling(
         TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
         TEST_COLORS.PRIMARY,
         TEST_FONT_SIZES.LARGE_OVERRIDE_VARIANT,
-        frame
+        frame,
       );
 
       await page.keyboard.press("ControlOrMeta+z");
@@ -1150,7 +1150,7 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.LARGE,
         "override-both",
         "Base",
-        "Website"
+        "Website",
       );
       await assertTokenIndicator(
         page,
@@ -1158,7 +1158,7 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.PRIMARY,
         "override-none",
         "Base",
-        "Website"
+        "Website",
       );
       await assertTokenIndicator(
         page,
@@ -1166,7 +1166,7 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.SECONDARY,
         "override-base",
         "Base",
-        "Website"
+        "Website",
       );
 
       await goToProject(page, `/projects/${dep1ProjectId}`, {
@@ -1188,7 +1188,7 @@ test.describe("Imported token overrides", () => {
         models,
         "Color",
         TOKEN_NAMES.SECONDARY,
-        TEST_COLORS.SECONDARY_NEW
+        TEST_COLORS.SECONDARY_NEW,
       );
 
       await page.waitForTimeout(1000);
@@ -1221,7 +1221,7 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.LARGE,
         "local-varianted",
         "Base",
-        "Website"
+        "Website",
       );
       await assertTokenIndicator(
         page,
@@ -1229,7 +1229,7 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.PRIMARY,
         "override-none",
         "Base",
-        "Website"
+        "Website",
       );
       await assertTokenIndicator(
         page,
@@ -1237,24 +1237,24 @@ test.describe("Imported token overrides", () => {
         TOKEN_NAMES.SECONDARY,
         "override-base",
         "Base",
-        "Website"
+        "Website",
       );
 
       await removeAllDependencies(page, models.studio);
       await apiClient.removeProjectAfterTest(
         mainProjectId,
         "user2@example.com",
-        "!53kr3tz!"
+        "!53kr3tz!",
       );
       await apiClient.removeProjectAfterTest(
         dep2ProjectId,
         "user2@example.com",
-        "!53kr3tz!"
+        "!53kr3tz!",
       );
       await apiClient.removeProjectAfterTest(
         dep1ProjectId,
         "user2@example.com",
-        "!53kr3tz!"
+        "!53kr3tz!",
       );
     });
   });
@@ -1272,7 +1272,7 @@ test.describe("Imported token overrides", () => {
       models,
       "Color",
       TOKEN_NAMES.SECONDARY,
-      TEST_COLORS.SECONDARY
+      TEST_COLORS.SECONDARY,
     );
     await models.studio.publishVersion("New tokens");
 
@@ -1286,7 +1286,7 @@ test.describe("Imported token overrides", () => {
       models,
       TOKEN_NAMES.SECONDARY,
       "override-none",
-      "Base"
+      "Base",
     );
 
     await updateToken(
@@ -1297,14 +1297,14 @@ test.describe("Imported token overrides", () => {
       TEST_COLORS.SECONDARY_OVERRIDE,
       {
         override: true,
-      }
+      },
     );
     await assertTokenIndicator(
       page,
       models,
       TOKEN_NAMES.SECONDARY,
       "override-base",
-      "Base"
+      "Base",
     );
 
     await models.studio.leftPanel.addComponent("Comp B");
@@ -1350,13 +1350,13 @@ test.describe("Imported token overrides", () => {
       TEST_TEXTS.FROM_B_COMP,
       TEST_COLORS.SECONDARY,
       TEST_FONT_SIZES.B_DEFAULT,
-      aFrame
+      aFrame,
     );
     await assertTextStyling(
       TEST_TEXTS.SLOT_FROM_B_COMP,
       TEST_COLORS.SECONDARY,
       TEST_FONT_SIZES.B_DEFAULT,
-      aFrame
+      aFrame,
     );
 
     await models.studio.withinLiveMode(async (liveFrame: FrameLocator) => {
@@ -1364,13 +1364,13 @@ test.describe("Imported token overrides", () => {
         TEST_TEXTS.FROM_B_COMP,
         TEST_COLORS.SECONDARY,
         TEST_FONT_SIZES.B_DEFAULT,
-        liveFrame
+        liveFrame,
       );
       await assertTextStyling(
         TEST_TEXTS.SLOT_FROM_B_COMP,
         TEST_COLORS.SECONDARY,
         TEST_FONT_SIZES.B_DEFAULT,
-        liveFrame
+        liveFrame,
       );
     });
 
@@ -1382,7 +1382,7 @@ test.describe("Imported token overrides", () => {
       TOKEN_NAMES.SECONDARY,
       "override-none",
       "Base",
-      "Website"
+      "Website",
     );
 
     await updateToken(
@@ -1393,14 +1393,14 @@ test.describe("Imported token overrides", () => {
       TEST_COLORS.SECONDARY_NEW,
       {
         override: true,
-      }
+      },
     );
 
     await assertTextStyling(
       TEST_TEXTS.FROM_B_COMP,
       TEST_COLORS.SECONDARY_NEW,
       TEST_FONT_SIZES.B_DEFAULT,
-      aFrame
+      aFrame,
     );
     await assertTokenIndicator(
       page,
@@ -1408,23 +1408,23 @@ test.describe("Imported token overrides", () => {
       TOKEN_NAMES.SECONDARY,
       "override-base",
       "Base",
-      "Website"
+      "Website",
     );
 
     await apiClient.removeProjectAfterTest(
       aProjectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
     await apiClient.removeProjectAfterTest(
       bDepProjectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
     await apiClient.removeProjectAfterTest(
       cDepProjectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -1441,7 +1441,7 @@ test.describe("Imported token overrides", () => {
       models,
       "Color",
       TOKEN_NAMES.SECONDARY,
-      TEST_COLORS.SECONDARY
+      TEST_COLORS.SECONDARY,
     );
     await models.studio.publishVersion("New tokens");
 
@@ -1453,7 +1453,7 @@ test.describe("Imported token overrides", () => {
       models,
       "Color",
       TOKEN_NAMES.PRIMARY,
-      TEST_COLORS.PRIMARY
+      TEST_COLORS.PRIMARY,
     );
     await importProject(page, models.studio, cDepProjectId);
 
@@ -1465,7 +1465,7 @@ test.describe("Imported token overrides", () => {
       TEST_COLORS.SECONDARY_OVERRIDE,
       {
         override: true,
-      }
+      },
     );
 
     await models.studio.leftPanel.addComponent("Dep Comp");
@@ -1494,13 +1494,13 @@ test.describe("Imported token overrides", () => {
       TEST_TEXTS.PRIMARY_TEXT,
       TEST_COLORS.PRIMARY,
       undefined,
-      bFrame
+      bFrame,
     );
     await assertTextStyling(
       TEST_TEXTS.SECONDARY_TEXT,
       TEST_COLORS.SECONDARY_OVERRIDE,
       undefined,
-      bFrame
+      bFrame,
     );
 
     await models.studio.withinLiveMode(async (liveFrame: FrameLocator) => {
@@ -1508,13 +1508,13 @@ test.describe("Imported token overrides", () => {
         TEST_TEXTS.PRIMARY_TEXT,
         TEST_COLORS.PRIMARY,
         undefined,
-        liveFrame
+        liveFrame,
       );
       await assertTextStyling(
         TEST_TEXTS.SECONDARY_TEXT,
         TEST_COLORS.SECONDARY_OVERRIDE,
         undefined,
-        liveFrame
+        liveFrame,
       );
     });
 
@@ -1536,13 +1536,13 @@ test.describe("Imported token overrides", () => {
       TEST_TEXTS.PRIMARY_TEXT,
       TEST_COLORS.PRIMARY,
       undefined,
-      aFrame
+      aFrame,
     );
     await assertTextStyling(
       TEST_TEXTS.SECONDARY_TEXT,
       TEST_COLORS.SECONDARY,
       undefined,
-      aFrame
+      aFrame,
     );
 
     await models.studio.withinLiveMode(async (liveFrame: FrameLocator) => {
@@ -1550,13 +1550,13 @@ test.describe("Imported token overrides", () => {
         TEST_TEXTS.PRIMARY_TEXT,
         TEST_COLORS.PRIMARY,
         undefined,
-        liveFrame
+        liveFrame,
       );
       await assertTextStyling(
         TEST_TEXTS.SECONDARY_TEXT,
         TEST_COLORS.SECONDARY,
         undefined,
-        liveFrame
+        liveFrame,
       );
     });
 
@@ -1568,20 +1568,20 @@ test.describe("Imported token overrides", () => {
       TEST_COLORS.PRIMARY_OVERRIDE_BASE,
       {
         override: true,
-      }
+      },
     );
 
     await assertTextStyling(
       TEST_TEXTS.PRIMARY_TEXT,
       TEST_COLORS.PRIMARY_OVERRIDE_BASE,
       undefined,
-      aFrame
+      aFrame,
     );
     await assertTextStyling(
       TEST_TEXTS.SECONDARY_TEXT,
       TEST_COLORS.SECONDARY,
       undefined,
-      aFrame
+      aFrame,
     );
 
     await models.studio.withinLiveMode(async (liveFrame: FrameLocator) => {
@@ -1589,30 +1589,30 @@ test.describe("Imported token overrides", () => {
         TEST_TEXTS.PRIMARY_TEXT,
         TEST_COLORS.PRIMARY_OVERRIDE_BASE,
         undefined,
-        liveFrame
+        liveFrame,
       );
       await assertTextStyling(
         TEST_TEXTS.SECONDARY_TEXT,
         TEST_COLORS.SECONDARY,
         undefined,
-        liveFrame
+        liveFrame,
       );
     });
 
     await apiClient.removeProjectAfterTest(
       aProjectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
     await apiClient.removeProjectAfterTest(
       bDepProjectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
     await apiClient.removeProjectAfterTest(
       cDepProjectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -1658,7 +1658,7 @@ test.describe("Imported token overrides", () => {
       TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
       TEST_COLORS.ANTD,
       undefined,
-      frame
+      frame,
     );
 
     await models.studio.withinLiveMode(async (liveFrame: FrameLocator) => {
@@ -1666,7 +1666,7 @@ test.describe("Imported token overrides", () => {
         TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
         TEST_COLORS.ANTD,
         undefined,
-        liveFrame
+        liveFrame,
       );
     });
 
@@ -1678,14 +1678,14 @@ test.describe("Imported token overrides", () => {
       TEST_COLORS.ANTD_OVERRIDE,
       {
         override: true,
-      }
+      },
     );
 
     await assertTextStyling(
       TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
       TEST_COLORS.ANTD_OVERRIDE,
       undefined,
-      frame
+      frame,
     );
 
     await models.studio.withinLiveMode(async (liveFrame: FrameLocator) => {
@@ -1693,14 +1693,14 @@ test.describe("Imported token overrides", () => {
         TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
         TEST_COLORS.ANTD_OVERRIDE,
         undefined,
-        liveFrame
+        liveFrame,
       );
     });
 
     await apiClient.removeProjectAfterTest(
       mainProjectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 });
@@ -1709,7 +1709,7 @@ async function assertTextStyling(
   text: string,
   color: string,
   fontSize: string | undefined,
-  frame: FrameLocator | undefined
+  frame: FrameLocator | undefined,
 ) {
   const element = frame ? frame.getByText(text).first() : undefined;
 

@@ -10,7 +10,7 @@ export class UniqueViolationError extends ApiError {
 }
 
 export function isUniqueViolationError(
-  err: unknown
+  err: unknown,
 ): err is UniqueViolationError {
   return (
     typeof err === "object" &&

@@ -13,7 +13,7 @@ test.describe("publish", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 

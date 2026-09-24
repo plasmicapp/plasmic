@@ -92,7 +92,7 @@ export async function issueOauthCode(req: Request, res: Response) {
     state,
     appAuthConfig.redirectUris,
     projectDomains,
-    originHost
+    originHost,
   );
 
   if (!valid || !redirectUri) {
@@ -161,7 +161,7 @@ function generateUserToken(appId: string, endUserId: string) {
     getEncryptionKey(),
     {
       expiresIn: "7d",
-    }
+    },
   );
   return token;
 }
@@ -220,7 +220,7 @@ export async function grantOauthToken(req: Request, res: Response) {
   }
 
   const appAuthConfig = await mgr.getAppAuthConfig(
-    codeMeta.clientId as ProjectId
+    codeMeta.clientId as ProjectId,
   );
 
   if (!appAuthConfig) {
@@ -246,7 +246,7 @@ export async function grantOauthToken(req: Request, res: Response) {
       firstName: plasmicUser?.firstName,
       lastName: plasmicUser?.lastName,
       avatarUrl: plasmicUser?.avatarUrl,
-    }
+    },
   );
 
   await mgr.upsertAppAccessRegistry(codeMeta.clientId, endUser.id);
@@ -271,7 +271,7 @@ export function trackAppUserActivity(
   req: Request,
   appId: string,
   endUserId: string,
-  type: "login" | "custom-auth-login" | "data-operation"
+  type: "login" | "custom-auth-login" | "data-operation",
 ) {
   // Compose analytics id from appId and endUserId because we don't have a
   // id for (appId, endUserId) pair in the database as their relationship is
@@ -288,7 +288,7 @@ export function extractAppUserFromToken(req: Request, skipError = false) {
   const token = req.headers["x-plasmic-data-user-auth-token"];
   if (!token || !isString(token)) {
     logger().info(
-      `[${req.id}] - Data source request without app auth token or with invalid token`
+      `[${req.id}] - Data source request without app auth token or with invalid token`,
     );
     if (skipError) {
       return {
@@ -332,7 +332,7 @@ export async function upsertEndUser(req: Request, res: Response) {
   }
 
   const directory = await mgr.getEndUserDirectoryById(
-    appAuthConfig.directoryId
+    appAuthConfig.directoryId,
   );
 
   const appId = appAuthConfig.projectId;
@@ -351,7 +351,7 @@ export async function upsertEndUser(req: Request, res: Response) {
       roleId,
       // We don't consider this rule as manually added, which won't appear in the PermissionsTab
       // unless the user interacts with it in the Users tab
-      /* manuallyAdded */ false
+      /* manuallyAdded */ false,
     );
   }
 
@@ -366,7 +366,7 @@ export async function upsertEndUser(req: Request, res: Response) {
     directory.id,
     identifier,
     undefined,
-    properties
+    properties,
   );
   await mgr.upsertAppAccessRegistry(appId, endUser.id);
 
@@ -404,7 +404,7 @@ export function parseRedirectURI(
   state: any,
   redirectUris: string[],
   projectDomains: string[],
-  originHost?: string
+  originHost?: string,
 ): {
   valid: boolean;
   redirectUri?: string;
@@ -429,12 +429,12 @@ export function parseRedirectURI(
             }
           } else if (
             isValidRedirectUri(
-              new URL(parsedState.continueTo, baseDomain).toString()
+              new URL(parsedState.continueTo, baseDomain).toString(),
             )
           ) {
             redirectUri = new URL(
               parsedState.continueTo,
-              baseDomain
+              baseDomain,
             ).toString();
           }
         }
@@ -468,7 +468,7 @@ export function parseRedirectURI(
     }
 
     const domain = projectDomains.find((d) =>
-      queryRedirectUri.startsWith(`https://${d}`)
+      queryRedirectUri.startsWith(`https://${d}`),
     );
 
     if (domain) {

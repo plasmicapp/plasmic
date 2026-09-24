@@ -36,11 +36,11 @@ export type CreateChatCompletionRequestOptions = OpenAI.RequestOptions;
 export type ChatCompletionRequestMessageRoleEnum = ChatCompletionRole;
 
 export function showCompletionRequest(
-  createChatCompletionRequest: CreateChatCompletionRequest
+  createChatCompletionRequest: CreateChatCompletionRequest,
 ) {
   const tokenizer = new GPT3Tokenizer({ type: "gpt3" });
   const encoded: { bpe: number[]; text: string[] } = tokenizer.encode(
-    createChatCompletionRequest.messages.map((m) => m.content).join("")
+    createChatCompletionRequest.messages.map((m) => m.content).join(""),
   );
 
   const chat = createChatCompletionRequest.messages
@@ -72,7 +72,7 @@ export interface CopilotCodeChainProps {
   data: Record<string, any>;
   context?: string;
   executeRequest: (
-    request: CreateChatCompletionRequest
+    request: CreateChatCompletionRequest,
   ) => Promise<WholeChatCompletionResponse>;
   goal: string;
 }
@@ -83,7 +83,7 @@ export interface CopilotSqlCodeChainProps {
   data: Record<string, any>;
   dataSourceSchema: DataSourceSchema;
   executeRequest: (
-    request: CreateChatCompletionRequest
+    request: CreateChatCompletionRequest,
   ) => Promise<WholeChatCompletionResponse>;
   goal: string;
 }
@@ -109,7 +109,7 @@ const CopilotUiGenerateHtmlActionSchema = z.object({
     html: z
       .string()
       .describe(
-        "Extract the <style> and <body> tag from the HTML document i.e <style></style><body></body> only"
+        "Extract the <style> and <body> tag from the HTML document i.e <style></style><body></body> only",
       ),
   }),
 });
@@ -119,13 +119,13 @@ const CopilotUiTokenSchema = z.object({
     .enum(tokenTypes)
     .describe(
       `Type of token. Only ${tokenTypes.join(
-        ", "
-      )} are supported. Length units except FontSize and LineHeight should use Spacing. If a token type is not supported, inline the CSS value instead.`
+        ", ",
+      )} are supported. Length units except FontSize and LineHeight should use Spacing. If a token type is not supported, inline the CSS value instead.`,
     ),
   name: z
     .string()
     .describe(
-      "A unique token name. Make sure it's in the format of existing tokens if available"
+      "A unique token name. Make sure it's in the format of existing tokens if available",
     ),
   value: z
     .string()
@@ -139,7 +139,7 @@ const CopilotUiTokenActionSchema = z.object({
 
 export const CopilotUiActionsSchema = z.object({
   actions: z.array(
-    z.union([CopilotUiGenerateHtmlActionSchema, CopilotUiTokenActionSchema])
+    z.union([CopilotUiGenerateHtmlActionSchema, CopilotUiTokenActionSchema]),
   ),
 });
 
@@ -150,7 +150,7 @@ export const CopilotUiResponseSchema = z.object({
   html: z
     .string()
     .describe(
-      "Extract the <style> and <body> tag from the HTML document i.e <style></style><body></body> only"
+      "Extract the <style> and <body> tag from the HTML document i.e <style></style><body></body> only",
     ),
 });
 
@@ -160,7 +160,7 @@ export type CopilotUiResponse = z.infer<typeof CopilotUiResponseSchema>;
 // for backward compatibility. When the client logic is migrated from QueryCopilotUiResponse.data to QueryCopilotUiResponse.response
 // we can remove this
 export const copilotUiResponseToActions = (
-  copilotUiResponse: CopilotUiResponse
+  copilotUiResponse: CopilotUiResponse,
 ): CopilotUiActions => {
   return {
     actions: [

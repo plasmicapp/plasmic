@@ -40,7 +40,7 @@ function objectToElement(name: string, obj: JsonObject): XmlElement {
               name: key,
               elements: [objectToElement(value.__type, value)],
             }
-          : objectToElement(key, value)
+          : objectToElement(key, value),
       );
     } else if (CDATA_FIELDS.has(key) && typeof value === "string") {
       elements.push({
@@ -89,7 +89,7 @@ function itemElement(item: JsonValue): XmlElement {
 }
 
 function isTypedJsonObject(
-  obj: JsonObject
+  obj: JsonObject,
 ): obj is JsonObject & { __type: string } {
   return typeof obj.__type === "string";
 }

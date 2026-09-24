@@ -52,7 +52,7 @@ describe("Insertable templates fixers", () => {
 
       const vs = ensure(
         tryGetBaseVariantSetting(tpl),
-        "Expect tpl to have base variant setting"
+        "Expect tpl to have base variant setting",
       );
 
       const getNewImageAsset = vi.fn().mockReturnValue(imageAsset);
@@ -66,7 +66,7 @@ describe("Insertable templates fixers", () => {
         vs,
         {
           getNewImageAsset,
-        }
+        },
       );
 
       expect(vs.attrs["onClick"]).toBeNil();
@@ -105,7 +105,7 @@ describe("Insertable templates fixers", () => {
 
       const vs = ensure(
         tryGetBaseVariantSetting(tpl),
-        "Expect tpl to have base variant setting"
+        "Expect tpl to have base variant setting",
       );
       vs.rs.animations = [sourceTplMgr.addAnimation(sourceSeq)];
 
@@ -134,7 +134,7 @@ describe("Insertable templates fixers", () => {
 
       const vs = ensure(
         tryGetBaseVariantSetting(tpl),
-        "Expect tpl to have base variant setting"
+        "Expect tpl to have base variant setting",
       );
       vs.rs.animations = [sourceTplMgr.addAnimation(sourceSeq)];
 
@@ -172,7 +172,7 @@ describe("Insertable templates fixers", () => {
 
       const vs = ensure(
         tryGetBaseVariantSetting(tpl),
-        "Expect tpl to have base variant setting"
+        "Expect tpl to have base variant setting",
       );
       vs.rs.animations = [
         sourceTplMgr.addAnimation(sourceSeq1),
@@ -190,7 +190,7 @@ describe("Insertable templates fixers", () => {
 
       // Second animation should reference cloned sequence
       const clonedSeq2 = targetSite.animationSequences.find(
-        (s) => s.name === "Test3_SlideOut"
+        (s) => s.name === "Test3_SlideOut",
       );
       expect(vs.rs.animations[1].sequence).toBe(clonedSeq2);
     });

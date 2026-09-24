@@ -105,7 +105,7 @@ const AnimatedCursor = observer(function AnimatedCursor(props: {
     }
     elm.style.setProperty(
       "transform",
-      `translate3d(${p[0]}px, ${p[1]}px, 0px)`
+      `translate3d(${p[0]}px, ${p[1]}px, 0px)`,
     );
   }, []);
 
@@ -113,7 +113,7 @@ const AnimatedCursor = observer(function AnimatedCursor(props: {
 
   React.useLayoutEffect(
     () => onPointMove([point.x, point.y]),
-    [onPointMove, point]
+    [onPointMove, point],
   );
 
   return (
@@ -139,7 +139,7 @@ function usePerfectCursor(cb: (point: number[]) => void, point?: number[]) {
 
   const onPointChange = React.useCallback(
     (p: number[]) => pc.addPoint(p),
-    [pc]
+    [pc],
   );
 
   return onPointChange;

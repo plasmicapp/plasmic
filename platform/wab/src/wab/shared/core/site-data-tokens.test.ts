@@ -22,7 +22,7 @@ describe("siteDataTokens helper functions", () => {
   function createDataToken(
     name: string,
     value: string,
-    isRegistered = false
+    isRegistered = false,
   ): DataToken {
     return new DataToken({
       name,
@@ -65,7 +65,7 @@ describe("siteDataTokens helper functions", () => {
     deepTransitiveToken1 = createDataToken("deepTransitiveNumberToken", "42");
     deepTransitiveToken2 = createDataToken(
       "deepTransitiveStringToken",
-      '"hello"'
+      '"hello"',
     );
     deepTransitiveDepSite = createSite({
       dataTokens: [deepTransitiveToken1, deepTransitiveToken2],
@@ -82,7 +82,7 @@ describe("siteDataTokens helper functions", () => {
     // Create transitive dependency (depends on deep transitive)
     transitiveToken1 = createDataToken(
       "transitiveGenericToken",
-      '{"theme": true}'
+      '{"theme": true}',
     );
     transitiveDepSite = createSite({
       dataTokens: [transitiveToken1],
@@ -139,7 +139,7 @@ describe("siteDataTokens helper functions", () => {
     test("returns site's tokens + direct dependencies", () => {
       const result = siteDataTokensDirectDeps(mainSite);
       expect(result).toHaveLength(
-        mainSite.dataTokens.length + directDepSite.dataTokens.length
+        mainSite.dataTokens.length + directDepSite.dataTokens.length,
       );
       expect(result.map((t) => t.name)).toEqual([
         "mainStringToken",
@@ -158,7 +158,7 @@ describe("siteDataTokens helper functions", () => {
         mainSite.dataTokens.length +
           directDepSite.dataTokens.length +
           transitiveDepSite.dataTokens.length +
-          deepTransitiveDepSite.dataTokens.length
+          deepTransitiveDepSite.dataTokens.length,
       );
       expect(result.map((t) => t.name)).toEqual([
         "mainStringToken",
@@ -180,7 +180,7 @@ describe("siteDataTokens helper functions", () => {
         mainSite.dataTokens.length +
           directDepSite.dataTokens.length +
           transitiveDepSite.dataTokens.length +
-          deepTransitiveDepSite.dataTokens.length
+          deepTransitiveDepSite.dataTokens.length,
       );
       expect(result[mainToken1.uuid]).toBe(mainToken1);
       expect(result[directDepToken1.uuid]).toBe(directDepToken1);
@@ -203,7 +203,7 @@ describe("siteDataTokens helper functions", () => {
     test("returns FinalToken for site's tokens + direct dependencies", () => {
       const result = siteFinalDataTokensDirectDeps(mainSite);
       expect(result).toHaveLength(
-        mainSite.dataTokens.length + directDepSite.dataTokens.length
+        mainSite.dataTokens.length + directDepSite.dataTokens.length,
       );
       expect(result.map((t) => t.name)).toEqual([
         "mainStringToken",
@@ -222,7 +222,7 @@ describe("siteDataTokens helper functions", () => {
         mainSite.dataTokens.length +
           directDepSite.dataTokens.length +
           transitiveDepSite.dataTokens.length +
-          deepTransitiveDepSite.dataTokens.length
+          deepTransitiveDepSite.dataTokens.length,
       );
       expect(result.map((t) => t.name)).toEqual([
         "mainStringToken",

@@ -1,10 +1,11 @@
-import { randUint16 } from "@/wab/shared/common";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
 import { Bundler } from "@/wab/shared/bundler";
+import { randUint16 } from "@/wab/shared/common";
+import { findExprsInComponent } from "@/wab/shared/core/tpls";
 import {
   getDynamicStringSegments,
   isDynamicValue,
@@ -15,7 +16,6 @@ import {
   isKnownDataSourceOpExpr,
   isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
-import { findExprsInComponent } from "@/wab/shared/core/tpls";
 
 function mkBindingId() {
   return `{{${randUint16().toString()}}}`;
@@ -27,7 +27,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   for (const component of site.components) {
@@ -45,7 +45,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "157-fix-data-source-bindings"
+    "157-fix-data-source-bindings",
   );
   Object.assign(bundle, newBundle);
 };

@@ -7,7 +7,7 @@ import React from "react";
 export function useTagLeftOffset(
   tagRef: React.RefObject<HTMLElement>,
   elementWidth: number,
-  zoom: number
+  zoom: number,
 ) {
   const [leftOffset, setLeftOffset] = React.useState(0);
 
@@ -16,7 +16,7 @@ export function useTagLeftOffset(
       const tagWidth = tagRef.current.offsetWidth;
       const scaledElementWidth = elementWidth * zoom;
       setLeftOffset(
-        scaledElementWidth < tagWidth ? scaledElementWidth - tagWidth : 0
+        scaledElementWidth < tagWidth ? scaledElementWidth - tagWidth : 0,
       );
     }
   }, [elementWidth, zoom, tagRef]);

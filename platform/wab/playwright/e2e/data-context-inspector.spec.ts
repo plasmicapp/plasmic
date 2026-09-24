@@ -21,7 +21,7 @@ test.describe("data-context-inspector", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -31,7 +31,7 @@ test.describe("data-context-inspector", () => {
       models,
     }) => {
       const dataPicker = models.studio.rightPanel.frame.locator(
-        '[data-test-id="data-picker"]'
+        '[data-test-id="data-picker"]',
       );
       const studioFrame = models.studio.frame;
 
@@ -55,7 +55,7 @@ test.describe("data-context-inspector", () => {
       await models.studio.rightPanel.switchToSettingsTab();
 
       const textContentLabel = studioFrame.locator(
-        '[data-test-id="text-content"] label'
+        '[data-test-id="text-content"] label',
       );
       await textContentLabel.click({ button: "right" });
       await models.studio.rightPanel.useDynamicValueButton.click();
@@ -63,7 +63,7 @@ test.describe("data-context-inspector", () => {
       await models.studio.rightPanel.ensureDataPickerInCustomCodeMode();
 
       const monacoContainer = dataPicker.locator(
-        ".react-monaco-editor-container"
+        ".react-monaco-editor-container",
       );
       await monacoContainer.waitFor({ state: "visible" });
 
@@ -90,7 +90,7 @@ test.describe("data-context-inspector", () => {
           .click();
 
         await expect(monacoContainer.locator(".view-lines")).toHaveText(
-          "`Welcome,${$state.myState}!`"
+          "`Welcome,${$state.myState}!`",
         );
       });
 
@@ -112,7 +112,7 @@ test.describe("data-context-inspector", () => {
 
         // Verify the selection was replaced
         await expect(monacoContainer.locator(".view-lines")).toHaveText(
-          "`Welcome,${$props.myProp}!`"
+          "`Welcome,${$props.myProp}!`",
         );
       });
 
@@ -128,7 +128,7 @@ test.describe("data-context-inspector", () => {
 
         // Verify the state path was copied to clipboard
         const clipboardContent = await page.evaluate(() =>
-          navigator.clipboard.readText()
+          navigator.clipboard.readText(),
         );
         expect(clipboardContent).toBe("$state.myState");
       });

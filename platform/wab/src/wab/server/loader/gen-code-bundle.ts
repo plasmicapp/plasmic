@@ -79,7 +79,7 @@ export async function genPublishedLoaderCodeBundle(
     i18nKeyScheme: LocalizationKeyScheme | undefined;
     i18nTagPrefix: string | undefined;
     skipHead?: boolean;
-  }
+  },
 ) {
   const { projectVersions } = opts;
 
@@ -94,7 +94,7 @@ export async function genPublishedLoaderCodeBundle(
       ...(await resolveProjectDeps(dbMgr, projectVersions)),
       ...projectVersions,
     }),
-    `Project versions ${JSON.stringify(projectVersions)}`
+    `Project versions ${JSON.stringify(projectVersions)}`,
   );
 
   await ensureDevFlags(dbMgr);
@@ -113,7 +113,7 @@ export async function genPublishedLoaderCodeBundle(
       i18nKeyScheme: opts.i18nKeyScheme,
       i18nTagPrefix: opts.i18nTagPrefix,
       skipHead: opts.skipHead,
-    }
+    },
   );
 }
 
@@ -130,14 +130,14 @@ export async function genLatestLoaderCodeBundle(
     i18nKeyScheme: LocalizationKeyScheme | undefined;
     i18nTagPrefix: string | undefined;
     skipHead?: boolean;
-  }
+  },
 ) {
   const projectIdsBranches = opts.projectIdsBranches;
 
   const projectVersions = Object.fromEntries(
     projectIdsBranches.map(({ id, branchName }) => {
       return [id, mkVersionToSync(branchName ?? "latest")];
-    })
+    }),
   );
 
   const allProjectVersions = {
@@ -165,7 +165,7 @@ export async function genLatestLoaderCodeBundle(
       i18nKeyScheme: opts.i18nKeyScheme,
       i18nTagPrefix: opts.i18nTagPrefix,
       skipHead: opts.skipHead,
-    }
+    },
   );
 }
 
@@ -183,14 +183,14 @@ async function genLoaderCodeBundleForProjectVersions(
     i18nKeyScheme?: LocalizationKeyScheme;
     i18nTagPrefix: string | undefined;
     skipHead?: boolean;
-  }
+  },
 ) {
   const exportOpts = makeExportOpts(opts);
 
   const codegenProject = async (
     projectId: string,
     version: string | undefined,
-    indirect: boolean
+    indirect: boolean,
   ) => {
     const res = await pool.exec("codegen", [
       {
@@ -214,10 +214,10 @@ async function genLoaderCodeBundleForProjectVersions(
         await Promise.all(
           Object.entries(projectVersions).map(async ([projectId, v]) => {
             const branches = await dbMgr.listBranchesForProject(
-              projectId as ProjectId
+              projectId as ProjectId,
             );
             const maybeBranch = branches.find(
-              (branch) => branch.name === v.version
+              (branch) => branch.name === v.version,
             );
 
             // If version is a branch name, we want to get the latest of that branch
@@ -236,7 +236,7 @@ async function genLoaderCodeBundleForProjectVersions(
                   [
                     CachedCodegenOutputBundle,
                     Record<string, string[]>,
-                    ComponentReference[]
+                    ComponentReference[],
                   ]
                 >({
                   bucket: LOADER_ASSETS_BUCKET,
@@ -252,23 +252,23 @@ async function genLoaderCodeBundleForProjectVersions(
               });
               if (!codegenCacheHit && opts.source === "live") {
                 logger().info(
-                  `Loader codegen cache miss for live request: ${codegenKey}`
+                  `Loader codegen cache miss for live request: ${codegenKey}`,
                 );
               }
               return codegenResult;
             }
-          })
+          }),
         ),
       `Projects ${JSON.stringify({
         ...projectVersions,
         loaderVersion: opts.loaderVersion,
-      })}`
-    )
+      })}`,
+    ),
   );
 
   const mergedComponentDeps: Record<string, string[]> = Object.assign(
     {},
-    ...componentDeps
+    ...componentDeps,
   );
 
   const bundleProjects = async () => {
@@ -294,13 +294,13 @@ async function genLoaderCodeBundleForProjectVersions(
           await Promise.all(
             Object.entries(projectVersions).map(async ([p, v]) => {
               const branches = await dbMgr.listBranchesForProject(
-                p as ProjectId
+                p as ProjectId,
               );
               const versionIsBranchName = !!branches.find(
-                (branch) => branch.name === v.version
+                (branch) => branch.name === v.version,
               );
               return v.version !== "latest" && !versionIsBranchName;
-            })
+            }),
           )
         ).every((x) => x)
       ) {
@@ -325,7 +325,7 @@ async function genLoaderCodeBundleForProjectVersions(
         });
         if (!bundleCacheHit && opts.source === "live") {
           logger().info(
-            `Loader bundle cache miss for live request: ${bundleKey}`
+            `Loader bundle cache miss for live request: ${bundleKey}`,
           );
         }
         bundle.bundleKey = bundleKey;
@@ -337,7 +337,7 @@ async function genLoaderCodeBundleForProjectVersions(
     `Projects ${JSON.stringify({
       ...projectVersions,
       loaderVersion: opts.loaderVersion,
-    })}`
+    })}`,
   );
   return result;
 }
@@ -394,7 +394,7 @@ function makeBundleBucketPath(opts: {
   }/ps=${projectSpecs.join(",")}/platform=${
     opts.platform
   }/browserOnly=${!!opts.browserOnly}/opts=${makeExportOptsKey(
-    opts.exportOpts
+    opts.exportOpts,
   )}`;
   return key;
 }
@@ -450,7 +450,7 @@ async function tryGetCachedPublishedBundle(
     source: "prefill" | "live";
     projectVersions: Record<string, VersionToSync>;
     browserOnly: boolean;
-  }
+  },
 ): Promise<LoaderBundleOutput | null> {
   const exportOpts = makeExportOpts(opts);
   const bundleKey = makeBundleBucketPath({
@@ -465,7 +465,7 @@ async function tryGetCachedPublishedBundle(
       bucket: LOADER_ASSETS_BUCKET,
       key: bundleKey,
       deserialize: (str) => JSON.parse(str),
-    })
+    }),
   );
   if (!cached) {
     // Leave the miss to be counted by the upsertS3CacheEntry call downstream,

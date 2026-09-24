@@ -50,7 +50,7 @@ describe("tests codegen for global variants", () => {
           platform,
           codegenScheme,
           stylesScheme,
-        }
+        },
       ));
     }
 
@@ -130,85 +130,85 @@ describe("tests codegen for global variants", () => {
       });
       // Token declarations
       expect(
-        findRuleDecl(plasmicCss, `.${baseClass}`, `--token-${bgTokenId}`)
+        findRuleDecl(plasmicCss, `.${baseClass}`, `--token-${bgTokenId}`),
       ).toEqual("#EEEEEE");
       expect(
-        findRuleDecl(plasmicCss, `.${baseClass}`, `--token-${fgTokenId}`)
+        findRuleDecl(plasmicCss, `.${baseClass}`, `--token-${fgTokenId}`),
       ).toEqual("#000000");
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClassOverride}.${baseClassOverride}`,
-          `--token-${primaryTokenId}`
-        )
+          `--token-${primaryTokenId}`,
+        ),
       ).toEqual("#7F00FF");
       // External token declarations
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClass}`,
-          `--plasmic-token-${bgTokenName}`
-        )
+          `--plasmic-token-${bgTokenName}`,
+        ),
       ).toEqual(`var(--token-${bgTokenId})`);
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClass}`,
-          `--plasmic-token-${fgTokenName}`
-        )
+          `--plasmic-token-${fgTokenName}`,
+        ),
       ).toEqual(`var(--token-${fgTokenId})`);
       // assert that external token declarations are not repeated for imported tokens
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClassOverride}.${baseClassOverride}`,
-          `--plasmic-token-${primaryTokenName}`
-        )
+          `--plasmic-token-${primaryTokenName}`,
+        ),
       ).toEqual(null);
       // Varianted token declarations
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClass}.${darkClass}.${darkClass}`,
-          `--token-${bgTokenId}`
-        )
+          `--token-${bgTokenId}`,
+        ),
       ).toEqual("#111111");
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClass}.${darkClass}.${darkClass}`,
-          `--token-${fgTokenId}`
-        )
+          `--token-${fgTokenId}`,
+        ),
       ).toEqual("#FFFFFF");
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClassOverride}.${baseClassOverride}.${darkClass}.${darkClass}`,
-          `--token-${primaryTokenId}`
-        )
+          `--token-${primaryTokenId}`,
+        ),
       ).toEqual("#DCC1F8");
       // assert that the varianted tokens from imported global variant groups are not included in the main project
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClassOverride}.${baseClassOverride}.${neonClass}.${neonClass}`,
-          `--token-${primaryTokenId}`
-        )
+          `--token-${primaryTokenId}`,
+        ),
       ).toEqual(null);
       // assert that redundant external tokens are not generated for varianted global tokens
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClass}.${darkClass}.${darkClass}`,
-          `--plasmic-token-${bgTokenName}`
-        )
+          `--plasmic-token-${bgTokenName}`,
+        ),
       ).toEqual(null);
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClass}.${darkClass}.${darkClass}`,
-          `--plasmic-token-${fgTokenName}`
-        )
+          `--plasmic-token-${fgTokenName}`,
+        ),
       ).toEqual(null);
     });
 
@@ -218,19 +218,19 @@ describe("tests codegen for global variants", () => {
         parseValue: false,
       });
       expect(findRuleDecl(pageCss, `.${rootClass}`, "background")).toEqual(
-        `var(--token-${bgTokenId})`
+        `var(--token-${bgTokenId})`,
       );
       expect(findRuleDecl(pageCss, `.${h1Class}`, "color")).toEqual(
-        `var(--token-${fgTokenId})`
+        `var(--token-${fgTokenId})`,
       );
       expect(findRuleDecl(pageCss, `.${h2Class}`, "color")).toEqual(
-        `var(--token-${primaryTokenId})`
+        `var(--token-${primaryTokenId})`,
       );
     });
 
     it("codegens component, StyleTokensProvider, and useStyleTokens that react to global variants", async () => {
       const { StyleTokensProvider, _useStyleTokens } = await importFromProject(
-        "PlasmicStyleTokensProvider.tsx"
+        "PlasmicStyleTokensProvider.tsx",
       );
       const { default: Homepage } = await importFromProject("Homepage.js");
 
@@ -257,7 +257,7 @@ describe("tests codegen for global variants", () => {
           wrapper: StyleTokensProvider,
         });
         expect(useStyleTokensWithProvider.result.current).toEqual(
-          expectedClassesWithOverride
+          expectedClassesWithOverride,
         );
         useStyleTokensWithProvider.unmount();
 
@@ -273,7 +273,7 @@ describe("tests codegen for global variants", () => {
 
       // Render with global variant "Theme: undefined"
       const { ThemeContextProvider } = await importFromProject(
-        "PlasmicGlobalVariant__Theme.js"
+        "PlasmicGlobalVariant__Theme.js",
       );
       {
         const expectedClasses = [baseClass, baseClassDep];
@@ -304,7 +304,7 @@ describe("tests codegen for global variants", () => {
           wrapper: StyleTokensProvider,
         });
         expect(useStyleTokensWithProvider.result.current).toEqual(
-          expectedClassesWithOverride
+          expectedClassesWithOverride,
         );
         useStyleTokensWithProvider.unmount();
 
@@ -355,7 +355,7 @@ describe("tests codegen for global variants", () => {
             }),
         });
         expect(useStyleTokensWithProvider.result.current).toEqual(
-          expectedClassesWithOverride
+          expectedClassesWithOverride,
         );
         useStyleTokensWithProvider.unmount();
 
@@ -374,7 +374,7 @@ describe("tests codegen for global variants", () => {
       // Render with global variant "Palette: Neon"
       {
         const { PaletteContextProvider } = await importFromProject(
-          "PlasmicGlobalVariant__Palette.js"
+          "PlasmicGlobalVariant__Palette.js",
         );
         const expectedClasses = [baseClass, baseClassDep, neonClass];
         const expectedClassesWithOverride = [
@@ -408,7 +408,7 @@ describe("tests codegen for global variants", () => {
             }),
         });
         expect(useStyleTokensWithProvider.result.current).toEqual(
-          expectedClassesWithOverride
+          expectedClassesWithOverride,
         );
         useStyleTokensWithProvider.unmount();
 
@@ -462,53 +462,53 @@ describe("tests codegen for global variants", () => {
         parseValue: false,
       });
       expect(
-        findRuleDecl(plasmicCss, `.${baseClass}`, `--token-${bgTokenId}`)
+        findRuleDecl(plasmicCss, `.${baseClass}`, `--token-${bgTokenId}`),
       ).toEqual("#EEEEEE");
       expect(
-        findRuleDecl(plasmicCss, `.${baseClass}`, `--token-${fgTokenId}`)
+        findRuleDecl(plasmicCss, `.${baseClass}`, `--token-${fgTokenId}`),
       ).toEqual("#000000");
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClass}`,
-          `--plasmic-token-${bgTokenName}`
-        )
+          `--plasmic-token-${bgTokenName}`,
+        ),
       ).toEqual(`var(--token-${bgTokenId})`);
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClass}`,
-          `--plasmic-token-${fgTokenName}`
-        )
+          `--plasmic-token-${fgTokenName}`,
+        ),
       ).toEqual(`var(--token-${fgTokenId})`);
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClass}.${darkClass}.${darkClass}`,
-          `--token-${bgTokenId}`
-        )
+          `--token-${bgTokenId}`,
+        ),
       ).toEqual("#111111");
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClass}.${darkClass}.${darkClass}`,
-          `--token-${fgTokenId}`
-        )
+          `--token-${fgTokenId}`,
+        ),
       ).toEqual("#FFFFFF");
       // assert that redundant external tokens are not generated for varianted global tokens
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClass}.${darkClass}.${darkClass}`,
-          `--plasmic-token-${bgTokenName}`
-        )
+          `--plasmic-token-${bgTokenName}`,
+        ),
       ).toEqual(null);
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClass}.${darkClass}.${darkClass}`,
-          `--plasmic-token-${fgTokenName}`
-        )
+          `--plasmic-token-${fgTokenName}`,
+        ),
       ).toEqual(null);
     });
 
@@ -518,10 +518,10 @@ describe("tests codegen for global variants", () => {
         parseValue: false,
       });
       expect(findRuleDecl(pageCss, `.root`, "background")).toEqual(
-        `var(--token-${bgTokenId})`
+        `var(--token-${bgTokenId})`,
       );
       expect(findRuleDecl(pageCss, `.h1`, "color")).toEqual(
-        `var(--token-${fgTokenId})`
+        `var(--token-${fgTokenId})`,
       );
     });
 
@@ -542,7 +542,7 @@ describe("tests codegen for global variants", () => {
 
       // Render with global variant "Theme: undefined"
       const { ThemeContextProvider } = await importFromProject(
-        "PlasmicGlobalVariant__Theme.js"
+        "PlasmicGlobalVariant__Theme.js",
       );
       {
         const expectedClasses = [baseClass];
@@ -600,7 +600,7 @@ describe("tests codegen for global variants", () => {
 
   function expectHomepage(
     expectedClasses: string[],
-    unexpectedClasses: string[]
+    unexpectedClasses: string[],
   ) {
     // Root elements should get token classes
     const rootEl = document.querySelector(rootSelector) as HTMLElement;
@@ -642,7 +642,7 @@ const useStyleTokensTester = createUseStyleTokens(
     base: otherProjData.base, // this value is always present in the result of useStyleTokens provider, as the values are merged
     varianted: [],
   },
-  () => ({})
+  () => ({}),
 );
 
 describe("useProviderTest", () => {
@@ -656,7 +656,7 @@ describe("useProviderTest", () => {
 function findRuleDecl(
   ast: CssNode,
   prelude: string,
-  property: string
+  property: string,
 ): string | null {
   const rule = find(ast, (node) => {
     return (
@@ -675,7 +675,7 @@ function findRuleDecl(
       node.type === "Declaration" &&
       node.property === property &&
       node.value.type === "Raw" &&
-      node.value
+      node.value,
   );
   if (!decl) {
     return null;
@@ -686,7 +686,7 @@ function findRuleDecl(
 
 function findMap<T>(
   ast: CssNode,
-  mapFn: (node: CssNode) => T | false
+  mapFn: (node: CssNode) => T | false,
 ): T | null {
   const foundNode = find(ast, (node) => !!mapFn(node));
   return foundNode ? mapFn(foundNode) || null : null;

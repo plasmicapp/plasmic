@@ -64,7 +64,7 @@ export function SpaceEdgeControls(props: {
     side: Side,
     edgeType: SpaceEdgeType,
     delta: number,
-    mode: EdgeDragMode
+    mode: EdgeDragMode,
   ) => void;
   onDragStop: (side: Side, edgeType: SpaceEdgeType) => void;
   onDoubleClick: (side: Side, edgeType: SpaceEdgeType) => void;
@@ -199,7 +199,7 @@ export function SpaceEdgeControls(props: {
             innerSpace,
             !isNil(paddingPxValue) && !isNil(marginPxValue)
               ? EDGE_HANDLE_WIDTH / 2
-              : EDGE_HANDLE_WIDTH
+              : EDGE_HANDLE_WIDTH,
           );
           return (
             <DraggableEdge
@@ -239,7 +239,7 @@ export function SpaceEdgeControls(props: {
 
 function getEdgeTransformOrigin(
   side: Side,
-  flush: "inward" | "outward" | "center"
+  flush: "inward" | "outward" | "center",
 ) {
   if (flush === "center") {
     return "50% 50%";
@@ -250,29 +250,29 @@ function getEdgeTransformOrigin(
     orient === "horiz"
       ? "50%"
       : side === "left"
-      ? flush === "inward"
-        ? "0%"
-        : "100%"
-      : flush === "inward"
-      ? "100%"
-      : "0%"
+        ? flush === "inward"
+          ? "0%"
+          : "100%"
+        : flush === "inward"
+          ? "100%"
+          : "0%"
   } ${
     orient === "vert"
       ? "50%"
       : side === "top"
-      ? flush === "inward"
-        ? "0%"
-        : "100%"
-      : flush === "inward"
-      ? "100%"
-      : "0%"
+        ? flush === "inward"
+          ? "0%"
+          : "100%"
+        : flush === "inward"
+          ? "100%"
+          : "0%"
   }
     `;
 }
 
 function getEdgeHandleCursor(
   side: Side,
-  direction: "inward" | "outward" | "both"
+  direction: "inward" | "outward" | "both",
 ) {
   const orient = sideEdgeToOrient(side);
   if (orient === "horiz") {
@@ -309,7 +309,7 @@ export function SpaceEdgeArea(props: {
     side: Side,
     edgeType: SpaceEdgeType,
     delta: number,
-    mode: EdgeDragMode
+    mode: EdgeDragMode,
   ) => void;
   onDragStop: (side: Side, edgeType: SpaceEdgeType) => void;
   onDoubleClick: (side: Side, edgeType: SpaceEdgeType) => void;
@@ -347,7 +347,7 @@ export function SpaceEdgeArea(props: {
     side,
     edgeType,
     isAutoSized,
-    childAlign
+    childAlign,
   );
   const [labelElt, setLabelElt] = React.useState<HTMLDivElement | null>(null);
   const orientation = sideEdgeToOrient(side);
@@ -536,7 +536,7 @@ export function DraggableEdge(props: {
   const direction =
     sideDirection(side) * (growDirection === "outward" ? 1 : -1);
   const [dragState, setDragState] = React.useState<DragState | undefined>(
-    undefined
+    undefined,
   );
 
   // isFlush is true if the draggable edge is "flush" against the hoverbox
@@ -612,10 +612,10 @@ export function DraggableEdge(props: {
                     (placement === "outside"
                       ? -thickness
                       : // Else we want to be entirely inside the box boundary
-                      placement === "inside"
-                      ? 0
-                      : // Otherwise we split the difference
-                        -thickness / 2),
+                        placement === "inside"
+                        ? 0
+                        : // Otherwise we split the difference
+                          -thickness / 2),
                 }
               : {
                   // If we're not flush, then we basically want to be at boxEdgePosition + valuePositionOffset
@@ -641,7 +641,7 @@ export function DraggableEdge(props: {
                   ? placement === "inside"
                     ? "inward"
                     : "outward"
-                  : "center"
+                  : "center",
               ),
               // We are positioning the visible edge within the drag handle
               ...(isFlush
@@ -724,7 +724,7 @@ function getGrowDirection(
   side: Side,
   edgeType: SpaceEdgeType,
   isAutoSized: boolean | undefined,
-  childAlign: ContainerChildAlignment | undefined
+  childAlign: ContainerChildAlignment | undefined,
 ) {
   const isStartEdge = side === "left" || side === "top";
   if (edgeType === "margin") {

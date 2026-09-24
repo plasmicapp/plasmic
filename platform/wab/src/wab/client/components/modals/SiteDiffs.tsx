@@ -40,12 +40,12 @@ export const SiteDiffs = observer(function SideDiffs(props: {
     xSetDefault(
       diffsByParent,
       diff.parentComponent === "global" ? "global" : diff.parentComponent.uuid,
-      () => []
+      () => [],
     ).push(diff);
     if (diff.parentComponent !== "global") {
       parentNameByUuid.set(
         diff.parentComponent.uuid,
-        diff.parentComponent.name
+        diff.parentComponent.name,
       );
     }
   }
@@ -64,7 +64,7 @@ export const SiteDiffs = observer(function SideDiffs(props: {
           }
           const [patches, others] = L.partition(
             subDiffs,
-            (d) => d.releaseType === "patch"
+            (d) => d.releaseType === "patch",
           );
           return (
             <li>
@@ -74,7 +74,7 @@ export const SiteDiffs = observer(function SideDiffs(props: {
                 <strong>
                   {ensure(
                     parentNameByUuid.get(parent),
-                    "Unexpected missing parent element in diffs"
+                    "Unexpected missing parent element in diffs",
                   )}
                 </strong>
               </div>
@@ -155,7 +155,7 @@ export const SplitStatusUpdateSection = observer(
   function SplitStatusUpdateSection(props: { diffs: ChangeLogEntry[] }) {
     const { diffs } = props;
     const splitStatusUpdate = diffs.filter(
-      (f) => f.description === "split-status-update"
+      (f) => f.description === "split-status-update",
     );
     return (
       <>
@@ -176,7 +176,7 @@ export const SplitStatusUpdateSection = observer(
         )}
       </>
     );
-  }
+  },
 );
 
 export const SplitStatusUpdateSummarySection = observer(
@@ -208,8 +208,8 @@ export const SplitStatusUpdateSummarySection = observer(
             return getTypeText(f.newValue.splitType);
           }
           return null;
-        })
-      )
+        }),
+      ),
     ).sort();
     if (splitTypesChanged.length === 0) {
       return null;
@@ -221,14 +221,14 @@ export const SplitStatusUpdateSummarySection = observer(
             idx === splitTypesChanged.length - 2
               ? " and "
               : idx < splitTypesChanged.length - 2
-              ? ", "
-              : "";
+                ? ", "
+                : "";
           return `${val}${separator}`;
         })}{" "}
         content changed.
       </div>
     );
-  }
+  },
 );
 
 const ChangeSubSection = observer(function ChangeSubSection(props: {
@@ -243,7 +243,7 @@ const ChangeSubSection = observer(function ChangeSubSection(props: {
   const renameds = diffs.filter(
     (f) =>
       f.description === "renamed" &&
-      (!(f.newValue?.type === "Variant") || !f.newValue.isStandalone)
+      (!(f.newValue?.type === "Variant") || !f.newValue.isStandalone),
   );
   const updateds = diffs.filter((f) => f.description === "updated");
 
@@ -353,7 +353,7 @@ const ChangeRenamedEntity = observer(function ChangeRenamedEntity(props: {
   const { diff } = props;
   const entity = ensure(
     diff.oldValue,
-    "Unexpected rename diff element without oldValue"
+    "Unexpected rename diff element without oldValue",
   );
   if (entity) {
     return (
@@ -365,7 +365,7 @@ const ChangeRenamedEntity = observer(function ChangeRenamedEntity(props: {
           {
             ensure(
               diff.newValue,
-              "Unexpected Rename diff element without newValue"
+              "Unexpected Rename diff element without newValue",
             ).name
           }
           "

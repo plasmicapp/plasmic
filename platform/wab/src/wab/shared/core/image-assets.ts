@@ -118,7 +118,7 @@ export type ImageAssetUsage =
   | ImageAssetUsageByPageMeta;
 export function extractImageAssetUsages(
   site: Site,
-  asset: ImageAsset
+  asset: ImageAsset,
 ): [ImageAssetUsage[], ImageAssetUsageSummary] {
   const usages: ImageAssetUsage[] = [];
   const usingComponents = new Set<Component>();
@@ -241,8 +241,8 @@ export function extractImageAssetUsages(
   const usingFrames = [...usingComponents].filter(isFrameComponent).map((c) =>
     ensure(
       arenaFrames.find((frame) => frame.container.component === c),
-      `ArenaFrame not found for component ${c.name}`
-    )
+      `ArenaFrame not found for component ${c.name}`,
+    ),
   );
 
   return tuple(usages, {
@@ -255,7 +255,7 @@ export function extractImageAssetUsages(
 
 export function removeImageAssetUsage(
   asset: ImageAsset,
-  usage: ImageAssetUsage
+  usage: ImageAssetUsage,
 ) {
   if (usage.type === "tpl-image") {
     const attr = usage.tpl.tag === "img" ? "src" : "outerHTML";
@@ -288,7 +288,7 @@ const RE_ASSETREF_ALL = new RegExp(RE_ASSETREF, "g");
 
 export function tryParseImageAssetRef(
   ref: string,
-  assets: ImageAsset[] | Record<string, ImageAsset>
+  assets: ImageAsset[] | Record<string, ImageAsset>,
 ) {
   const m = ref.match(RE_ASSETREF);
   if (!m) {
@@ -311,7 +311,7 @@ export function hasAssetRefs(str: string) {
 
 export const resolveAllAssetRefs = (
   str: string,
-  assets: ImageAsset[] | Map<string, ImageAsset>
+  assets: ImageAsset[] | Map<string, ImageAsset>,
 ) => {
   const finder = Array.isArray(assets)
     ? (assetId: string) => assets.find((t) => t.uuid === assetId)
@@ -332,7 +332,7 @@ export function extractAllAssetRefs(str: string) {
 
 export function replaceAllAssetRefs(
   str: string,
-  getVal: (assetId: string) => string | undefined
+  getVal: (assetId: string) => string | undefined,
 ) {
   return str.replace(RE_ASSETREF_ALL, (sub, assetId) => {
     const replace = getVal(assetId);
@@ -350,7 +350,7 @@ export function getTagAttrForImageAsset(type: ImageAssetType) {
 
 export function getTagAttrForTplImage(tpl: TplImageTag) {
   return getTagAttrForImageAsset(
-    tpl.tag === "svg" ? ImageAssetType.Icon : ImageAssetType.Picture
+    tpl.tag === "svg" ? ImageAssetType.Icon : ImageAssetType.Picture,
   );
 }
 
@@ -365,7 +365,7 @@ export function getOnlyAssetRef(tpl: TplImageTag) {
         }
         return undefined;
       })
-      .filter(notNil)
+      .filter(notNil),
   );
   if (assetRefs.length === 1) {
     return assetRefs[0];

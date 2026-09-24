@@ -47,11 +47,11 @@ const borderLineStyles: ReadonlyArray<string> = ["color", "style", "width"];
 const borderRadiusStyles: ReadonlyArray<string> = ["radius"];
 
 export const borderStyleProps = borderLineStyles.flatMap((prop) =>
-  standardSides.map((side) => `border-${side}-${prop}`)
+  standardSides.map((side) => `border-${side}-${prop}`),
 );
 
 export const borderRadiusStyleProps = standardCorners.map(
-  (corner) => `border-${corner}-radius`
+  (corner) => `border-${corner}-radius`,
 );
 
 const isTplWithDefaultBorder = (tpl: TplNode | null | undefined) => {
@@ -81,7 +81,7 @@ function BorderPanelSection_(props: {
     borderStyleProps.some((prop) => exp.has(prop)) ||
     isTplWithDefaultBorder(tpl);
   const hasBorderTargetProps = borderStyleProps.some((prop) =>
-    targetExp?.has(prop)
+    targetExp?.has(prop),
   );
 
   const vsh = props.vsh ?? makeVariantedStylesHelperFromCurrentCtx(studioCtx);
@@ -146,10 +146,10 @@ function BorderRadiusSection_(props: {
   useAutoFocus(open && inputRef);
 
   const hasBorderRadiusProps = borderRadiusStyleProps.some((prop) =>
-    exp.has(prop)
+    exp.has(prop),
   );
   const hasBorderRadiusTargetProps = borderRadiusStyleProps.some((prop) =>
-    targetExp?.has(prop)
+    targetExp?.has(prop),
   );
 
   const vsh = props.vsh ?? makeVariantedStylesHelperFromCurrentCtx(studioCtx);
@@ -213,7 +213,7 @@ function BorderRadiusSection_(props: {
 function getInitialBorderPositions(
   expsProvider: ExpsProvider,
   borderStyles: ReadonlyArray<string>,
-  standardPositions: readonly Side[] | readonly Corner[]
+  standardPositions: readonly Side[] | readonly Corner[],
 ) {
   const selectedPositions: string[] = [];
 
@@ -243,7 +243,7 @@ export const BorderControlsWrapper = observer(
     const initial = getInitialBorderPositions(
       props.expsProvider,
       borderType === BorderType.Line ? borderLineStyles : borderRadiusStyles,
-      borderType === BorderType.Line ? standardSides : standardCorners
+      borderType === BorderType.Line ? standardSides : standardCorners,
     );
     const key = JSON.stringify(
       expsProvider instanceof TplExpsProvider
@@ -251,7 +251,7 @@ export const BorderControlsWrapper = observer(
             expsProvider.tpl.uuid,
             ...expsProvider.targetVariantCombo.map((v) => v.uuid),
           ]
-        : expsProvider.targetRs().uid
+        : expsProvider.targetRs().uid,
     );
 
     return props.borderType === BorderType.Line ? (
@@ -270,7 +270,7 @@ export const BorderControlsWrapper = observer(
         vsh={vsh}
       />
     );
-  }
+  },
 );
 
 const BorderLineControls = observer(function BorderLineControls(props: {
@@ -281,7 +281,7 @@ const BorderLineControls = observer(function BorderLineControls(props: {
   const { expsProvider, initialBorderPositions, vsh } = props;
   const studioCtx = expsProvider.studioCtx;
   const [selectedSides, setSelectedSides] = React.useState<Side[]>(
-    initialBorderPositions
+    initialBorderPositions,
   );
 
   const containerRef = React.useRef<HTMLDivElement | null>(null);
@@ -301,7 +301,7 @@ const BorderLineControls = observer(function BorderLineControls(props: {
   const getSelectedSidesWidth = () => {
     if (selectedSides.length === 0) {
       return showCssShorthand(
-        effectiveSides().map((side) => getSideProp(side, "width"))
+        effectiveSides().map((side) => getSideProp(side, "width")),
       );
     } else {
       return getUnanimousSelectedSidesProp("width");
@@ -311,7 +311,7 @@ const BorderLineControls = observer(function BorderLineControls(props: {
   const toggleSide = (side: Side) => {
     if (selectedSides.includes(side)) {
       setSelectedSides((prevSelectedSides) =>
-        prevSelectedSides.filter((s) => s !== side)
+        prevSelectedSides.filter((s) => s !== side),
       );
     } else if (hasSetPropRef.current) {
       // If we had already set a prop with the current set of selectedSides,
@@ -349,7 +349,7 @@ const BorderLineControls = observer(function BorderLineControls(props: {
       if (selectedSides.length === 0) {
         const newVals = parseCssShorthand(value);
         [...standardSides].forEach((side, i) =>
-          exp.set(`border-${side}-width`, newVals[i])
+          exp.set(`border-${side}-width`, newVals[i]),
         );
       } else {
         changeProp("width", value);
@@ -437,8 +437,8 @@ const BorderLineControls = observer(function BorderLineControls(props: {
             studioCtx.changeUnsafe(() =>
               changeProp(
                 "style",
-                ensure(val, "Unexpected undefined value for prop")
-              )
+                ensure(val, "Unexpected undefined value for prop"),
+              ),
             )
           }
         />
@@ -468,7 +468,7 @@ const BorderRadiusControls = observer(function BorderRadiusControls(props: {
   const { expsProvider, initialBorderPositions } = props;
   const studioCtx = expsProvider.studioCtx;
   const [selectedCorners, setSelectedCorners] = React.useState<Corner[]>(
-    initialBorderPositions
+    initialBorderPositions,
   );
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const hasSetPropRef = React.useRef(false);
@@ -492,7 +492,7 @@ const BorderRadiusControls = observer(function BorderRadiusControls(props: {
   const toggleCorner = (corner: Corner) => {
     if (selectedCorners.includes(corner)) {
       setSelectedCorners((prevSelectedCorners) =>
-        prevSelectedCorners.filter((s) => s !== corner)
+        prevSelectedCorners.filter((s) => s !== corner),
       );
     } else if (hasSetPropRef.current) {
       setSelectedCorners([corner]);
@@ -512,11 +512,11 @@ const BorderRadiusControls = observer(function BorderRadiusControls(props: {
       if (isAll) {
         const vals = parseCssShorthand(value);
         standardCorners.forEach((corner, i) =>
-          exp.set(`border-${corner}-radius`, vals[i])
+          exp.set(`border-${corner}-radius`, vals[i]),
         );
       } else {
         effectiveCorners().forEach((corner, i) =>
-          exp.set(`border-${corner}-radius`, value)
+          exp.set(`border-${corner}-radius`, value),
         );
       }
     });
@@ -527,7 +527,7 @@ const BorderRadiusControls = observer(function BorderRadiusControls(props: {
     return studioCtx.changeUnsafe(() => {
       const exp = expsProvider.mergedExp();
       effectiveCorners().forEach((corner) =>
-        exp.clear(`border-${corner}-radius`)
+        exp.clear(`border-${corner}-radius`),
       );
     });
   };

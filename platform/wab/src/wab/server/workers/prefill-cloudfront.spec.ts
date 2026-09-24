@@ -171,7 +171,7 @@ describe("Prefill cloudfront", () => {
             },
             browserOnly: false,
             source: "prefill",
-          }
+          },
         );
         expect(genPublishedLoaderCodeBundle).toHaveBeenNthCalledWith(
           2,
@@ -194,7 +194,7 @@ describe("Prefill cloudfront", () => {
             i18nKeyScheme: "hash",
             i18nTagPrefix: "n",
             source: "prefill",
-          }
+          },
         );
         expect(genPublishedLoaderCodeBundle).toHaveBeenNthCalledWith(
           3,
@@ -213,7 +213,7 @@ describe("Prefill cloudfront", () => {
             },
             browserOnly: true,
             source: "prefill",
-          }
+          },
         );
 
         expect(updatePkgVersionMock).toBeCalledWith(
@@ -222,7 +222,7 @@ describe("Prefill cloudfront", () => {
           undefined,
           {
             isPrefilled: true,
-          }
+          },
         );
       });
     });

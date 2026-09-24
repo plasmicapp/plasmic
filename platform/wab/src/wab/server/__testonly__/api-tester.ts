@@ -19,7 +19,7 @@ export class ApiTester {
 
   constructor(
     private readonly baseURL: string,
-    private baseHeaders: { [name: string]: string } = {}
+    private baseHeaders: { [name: string]: string } = {},
   ) {
     this.apiRequestContextPromise = request.newContext({
       baseURL,
@@ -39,7 +39,7 @@ export class ApiTester {
     data?: {} | undefined,
     opts?: ApiTesterRequestOptions,
     _hideDataOnError?: boolean | undefined,
-    _noErrorTransform?: boolean | undefined
+    _noErrorTransform?: boolean | undefined,
   ): Promise<any> {
     // This attempts to match src/wab/client/api.ts
     // TODO: use same implementation
@@ -58,7 +58,7 @@ export class ApiTester {
         const text = await res.text();
         console.info(`HTTP ${res.status()} response`, method, url, text);
         throw new UnknownApiError(
-          `${method} ${url} failed: ${res.status()}: ${text}`
+          `${method} ${url} failed: ${res.status()}: ${text}`,
         );
       }
 
@@ -70,7 +70,7 @@ export class ApiTester {
         // ApiErrors. So it is now just a JSON object, not an Error.
         // We create an UnknownApiError for it instead.
         throw new UnknownApiError(
-          `${method} ${url} failed: ${transformed.message}`
+          `${method} ${url} failed: ${transformed.message}`,
         );
       }
     }
@@ -80,7 +80,7 @@ export class ApiTester {
     method: LowerHttpMethod,
     url: string,
     data?: {} | undefined,
-    { headers, ...opts }: ApiTesterRequestOptions = {}
+    { headers, ...opts }: ApiTesterRequestOptions = {},
   ) {
     const mergedHeaders = { ...this.baseHeaders };
     Object.entries(headers ?? {}).forEach(([name, value]) => {
@@ -135,7 +135,7 @@ export class SharedApiTester extends SharedApi {
       headers: { [name: string]: string };
     },
     hideDataOnError?: boolean,
-    noErrorTransform?: boolean
+    noErrorTransform?: boolean,
   ) {
     return this.apiTester.req(
       method,
@@ -143,7 +143,7 @@ export class SharedApiTester extends SharedApi {
       data,
       opts,
       hideDataOnError,
-      noErrorTransform
+      noErrorTransform,
     );
   }
 
@@ -184,7 +184,7 @@ export class PublicApiTester extends ApiTester {
       i18nKeyScheme?: string;
       i18nTagPrefix?: string;
       skipHead?: string;
-    }
+    },
   ): Promise<APIResponse> {
     const queryString = new URLSearchParams(queryParams);
     projects.forEach((p) => queryString.append("projectId", p.id));
@@ -200,14 +200,14 @@ export class PublicApiTester extends ApiTester {
           "x-plasmic-api-project-tokens": projectTokens,
         },
         maxRedirects: 0, // do not follow
-      }
+      },
     );
   }
 
   async getPublishedLoaderHtml(
     project: Project,
     component: string,
-    { followRedirect = false }: { followRedirect?: boolean } = {}
+    { followRedirect = false }: { followRedirect?: boolean } = {},
   ): Promise<APIResponse> {
     const projectToken = `${project.id}:${project.projectApiToken}`;
     return this.rawReq(
@@ -219,14 +219,14 @@ export class PublicApiTester extends ApiTester {
           "x-plasmic-api-project-tokens": projectToken,
         },
         maxRedirects: followRedirect ? undefined : 0,
-      }
+      },
     );
   }
 
   async getPreviewLoaderHtml(
     project: Project,
     component: string,
-    { ifNoneMatch }: { ifNoneMatch?: string } = {}
+    { ifNoneMatch }: { ifNoneMatch?: string } = {},
   ): Promise<APIResponse> {
     const projectToken = `${project.id}:${project.projectApiToken}`;
     return this.rawReq(
@@ -238,7 +238,7 @@ export class PublicApiTester extends ApiTester {
           "x-plasmic-api-project-tokens": projectToken,
           ...(ifNoneMatch ? { "if-none-match": ifNoneMatch } : {}),
         },
-      }
+      },
     );
   }
 }
@@ -246,10 +246,10 @@ export class PublicApiTester extends ApiTester {
 /** Expects the ts-rest response to have a status and narrows the type. */
 export function expectStatus<
   Response extends { status: number; headers: unknown; body: unknown },
-  ExpectedStatus extends number
+  ExpectedStatus extends number,
 >(
   res: Response,
-  status: ExpectedStatus
+  status: ExpectedStatus,
 ): Response extends { status: ExpectedStatus } ? Response : never {
   expect(res.status).toEqual(status);
   return res as Response extends { status: ExpectedStatus } ? Response : never;

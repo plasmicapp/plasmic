@@ -12,7 +12,7 @@ interface UpsellConfirmProps extends DefaultUpsellConfirmProps {
 
 function UpsellConfirm_(
   props: UpsellConfirmProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { onDismiss, teamSettingsUrl, ...rest } = props;
   return (

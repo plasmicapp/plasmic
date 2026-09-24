@@ -59,7 +59,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
   } = props;
   const [billingEmail, setBillingEmail] = React.useState(team.billingEmail);
   const [billingFreq, setBillingFreq] = React.useState<BillingFrequency>(
-    team.billingFrequency ?? "year"
+    team.billingFrequency ?? "year",
   );
 
   // Figure out the current plan we're on
@@ -76,7 +76,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
     const bill = calculateBill(
       team.featureTier,
       team.seats,
-      team.billingFrequency
+      team.billingFrequency,
     );
     return team.billingFrequency === "year"
       ? `$${bill.total}/year`
@@ -84,7 +84,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
   }, [team.featureTier, team.seats, team.billingFrequency]);
 
   const seatsUsed = members.filter(
-    (m) => !isAdminTeamEmail(m.email, DEVFLAGS)
+    (m) => !isAdminTeamEmail(m.email, DEVFLAGS),
   ).length;
 
   const upsell = async (tier: ApiFeatureTier, title?: string) => {
@@ -155,7 +155,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
   const manageSeats = async () => {
     const tier = ensure(
       team.featureTier,
-      "Feature tier should exist to change seats"
+      "Feature tier should exist to change seats",
     );
     await upsell(tier, "Change seat count");
   };
@@ -205,9 +205,9 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
         subStatus.type === "valid" && (subStatus.free || team.onTrial)
           ? "free"
           : subStatus.type === "valid" &&
-            subStatus.tier.name.includes("Enterprise")
-          ? "enterprise"
-          : undefined
+              subStatus.tier.name.includes("Enterprise")
+            ? "enterprise"
+            : undefined
       }
       currentBill={currentBill}
       seatsUsed={`${seatsUsed}`}
@@ -260,7 +260,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
           // Do the cancellation
           const teamId = ensure(
             team,
-            `${ORGANIZATION_CAP} should exist to change subscription`
+            `${ORGANIZATION_CAP} should exist to change subscription`,
           ).id;
           await appCtx.api.cancelSubscription(teamId, {
             reason: cancelReason,
@@ -281,7 +281,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
           }
           const teamId = ensure(
             team,
-            `${ORGANIZATION_CAP} should exist to update billing email`
+            `${ORGANIZATION_CAP} should exist to update billing email`,
           ).id;
           await appCtx.api.updateTeam(teamId, {
             billingEmail,

@@ -10,7 +10,7 @@ function getFormValue(expectedFormItems: any[]): string {
   const values = Object.fromEntries(
     expectedFormItems
       .filter((formItem) => formItem.value != null)
-      .map((formItem) => [formItem.name, formItem.value])
+      .map((formItem) => [formItem.name, formItem.value]),
   );
   return JSON.stringify(values, Object.keys(values).sort());
 }
@@ -33,7 +33,7 @@ test.describe("simplified", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -45,7 +45,7 @@ test.describe("simplified", () => {
     await waitForFrameToLoad(page);
 
     const outlineButton = (models.studio as any).studioFrame.locator(
-      'button[data-test-tabkey="outline"]'
+      'button[data-test-tabkey="outline"]',
     );
     const isPressed = await outlineButton.getAttribute("data-state-isselected");
     if (isPressed === "true") {
@@ -91,7 +91,7 @@ test.describe("simplified", () => {
 
     await models.studio.leftPanel.insertNode("Text");
     await models.studio.rightPanel.bindTextContentToCustomCode(
-      "JSON.stringify($state.submittedData, Object.keys($state.submittedData ?? {}).sort())"
+      "JSON.stringify($state.submittedData, Object.keys($state.submittedData ?? {}).sort())",
     );
 
     await models.studio.withinLiveMode(async (liveFrame) => {
@@ -112,7 +112,7 @@ test.describe("simplified", () => {
         {
           inputs: { name: "foo", message: "bar" },
         },
-        liveFrame
+        liveFrame,
       );
 
       await checkFormValues(liveModeExpectedFormItems, liveFrame);
@@ -163,7 +163,7 @@ test.describe("simplified", () => {
             field2: "baz",
           },
         },
-        liveFrame
+        liveFrame,
       );
 
       await checkFormValues(liveModeExpectedFormItems, liveFrame);

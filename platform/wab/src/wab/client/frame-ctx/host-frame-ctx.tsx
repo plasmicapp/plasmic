@@ -48,11 +48,11 @@ export function HostFrameCtxProvider({ children }: HostFrameCtxProviderProps) {
     console.log("[HostFrame] Sending PLASMIC_HOST_REGISTERED message");
     topFrame.postMessage(
       { type: FrameMessage.PlasmicHostRegister },
-      plasmicOrigin
+      plasmicOrigin,
     );
 
     const topFrameApi: PromisifyMethods<TopFrameFullApi> = Comlink.wrap(
-      Comlink.windowEndpoint(topFrame, self, plasmicOrigin)
+      Comlink.windowEndpoint(topFrame, self, plasmicOrigin),
     );
 
     const hostHistory = new HostHistory(topFrameApi);
@@ -109,7 +109,7 @@ export class HostHistory implements History {
           const path = location.pathname + location.search + location.hash;
           console.log(
             `Host history ${action} ${location.key} ${path}`,
-            history
+            history,
           );
           switch (action) {
             case Action.Push: {
@@ -127,7 +127,7 @@ export class HostHistory implements History {
               // https://developer.mozilla.org/en-US/docs/Web/API/Window/popstate_event
 
               const targetIndex = this.memoryHistory.entries.findIndex(
-                (entry) => entry.state === location.key
+                (entry) => entry.state === location.key,
               );
               if (targetIndex >= 0) {
                 // The most common is browser back/forward.
@@ -143,7 +143,7 @@ export class HostHistory implements History {
               break;
             }
           }
-        })
+        }),
       );
   }
 

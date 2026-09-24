@@ -50,7 +50,7 @@ describe("todo app codegen", () => {
     ];
 
     const rootElement = document.querySelector(
-      `[data-testid="root"]`
+      `[data-testid="root"]`,
     ) as HTMLElement;
     const root = within(rootElement);
 
@@ -61,15 +61,15 @@ describe("todo app codegen", () => {
 
     const checkTable = async () => {
       expect(root.getByTestId("tbody").children.length).toBe(
-        expectedData.length
+        expectedData.length,
       );
       expectedData.forEach((rowData, index) => {
         const row = getRow(index);
         expect(row.getByTestId("firstName-cell").innerHTML).toBe(
-          rowData.firstName
+          rowData.firstName,
         );
         expect(row.getByTestId("lastName-cell").innerHTML).toBe(
-          rowData.lastName
+          rowData.lastName,
         );
         expect(row.getByTestId("sport-cell").innerHTML).toBe(rowData.sport);
       });
@@ -81,13 +81,13 @@ describe("todo app codegen", () => {
       sport: string;
     }) => {
       expect(
-        (root.getAllByTestId("textInput")[0] as HTMLInputElement).value
+        (root.getAllByTestId("textInput")[0] as HTMLInputElement).value,
       ).toBe(expected.firstName);
       expect(
-        (root.getAllByTestId("textInput")[1] as HTMLInputElement).value
+        (root.getAllByTestId("textInput")[1] as HTMLInputElement).value,
       ).toBe(expected.lastName);
       expect(
-        (root.getAllByTestId("textInput")[2] as HTMLInputElement).value
+        (root.getAllByTestId("textInput")[2] as HTMLInputElement).value,
       ).toBe(expected.sport);
     };
 
@@ -97,26 +97,26 @@ describe("todo app codegen", () => {
         firstName?: string;
         lastName?: string;
         sport?: string;
-      }
+      },
     ) => {
       if (changes.firstName) {
         await userEvent.type(
           root.getAllByTestId("textInput")[0],
-          changes.firstName
+          changes.firstName,
         );
         expectedData[selectedRow].firstName += changes.firstName;
       }
       if (changes.lastName) {
         await userEvent.type(
           root.getAllByTestId("textInput")[1],
-          changes.lastName
+          changes.lastName,
         );
         expectedData[selectedRow].lastName += changes.lastName;
       }
       if (changes.sport) {
         await userEvent.type(
           root.getAllByTestId("textInput")[2],
-          changes.sport
+          changes.sport,
         );
         expectedData[selectedRow].sport += changes.sport;
       }

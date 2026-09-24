@@ -22,7 +22,7 @@ export type ReadonlyIBaseRuleSetHelpers = Pick<
 
 export function makeReadonlyExpProxy(
   exp: ReadonlyIRuleSetHelpersX,
-  overrides?: Partial<ReadonlyIRuleSetHelpersX>
+  overrides?: Partial<ReadonlyIRuleSetHelpersX>,
 ): ReadonlyIRuleSetHelpersX {
   return Object.assign(
     {},
@@ -32,13 +32,13 @@ export function makeReadonlyExpProxy(
       getRaw: (prop: string) => exp.getRaw(prop),
       props: () => exp.props(),
     },
-    overrides
+    overrides,
   );
 }
 
 export function makeExpProxy(
   exp: IRuleSetHelpersX,
-  overrides?: Partial<IRuleSetHelpersX>
+  overrides?: Partial<IRuleSetHelpersX>,
 ): IRuleSetHelpersX {
   const writeExp = exp as IRuleSetHelpersX;
   return Object.assign(
@@ -50,12 +50,12 @@ export function makeExpProxy(
       clear: (prop: string) => writeExp.clear(prop),
       clearAll: (props: string[]) => writeExp.clearAll(props),
     },
-    overrides
+    overrides,
   );
 }
 
 export function makeExpandedExp(
-  exp: Partial<IBaseRuleSetHelpers>
+  exp: Partial<IBaseRuleSetHelpers>,
 ): Partial<IRuleSetHelpersX> {
   const set = exp.set;
   const clear = exp.clear;
@@ -73,13 +73,13 @@ export function makeExpandedExp(
     },
     clear && {
       clearAll: (props: string[]) => props.forEach((p) => clear(p)),
-    }
+    },
   );
   return expanded;
 }
 
 export function makeReadonlyExpandedExp(
-  exp: Partial<ReadonlyIBaseRuleSetHelpers>
+  exp: Partial<ReadonlyIBaseRuleSetHelpers>,
 ): Partial<ReadonlyIRuleSetHelpersX> {
   const getDefault =
     exp.getDefault || ((p: string) => getCssDefault(p, undefined));
@@ -92,7 +92,7 @@ export function makeReadonlyExpandedExp(
       get: (prop: string) =>
         ensure(expanded.getRaw, "Must specify getRaw")(prop) ||
         getDefault(prop),
-    }
+    },
   );
   return expanded;
 }
@@ -103,7 +103,7 @@ export function makeReadonlyExpandedExp(
  */
 export function makeMergedExpProxy(
   effectiveExp: ReadonlyIRuleSetHelpersX,
-  getTargetExp: () => IRuleSetHelpersX
+  getTargetExp: () => IRuleSetHelpersX,
 ): IRuleSetHelpersX {
   return {
     has: (prop: string) => effectiveExp.has(prop),

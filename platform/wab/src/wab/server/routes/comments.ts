@@ -30,39 +30,39 @@ export function addCommentsRoutes(app: express.Application) {
   app.post("/api/v1/comments/:projectBranchId", postRootCommentInProject);
   app.post(
     "/api/v1/comments/:projectBranchId/thread/:threadId",
-    postCommentInThread
+    postCommentInThread,
   );
   app.put("/api/v1/comments/:projectBranchId/comment/:commentId", editComment);
   app.put(
     "/api/v1/comments/:projectBranchId/thread/:commentThreadId",
-    editThread
+    editThread,
   );
   app.delete(
     "/api/v1/comments/:projectBranchId/comment/:commentId",
-    deleteCommentInProject
+    deleteCommentInProject,
   );
   app.delete(
     "/api/v1/comments/:projectBranchId/thread/:threadId",
-    deleteThreadInProject
+    deleteThreadInProject,
   );
   app.post(
     "/api/v1/comments/:projectBranchId/comment/:commentId/reactions",
-    addReactionToComment
+    addReactionToComment,
   );
   app.delete(
     "/api/v1/comments/:projectBranchId/reactions/:reactionId",
-    removeReactionFromComment
+    removeReactionFromComment,
   );
   app.put(
     "/api/v1/comments/:projectBranchId/notification-settings",
-    updateNotificationSettings
+    updateNotificationSettings,
   );
 }
 
 async function getCommentsForProject(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const { projectId, branchId } = parseProjectBranchId(
-    req.params.projectBranchId
+    req.params.projectBranchId,
   );
 
   // Ensure the user has access to the project
@@ -80,7 +80,7 @@ async function getCommentsForProject(req: Request, res: Response) {
     withoutNils([
       ...threads.map((c) => c.createdById),
       ...reactions.map((r) => r.createdById),
-    ])
+    ]),
   );
   const commentUsers = await mgr.getUsersById(usersIds);
   const users = uniq(withoutNils([...commentUsers, ...projectUsers]));
@@ -91,13 +91,13 @@ async function getCommentsForProject(req: Request, res: Response) {
       reactions,
       selfNotificationSettings,
       users,
-    })
+    }),
   );
 }
 
 async function postRootCommentInProject(req: Request, res: Response) {
   const { projectId, branchId } = parseProjectBranchId(
-    req.params.projectBranchId
+    req.params.projectBranchId,
   );
 
   await startTransaction(req, async () => {
@@ -115,7 +115,7 @@ async function postRootCommentInProject(req: Request, res: Response) {
         commentThreadId,
         location,
         body,
-      }
+      },
     );
 
     return commitTransaction();
@@ -132,7 +132,7 @@ async function postRootCommentInProject(req: Request, res: Response) {
 
 async function postCommentInThread(req: Request, res: Response) {
   const { projectId, branchId } = parseProjectBranchId(
-    req.params.projectBranchId
+    req.params.projectBranchId,
   );
   const threadId = req.params.threadId as CommentThreadId;
 
@@ -149,7 +149,7 @@ async function postCommentInThread(req: Request, res: Response) {
         id,
         threadId,
         body,
-      }
+      },
     );
 
     return commitTransaction();
@@ -166,7 +166,7 @@ async function postCommentInThread(req: Request, res: Response) {
 
 async function deleteCommentInProject(req: Request, res: Response) {
   const { projectId, branchId } = parseProjectBranchId(
-    req.params.projectBranchId
+    req.params.projectBranchId,
   );
   const commentId = req.params.commentId as CommentId;
 
@@ -192,7 +192,7 @@ async function deleteCommentInProject(req: Request, res: Response) {
 
 async function deleteThreadInProject(req: Request, res: Response) {
   const { projectId, branchId } = parseProjectBranchId(
-    req.params.projectBranchId
+    req.params.projectBranchId,
   );
   const threadId = req.params.threadId as CommentThreadId;
 
@@ -326,7 +326,7 @@ async function updateNotificationSettings(req: Request, res: Response) {
     await mgr.updateNotificationSettings(
       getUser(req).id,
       toOpaque(projectId),
-      settings
+      settings,
     );
 
     return commitTransaction();

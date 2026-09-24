@@ -1,13 +1,11 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class AddUserFreeTrialStartedAt1788327057614
-  implements MigrationInterface
-{
+export class AddUserFreeTrialStartedAt1788327057614 implements MigrationInterface {
   name = "AddUserFreeTrialStartedAt1788327057614";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "user" ADD "freeTrialStartedAt" TIMESTAMP WITH TIME ZONE`
+      `ALTER TABLE "user" ADD "freeTrialStartedAt" TIMESTAMP WITH TIME ZONE`,
     );
     await queryRunner.query(
       `UPDATE "user" u
@@ -18,13 +16,13 @@ export class AddUserFreeTrialStartedAt1788327057614
          WHERE "trialStartDate" IS NOT NULL AND "createdById" IS NOT NULL
          GROUP BY "createdById"
        ) t
-       WHERE t."createdById" = u.id`
+       WHERE t."createdById" = u.id`,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "user" DROP COLUMN "freeTrialStartedAt"`
+      `ALTER TABLE "user" DROP COLUMN "freeTrialStartedAt"`,
     );
   }
 }

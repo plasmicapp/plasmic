@@ -53,13 +53,13 @@ export const TextInputPlugin: PlumePlugin = {
           Object.assign(comp, getCompMeta()),
           omit(allProps, internalCanvasElementProps),
           textInputConfig as any,
-          ref
+          ref,
         );
         return sub.React.createElement(comp, {
           ...plasmicProps,
           ...internalProps,
         });
-      })
+      }),
     );
   },
 
@@ -69,7 +69,7 @@ export const TextInputPlugin: PlumePlugin = {
     return `
       function useBehavior<P extends pp.PlumeTextInputProps>(props: P, ref: pp.TextInputRef) {
         return pp.useTextInput<P, typeof ${makePlasmicComponentName(
-          component
+          component,
         )}>(
           ${makePlasmicComponentName(component)},
           props,
@@ -82,7 +82,7 @@ export const TextInputPlugin: PlumePlugin = {
   genDefaultExternalProps(ctx: SerializerBaseContext, opts) {
     const { component } = ctx;
     const params = getExternalParams(ctx).filter(
-      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name))
+      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name)),
     );
     return `
       export interface ${
@@ -94,8 +94,8 @@ export const TextInputPlugin: PlumePlugin = {
               `"${paramToVarName(ctx.component, param)}"?: ${serializeParamType(
                 component,
                 param,
-                ctx.projectFlags
-              )}`
+                ctx.projectFlags,
+              )}`,
           )
           .join(";\n")}
       }
@@ -117,12 +117,12 @@ export const TextInputPlugin: PlumePlugin = {
     return `
       import * as React from "react";
       import {${plasmicComponentName}, ${defaultPropsName}} from "${
-      ctx.exportOpts.relPathFromImplToManagedDir
-    }/${makeComponentImportPath(
-      component,
-      ctx,
-      "render"
-    )}";  // plasmic-import: ${component.uuid}/render
+        ctx.exportOpts.relPathFromImplToManagedDir
+      }/${makeComponentImportPath(
+        component,
+        ctx,
+        "render",
+      )}";  // plasmic-import: ${component.uuid}/render
     ${this.genSkeletonImports(ctx).imports}
 
       ${componentSubstitutionApi}
@@ -155,7 +155,7 @@ export const TextInputPlugin: PlumePlugin = {
       imports: `
         import {TextInputRef} from "${getPlumePackageName(
           ctx.exportOpts,
-          "text-input"
+          "text-input",
         )}";`,
       refName: "TextInputRef",
     };

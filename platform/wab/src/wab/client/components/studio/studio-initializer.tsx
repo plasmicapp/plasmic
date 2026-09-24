@@ -87,7 +87,7 @@ class StudioInitializer_ extends React.Component<
 
       // Store preference in local storage
       spawn(
-        appCtx.api.addStorageItem(plexusStorageKey, appCtx.appConfig.plexus)
+        appCtx.api.addStorageItem(plexusStorageKey, appCtx.appConfig.plexus),
       );
     }
 
@@ -127,7 +127,7 @@ class StudioInitializer_ extends React.Component<
     };
     window.addEventListener("beforeunload", listener);
     this._cleanups.push(() =>
-      window.removeEventListener("beforeunload", listener)
+      window.removeEventListener("beforeunload", listener),
     );
 
     studioCtx.finishedLoading();
@@ -143,7 +143,7 @@ class StudioInitializer_ extends React.Component<
 
     if (studioCtx.siteInfo.hasAppAuth) {
       const lastLoggedInAppUser = await appCtx.api.getStorageItem(
-        storageViewAsKey(studioCtx.siteInfo.id)
+        storageViewAsKey(studioCtx.siteInfo.id),
       );
 
       if (lastLoggedInAppUser) {
@@ -157,7 +157,7 @@ class StudioInitializer_ extends React.Component<
         // and blocking the user from using the studio.
         try {
           const { initialUser } = await appCtx.api.getInitialUserToViewAs(
-            studioCtx.siteInfo.id
+            studioCtx.siteInfo.id,
           );
           if (initialUser) {
             // Save the user in local storage so that we don't have to ask the server again
@@ -166,7 +166,7 @@ class StudioInitializer_ extends React.Component<
               storageViewAsKey(studioCtx.siteInfo.id),
               JSON.stringify({
                 studioAppUser: initialUser,
-              })
+              }),
             );
             await studioCtx.logAsAppUser(initialUser);
           } else {
@@ -248,9 +248,7 @@ class StudioInitializer_ extends React.Component<
                           loader={() =>
                             importAndRetry(
                               () =>
-                                import(
-                                  "@/wab/client/components/docs/DocsPortal"
-                                )
+                                import("@/wab/client/components/docs/DocsPortal"),
                             ).then(({ default: DocsPortal }) => DocsPortal)
                           }
                           contents={(DocsPortal) => (
@@ -276,7 +274,7 @@ class StudioInitializer_ extends React.Component<
                             loader={() =>
                               importAndRetry(
                                 () =>
-                                  import("@/wab/client/components/live/Preview")
+                                  import("@/wab/client/components/live/Preview"),
                               ).then(({ default: Preview }) => Preview)
                             }
                             contents={(Preview) => (
@@ -290,9 +288,9 @@ class StudioInitializer_ extends React.Component<
                   switchDefault({ render: () => null }),
                 ]}
               />
-            </>
-          )
-        )
+            </>,
+          ),
+        ),
       );
     };
     return (

@@ -6,7 +6,7 @@ fs.writeFileSync(
   path.join(__dirname, "./css-variables.ts"),
   Object.entries(styleVariables)
     .map(([k]) => `export const ${k} = "--${k}";`)
-    .join("\n")
+    .join("\n"),
 );
 
 fs.writeFileSync(
@@ -21,5 +21,5 @@ fs.writeFileSync(
         .map(([k, v]) => `--${k}: ${v};`)
         .join("\n")}  
     }`,
-  ].join("\n\n")
+  ].join("\n\n"),
 );

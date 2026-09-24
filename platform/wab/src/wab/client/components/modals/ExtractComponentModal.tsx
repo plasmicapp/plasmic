@@ -121,7 +121,7 @@ export function ExtractComponentForm(props: {
                   <code key={q.name}>{q.name}</code>
                 )),
               ],
-              ", "
+              ", ",
             )}
             .
           </div>

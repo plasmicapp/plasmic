@@ -52,8 +52,8 @@ const SliceControls = observer(function SliceControls(props: {
       if (value) {
         const newValue = dayjs(value).toISOString();
         const newFromValue =
-          label === "from" ? newValue : range.from ?? newValue;
-        const newToValue = label === "to" ? newValue : range.to ?? newValue;
+          label === "from" ? newValue : (range.from ?? newValue);
+        const newToValue = label === "to" ? newValue : (range.to ?? newValue);
         const newVals = [...values];
         newVals[idx] = JSON.stringify({
           "<=": [newFromValue, { var: "time" }, newToValue],

@@ -14,43 +14,43 @@ describe("dynamic-bindings", () => {
       expect(isCurrentUserBinding(" (currentUser.properties) ")).toBeFalse();
       expect(isCurrentUserBinding(" (currentUser.properties.) ")).toBeFalse();
       expect(
-        isCurrentUserBinding(" (currentUser.properties.name) ")
+        isCurrentUserBinding(" (currentUser.properties.name) "),
       ).toBeTrue();
       expect(isCurrentUserBinding(" (currentUser.properties.0) ")).toBeFalse();
       expect(
-        isCurrentUserBinding(" (currentUser.properties.0name) ")
+        isCurrentUserBinding(" (currentUser.properties.0name) "),
       ).toBeFalse();
       expect(
-        isCurrentUserBinding(" (currentUser.properties._name) ")
+        isCurrentUserBinding(" (currentUser.properties._name) "),
       ).toBeTrue();
       expect(
-        isCurrentUserBinding(" (currentUser.properties._name_) ")
+        isCurrentUserBinding(" (currentUser.properties._name_) "),
       ).toBeTrue();
       expect(
-        isCurrentUserBinding(" (currentUser.customProperties) ")
+        isCurrentUserBinding(" (currentUser.customProperties) "),
       ).toBeFalse();
       expect(
-        isCurrentUserBinding(" (currentUser.customProperties.) ")
+        isCurrentUserBinding(" (currentUser.customProperties.) "),
       ).toBeFalse();
       expect(
-        isCurrentUserBinding(" (currentUser.customProperties.name) ")
+        isCurrentUserBinding(" (currentUser.customProperties.name) "),
       ).toBeTrue();
       expect(
-        isCurrentUserBinding(" (currentUser.customProperties.0) ")
+        isCurrentUserBinding(" (currentUser.customProperties.0) "),
       ).toBeFalse();
       expect(
-        isCurrentUserBinding(" (currentUser.customProperties.0name) ")
+        isCurrentUserBinding(" (currentUser.customProperties.0name) "),
       ).toBeFalse();
       expect(
-        isCurrentUserBinding(" (currentUser.customProperties._name) ")
+        isCurrentUserBinding(" (currentUser.customProperties._name) "),
       ).toBeTrue();
       expect(
-        isCurrentUserBinding(" (currentUser.customProperties.user_id) ")
+        isCurrentUserBinding(" (currentUser.customProperties.user_id) "),
       ).toBeTrue();
       expect(
         isCurrentUserBinding(
-          " (currentUser.customProperties.name.toLowerCase()) "
-        )
+          " (currentUser.customProperties.name.toLowerCase()) ",
+        ),
       ).toBeFalse();
     });
   });
@@ -58,7 +58,7 @@ describe("dynamic-bindings", () => {
   describe("extractValueFromCurrentUser", () => {
     it("should properly extract value from currentUser", () => {
       expect(
-        extractValueFromCurrentUser(undefined, "{{ (currentUser.email) }}")
+        extractValueFromCurrentUser(undefined, "{{ (currentUser.email) }}"),
       ).toBeUndefined();
 
       expect(
@@ -66,8 +66,8 @@ describe("dynamic-bindings", () => {
           {
             email: "admin@admin.example.com",
           },
-          "{{ (currentUser.email) }}"
-        )
+          "{{ (currentUser.email) }}",
+        ),
       ).toBe("admin@admin.example.com");
 
       expect(
@@ -78,8 +78,8 @@ describe("dynamic-bindings", () => {
               has_id: true,
             },
           },
-          "{{ (currentUser.customProperties.name) }}"
-        )
+          "{{ (currentUser.customProperties.name) }}",
+        ),
       ).toBe("admin");
 
       expect(
@@ -90,8 +90,8 @@ describe("dynamic-bindings", () => {
               has_id: true,
             },
           },
-          "{{ (currentUser.customProperties.has_id) }}"
-        )
+          "{{ (currentUser.customProperties.has_id) }}",
+        ),
       ).toBeTrue();
 
       expect(
@@ -102,8 +102,8 @@ describe("dynamic-bindings", () => {
               has_id: true,
             },
           },
-          "{{ (currentUser.customProperties._name) }}"
-        )
+          "{{ (currentUser.customProperties._name) }}",
+        ),
       ).toBeUndefined();
     });
   });

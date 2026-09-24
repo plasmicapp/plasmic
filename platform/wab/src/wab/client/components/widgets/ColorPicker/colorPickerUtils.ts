@@ -101,6 +101,6 @@ export function getColorAlpha(color: string) {
   return color && Chroma.isLiteralUnpickedColor(color)
     ? 100
     : Chroma.valid(color)
-    ? Math.round(Chroma(color).alpha() * 100)
-    : 0;
+      ? Math.round(Chroma(color).alpha() * 100)
+      : 0;
 }

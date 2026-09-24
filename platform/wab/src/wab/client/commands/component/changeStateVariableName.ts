@@ -37,7 +37,7 @@ export const changeStateVariableNameCommand: Command<
             .renameParam(
               component,
               state.onChangeParam,
-              `On ${varName} Change`
+              `On ${varName} Change`,
             );
         }
       }

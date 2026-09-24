@@ -27,7 +27,7 @@ async function getFileType(buffer: Buffer | ArrayBuffer) {
 
 export async function uploadDataUriToS3(
   dataUri: string,
-  opts?: { imageOnly?: boolean }
+  opts?: { imageOnly?: boolean },
 ): Promise<Result<string, Error>> {
   if (!dataUri.startsWith("data:")) {
     // Already on S3
@@ -38,13 +38,13 @@ export async function uploadDataUriToS3(
   const fileBuffer = parsed.toBuffer();
 
   return (await uploadFileToS3(fileBuffer, { ...opts, contentType })).map(
-    (res) => res.url
+    (res) => res.url,
   );
 }
 
 export async function uploadFileToS3(
   fileBuffer: Buffer,
-  opts?: { imageOnly?: boolean; contentType?: string }
+  opts?: { imageOnly?: boolean; contentType?: string },
 ): Promise<Result<{ url: string; mimeType: string | undefined }, Error>> {
   const imageOnly = opts?.imageOnly ?? true;
 

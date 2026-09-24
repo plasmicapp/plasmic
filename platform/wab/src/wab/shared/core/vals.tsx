@@ -81,7 +81,7 @@ export function isValSelectable(x: Selectable) {
 }
 
 export function asTplOrSlotSelection(
-  v: Selectable | TplNode
+  v: Selectable | TplNode,
 ): TplNode | SlotSelection {
   return switchType(v)
     .when(TplNode, (x) => x)
@@ -92,7 +92,7 @@ export function asTplOrSlotSelection(
 
 export function equivTplOrSlotSelection(
   x: TplNode | SlotSelection,
-  y: TplNode | SlotSelection
+  y: TplNode | SlotSelection,
 ): boolean {
   return x instanceof SlotSelection && y instanceof SlotSelection
     ? x.toTplSlotSelection().equals(y.toTplSlotSelection())

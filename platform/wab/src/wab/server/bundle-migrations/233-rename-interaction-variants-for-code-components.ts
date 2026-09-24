@@ -9,7 +9,7 @@ export const migrate: BundledMigrationFn = async (bundle) => {
     }
     if (inst.__type === "Variant" && Array.isArray(inst["selectors"])) {
       inst["selectors"] = inst["selectors"].map((sel) =>
-        sel.replace("cc-interaction", "cc-variant")
+        sel.replace("cc-interaction", "cc-variant"),
       );
     }
     if (inst.__type === "CodeComponentInteractionVariantMeta") {

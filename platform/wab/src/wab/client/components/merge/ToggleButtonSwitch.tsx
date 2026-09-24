@@ -21,15 +21,14 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultToggleButtonSwitchProps altogether and have
 // total control over the props for your component.
-export interface ToggleButtonSwitchProps
-  extends DefaultToggleButtonSwitchProps {
+export interface ToggleButtonSwitchProps extends DefaultToggleButtonSwitchProps {
   side: BranchSide;
   onPickSide: (side: BranchSide) => void;
 }
 
 function ToggleButtonSwitch_(
   { side, onPickSide, ...props }: ToggleButtonSwitchProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicToggleButtonSwitch to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

@@ -18,7 +18,7 @@ export function setComponentInstanceProp(
   opts: {
     vs: VariantSetting;
     tplMgr: TplMgr;
-  }
+  },
 ): SetComponentInstancePropResult {
   const { vs, tplMgr } = opts;
   const component = tpl.component;

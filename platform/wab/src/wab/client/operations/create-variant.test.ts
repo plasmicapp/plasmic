@@ -12,7 +12,7 @@ import { ComponentVariantGroup } from "@/wab/shared/model/classes";
 describe("createVariant", () => {
   function setupWithGroup() {
     const { site, tplMgr } = setupComponentWithTplTree(
-      Tpls.mkTplTagX("div", {})
+      Tpls.mkTplTagX("div", {}),
     );
     const created = createComponent({
       tplMgr,

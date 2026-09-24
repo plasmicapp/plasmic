@@ -24,7 +24,7 @@ export type MultiplayerCursorProps = DefaultMultiplayerCursorProps;
 
 function MultiplayerCursor_(
   props: MultiplayerCursorProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicMultiplayerCursor to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

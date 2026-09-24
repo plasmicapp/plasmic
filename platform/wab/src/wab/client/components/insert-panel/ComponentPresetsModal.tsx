@@ -20,7 +20,7 @@ export const ComponentPresetsModal = observer(function ComponentPresetsModal() {
     return null;
   }
   const items = getComponentPresets(studioCtx, component).map((preset) =>
-    createAddComponentPreset(studioCtx, component, preset)
+    createAddComponentPreset(studioCtx, component, preset),
   );
   const onClose = () => studioCtx.hidePresetsModal();
   return (

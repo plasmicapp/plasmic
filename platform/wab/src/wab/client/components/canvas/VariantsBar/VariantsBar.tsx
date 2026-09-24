@@ -55,7 +55,7 @@ function useFocusedVariants(viewCtx: ViewCtx) {
   const canChangeVariants = variantsController?.canChangeActiveVariants();
   const activeVariants = variantsController?.getActiveNonBaseVariants() ?? [];
   const targetedVariants = activeVariants?.filter((it) =>
-    variantsController?.isTargeted(it)
+    variantsController?.isTargeted(it),
   );
 
   const focusedTpl = viewCtx?.focusedTpl();
@@ -87,7 +87,7 @@ function getFocusedElementRect(studioCtx: StudioCtx) {
   if (isKnownArenaFrame(focusObj) && vc) {
     return vc.viewportCtx
       .scalerToClient(
-        Box.fromRect(studioCtx.getArenaFrameScalerRect(focusObj)!)
+        Box.fromRect(studioCtx.getArenaFrameScalerRect(focusObj)!),
       )
       .rect();
   } else {
@@ -148,7 +148,7 @@ function useFloatingBarForFocusedFrame({
 
       const clipperBox = viewCtx.viewportCtx.clipperBox();
       const componentBox = viewCtx.viewportCtx.scalerToClient(
-        Box.fromRect(focusedComponentRect)
+        Box.fromRect(focusedComponentRect),
       );
       const panelRect = panelRef.current.getBoundingClientRect();
       const controlledObj = studioCtx.hoverBoxControlledObj;
@@ -163,11 +163,11 @@ function useFloatingBarForFocusedFrame({
         (isMixedArena(studioCtx.currentArena)
           ? HOVER_TAG_HEIGHT
           : focusedElementRect && focusedElementRect.height
-          ? Math.max(
-              componentBox.top() - (focusedElementRect.top - hoverTagHeight),
-              0
-            )
-          : 0) +
+            ? Math.max(
+                componentBox.top() - (focusedElementRect.top - hoverTagHeight),
+                0,
+              )
+            : 0) +
         GUTTER * 1.3;
 
       const maxTranslateX =
@@ -180,9 +180,9 @@ function useFloatingBarForFocusedFrame({
         Math.max(
           Math.min(
             componentBox.left() - clipperBox.left() + GUTTER,
-            maxTranslateX
+            maxTranslateX,
           ),
-          CANVAS_PADDING
+          CANVAS_PADDING,
         );
 
       const translateY =
@@ -193,9 +193,9 @@ function useFloatingBarForFocusedFrame({
               componentTopMargin -
               clipperBox.top() -
               panelRect.height,
-            maxTranslateY
+            maxTranslateY,
           ),
-          CANVAS_PADDING
+          CANVAS_PADDING,
         );
 
       panelRef.current.style.transform = `translate(${translateX}px, ${translateY}px)`;
@@ -279,7 +279,7 @@ export const VariantsBar = observer(function VariantsBar_({
         isScreenVariant(v) &&
         spotlightInfo.shouldRender &&
         isDedicatedArena(studioCtx.currentArena)
-      )
+      ),
   );
 
   if (allAvailableVariants.length === 0) {
@@ -318,7 +318,7 @@ const VariantsBarInner = observer(function VariantsBarInner_({
   useEffect(
     /* Close variants drawer on unmount */ () => () =>
       studioCtx.setShowVariantsDrawer(false),
-    []
+    [],
   );
 
   useEffect(
@@ -328,7 +328,7 @@ const VariantsBarInner = observer(function VariantsBarInner_({
     [
       studioCtx.focusedViewCtx()?.arenaFrame().uid,
       studioCtx.focusedViewCtx()?.focusedSelectable()?.tpl?.uid,
-    ]
+    ],
   );
 
   const getVariantUnpinHandler = (it: Variant) =>
@@ -353,7 +353,7 @@ const VariantsBarInner = observer(function VariantsBarInner_({
 
   const handleRecordingButtonClick = () => {
     viewCtx?.change(() =>
-      variantsController?.onToggleTargetingOfActiveVariants()
+      variantsController?.onToggleTargetingOfActiveVariants(),
     );
   };
 
@@ -381,7 +381,7 @@ const VariantsBarInner = observer(function VariantsBarInner_({
   };
 
   const spotlightInfo = getSpotlightInfo(
-    ensure(viewCtx, "Expected viewCtx to be not null in VariantsBar")
+    ensure(viewCtx, "Expected viewCtx to be not null in VariantsBar"),
   );
 
   return !canChangeVariants && !displayVariants.length ? null : (

@@ -7,7 +7,7 @@ describe("normalizeHostUrl", () => {
     expect(normalizeHostUrl("")).toBe("");
     expect(normalizeHostUrl("   ")).toBe("");
     expect(normalizeHostUrl(" https://my-app.com/ ")).toBe(
-      "https://my-app.com/"
+      "https://my-app.com/",
     );
   });
 
@@ -19,7 +19,7 @@ describe("normalizeHostUrl", () => {
   it("prepends https:// to most inputs when valid", () => {
     expect(normalizeHostUrl("my-app.com")).toBe("https://my-app.com/");
     expect(normalizeHostUrl("my-app.com/plasmic-host")).toBe(
-      "https://my-app.com/plasmic-host"
+      "https://my-app.com/plasmic-host",
     );
     expect(normalizeHostUrl("localhost.com")).toBe("https://localhost.com/");
   });
@@ -27,11 +27,11 @@ describe("normalizeHostUrl", () => {
   it("prepends http:// for localhost and 127.0.0.1", () => {
     expect(normalizeHostUrl("localhost:3000")).toBe("http://localhost:3000/");
     expect(normalizeHostUrl("localhost:3000/host")).toBe(
-      "http://localhost:3000/host"
+      "http://localhost:3000/host",
     );
     expect(normalizeHostUrl("127.0.0.1:8000")).toBe("http://127.0.0.1:8000/");
     expect(normalizeHostUrl("127.0.0.1:8000/plasmic-host")).toBe(
-      "http://127.0.0.1:8000/plasmic-host"
+      "http://127.0.0.1:8000/plasmic-host",
     );
   });
 
@@ -44,24 +44,24 @@ describe("normalizeHostUrl", () => {
     expect(normalizeHostUrl("https://my-app.com")).toBe("https://my-app.com/");
     expect(normalizeHostUrl("https://my-app.com/")).toBe("https://my-app.com/");
     expect(normalizeHostUrl("https://my-app.com/plasmic-host")).toBe(
-      "https://my-app.com/plasmic-host"
+      "https://my-app.com/plasmic-host",
     );
     expect(normalizeHostUrl("https://my-app.com/plasmic-host/")).toBe(
-      "https://my-app.com/plasmic-host/"
+      "https://my-app.com/plasmic-host/",
     );
 
     // omits :80 and :443 when matches http/https
     expect(normalizeHostUrl("http://my-app.com:80/")).toBe(
-      "http://my-app.com/"
+      "http://my-app.com/",
     );
     expect(normalizeHostUrl("http://my-app.com:443/")).toBe(
-      "http://my-app.com:443/"
+      "http://my-app.com:443/",
     );
     expect(normalizeHostUrl("https://my-app.com:80/")).toBe(
-      "https://my-app.com:80/"
+      "https://my-app.com:80/",
     );
     expect(normalizeHostUrl("https://my-app.com:443/")).toBe(
-      "https://my-app.com/"
+      "https://my-app.com/",
     );
   });
 });

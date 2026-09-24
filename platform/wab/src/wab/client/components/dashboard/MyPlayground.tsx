@@ -31,9 +31,8 @@ function MyPlayground_(props: MyPlaygroundProps, ref: HTMLElementRefOf<"div">) {
       query: "byWorkspace",
       workspaceId,
     });
-    const databases = await appCtx.api.listCmsDatabasesForWorkspace(
-      workspaceId
-    );
+    const databases =
+      await appCtx.api.listCmsDatabasesForWorkspace(workspaceId);
     const perms = uniqBy([...workspacePerms, ...projectsPerms], (p) => p.id);
     return { workspace, projects, databases, perms };
   }, []);

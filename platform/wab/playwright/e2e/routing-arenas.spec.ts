@@ -20,8 +20,8 @@ test.describe("routing", () => {
 
     await expect(page).toHaveURL(
       new RegExp(
-        `/-/Custom-arena-1\\?arena_type=custom&arena=Custom%20arena%201`
-      )
+        `/-/Custom-arena-1\\?arena_type=custom&arena=Custom%20arena%201`,
+      ),
     );
 
     const projNavButton = models.studio.frame.locator("#proj-nav-button");
@@ -30,7 +30,7 @@ test.describe("routing", () => {
 
     const selectedArenaItem = models.studio.frame
       .locator(
-        '[class*="plasmic_kit_style_controls-PlasmicRowItem-module__rootisSelected"]'
+        '[class*="plasmic_kit_style_controls-PlasmicRowItem-module__rootisSelected"]',
       )
       .filter({ hasText: "Custom arena 1" });
 
@@ -39,7 +39,7 @@ test.describe("routing", () => {
     await page.waitForTimeout(500);
 
     const renameOption = models.studio.frame.locator(
-      'li[data-menu-id="proj-item-menu-rename"]'
+      'li[data-menu-id="proj-item-menu-rename"]',
     );
     await renameOption.waitFor({ state: "visible", timeout: 5000 });
     await renameOption.click();
@@ -53,7 +53,7 @@ test.describe("routing", () => {
     await page.waitForTimeout(500);
 
     await expect(page).toHaveURL(
-      new RegExp(`/-/FirstArena\\?arena_type=custom&arena=FirstArena`)
+      new RegExp(`/-/FirstArena\\?arena_type=custom&arena=FirstArena`),
     );
 
     await models.studio.leftPanel.createNewPage("My/Page");
@@ -65,31 +65,31 @@ test.describe("routing", () => {
     await models.studio.projectPanel();
     const myComponentItem = models.studio.frame
       .locator(
-        '[class*="plasmic_kit_style_controls-PlasmicRowItem-module__root-"]'
+        '[class*="plasmic_kit_style_controls-PlasmicRowItem-module__root-"]',
       )
       .filter({ hasText: "MyComponent" });
     await myComponentItem.click();
 
     await expect(page).toHaveURL(
-      new RegExp(`/-/MyComponent\\?arena_type=component&arena=`)
+      new RegExp(`/-/MyComponent\\?arena_type=component&arena=`),
     );
 
     await models.studio.projectPanel();
     const myPageItem = models.studio.frame
       .locator(
-        '[class*="plasmic_kit_style_controls-PlasmicRowItem-module__root-"]'
+        '[class*="plasmic_kit_style_controls-PlasmicRowItem-module__root-"]',
       )
       .filter({ hasText: "/my/page" });
     await myPageItem.click();
 
     await expect(page).toHaveURL(
-      new RegExp(`/-/My-Page\\?arena_type=page&arena=`)
+      new RegExp(`/-/My-Page\\?arena_type=page&arena=`),
     );
 
     await goToProject(page, `/projects/${projectId}`);
 
     await expect(page).toHaveURL(
-      new RegExp(`/-/FirstArena\\?arena_type=custom&arena=FirstArena`)
+      new RegExp(`/-/FirstArena\\?arena_type=custom&arena=FirstArena`),
     );
 
     const projNavButtonCheck = models.studio.frame.locator("#proj-nav-button");
@@ -97,11 +97,11 @@ test.describe("routing", () => {
 
     await goToProject(
       page,
-      `/projects/${projectId}/-/NonExistentArena?arena_type=arena&arena=NonExistentArena`
+      `/projects/${projectId}/-/NonExistentArena?arena_type=arena&arena=NonExistentArena`,
     );
 
     await expect(page).toHaveURL(
-      new RegExp(`/-/FirstArena\\?arena_type=custom&arena=FirstArena`)
+      new RegExp(`/-/FirstArena\\?arena_type=custom&arena=FirstArena`),
     );
 
     const projNavButtonCheck2 = models.studio.frame.locator("#proj-nav-button");

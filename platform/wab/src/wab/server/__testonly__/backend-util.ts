@@ -16,11 +16,11 @@ export async function withDb(
     dbs: (() => DbMgr)[],
     project: Project,
     em: EntityManager,
-    dburi: string
+    dburi: string,
   ) => Promise<void>,
   opts?: {
     numUsers?: number;
-  }
+  },
 ): Promise<void> {
   await withDatabase(async (dburi, dbname) => {
     const con = await ensureDbConnection(dburi, dbname);
@@ -41,11 +41,11 @@ export async function withDb(
           });
           await sudo.markEmailAsVerified(user);
           return user;
-        })
+        }),
       );
       // Always discard the cache since perms are changing.
       const dbs = users.map(
-        (user) => () => new DbMgr(em, normalActor(user.id))
+        (user) => () => new DbMgr(em, normalActor(user.id)),
       );
       const { workspace } = await getTeamAndWorkspace(dbs[0]());
       const { project } = await dbs[0]().createProject({
@@ -58,7 +58,7 @@ export async function withDb(
 }
 
 async function withDatabase(
-  f: (dburi: string, dbname: string) => Promise<void>
+  f: (dburi: string, dbname: string) => Promise<void>,
 ) {
   const { dburi, dbname, cleanup } = await createDatabase();
   try {
@@ -72,7 +72,7 @@ export type DbTestArgs = Parameters<Parameters<typeof withDb>[0]>;
 
 export async function getTeamAndWorkspace(db1: DbMgr) {
   const teams = (await db1.getAffiliatedTeams()).filter(
-    (it) => !it.personalTeamOwnerId
+    (it) => !it.personalTeamOwnerId,
   );
   const team = ensure(teams[0], "");
   const workspaces = await db1.getWorkspacesByTeams(teams.map((t) => t.id));
@@ -93,7 +93,7 @@ export async function createDatabase(name = "test") {
     : `wab_dev_${name}${process.env.VITEST_POOL_ID ?? ""}`;
   const sucon = await ensureDbConnection(
     "postgresql://superwab@localhost/postgres",
-    "super"
+    "super",
   );
   await sucon.query("select 1");
   await sucon.query(`drop database if exists ${dbname} with (force);`);
@@ -132,11 +132,11 @@ export async function createBackend(
   dburi: string,
   opts?: {
     preferredPorts?: number[];
-  }
+  },
 ) {
   const port = await getPort(
     // Casting as any because the type definition is behind
-    (opts?.preferredPorts ? { port: opts.preferredPorts } : undefined) as any
+    (opts?.preferredPorts ? { port: opts.preferredPorts } : undefined) as any,
   );
 
   process.env.DISABLE_BWRAP = "1";
@@ -181,19 +181,19 @@ export async function createBackend(
           }
         },
       };
-    }
+    },
   );
 }
 
 async function withEnvOverrides<T>(
   overrides: Record<string, any>,
-  f: () => Promise<T>
+  f: () => Promise<T>,
 ) {
   const origValues = Object.fromEntries(
     Object.keys(overrides).map((key) => [
       key,
       key in process.env ? process.env[key] : null,
-    ])
+    ]),
   );
   try {
     for (const [key, val] of Object.entries(overrides)) {

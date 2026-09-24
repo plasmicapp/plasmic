@@ -23,8 +23,8 @@ describe("animations", () => {
     it("should keep `var(--anim-<uuid>)` references as the name", () => {
       expect(
         parseCssAnimation(
-          "var(--anim-amPxFRYy2Bqz) 1s ease-in-out 0s 1 normal none running"
-        )
+          "var(--anim-amPxFRYy2Bqz) 1s ease-in-out 0s 1 normal none running",
+        ),
       ).toMatchObject({
         name: "var(--anim-amPxFRYy2Bqz)",
         duration: "1s",
@@ -34,7 +34,9 @@ describe("animations", () => {
 
     it("should parse animation with all properties", () => {
       expect(
-        parseCssAnimation("fadeOut 2s ease-in 0.5s 3 alternate forwards paused")
+        parseCssAnimation(
+          "fadeOut 2s ease-in 0.5s 3 alternate forwards paused",
+        ),
       ).toMatchObject({
         duration: "2s",
         timingFunction: "ease-in",
@@ -153,7 +155,7 @@ describe("animations", () => {
 
     it("should parse animation in different order", () => {
       expect(
-        parseCssAnimation("myAnim ease-in-out 2s backwards infinite")
+        parseCssAnimation("myAnim ease-in-out 2s backwards infinite"),
       ).toMatchObject({
         duration: "2s",
         timingFunction: "ease-in-out",
@@ -186,7 +188,7 @@ describe("animations", () => {
           direction: "normal",
           fillMode: "none",
           playState: "running",
-        })
+        }),
       ).toEqual("slideIn 1s ease 0s 1 normal none running");
     });
 
@@ -201,7 +203,7 @@ describe("animations", () => {
           direction: "alternate",
           fillMode: "forwards",
           playState: "paused",
-        })
+        }),
       ).toEqual("fadeOut 2s ease-in 0.5s 3 alternate forwards paused");
     });
 
@@ -216,7 +218,7 @@ describe("animations", () => {
           direction: "normal",
           fillMode: "none",
           playState: "running",
-        })
+        }),
       ).toEqual("spin 1s linear 0s infinite normal none running");
     });
   });
@@ -240,8 +242,8 @@ describe("animations", () => {
     it("should parse multiple comma-separated animations", () => {
       expect(
         parseCssAnimations(
-          "fadeIn 1s, slideUp 2s ease-in, rotate 3s linear infinite"
-        )
+          "fadeIn 1s, slideUp 2s ease-in, rotate 3s linear infinite",
+        ),
       ).toEqual([
         {
           duration: "1s",
@@ -299,7 +301,7 @@ describe("animations", () => {
             fillMode: "none" as const,
             playState: "running" as const,
           },
-        ])
+        ]),
       ).toEqual("slideIn 1s ease 0s 1 normal none running");
     });
 
@@ -326,9 +328,9 @@ describe("animations", () => {
             fillMode: "forwards" as const,
             playState: "running" as const,
           },
-        ])
+        ]),
       ).toEqual(
-        "fadeIn 1s ease 0s 1 normal none running, slideUp 2s ease-in 0s 1 normal forwards running"
+        "fadeIn 1s ease 0s 1 normal none running, slideUp 2s ease-in 0s 1 normal forwards running",
       );
     });
 

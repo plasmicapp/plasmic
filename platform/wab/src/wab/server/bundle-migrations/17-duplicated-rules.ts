@@ -1,8 +1,8 @@
-import { ensureInstance } from "@/wab/shared/common";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { loadDepPackages } from "@/wab/server/db/DbBundleLoader";
 import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { Bundler } from "@/wab/shared/bundler";
+import { ensureInstance } from "@/wab/shared/common";
 import { ProjectDependency, Site } from "@/wab/shared/model/classes";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
@@ -20,7 +20,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const siteOrProjectDep = ensureInstance(
     bundler.unbundle(bundle, entity.id),
     Site,
-    ProjectDependency
+    ProjectDependency,
   );
 
   // OBSOLETED by 183-
@@ -59,7 +59,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "17-duplicated-rules"
+    "17-duplicated-rules",
   );
   Object.assign(bundle, newBundle);
 };

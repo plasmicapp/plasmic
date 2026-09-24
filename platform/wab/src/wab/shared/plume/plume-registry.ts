@@ -41,7 +41,7 @@ export interface PlumeCanvasPlugin {
     },
     component: Component,
     viewCtx: ViewCtx,
-    createCanvasComponent: (comp: Component) => React.ComponentType<any>
+    createCanvasComponent: (comp: Component) => React.ComponentType<any>,
   ): React.ComponentType<any>;
 }
 
@@ -49,7 +49,7 @@ export interface PlumeCodegenPlugin {
   genHook: (ctx: SerializerBaseContext) => string;
   genDefaultExternalProps: (
     ctx: SerializerBaseContext,
-    opts?: { typeName?: string }
+    opts?: { typeName?: string },
   ) => string;
   genSkeleton: (ctx: SerializerBaseContext) => string;
   genSkeletonImports: (ctx: SerializerBaseContext) => {
@@ -64,7 +64,7 @@ export interface PlumeCodegenPlugin {
    */
   twiddleGenInstanceProps?: (
     tpl: TplComponent,
-    serializedProps: Record<string, string>
+    serializedProps: Record<string, string>,
   ) => void;
   tagToAttachEventHandlers?: string;
 }
@@ -115,7 +115,7 @@ export interface PlumeEditorPlugin {
   getInstancePropEditorEnumValues?: (
     valComp: ValComponent,
     prop: string,
-    viewCtx: ViewCtx
+    viewCtx: ViewCtx,
   ) => string[] | null;
 
   /**
@@ -145,7 +145,7 @@ export interface PlumeEditorPlugin {
    * an artboard or live frame
    */
   getArtboardRootDefaultProps?: (
-    component: Component
+    component: Component,
   ) => Record<string, any> | undefined;
 
   /**
@@ -154,7 +154,7 @@ export interface PlumeEditorPlugin {
   onComponentCreated?: (
     site: Site,
     plumeSite: Site,
-    component: Component
+    component: Component,
   ) => void;
 
   /**
@@ -162,7 +162,7 @@ export interface PlumeEditorPlugin {
    */
   onComponentInserted?: (
     component: Component,
-    tplComponent: TplComponent
+    tplComponent: TplComponent,
   ) => void;
   getEventHandlers?: () => string[];
 
@@ -227,7 +227,8 @@ export interface PlumeDocsPlugin {
 }
 
 export interface PlumePlugin
-  extends PlumeCanvasPlugin,
+  extends
+    PlumeCanvasPlugin,
     PlumeCodegenPlugin,
     PlumeEditorPlugin,
     PlumeDocsPlugin {}
@@ -290,7 +291,7 @@ export function getPlumeVariantDef(component: Component, variant: Variant) {
   }
   const groupName = toVarName(variant.parent.param.variable.name);
   return plugin.componentMeta.variantDefs.find(
-    (d) => d.group === groupName && d.variant === toVarName(variant.name)
+    (d) => d.group === groupName && d.variant === toVarName(variant.name),
   );
 }
 
@@ -302,8 +303,8 @@ export function getPlumeElementDef(component: Component, node: TplNode) {
   const nodeName = node.name
     ? toVarName(node.name)
     : component.tplTree === node
-    ? "root"
-    : undefined;
+      ? "root"
+      : undefined;
   if (!nodeName) {
     return undefined;
   }
@@ -324,6 +325,6 @@ export function getPlumeSlotDef(component: Component, param: Param) {
     return undefined;
   }
   return plugin.componentMeta.slotDefs.find(
-    (d) => d.name === toVarName(param.variable.name)
+    (d) => d.name === toVarName(param.variable.name),
   );
 }

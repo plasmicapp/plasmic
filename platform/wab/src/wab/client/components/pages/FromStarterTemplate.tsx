@@ -22,7 +22,7 @@ export function FromStarterTemplate(props: {
       if (projectId) {
         const { projectId: newProjectId } = await appCtx.api.cloneProject(
           projectId,
-          { name, workspaceId }
+          { name, workspaceId },
         );
         return newProjectId;
       } else if (baseProjectId) {
@@ -31,7 +31,7 @@ export function FromStarterTemplate(props: {
             baseProjectId,
             name,
             workspaceId,
-            version
+            version,
           );
         return newProjectId;
       }
@@ -45,13 +45,13 @@ export function FromStarterTemplate(props: {
               projectId: newProjectId,
             });
           }
-        })
+        }),
       );
     } else if (!appCtx.selfInfo) {
       appCtx.router.routeTo(APP_ROUTES.login.fill({}, { continueTo: path }));
     } else {
       appCtx.router.routeTo(
-        APP_ROUTES.emailVerification.fill({}, { continueTo: path })
+        APP_ROUTES.emailVerification.fill({}, { continueTo: path }),
       );
     }
   }, [projectId, baseProjectId, appCtx, name]);

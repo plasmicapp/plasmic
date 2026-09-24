@@ -25,7 +25,7 @@ export function unwrap<T, E>(result: Result<T, E>): T {
 export function ensureOk<T, E>(result: Result<T, E>): T {
   if (result.isErr()) {
     throw new AssertionError(
-      `Expected Ok result, but got Err: ${formatErrorMessage(result.error)}`
+      `Expected Ok result, but got Err: ${formatErrorMessage(result.error)}`,
     );
   }
   return result.value;
@@ -38,7 +38,7 @@ export function ensureOk<T, E>(result: Result<T, E>): T {
 export function ensureErr<T, E>(result: Result<T, E>): E {
   if (result.isOk()) {
     throw new AssertionError(
-      `Expected Err result, but got Ok: ${formatErrorMessage(result.value)}`
+      `Expected Err result, but got Ok: ${formatErrorMessage(result.value)}`,
     );
   }
   return result.error;

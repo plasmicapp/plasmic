@@ -101,14 +101,14 @@ describe("matchScore", () => {
   it("matches a punctuated query against the whole string", () => {
     // The email is one searchable string, so "john.doe" prefixes it directly.
     expect(
-      matchScore(["John", "Doe", "john.doe@x.com"], "john.doe")
+      matchScore(["John", "Doe", "john.doe@x.com"], "john.doe"),
     ).not.toBeUndefined();
     expect(matchScore(["John", "Smith"], "john.doe")).toBeUndefined();
   });
 
   it("scores a prefix match above a substring match", () => {
     expect(
-      better(matchScore(["hello"], "hel"), matchScore(["hello"], "ell"))
+      better(matchScore(["hello"], "hel"), matchScore(["hello"], "ell")),
     ).toBe(true);
   });
 
@@ -117,8 +117,8 @@ describe("matchScore", () => {
     expect(
       better(
         matchScore(["Jo", "Smith"], "jo"),
-        matchScore(["Jo", "Smith"], "smith")
-      )
+        matchScore(["Jo", "Smith"], "smith"),
+      ),
     ).toBe(true);
   });
 });

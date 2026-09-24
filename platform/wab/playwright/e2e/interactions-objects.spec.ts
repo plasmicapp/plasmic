@@ -19,7 +19,7 @@ test.describe("state-management-object-interactions", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -62,11 +62,11 @@ test.describe("state-management-object-interactions", () => {
     await models.studio.withinLiveMode(async (liveFrame) => {
       await expect(liveFrame.locator("body")).toBeVisible();
       await expect(
-        liveFrame.getByText(JSON.stringify({ a: 1, b: 2 }))
+        liveFrame.getByText(JSON.stringify({ a: 1, b: 2 })),
       ).toBeVisible();
       await liveFrame.getByRole("button", { name: "Set to" }).click();
       await expect(
-        liveFrame.getByText(JSON.stringify({ a: 3, b: 4 }))
+        liveFrame.getByText(JSON.stringify({ a: 3, b: 4 })),
       ).toBeVisible();
       await liveFrame.getByRole("button", { name: "Clear" }).click();
       await expect(liveFrame.getByText("undefined")).toBeVisible();

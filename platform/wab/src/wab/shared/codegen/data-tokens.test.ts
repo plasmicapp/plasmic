@@ -34,7 +34,7 @@ describe("data tokens: codegen", () => {
 
   it("should codegen correct app dir contents with data tokens in metadata", async () => {
     const site = generateSiteFromBundle(
-      dataTokensPageMetaBundle as [string, Bundle][]
+      dataTokensPageMetaBundle as [string, Bundle][],
     );
     await codegen(dir.name, site, {
       platform: "nextjs",

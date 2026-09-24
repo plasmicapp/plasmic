@@ -36,7 +36,7 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog({
   };
   const currentArena = ensure(
     studioCtx.currentArena,
-    "Current arena should exist"
+    "Current arena should exist",
   );
 
   const threadSubject = openedNewThread.tpl;
@@ -60,7 +60,7 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog({
               threadSubject,
               openedNewThread.viewCtx
                 .effectiveCurrentVariantSetting(threadSubject)
-                .rsh()
+                .rsh(),
             ),
             close: {
               onClick: () => commentsCtx.closeNewThreadDialog(),
@@ -82,12 +82,12 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog({
                     subject: ensure(subjectAddr, "Subject Addr should exist"),
                     variants: getSetOfPinnedVariantsForViewCtx(
                       ensure(openedNewThread.viewCtx, ""),
-                      commentsCtx.bundler()
+                      commentsCtx.bundler(),
                     ).map((pv) =>
                       ensure(
                         commentsCtx.bundler().addrOf(pv),
-                        "Variant Addr should exist"
-                      )
+                        "Variant Addr should exist",
+                      ),
                     ),
                   };
                   commentsCtx.postRootComment({

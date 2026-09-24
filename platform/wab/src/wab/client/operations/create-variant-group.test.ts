@@ -10,7 +10,7 @@ import * as Tpls from "@/wab/shared/core/tpls";
 describe("createVariantGroup", () => {
   function setupWithComponent() {
     const { site, tplMgr } = setupComponentWithTplTree(
-      Tpls.mkTplTagX("div", {})
+      Tpls.mkTplTagX("div", {}),
     );
     const created = createComponent({
       tplMgr,

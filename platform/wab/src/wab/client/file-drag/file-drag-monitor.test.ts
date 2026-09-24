@@ -10,7 +10,7 @@ function fireDrag(
   opts: {
     types?: string[];
     relatedTarget?: Element | null;
-  } = {}
+  } = {},
 ) {
   // `instanceof Window` is per-realm, so it fails for iframe windows.
   const win =
@@ -31,7 +31,7 @@ function firePointerMove(win: Window) {
   win.dispatchEvent(
     new (win as unknown as typeof globalThis).MouseEvent("pointermove", {
       bubbles: true,
-    })
+    }),
   );
 }
 
@@ -53,7 +53,7 @@ function mkTarget() {
 
 function remoteEvent(
   type: RemoteFileDragEvent["type"],
-  timestamp = Date.now()
+  timestamp = Date.now(),
 ): RemoteFileDragEvent {
   return { type, timestamp };
 }
@@ -135,7 +135,7 @@ describe("FileDragMonitor", () => {
       fireDrag(target, "dragenter");
       expect(local).toHaveBeenCalledTimes(1);
       expect(local).toHaveBeenCalledWith(
-        expect.objectContaining({ type: "dragenter", local: true, target })
+        expect.objectContaining({ type: "dragenter", local: true, target }),
       );
       expect(remote).toHaveBeenCalledTimes(1);
       expect(remote).toHaveBeenCalledWith({

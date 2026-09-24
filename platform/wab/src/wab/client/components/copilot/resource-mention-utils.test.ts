@@ -129,7 +129,7 @@ function mkTestSite() {
 /** A project dependency whose site holds one of each mentionable resource. */
 function mkTestDep(
   name: string,
-  opts: { projectDependencies?: ProjectDependency[] } = {}
+  opts: { projectDependencies?: ProjectDependency[] } = {},
 ) {
   const site = createSite(opts);
   const tpl = mkTplTagX("div", { name: `${name}Element` });
@@ -248,14 +248,14 @@ describe("parseMention", () => {
 describe("mkMentionRaw", () => {
   it("stores the uuid, so a later rename can't break the mention", () => {
     expect(mkMentionRaw({ kind: "token", uuid: "t1", name: "primary" })).toBe(
-      "token:t1|primary"
+      "token:t1|primary",
     );
   });
 
   it("escapes the grammar's delimiters in the label", () => {
     // `/` is not a delimiter of this grammar, so it stays readable.
     expect(mkMentionRaw({ kind: "token", uuid: "t1", name: "a|b>c/d%e" })).toBe(
-      "token:t1|a%7Cb%3Ec/d%25e"
+      "token:t1|a%7Cb%3Ec/d%25e",
     );
   });
 
@@ -267,7 +267,7 @@ describe("mkMentionRaw", () => {
         componentUuid: "comp1",
         tplType: "text",
         name: "Title",
-      })
+      }),
     ).toBe("tpl:comp1/tpl1|Title");
   });
 
@@ -278,7 +278,7 @@ describe("mkMentionRaw", () => {
         uuid: "v1",
         componentUuid: "comp1",
         name: "Large",
-      })
+      }),
     ).toBe("componentVariant:comp1/v1|Large");
   });
 
@@ -346,8 +346,8 @@ describe("findMissingMentions", () => {
     expect(
       findMissingMentions(
         `use @<token:${transitive.token.uuid}|Transitive-primary>`,
-        s
-      )
+        s,
+      ),
     ).toEqual(["Transitive-primary"]);
   });
 
@@ -375,31 +375,31 @@ describe("getMentionUiId", () => {
 
   it("returns a Model UiId for a component", () => {
     expect(getMentionUiId("component", component.uuid, site)).toBe(
-      mkModelUiId({ typeTag: "Component", uuid: component.uuid })
+      mkModelUiId({ typeTag: "Component", uuid: component.uuid }),
     );
   });
 
   it("returns a Model UiId for a page", () => {
     expect(getMentionUiId("page", page.uuid, site)).toBe(
-      mkModelUiId({ typeTag: "Component", uuid: page.uuid })
+      mkModelUiId({ typeTag: "Component", uuid: page.uuid }),
     );
   });
 
   it("returns a Model UiId for a token", () => {
     expect(getMentionUiId("token", token.uuid, site)).toBe(
-      mkModelUiId({ typeTag: "StyleToken", uuid: token.uuid })
+      mkModelUiId({ typeTag: "StyleToken", uuid: token.uuid }),
     );
   });
 
   it("returns a Model UiId for a global variant", () => {
     expect(getMentionUiId("globalVariant", variant.uuid, site)).toBe(
-      mkModelUiId({ typeTag: "Variant", uuid: variant.uuid })
+      mkModelUiId({ typeTag: "Variant", uuid: variant.uuid }),
     );
   });
 
   it("returns a Model UiId for an animation", () => {
     expect(getMentionUiId("animation", animation.uuid, site)).toBe(
-      mkModelUiId({ typeTag: "AnimationSequence", uuid: animation.uuid })
+      mkModelUiId({ typeTag: "AnimationSequence", uuid: animation.uuid }),
     );
   });
 
@@ -414,20 +414,20 @@ describe("getMentionUiId", () => {
       return tplMgr.createVariant(comp, group, "Large");
     });
     expect(
-      getMentionUiId("componentVariant", `${comp.uuid}/${cv.uuid}`, s)
+      getMentionUiId("componentVariant", `${comp.uuid}/${cv.uuid}`, s),
     ).toBe(mkModelUiId({ typeTag: "Variant", uuid: cv.uuid }));
   });
 
   it("returns a Tpl UiId for a tpl (composite uuid)", () => {
     expect(getMentionUiId("tpl", `${component.uuid}/${tpl.uuid}`, site)).toBe(
-      mkTplUiId(component.uuid, tpl.uuid)
+      mkTplUiId(component.uuid, tpl.uuid),
     );
   });
 
   it("returns undefined when the resource no longer exists", () => {
     expect(getMentionUiId("component", "nope", site)).toBeUndefined();
     expect(
-      getMentionUiId("tpl", `${component.uuid}/nope`, site)
+      getMentionUiId("tpl", `${component.uuid}/nope`, site),
     ).toBeUndefined();
   });
 
@@ -436,29 +436,29 @@ describe("getMentionUiId", () => {
       mkModelUiId({
         typeTag: "AnimationSequence",
         uuid: imported.animation.uuid,
-      })
+      }),
     );
   });
 
   it("resolves a directly imported global variant", () => {
     expect(getMentionUiId("globalVariant", imported.variant.uuid, site)).toBe(
-      mkModelUiId({ typeTag: "Variant", uuid: imported.variant.uuid })
+      mkModelUiId({ typeTag: "Variant", uuid: imported.variant.uuid }),
     );
   });
 
   it("does not resolve a transitively imported resource", () => {
     // Mentions stop at direct deps, matching what the `read` tool can fetch.
     expect(
-      getMentionUiId("component", transitive.component.uuid, site)
+      getMentionUiId("component", transitive.component.uuid, site),
     ).toBeUndefined();
     expect(
-      getMentionUiId("token", transitive.token.uuid, site)
+      getMentionUiId("token", transitive.token.uuid, site),
     ).toBeUndefined();
     expect(
-      getMentionUiId("animation", transitive.animation.uuid, site)
+      getMentionUiId("animation", transitive.animation.uuid, site),
     ).toBeUndefined();
     expect(
-      getMentionUiId("globalVariant", transitive.variant.uuid, site)
+      getMentionUiId("globalVariant", transitive.variant.uuid, site),
     ).toBeUndefined();
   });
 });
@@ -468,7 +468,7 @@ const depName = (dep: ProjectDependency) => `${dep.name} (nice)`;
 const mkResources = (
   fx: ReturnType<typeof mkTestSite>,
   focusedComponent?: Component,
-  selectedTpls: TplNode[] = []
+  selectedTpls: TplNode[] = [],
 ) =>
   mkMentionableResources({
     site: fx.site,
@@ -558,7 +558,7 @@ describe("mkMentionableResources", () => {
     });
 
     expect(importedResources(own)).toContainEqual(
-      expect.objectContaining({ uuid: own.imported.registeredToken.uuid })
+      expect.objectContaining({ uuid: own.imported.registeredToken.uuid }),
     );
   });
 
@@ -578,7 +578,7 @@ describe("mkMentionableResources", () => {
     });
     // The site's own screen variant group is no longer the active one
     expect(resources).not.toContainEqual(
-      expect.objectContaining({ uuid: own.screenVariant.uuid })
+      expect.objectContaining({ uuid: own.screenVariant.uuid }),
     );
   });
 
@@ -588,18 +588,18 @@ describe("mkMentionableResources", () => {
     expect(firstImported).toBeGreaterThan(0);
     // Nothing local appears after the imports begin.
     expect(searchable.slice(firstImported).every((r) => r.fromProject)).toBe(
-      true
+      true,
     );
   });
 
   it("mentions direct dependencies only, matching what `read` can fetch", () => {
     const { searchable } = mkResources(fixture);
     expect(
-      searchable.some((r) => r.uuid === fixture.imported.component.uuid)
+      searchable.some((r) => r.uuid === fixture.imported.component.uuid),
     ).toBe(true);
     // The transitive dep is reachable from the imported one, but out of scope.
     expect(
-      searchable.some((r) => r.uuid === fixture.transitive.component.uuid)
+      searchable.some((r) => r.uuid === fixture.transitive.component.uuid),
     ).toBe(false);
   });
 
@@ -608,7 +608,7 @@ describe("mkMentionableResources", () => {
       fixture.tpl,
     ]);
     expect(searchable).toContainEqual(
-      expect.objectContaining({ kind: "tpl", uuid: fixture.tpl.uuid })
+      expect.objectContaining({ kind: "tpl", uuid: fixture.tpl.uuid }),
     );
     expect(searchable).toContainEqual({
       kind: "componentVariant",
@@ -619,7 +619,7 @@ describe("mkMentionableResources", () => {
     });
     // An unnamed element is not searchable, so it is left out of `searchable`.
     expect(searchable).not.toContainEqual(
-      expect.objectContaining({ uuid: fixture.unnamedTpl.uuid })
+      expect.objectContaining({ uuid: fixture.unnamedTpl.uuid }),
     );
   });
 
@@ -633,7 +633,7 @@ describe("mkMentionableResources", () => {
 const selectionOf = (
   fx: ReturnType<typeof mkTestSite>,
   focusedComponent?: Component,
-  selectedTpls: TplNode[] = []
+  selectedTpls: TplNode[] = [],
 ) => mkResources(fx, focusedComponent, selectedTpls).selection;
 
 describe("mkMentionableResources: the canvas selection", () => {
@@ -659,7 +659,7 @@ describe("mkMentionableResources: the canvas selection", () => {
   it("describes a selected element that has no name", () => {
     const { elements } = ensure(
       selectionOf(fixture, fixture.component, [fixture.unnamedTpl]),
-      "a component is open"
+      "a component is open",
     );
     expect(elements[0].name).toBe(`(unnamed ${FREE_CONTAINER_LOWER})`);
   });
@@ -681,7 +681,7 @@ describe("mkMentionableResources: the canvas selection", () => {
         fixture.tpl,
         fixture.unnamedTpl,
       ]),
-      "a component is open"
+      "a component is open",
     );
     expect(elements.map((el) => el.uuid)).toEqual([
       fixture.tpl.uuid,
@@ -692,18 +692,18 @@ describe("mkMentionableResources: the canvas selection", () => {
   it("mentions the selected element as the resource it resolves to", () => {
     const { elements } = ensure(
       selectionOf(fixture, fixture.component, [fixture.unnamedTpl]),
-      "a component is open"
+      "a component is open",
     );
     const content = mkMentionRaw(elements[0]);
     expect(findMissingMentions(`tweak @<${content}>`, fixture.site)).toEqual(
-      []
+      [],
     );
     const { kind, uuid } = ensure(
       parseMention(`@<${content}>`),
-      "must parse back"
+      "must parse back",
     );
     expect(
-      getMentionUiId(kind, ensure(uuid, "must carry a uuid"), fixture.site)
+      getMentionUiId(kind, ensure(uuid, "must carry a uuid"), fixture.site),
     ).toBe(`Tpl:${fixture.component.uuid}/${fixture.unnamedTpl.uuid}`);
   });
 });
@@ -730,9 +730,9 @@ describe("getResourceMatchScore", () => {
       name: "the-primary",
     };
     expect(
-      ensure(getResourceMatchScore(token, "prim"), "matches")
+      ensure(getResourceMatchScore(token, "prim"), "matches"),
     ).toBeGreaterThan(
-      ensure(getResourceMatchScore(other, "prim"), "also matches")
+      ensure(getResourceMatchScore(other, "prim"), "also matches"),
     );
   });
 
@@ -740,8 +740,8 @@ describe("getResourceMatchScore", () => {
     expect(
       getResourceMatchScore(
         { ...token, fromProject: "Design system" },
-        "Design"
-      )
+        "Design",
+      ),
     ).toBeDefined();
   });
 

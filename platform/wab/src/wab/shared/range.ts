@@ -11,7 +11,7 @@ export function mkRange<T>(
   opts?: {
     lowerExclusive?: boolean;
     upperExclusive?: boolean;
-  }
+  },
 ): Range<T> {
   return {
     lower,

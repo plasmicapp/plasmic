@@ -32,7 +32,7 @@ export function showError(
     title?: string;
     description?: string;
     type?: IconType;
-  }
+  },
 ) {
   const { title = "Unexpected error", description, type } = opts ?? {};
   const deriveErrorInfo = () => {
@@ -188,7 +188,7 @@ export function reportError(error: Error, eventName?: string) {
 
 export function reportSilentErrorMessage(
   msg: string,
-  eventName = "Silent Error"
+  eventName = "Silent Error",
 ) {
   Sentry.captureMessage(msg);
   analytics().track(eventName, {
@@ -200,7 +200,7 @@ export function notifyReferencingNode(
   title: string,
   message: string,
   referencingNode: TplNode | null | undefined,
-  studioCtx: StudioCtx
+  studioCtx: StudioCtx,
 ) {
   const owningComponent = referencingNode
     ? tryGetTplOwnerComponent(referencingNode)
@@ -216,7 +216,7 @@ export function notifyReferencingNode(
           <a
             onClick={() => {
               spawn(
-                studioCtx.setStudioFocusOnTpl(owningComponent, referencingNode)
+                studioCtx.setStudioFocusOnTpl(owningComponent, referencingNode),
               );
               notification.destroy(key);
             }}
@@ -235,14 +235,14 @@ export function normalizeError(error: any) {
   return isStampedIgnoreError(error)
     ? error
     : error instanceof Error
-    ? error
-    : error && error.error
-    ? (error.error as Error)
-    : typeof error === "string"
-    ? new Error(error)
-    : new Error(
-        `Unknown error: ${
-          typeof error === "object" ? JSON.stringify(error) : error
-        }`
-      );
+      ? error
+      : error && error.error
+        ? (error.error as Error)
+        : typeof error === "string"
+          ? new Error(error)
+          : new Error(
+              `Unknown error: ${
+                typeof error === "object" ? JSON.stringify(error) : error
+              }`,
+            );
 }

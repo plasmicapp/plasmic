@@ -48,13 +48,13 @@ export function makeStyleTokensProviderBundle(
   cssProjectDependencies: CssProjectDependencies,
   projectModuleBundle: ProjectModuleBundle,
   exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">,
-  siteGenHelper?: SiteGenHelper
+  siteGenHelper?: SiteGenHelper,
 ): StyleTokensProviderBundle {
   const hasStyleTokenOverrides = site.styleTokenOverrides.length > 0;
 
   // project plasmic_tokens_override
   const overridesClassName = serializeGlobalCssClass(
-    makePlasmicTokensOverrideClassName(projectId, exportOpts)
+    makePlasmicTokensOverrideClassName(projectId, exportOpts),
   );
   // The root project may override tokens,
   // and the overridden value might reference tokens from the root project.
@@ -67,8 +67,8 @@ export function makeStyleTokensProviderBundle(
   const dataWithOverrides = `{ 
     base: ${wrapInTemplateString(
       `${embedInTemplateString(overridesClassName)} ${embedInTemplateString(
-        "data.base"
-      )}`
+        "data.base",
+      )}`,
     )}, 
     varianted: data.varianted 
   }`;
@@ -82,8 +82,8 @@ export function makeStyleTokensProviderBundle(
   const module = `${makePlasmicModulePrelude(projectId)}
   
     import { ${reactWebImports.join(", ")} } from "${getReactWebPackageName(
-    exportOpts
-  )}";
+      exportOpts,
+    )}";
 
     ${makeProjectModuleImports(projectModuleBundle)}
 
@@ -98,13 +98,13 @@ export function makeStyleTokensProviderBundle(
         : [
             makeCssImport(
               projectId,
-              makeProjectCssFileName(projectId, exportOpts)
+              makeProjectCssFileName(projectId, exportOpts),
             ),
             ...cssProjectDependencies.map((dep) =>
               makeCssImport(
                 dep.projectId,
-                makeProjectCssFileName(dep.projectId as ProjectId, exportOpts)
-              )
+                makeProjectCssFileName(dep.projectId as ProjectId, exportOpts),
+              ),
             ),
           ].join("\n")
     }
@@ -114,7 +114,7 @@ export function makeStyleTokensProviderBundle(
       projectId,
       cssProjectDependencies,
       exportOpts,
-      siteGenHelper
+      siteGenHelper,
     )};
   
     export const ${makeUseStyleTokensName()} = ${makeCreateUseStyleTokensName()}(
@@ -146,7 +146,7 @@ function makeCssImport(projectId: string, cssFileName: string) {
     "",
     cssFileName,
     projectId,
-    "projectcss"
+    "projectcss",
   );
 }
 
@@ -163,43 +163,43 @@ function projectStyleTokenData(
   projectId: ProjectId,
   cssProjectDependencies: CssProjectDependencies,
   exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">,
-  siteGenHelper?: SiteGenHelper
+  siteGenHelper?: SiteGenHelper,
 ) {
   const baseClassNames = [
     // project plasmic_tokens
     makePlasmicTokensClassName(projectId, exportOpts),
     // dependencies plasmic_tokens
     ...cssProjectDependencies.map((dep) =>
-      makePlasmicTokensClassName(dep.projectId as ProjectId, exportOpts)
+      makePlasmicTokensClassName(dep.projectId as ProjectId, exportOpts),
     ),
   ].map(serializeGlobalCssClass);
 
   const contextGlobalVariantCombos = (
     siteGenHelper?.contextGlobalVariantsWithVariantedTokens() ??
     getContextGlobalVariantsWithVariantedTokens(
-      siteFinalStyleTokensAllDeps(site)
+      siteFinalStyleTokensAllDeps(site),
     )
   ).map((v) => [v]);
   const sorter = makeGlobalVariantComboSorter(site);
 
   const globalVariantDataEntries = sortedVariantCombos(
     contextGlobalVariantCombos,
-    sorter
+    sorter,
   )
     .map((vc) => {
       assert(
         isValidComboForToken(vc),
-        "Can only build varianted combos with one variant"
+        "Can only build varianted combos with one variant",
       );
       const variant = vc[0];
       const variantName = toVarName(variant.name);
       const variantGroup = ensure(
         variant.parent,
-        "Global variants always have parent group"
+        "Global variants always have parent group",
       );
       const groupName = toVarName(variantGroup.param.variable.name);
       const classNameExpr = serializeGlobalCssClass(
-        makeCssClassNameForVariantCombo(vc, exportOpts)
+        makeCssClassNameForVariantCombo(vc, exportOpts),
       );
       return `{
             className: ${classNameExpr},
@@ -210,7 +210,7 @@ function projectStyleTokenData(
     .join(",\n");
 
   const baseArg = wrapInTemplateString(
-    baseClassNames.map(embedInTemplateString).join(" ")
+    baseClassNames.map(embedInTemplateString).join(" "),
   );
 
   const variantedArg = `[

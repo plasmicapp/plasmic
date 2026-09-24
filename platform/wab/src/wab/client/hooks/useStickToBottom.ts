@@ -7,7 +7,7 @@ export interface StickToBottom {
 
 export function useStickToBottom(
   scroller: HTMLElement | null,
-  content: HTMLElement | null
+  content: HTMLElement | null,
 ): StickToBottom {
   const [isStuck, _setIsStuck] = React.useState(true);
   const isStuckRef = React.useRef(true);
@@ -60,7 +60,7 @@ export function useStickToBottom(
         scrollToBottom(scroller);
       }
     },
-    [scroller, setIsStuck]
+    [scroller, setIsStuck],
   );
 
   return { isStuck, stick };

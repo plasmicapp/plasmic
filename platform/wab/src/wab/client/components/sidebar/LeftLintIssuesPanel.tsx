@@ -39,7 +39,7 @@ export type LeftLintIssuesPanelProps = DefaultLeftLintIssuesPanelProps;
 
 function LeftLintIssuesPanel_(
   props: LeftLintIssuesPanelProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   return (
     <PlasmicLeftLintIssuesPanel
@@ -86,14 +86,14 @@ const SiteIssuesList = observer(function SiteIssuesList() {
 
   const { roles: appRoles } = useAppRoles(
     studioCtx.appCtx,
-    studioCtx.siteInfo.id
+    studioCtx.siteInfo.id,
   );
 
   const siteIssues = lintSite(site, studioCtx);
   const [domIssues, setDomIssues] = React.useState<LintIssue[]>([]);
   const unprotectedDataQueriesIssues = lintUnprotectedDataQueries(
     site,
-    appRoles
+    appRoles,
   );
 
   const [filter, setFilter] = React.useState<string>("");
@@ -112,12 +112,12 @@ const SiteIssuesList = observer(function SiteIssuesList() {
   const filteredIssues = unfilteredIssues.filter(
     (t) =>
       (matcher.matches(t.type) || matcher.matches(t.component.name)) &&
-      !disabledTypes[t.type]
+      !disabledTypes[t.type],
   );
 
   const issuesByComponent = xGroupBy(
     filteredIssues,
-    (issue) => issue.component
+    (issue) => issue.component,
   );
 
   const items: ItemOrGroup<Component | LintIssueType, LintIssue>[] = [
@@ -131,7 +131,7 @@ const SiteIssuesList = observer(function SiteIssuesList() {
         type: "item" as const,
         item: issue,
         key: issue.key,
-      }))
+      })),
     ),
   }));
 
@@ -163,7 +163,7 @@ const SiteIssuesList = observer(function SiteIssuesList() {
           Deep inspect current{" "}
           {maybe(
             studioCtx.focusedOrFirstViewCtx()?.component,
-            getPageOrComponentLabel
+            getPageOrComponentLabel,
           )}
         </Button>
       </div>
@@ -191,7 +191,7 @@ const SiteIssuesList = observer(function SiteIssuesList() {
                               issueTypes.map((issueType) => [
                                 issueType,
                                 !checked,
-                              ])
+                              ]),
                             ),
                           })
                         }
@@ -199,7 +199,7 @@ const SiteIssuesList = observer(function SiteIssuesList() {
                       >
                         {label}
                       </Checkbox>
-                    )
+                    ),
                   )}
                 </div>
               }

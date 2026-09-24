@@ -9,7 +9,7 @@ describe("getViewportAwareHeight", () => {
   it("should wrap vh in calc even when already inside calc (nested calc)", () => {
     const result = getViewportAwareHeight("calc(100vh - 20px)");
     expect(result).toBe(
-      "calc(calc(var(--viewport-height) * 100 / 100) - 20px)"
+      "calc(calc(var(--viewport-height) * 100 / 100) - 20px)",
     );
   });
 
@@ -26,14 +26,14 @@ describe("getViewportAwareHeight", () => {
   it("should wrap vh in calc even when inside clamp (nested calc)", () => {
     const result = getViewportAwareHeight("clamp(20vh, 50vh, 80vh)");
     expect(result).toBe(
-      "clamp(calc(var(--viewport-height) * 20 / 100),calc(var(--viewport-height) * 50 / 100),calc(var(--viewport-height) * 80 / 100))"
+      "clamp(calc(var(--viewport-height) * 20 / 100),calc(var(--viewport-height) * 50 / 100),calc(var(--viewport-height) * 80 / 100))",
     );
   });
 
   it("should handle multiple vh values with nested calcs", () => {
     const result = getViewportAwareHeight("calc(100vh - 50vh)");
     expect(result).toBe(
-      "calc(calc(var(--viewport-height) * 100 / 100) - calc(var(--viewport-height) * 50 / 100))"
+      "calc(calc(var(--viewport-height) * 100 / 100) - calc(var(--viewport-height) * 50 / 100))",
     );
   });
 
@@ -55,30 +55,30 @@ describe("getViewportAwareHeight", () => {
   it("should handle complex nested calc expressions", () => {
     const result = getViewportAwareHeight("calc(100vh - 10vh - 20px)");
     expect(result).toBe(
-      "calc(calc(var(--viewport-height) * 100 / 100) - calc(var(--viewport-height) * 10 / 100) - 20px)"
+      "calc(calc(var(--viewport-height) * 100 / 100) - calc(var(--viewport-height) * 10 / 100) - 20px)",
     );
   });
 
   it("should handle calc inside max with nested calcs", () => {
     const result = getViewportAwareHeight("max(calc(100vh - 50px), 300px)");
     expect(result).toBe(
-      "max(calc(calc(var(--viewport-height) * 100 / 100) - 50px),300px)"
+      "max(calc(calc(var(--viewport-height) * 100 / 100) - 50px),300px)",
     );
   });
 
   it("should handle calc inside clamp with nested calcs", () => {
     const result = getViewportAwareHeight(
-      "clamp(10vh, calc(50vh + 100px), 90vh)"
+      "clamp(10vh, calc(50vh + 100px), 90vh)",
     );
     expect(result).toBe(
-      "clamp(calc(var(--viewport-height) * 10 / 100),calc(calc(var(--viewport-height) * 50 / 100) + 100px),calc(var(--viewport-height) * 90 / 100))"
+      "clamp(calc(var(--viewport-height) * 10 / 100),calc(calc(var(--viewport-height) * 50 / 100) + 100px),calc(var(--viewport-height) * 90 / 100))",
     );
   });
 
   it("should handle min with multiple vh values and nested calcs", () => {
     const result = getViewportAwareHeight("min(100vh, 50vh + 200px)");
     expect(result).toBe(
-      "min(calc(var(--viewport-height) * 100 / 100),calc(var(--viewport-height) * 50 / 100) + 200px)"
+      "min(calc(var(--viewport-height) * 100 / 100),calc(var(--viewport-height) * 50 / 100) + 200px)",
     );
   });
 
@@ -100,7 +100,7 @@ describe("getViewportAwareHeight", () => {
   it("should handle mixed viewport height units (vh, dvh, svh, lvh)", () => {
     const result = getViewportAwareHeight("calc(100vh + 50dvh - 25svh)");
     expect(result).toBe(
-      "calc(calc(var(--viewport-height) * 100 / 100) + calc(var(--viewport-height) * 50 / 100) - calc(var(--viewport-height) * 25 / 100))"
+      "calc(calc(var(--viewport-height) * 100 / 100) + calc(var(--viewport-height) * 50 / 100) - calc(var(--viewport-height) * 25 / 100))",
     );
   });
 

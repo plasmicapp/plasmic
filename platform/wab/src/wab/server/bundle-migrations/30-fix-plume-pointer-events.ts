@@ -5,8 +5,12 @@ import {
 } from "@/wab/server/db/bundle-migration-utils";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { Bundler } from "@/wab/shared/bundler";
+import {
+  flattenTpls,
+  isTplNamable,
+  isTplVariantable,
+} from "@/wab/shared/core/tpls";
 import { TplNode } from "@/wab/shared/model/classes";
-import { flattenTpls, isTplNamable, isTplVariantable } from "@/wab/shared/core/tpls";
 
 /**
  * This is fixing https://app.shortcut.com/plasmic/story/20351/urgent-plume-button-component-click-not-working
@@ -19,7 +23,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   for (const component of site.components) {
@@ -31,7 +35,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
       removePointerEventsFromAllVariants(component.tplTree);
     } else if (component.plumeInfo.type === "select") {
       const trigger = flattenTpls(component.tplTree).find(
-        (tpl) => isTplNamable(tpl) && tpl.name === "trigger"
+        (tpl) => isTplNamable(tpl) && tpl.name === "trigger",
       );
       if (trigger) {
         removePointerEventsFromAllVariants(trigger);
@@ -44,7 +48,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "30-fix-plume-pointer-events"
+    "30-fix-plume-pointer-events",
   );
   Object.assign(bundle, newBundle);
 };

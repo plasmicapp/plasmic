@@ -1,6 +1,6 @@
 import { xAddAll } from "@/wab/shared/common";
-import { Component, Mixin, TplNode } from "@/wab/shared/model/classes";
 import { flattenTpls } from "@/wab/shared/core/tpls";
+import { Component, Mixin, TplNode } from "@/wab/shared/model/classes";
 
 export function extractUsedMixinsForComponents(components: Component[]) {
   const mixins = new Set<Mixin>();

@@ -43,7 +43,7 @@ export const SelectOptionGroupPlugin: PlumePlugin = {
         const { plasmicProps } = sub.reactWeb.useSelectOptionGroup(
           Object.assign(comp, getCompMeta()),
           omit(allProps, internalCanvasElementProps),
-          selectOptionGroupConfig as any
+          selectOptionGroupConfig as any,
         );
 
         return sub.React.createElement(comp, {
@@ -71,7 +71,7 @@ export const SelectOptionGroupPlugin: PlumePlugin = {
   genDefaultExternalProps(ctx: SerializerBaseContext, opts) {
     const { component } = ctx;
     const params = getExternalParams(ctx).filter(
-      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name))
+      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name)),
     );
     return `
       export interface ${
@@ -83,8 +83,8 @@ export const SelectOptionGroupPlugin: PlumePlugin = {
               `"${paramToVarName(ctx.component, param)}"?: ${serializeParamType(
                 component,
                 param,
-                ctx.projectFlags
-              )}`
+                ctx.projectFlags,
+              )}`,
           )
           .join(";\n")}
       }
@@ -106,12 +106,12 @@ export const SelectOptionGroupPlugin: PlumePlugin = {
     return `
       import * as React from "react";
       import {${plasmicComponentName}, ${defaultPropsName}} from "${
-      ctx.exportOpts.relPathFromImplToManagedDir
-    }/${makeComponentImportPath(
-      component,
-      ctx,
-      "render"
-    )}";  // plasmic-import: ${component.uuid}/render
+        ctx.exportOpts.relPathFromImplToManagedDir
+      }/${makeComponentImportPath(
+        component,
+        ctx,
+        "render",
+      )}";  // plasmic-import: ${component.uuid}/render
     ${this.genSkeletonImports(ctx).imports}
 
     ${componentSubstitutionApi}
@@ -151,7 +151,7 @@ export const SelectOptionGroupPlugin: PlumePlugin = {
   getSlotType(component: Component, param: Param) {
     if (param.variable.name === "children" && component.superComp) {
       const option = component.superComp.subComps.find(
-        (c) => c.plumeInfo?.type === "select-option"
+        (c) => c.plumeInfo?.type === "select-option",
       );
       if (option) {
         return typeFactory.renderable({

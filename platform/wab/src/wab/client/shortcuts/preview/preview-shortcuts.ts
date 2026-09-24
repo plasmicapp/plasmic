@@ -9,5 +9,5 @@ export const PREVIEW_SHORTCUTS = shortcutGroupToDict(
       combos: ["l", "esc"],
       description: "Exit Preview mode and return to Studio",
     },
-  })
+  }),
 );

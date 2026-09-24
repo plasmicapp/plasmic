@@ -37,7 +37,7 @@ export const FontFamilyTokenEditModal = observer(
             vsh.updateToken(token, val);
           }
           return ok();
-        })
+        }),
       );
     };
 
@@ -80,5 +80,5 @@ export const FontFamilyTokenEditModal = observer(
         </div>
       </SidebarModal>
     );
-  }
+  },
 );

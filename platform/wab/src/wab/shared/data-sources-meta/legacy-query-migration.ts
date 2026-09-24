@@ -33,7 +33,7 @@ export function checkLegacyQueryMigratable(
   source: ApiDataSource | undefined,
   invalidationRefCount: number,
   readsLegacyQueries: string[],
-  sourceError?: unknown
+  sourceError?: unknown,
 ): LegacyQueryMigrationCheck {
   const blockers: string[] = [];
   const warnings: string[] = [];
@@ -48,7 +48,7 @@ export function checkLegacyQueryMigratable(
       isForbiddenError(sourceError)
         ? "You don't have access to the workspace that owns this integration, so its configuration " +
             "can't be checked. Ask a workspace admin for viewer access, then reopen the project."
-        : "The integration this query uses could not be loaded, so its endpoint is unknown."
+        : "The integration this query uses could not be loaded, so its endpoint is unknown.",
     );
     return { migratable: false, blockers, warnings };
   }
@@ -57,42 +57,42 @@ export function checkLegacyQueryMigratable(
     blockers.push(
       `${source.source} integrations run on Plasmic's server and have no client-side equivalent; ` +
         `only ${MIGRATABLE_SOURCE_TYPES.join(
-          "/"
-        )} integrations can be migrated.`
+          "/",
+        )} integrations can be migrated.`,
     );
   }
 
   const baseUrl = source.settings?.baseUrl;
   if (typeof baseUrl !== "string" || !baseUrl) {
     blockers.push(
-      "The integration's base URL is not visible, so the request URL can't be reconstructed."
+      "The integration's base URL is not visible, so the request URL can't be reconstructed.",
     );
   } else {
     if (isInsecureBaseUrl(baseUrl)) {
       blockers.push(
         "The integration's base URL is not https. Studio and published pages load over https, " +
           "and browsers block insecure requests from https pages, so the migrated query would " +
-          "fail to fetch."
+          "fail to fetch.",
       );
     }
     if (baseUrlHasSensitiveText(baseUrl)) {
       blockers.push(
         "The integration's base URL looks like it embeds credentials. The proxy keeps the base URL " +
-          "on Plasmic's server now, but a migrated query could include it in client code."
+          "on Plasmic's server now, but a migrated query could include it in client code.",
       );
     }
   }
 
   if (op.roleId) {
     blockers.push(
-      "The query is role-gated. New data queries have no role, so migrating drops access check."
+      "The query is role-gated. New data queries have no role, so migrating drops access check.",
     );
   }
 
   if (op.cacheKey && !isBlankTemplatedString(op.cacheKey)) {
     blockers.push(
       "The query is assigned to a query group. Interactions can refresh groups by name, and " +
-        "the migrated query would no longer be in the group, so refreshes would silently stop updating it."
+        "the migrated query would no longer be in the group, so refreshes would silently stop updating it.",
     );
   }
 
@@ -100,14 +100,14 @@ export function checkLegacyQueryMigratable(
     blockers.push(
       "An interaction refreshes this query after a mutation. All migrated fetch queries " +
         "share one refresh key, so the refresh would re-run every one of them " +
-        "instead of just this query. Retarget those interactions (e.g. to refresh all queries) first."
+        "instead of just this query. Retarget those interactions (e.g. to refresh all queries) first.",
     );
   }
 
   if (source.hasPrivateConfig) {
     blockers.push(
       "The integration has server-side credentials or default headers. Those are applied by the proxy and " +
-        "would be lost — and any replacement would have to send them from the browser, where they are readable by end users."
+        "would be lost — and any replacement would have to send them from the browser, where they are readable by end users.",
     );
   }
 
@@ -115,18 +115,18 @@ export function checkLegacyQueryMigratable(
   if (sensitiveArgs.length > 0) {
     blockers.push(
       `Some of the query's args might have credentials (${sensitiveArgs.join(
-        ", "
+        ", ",
       )}). The proxy sends those from Plasmic's server today; a migrated query would send them ` +
-        "from the browser, where end users can read them."
+        "from the browser, where end users can read them.",
     );
   }
 
   if (readsLegacyQueries.length > 0) {
     warnings.push(
       `The query builds its request from legacy queries (${readsLegacyQueries.join(
-        ", "
+        ", ",
       )}). Migrated queries run before legacy ones, so this one returns no data ` +
-        "until those are migrated too."
+        "until those are migrated too.",
     );
   }
 
@@ -135,7 +135,7 @@ export function checkLegacyQueryMigratable(
     blockers.push(
       `The query sets the ${browserOwnedHeaders.join(", ")} header(s). ` +
         "Browsers drop or replace those on requests made from page code, so the " +
-        "migrated request would not match what the proxy sends today."
+        "migrated request would not match what the proxy sends today.",
     );
   }
 
@@ -153,7 +153,7 @@ function isForbiddenError(err: unknown): boolean {
  */
 export function isGeneratedDefaultHeader(
   header: string,
-  value: unknown
+  value: unknown,
 ): boolean {
   return (
     header.toLowerCase() === "content-type" && value === "application/json"
@@ -161,7 +161,7 @@ export function isGeneratedDefaultHeader(
 }
 
 export function generatedDefaultHeaders(
-  commonHeaders: unknown
+  commonHeaders: unknown,
 ): Record<string, string> {
   if (
     !commonHeaders ||
@@ -172,8 +172,8 @@ export function generatedDefaultHeaders(
   }
   return Object.fromEntries(
     Object.entries(commonHeaders).filter(([header, value]) =>
-      isGeneratedDefaultHeader(header, value)
-    )
+      isGeneratedDefaultHeader(header, value),
+    ),
   );
 }
 
@@ -187,7 +187,7 @@ function findSensitiveOpArgs(op: DataSourceOpExpr): string[] {
       ([name, template]) =>
         hasSensitiveWord(name) ||
         hasSensitiveWord(templateLiteralText(template)) ||
-        (name === HEADERS_ARG && hasUnrecognizedHeader(template))
+        (name === HEADERS_ARG && hasUnrecognizedHeader(template)),
     )
     .map(([name]) => name);
 }
@@ -252,7 +252,7 @@ function hasUnrecognizedHeader(template: DataSourceTemplate): boolean {
     names.some(
       (name) =>
         !RECOGNIZED_HEADER_NAMES.has(name) &&
-        !BROWSER_OWNED_HEADER_NAMES.has(name)
+        !BROWSER_OWNED_HEADER_NAMES.has(name),
     )
   );
 }
@@ -266,8 +266,8 @@ function findBrowserOwnedHeaders(op: DataSourceOpExpr): string[] {
   return [
     ...new Set(
       (headerNames(template) ?? []).filter((name) =>
-        BROWSER_OWNED_HEADER_NAMES.has(name)
-      )
+        BROWSER_OWNED_HEADER_NAMES.has(name),
+      ),
     ),
   ];
 }
@@ -311,8 +311,8 @@ const SENSITIVE_PREFIXES = [
  */
 const SENSITIVE_WORD_RE = new RegExp(
   `^(?:${SENSITIVE_PREFIXES.join("|")})?(?:${SENSITIVE_WORDS.join(
-    "|"
-  )})(?:e?s|ids?)?$`
+    "|",
+  )})(?:e?s|ids?)?$`,
 );
 
 /** Splits on non-letters and camelCase humps: `X-Api-Key` -> `x`, `api`, `key`. */
@@ -396,7 +396,7 @@ function isBlankTemplatedString(ts: TemplatedString): boolean {
 function templateLiteralText(template: DataSourceTemplate): string {
   const value = template.value;
   return [
-    isKnownTemplatedString(value) ? exprLiteralText(value) : value ?? "",
+    isKnownTemplatedString(value) ? exprLiteralText(value) : (value ?? ""),
     ...Object.values(template.bindings ?? {}).map(exprLiteralText),
   ].join(" ");
 }

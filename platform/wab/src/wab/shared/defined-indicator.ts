@@ -197,7 +197,7 @@ export const computeDefinedIndicator = (
   site: Site,
   component: Component,
   sources: VariantSettingSourceStack | undefined,
-  currentCombo: VariantCombo
+  currentCombo: VariantCombo,
 ): DefinedIndicatorType => {
   if (sources === undefined || sources.length === 0) {
     return { source: "none" };
@@ -209,8 +209,8 @@ export const computeDefinedIndicator = (
           s.type !== "themeTag" &&
           s.type !== "slot" &&
           s.type !== "parentTplStyle" &&
-          arrayEqIgnoreOrder(s.combo, currentCombo)
-      )
+          arrayEqIgnoreOrder(s.combo, currentCombo),
+      ),
     );
     const lastSource = ensure(L.last(sources), "sources is empty");
     if (lastSource.type === "theme" || lastSource.type === "themeTag") {
@@ -267,7 +267,7 @@ export function isTargetOverwritten(types: DefinedIndicatorType[]) {
     (type) =>
       type.source === "otherVariants" &&
       type.targetSource &&
-      !type.targetHasHighestPriority
+      !type.targetHasHighestPriority,
   );
 }
 
@@ -277,7 +277,7 @@ export function isTargetOverwritten(types: DefinedIndicatorType[]) {
  */
 export function getTargetBlockingCombo(types: DefinedIndicatorType[]) {
   const blocking = types.find(
-    (type) => type.source === "otherVariants" && !type.targetHasHighestPriority
+    (type) => type.source === "otherVariants" && !type.targetHasHighestPriority,
   );
   if (blocking && blocking.source === "otherVariants") {
     const lastSource = L.last(blocking.stack);
@@ -299,7 +299,7 @@ export function getTargetBlockingCombo(types: DefinedIndicatorType[]) {
  */
 export const getPropertyFromSetTypeSource = (
   indicatorType: DefinedIndicatorType,
-  propertyName: string
+  propertyName: string,
 ) => indicatorType.source === "set" && indicatorType.targetSource[propertyName];
 
 /**
@@ -311,7 +311,7 @@ export const getPropertyFromSetTypeSource = (
  * @returns An object containing `prop` and `value` attributes, if available.
  */
 export function getPropAndValueFromIndicator(
-  indicatorType: DefinedIndicatorType
+  indicatorType: DefinedIndicatorType,
 ) {
   const prop =
     getPropertyFromSetTypeSource(indicatorType, "prop") ||

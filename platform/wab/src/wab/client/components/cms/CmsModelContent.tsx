@@ -17,7 +17,7 @@ export type CmsModelContentProps = DefaultCmsModelContentProps;
 
 function CmsModelContent_(
   props: CmsModelContentProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const match_ = useMatchedRoute<{
     databaseId: CmsDatabaseId;
@@ -25,7 +25,7 @@ function CmsModelContent_(
   }>()!;
   const { rows } = useCmsRows(
     match_.pathParams.databaseId,
-    match_.pathParams.tableId as CmsTableId
+    match_.pathParams.tableId as CmsTableId,
   );
 
   return (

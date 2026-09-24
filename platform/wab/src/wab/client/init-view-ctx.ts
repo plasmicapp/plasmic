@@ -43,7 +43,7 @@ function createStudioCtx({ dbCtx }: { dbCtx: DbCtx; siteInfo: SiteInfo }) {
 export async function initStudioCtx(
   appCtx: AppCtx,
   siteId: ProjectId,
-  onRefreshUi
+  onRefreshUi,
 ) {
   const dbCtx = await loadSiteDbCtx(appCtx, onRefreshUi, siteId);
   const { siteInfo } = dbCtx;

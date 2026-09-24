@@ -17,7 +17,7 @@ export function HistoryProvider({
 }) {
   const location = React.useSyncExternalStore(
     React.useCallback((onChange) => history.listen(onChange), [history]),
-    () => history.location
+    () => history.location,
   );
   return (
     <HistoryContext.Provider value={history}>

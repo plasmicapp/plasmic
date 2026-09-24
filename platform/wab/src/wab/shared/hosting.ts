@@ -19,7 +19,7 @@ export class DomainValidator {
 
   parseSubdomainPart(domain: string) {
     return domain.match(
-      new RegExp(`^([\\w-]+)\\.${L.escapeRegExp(this.suffix)}$`)
+      new RegExp(`^([\\w-]+)\\.${L.escapeRegExp(this.suffix)}$`),
     )?.[1];
   }
 
@@ -60,7 +60,7 @@ export interface SetCustomDomainFailure extends SetDomainOutcome {
  * and only `domains[""].status === "DomainUpdated"` means the change went through.
  */
 export function getSetCustomDomainFailure(
-  response: SetCustomDomainForProjectResponse
+  response: SetCustomDomainForProjectResponse,
 ): SetCustomDomainFailure | undefined {
   if (response.domains[""]?.status === "DomainUpdated") {
     return undefined;
@@ -78,7 +78,7 @@ export function getSetCustomDomainFailure(
  */
 export function pickFailedOperation(
   failure: SetCustomDomainFailure,
-  submittedDomain?: string
+  submittedDomain?: string,
 ): SetDomainOperation {
   return failure.operation ?? (submittedDomain ? "register" : "remove");
 }
@@ -87,5 +87,5 @@ export function pickFailedOperation(
 // Centralize the configuration so all server and shared utilities use
 // the same suffix (from DEVFLAGS).
 export const PLASMIC_HOSTING_DOMAIN_VALIDATOR = new DomainValidator(
-  DEVFLAGS.plasmicHostingSubdomainSuffix
+  DEVFLAGS.plasmicHostingSubdomainSuffix,
 );

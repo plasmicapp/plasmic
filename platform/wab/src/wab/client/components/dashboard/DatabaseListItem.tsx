@@ -35,7 +35,7 @@ export interface DatabaseListItemProps {
 
 function DatabaseListItem_(
   props: DatabaseListItemProps,
-  ref: HTMLElementRefOf<"a">
+  ref: HTMLElementRefOf<"a">,
 ) {
   const { className, database, matcher, perms, workspace, onUpdate, ...rest } =
     props;
@@ -44,7 +44,7 @@ function DatabaseListItem_(
   const accessLevel = getAccessLevelToResource(
     { type: "workspace", resource: workspace },
     appCtx.selfInfo,
-    perms
+    perms,
   );
 
   return (
@@ -124,14 +124,14 @@ function DatabaseListItem_(
                         appCtx,
                         workspace.id,
                         false,
-                        "Move"
+                        "Move",
                       );
                       if (response === undefined) {
                         return;
                       }
                       assert(
                         response.result === "workspace",
-                        "Expected workspace to move CMS into."
+                        "Expected workspace to move CMS into.",
                       );
                       await appCtx.api.updateCmsDatabase(database.id, {
                         workspaceId: response.workspace.id,

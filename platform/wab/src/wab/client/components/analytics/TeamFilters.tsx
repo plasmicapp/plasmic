@@ -85,7 +85,7 @@ function TeamFilters_(props: TeamFiltersProps, ref: HTMLElementRefOf<"div">) {
               label: project.workspaceName!,
               value: project.workspaceId!,
             })),
-          (x) => `${x.label}@${x.value}`
+          (x) => `${x.label}@${x.value}`,
         ),
         selected: projectId,
         onChange: (x) => setProjectId(x),

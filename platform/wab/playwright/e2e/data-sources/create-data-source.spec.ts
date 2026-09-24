@@ -9,7 +9,7 @@ test.describe("create-data-source", () => {
       request,
       context,
       "user@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
     await page.goto("/projects/", { timeout: 120000 });
   });
@@ -27,7 +27,7 @@ test.describe("create-data-source", () => {
     await page.waitForTimeout(1000);
 
     const dataSourcePicker = page.locator(
-      `[data-test-id="data-source-picker"]`
+      `[data-test-id="data-source-picker"]`,
     );
     await dataSourcePicker.click();
     await page.getByRole("option", { name: "Postgres" }).click();
@@ -37,31 +37,31 @@ test.describe("create-data-source", () => {
     await nameInput.fill(dataSourceName);
 
     const connectionStringInput = page.locator(
-      `[data-test-id="postgres-connection-string"]`
+      `[data-test-id="postgres-connection-string"]`,
     );
     await connectionStringInput.click();
 
     const promptInput = page.locator(`[data-test-id="prompt"]`);
     await promptInput.click();
     await promptInput.fill(
-      "postgresql://wronguser:SEKRET@localhost:5432/postgres"
+      "postgresql://wronguser:SEKRET@localhost:5432/postgres",
     );
 
     await page.locator(`[data-test-id="prompt-submit"]`).last().click();
 
     await expect(page.locator(`[data-test-id="host"]`)).toHaveValue(
-      "localhost"
+      "localhost",
     );
     await expect(page.locator(`[data-test-id="port"]`)).toHaveValue("5432");
     await expect(page.locator(`[data-test-id="name"]`)).toHaveValue("postgres");
     await expect(page.locator(`[data-test-id="user"]`)).toHaveValue(
-      "wronguser"
+      "wronguser",
     );
 
     await page.locator(`[data-test-id="test-connection"]`).click();
 
     const errorNotification = page.locator(
-      ".ant-notification-notice-error:has(.ant-notification-notice-message:has-text('Connection failed'))"
+      ".ant-notification-notice-error:has(.ant-notification-notice-message:has-text('Connection failed'))",
     );
     await errorNotification.waitFor({ state: "visible" });
     await errorNotification.locator(".ant-notification-notice-close").click();
@@ -75,7 +75,7 @@ test.describe("create-data-source", () => {
     await page.locator(`[data-test-id="test-connection"]`).click();
 
     const successNotification = page.locator(
-      ".ant-notification-notice-success:has(.ant-notification-notice-message:has-text('Connection successful'))"
+      ".ant-notification-notice-success:has(.ant-notification-notice-message:has-text('Connection successful'))",
     );
     await successNotification.waitFor({ state: "visible" });
     await successNotification.locator(".ant-notification-notice-close").click();
@@ -93,7 +93,7 @@ test.describe("create-data-source", () => {
     await page.waitForTimeout(1000);
 
     const dataSourcePicker = page.locator(
-      `[data-test-id="data-source-picker"]`
+      `[data-test-id="data-source-picker"]`,
     );
     await dataSourcePicker.click();
     await page.getByRole("option", { name: "HTTP" }).click();

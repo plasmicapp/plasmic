@@ -10,7 +10,7 @@ export class ConsoleLogLogger implements Logger {
   private log(
     level: "debug" | "info" | "warn" | "error",
     message: string,
-    payload?: Properties
+    payload?: Properties,
   ) {
     if (this.loggingContext) {
       console[level](`[logger.child]`, this.loggingContext);
@@ -40,7 +40,7 @@ export class ConsoleLogLogger implements Logger {
 
   child(loggingContext: Properties): Logger {
     return new ConsoleLogLogger(
-      mergeProperties(this.loggingContext, loggingContext)
+      mergeProperties(this.loggingContext, loggingContext),
     );
   }
 }

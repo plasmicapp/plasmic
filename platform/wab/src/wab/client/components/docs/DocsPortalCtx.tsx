@@ -152,11 +152,11 @@ export class DocsPortalCtx {
       resolveCollisionsForComponentProp(
         component,
         toVarName(param.variable.name),
-        isVariant ? "variant" : "arg"
+        isVariant ? "variant" : "arg",
       ),
       value,
       false,
-      param
+      param,
     );
   }
 
@@ -165,7 +165,7 @@ export class DocsPortalCtx {
     key: string,
     innerPath: string[],
     value: string,
-    isRootProp: boolean
+    isRootProp: boolean,
   ) {
     this.updateComponentCustomCode(
       component,
@@ -173,12 +173,12 @@ export class DocsPortalCtx {
         ...resolveCollisionsForComponentProp(
           component,
           key,
-          isRootProp ? "rootProp" : "override"
+          isRootProp ? "rootProp" : "override",
         ),
         ...innerPath,
       ],
       value,
-      true
+      true,
     );
   }
 
@@ -187,14 +187,14 @@ export class DocsPortalCtx {
     path: string[],
     value: any,
     isValueSerialized: boolean,
-    param?: Param
+    param?: Param,
   ) {
     const code = updateComponentCode(
       this,
       path,
       value,
       isValueSerialized,
-      param
+      param,
     );
     this.setComponentCustomCode(component, code, true);
   }
@@ -205,7 +205,7 @@ export class DocsPortalCtx {
     }
     return ensure(
       this.componentToToggles.get(component),
-      `missing ${component} in componentToToggles`
+      `missing ${component} in componentToToggles`,
     );
   }
 
@@ -244,7 +244,7 @@ export class DocsPortalCtx {
     }
     return ensure(
       this.iconToToggles.get(icon),
-      `missing ${icon} in iconToToggles`
+      `missing ${icon} in iconToToggles`,
     );
   }
 
@@ -255,7 +255,7 @@ export class DocsPortalCtx {
   setIconToggle(
     icon: ImageAsset,
     prop: IconToggleProp,
-    value: string | null | undefined
+    value: string | null | undefined,
   ) {
     if (value == null) {
       this.getIconToggles(icon).delete(prop);
@@ -285,10 +285,10 @@ export class DocsPortalCtx {
   updateStateFromRoute(history: History, path: string) {
     const projectId = this.studioCtx.siteInfo.id;
     const components = this.studioCtx.site.components.filter(
-      (c) => !isFrameComponent(c) && !isCodeComponent(c) && !isSubComponent(c)
+      (c) => !isFrameComponent(c) && !isCodeComponent(c) && !isSubComponent(c),
     );
     const icons = this.studioCtx.site.imageAssets.filter(
-      (icon) => icon.type === ImageAssetType.Icon && !!icon.dataUri
+      (icon) => icon.type === ImageAssetType.Icon && !!icon.dataUri,
     );
     const matchDocs = APP_ROUTES.projectDocs.parse(path, false);
     if (!matchDocs) {
@@ -331,7 +331,7 @@ export class DocsPortalCtx {
             componentIdOrClassName:
               toClassName(components[0].name) || components[0].uuid,
             codegenType,
-          })
+          }),
         );
       } else {
         if (matchComponents) {
@@ -343,7 +343,7 @@ export class DocsPortalCtx {
             APP_ROUTES.projectDocsComponents.fill({
               projectId: projectId,
               codegenType,
-            })
+            }),
           );
         }
       }
@@ -356,7 +356,7 @@ export class DocsPortalCtx {
             projectId: projectId,
             iconIdOrClassName: toClassName(icons[0].name) || icons[0].uuid,
             codegenType,
-          })
+          }),
         );
       } else {
         if (matchIcons) {
@@ -368,7 +368,7 @@ export class DocsPortalCtx {
             APP_ROUTES.projectDocsIcons.fill({
               projectId: projectId,
               codegenType,
-            })
+            }),
           );
         }
       }
@@ -379,7 +379,7 @@ export class DocsPortalCtx {
       const component = components.find(
         (value) =>
           value.uuid === componentIdOrClassName ||
-          toClassName(value.name) === componentIdOrClassName
+          toClassName(value.name) === componentIdOrClassName,
       );
       if (!component) {
         accessComponents();
@@ -392,13 +392,13 @@ export class DocsPortalCtx {
       const icon = icons.find(
         (value) =>
           value.uuid === iconIdOrClassName ||
-          toClassName(value.name) === iconIdOrClassName
+          toClassName(value.name) === iconIdOrClassName,
       );
       if (!icon) {
         replace(
           APP_ROUTES.projectDocs.fill({
             projectId: projectId,
-          })
+          }),
         );
       } else {
         this.setFocusedIcon(icon);
@@ -426,19 +426,19 @@ export class DocsPortalCtx {
 }
 
 const DocsPortalCtxContext = React.createContext<DocsPortalCtx | undefined>(
-  undefined
+  undefined,
 );
 export const providesDocsPortalCtx = withProvider(
-  DocsPortalCtxContext.Provider
+  DocsPortalCtxContext.Provider,
 );
 export const useDocsPortalCtx = () =>
   ensure(
     React.useContext(DocsPortalCtxContext),
-    "missing DocsPortalCtxContext"
+    "missing DocsPortalCtxContext",
   );
 
 export function codegenTypeToRoute(
-  codegenType: "cms" | "codegen"
+  codegenType: "cms" | "codegen",
 ): "codegen" | "loader" {
   return codegenType === "cms" ? "loader" : codegenType;
 }

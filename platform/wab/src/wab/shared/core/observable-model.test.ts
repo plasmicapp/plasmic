@@ -122,7 +122,7 @@ function mkTag(opts: {
       rootExpr: null,
       attrs2: {},
       attrs3: {},
-    })
+    }),
   );
 }
 
@@ -152,7 +152,11 @@ describe("observeModel", () => {
   const testInst = (
     inst: ObjInstBase,
     doWork: (prune: Lambda) => void,
-    checkEvents: (events: ModelChange[], dispose: Lambda, prune: Lambda) => void
+    checkEvents: (
+      events: ModelChange[],
+      dispose: Lambda,
+      prune: Lambda,
+    ) => void,
   ) => {
     const events: ModelChange[] = [];
     const { dispose, prune } = observeModel(hackyCast(inst), {
@@ -198,7 +202,7 @@ describe("observeModel", () => {
         node.name = "what";
         node.tag = "okay";
         expect(events.length).toEqual(0);
-      }
+      },
     );
   });
 
@@ -271,7 +275,7 @@ describe("observeModel", () => {
         node.rootExpr = mkExpr({ value: "no one cares here either" });
         firstExpr.value = "definitely no one cares";
         expect(events.length).toBe(0);
-      }
+      },
     );
   });
 
@@ -291,14 +295,14 @@ describe("observeModel", () => {
         // rich array
         // add single
         node.children.push(
-          (ohhaiChild = mkText({ text: "OHHAI", parent: node }))
+          (ohhaiChild = mkText({ text: "OHHAI", parent: node })),
         );
         // add multiple
         node.children.splice(
           0,
           0,
           (whyNotChild = mkText({ text: "Why not", parent: node })),
-          (yesNotChild = mkText({ text: "Yes not", parent: node }))
+          (yesNotChild = mkText({ text: "Yes not", parent: node })),
         );
         // setting array element
         node.children[1] = replaceChild = mkText({
@@ -421,7 +425,7 @@ describe("observeModel", () => {
         (node.children[1] as TextNode).text = "blahblah";
         node.children.push(mkText({ text: "blah2" }));
         expect(events.length).toBe(0);
-      }
+      },
     );
   });
 
@@ -437,7 +441,7 @@ describe("observeModel", () => {
             text: "foo",
             parent: node,
             attrs: [new Attribute({ key: "foo", value: "foo", parent: null })],
-          }))
+          })),
         );
         node.children2.push(child);
         const removed = node.children2.splice(0, 1);
@@ -448,7 +452,7 @@ describe("observeModel", () => {
       (events, dispose) => {
         expect(events.length).toBe(5);
         dispose();
-      }
+      },
     );
   });
 
@@ -565,7 +569,7 @@ describe("observeModel", () => {
         (node.attrs3["className"][1].value as TextNode).text = "c3 3";
         delete node.attrs["stuff"];
         expect(events.length).toBe(0);
-      }
+      },
     );
   });
 
@@ -665,7 +669,7 @@ describe("observeModel", () => {
         prune();
         expr.value = "happy6";
         expect(events.length).toBe(0);
-      }
+      },
     );
   });
 
@@ -695,7 +699,7 @@ describe("observeModel", () => {
         expr.value = "expr 3";
         attrExpr.value = "attr 3";
         expect(events.length).toBe(0);
-      }
+      },
     );
   });
 
@@ -744,7 +748,7 @@ describe("observeModel", () => {
         prune();
         value.name = "value 5";
         expect(events.length).toBe(0);
-      }
+      },
     );
   });
 

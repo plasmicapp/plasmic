@@ -44,7 +44,7 @@ export const MenuItemPlugin: PlumePlugin = {
         const { plasmicProps } = sub.reactWeb.useMenuItem(
           Object.assign(comp, getCompMeta()),
           omit(allProps, internalCanvasElementProps),
-          menuItemConfig as any
+          menuItemConfig as any,
         );
         return sub.React.createElement(comp, {
           ...plasmicProps,
@@ -71,7 +71,7 @@ export const MenuItemPlugin: PlumePlugin = {
   genDefaultExternalProps(ctx: SerializerBaseContext, opts) {
     const { component } = ctx;
     const params = getExternalParams(ctx).filter(
-      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name))
+      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name)),
     );
     return `
       export interface ${
@@ -83,8 +83,8 @@ export const MenuItemPlugin: PlumePlugin = {
               `"${paramToVarName(ctx.component, param)}"?: ${serializeParamType(
                 component,
                 param,
-                ctx.projectFlags
-              )}`
+                ctx.projectFlags,
+              )}`,
           )
           .join(";\n")}
       }
@@ -106,12 +106,12 @@ export const MenuItemPlugin: PlumePlugin = {
     return `
       import * as React from "react";
       import {${plasmicComponentName}, ${defaultPropsName}} from "${
-      ctx.exportOpts.relPathFromImplToManagedDir
-    }/${makeComponentImportPath(
-      component,
-      ctx,
-      "render"
-    )}";  // plasmic-import: ${component.uuid}/render
+        ctx.exportOpts.relPathFromImplToManagedDir
+      }/${makeComponentImportPath(
+        component,
+        ctx,
+        "render",
+      )}";  // plasmic-import: ${component.uuid}/render
     ${this.genSkeletonImports(ctx).imports}
 
     ${componentSubstitutionApi}

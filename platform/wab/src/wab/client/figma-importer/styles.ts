@@ -96,7 +96,7 @@ export function flattenStyles(...styles: Array<Style>): CSSProperties {
     return {};
   }
   const flattenedStyles = styles.map((style) =>
-    style ? (Array.isArray(style) ? flattenStyles(...style) : style) : {}
+    style ? (Array.isArray(style) ? flattenStyles(...style) : style) : {},
   );
   const flattenedStyle = flattenedStyles.reduce((a, b) => ({ ...a, ...b }), {});
   Object.keys(delimiters).forEach((key) => {
@@ -113,14 +113,14 @@ export function filterValidCodeComponentStyles(styles: CSSProperties) {
 }
 
 export const styleForLayoutMixinAndConstraintMixin = (
-  node: SceneNode
+  node: SceneNode,
 ): CSSProperties => {
   const style = flattenStyles(styleForLayoutMixin(node));
   const parent = node.parent;
   if (parent && isDefaultFrameMixin(parent) && parent.layoutMode !== "NONE") {
     assert(
       style.position === "relative",
-      "If the parent is AutoLayout, position must be relative"
+      "If the parent is AutoLayout, position must be relative",
     );
     // We ignore the layout constraints for now for AutoLayout children
     // TODO: maybe keep some constraints?
@@ -258,7 +258,7 @@ function omitTranslate({ a, b, c, d }: Matrix): Matrix {
  * gets instead placed in top/left.
  */
 export const styleForLayoutMixin = (
-  node: SceneNode & LayoutMixin
+  node: SceneNode & LayoutMixin,
 ): CSSProperties => {
   // The DOM will round up widths and heights
   const style: Style = {
@@ -335,7 +335,7 @@ export const styleForLayoutMixin = (
         {
           x: left,
           y: top,
-        }
+        },
       );
       top = adjustedTopLeft.y;
       left = adjustedTopLeft.x;
@@ -344,7 +344,7 @@ export const styleForLayoutMixin = (
       // transform
       adjustedMatrix = compose(
         inverse(transformToMatrix(node.parent.relativeTransform)),
-        matrix
+        matrix,
       );
     }
 
@@ -574,7 +574,7 @@ export const styleForTextNode = (node: TextNode): Style => {
     }
   } else {
     const layer = mkBackgroundLayer(
-      new ColorFill({ color: rgbaToString({ r: 0, g: 0, b: 0, a: 0 }) })
+      new ColorFill({ color: rgbaToString({ r: 0, g: 0, b: 0, a: 0 }) }),
     );
     layer.clip = "text";
     style.background = layer.showCss();
@@ -586,7 +586,7 @@ export const styleForTextNode = (node: TextNode): Style => {
 
 const styleForGeometryMixin = (
   node: SceneNode,
-  imageAssets: Map<string, ImageAsset>
+  imageAssets: Map<string, ImageAsset>,
 ): Style => {
   // Don't run these for vectors! The result is already in the SVG.
   if (vectorNodeTypes.includes(node.type)) {
@@ -626,7 +626,7 @@ const styleForGeometryMixin = (
             // Calculate the angle relative to the y-axis
             let angle = Math.atan2(
               endPoint.x - startPoint.x,
-              endPoint.y - startPoint.y
+              endPoint.y - startPoint.y,
             );
             if (endPoint.y > startPoint.y) {
               angle = Math.PI - angle;
@@ -637,7 +637,7 @@ const styleForGeometryMixin = (
             // https://developer.mozilla.org/en-US/docs/Web/CSS/linear-gradient
             const length = Math.sqrt(
               Math.pow(endPoint.x - startPoint.x, 2) +
-                Math.pow(endPoint.y - startPoint.y, 2)
+                Math.pow(endPoint.y - startPoint.y, 2),
             );
             const targetLength =
               Math.abs(node.width * Math.sin(angle)) +
@@ -649,7 +649,7 @@ const styleForGeometryMixin = (
             // start point
             const { y: start } = applyToPoint(
               rotate(-angle, node.width / 2, node.height / 2),
-              startPoint
+              startPoint,
             );
             const targetStart = node.height / 2 + targetLength / 2;
             const offset = Math.abs(start - targetStart) / targetLength;
@@ -662,9 +662,9 @@ const styleForGeometryMixin = (
                   rgbaToString(color),
                   new Dim(
                     `${truncateNumber((position * scale + offset) * 100)}`,
-                    "%"
-                  )
-                )
+                    "%",
+                  ),
+                ),
             );
             return {
               background: mkBackgroundLayer(
@@ -672,7 +672,7 @@ const styleForGeometryMixin = (
                   repeating: false,
                   angle: angleDEG,
                   stops,
-                })
+                }),
               ).showCss(),
             };
           }
@@ -686,14 +686,14 @@ const styleForGeometryMixin = (
                     ({ color, position }) =>
                       new Stop(
                         rgbaToString(color),
-                        new Dim(`${truncateNumber(position * 100)}`, "%")
-                      )
+                        new Dim(`${truncateNumber(position * 100)}`, "%"),
+                      ),
                   ),
                   cx: new Dim("50", "%"),
                   cy: new Dim("50", "%"),
                   rx: new Dim("50", "%"),
                   ry: new Dim("50", "%"),
-                })
+                }),
               ).showCss(),
             };
           case "IMAGE": {
@@ -701,7 +701,7 @@ const styleForGeometryMixin = (
             const asset = paint.imageHash
               ? ensure(
                   imageAssets.get(paint.imageHash),
-                  "[Figma] - Paint not found in imageAssets"
+                  "[Figma] - Paint not found in imageAssets",
                 )
               : undefined;
             const layer = mkBackgroundLayer(
@@ -709,7 +709,7 @@ const styleForGeometryMixin = (
                 ? new ImageBackground({
                     url: mkImageAssetRef(asset),
                   })
-                : new NoneBackground()
+                : new NoneBackground(),
             );
             switch (paint.scaleMode) {
               case "FILL":
@@ -725,8 +725,8 @@ const styleForGeometryMixin = (
                   const transform = transformToMatrix(
                     ensure(
                       paint.imageTransform,
-                      "[Figma] - Asset without imageTransform"
-                    )
+                      "[Figma] - Asset without imageTransform",
+                    ),
                   );
                   // The position of the top-left corner in the image (in [0,1])
                   const p0 = applyToPoint(transform, { x: 0, y: 0 });
@@ -737,10 +737,10 @@ const styleForGeometryMixin = (
                   const imageWidth = node.width / (p1.x - p0.x);
                   const imageHeight = node.height / (p1.y - p0.y);
                   layer.position = `${Math.round(
-                    -p0.x * imageWidth
+                    -p0.x * imageWidth,
                   )}px ${Math.round(-p0.y * imageHeight)}px`;
                   layer.size = `${Math.round(imageWidth)}px ${Math.round(
-                    imageHeight
+                    imageHeight,
                   )}px`;
                 }
                 break;
@@ -748,19 +748,19 @@ const styleForGeometryMixin = (
                 {
                   const scale = ensure(
                     paint.scalingFactor,
-                    "[Figma] - Asset without scaling factor"
+                    "[Figma] - Asset without scaling factor",
                   );
                   const w = ensure(
                     asset?.width,
-                    "[Figma] - Asset without width"
+                    "[Figma] - Asset without width",
                   );
                   const h = ensure(
                     asset?.height,
-                    "[Figma] - Asset without height"
+                    "[Figma] - Asset without height",
                   );
                   layer.position = "0% 0%";
                   layer.size = `${Math.round(w * scale)}px ${Math.round(
-                    h * scale
+                    h * scale,
                   )}px`;
                   layer.repeat = "repeat";
                 }
@@ -775,7 +775,7 @@ const styleForGeometryMixin = (
               background: mkBackgroundLayer(
                 new ColorFill({
                   color: rgbToString(paint.color, paint.opacity),
-                })
+                }),
               ).showCss(),
             };
           default:
@@ -839,11 +839,11 @@ export const styleForRectangleCornerMixin = (node: SceneNode): Style => {
 
 export const styleForDefaultShapeMixin = (
   node: SceneNode & DefaultShapeMixin,
-  imageAssets: Map<string, ImageAsset>
+  imageAssets: Map<string, ImageAsset>,
 ): Style =>
   flattenStyles(
     styleForBlendMixin(node),
-    styleForGeometryMixin(node, imageAssets)
+    styleForGeometryMixin(node, imageAssets),
     // Leave out layout mixin and let subclasses define if they use only layout
     // or layout and constraints, these mixins effect the same CSS properties
     // and need to be computed together
@@ -851,7 +851,7 @@ export const styleForDefaultShapeMixin = (
 
 export const styleForDefaultFrameMixin = (
   node: SceneNode,
-  imageAssets: Map<string, ImageAsset>
+  imageAssets: Map<string, ImageAsset>,
 ) => {
   const style = flattenStyles(
     styleForGeometryMixin(node, imageAssets),
@@ -859,7 +859,7 @@ export const styleForDefaultFrameMixin = (
     styleForRectangleCornerMixin(node),
     styleForBlendMixin(node),
     styleForLayoutMixinAndConstraintMixin(node),
-    "clipsContent" in node && node.clipsContent && { overflow: "hidden" }
+    "clipsContent" in node && node.clipsContent && { overflow: "hidden" },
   );
 
   if ("layoutMode" in node && node.layoutMode !== "NONE") {

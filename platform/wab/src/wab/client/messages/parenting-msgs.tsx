@@ -14,15 +14,15 @@ export type ClientCantAddChildMsg = CantAddChildMsg | CantAddToSlotOutOfContext;
 
 export function renderCantAddMsg(
   msg: CantInsertTplReason | ClientCantAddChildMsg | CantAddSiblingMsg,
-  opts: { format: "string" }
+  opts: { format: "string" },
 ): string;
 export function renderCantAddMsg(
   msg: CantInsertTplReason | ClientCantAddChildMsg | CantAddSiblingMsg,
-  opts?: { format?: "string" }
+  opts?: { format?: "string" },
 ): React.ReactNode;
 export function renderCantAddMsg(
   msg: CantInsertTplReason | ClientCantAddChildMsg | CantAddSiblingMsg,
-  opts?: { format?: "string" }
+  opts?: { format?: "string" },
 ) {
   const asString = opts?.format === "string";
   switch (msg.type) {
@@ -62,7 +62,7 @@ export function renderCantAddMsg(
           Cannot add element that references component props (
           {joinReactNodes(
             msg.vars.map((v) => <code>{v.name}</code>),
-            ", "
+            ", ",
           )}
           ) as default content of a slot.
         </>

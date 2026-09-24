@@ -42,7 +42,7 @@ export const OutlinePanelSection = observer(function OutlinePanelSection() {
 
   const [isOpen, setIsOpen] = React.useState(false);
   const hasOutlineProps = outlineStyleProps.some((prop) =>
-    sc.hasTargetProp(prop)
+    sc.hasTargetProp(prop),
   );
   const isVisible = isOpen || hasOutlineProps;
 

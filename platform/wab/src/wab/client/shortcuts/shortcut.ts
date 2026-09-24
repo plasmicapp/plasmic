@@ -52,7 +52,7 @@ export function mkNoActionShortcuts(...shortcuts: AddShortcut[]): Shortcut[] {
         combos: combosArray,
         ...rest,
       };
-    }
+    },
   );
   return maybeTransformCombos(transformedShortcuts);
 }
@@ -60,7 +60,7 @@ export function mkNoActionShortcuts(...shortcuts: AddShortcut[]): Shortcut[] {
 /** Shortcut group. Ordering of the shortcuts is how they will be displayed to the user. */
 export function mkShortcutGroup<Action extends string>(
   name: string,
-  shortcuts: { [action in Action]: AddShortcut }
+  shortcuts: { [action in Action]: AddShortcut },
 ): ShortcutGroup<Action> {
   let transformedShortcuts: Shortcut<Action>[] = (
     Object.entries(shortcuts) as [Action, AddShortcut][]
@@ -77,10 +77,10 @@ export function mkShortcutGroup<Action extends string>(
 }
 
 export function shortcutGroupToDict<Action extends string>(
-  group: ShortcutGroup<Action>
+  group: ShortcutGroup<Action>,
 ): Shortcuts<Action> {
   return Object.fromEntries(
-    group.shortcuts.map((shortcut) => [shortcut.action, shortcut])
+    group.shortcuts.map((shortcut) => [shortcut.action, shortcut]),
   ) as Shortcuts<Action>;
 }
 
@@ -92,7 +92,7 @@ export class ShortcutsMerger<Action extends string> {
   private constructor(private readonly shortcuts: Shortcuts<Action>) {}
 
   add<NewAction extends string>(
-    group: ShortcutGroup<NewAction>
+    group: ShortcutGroup<NewAction>,
   ): ShortcutsMerger<Action | NewAction> {
     return new ShortcutsMerger<Action | NewAction>({
       ...this.shortcuts,
@@ -106,13 +106,13 @@ export class ShortcutsMerger<Action extends string> {
 }
 
 function maybeTransformCombos<Action extends string>(
-  shortcuts: Shortcut<Action>[]
+  shortcuts: Shortcut<Action>[],
 ): Shortcut<Action>[] {
   if (PLATFORM === "osx") {
     return shortcuts.map((shortcut) => ({
       ...shortcut,
       combos: shortcut.combos.map((combo) =>
-        combo.replace("ctrl", "command").replace("alt", "option")
+        combo.replace("ctrl", "command").replace("alt", "option"),
       ),
     }));
   } else {

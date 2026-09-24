@@ -55,8 +55,8 @@ describe("FocusHeuristics", function () {
       "div",
       tuple(
         Tpls.mkTplComponent(componentB, TEST_GLOBAL_VARIANT),
-        (_spanA = Tpls.mkTplTag("span"))
-      )
+        (_spanA = Tpls.mkTplTag("span")),
+      ),
     ),
     type: ComponentType.Plain,
   });
@@ -76,9 +76,9 @@ describe("FocusHeuristics", function () {
         (defaultSlotChild = Tpls.mkTplTagX(
           "div",
           {},
-          mkTplTestText("slot for children")
+          mkTplTestText("slot for children"),
         )),
-      ]))
+      ])),
     ),
     type: ComponentType.Plain,
   });
@@ -107,7 +107,7 @@ describe("FocusHeuristics", function () {
     componentB,
     componentA,
     slottedComponent,
-    nestingSlottedComponent
+    nestingSlottedComponent,
   );
 
   beforeEach(function () {
@@ -118,7 +118,7 @@ describe("FocusHeuristics", function () {
           Tpls.mkTplComponent(componentB, TEST_GLOBAL_VARIANT), // 1-deep
           Tpls.mkTplTag("span"), // 0-deep
         ]),
-      }
+      },
     ) {
       const tplMgr = new TplMgr({ site });
       doEval = function () {
@@ -140,7 +140,7 @@ describe("FocusHeuristics", function () {
             ? new ComponentCtx({
                 valComponent: ensureInstance(
                   renderStateForTests.key2val(ctx.valComponent().key),
-                  ValComponent
+                  ValComponent,
                 ),
               })
             : null;
@@ -149,7 +149,7 @@ describe("FocusHeuristics", function () {
             tplMgr,
             valState,
             currentComponentCtx,
-            !!opts.showDefaultContentsFor
+            !!opts.showDefaultContentsFor,
           );
         };
       };
@@ -167,15 +167,15 @@ describe("FocusHeuristics", function () {
         valTree.children[1],
       ]);
       expect(
-        fh.parentComponents(valTree.children[1].contents[0].children[0])
+        fh.parentComponents(valTree.children[1].contents[0].children[0]),
       ).toEqual([valTree.children[1]]);
       expect(
-        fh.parentComponents(valTree.children[0].contents[0].children[1])
+        fh.parentComponents(valTree.children[0].contents[0].children[1]),
       ).toEqual([valTree.children[0]]);
       expect(
         fh.parentComponents(
-          valTree.children[0].contents[0].children[0].contents[0].children[0]
-        )
+          valTree.children[0].contents[0].children[0].contents[0].children[0],
+        ),
       ).toEqual([
         valTree.children[0].contents[0].children[0],
         valTree.children[0],
@@ -187,42 +187,42 @@ describe("FocusHeuristics", function () {
       evalTpl();
       const fh = getHeuristics();
       expect(
-        fh.containingComponentWithinCurrentComponentCtx(valTree.children[2])
+        fh.containingComponentWithinCurrentComponentCtx(valTree.children[2]),
       ).toBe(null);
       expect(
-        fh.containingComponentWithinCurrentComponentCtx(valTree.children[1])
+        fh.containingComponentWithinCurrentComponentCtx(valTree.children[1]),
       ).toBe(null);
       expect(
         ensure(
           fh.containingComponentWithinCurrentComponentCtx(
-            valTree.children[1].contents[0]
+            valTree.children[1].contents[0],
           ),
-          () => `Didn't find valComp`
-        ).container
+          () => `Didn't find valComp`,
+        ).container,
       ).toBe(valTree.children[1]);
       expect(
         ensure(
           fh.containingComponentWithinCurrentComponentCtx(
-            valTree.children[1].contents[0].children[0]
+            valTree.children[1].contents[0].children[0],
           ),
-          () => `Didn't find valComp`
-        ).container
+          () => `Didn't find valComp`,
+        ).container,
       ).toBe(valTree.children[1]);
       expect(
         ensure(
           fh.containingComponentWithinCurrentComponentCtx(
-            valTree.children[0].contents[0].children[1]
+            valTree.children[0].contents[0].children[1],
           ),
-          () => `Didn't find valComp`
-        ).container
+          () => `Didn't find valComp`,
+        ).container,
       ).toBe(valTree.children[0]);
       return expect(
         ensure(
           fh.containingComponentWithinCurrentComponentCtx(
-            valTree.children[0].contents[0].children[0].contents[0].children[0]
+            valTree.children[0].contents[0].children[0].contents[0].children[0],
           ),
-          () => `Didn't find valComp`
-        ).container
+          () => `Didn't find valComp`,
+        ).container,
       ).toBe(valTree.children[0]);
     });
 
@@ -231,36 +231,36 @@ describe("FocusHeuristics", function () {
       let fh = getHeuristics(
         new ComponentCtx({
           valComponent: valTree.children[1],
-        })
+        }),
       );
       expect(
         fh.containingComponentWithinCurrentComponentCtx(
-          valTree.children[1].contents[0]
-        )
+          valTree.children[1].contents[0],
+        ),
       ).toBe(null);
       expect(
         fh.containingComponentWithinCurrentComponentCtx(
-          valTree.children[1].contents[0].children[0]
-        )
+          valTree.children[1].contents[0].children[0],
+        ),
       ).toBe(null);
 
       fh = getHeuristics(
         new ComponentCtx({
           valComponent: valTree.children[0],
-        })
+        }),
       );
       expect(
         fh.containingComponentWithinCurrentComponentCtx(
-          valTree.children[0].contents[0].children[1]
-        )
+          valTree.children[0].contents[0].children[1],
+        ),
       ).toBe(null);
       expect(
         ensure(
           fh.containingComponentWithinCurrentComponentCtx(
-            valTree.children[0].contents[0].children[0].contents[0].children[0]
+            valTree.children[0].contents[0].children[0].contents[0].children[0],
           ),
-          () => `Didn't find valComp`
-        ).container
+          () => `Didn't find valComp`,
+        ).container,
       ).toBe(valTree.children[0].contents[0].children[0]);
     });
 
@@ -270,18 +270,18 @@ describe("FocusHeuristics", function () {
         evalTpl({
           tplTree: Tpls.mkTplTag(
             "div",
-            Tpls.mkTplComponent(slottedComponent, TEST_GLOBAL_VARIANT)
+            Tpls.mkTplComponent(slottedComponent, TEST_GLOBAL_VARIANT),
           ),
         });
         const fh = getHeuristics(
           new ComponentCtx({
             valComponent: valTree.children[0],
-          })
+          }),
         );
         expect(
           fh.containingComponentWithinCurrentComponentCtx(
-            valTree.children[0].contents[0].children[0].contents[0] // defaultContents
-          )
+            valTree.children[0].contents[0].children[0].contents[0], // defaultContents
+          ),
         ).toBe(null);
       });
 
@@ -293,23 +293,23 @@ describe("FocusHeuristics", function () {
               component: slottedComponent,
               children: Tpls.mkTplTag("span"),
               baseVariant: TEST_GLOBAL_VARIANT,
-            })
+            }),
           ),
         });
         const fh = getHeuristics(
           new ComponentCtx({
             valComponent: valTree.children[0],
-          })
+          }),
         );
         return expect(
           ensure(
             fh.containingComponentWithinCurrentComponentCtx(
               slotContentValNode(
-                valTree.children[0].contents[0].children[0].contents[0]
-              ) // span
+                valTree.children[0].contents[0].children[0].contents[0],
+              ), // span
             ),
-            () => `Didn't find valComp`
-          ).container
+            () => `Didn't find valComp`,
+          ).container,
         ).toBe(null);
       });
 
@@ -321,7 +321,7 @@ describe("FocusHeuristics", function () {
               component: nestingSlottedComponent,
               children: Tpls.mkTplTag("span"),
               baseVariant: TEST_GLOBAL_VARIANT,
-            })
+            }),
           ),
         });
         // div > nesting > slotted > div > slotted's slot > nesting's slot > span
@@ -329,18 +329,18 @@ describe("FocusHeuristics", function () {
         const fh = getHeuristics(
           new ComponentCtx({
             valComponent: valTree.children[0].contents[0],
-          })
+          }),
         );
         return expect(
           ensure(
             fh.containingComponentWithinCurrentComponentCtx(
               slotContentValNode(
                 valTree.children[0].contents[0].contents[0].children[0]
-                  .contents[0]
-              ) // nesting's slot passed into slotted
+                  .contents[0],
+              ), // nesting's slot passed into slotted
             ),
-            () => `Didn't find valComp`
-          ).container
+            () => `Didn't find valComp`,
+          ).container,
         ).toBe(valTree.children[0]);
       });
 
@@ -352,13 +352,13 @@ describe("FocusHeuristics", function () {
               component: nestingSlottedComponent,
               children: Tpls.mkTplTag("span"),
               baseVariant: TEST_GLOBAL_VARIANT,
-            })
+            }),
           ),
         });
         const fh = getHeuristics(
           new ComponentCtx({
             valComponent: valTree.children[0].contents[0],
-          })
+          }),
         );
         return expect(
           ensure(
@@ -367,14 +367,14 @@ describe("FocusHeuristics", function () {
                 ensureInstance(
                   slotContentValNode(
                     valTree.children[0].contents[0].contents[0].children[0]
-                      .contents[0]
+                      .contents[0],
                   ),
-                  ValSlot
-                ).contents![0]
-              ) // span
+                  ValSlot,
+                ).contents![0],
+              ), // span
             ),
-            () => `Didn't find valComp`
-          ).container
+            () => `Didn't find valComp`,
+          ).container,
         ).toBe(valTree.children[0]);
       });
     });
@@ -411,7 +411,7 @@ describe("FocusHeuristics", function () {
           focusTarget: newFocus,
         };
         expect(bestFocus.componentCtx?.valComponent()).toBe(
-          expectedFocus.componentCtx?.valComponent()
+          expectedFocus.componentCtx?.valComponent(),
         );
         expect(bestFocus.focusTarget).toBe(expectedFocus.focusTarget);
       };
@@ -521,17 +521,17 @@ describe("FocusHeuristics", function () {
             component: slottedComponent,
             children: (target = Tpls.mkTplTag("span")),
             baseVariant: TEST_GLOBAL_VARIANT,
-          })
+          }),
         ),
       });
       activate(valTree.children[0]);
       return test({
         desiredFocus: ensure(
           ValNodes.flattenVals(valTree).find((v) => v.tpl === target),
-          () => `Didn't find node`
+          () => `Didn't find node`,
         ), // .children[0].contents[0].children[0].contents[0] # span
         newFocus: ValNodes.flattenVals(valTree).find(
-          (v) => v.tpl === slottedSlot
+          (v) => v.tpl === slottedSlot,
         ),
       });
     });
@@ -545,17 +545,17 @@ describe("FocusHeuristics", function () {
             component: nestingSlottedComponent,
             children: (target = Tpls.mkTplTag("span")),
             baseVariant: TEST_GLOBAL_VARIANT,
-          })
+          }),
         ),
       });
       activate(valTree.children[0]);
       return test({
         desiredFocus: ensure(
           ValNodes.flattenVals(valTree).find((v) => v.tpl === target),
-          () => `Didn't find node`
+          () => `Didn't find node`,
         ),
         newFocus: ValNodes.flattenVals(valTree).find(
-          (v) => v.tpl === nestingSlot
+          (v) => v.tpl === nestingSlot,
         ),
       });
     });
@@ -573,17 +573,17 @@ describe("FocusHeuristics", function () {
               baseVariant: TEST_GLOBAL_VARIANT,
             }),
             baseVariant: TEST_GLOBAL_VARIANT,
-          })
+          }),
         ),
       });
       activate(valTree.children[0]);
       return test({
         desiredFocus: ensure(
           ValNodes.flattenVals(valTree).find((v) => v.tpl === target),
-          () => `Didn't find node`
+          () => `Didn't find node`,
         ),
         newFocus: ValNodes.flattenVals(valTree).find(
-          (v) => v.tpl === slottedSlot
+          (v) => v.tpl === slottedSlot,
         ),
       });
     });
@@ -592,7 +592,7 @@ describe("FocusHeuristics", function () {
       evalTpl({
         tplTree: Tpls.mkTplTag(
           "div",
-          Tpls.mkTplComponent(slottedComponent, TEST_GLOBAL_VARIANT)
+          Tpls.mkTplComponent(slottedComponent, TEST_GLOBAL_VARIANT),
         ),
       });
       activate(valTree.children[0]);
@@ -601,7 +601,7 @@ describe("FocusHeuristics", function () {
           ValNodes.flattenVals(valTree).find((v) => {
             return v.tpl === slottedSlot;
           }),
-          () => `Didn't find node`
+          () => `Didn't find node`,
         ),
       });
     });
@@ -618,7 +618,7 @@ describe("FocusHeuristics", function () {
           ValNodes.flattenVals(valTree).find((v) => {
             return v.tpl === defaultSlotChild;
           }),
-          () => `Didn't find node`
+          () => `Didn't find node`,
         ),
       });
     });

@@ -38,7 +38,7 @@ describe("waitForCanvasEnvSettled", () => {
     const result = await waitForCanvasEnvSettled(
       fakeViewCtx(() => env),
       tpl,
-      LONG_TIMEOUT
+      LONG_TIMEOUT,
     );
     expect(result).toBe(env);
   });
@@ -51,7 +51,7 @@ describe("waitForCanvasEnvSettled", () => {
       (env) => {
         settled = true;
         return env;
-      }
+      },
     );
     await asyncTimeout(20);
     expect(settled).toBe(false);
@@ -83,7 +83,7 @@ describe("waitForCanvasEnvSettled", () => {
       (env) => {
         settled = true;
         return env;
-      }
+      },
     );
     await asyncTimeout(20);
     expect(settled).toBe(false);
@@ -101,14 +101,14 @@ describe("waitForCanvasEnvSettled", () => {
     const vc = fakeViewCtx(() =>
       mkEnv({
         $q: first.isLoading ? { first } : { first, second },
-      })
+      }),
     );
     let settled = false;
     const resultPromise = waitForCanvasEnvSettled(vc, tpl, LONG_TIMEOUT).then(
       (env) => {
         settled = true;
         return env;
-      }
+      },
     );
     first.resolvePromise("k1", "one");
     await asyncTimeout(20);

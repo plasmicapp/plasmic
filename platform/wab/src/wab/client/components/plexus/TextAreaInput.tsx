@@ -9,8 +9,7 @@ type NativeTextAreaProps = Omit<
   "value" | "defaultValue" | "onChange"
 >;
 export interface TextAreaInputProps
-  extends DefaultTextAreaInputProps,
-    NativeTextAreaProps {}
+  extends DefaultTextAreaInputProps, NativeTextAreaProps {}
 
 function TextAreaInput(props: TextAreaInputProps) {
   return <PlasmicTextAreaInput {...props} />;

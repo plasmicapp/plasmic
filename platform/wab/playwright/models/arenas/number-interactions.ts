@@ -8,7 +8,7 @@ export class NumberInteractionsArena extends BaseModel {
     readonly setToButton: Locator,
     readonly incrementButton: Locator,
     readonly decrementButton: Locator,
-    readonly clearButton: Locator
+    readonly clearButton: Locator,
   ) {
     super(page);
   }
@@ -39,7 +39,7 @@ export class NumberInteractionsArena extends BaseModel {
       setToButton,
       incrementButton,
       decrementButton,
-      clearButton
+      clearButton,
     );
     return instance;
   }

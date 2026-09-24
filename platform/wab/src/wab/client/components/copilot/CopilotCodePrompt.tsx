@@ -70,7 +70,7 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
                           type: "code-sql",
                           schema: ensure(
                             dataSourceSchema,
-                            () => `Missing schema`
+                            () => `Missing schema`,
                           ),
                           currentCode: processCurrentCode(currentValue),
                           data: processData(data),
@@ -132,7 +132,7 @@ function processData(data: Record<string, any>) {
       }
       if (Array.isArray(v)) {
         return (v.length > 3 ? [...v.slice(0, 3), "... (long array"] : v).map(
-          (val, i) => rec(val, depth + 1, [...path, i])
+          (val, i) => rec(val, depth + 1, [...path, i]),
         );
       } else {
         return Object.fromEntries(
@@ -144,10 +144,10 @@ function processData(data: Record<string, any>) {
                   showAdvancedFields: true,
                 })
                   ? null
-                  : ([key, rec(v[key], depth + 1, [...path, key])] as const)
-              )
-            )
-          ).slice(0, 50)
+                  : ([key, rec(v[key], depth + 1, [...path, key])] as const),
+              ),
+            ),
+          ).slice(0, 50),
         );
       }
     };

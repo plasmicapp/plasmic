@@ -21,7 +21,7 @@ async function createComponentWithComment(props: {
       await models.studio.addCommentToSelection(commentText);
 
       const commentMarkers = models.studio.frame.locator(
-        '[data-test-id^="comment-marker-"]'
+        '[data-test-id^="comment-marker-"]',
       );
 
       const firstMarker = commentMarkers.first();
@@ -54,7 +54,7 @@ test.describe("comments", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -92,7 +92,7 @@ test.describe("comments", () => {
       const componentUuid = await getComponentUuid(page, componentName);
 
       expect(page.url()).toContain(
-        `/-/${componentName}?arena_type=component&arena=${componentUuid}&comment=${threadIdValue}`
+        `/-/${componentName}?arena_type=component&arena=${componentUuid}&comment=${threadIdValue}`,
       );
     });
 
@@ -112,7 +112,7 @@ test.describe("comments", () => {
       await assertCommentInUrl(page, postIdValue);
 
       expect(page.url()).toContain(
-        `/-/${componentName}?arena_type=component&arena=${componentUuid}&comment=${postIdValue}`
+        `/-/${componentName}?arena_type=component&arena=${componentUuid}&comment=${postIdValue}`,
       );
     });
   });
@@ -139,7 +139,7 @@ test.describe("comments", () => {
         resp.url().includes("/revisions/") &&
         resp.request().method() === "POST" &&
         resp.status() === 200,
-      { timeout: 10000 }
+      { timeout: 10000 },
     );
     await models.studio.deleteSelectionWithComments();
     await savePromise;
@@ -147,9 +147,8 @@ test.describe("comments", () => {
     await test.step("URL has no comment param and marker is not visible", async () => {
       await assertCommentNotInUrl(page, threadIdValue);
 
-      const commentMarker = await models.studio.getCommentMarketById(
-        threadIdValue
-      );
+      const commentMarker =
+        await models.studio.getCommentMarketById(threadIdValue);
       await expect(commentMarker).not.toBeVisible();
     });
 
@@ -190,7 +189,7 @@ test.describe("comments", () => {
       const pageUuid = await getComponentUuid(page, pageName);
 
       expect(page.url()).toContain(
-        `/-/${pageName}?arena_type=page&arena=${pageUuid}&comment=${postIdValue}`
+        `/-/${pageName}?arena_type=page&arena=${pageUuid}&comment=${postIdValue}`,
       );
     });
   });

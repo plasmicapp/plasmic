@@ -1,6 +1,6 @@
-import { mkShortId } from "@/wab/shared/common";
-import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { BundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
+import { mkShortId } from "@/wab/shared/common";
 
 export const migrate: BundledMigrationFn = async (bundle) => {
   // Ensures all tpl nodes will have a unique uuid in the project.

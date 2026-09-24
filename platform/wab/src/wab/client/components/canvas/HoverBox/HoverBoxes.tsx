@@ -109,7 +109,7 @@ const HoverBoxInner = memo(HoverBoxInner_);
 
 function getObjResizability(
   controlledObj: ArenaFrame | undefined | ValNode | SlotSelection,
-  viewCtx: ViewCtx | undefined
+  viewCtx: ViewCtx | undefined,
 ) {
   if (isKnownArenaFrame(controlledObj)) {
     return isHeightAutoDerived(controlledObj)
@@ -132,7 +132,7 @@ const _throttledWarn = throttle(
   5000,
   {
     trailing: false,
-  }
+  },
 );
 
 interface SpacingEdgeDragState {
@@ -171,7 +171,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
 
   const [suppressSpacingToast, setSuppressSpacingToast] = useLocalStorage(
     "HoverBox.suppressSpacingToast",
-    false
+    false,
   );
 
   const mkFreestyleManip = (): Result<
@@ -185,9 +185,10 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
       return mkFreestyleManipForFocusedDomElt(
         ensure(
           viewCtx,
-          () => `mkFreestyleManip is only called when there's a focused viewCtx`
+          () =>
+            `mkFreestyleManip is only called when there's a focused viewCtx`,
         ),
-        obj
+        obj,
       );
     }
   };
@@ -204,7 +205,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
       () => {
         setResizePart(undefined);
         setManipState(undefined);
-      }
+      },
     );
   };
 
@@ -220,10 +221,10 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
               altKey: e.mouseEvent.altKey,
               metaKey: e.mouseEvent.metaKey,
               ctrlKey: e.mouseEvent.ctrlKey,
-            })
+            }),
           );
           return ok();
-        })
+        }),
       );
       if (maybeAborted.isErr()) {
         await stopResize();
@@ -255,7 +256,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
     const val = ensureInstance(
       viewCtx.focusedSelectable(),
       ValTag,
-      ValComponent
+      ValComponent,
     );
     const tpl = val.tpl;
 
@@ -287,7 +288,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
       dragMoveManager.current = new DragMoveFrameManager(
         studioCtx,
         focusedObjects[0],
-        clientPt
+        clientPt,
       );
     } else if (viewCtx && focusedObjects.length > 0) {
       const filteredFocusedObjects = (focusedObjects as Selectable[]).filter(
@@ -298,12 +299,12 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
               obj instanceof ValSlot) &&
             !isTplTextBlock(obj.tpl.parent)
           );
-        }
+        },
       );
       dragMoveManager.current = new DragMoveManager(
         viewCtx,
         filteredFocusedObjects as (ValTag | ValComponent | ValSlot)[],
-        clientPt
+        clientPt,
       );
     }
     if (dragMoveManager.current && dragMoveManager.current.aborted()) {
@@ -349,10 +350,10 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
     (isKnownArenaFrame(controlledObj)
       ? controlledObj
       : controlledTpl && isTplNodeNamable(controlledTpl)
-      ? controlledTpl
-      : undefined);
+        ? controlledTpl
+        : undefined);
   const controlledSpacingObj = maybe(viewCtx, (vc) =>
-    getControlledSpacingObj(controlledObj, vc)
+    getControlledSpacingObj(controlledObj, vc),
   );
 
   const resizable = getObjResizability(controlledObj, viewCtx);
@@ -372,7 +373,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
         if (dragMoveManager.current) {
           await stopMove();
         }
-      })
+      }),
     );
 
     return () => {
@@ -418,7 +419,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
   const leftOffset = useTagLeftOffset(
     hoverTagRef,
     state?.width || 0,
-    studioCtx.zoom
+    studioCtx.zoom,
   );
 
   useEffect(() => {
@@ -567,7 +568,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                               corner: (corner) =>
                                 state?.edgeControls["top"].includes("size") &&
                                 state?.edgeControls["bottom"].includes(
-                                  "size"
+                                  "size",
                                 ) &&
                                 state?.edgeControls["left"].includes("size") &&
                                 state?.edgeControls["right"].includes("size") &&
@@ -584,7 +585,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                       className={cn({
                                         HoverBox__Resizer: true,
                                         [`HoverBox__Resizer__${styleCase(
-                                          corner
+                                          corner,
                                         )}`]: true,
                                       })}
                                     />
@@ -605,7 +606,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                               (isHorizontal && resizable.height));
                           const disabledDnd = !canEditSection(
                             studioCtx,
-                            Section.Spacing
+                            Section.Spacing,
                           );
                           return (
                             <SpaceEdgeControls
@@ -614,7 +615,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                 allowPadding
                                   ? maybe(
                                       state?.padding?.[side],
-                                      (size) => `${showSizeCss(size)}`
+                                      (size) => `${showSizeCss(size)}`,
                                     )
                                   : null
                               }
@@ -622,13 +623,13 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                 allowMargin
                                   ? maybe(
                                       state?.margin?.[side],
-                                      (size) => `${showSizeCss(size)}`
+                                      (size) => `${showSizeCss(size)}`,
                                     )
                                   : null
                               }
                               paddingPxValue={
                                 allowPadding
-                                  ? state?.paddingPx?.[side] ?? 0
+                                  ? (state?.paddingPx?.[side] ?? 0)
                                   : null
                               }
                               disabledPaddingDragging={
@@ -639,11 +640,11 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                               }
                               marginPxValue={
                                 allowMargin
-                                  ? state?.marginPx?.[side] ?? 0
+                                  ? (state?.marginPx?.[side] ?? 0)
                                   : null
                               }
                               sizePxValue={
-                                allowSizing ? state?.[side] ?? 0 : null
+                                allowSizing ? (state?.[side] ?? 0) : null
                               }
                               draggedSide={spacingDragState?.side}
                               draggedEdgeType={spacingDragState?.edgeType}
@@ -676,8 +677,8 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                         ensureInstance(
                                           focused,
                                           ValTag,
-                                          ValComponent
-                                        )
+                                          ValComponent,
+                                        ),
                                     );
                                     if (!val) {
                                       return ok();
@@ -685,8 +686,8 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                     const domElt = ensureArray(
                                       viewCtx.renderState.sel2dom(
                                         val,
-                                        viewCtx.canvasCtx
-                                      )
+                                        viewCtx.canvasCtx,
+                                      ),
                                     )[0] as HTMLElement;
                                     studioCtx.startUnlogged();
                                     studioCtx.isResizeDragging = true;
@@ -728,7 +729,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                         {
                                           duration: 999,
                                           key: "spacing",
-                                        }
+                                        },
                                       );
                                     }
                                     return ok();
@@ -765,11 +766,11 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                                 altKey: mode === "symmetric",
                                                 metaKey: false,
                                                 ctrlKey: false,
-                                              }
-                                            )
+                                              },
+                                            ),
                                           );
                                           return ok();
-                                        })
+                                        }),
                                     );
                                   if (maybeAborted.isErr()) {
                                     await stopResize();
@@ -794,29 +795,29 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                       spacingDragState.unit,
                                       frameOffset,
                                       "width",
-                                      0
+                                      0,
                                     );
                                     const newUnitValue = showSizeCss(
                                       createNumericSize(
                                         newNumericValue,
-                                        spacingDragState.unit
-                                      )
+                                        spacingDragState.unit,
+                                      ),
                                     );
                                     const vtm = ensure(
                                       viewCtx,
                                       () =>
-                                        `Only possible to resize if there's a focused viewCtx`
+                                        `Only possible to resize if there's a focused viewCtx`,
                                     ).variantTplMgr();
                                     const expr = vtm.targetRshForNode(
-                                      spacingDragState.tpl
+                                      spacingDragState.tpl,
                                     );
                                     for (const s of getAffectedSides(
                                       side2,
-                                      mode
+                                      mode,
                                     )) {
                                       expr.set(
                                         `${edgeType}-${s}`,
-                                        newUnitValue
+                                        newUnitValue,
                                       );
                                     }
 
@@ -853,7 +854,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                   });
                                   setTimeout(
                                     () => notification.destroy("spacing"),
-                                    3000
+                                    3000,
                                   );
                                 }
                               }}
@@ -869,12 +870,12 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                     const val = ensureInstance(
                                       controlledSpacingObj,
                                       ValTag,
-                                      ValComponent
+                                      ValComponent,
                                     );
                                     const vtm = ensure(
                                       viewCtx,
                                       () =>
-                                        `Only possible to resize when there's a focused viewCtx`
+                                        `Only possible to resize when there's a focused viewCtx`,
                                     ).variantTplMgr();
                                     const expr = vtm.targetRshForNode(val.tpl);
                                     if (expr.has(`${edgeType}-${side2}`)) {
@@ -984,7 +985,7 @@ function HoverBox_({
       elts.forEach(
         (elt) =>
           elt.parentNode &&
-          parentObs.observe(elt.parentNode, { childList: true })
+          parentObs.observe(elt.parentNode, { childList: true }),
       );
 
       return () => {

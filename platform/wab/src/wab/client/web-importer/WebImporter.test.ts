@@ -59,7 +59,7 @@ describe("WebImporter", () => {
           clipboard,
           studioCtx,
           cursorClientPt: undefined,
-        })
+        }),
       ).toBe(true);
 
       const { pastedTpl } = getPastedTpl(page.tplTree);
@@ -73,7 +73,7 @@ describe("WebImporter", () => {
       const textTpl = pastedTplChildren[0];
       expect(Tpls.getTagOrComponentName(textTpl)).toEqual("span");
       expect(Tpls.getTplTextBlockContent(textTpl, pageViewCtx)).toEqual(
-        "Hello World"
+        "Hello World",
       );
       expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
     });
@@ -99,7 +99,7 @@ describe("WebImporter", () => {
           clipboard: htmlToClipboard(htmlStr),
           studioCtx,
           cursorClientPt: undefined,
-        })
+        }),
       ).toBe(true);
 
       const { pastedTpl } = getPastedTpl(page.tplTree);
@@ -116,7 +116,7 @@ describe("WebImporter", () => {
       // Verify it's an img tpl (SVG converted to image asset)
       expect(Tpls.isTplImage(imgTpl)).toBe(true);
       expect(
-        ImageAssets.getOnlyAssetRef(imgTpl as TplImageTag)?.dataUri
+        ImageAssets.getOnlyAssetRef(imgTpl as TplImageTag)?.dataUri,
       ).toEqual(dataUri);
 
       // Verify img tpl to be lazy loaded
@@ -125,7 +125,7 @@ describe("WebImporter", () => {
         .ensureBaseVariantSetting(imgTpl as TplImageTag);
       assert(
         isKnownCustomCode(baseVs.attrs.loading),
-        "imgTpl baseVs loading attr should be CustomCode"
+        "imgTpl baseVs loading attr should be CustomCode",
       );
       expect(baseVs.attrs.loading.code).toBe('"lazy"');
 
@@ -143,7 +143,7 @@ describe("WebImporter", () => {
           clipboard: htmlToClipboard(htmlStr),
           studioCtx,
           cursorClientPt: undefined,
-        })
+        }),
       ).toBe(true);
 
       const { pastedTpl } = getPastedTpl(page.tplTree);
@@ -159,7 +159,7 @@ describe("WebImporter", () => {
 
       // Verify it's an icon with the correct dataUri (should have height="1em" and style="fill: currentColor;")
       expect(
-        ImageAssets.getOnlyAssetRef(iconTpl as TplImageTag)?.dataUri
+        ImageAssets.getOnlyAssetRef(iconTpl as TplImageTag)?.dataUri,
       ).toEqual(processedDataUri);
 
       expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
@@ -176,7 +176,7 @@ describe("WebImporter", () => {
           clipboard: htmlToClipboard(htmlStr),
           studioCtx,
           cursorClientPt: undefined,
-        })
+        }),
       ).toBe(true);
 
       const { pastedTpl } = getPastedTpl(page.tplTree);
@@ -190,7 +190,7 @@ describe("WebImporter", () => {
       const textTpl = pastedTplChildren[0];
       expect(Tpls.getTagOrComponentName(textTpl)).toEqual("span");
       expect(Tpls.getTplTextBlockContent(textTpl, pageViewCtx)).toEqual(
-        "Text with multiple fonts"
+        "Text with multiple fonts",
       );
 
       // Verify font-family in variant settings
@@ -200,7 +200,7 @@ describe("WebImporter", () => {
 
       // Check that font-family in ruleset values matches the first font only
       expect(baseVariantSetting.rs.values["font-family"]).toBe(
-        "Playfair Display"
+        "Playfair Display",
       );
 
       expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
@@ -230,7 +230,7 @@ describe("WebImporter", () => {
           clipboard: htmlToClipboard(htmlStr),
           studioCtx,
           cursorClientPt: undefined,
-        })
+        }),
       ).toBe(true);
 
       const { pastedTpl } = getPastedTpl(page.tplTree);
@@ -256,7 +256,7 @@ describe("WebImporter", () => {
       ]);
 
       const hoverVs = pastedTpl.vsettings.find((vs) =>
-        vs.variants.find((v) => v.selectors?.includes(":hover"))
+        vs.variants.find((v) => v.selectors?.includes(":hover")),
       );
       assert(hoverVs, "Expected Hover VariantSetting to exists, found null");
       expect(hoverVs.rs.animations).toMatchObject([]);

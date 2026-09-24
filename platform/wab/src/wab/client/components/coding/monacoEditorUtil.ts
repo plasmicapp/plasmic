@@ -19,10 +19,10 @@ const compilerOptions: monaco.languages.typescript.CompilerOptions = {
 };
 
 monaco.languages.typescript.javascriptDefaults.setCompilerOptions(
-  compilerOptions
+  compilerOptions,
 );
 monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
-  compilerOptions
+  compilerOptions,
 );
 
 export interface MonacoEditorActions {
@@ -89,9 +89,9 @@ export function useMonacoEditor(
      */
     onAfterEditorCreate?: (
       editor: monaco.editor.IStandaloneCodeEditor,
-      editorActions: MonacoEditorActions
+      editorActions: MonacoEditorActions,
     ) => Generator<monaco.IDisposable | null | undefined>;
-  }
+  },
 ): MonacoEditorActions | undefined {
   const [editorActions, setEditorActions] = useState<MonacoEditorActions>();
 
@@ -156,7 +156,7 @@ export function useMonacoEditor(
 export function initMonacoEditor(
   editor: monaco.editor.IStandaloneCodeEditor,
   model: monaco.editor.ITextModel,
-  language: string
+  language: string,
 ): MonacoEditorActions {
   if (language === "javascript" || language === "typescript") {
     return initMonacoEditorJs(editor, model);
@@ -190,7 +190,7 @@ export function initMonacoEditor(
  */
 function initMonacoEditorJs(
   editor: monaco.editor.IStandaloneCodeEditor,
-  model: monaco.editor.ITextModel
+  model: monaco.editor.ITextModel,
 ): MonacoEditorActions {
   /* These signal to custom commands
      that the current cursor's position is in the end/start of the editable range */
@@ -276,7 +276,7 @@ function initMonacoEditorJs(
       getRange(
         model,
         Math.min(model.getLineCount(), getEndLineNumber() + 1),
-        model.getLineCount()
+        model.getLineCount(),
       ),
     ]);
   };
@@ -287,7 +287,7 @@ function initMonacoEditorJs(
       const startLineNumber = getStartLineNumber();
       const endLineNumber = getEndLineNumber();
       return model.getValueInRange(
-        getRange(model, startLineNumber, endLineNumber)
+        getRange(model, startLineNumber, endLineNumber),
       );
     },
     replaceUserValue: (value) => {
@@ -303,34 +303,34 @@ function initMonacoEditorJs(
   // @see https://github.com/microsoft/monaco-editor/issues/940
   editor.addCommand(monaco.KeyCode.Backspace, noopFn, "startOfEditable");
   allModCombosOf(monaco.KeyCode.Backspace).forEach((modKey) =>
-    editor.addCommand(modKey, noopFn, "startOfEditable")
+    editor.addCommand(modKey, noopFn, "startOfEditable"),
   );
   editor.addCommand(monaco.KeyCode.Delete, noopFn, "endOfEditable");
   allModCombosOf(monaco.KeyCode.Delete).forEach((modKey) =>
-    editor.addCommand(modKey, noopFn, "endOfEditable")
+    editor.addCommand(modKey, noopFn, "endOfEditable"),
   );
   // MacOS: Delete
   editor.addCommand(
     monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyD,
     noopFn,
-    "endOfEditable"
+    "endOfEditable",
   );
   // MacOS: Delete Line
   editor.addCommand(
     monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyK,
     noopFn,
-    "endOfEditable"
+    "endOfEditable",
   );
   // MacOS: Transpose
   editor.addCommand(
     monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyT,
     noopFn,
-    "startOfEditable"
+    "startOfEditable",
   );
   editor.addCommand(
     monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyT,
     noopFn,
-    "endOfEditable"
+    "endOfEditable",
   );
 
   // These cheat on the replace widget so that it cannot replace anything in the wrapper.
@@ -367,7 +367,7 @@ function initMonacoEditorJs(
             },
           ],
         },
-        true
+        true,
       );
       editor.setSelection(scope);
       find._model._decorations.getFindScope = function getFindScope() {
@@ -384,7 +384,7 @@ function initMonacoEditorJs(
       {
         searchScope: oldSearchScope,
       },
-      true
+      true,
     );
     find._widget._updateSearchScope();
     restrictSelections(null);
@@ -420,7 +420,7 @@ function initMonacoEditorJs(
 export function upsertMonacoModel(
   filePath: string,
   language: string,
-  content: string
+  content: string,
 ): monaco.editor.ITextModel {
   const uri = monaco.Uri.parse(filePath);
   const existing = monaco.editor
@@ -439,7 +439,7 @@ export function upsertMonacoModel(
 export function upsertMonacoExtraLib(
   lang: monaco.languages.typescript.LanguageServiceDefaults,
   filePath: string,
-  content: string
+  content: string,
 ): monaco.IDisposable | null {
   const existingLib = lang.getExtraLibs()[filePath];
   if (existingLib && existingLib.content === content) {
@@ -451,19 +451,19 @@ export function upsertMonacoExtraLib(
 
 export function createFilePathWithExtension(
   fileName: string,
-  language: string
+  language: string,
 ) {
   return language === "typescript"
     ? `file:///${fileName}.tsx`
     : language === "json"
-    ? `file:///${fileName}.json`
-    : language === "html"
-    ? `file:///${fileName}.html`
-    : language === "css"
-    ? `file:///${fileName}.css`
-    : language === "javascript"
-    ? `file:///${fileName}.jsx`
-    : `file:///${fileName}.txt`;
+      ? `file:///${fileName}.json`
+      : language === "html"
+        ? `file:///${fileName}.html`
+        : language === "css"
+          ? `file:///${fileName}.css`
+          : language === "javascript"
+            ? `file:///${fileName}.jsx`
+            : `file:///${fileName}.txt`;
 }
 
 const PREFIX_NEWLINES = "\n";
@@ -502,7 +502,7 @@ function wrapJsCode(code: string) {
  */
 function replaceUserValueFn(
   editor: monaco.editor.IStandaloneCodeEditor,
-  model: monaco.editor.ITextModel
+  model: monaco.editor.ITextModel,
 ) {
   return (value) => {
     if (model.getValue() === value) {
@@ -516,7 +516,7 @@ function replaceUserValueFn(
           text: value,
         },
       ],
-      editor.getSelections() ?? undefined // restore current selections after edit
+      editor.getSelections() ?? undefined, // restore current selections after edit
     );
   };
 }
@@ -531,13 +531,13 @@ function isRangeSelection(s: monaco.Selection) {
 function getRange(
   model: monaco.editor.ITextModel,
   startLineNumber: number,
-  endLineNumber: number
+  endLineNumber: number,
 ): monaco.Range {
   return new monaco.Range(
     startLineNumber,
     1,
     endLineNumber,
-    model.getLineMaxColumn(endLineNumber)
+    model.getLineMaxColumn(endLineNumber),
   );
 }
 
@@ -575,7 +575,7 @@ const allModCombos = [
  * onDidCreateEditor doesn't work.
  */
 export function makeMonacoAutoFocus(
-  codeEditor: monaco.editor.IStandaloneCodeEditor
+  codeEditor: monaco.editor.IStandaloneCodeEditor,
 ) {
   let didScrollChangeDisposable;
   codeEditor.focus();

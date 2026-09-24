@@ -13,7 +13,7 @@ type ProjectInfo = {
 };
 
 function useImportFromProdListener(
-  onListen: (devflags: DevFlagsType, info: ProjectInfo[]) => Promise<void>
+  onListen: (devflags: DevFlagsType, info: ProjectInfo[]) => Promise<void>,
 ) {
   React.useEffect(() => {
     const listener = async (event: MessageEvent) => {
@@ -32,7 +32,7 @@ function useImportFromProdListener(
 
 async function setupHostlessWorkspace(
   nonAuthCtx: NonAuthCtx,
-  hostLessWorkspaceId: WorkspaceId
+  hostLessWorkspaceId: WorkspaceId,
 ) {
   try {
     // If it doesn't throw an error, it means the workspace exists
@@ -61,7 +61,7 @@ async function setupHostlessWorkspace(
 
 async function resetProjects(
   nonAuthCtx: NonAuthCtx,
-  projectsInfo: ProjectInfo[]
+  projectsInfo: ProjectInfo[],
 ) {
   console.log("## Deleting existing projects...");
 
@@ -70,7 +70,7 @@ async function resetProjects(
     const dependenciesProjectIds = parsedBundles.flatMap(([_, bundle]) =>
       Object.values(bundle.map)
         .filter((inst) => inst.__type === "ProjectDependency")
-        .map((inst) => inst.projectId)
+        .map((inst) => inst.projectId),
     );
 
     return [info.projectId, ...dependenciesProjectIds];
@@ -78,8 +78,8 @@ async function resetProjects(
 
   await Promise.all(
     projectIds.map((projectId) =>
-      nonAuthCtx.api.deleteProjectAndRevisions(projectId)
-    )
+      nonAuthCtx.api.deleteProjectAndRevisions(projectId),
+    ),
   );
 
   console.log("## Uploading new projects...");
@@ -113,7 +113,7 @@ export function AdminImportProjectsFromProd() {
       devflags.hideBlankStarter = false;
 
       await nonAuthCtx.api.setDevFlagOverrides(
-        JSON.stringify(devflags, null, 2)
+        JSON.stringify(devflags, null, 2),
       );
 
       await resetProjects(nonAuthCtx, info);
@@ -123,12 +123,12 @@ export function AdminImportProjectsFromProd() {
         JSON.stringify({
           source: "import-project-from-prod",
           done: true,
-        })
+        }),
       );
 
       setModalVisible(false);
     },
-    [nonAuthCtx, ref, isLocalhost]
+    [nonAuthCtx, ref, isLocalhost],
   );
 
   useImportFromProdListener(onListenProjectsInfo);

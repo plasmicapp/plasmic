@@ -38,22 +38,22 @@ describe("uniquePagePath", () => {
     expect(uniquePagePath("/", ["/"])).toBe("/new-page");
     expect(uniquePagePath("/", ["/", "/new-page"])).toBe("/new-page-2");
     expect(uniquePagePath("/", ["/", "/new-page", "/new-page-2"])).toBe(
-      "/new-page-3"
+      "/new-page-3",
     );
 
     expect(
-      uniquePagePath("/[a]/[b]", ["/", "/foo/bar", "/[a]", "/[a]/[b]/[c]"])
+      uniquePagePath("/[a]/[b]", ["/", "/foo/bar", "/[a]", "/[a]/[b]/[c]"]),
     ).toBe("/[a]/[b]");
     expect(uniquePagePath("/[a]/[b]", ["/[x]/[y]"])).toBe("/new-page/[a]/[b]");
     expect(uniquePagePath("/[a]/[b]", ["/[a]/[b]", "/new-page/[a]/[b]"])).toBe(
-      "/new-page-2/[a]/[b]"
+      "/new-page-2/[a]/[b]",
     );
     expect(
       uniquePagePath("/[a]/[b]", [
         "/[a]/[b]",
         "/new-page/[a]/[b]",
         "/new-page-2/[a]/[b]",
-      ])
+      ]),
     ).toBe("/new-page-3/[a]/[b]");
 
     // Part 2: there is prefix.
@@ -66,7 +66,7 @@ describe("uniquePagePath", () => {
         "/pre/[pre]/part/foo/bar",
         "/pre/[pre]/part/[a]",
         "/pre/[pre]/part/[a]/[b]/[c]",
-      ])
+      ]),
     ).toBe("/pre/[pre]/part/[a]/[b]");
     expect(
       uniquePagePath("/pre/[pre]/part", [
@@ -75,7 +75,7 @@ describe("uniquePagePath", () => {
         "/pre/[pre]/part/foo/bar",
         "/pre/[pre]/part/[a]",
         "/pre/[pre]/part/[a]/[b]/[c]",
-      ])
+      ]),
     ).toBe("/pre/[pre]/part");
 
     // Changes.
@@ -84,13 +84,13 @@ describe("uniquePagePath", () => {
       expect(
         uniquePagePath(`/pre/[pre]/part${suffix}`, [
           suffix ? "/pre/[p]/part/[x]/[y]" : "/pre/[p]/part",
-        ])
+        ]),
       ).toBe(`/pre/[pre]/part-2${suffix}`);
       expect(
         uniquePagePath(`/pre/[pre]/part${suffix}`, [
           `/pre/[pre]/part${suffix}`,
           `/pre/[pre]/part-2${suffix}`,
-        ])
+        ]),
       ).toBe(`/pre/[pre]/part-3${suffix}`);
     }
   });
@@ -124,19 +124,19 @@ describe("TplMgr", () => {
     const componentRoot = ensureKnownTplTag(component.tplTree);
     let vs1, vs2, vs3, vs4, vs5;
     componentRoot.vsettings.push(
-      (vs1 = mkVariantSetting({ variants: [singleV1] }))
+      (vs1 = mkVariantSetting({ variants: [singleV1] })),
     );
     componentRoot.vsettings.push(
-      (vs2 = mkVariantSetting({ variants: [singleV2] }))
+      (vs2 = mkVariantSetting({ variants: [singleV2] })),
     );
     componentRoot.vsettings.push(
-      (vs3 = mkVariantSetting({ variants: [multiV1] }))
+      (vs3 = mkVariantSetting({ variants: [multiV1] })),
     );
     componentRoot.vsettings.push(
-      (vs4 = mkVariantSetting({ variants: [multiV2] }))
+      (vs4 = mkVariantSetting({ variants: [multiV2] })),
     );
     componentRoot.vsettings.push(
-      (vs5 = mkVariantSetting({ variants: [multiV2, screenV1] }))
+      (vs5 = mkVariantSetting({ variants: [multiV2, screenV1] })),
     );
 
     const rootComponent = mkComponent({
@@ -192,7 +192,7 @@ describe("TplMgr", () => {
       expect(groupSingle.variants).toEqual([singleV2]);
 
       expect(
-        componentRoot.vsettings.find((vs) => vs.variants.includes(singleV1))
+        componentRoot.vsettings.find((vs) => vs.variants.includes(singleV1)),
       ).toBeUndefined();
       expect(componentRoot.vsettings).not.toContain(vs1);
       expect(componentRoot.vsettings).toContain(vs2);
@@ -207,7 +207,7 @@ describe("TplMgr", () => {
       expect(groupMulti.variants).toEqual([multiV1, multiV3]);
 
       expect(
-        componentRoot.vsettings.find((vs) => vs.variants.includes(multiV2))
+        componentRoot.vsettings.find((vs) => vs.variants.includes(multiV2)),
       ).toBeUndefined();
       expect(componentRoot.vsettings).toContain(vs3);
       expect(componentRoot.vsettings).not.toContain(vs4);
@@ -327,7 +327,7 @@ describe("TplMgr.updateVariantGroupMulti", () => {
     const { mgr, group, variant1, variant2, addTpl, getArg, addFrame } =
       setup(true);
     const validTpl = addTpl(
-      new VariantsRef({ variants: [variant1, variant2] })
+      new VariantsRef({ variants: [variant1, variant2] }),
     );
     const dynamicExpr = new CustomCode({
       code: "$props.activeVariant",
@@ -368,7 +368,7 @@ describe("TplMgr.updateVariantGroupMulti", () => {
 describe("TplMgr.removeComponentServerQuery", () => {
   function setup(
     queries: ComponentServerQuery[],
-    anchor: ComponentServerQuery
+    anchor: ComponentServerQuery,
   ) {
     const site = createSite();
     const mgr = new TplMgr({ site });

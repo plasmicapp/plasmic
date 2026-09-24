@@ -27,7 +27,7 @@ export function OnClickAway({ onDone, children }: OnClickAwayProps) {
 
 export function useOnClickAwayExcept(
   getAllowedContainers: () => (Element | undefined | null)[],
-  callback: () => void
+  callback: () => void,
 ) {
   const listener = React.useCallback(
     (e: MouseEvent) => {
@@ -43,7 +43,7 @@ export function useOnClickAwayExcept(
         callback();
       }
     },
-    [getAllowedContainers, callback]
+    [getAllowedContainers, callback],
   );
   useEvent("click", listener as EventListener, document);
 
@@ -66,7 +66,7 @@ export function OnClickAwayExcept(props: {
 
 export function useOnClickAwayIfNotAllowed(
   isAllowed: (target: Element) => boolean,
-  callback: () => void
+  callback: () => void,
 ) {
   const listener = React.useCallback(
     (e: MouseEvent) => {
@@ -78,7 +78,7 @@ export function useOnClickAwayIfNotAllowed(
         callback();
       }
     },
-    [isAllowed, callback]
+    [isAllowed, callback],
   );
   useEvent("click", listener as EventListener, document);
 
@@ -115,7 +115,7 @@ export const INTERACT_OUTSIDE_EXCEPTION_SELECTORS = [
 export function useInteractOutsideWithCommonExceptions(
   opts: Parameters<typeof useInteractOutside>[0] & {
     exceptSelectors?: string[];
-  }
+  },
 ) {
   const lastPointerDown = useRef<PointerEvent | undefined>(undefined);
   const onInteractOutside = opts.onInteractOutside;
@@ -123,7 +123,7 @@ export function useInteractOutsideWithCommonExceptions(
     ...opts,
     onInteractOutside: (e) => {
       const shouldInteractOutside = (
-        eventTarget: EventTarget | null | undefined
+        eventTarget: EventTarget | null | undefined,
       ) => {
         if (eventTarget instanceof Node) {
           // Don't close if the interaction was with an ant menu
@@ -135,7 +135,7 @@ export function useInteractOutsideWithCommonExceptions(
           const $target = $(eventTarget);
           const $parents = $target.parents();
           return !exceptions.some(
-            (selector) => $target.is(selector) || $parents.is(selector)
+            (selector) => $target.is(selector) || $parents.is(selector),
           );
         }
         return true;
@@ -163,7 +163,7 @@ export function useInteractOutsideWithCommonExceptions(
     (e: Event) => {
       onInteractOutside?.(e as any);
     },
-    [onInteractOutside]
+    [onInteractOutside],
   );
   React.useEffect(() => {
     document.addEventListener(plasmicIFrameMouseDownEvent, callback);

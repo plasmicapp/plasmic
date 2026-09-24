@@ -23,7 +23,7 @@ type ViewInitializerProps = {
  * - In the host frame, we render StudioInitializer, which includes the actual Studio UI code.
  */
 export const ViewInitializer = observer(function ViewInitializer(
-  props: ViewInitializerProps
+  props: ViewInitializerProps,
 ) {
   if (isTopFrame()) {
     return <TopFrameViewInitializer {...props} />;
@@ -36,7 +36,7 @@ function TopFrameViewInitializer({ projectId }: ViewInitializerProps) {
   const [studioFrameKey, setStudioFrameKey] = React.useState(0);
   const refreshStudio = React.useCallback(
     async () => setStudioFrameKey((prevKey) => prevKey + 1),
-    []
+    [],
   );
 
   return (
@@ -63,7 +63,7 @@ function HostFrameViewInitializer({
           onRefreshUi={onRefreshUi}
           projectId={projectId}
         />
-      )
+      ),
     );
   const contents = (studioInitializer: React.ReactElement) => studioInitializer;
   return (

@@ -5,8 +5,10 @@ import {
 import L from "lodash";
 import * as React from "react";
 
-interface DocsCollapsibleExplanationProps
-  extends Omit<DefaultDocsCollapsibleExplanationProps, "children"> {
+interface DocsCollapsibleExplanationProps extends Omit<
+  DefaultDocsCollapsibleExplanationProps,
+  "children"
+> {
   children?: React.ReactNode | ((expanded: boolean) => React.ReactNode);
   defaultExpanded?: boolean;
   onToggle?: (expanded: boolean) => void;

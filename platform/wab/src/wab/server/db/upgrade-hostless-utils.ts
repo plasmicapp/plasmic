@@ -29,7 +29,7 @@ import {
  */
 export async function upgradeReferencedHostlessDeps(
   db: DbMgr,
-  projectId: ProjectId
+  projectId: ProjectId,
 ) {
   const projectRev = await db.getLatestProjectRev(projectId);
   const bundler = new Bundler();
@@ -37,7 +37,7 @@ export async function upgradeReferencedHostlessDeps(
     bundler,
     JSON.parse(projectRev.data),
     db,
-    projectRev
+    projectRev,
   );
 
   const updatedDeps: {
@@ -50,7 +50,7 @@ export async function upgradeReferencedHostlessDeps(
         const oldDep = dep;
         const pkgVersion = await db.getPkgVersion(dep.pkgId);
         logger().info(
-          `Upgrading ${dep.name} from ${oldDep.version} to ${pkgVersion.version}`
+          `Upgrading ${dep.name} from ${oldDep.version} to ${pkgVersion.version}`,
         );
         const newDep = ensureKnownProjectDependency(
           (
@@ -58,9 +58,9 @@ export async function upgradeReferencedHostlessDeps(
               bundler,
               await getMigratedBundle(pkgVersion),
               db,
-              pkgVersion
+              pkgVersion,
             )
-          ).siteOrProjectDep
+          ).siteOrProjectDep,
         );
         updatedDeps.push({ oldDep, newDep });
       }
@@ -76,7 +76,7 @@ export async function upgradeReferencedHostlessDeps(
     const newBundle = bundler.bundle(
       siteOrProjectDep,
       projectRev.id,
-      await getLastBundleVersion()
+      await getLastBundleVersion(),
     );
     await db.saveProjectRev({
       projectId,

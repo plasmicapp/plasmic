@@ -39,7 +39,7 @@ export class TypeormStore extends Store {
         onError: (s: TypeormStore, e: Error) => void;
         ttl: Ttl;
       }
-    > = {}
+    > = {},
   ) {
     super(options as any);
     this.cleanupLimit = options.cleanupLimit;
@@ -120,17 +120,17 @@ export class TypeormStore extends Store {
                           ? `'${x.id
                               .replace(/\\/g, "\\\\")
                               .replace(/'/g, "\\'")}'`
-                          : `${x.id}`
+                          : `${x.id}`,
                       )
                       .join(", ")
-                  : "NULL"
+                  : "NULL",
               );
         })().then((ids) =>
           this.repository
             .createQueryBuilder()
             .delete()
             .where(`id IN (${ids})`)
-            .execute()
+            .execute(),
         )
       : Promise.resolve()
     )
@@ -139,7 +139,7 @@ export class TypeormStore extends Store {
           expiredAt: Date.now() + ttl * 1000,
           id: sid,
           json,
-        })
+        }),
       )
       .then(() => {
         this.debug("SET complete");
@@ -165,8 +165,8 @@ export class TypeormStore extends Store {
 
     Promise.all(
       (Array.isArray(sid) ? sid : [sid]).map((x) =>
-        this.repository.delete({ id: x })
-      )
+        this.repository.delete({ id: x }),
+      ),
     )
       .then(() => {
         if (fn) {

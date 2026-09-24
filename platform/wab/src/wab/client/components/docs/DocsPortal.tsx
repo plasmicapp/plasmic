@@ -84,7 +84,7 @@ const DocsPortal = observer(function DocsPortal(props: DocsPortalProps) {
           }),
         ]}
       />
-    </CodegenTypeContext.Provider>
+    </CodegenTypeContext.Provider>,
   );
 });
 

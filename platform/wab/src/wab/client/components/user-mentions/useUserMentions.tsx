@@ -26,7 +26,7 @@ export function useUserMentions({
   const studioCtx = useStudioCtx();
   const users = React.useMemo(
     () => getUniqueUsersFromApiPermissions(studioCtx.siteInfo.perms),
-    [studioCtx.siteInfo.perms]
+    [studioCtx.siteInfo.perms],
   );
 
   const inputElement =
@@ -40,14 +40,14 @@ export function useUserMentions({
         if (opts?.start !== undefined || opts?.end !== undefined) {
           inputElement.setSelectionRange(
             opts?.start ?? null,
-            opts?.end ?? null
+            opts?.end ?? null,
           );
         }
 
         document.execCommand("insertText", false, text);
       }
     },
-    [inputElement]
+    [inputElement],
   );
 
   const onPick = React.useCallback(
@@ -68,11 +68,11 @@ export function useUserMentions({
         end: caret,
       });
     },
-    [inputElement, value, insertText]
+    [inputElement, value, insertText],
   );
 
   const [mentionQuery, setMentionQuery] = React.useState<string | undefined>(
-    undefined
+    undefined,
   );
 
   const { mentionsPopover, onKeyHandler } = useMentionsPopover({
@@ -83,9 +83,9 @@ export function useUserMentions({
     getMatchScore: (user, query) =>
       matchScore(
         [user.firstName, user.lastName, user.email].filter(
-          (word) => word !== null
+          (word) => word !== null,
         ),
-        query
+        query,
       ),
     renderPopoverContent: ({ suggestions, highlightIndex, onSelect }) =>
       suggestions.length === 0 ? null : (

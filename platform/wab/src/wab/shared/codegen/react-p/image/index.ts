@@ -44,7 +44,7 @@ export function maybeMakePlasmicImgSrc(asset: ImageAsset, exprCtx: ExprCtx) {
     asset.dataUri.startsWith("http") &&
     ensure(
       last(asset.dataUri.split("/")),
-      "A URL starting with 'http' should contain slashes"
+      "A URL starting with 'http' should contain slashes",
     );
 
   return {
@@ -56,7 +56,7 @@ export function maybeMakePlasmicImgSrc(asset: ImageAsset, exprCtx: ExprCtx) {
     fullHeight: asset.height,
     aspectRatio: maybe(
       asset.aspectRatio,
-      (aspectRatio) => aspectRatio / ASPECT_RATIO_SCALE_FACTOR
+      (aspectRatio) => aspectRatio / ASPECT_RATIO_SCALE_FACTOR,
     ),
   };
 }
@@ -64,7 +64,7 @@ export function maybeMakePlasmicImgSrc(asset: ImageAsset, exprCtx: ExprCtx) {
 export function getSerializedImgSrcForAsset(
   asset: ImageAsset,
   ctx: SerializerBaseContext,
-  asStringUrl = false
+  asStringUrl = false,
 ) {
   let srcStr: string | undefined = undefined;
 
@@ -91,7 +91,7 @@ export function getSerializedImgSrcForAsset(
       return `{ ${Object.entries(maybeSrcObject)
         .map(
           ([key, value]) =>
-            `${jsLiteral(key)}:${key === "src" ? srcStr : jsLiteral(value)}`
+            `${jsLiteral(key)}:${key === "src" ? srcStr : jsLiteral(value)}`,
         )
         .join(", ")} }`;
     }

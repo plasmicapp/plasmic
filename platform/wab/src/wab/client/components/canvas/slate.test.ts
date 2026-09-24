@@ -45,7 +45,7 @@ function expectMarks(editor: Editor, expected: CSSProperties | null) {
 function expectMarksDiffer(
   editor: Editor,
   expectedToolbar: CSSProperties | null,
-  expectedEditorMarks: CSSProperties | null
+  expectedEditorMarks: CSSProperties | null,
 ) {
   expect(marksForToolbar(editor)).toEqual(expectedToolbar);
   expect(Editor.marks(editor)).toEqual(expectedEditorMarks);
@@ -149,7 +149,7 @@ describe("marksForToolbar", () => {
       editor.children = [
         ul(
           li(p(span("Reasons to use "), b("Plasmic"), span(":"))),
-          li(ol(li(p(b("fun"))), li(p(span("fast"))), li(p(b("")))))
+          li(ol(li(p(b("fun"))), li(p(span("fast"))), li(p(b(""))))),
         ),
       ];
     });

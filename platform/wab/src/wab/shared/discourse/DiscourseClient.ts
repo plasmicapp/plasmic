@@ -148,7 +148,7 @@ export class DiscourseHttpError {
     readonly url: string,
     readonly status: number,
     readonly statusText: string,
-    readonly body: string
+    readonly body: string,
   ) {}
 }
 
@@ -159,7 +159,7 @@ class DiscourseApiClient {
   constructor(
     private readonly baseUrl: string,
     private readonly apiKey: string,
-    private readonly apiUsername: string
+    private readonly apiUsername: string,
   ) {}
 
   /** https://docs.discourse.org/#tag/Categories/operation/getCategory */
@@ -168,14 +168,14 @@ class DiscourseApiClient {
   }
   /** https://docs.discourse.org/#tag/Categories/operation/createCategory */
   async categoryCreate(
-    data: CategoryMutation & { name: string }
+    data: CategoryMutation & { name: string },
   ): Promise<{ category: Category }> {
     return this.httpPost(`/categories.json`, data);
   }
   /** https://docs.discourse.org/#tag/Categories/operation/updateCategory */
   async categoryUpdate(
     id: number,
-    data: CategoryMutation
+    data: CategoryMutation,
   ): Promise<{ category: Category }> {
     return this.httpPut(`/categories/${id}.json`, data);
   }
@@ -197,7 +197,7 @@ class DiscourseApiClient {
     id: number,
     data: {
       usernames: string;
-    }
+    },
   ): Promise<{ success: string }> {
     return this.httpPut(`/groups/${id}/members.json`, data);
   }
@@ -206,7 +206,7 @@ class DiscourseApiClient {
     id: number,
     data: {
       usernames: string;
-    }
+    },
   ): Promise<{ success: string }> {
     return this.httpDelete(`/groups/${id}/members.json`, data);
   }
@@ -215,7 +215,7 @@ class DiscourseApiClient {
     id: number,
     data: {
       usernames: string;
-    }
+    },
   ): Promise<{ success: string }> {
     return this.httpPut(`/groups/${id}/owners.json`, data);
   }
@@ -224,7 +224,7 @@ class DiscourseApiClient {
     id: number,
     data: {
       user_id: number;
-    }
+    },
   ): Promise<{ success: string }> {
     return this.httpDelete(`/groups/${id}/owners.json`, data);
   }
@@ -252,7 +252,7 @@ class DiscourseApiClient {
     id: number,
     data: {
       post: PostMutation;
-    }
+    },
   ): Promise<{ post: Post }> {
     return this.httpPut(`/posts/${id}.json`, data);
   }
@@ -266,7 +266,7 @@ class DiscourseApiClient {
     return this.httpPut(
       `/posts/${id}/revisions/${revisionId}/hide`,
       undefined,
-      noop
+      noop,
     );
   }
   /** undocumented */
@@ -274,7 +274,7 @@ class DiscourseApiClient {
     return this.httpPut(
       `/posts/${id}/revisions/${revisionId}/show`,
       undefined,
-      noop
+      noop,
     );
   }
 
@@ -301,7 +301,7 @@ class DiscourseApiClient {
   /** https://docs.discourse.org/#tag/Topics/operation/updateTopic */
   async topicUpdate(
     id: number,
-    data: { title?: string; category_id?: string }
+    data: { title?: string; category_id?: string },
   ): Promise<{ basic_topic: BasicTopic }> {
     return this.httpPut(`/t/-/${id}.json`, data);
   }
@@ -313,7 +313,7 @@ class DiscourseApiClient {
 
   private async httpGet<TResponse>(
     endpoint: string,
-    handleResponse: (response: Response) => Promise<TResponse> = parseJson
+    handleResponse: (response: Response) => Promise<TResponse> = parseJson,
   ): Promise<TResponse> {
     return this.http("get", endpoint, undefined, handleResponse);
   }
@@ -321,7 +321,7 @@ class DiscourseApiClient {
   private async httpPost<TRequest, TResponse>(
     endpoint: string,
     data: TRequest,
-    handleResponse: (response: Response) => Promise<TResponse> = parseJson
+    handleResponse: (response: Response) => Promise<TResponse> = parseJson,
   ): Promise<TResponse> {
     return this.http("post", endpoint, data, handleResponse);
   }
@@ -329,7 +329,7 @@ class DiscourseApiClient {
   private async httpPut<TRequest, TResponse>(
     endpoint: string,
     data: TRequest,
-    handleResponse: (response: Response) => Promise<TResponse> = parseJson
+    handleResponse: (response: Response) => Promise<TResponse> = parseJson,
   ): Promise<TResponse> {
     return this.http("put", endpoint, data, handleResponse);
   }
@@ -337,7 +337,7 @@ class DiscourseApiClient {
   private async httpDelete<TRequest, TResponse>(
     endpoint: string,
     data: TRequest,
-    handleResponse: (response: Response) => Promise<TResponse> = parseJson
+    handleResponse: (response: Response) => Promise<TResponse> = parseJson,
   ): Promise<TResponse> {
     return this.http("delete", endpoint, data, handleResponse);
   }
@@ -346,7 +346,7 @@ class DiscourseApiClient {
     method: string,
     endpoint: string,
     data: any,
-    handleResponse: (response: Response) => Promise<TResponse>
+    handleResponse: (response: Response) => Promise<TResponse>,
   ): Promise<TResponse> {
     const url = `${this.baseUrl}${endpoint}`;
     console.log(`${method} ${url}`, data);
@@ -365,7 +365,7 @@ class DiscourseApiClient {
         url,
         response.status,
         response.statusText,
-        await response.text()
+        await response.text(),
       );
     }
 
@@ -383,14 +383,14 @@ export class DiscourseClient extends DiscourseApiClient {
 
   async categoryAppendGroupPermissions(
     id: number,
-    newPermissions: GroupPermissionsMutation
+    newPermissions: GroupPermissionsMutation,
   ): Promise<Category> {
     const category = (await this.categoryGet(id)).category;
     const currentPermissions = Object.fromEntries(
       category.group_permissions.map(({ group_name, permission_type }) => [
         group_name,
         permission_type,
-      ])
+      ]),
     );
     return (
       await this.categoryUpdate(id, {

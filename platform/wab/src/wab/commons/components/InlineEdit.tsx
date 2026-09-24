@@ -17,7 +17,7 @@ export interface InlineEditRef {
 
 export const InlineEdit = React.forwardRef(function InlineEdit(
   { render, defaultEditing = false }: InlineEditProps,
-  ref: React.Ref<InlineEditRef>
+  ref: React.Ref<InlineEditRef>,
 ) {
   const [editing, setEditing] = useState(defaultEditing);
   React.useImperativeHandle(ref, () => ({

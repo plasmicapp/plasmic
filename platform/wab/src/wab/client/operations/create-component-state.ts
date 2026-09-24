@@ -67,7 +67,7 @@ export function createComponentState(opts: {
   const name = tplMgr.getUniqueParamName(component, opts.name);
   const onChangeProp = tplMgr.getUniqueParamName(
     component,
-    genOnChangeParamName(name)
+    genOnChangeParamName(name),
   );
   const { valueParam, onChangeParam } = mkParamsForState({
     name,

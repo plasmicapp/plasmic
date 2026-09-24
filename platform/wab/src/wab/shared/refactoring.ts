@@ -56,12 +56,12 @@ import { get, isString } from "lodash";
  */
 export function isParamUsedInExpr(
   param: Param,
-  expr: Expr | null | undefined
+  expr: Expr | null | undefined,
 ): boolean {
   if (Exprs.isRealCodeExpr(expr)) {
     assert(
       isKnownCustomCode(expr) || isKnownObjectPath(expr),
-      "Real code expression must be CustomCode or ObjectPath"
+      "Real code expression must be CustomCode or ObjectPath",
     );
     const info = parseExpr(expr);
     const varName = toVarName(param.variable.name);
@@ -80,12 +80,12 @@ export function isParamUsedInExpr(
  */
 export function isQueryUsedInExpr(
   queryName: string,
-  expr: Expr | null | undefined
+  expr: Expr | null | undefined,
 ) {
   if (Exprs.isRealCodeExpr(expr)) {
     assert(
       isKnownCustomCode(expr) || isKnownObjectPath(expr),
-      "Real code expression must be CustomCode or ObjectPath"
+      "Real code expression must be CustomCode or ObjectPath",
     );
     const info = parseExpr(expr);
     const varName = toVarName(queryName);
@@ -100,21 +100,21 @@ export function isQueryUsedInExpr(
  */
 function queriesPossiblyUsedInExpr(
   queries: ComponentDataQuery[],
-  expr: Expr | null | undefined
+  expr: Expr | null | undefined,
 ): ComponentDataQuery[] {
   if (!Exprs.isRealCodeExpr(expr)) {
     return [];
   }
   assert(
     isKnownCustomCode(expr) || isKnownObjectPath(expr),
-    "Real code expression must be CustomCode or ObjectPath"
+    "Real code expression must be CustomCode or ObjectPath",
   );
   try {
     const info = parseExpr(expr);
     return info.usesUnknownDollarVarKeys.$queries
       ? queries
       : queries.filter((q) =>
-          info.usedDollarVarKeys.$queries.has(toVarName(q.name))
+          info.usedDollarVarKeys.$queries.has(toVarName(q.name)),
         );
   } catch {
     return queries;
@@ -127,7 +127,7 @@ function queriesPossiblyUsedInExpr(
  */
 export function findLegacyQueriesReadByOp(
   query: ComponentDataQuery,
-  queries: ComponentDataQuery[]
+  queries: ComponentDataQuery[],
 ): ComponentDataQuery[] {
   if (!query.op) {
     return [];
@@ -147,12 +147,12 @@ export function findLegacyQueriesReadByOp(
  */
 export function isServerQueryUsedInExpr(
   queryName: string,
-  expr: Expr | null | undefined
+  expr: Expr | null | undefined,
 ) {
   if (Exprs.isRealCodeExpr(expr)) {
     assert(
       isKnownCustomCode(expr) || isKnownObjectPath(expr),
-      "Real code expression must be CustomCode or ObjectPath"
+      "Real code expression must be CustomCode or ObjectPath",
     );
     const info = parseExpr(expr);
     const varName = toVarName(queryName);
@@ -167,7 +167,7 @@ export function isServerQueryUsedInExpr(
 export function isDataTokenUsedInExpr(
   token: DataToken,
   expr: Expr | null | undefined,
-  projectId: ProjectId
+  projectId: ProjectId,
 ): expr is CustomCode | ObjectPath {
   if (!expr || !Exprs.isRealCodeExprEnsuringType(expr)) {
     return false;
@@ -196,7 +196,7 @@ export function isDataTokenUsedInExpr(
  */
 export function isInteractionResultUsedInExpr(
   interaction: Interaction,
-  expr: Expr | null | undefined
+  expr: Expr | null | undefined,
 ): boolean {
   if (!expr) {
     return false;
@@ -221,7 +221,7 @@ function toPathSegments(dottedPath: string): (string | number)[] {
 
 function isPathPrefix(
   prefix: (string | number)[],
-  path: (string | number)[]
+  path: (string | number)[],
 ): boolean {
   return (
     prefix.length <= path.length &&
@@ -237,7 +237,7 @@ function renameObjectInCode(
   oldObject: string,
   newObject: string,
   oldVarName: string,
-  newVarName: string
+  newVarName: string,
 ) {
   const oldCode = expr.code.slice(1, -1);
   const newCode = renameObjectKey(
@@ -245,7 +245,7 @@ function renameObjectInCode(
     oldObject,
     newObject,
     oldVarName,
-    newVarName
+    newVarName,
   );
   if (newCode !== oldCode) {
     expr.code = `(${newCode})`;
@@ -261,7 +261,7 @@ export function renameObjectInExpr(
   oldObject: string,
   newObject: string,
   oldVarName: string,
-  newVarName: string
+  newVarName: string,
 ) {
   if (isKnownCustomCode(expr) && Exprs.isRealCodeExpr(expr)) {
     renameObjectInCode(expr, oldObject, newObject, oldVarName, newVarName);
@@ -281,7 +281,7 @@ export function renameObjectInExpr(
         oldObject,
         newObject,
         oldVarName,
-        newVarName
+        newVarName,
       );
     } else if (isKnownObjectPath(expr.bodyExpr)) {
       renameObjectInExpr(
@@ -289,7 +289,7 @@ export function renameObjectInExpr(
         oldObject,
         newObject,
         oldVarName,
-        newVarName
+        newVarName,
       );
     }
   }
@@ -302,7 +302,7 @@ export function renameObjectInExpr(
 export function replaceVarWithPropInCodeExprs(
   tree: TplNode,
   varName: string,
-  propName: string
+  propName: string,
 ) {
   Tpls.flattenTpls(tree).forEach((node) => {
     for (const { expr } of Tpls.findExprsInNode(node)) {
@@ -310,7 +310,7 @@ export function replaceVarWithPropInCodeExprs(
         const newCode = replaceVarWithProp(
           expr.code.slice(1, -1),
           varName,
-          propName
+          propName,
         );
         expr.code = `(${newCode})`;
       } else if (isKnownObjectPath(expr)) {
@@ -331,7 +331,7 @@ export function replaceDollarVarWithPropInCodeExprs(
   tree: TplNode,
   varType: "$state" | "$queries" | "$q",
   varName: string,
-  propVarName: string
+  propVarName: string,
 ) {
   Tpls.flattenTpls(tree).forEach((node) => {
     for (const { expr } of Tpls.findExprsInNode(node)) {
@@ -348,7 +348,7 @@ export function renameTplAndFixExprs(
   site: Site,
   tpl: Tpls.TplNamable,
   newName: string | null | undefined,
-  tplTreeToFixExprs?: TplNode
+  tplTreeToFixExprs?: TplNode,
 ) {
   const component = Tpls.tryGetTplOwnerComponent(tpl);
   const states = (component?.states || []).filter((s) => s.tplNode === tpl);
@@ -378,7 +378,7 @@ export function renameTplAndFixExprs(
         const stateRefs = tplTreeToFixExprs
           ? Tpls.findExprsInTree(tplTreeToFixExprs)
           : Tpls.findExprsInComponent(comp).filter(({ expr }) =>
-              isStateUsedInExpr(st, expr)
+              isStateUsedInExpr(st, expr),
             );
         for (const { expr } of stateRefs) {
           renameObjectInExpr(
@@ -386,7 +386,7 @@ export function renameTplAndFixExprs(
             "$state",
             "$state",
             oldStateVarName,
-            newStateVarName
+            newStateVarName,
           );
         }
       }
@@ -400,21 +400,21 @@ export function renameParamAndFixExprs(
   site: Site,
   component: Component,
   param: Param,
-  newName: string
+  newName: string,
 ) {
   const oldName = param.variable.name;
   const oldVarName = toVarName(oldName);
   const newVarName = toVarName(newName);
 
   const paramRefs = Tpls.findExprsInComponent(component).filter(({ expr }) =>
-    isParamUsedInExpr(param, expr)
+    isParamUsedInExpr(param, expr),
   );
   for (const { expr } of paramRefs) {
     renameObjectInExpr(expr, "$props", "$props", oldVarName, newVarName);
   }
 
   const state = component.states.find(
-    (s) => !s.implicitState && s.param === param
+    (s) => !s.implicitState && s.param === param,
   );
   if (state) {
     const pairs = [
@@ -428,7 +428,7 @@ export function renameParamAndFixExprs(
       param.variable.name = oldName;
 
       const stateRefs = Tpls.findExprsInComponent(comp).filter(({ expr }) =>
-        isStateUsedInExpr(st, expr)
+        isStateUsedInExpr(st, expr),
       );
       for (const { expr } of stateRefs) {
         renameObjectInExpr(
@@ -436,7 +436,7 @@ export function renameParamAndFixExprs(
           "$state",
           "$state",
           oldStateVarName,
-          newStateVarName
+          newStateVarName,
         );
       }
     }
@@ -447,7 +447,7 @@ export function renameParamAndFixExprs(
 
 export function renameInteractionAndFixExprs(
   interaction: Interaction,
-  newName: string
+  newName: string,
 ) {
   const newUniqueName = uniqueName(
     interaction.parent.interactions
@@ -455,7 +455,7 @@ export function renameInteractionAndFixExprs(
       .map((it) => it.interactionName),
     newName,
     // $steps results are keyed by toVarName(interactionName)
-    { normalize: toVarName }
+    { normalize: toVarName },
   );
 
   const eventHandler = interaction.parent;
@@ -477,7 +477,7 @@ export function renameInteractionAndFixExprs(
 export function renameQueryAndFixExprs(
   component: Component,
   query: ComponentDataQuery,
-  wantedNewName: string
+  wantedNewName: string,
 ) {
   const oldVarName = toVarName(query.name);
   query.name = uniqueName(
@@ -485,7 +485,7 @@ export function renameQueryAndFixExprs(
     wantedNewName,
     {
       normalize: toVarName,
-    }
+    },
   );
   const newVarName = toVarName(query.name);
   const refs = Tpls.findExprsInComponent(component);
@@ -497,13 +497,13 @@ export function renameQueryAndFixExprs(
 export function renameServerQueryAndFixExprs(
   component: Component,
   query: ComponentServerQuery,
-  wantedNewName: string
+  wantedNewName: string,
 ) {
   const oldVarName = toVarName(query.name);
   query.name = uniqueName(
     component.serverQueries.filter((q) => q !== query).map((q) => q.name),
     wantedNewName,
-    { normalize: toVarName }
+    { normalize: toVarName },
   );
   const newVarName = toVarName(query.name);
   const refs = Tpls.findExprsInComponent(component);
@@ -534,7 +534,7 @@ function findQueryInvalidationExprs(site: Site) {
   return site.components.flatMap((comp) =>
     Tpls.findExprsInComponent(comp)
       .map(({ expr }) => expr)
-      .filter(isKnownQueryInvalidationExpr)
+      .filter(isKnownQueryInvalidationExpr),
   );
 }
 
@@ -542,10 +542,10 @@ export const findQueryInvalidationRefs = maybeComputedFn(
   function findQueryInvalidationRefs(site: Site): QueryRef[] {
     return findQueryInvalidationExprs(site).flatMap((expr) =>
       expr.invalidationQueries.filter(
-        (queryRef): queryRef is QueryRef => !isString(queryRef)
-      )
+        (queryRef): queryRef is QueryRef => !isString(queryRef),
+      ),
     );
-  }
+  },
 );
 
 /**
@@ -555,7 +555,7 @@ export const findQueryInvalidationRefs = maybeComputedFn(
 export function countQueryReferences(
   component: Component,
   queries: ComponentDataQuery[],
-  invalidationRefs: QueryRef[]
+  invalidationRefs: QueryRef[],
 ): Map<ComponentDataQuery, number> {
   const counts = new Map(queries.map((q) => [q, 0]));
   for (const { expr } of Tpls.findExprsInComponent(component)) {
@@ -567,7 +567,7 @@ export function countQueryReferences(
     counts.set(
       query,
       counts.get(query)! +
-        invalidationRefs.filter(({ ref }) => ref === query).length
+        invalidationRefs.filter(({ ref }) => ref === query).length,
     );
   }
   return counts;
@@ -586,7 +586,7 @@ export function migrateQueryReferences(
   component: Component,
   legacyQuery: ComponentDataQuery,
   serverQuery: ComponentServerQuery,
-  subPathRewrites: QuerySubPathRewrite[] = []
+  subPathRewrites: QuerySubPathRewrite[] = [],
 ): MigrateQueryReferencesResult {
   const oldVarName = toVarName(legacyQuery.name);
   const newVarName = toVarName(serverQuery.name);
@@ -612,12 +612,12 @@ export function migrateQueryReferences(
     const subPaths = isKnownObjectPath(expr)
       ? [expr.path.slice(2)]
       : isKnownCustomCode(expr)
-      ? findMemberChainsInCode(expr.code.slice(1, -1), "$queries", oldVarName)
-      : [];
+        ? findMemberChainsInCode(expr.code.slice(1, -1), "$queries", oldVarName)
+        : [];
     return subPaths.some((subPath) =>
       fromPaths.some(
-        (from) => subPath.length < from.length && isPathPrefix(subPath, from)
-      )
+        (from) => subPath.length < from.length && isPathPrefix(subPath, from),
+      ),
     );
   };
 
@@ -643,14 +643,14 @@ export function migrateQueryReferences(
     remainingReferences: countQueryReferences(
       component,
       [legacyQuery],
-      findQueryInvalidationRefs(site)
+      findQueryInvalidationRefs(site),
     ).get(legacyQuery)!,
   };
 }
 
 export function renameDollarFunctions(
   expr: Expr,
-  remappedFunctions: Map<CustomFunction, CustomFunction>
+  remappedFunctions: Map<CustomFunction, CustomFunction>,
 ) {
   for (const [oldFunction, newFunction] of remappedFunctions.entries()) {
     const oldName = customFunctionId(oldFunction);
@@ -662,7 +662,7 @@ export function renameDollarFunctions(
 export function renameDataTokenInExpr(
   expr: Expr,
   oldIdentifier: string,
-  newIdentifier: string
+  newIdentifier: string,
 ) {
   if (isKnownObjectPath(expr)) {
     if (expr.path[0] === oldIdentifier) {
@@ -691,7 +691,7 @@ export function renameDataTokenAndFixExprs(
   projectId: ProjectId,
   site: Site,
   dataToken: DataToken,
-  newName: string
+  newName: string,
 ) {
   const oldVarName = toVarName(dataToken.name);
   const newVarName = toVarName(newName);
@@ -727,7 +727,7 @@ export function flattenDataTokenUsage(
   token: DataToken,
   exprRef: Tpls.ExprReference,
   projectId: ProjectId,
-  component?: Component
+  component?: Component,
 ) {
   const { expr } = exprRef;
   const tokenValue = computeDataTokenValue(token);

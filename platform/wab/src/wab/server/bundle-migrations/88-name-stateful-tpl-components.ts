@@ -1,11 +1,11 @@
-import { getComponentDisplayName } from "@/wab/shared/core/components";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
-import { Bundler } from "@/wab/shared/bundler";
 import { TplMgr } from "@/wab/shared/TplMgr";
+import { Bundler } from "@/wab/shared/bundler";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { isPrivateState } from "@/wab/shared/core/states";
 import { flattenTpls, isTplComponent } from "@/wab/shared/core/tpls";
 
@@ -15,7 +15,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   const tplMgr = new TplMgr({ site });
@@ -26,7 +26,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
           tplMgr.renameTpl(
             component,
             tpl,
-            getComponentDisplayName(tpl.component)
+            getComponentDisplayName(tpl.component),
           );
         }
       }
@@ -36,7 +36,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "88-name-stateful-tpl-components"
+    "88-name-stateful-tpl-components",
   );
   Object.assign(bundle, newBundle);
 };

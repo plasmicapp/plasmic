@@ -32,14 +32,14 @@ export interface AnalyticsHeaderProps extends DefaultAnalyticsHeaderProps {
 
 function AnalyticsHeader_(
   props: AnalyticsHeaderProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const history = useHistory();
   const appCtx = useAppCtx();
   const { teamId, ...rest } = props;
   const team = ensure(
     appCtx.teams.find((t) => t.id === teamId),
-    `${ORGANIZATION_CAP} with ${ORGANIZATION_LOWER}Id should exist`
+    `${ORGANIZATION_CAP} with ${ORGANIZATION_LOWER}Id should exist`,
   );
 
   return (

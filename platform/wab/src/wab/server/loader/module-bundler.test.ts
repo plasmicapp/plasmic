@@ -32,7 +32,7 @@ describe("externalizeCssUrlsPlugin", () => {
   it("preserves unresolvable url() in a css__*.css minify pass", async () => {
     await fs.writeFile(
       path.join(dir, "css__test.css"),
-      cssWithUnresolvableUrls
+      cssWithUnresolvableUrls,
     );
     const outdir = path.join(dir, "out");
 
@@ -44,7 +44,7 @@ describe("externalizeCssUrlsPlugin", () => {
         outdir,
         target: ["safari13"],
         plugins: [externalizeCssUrlsPlugin],
-      })
+      }),
     ).resolves.toBeDefined();
 
     const out = (
@@ -58,7 +58,7 @@ describe("externalizeCssUrlsPlugin", () => {
   it("preserves unresolvable url() when bundling (css-entrypoint pass)", async () => {
     await fs.writeFile(
       path.join(dir, "css__test.css"),
-      cssWithUnresolvableUrls
+      cssWithUnresolvableUrls,
     );
     const outdir = path.join(dir, "out");
 
@@ -70,7 +70,7 @@ describe("externalizeCssUrlsPlugin", () => {
         bundle: true,
         target: ["safari13"],
         plugins: [externalizeCssUrlsPlugin],
-      })
+      }),
     ).resolves.toBeDefined();
 
     const out = (
@@ -86,11 +86,11 @@ describe("externalizeCssUrlsPlugin", () => {
   it("preserves unresolvable url() when a JS module imports the CSS", async () => {
     await fs.writeFile(
       path.join(dir, "css__test.css"),
-      cssWithUnresolvableUrls
+      cssWithUnresolvableUrls,
     );
     await fs.writeFile(
       path.join(dir, "render__test.tsx"),
-      `import "./css__test.css";\nexport const X = 1;\n`
+      `import "./css__test.css";\nexport const X = 1;\n`,
     );
     const outdir = path.join(dir, "out");
 
@@ -104,7 +104,7 @@ describe("externalizeCssUrlsPlugin", () => {
         absWorkingDir: dir,
         target: "es6",
         plugins: [externalizeCssUrlsPlugin],
-      })
+      }),
     ).resolves.toBeDefined();
 
     const cssFile = (await fs.readdir(outdir)).find((f) => f.endsWith(".css"));
@@ -119,11 +119,11 @@ describe("externalizeCssUrlsPlugin", () => {
     // exact production failure.
     await fs.writeFile(
       path.join(dir, "css__test.css"),
-      cssWithUnresolvableUrls
+      cssWithUnresolvableUrls,
     );
     await fs.writeFile(
       path.join(dir, "render__test.tsx"),
-      `import "./css__test.css";\nexport const X = 1;\n`
+      `import "./css__test.css";\nexport const X = 1;\n`,
     );
 
     await expect(
@@ -136,7 +136,7 @@ describe("externalizeCssUrlsPlugin", () => {
         absWorkingDir: dir,
         target: "es6",
         logLevel: "silent",
-      })
+      }),
     ).rejects.toThrow(/Could not resolve/);
   });
 });

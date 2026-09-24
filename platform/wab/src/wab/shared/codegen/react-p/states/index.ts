@@ -41,7 +41,7 @@ export function serializeInitFunc(
   ctx: SerializerBaseContext,
   isForRegisterInitFunc?: boolean,
   shouldTransformWritableStates: boolean | undefined = ctx.exportOpts
-    .shouldTransformWritableStates
+    .shouldTransformWritableStates,
 ) {
   let initFunc: undefined | string = undefined;
   if (
@@ -61,7 +61,7 @@ export function serializeInitFunc(
   } else if (!state.tplNode && state.param.defaultExpr) {
     initFunc = `({$props, $state, $queries, $q, $ctx}) => (${getRawCode(
       state.param.defaultExpr,
-      exprCtx
+      exprCtx,
     )})`;
   } else if (state.tplNode) {
     const tpl = state.tplNode;
@@ -69,7 +69,7 @@ export function serializeInitFunc(
     for (const vs of getOrderedExplicitVSettings(ctx, tpl)) {
       if (isTplComponent(tpl)) {
         const arg = vs.args.find(
-          (vsArg) => vsArg.param === state.implicitState?.param
+          (vsArg) => vsArg.param === state.implicitState?.param,
         );
         if (arg) {
           exprs.push([getRawCode(arg.expr, exprCtx), vs.variants]);
@@ -87,7 +87,7 @@ export function serializeInitFunc(
       state.implicitState &&
       isWritableState(state.implicitState) &&
       !exprs.some(([_expr, variantCombo]) =>
-        arrayEq(variantCombo, [baseVariant])
+        arrayEq(variantCombo, [baseVariant]),
       )
     ) {
       const initExpr = getVirtualWritableStateInitialValue(state);
@@ -135,7 +135,7 @@ export function serializeStateSpecs(
      *  - `shouldTransformWritableStates` `$props[...]` transform, which needs $props in scope.
      */
     forLegacyQueries?: boolean;
-  }
+  },
 ) {
   // Only the legacy render path can emit the `$props[...]` transform.
   // The query tree is a module-scoped, so it can't reference `$props`.
@@ -147,7 +147,7 @@ export function serializeStateSpecs(
       state,
       ctx,
       undefined,
-      shouldTransformWritableStates
+      shouldTransformWritableStates,
     );
 
     let valueProp = ``;
@@ -167,7 +167,7 @@ export function serializeStateSpecs(
       isCodeComponentWithHelpers(state.tplNode.component)
         ? getImportedCodeComponentHelperName(
             ctx.aliases,
-            state.tplNode.component
+            state.tplNode.component,
           )
         : "undefined";
 

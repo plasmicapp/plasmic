@@ -198,7 +198,7 @@ function isParentPointerChange(change: ModelChange) {
  */
 export function summarizeChanges(
   studioCtx: StudioCtx,
-  recordedData: RecordedChanges
+  recordedData: RecordedChanges,
 ): ChangeSummary {
   // We ignore changes to the parent pointer, as they always manifest
   // as some other change anyway (for example, changes to the children)
@@ -254,10 +254,10 @@ export function summarizeChanges(
 
   // Handle new / removed trees
   const newTrees = new Set<TplNode>(
-    recordedData.newInsts.filter(isKnownTplNode)
+    recordedData.newInsts.filter(isKnownTplNode),
   );
   const removedTrees = new Set<TplNode>(
-    recordedData.removedInsts.filter(isKnownTplNode)
+    recordedData.removedInsts.filter(isKnownTplNode),
   );
 
   [...newTrees.keys()].forEach((tpl) => {
@@ -318,7 +318,7 @@ export function summarizeChanges(
 
     const changedRsByVariantSelectors = getChangedRuleSetsByVariantSelectors(
       studioCtx,
-      change
+      change,
     );
     if (changedRsByVariantSelectors) {
       for (const [vs, tpl] of changedRsByVariantSelectors) {
@@ -350,7 +350,7 @@ export function summarizeChanges(
     maybeMergeMap(
       regenMixins,
       getMixinWithChangedAlwaysResolveProps(change),
-      {}
+      {},
     );
 
     const tagChanged = changedRs && changedRs[2];
@@ -365,10 +365,10 @@ export function summarizeChanges(
 
     tokenOrMixinChangeType = Math.max(
       tokenOrMixinChangeType,
-      thisTokenOrMixinValueChangeType
+      thisTokenOrMixinValueChangeType,
     );
     getDeletedVariantSettings(change).forEach(([vs, tpl]) =>
-      deletedVariantSettings.set(vs, tpl)
+      deletedVariantSettings.set(vs, tpl),
     );
   }
 
@@ -376,7 +376,7 @@ export function summarizeChanges(
   for (const change of changes) {
     const changedComponents = getChangedComponentsByImageAsset(
       studioCtx,
-      change
+      change,
     );
     if (changedComponents) {
       changedComponents.forEach((c) => changedComponentsByImageAsset.add(c));
@@ -387,7 +387,7 @@ export function summarizeChanges(
   const changedComponentsByDataToken = new Set<Component>();
   for (const change of changes) {
     getChangedComponentsByDataToken(studioCtx, change)?.forEach((c) =>
-      changedComponentsByDataToken.add(c)
+      changedComponentsByDataToken.add(c),
     );
   }
 
@@ -395,7 +395,7 @@ export function summarizeChanges(
     (change) =>
       change.path &&
       change.path.length > 0 &&
-      change.path[0].field === "globalContexts"
+      change.path[0].field === "globalContexts",
   );
 
   // If the globalContexts changed, it's easier to update
@@ -409,14 +409,14 @@ export function summarizeChanges(
         new Set([
           ...changedComponentsByImageAsset,
           ...changedComponentsByDataToken,
-        ])
+        ]),
       );
 
   getChangedRuleSetsByMasterComponentRootSizeChange(studioCtx, changes).forEach(
-    ([vs, node]) => maybeMergeMap(updatedRuleSets, vs, { tpl: node })
+    ([vs, node]) => maybeMergeMap(updatedRuleSets, vs, { tpl: node }),
   );
   getChangedRuleSetsByActiveVariants(studioCtx, changes).forEach(([vs, node]) =>
-    maybeMergeMap(updatedRuleSets, vs, { tpl: node })
+    maybeMergeMap(updatedRuleSets, vs, { tpl: node }),
   );
 
   // Remove variantsettings owned by removed tplNodes.
@@ -424,7 +424,7 @@ export function summarizeChanges(
     flattenTpls(tree).forEach((removed) => {
       if (isTplVariantable(removed)) {
         removed.vsettings.forEach((vs) =>
-          deletedVariantSettings.set(vs, removed)
+          deletedVariantSettings.set(vs, removed),
         );
       }
       // If a node had been updated and then removed, then just
@@ -432,7 +432,7 @@ export function summarizeChanges(
       if (updatedNodes.has(removed)) {
         updatedNodes.delete(removed);
       }
-    })
+    }),
   );
   // Remove deleted rulesets from update sets.
   deletedVariantSettings.forEach((tpl, vs) => updatedRuleSets.delete(vs));
@@ -466,7 +466,7 @@ export function getChangedTplNode(change: ModelChange) {
  * the tag changed.
  */
 function getChangedRuleSet(
-  change: ModelChange
+  change: ModelChange,
 ): [VariantSetting, TplNode, boolean] | undefined {
   if (!change.path) {
     return undefined;
@@ -487,10 +487,10 @@ function getChangedRuleSet(
     return tuple(
       ensure(
         tryGetBaseVariantSetting(last.inst),
-        () => "Expected base variantSetting to exist"
+        () => "Expected base variantSetting to exist",
       ),
       last.inst,
-      true
+      true,
     );
   }
 
@@ -504,7 +504,7 @@ function getChangedRuleSet(
  */
 function getChangedRuleSetsByMasterComponentRootSizeChange(
   studioCtx: StudioCtx,
-  changes: ModelChange[]
+  changes: ModelChange[],
 ): [VariantSetting, TplComponent][] {
   const affectedComponents = new Set<Component>();
   for (const change of changes) {
@@ -529,8 +529,8 @@ function getChangedRuleSetsByMasterComponentRootSizeChange(
 
   return L.flatten(
     Array.from(affectedComponents).map((component) =>
-      getAffectedComponentInstancesWithDefaultSize(studioCtx.site, component)
-    )
+      getAffectedComponentInstancesWithDefaultSize(studioCtx.site, component),
+    ),
   );
 }
 
@@ -543,7 +543,7 @@ function getChangedRuleSetsByMasterComponentRootSizeChange(
  */
 function getAffectedComponentInstancesWithDefaultSize(
   site: Site,
-  component: Component
+  component: Component,
 ) {
   const changes: [VariantSetting, TplComponent][] = [];
 
@@ -590,7 +590,7 @@ function getAffectedComponentInstancesWithDefaultSize(
  */
 function getChangedRuleSetsByActiveVariants(
   studioCtx: StudioCtx,
-  changes: ModelChange[]
+  changes: ModelChange[],
 ): [VariantSetting, TplComponent][] {
   const updates: [VariantSetting, TplComponent][] = [];
   const affectedComponents = new Set<Component>();
@@ -625,8 +625,8 @@ function getChangedRuleSetsByActiveVariants(
     ...updates,
     ...L.flatten(
       Array.from(affectedComponents).map((component) =>
-        getAffectedComponentInstancesWithDefaultSize(studioCtx.site, component)
-      )
+        getAffectedComponentInstancesWithDefaultSize(studioCtx.site, component),
+      ),
     ),
   ];
 }
@@ -636,12 +636,12 @@ function getChangedRuleSetsByActiveVariants(
  */
 function changeTogglesSize(change: ModelChange) {
   return changeTogglesStyle(change, SIZE_PROPS, (vals) =>
-    styleTypeFromProps(vals, SIZE_PROPS)
+    styleTypeFromProps(vals, SIZE_PROPS),
   );
 }
 
 function getDeletedVariantSettings(
-  change: ModelChange
+  change: ModelChange,
 ): Array<[VariantSetting, TplNode]> {
   if (change.type !== "array-splice") {
     return [];
@@ -659,7 +659,7 @@ function getDeletedVariantSettings(
           (vs) =>
             // The sets of deleted and added nodes in an "array-splice" change
             // might overlap
-            !change.added.includes(vs)
+            !change.added.includes(vs),
         )
         .map((vs) => tuple(vs, tpl))
     : [];
@@ -685,7 +685,7 @@ function changeChangesImgSize(change: ModelChange) {
     const [_vs, tpl] = vsTpl;
     if (isTplTag(tpl) && tpl.tag === "img") {
       return changeTogglesStyle(change, plasmicImgAttrStyles, (vals) =>
-        styleTypeFromProps(vals, plasmicImgAttrStyles)
+        styleTypeFromProps(vals, plasmicImgAttrStyles),
       );
     }
   }
@@ -698,7 +698,7 @@ function changeChangesImgSize(change: ModelChange) {
  */
 function getChangedRuleSetsByVariantSelectors(
   studioCtx: StudioCtx,
-  change: ModelChange
+  change: ModelChange,
 ): [VariantSetting, TplNode][] | undefined {
   const last = change.changeNode;
 
@@ -717,7 +717,7 @@ function getChangedRuleSetsByVariantSelectors(
       return extractComponentVariantSettings(
         studioCtx.site,
         component,
-        false
+        false,
       ).filter(([vs, _tpl]) => vs.variants.includes(variant));
     }
     return undefined;
@@ -731,7 +731,7 @@ function getChangedRuleSetsByVariantSelectors(
  */
 function getChangedComponentsByImageAsset(
   studioCtx: StudioCtx,
-  change: ModelChange
+  change: ModelChange,
 ) {
   const last = change.changeNode;
   if (isKnownImageAsset(last.inst) && last.field === "dataUri") {
@@ -755,7 +755,7 @@ function getChangedComponentsByImageAsset(
  */
 function getChangedComponentsByDataToken(
   studioCtx: StudioCtx,
-  change: ModelChange
+  change: ModelChange,
 ) {
   const last = change.changeNode;
   const { site, siteInfo } = studioCtx;
@@ -774,7 +774,7 @@ function getChangedComponentsByDataToken(
       componentsReferencingDataToken(
         siteInfo.id,
         site,
-        removedDataToken
+        removedDataToken,
       ).forEach((c) => changedComponents.add(c));
     }
     return changedComponents;
@@ -783,7 +783,7 @@ function getChangedComponentsByDataToken(
 }
 
 function getCssVarsChangeType(
-  change: ModelChange
+  change: ModelChange,
 ): [CssVarsChangeType, Mixin?] {
   const last = change.changeNode;
   if (isKnownSite(last.inst) && last.field === "styleTokens") {
@@ -888,7 +888,7 @@ export function getChangedComponent(change: ModelChange) {
 function getDeeplyChangedComponent(
   studioCtx: StudioCtx,
   changes: ModelChange[],
-  seedComponents: Set<Component>
+  seedComponents: Set<Component>,
 ) {
   const changed = new Set<Component>(seedComponents);
 
@@ -957,7 +957,7 @@ function getMixinWithChangedAlwaysResolveProps(change: ModelChange) {
     const [_rs, mixin] = rsMixin;
     if (
       changeTogglesStyle(change, ALWAYS_RESOLVE_MIXIN_PROPS, (values) =>
-        styleTypeFromProps(values, ALWAYS_RESOLVE_MIXIN_PROPS)
+        styleTypeFromProps(values, ALWAYS_RESOLVE_MIXIN_PROPS),
       )
     ) {
       return mixin;
@@ -1000,7 +1000,7 @@ function ensurePush(vals: string[] | undefined, value: string) {
 function changeTogglesStyle(
   change: ModelChange,
   relevantProps: string[],
-  getRuleType: (values: Record<string, string>) => string | undefined
+  getRuleType: (values: Record<string, string>) => string | undefined,
 ) {
   const last = change.changeNode;
   if (isKnownRuleSet(last.inst) && last.field === "values") {
@@ -1039,7 +1039,7 @@ function changeTogglesStyle(
       // Updating the members of RuleSet.mixins.
       return (
         getRuleType(
-          mixinsToRules(mkArrayBeforeSplice(last.inst.mixins, change))
+          mixinsToRules(mkArrayBeforeSplice(last.inst.mixins, change)),
         ) !== getRuleType(mixinsToRules(last.inst.mixins))
       );
     } else if (change.type === "array-update") {
@@ -1109,8 +1109,8 @@ function getReorderedRulesComponents(site: Site, changes: ModelChange[]) {
   if (movedVariants.size > 0) {
     const variantToComp = new Map(
       site.components.flatMap((comp) =>
-        allComponentVariants(comp).map((v) => tuple(v, comp))
-      )
+        allComponentVariants(comp).map((v) => tuple(v, comp)),
+      ),
     );
     for (const variant of movedVariants) {
       if (isGlobalVariant(variant)) {
@@ -1121,8 +1121,8 @@ function getReorderedRulesComponents(site: Site, changes: ModelChange[]) {
           ensure(
             variantToComp.get(variant),
             () =>
-              `Expected owner component to exist for variant ${variant.name} (${variant.uuid})`
-          )
+              `Expected owner component to exist for variant ${variant.name} (${variant.uuid})`,
+          ),
         );
       }
     }
@@ -1135,7 +1135,7 @@ function getReorderedRulesComponents(site: Site, changes: ModelChange[]) {
         site.components.forEach((c) => reorderedComponents.add(c));
       } else {
         const comp = site.components.find((c) =>
-          c.variantGroups.includes(group)
+          c.variantGroups.includes(group),
         );
         if (comp) {
           reorderedComponents.add(comp);
@@ -1149,15 +1149,15 @@ function getReorderedRulesComponents(site: Site, changes: ModelChange[]) {
 
 function extractAlongPath<T>(
   path: ChangeNode[] | undefined,
-  cls: [TypeStamped<T>]
+  cls: [TypeStamped<T>],
 ): [T] | undefined;
 function extractAlongPath<T1, T2>(
   path: ChangeNode[] | undefined,
-  cls: [TypeStamped<T1>, TypeStamped<T2>]
+  cls: [TypeStamped<T1>, TypeStamped<T2>],
 ): [T1, T2] | undefined;
 function extractAlongPath<T1, T2, T3>(
   path: ChangeNode[] | undefined,
-  cls: [TypeStamped<T1>, TypeStamped<T2>, TypeStamped<T3>]
+  cls: [TypeStamped<T1>, TypeStamped<T2>, TypeStamped<T3>],
 ): [T1, T2, T3] | undefined;
 /**
  * Given a path, extracts items along the path that are instances of classes in
@@ -1166,7 +1166,7 @@ function extractAlongPath<T1, T2, T3>(
  */
 function extractAlongPath(
   path: ChangeNode[] | undefined,
-  cls: TypeStamped<any>[]
+  cls: TypeStamped<any>[],
 ) {
   if (!path) {
     return undefined;

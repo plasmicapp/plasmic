@@ -91,7 +91,7 @@ describe("parseCodeExpression", function () {
 
   it("should find uses of unknown $props", () => {
     const parsed = parseCodeExpression(
-      "new Date($props[$ctx.unknown]).getMonth()"
+      "new Date($props[$ctx.unknown]).getMonth()",
     );
     const expected = emptyParsedExprInfo();
     expected.usesDollarVars.$ctx = true;
@@ -103,7 +103,7 @@ describe("parseCodeExpression", function () {
 
   it("should find uses of $q", () => {
     const parsed = parseCodeExpression(
-      '$q.foo.data + $q["bar"].data + $q.baz.key + $q.qux'
+      '$q.foo.data + $q["bar"].data + $q.baz.key + $q.qux',
     );
     const expected = emptyParsedExprInfo();
     expected.usesDollarVars.$q = true;
@@ -114,7 +114,7 @@ describe("parseCodeExpression", function () {
 
   it("should find uses of $state", () => {
     const parsed = parseCodeExpression(
-      '$state.a.deep.value + $state["b"].foo + $state[c].bar + "$state.d" - $state.e[f].g'
+      '$state.a.deep.value + $state["b"].foo + $state[c].bar + "$state.d" - $state.e[f].g',
     );
     const expected = emptyParsedExprInfo();
     expected.usesDollarVars.$state = true;
@@ -133,7 +133,7 @@ describe("parseCodeExpression", function () {
 
   it("should find uses of $ctx", () => {
     const parsed = parseCodeExpression(
-      '$ctx.a.deep.value + $ctx["b"].foo + $ctx[c].bar + "$ctx.d"'
+      '$ctx.a.deep.value + $ctx["b"].foo + $ctx[c].bar + "$ctx.d"',
     );
     const expected = emptyParsedExprInfo();
     expected.usesDollarVars.$ctx = true;
@@ -154,7 +154,7 @@ describe("parseCodeExpression", function () {
 
   it("should treat bare and dynamic $queries uses as unknown-key usage", () => {
     const parsed = parseCodeExpression(
-      "Object.keys($queries).length + $queries[someVar].data + $queries.known.data"
+      "Object.keys($queries).length + $queries[someVar].data + $queries.known.data",
     );
     const expected = emptyParsedExprInfo();
     expected.usesDollarVars.$queries = true;
@@ -175,7 +175,7 @@ describe("parseCodeExpression", function () {
   // here would report the query as unreferenced.
   it("should keep a loop binding from shadowing the rest of its block", () => {
     const parsed = parseCodeExpression(
-      "(() => { for (const $queries of xs) { g($queries); } return $queries.getUsers.data })()"
+      "(() => { for (const $queries of xs) { g($queries); } return $queries.getUsers.data })()",
     );
     const expected = emptyParsedExprInfo();
     expected.usesDollarVars.$queries = true;
@@ -186,7 +186,7 @@ describe("parseCodeExpression", function () {
 
   it("should treat classic for and for-in bindings as loop-scoped", () => {
     const parsed = parseCodeExpression(
-      "(() => { for (let $props = 0; $props < n; $props++) {} for (const $ctx in o) {} return $props.a + $ctx.b })()"
+      "(() => { for (let $props = 0; $props < n; $props++) {} for (const $ctx in o) {} return $props.a + $ctx.b })()",
     );
     const expected = emptyParsedExprInfo();
     expected.usesDollarVars.$props = true;
@@ -199,7 +199,7 @@ describe("parseCodeExpression", function () {
 
   it("should still treat a loop binding as local inside the loop", () => {
     const parsed = parseCodeExpression(
-      "(() => { for (const $queries of xs) { g($queries.getUsers.data); } })()"
+      "(() => { for (const $queries of xs) { g($queries.getUsers.data); } })()",
     );
     const expected = emptyParsedExprInfo();
     expected.usedFreeVars = new Set(["xs", "g"]);
@@ -210,7 +210,7 @@ describe("parseCodeExpression", function () {
   // the dollar var after the block.
   it("should keep a block function declaration from shadowing its enclosing scope", () => {
     const parsed = parseCodeExpression(
-      "(() => { { function $queries() {} } return $queries.getUsers.data })()"
+      "(() => { { function $queries() {} } return $queries.getUsers.data })()",
     );
     const expected = emptyParsedExprInfo();
     expected.usesDollarVars.$queries = true;
@@ -220,7 +220,7 @@ describe("parseCodeExpression", function () {
 
   it("should still treat a block function declaration as local inside the block", () => {
     const parsed = parseCodeExpression(
-      "(() => { { function $queries() {} g($queries.getUsers.data); } })()"
+      "(() => { { function $queries() {} g($queries.getUsers.data); } })()",
     );
     const expected = emptyParsedExprInfo();
     expected.usedFreeVars = new Set(["g"]);
@@ -230,7 +230,7 @@ describe("parseCodeExpression", function () {
   // A class static block is its own scope, for `var` as well as let/const.
   it("should keep a static block binding from shadowing its enclosing scope", () => {
     const parsed = parseCodeExpression(
-      "(() => { class A { static { const $queries = o } } return $queries.getUsers.data })()"
+      "(() => { class A { static { const $queries = o } } return $queries.getUsers.data })()",
     );
     const expected = emptyParsedExprInfo();
     expected.usesDollarVars.$queries = true;
@@ -241,7 +241,7 @@ describe("parseCodeExpression", function () {
 
   it("should scope a static block var to the static block", () => {
     const parsed = parseCodeExpression(
-      "(() => { class A { static { var $props = o } } return $props.a })()"
+      "(() => { class A { static { var $props = o } } return $props.a })()",
     );
     const expected = emptyParsedExprInfo();
     expected.usesDollarVars.$props = true;
@@ -252,7 +252,7 @@ describe("parseCodeExpression", function () {
 
   it("should still treat a static block binding as local inside the block", () => {
     const parsed = parseCodeExpression(
-      "(() => { class A { static { const $queries = o; g($queries.getUsers.data); } } })()"
+      "(() => { class A { static { const $queries = o; g($queries.getUsers.data); } } })()",
     );
     const expected = emptyParsedExprInfo();
     expected.usedFreeVars = new Set(["o", "g"]);
@@ -263,36 +263,39 @@ describe("parseCodeExpression", function () {
 describe("tryCodeWritesToGlobalVariable", () => {
   it("finds direct writes to the ambient binding", () => {
     expect(tryCodeWritesToGlobalVariable("$state = nextState", "$state")).toBe(
-      true
+      true,
     );
     expect(tryCodeWritesToGlobalVariable("$state ||= {}", "$state")).toBe(true);
     expect(tryCodeWritesToGlobalVariable("$state++", "$state")).toBe(true);
     expect(
-      tryCodeWritesToGlobalVariable("({ value: $state } = source)", "$state")
+      tryCodeWritesToGlobalVariable("({ value: $state } = source)", "$state"),
     ).toBe(true);
     expect(
-      tryCodeWritesToGlobalVariable("for ($state of states) {}", "$state")
+      tryCodeWritesToGlobalVariable("for ($state of states) {}", "$state"),
     ).toBe(true);
   });
 
   it("allows property writes", () => {
     expect(
-      tryCodeWritesToGlobalVariable("$state.count = $state.count + 1", "$state")
+      tryCodeWritesToGlobalVariable(
+        "$state.count = $state.count + 1",
+        "$state",
+      ),
     ).toBe(false);
     expect(
-      tryCodeWritesToGlobalVariable("for ($state.item of items) {}", "$state")
+      tryCodeWritesToGlobalVariable("for ($state.item of items) {}", "$state"),
     ).toBe(false);
   });
 
   it("reads expression-only code, which is not a valid program", () => {
     expect(
-      tryCodeWritesToGlobalVariable("{ first: 1, second: 2 }", "$state")
+      tryCodeWritesToGlobalVariable("{ first: 1, second: 2 }", "$state"),
     ).toBe(false);
     expect(
-      tryCodeWritesToGlobalVariable("function () { return $state }", "$state")
+      tryCodeWritesToGlobalVariable("function () { return $state }", "$state"),
     ).toBe(false);
     expect(
-      tryCodeWritesToGlobalVariable("{ first: ($state = 1) }", "$state")
+      tryCodeWritesToGlobalVariable("{ first: ($state = 1) }", "$state"),
     ).toBe(true);
   });
 
@@ -300,32 +303,32 @@ describe("tryCodeWritesToGlobalVariable", () => {
     expect(
       tryCodeWritesToGlobalVariable(
         "(($state) => { $state = nextState })({})",
-        "$state"
-      )
+        "$state",
+      ),
     ).toBe(false);
     expect(
       tryCodeWritesToGlobalVariable(
         "let $state = {}; $state = nextState",
-        "$state"
-      )
+        "$state",
+      ),
     ).toBe(false);
   });
 
   it("parses code in the same async function-body context as validation", () => {
     expect(
-      tryCodeWritesToGlobalVariable("using resource = acquire()", "$state")
+      tryCodeWritesToGlobalVariable("using resource = acquire()", "$state"),
     ).toBe(false);
     expect(
       tryCodeWritesToGlobalVariable(
         "await using resource = acquire()",
-        "$state"
-      )
+        "$state",
+      ),
     ).toBe(false);
   });
 
   it("returns undefined for runtime syntax that Acorn cannot parse", () => {
     expect(
-      tryCodeWritesToGlobalVariable('return import.source("module")', "$state")
+      tryCodeWritesToGlobalVariable('return import.source("module")', "$state"),
     ).toBe(undefined);
   });
 });
@@ -336,8 +339,8 @@ describe("findMemberChainsInCode", () => {
       findMemberChainsInCode(
         "$queries.getUsers.data.response.length + $queries.getUsers.error",
         "$queries",
-        "getUsers"
-      )
+        "getUsers",
+      ),
     ).toEqual([["data", "response", "length"], ["error"]]);
   });
 
@@ -346,8 +349,8 @@ describe("findMemberChainsInCode", () => {
       findMemberChainsInCode(
         "f($queries.getUsers) + $queries.getUsers.data[someVar].name",
         "$queries",
-        "getUsers"
-      )
+        "getUsers",
+      ),
     ).toEqual([[], ["data"]]);
   });
 
@@ -356,8 +359,8 @@ describe("findMemberChainsInCode", () => {
       findMemberChainsInCode(
         "$queries.getTeams.data + $q.getUsers.data + $queries[someVar].data",
         "$queries",
-        "getUsers"
-      )
+        "getUsers",
+      ),
     ).toEqual([]);
   });
 
@@ -366,8 +369,8 @@ describe("findMemberChainsInCode", () => {
       findMemberChainsInCode(
         "$queries.getUsers.error + (($queries) => $queries.getUsers.data)(other)",
         "$queries",
-        "getUsers"
-      )
+        "getUsers",
+      ),
     ).toEqual([["error"]]);
   });
 
@@ -376,8 +379,8 @@ describe("findMemberChainsInCode", () => {
       findMemberChainsInCode(
         "(() => { for (const $queries of xs) { g($queries.getUsers.data); } return $queries.getUsers.error })()",
         "$queries",
-        "getUsers"
-      )
+        "getUsers",
+      ),
     ).toEqual([["error"]]);
   });
 });
@@ -389,7 +392,7 @@ describe("renameObjectKey", function () {
       "$props",
       "$props",
       "a",
-      "b"
+      "b",
     );
     expect(newCode).toEqual("$ctx.a + $ctx.b");
   });
@@ -400,7 +403,7 @@ describe("renameObjectKey", function () {
       "$props",
       "$props",
       "oldKey",
-      "newKey"
+      "newKey",
     );
     expect(newCode).toEqual("$ctx.a + $props.newKey + $ctx.b");
   });
@@ -411,7 +414,7 @@ describe("renameObjectKey", function () {
       "$queries",
       "$props",
       "oldKey",
-      "newKey"
+      "newKey",
     );
     expect(newCode).toEqual("$ctx.a + $props.newKey + $ctx.b");
   });
@@ -422,7 +425,7 @@ describe("renameObjectKey", function () {
       "$props",
       "$props",
       "oldKey",
-      "newKey"
+      "newKey",
     );
     expect(newCode).toEqual("$ctx.a + $props[oldKey] + $ctx.b");
   });
@@ -433,7 +436,7 @@ describe("renameObjectKey", function () {
       "$props",
       "$props",
       "oldKey",
-      "newKey"
+      "newKey",
     );
     expect(newCode).toEqual('$ctx.a + "$props.oldKey" + $ctx.b');
   });
@@ -444,7 +447,7 @@ describe("renameObjectKey", function () {
       "$state",
       "$state",
       "old.key",
-      "new.yek"
+      "new.yek",
     );
     expect(newCode).toEqual("$ctx.a + $state.new.yek + $ctx.b");
   });
@@ -455,7 +458,7 @@ describe("renameObjectKey", function () {
       "$state",
       "$state",
       "old.key",
-      "new.yek"
+      "new.yek",
     );
     expect(newCode).toEqual("$ctx.a + $state.new.yek + $ctx.b");
   });
@@ -468,10 +471,10 @@ describe("renameObjectKey", function () {
       "$queries",
       "$q",
       "getUsers",
-      "fetchUsers"
+      "fetchUsers",
     );
     expect(newCode.replace(/\s+/g, " ")).toEqual(
-      "$q.fetchUsers.data + ($queries => $queries.getUsers.data)(other)"
+      "$q.fetchUsers.data + ($queries => $queries.getUsers.data)(other)",
     );
   });
 
@@ -481,7 +484,7 @@ describe("renameObjectKey", function () {
       "$props",
       "$props",
       "oldKey",
-      "newKey"
+      "newKey",
     );
     expect(newCode).toContain("$props.oldKey");
   });
@@ -494,7 +497,7 @@ describe("renameObjectKey", function () {
       "$queries",
       "$q",
       "getUsers",
-      "fetchUsers"
+      "fetchUsers",
     );
     expect(newCode).toContain("$queries.getUsers.data");
   });
@@ -507,7 +510,7 @@ describe("renameObjectKey", function () {
       "$queries",
       "$q",
       "getUsers",
-      "fetchUsers"
+      "fetchUsers",
     );
     expect(newCode).toContain("$q.fetchUsers.data");
     expect(newCode).toContain("g($queries.getUsers.data)");
@@ -519,7 +522,7 @@ describe("renameObjectKey", function () {
       "$queries",
       "$q",
       "getUsers",
-      "fetchUsers"
+      "fetchUsers",
     );
     expect(newCode).toContain("$q.fetchUsers.data");
   });
@@ -530,7 +533,7 @@ describe("renameObjectKey", function () {
       "$props",
       "$props",
       "test",
-      "newTest"
+      "newTest",
     );
 
     // Removing spaces to make it easier to compare, since ast formats the code
@@ -548,7 +551,7 @@ describe("replaceVarWithProp", function () {
     const newCode = replaceVarWithProp(
       "$ctx.a + niceVar + $ctx.b",
       "niceVar",
-      "newProp"
+      "newProp",
     );
     expect(newCode).toEqual("$ctx.a + $props.newProp + $ctx.b");
   });
@@ -557,7 +560,7 @@ describe("replaceVarWithProp", function () {
     const newCode = replaceVarWithProp(
       "$ctx.a + niceVar.test + $ctx.b",
       "niceVar",
-      "newProp"
+      "newProp",
     );
     expect(newCode).toEqual("$ctx.a + $props.newProp.test + $ctx.b");
   });
@@ -566,7 +569,7 @@ describe("replaceVarWithProp", function () {
     const newCode = replaceVarWithProp(
       "$ctx.a + niceVar[test] + $ctx.b",
       "test",
-      "newProp"
+      "newProp",
     );
     expect(newCode).toEqual("$ctx.a + niceVar[$props.newProp] + $ctx.b");
   });
@@ -584,7 +587,7 @@ describe("codeUsesGlobalObjects", function () {
     expect(codeUsesGlobalObjects("window.location.href")).toBe(true);
     expect(codeUsesGlobalObjects("window")).toBe(true);
     expect(codeUsesGlobalObjects("const url = (window as any).test")).toBe(
-      true
+      true,
     );
   });
 
@@ -592,17 +595,17 @@ describe("codeUsesGlobalObjects", function () {
     expect(codeUsesGlobalObjects("globalThis.fetch")).toBe(true);
     expect(codeUsesGlobalObjects("globalThis")).toBe(true);
     expect(codeUsesGlobalObjects("const g = (globalThis as MyGlobal)")).toBe(
-      true
+      true,
     );
   });
 
   it("should not detect locally declared window/globalThis", () => {
     expect(codeUsesGlobalObjects("const window = {}; window.test")).toBe(false);
     expect(
-      codeUsesGlobalObjects("function test(window) { return window.prop }")
+      codeUsesGlobalObjects("function test(window) { return window.prop }"),
     ).toBe(false);
     expect(codeUsesGlobalObjects("let globalThis = {}; globalThis.value")).toBe(
-      false
+      false,
     );
   });
 
@@ -671,7 +674,7 @@ describe("transformDataTokensInCode", function () {
     const depResult = transformDataTokensInCode(
       depCode,
       mockSite,
-      projectId
+      projectId,
     ).code;
     expect(depResult).toBe(`$dataTokens_${depShortId}_depToken.x.y.z`);
   });
@@ -698,7 +701,7 @@ describe("transformDataTokensInCode", function () {
     const code = "Object.keys($dataTokens.myToken.nested)";
     const result = transformDataTokensInCode(code, mockSite, projectId).code;
     expect(result).toBe(
-      `Object.keys($dataTokens_${shortProjectId}_myToken.nested)`
+      `Object.keys($dataTokens_${shortProjectId}_myToken.nested)`,
     );
   });
 
@@ -706,7 +709,7 @@ describe("transformDataTokensInCode", function () {
     const code = "merge($dataTokens.token1, $dataTokens.myDep.token2.data)";
     const result = transformDataTokensInCode(code, mockSite, projectId).code;
     expect(result).toBe(
-      `merge($dataTokens_${shortProjectId}_token1, $dataTokens_${depShortId}_token2.data)`
+      `merge($dataTokens_${shortProjectId}_token1, $dataTokens_${depShortId}_token2.data)`,
     );
   });
 
@@ -715,7 +718,7 @@ describe("transformDataTokensInCode", function () {
       "($dataTokens.myToken.value || 0) + $dataTokens.myDep.depToken.count";
     const result = transformDataTokensInCode(code, mockSite, projectId).code;
     expect(result).toBe(
-      `($dataTokens_${shortProjectId}_myToken.value || 0) + $dataTokens_${depShortId}_depToken.count`
+      `($dataTokens_${shortProjectId}_myToken.value || 0) + $dataTokens_${depShortId}_depToken.count`,
     );
   });
 });
@@ -778,7 +781,7 @@ describe("transformDataTokensToDisplay", function () {
     const code = `($dataTokens_${shortProjectId}_myToken.value || 0) + $dataTokens_${depShortId}_depToken.count`;
     const result = transformDataTokensToDisplay(code, mockSite, projectId);
     expect(result).toBe(
-      "($dataTokens.myToken.value || 0) + $dataTokens.myDep.depToken.count"
+      "($dataTokens.myToken.value || 0) + $dataTokens.myDep.depToken.count",
     );
   });
 });
@@ -941,7 +944,7 @@ describe("parseDataTokenIdentifier", function () {
 
   it("should parse data token identifier with underscored name", () => {
     const result = parseDataTokenIdentifier(
-      "$dataTokens_qfp12_underscored_name"
+      "$dataTokens_qfp12_underscored_name",
     );
     expect(result).toEqual({
       identifier: "$dataTokens_qfp12_underscored_name",

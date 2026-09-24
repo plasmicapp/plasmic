@@ -28,6 +28,6 @@ export function methodForwarder<T extends RequiresVoidMethodsObject<T>>(
           }
         };
       },
-    }
+    },
   ) as T;
 }

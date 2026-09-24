@@ -11,13 +11,14 @@ export async function sendShareEmail(
   resourceType: ResourceType,
   resourceName: string,
   resourceUrl: string,
-  isInviteeExistingUser: boolean
+  isInviteeExistingUser: boolean,
 ) {
   const sharerName = sanitize(fullName(sharer)) || sharer.email;
   const safeResourceName = sanitize(resourceName);
-  const text = `${sharerName} is using Plasmic and has invited you to the ${labelForResourceType(
-    resourceType
-  )} "${safeResourceName}":
+  const text =
+    `${sharerName} is using Plasmic and has invited you to the ${labelForResourceType(
+      resourceType,
+    )} "${safeResourceName}":
 
 ${resourceUrl}
 

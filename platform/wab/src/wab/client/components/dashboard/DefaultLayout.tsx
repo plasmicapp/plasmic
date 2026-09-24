@@ -31,7 +31,7 @@ export type DefaultLayoutProps = DefaultDefaultLayoutProps &
 
 function DefaultLayout_(
   props: DefaultLayoutProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { team, workspace, freeTrial, upgradeButton, helpButton, ...rest } =
     props;
@@ -39,7 +39,7 @@ function DefaultLayout_(
   const appCtx = useAppCtx();
   const userInfo = ensure(
     appCtx.selfInfo,
-    "DefaultLayout requires appCtx to contain user information"
+    "DefaultLayout requires appCtx to contain user information",
   );
 
   const teams = appCtx.getAllTeams();

@@ -60,7 +60,7 @@ export class PinStateManager {
   constructor(
     private site: Site,
     private component: Component,
-    private evalState: Map<Variant, boolean>
+    private evalState: Map<Variant, boolean>,
   ) {}
 
   getComponentVariantGroups() {
@@ -113,12 +113,12 @@ export class PinStateManager {
           ? [
               ensure(
                 L.last(privates),
-                "Already checked that privates.length > 1"
+                "Already checked that privates.length > 1",
               ),
             ]
           : privates),
         ...locals.filter(
-          (v) => !isBaseVariant(v) && !isComponentStyleVariant(v)
+          (v) => !isBaseVariant(v) && !isComponentStyleVariant(v),
         ),
         ...(styleVariant ? [styleVariant] : []),
         ...globals.filter((v) => !isScreenVariant(v)),
@@ -133,14 +133,14 @@ export class PinStateManager {
     }
     return this.setSelectedVariants(
       state,
-      L.uniq([...state.targetVariants, ...variants])
+      L.uniq([...state.targetVariants, ...variants]),
     );
   }
 
   removeSelectedVariants(state: PinState, variants: Variant[]) {
     return this.setSelectedVariants(
       state,
-      state.targetVariants.filter((v) => !variants.includes(v))
+      state.targetVariants.filter((v) => !variants.includes(v)),
     );
   }
 
@@ -192,7 +192,7 @@ export class PinStateManager {
 
   getVariantState(
     state: PinState,
-    variant: Variant
+    variant: Variant,
   ): VariantPinState | undefined {
     const pinned = state.pinnedVariants.get(variant);
     const selected = state.targetVariants.includes(variant);
@@ -248,13 +248,13 @@ export class PinStateManager {
   updateScreenVariants(state: PinState, newWidth: number) {
     const [activeVariants, inactiveVariants] = getPartitionedScreenVariants(
       this.site,
-      newWidth
+      newWidth,
     );
     activeVariants.forEach(
-      (variant) => (state = this.activateVariant(state, variant))
+      (variant) => (state = this.activateVariant(state, variant)),
     );
     inactiveVariants.forEach(
-      (variant) => (state = this.deactivateVariant(state, variant))
+      (variant) => (state = this.deactivateVariant(state, variant)),
     );
     return state;
   }
@@ -281,7 +281,7 @@ export class PinStateManager {
   private setVariantPin(
     state: PinState,
     variant: Variant,
-    makeActive: boolean
+    makeActive: boolean,
   ): PinState {
     const pinned = state.pinnedVariants.get(variant);
     const evaluated = this.evalState.get(variant);
@@ -298,7 +298,7 @@ export class PinStateManager {
           pinnedVariants: xExtend(
             new Map<Variant, boolean>(),
             state.pinnedVariants,
-            new Map<Variant, boolean>([[variant, pin]])
+            new Map<Variant, boolean>([[variant, pin]]),
           ),
         };
       }
@@ -329,22 +329,22 @@ export class PinStateManager {
 
 export function extractPinStateFromFrame(
   site: Site,
-  frame: ArenaFrame
+  frame: ArenaFrame,
 ): PinState {
   const pinnedVariants = new Map<Variant, boolean>();
 
   if (!isObjectEmpty(frame.pinnedGlobalVariants)) {
     const globalVariantMap = L.keyBy(
       siteToAllGlobalVariants(site),
-      (v) => v.uuid
+      (v) => v.uuid,
     );
     for (const [key, pin] of Object.entries(frame.pinnedGlobalVariants)) {
       pinnedVariants.set(
         ensure(
           globalVariantMap[key],
-          `Pinned global variant ${key} must be in globalVariantMap`
+          `Pinned global variant ${key} must be in globalVariantMap`,
         ),
-        pin
+        pin,
       );
     }
   }
@@ -352,15 +352,15 @@ export function extractPinStateFromFrame(
   if (!isObjectEmpty(frame.pinnedVariants)) {
     const componentVariantMap = L.keyBy(
       componentToAllVariants(frame.container.component),
-      (v) => v.uuid
+      (v) => v.uuid,
     );
     for (const [key, pin] of Object.entries(frame.pinnedVariants)) {
       pinnedVariants.set(
         ensure(
           componentVariantMap[key],
-          "Pinned variant must be in componentVariantMap"
+          "Pinned variant must be in componentVariantMap",
         ),
-        pin
+        pin,
       );
     }
   }
@@ -397,19 +397,19 @@ export abstract class PinManager {
 
   setSelectedVariants(variants: Variant[]) {
     this.setPinState(
-      this.pinMachine.setSelectedVariants(this.curState, variants)
+      this.pinMachine.setSelectedVariants(this.curState, variants),
     );
   }
 
   addSelectedVariants(variants: Variant[]) {
     this.setPinState(
-      this.pinMachine.addSelectedVariants(this.curState, variants)
+      this.pinMachine.addSelectedVariants(this.curState, variants),
     );
   }
 
   removeSelectedVariants(variants: Variant[]) {
     this.setPinState(
-      this.pinMachine.removeSelectedVariants(this.curState, variants)
+      this.pinMachine.removeSelectedVariants(this.curState, variants),
     );
   }
 
@@ -444,7 +444,7 @@ export abstract class PinManager {
 
   toggleTargetingOfActiveVariants(on?: boolean) {
     this.setPinState(
-      this.pinMachine.toggleTargetingOfActiveVariants(this.curState, on)
+      this.pinMachine.toggleTargetingOfActiveVariants(this.curState, on),
     );
   }
 
@@ -453,7 +453,7 @@ export abstract class PinManager {
    */
   toggleTargeting(variants: Variant[], on?: boolean) {
     this.setPinState(
-      this.pinMachine.toggleTargeting(this.curState, variants, on)
+      this.pinMachine.toggleTargeting(this.curState, variants, on),
     );
   }
 
@@ -465,12 +465,12 @@ export abstract class PinManager {
     const updatedState = this.pinMachine.toggleTargeting(
       this.curState,
       variants,
-      on
+      on,
     );
     const activeVariants = this.pinMachine.activeNonBaseVariants(updatedState);
     if (on) {
       updatedState.pinnedVariants = new Map<Variant, boolean>(
-        activeVariants.map((variant) => [variant, true])
+        activeVariants.map((variant) => [variant, true]),
       );
     }
     this.setPinState(updatedState);
@@ -489,8 +489,8 @@ export abstract class PinManager {
       targetVariants: cur.targetVariants.filter((v) => isScreenVariant(v)),
       pinnedVariants: new Map(
         Array.from(cur.pinnedVariants.entries()).filter(([variant, _pin]) =>
-          isScreenVariant(variant)
-        )
+          isScreenVariant(variant),
+        ),
       ),
     });
   }
@@ -539,7 +539,10 @@ export abstract class PinManager {
  * A PinManager that works directly with an ArenaFrame instance
  */
 export class FramePinManager extends PinManager {
-  constructor(private site: Site, private frame: ArenaFrame) {
+  constructor(
+    private site: Site,
+    private frame: ArenaFrame,
+  ) {
     super(new PinStateManager(site, frame.container.component, new Map()));
   }
 
@@ -555,7 +558,7 @@ export class FramePinManager extends PinManager {
 export function applyPinStateToFrame(state: PinState, frame: ArenaFrame) {
   const [globals, locals] = partitions(
     state.targetVariants.filter((v) => !isPrivateStyleVariant(v)),
-    [isGlobalVariant]
+    [isGlobalVariant],
   );
   if (!arrayEqIgnoreOrder(globals, frame.targetGlobalVariants)) {
     replaceAll(frame.targetGlobalVariants, globals);
@@ -568,7 +571,7 @@ export function applyPinStateToFrame(state: PinState, frame: ArenaFrame) {
   const globalPins = Object.fromEntries(
     [...state.pinnedVariants.entries()]
       .filter(([variant, _pin]) => isGlobalVariant(variant))
-      .map(([variant, pin]) => tuple(variant.uuid, pin))
+      .map(([variant, pin]) => tuple(variant.uuid, pin)),
   );
   if (!objsEq(globalPins, frame.pinnedGlobalVariants)) {
     replaceObj(frame.pinnedGlobalVariants, globalPins);
@@ -577,7 +580,7 @@ export function applyPinStateToFrame(state: PinState, frame: ArenaFrame) {
   const localPins = Object.fromEntries(
     [...state.pinnedVariants.entries()]
       .filter(([variant, _pin]) => !isGlobalVariant(variant))
-      .map(([variant, pin]) => tuple(variant.uuid, pin))
+      .map(([variant, pin]) => tuple(variant.uuid, pin)),
   );
   if (!objsEq(localPins, frame.pinnedVariants)) {
     replaceObj(frame.pinnedVariants, localPins);
@@ -603,7 +606,7 @@ export function withoutIrrelevantScreenVariants({
   const screenVariantGroup = site.activeScreenVariantGroup;
   if (screenVariantGroup) {
     const ordered = getOrderedScreenVariants(site, screenVariantGroup).filter(
-      (v) => activeVariants.includes(v)
+      (v) => activeVariants.includes(v),
     );
     const drop = new Set(butLast(ordered));
     return activeVariants.filter((v) => !drop.has(v));

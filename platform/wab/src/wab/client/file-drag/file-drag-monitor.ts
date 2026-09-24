@@ -129,7 +129,7 @@ export class FileDragMonitor {
               target: null,
               relatedTarget: null,
             }),
-          500
+          500,
         );
         this.notify(event);
         break;
@@ -147,7 +147,7 @@ export class FileDragMonitor {
 
   /** Subscribes to all events. */
   readonly subscribe = (
-    listener: (event: FileDragEvent) => void
+    listener: (event: FileDragEvent) => void,
   ): (() => void) => {
     this.listeners.add(listener);
     return () => {
@@ -157,7 +157,7 @@ export class FileDragMonitor {
 
   /** Subscribes to events that should be sent to remote frames. */
   readonly subscribeRemote = (
-    listener: (event: RemoteFileDragEvent) => void
+    listener: (event: RemoteFileDragEvent) => void,
   ): (() => void) => {
     return this.subscribe((event) => {
       if (isLocal(event)) {

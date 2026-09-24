@@ -14,7 +14,7 @@ export function useGetDomainsForProject(projectId: ProjectId) {
       appCtx.appConfig.enablePlasmicHosting
         ? appCtx.api.getDomainsForProject(projectId)
         : undefined,
-    { revalidateOnMount: true }
+    { revalidateOnMount: true },
   );
   return response;
 }
@@ -27,7 +27,7 @@ export function usePlasmicHostingSettings(projectId: ProjectId) {
       appCtx.appConfig.enablePlasmicHosting
         ? appCtx.api.getPlasmicHostingSettings(projectId)
         : undefined,
-    { revalidateOnMount: true }
+    { revalidateOnMount: true },
   );
   return response;
 }
@@ -38,7 +38,7 @@ export function useGetProjectReleases(projectId: ProjectId) {
   const response = useSWR(
     invalidationKey(`getProjectReleases`, projectId),
     () => getProjectReleases(appCtx, projectId, undefined),
-    { revalidateOnMount: true }
+    { revalidateOnMount: true },
   );
 
   return response;
@@ -47,7 +47,7 @@ export function useGetProjectReleases(projectId: ProjectId) {
 export async function getProjectReleases(
   appCtx: AppCtx,
   projectId: ProjectId,
-  branchId: BranchId | undefined
+  branchId: BranchId | undefined,
 ) {
   const { pkg } = await appCtx.api.getPkgByProjectId(projectId);
   // If we haven't created a Pkg yet, we've never published before
@@ -65,18 +65,18 @@ export async function listUnpublishedProjectRevisions(
   appCtx: AppCtx,
   projectId: ProjectId,
   branchId: BranchId | undefined,
-  revisionNumGt?: number
+  revisionNumGt?: number,
 ) {
   const res = await appCtx.api.listUnpublishedProjectRevisions(
     projectId,
     branchId ?? undefined,
-    revisionNumGt
+    revisionNumGt,
   );
   return res?.revisions || [];
 }
 
 export function useUsersMap(
-  userIds: (string | undefined | null)[] | undefined | null
+  userIds: (string | undefined | null)[] | undefined | null,
 ) {
   const appCtx = useAppCtx();
   const actualUserIds = userIds
@@ -94,6 +94,6 @@ export function useUsersMap(
       }
       const users = (await appCtx.api.getUsersById(actualUserIds)).users;
       return keyBy(users, (u) => u.id);
-    }
+    },
   );
 }

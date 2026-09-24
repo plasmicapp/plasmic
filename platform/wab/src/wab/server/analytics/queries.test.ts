@@ -40,7 +40,7 @@ describe("Analytics queries", () => {
           timezone: PARAMS.TIMEZONE,
           period: "day",
         }),
-        PARAMS
+        PARAMS,
       );
       expect(result).toMatchSnapshot();
       expect(() => parseQuery(result)).not.toThrow();
@@ -59,7 +59,7 @@ describe("Analytics queries", () => {
           ...PARAMS,
           FROM: "'2022-06-01'",
           TO: "'2022-07-30'",
-        }
+        },
       );
       expect(result).toMatchSnapshot();
       expect(() => parseQuery(result)).not.toThrow();
@@ -76,7 +76,7 @@ describe("Analytics queries", () => {
           splitId: PARAMS.SPLIT_ID,
           period: "day",
         }),
-        PARAMS
+        PARAMS,
       );
       expect(result).toMatchSnapshot();
       expect(() => parseQuery(result)).not.toThrow();
@@ -97,7 +97,7 @@ describe("Analytics queries", () => {
           ...PARAMS,
           FROM: "'2022-06-01'",
           TO: "'2022-07-30'",
-        }
+        },
       );
       expect(result).toMatchSnapshot();
       expect(() => parseQuery(result)).not.toThrow();
@@ -114,7 +114,7 @@ describe("Analytics queries", () => {
           timezone: PARAMS.TIMEZONE,
           period: "day",
         }),
-        PARAMS
+        PARAMS,
       );
       expect(result).toMatchSnapshot();
       expect(() => parseQuery(result)).not.toThrow();
@@ -133,7 +133,7 @@ describe("Analytics queries", () => {
           ...PARAMS,
           FROM: "'2022-06-01'",
           TO: "'2022-07-30'",
-        }
+        },
       );
       expect(result).toMatchSnapshot();
       expect(() => parseQuery(result)).not.toThrow();
@@ -150,7 +150,7 @@ describe("Analytics queries", () => {
           splitId: PARAMS.SPLIT_ID,
           period: "day",
         }),
-        PARAMS
+        PARAMS,
       );
       expect(result).toMatchSnapshot();
       expect(() => parseQuery(result)).not.toThrow();
@@ -171,7 +171,7 @@ describe("Analytics queries", () => {
           ...PARAMS,
           FROM: "'2022-06-01'",
           TO: "'2022-07-30'",
-        }
+        },
       );
       expect(result).toMatchSnapshot();
       expect(() => parseQuery(result)).not.toThrow();

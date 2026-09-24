@@ -17,7 +17,7 @@ test.describe("routing", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -79,8 +79,8 @@ test.describe("routing", () => {
       .click();
     await expect(
       models.studio.leftPanel.frame.getByText(
-        "Newest changes haven't been published."
-      )
+        "Newest changes haven't been published.",
+      ),
     ).toBeVisible();
 
     await models.studio.leftPanel.frame
@@ -106,8 +106,8 @@ test.describe("routing", () => {
 
     await expect(
       models.studio.leftPanel.frame.getByText(
-        "Newest changes haven't been published."
-      )
+        "Newest changes haven't been published.",
+      ),
     ).toBeVisible();
 
     async function switchBranchVersion(branchVersion: string) {
@@ -126,7 +126,7 @@ test.describe("routing", () => {
 
     await switchBranchVersion("0.0.1");
     await expect(
-      models.studio.frame.getByText("Back to current version")
+      models.studio.frame.getByText("Back to current version"),
     ).toBeVisible();
     await models.studio.leftPanel.frame
       .getByRole("button")
@@ -143,7 +143,7 @@ test.describe("routing", () => {
       .click();
     await switchBranchVersion("0.0.2");
     await expect(
-      models.studio.frame.getByText("Back to current version")
+      models.studio.frame.getByText("Back to current version"),
     ).toBeVisible();
     await models.studio.leftPanel.frame
       .getByRole("button")
@@ -160,7 +160,7 @@ test.describe("routing", () => {
     await expect(page).not.toHaveURL(/branch=/);
     await expect(page).not.toHaveURL(/version=/);
     await expect(
-      models.studio.frame.getByText("Back to current version")
+      models.studio.frame.getByText("Back to current version"),
     ).not.toBeVisible();
     await models.studio.leftPanel.frame
       .locator(".tpltree__label", { hasText: "text" })
@@ -169,11 +169,11 @@ test.describe("routing", () => {
 
     await goToProject(
       page,
-      `/projects/${projectId}?branching=true&version=0.0.1`
+      `/projects/${projectId}?branching=true&version=0.0.1`,
     );
     await waitForFrameToLoad(page);
     await expect(
-      models.studio.frame.getByText("Back to current version")
+      models.studio.frame.getByText("Back to current version"),
     ).toBeVisible({ timeout: 30_000 });
     await models.studio.leftPanel.frame
       .locator(".tpltree__label", { hasText: "text" })
@@ -182,10 +182,10 @@ test.describe("routing", () => {
 
     await goToProject(
       page,
-      `/projects/${projectId}?branching=true&branch=main&version=0.0.2`
+      `/projects/${projectId}?branching=true&branch=main&version=0.0.2`,
     );
     await expect(
-      models.studio.frame.getByText("Back to current version")
+      models.studio.frame.getByText("Back to current version"),
     ).toBeVisible({ timeout: 30_000 });
     await models.studio.leftPanel.frame
       .locator(".tpltree__label", { hasText: "text" })
@@ -194,12 +194,12 @@ test.describe("routing", () => {
 
     await goToProject(
       page,
-      `/projects/${projectId}?branching=true&branch=main&version=0.0.3`
+      `/projects/${projectId}?branching=true&branch=main&version=0.0.3`,
     );
     await expect(page).not.toHaveURL(/branch=/);
     await expect(page).not.toHaveURL(/version=/);
     await expect(
-      models.studio.frame.getByText("Back to current version")
+      models.studio.frame.getByText("Back to current version"),
     ).not.toBeVisible();
 
     await models.studio.leftPanel.frame

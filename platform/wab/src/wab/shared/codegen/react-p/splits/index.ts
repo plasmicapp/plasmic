@@ -15,14 +15,14 @@ import {
 export function makeSplitsProviderBundle(
   site: Site,
   projectId: string,
-  opts: Partial<ExportOpts>
+  opts: Partial<ExportOpts>,
 ) {
   if (site.splits.length === 0) {
     return undefined;
   }
 
   const runningSplits = site.splits.filter(
-    (s) => s.status === SplitStatus.Running
+    (s) => s.status === SplitStatus.Running,
   );
 
   const referencedGlobalVariantGroups = site.globalVariantGroups.filter(
@@ -37,7 +37,7 @@ export function makeSplitsProviderBundle(
           });
         });
       });
-    }
+    },
   );
 
   let content = `{children}`;
@@ -47,7 +47,7 @@ export function makeSplitsProviderBundle(
       globalVariantGroup,
       content,
       false,
-      `getGlobalContextValueFromVariation("${globalVariantGroup.uuid}", variation)`
+      `getGlobalContextValueFromVariation("${globalVariantGroup.uuid}", variation)`,
     );
   }
 
@@ -68,7 +68,7 @@ export function makeSplitsProviderBundle(
     };
 
     export const splits = ${JSON.stringify(
-      exportActiveSplitsConfig(site, projectId)
+      exportActiveSplitsConfig(site, projectId),
     )};
 
     export function getGlobalContextValueFromVariation(groupId: string, variation: Record<string, string>) {

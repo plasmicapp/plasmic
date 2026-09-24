@@ -166,7 +166,7 @@ export function DataSourceModal({
     return list;
   }, []);
   const [selectedDataSourceType, setSelectedDataSourceType] = React.useState(
-    editingDataSource !== "new" ? editingDataSource.source : dataSourceType
+    editingDataSource !== "new" ? editingDataSource.source : dataSourceType,
   );
   const [showAliasMessage, setShowAliasMessage] =
     React.useState<React.ReactNode>(null);
@@ -188,7 +188,7 @@ export function DataSourceModal({
     () => (hasOauthIntegration ? INTEGRATION_KEY : undefined),
     async () => {
       return await api.listAuthIntegrations();
-    }
+    },
   );
 
   const isValidValuesData = React.useCallback(
@@ -200,14 +200,14 @@ export function DataSourceModal({
         (editingDataSource !== "new" ||
           Object.entries(sourceMeta.credentials).every(
             ([key, fieldMeta]) =>
-              !fieldMeta.required || !!values.credentials[key]
+              !fieldMeta.required || !!values.credentials[key],
           )) &&
         Object.entries(sourceMeta.settings).every(
-          ([key, fieldMeta]) => !fieldMeta.required || !!values.settings[key]
+          ([key, fieldMeta]) => !fieldMeta.required || !!values.settings[key],
         )
       );
     },
-    [sourceMeta, editingDataSource]
+    [sourceMeta, editingDataSource],
   );
 
   const testDataSourceConnection = React.useCallback(
@@ -249,7 +249,7 @@ export function DataSourceModal({
         if (!connectionTest.result.connected) {
           if (connectionTest.result.error?.includes("SSL")) {
             const connectionOptions = JSON.parse(
-              values.settings.connectionOptions ?? "{}"
+              values.settings.connectionOptions ?? "{}",
             );
             if (
               connectionOptions.ssl === true &&
@@ -301,7 +301,7 @@ export function DataSourceModal({
         return { result: { connected: false } };
       }
     },
-    [form, appCtx, successfulConnections, isValidValuesData]
+    [form, appCtx, successfulConnections, isValidValuesData],
   );
 
   return (
@@ -360,7 +360,7 @@ export function DataSourceModal({
             const connectionTest = await testDataSourceConnection(
               editingDataSource !== "new"
                 ? editingDataSource.workspaceId
-                : workspaceId
+                : workspaceId,
             );
 
             if (!connectionTest.result.connected) {
@@ -379,7 +379,7 @@ export function DataSourceModal({
                   editingDataSource.id,
                   {
                     ...values,
-                  }
+                  },
                 );
               }
               await onUpdate(dataSource);
@@ -409,7 +409,7 @@ export function DataSourceModal({
               : {})}
             onChange={(id) => {
               const metaOrAlias = dataSourceMetasOrAliases.find(
-                (item) => item.id === id
+                (item) => item.id === id,
               );
               if (!metaOrAlias) {
                 return;
@@ -418,7 +418,7 @@ export function DataSourceModal({
               if (isDataSourceAlias(metaOrAlias)) {
                 form.setFieldValue("source", metaOrAlias.aliasFor.id);
                 setSelectedDataSourceType(
-                  metaOrAlias.aliasFor.id as DataSourceType
+                  metaOrAlias.aliasFor.id as DataSourceType,
                 );
                 setShowAliasMessage(metaOrAlias.message);
               } else {
@@ -435,7 +435,7 @@ export function DataSourceModal({
                 return (
                   !readOpsOnly ||
                   getDataSourceMeta(
-                    isDataSourceAlias(s) ? s.aliasFor.id : s.id
+                    isDataSourceAlias(s) ? s.aliasFor.id : s.id,
                   ).ops.some((op) => op.type === "read")
                 );
               })
@@ -613,7 +613,7 @@ function CredentialsAndSettingsSection(props: {
   const renderFormItem = (
     key: string,
     settingMeta: SettingFieldMeta,
-    type: "credentials" | "settings"
+    type: "credentials" | "settings",
   ) => {
     return (
       <Form.Item
@@ -627,8 +627,8 @@ function CredentialsAndSettingsSection(props: {
             ? integrationList?.providers.find((p) => p.name === sourceMeta.id)
                 ?.id
             : settingMeta.default
-            ? coerceArgValueToString(settingMeta.default, settingMeta)
-            : undefined
+              ? coerceArgValueToString(settingMeta.default, settingMeta)
+              : undefined
         }
         hidden={settingMeta.hidden}
       >
@@ -637,10 +637,10 @@ function CredentialsAndSettingsSection(props: {
             provider={sourceMeta.id}
             onSuccess={async () => {
               const data = (await mutate(
-                INTEGRATION_KEY
+                INTEGRATION_KEY,
               )) as ListAuthIntegrationsResponse;
               const integration = data.providers.find(
-                (p) => p.name === sourceMeta.id
+                (p) => p.name === sourceMeta.id,
               );
               const { credentials } = form.getFieldsValue();
               credentials[key] = integration?.id;
@@ -653,7 +653,7 @@ function CredentialsAndSettingsSection(props: {
             disabled={isDisabled}
           >
             {integrationList?.providers.find(
-              (provider) => provider.name === sourceMeta.id
+              (provider) => provider.name === sourceMeta.id,
             )
               ? "Edit integration"
               : undefined}
@@ -675,7 +675,7 @@ function CredentialsAndSettingsSection(props: {
             onChange={async (cmsId) => {
               const db = ensure(
                 await api.getCmsDatabase(cmsId as CmsDatabaseId),
-                "Couldn't find CMS database by cmsId"
+                "Couldn't find CMS database by cmsId",
               );
               const secretToken = db.secretToken;
               form.setFieldsValue({
@@ -731,12 +731,12 @@ function CredentialsAndSettingsSection(props: {
         ...Object.entries(sourceMeta.credentials).map(
           ([key, settingMeta]) =>
             () =>
-              renderFormItem(key, settingMeta, "credentials")
+              renderFormItem(key, settingMeta, "credentials"),
         ),
         ...Object.entries(sourceMeta.settings).map(
           ([key, settingMeta]) =>
             () =>
-              renderFormItem(key, settingMeta, "settings")
+              renderFormItem(key, settingMeta, "settings"),
         ),
       ];
 
@@ -855,7 +855,7 @@ function PlasmicCmsSelect(props: {
     CMS_DATABASES_KEY + workspaceId,
     async () => {
       return await api.listCmsDatabasesForWorkspace(workspaceId);
-    }
+    },
   );
 
   return (
@@ -914,7 +914,7 @@ function PostgresConnectionStringImportButton(props: {
                         key in sourceMeta.credentials ||
                         key in sourceMeta.settings ||
                         ["database"].includes(key)
-                      )
+                      ),
                   )
                   .reduce((acum, [key, value]) => {
                     const stringValue = JSON.stringify(value);
@@ -922,7 +922,7 @@ function PostgresConnectionStringImportButton(props: {
                       acum[key] = stringValue;
                     }
                     return acum;
-                  }, {})
+                  }, {}),
               ),
             },
           });
@@ -947,7 +947,7 @@ function StringDictEditor(props: {
       ([key, val]) => ({
         key,
         value: typeof val === "object" ? JSON.stringify(val) : (val as string),
-      })
+      }),
     );
   };
   const [currentValues, setCurrentValues] = React.useState<
@@ -956,8 +956,8 @@ function StringDictEditor(props: {
     value !== undefined
       ? parseValue(value)
       : defaultValue !== undefined
-      ? parseValue(defaultValue)
-      : []
+        ? parseValue(defaultValue)
+        : [],
   );
 
   React.useEffect(() => {

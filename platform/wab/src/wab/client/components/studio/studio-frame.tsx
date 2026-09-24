@@ -66,7 +66,7 @@ export function StudioFrame({
     React.useState(false);
   const refreshProjectAndPerms = React.useCallback(
     () => setFetchProjectCount(fetchProjectCount + 1),
-    [fetchProjectCount]
+    [fetchProjectCount],
   );
   const toggleAdminMode = React.useCallback(
     async (newMode: boolean) => {
@@ -76,7 +76,7 @@ export function StudioFrame({
       await appCtx.reloadAll();
       await refreshStudio();
     },
-    [appCtx, refreshStudio]
+    [appCtx, refreshStudio],
   );
 
   const fetchBranches = React.useCallback(
@@ -86,21 +86,21 @@ export function StudioFrame({
         isPromise: true,
         maxAge: 5 * 60 * 1000,
         maxArgs: 0,
-      }
+      },
     ),
-    [appCtx, projectId]
+    [appCtx, projectId],
   );
 
   const refreshBranchData = React.useCallback(
     () => [...fetchBranches.keys()].forEach((key) => fetchBranches.remove(key)),
-    [fetchBranches]
+    [fetchBranches],
   );
 
   const previousLocation = React.useRef<Location>(appCtx.history.location);
   React.useEffect(() => {
     const dispose = appCtx.history.listen(({ location: newLocation }) => {
       const oldBranchName = parseProjectLocation(
-        previousLocation.current
+        previousLocation.current,
       )?.branchName;
       const newBranchName = parseProjectLocation(newLocation)?.branchName;
       if (project && oldBranchName !== newBranchName) {
@@ -115,7 +115,7 @@ export function StudioFrame({
             ) {
               await refreshStudio();
             }
-          })()
+          })(),
         );
       }
       previousLocation.current = newLocation;
@@ -143,11 +143,11 @@ export function StudioFrame({
         }
         let maybeBranch: ApiBranch | undefined = undefined;
         const branchName = parseProjectLocation(
-          appCtx.history.location
+          appCtx.history.location,
         )?.branchName;
         if (branchName && branchName !== MainBranchId) {
           maybeBranch = (await fetchBranches()).find(
-            (b) => b.name === branchName
+            (b) => b.name === branchName,
           );
         }
         const hostUrl = getHostUrl(proj, maybeBranch, appCtx.appConfig);
@@ -168,7 +168,7 @@ export function StudioFrame({
           ? getAccessLevelToResource(
               { type: "project", resource: proj },
               appCtx.selfInfo,
-              permissions
+              permissions,
             )
           : "blocked";
         setPerms(permissions);
@@ -180,7 +180,7 @@ export function StudioFrame({
         // An unowned project is editable by anyone, matching the server's permission check.
         setEditorPerm(
           accessLevelRank(accessLevel) >= accessLevelRank("content") ||
-            isUnownedProject(proj)
+            isUnownedProject(proj),
         );
         setProject(proj);
         if (appCtx.appConfig.defaultHostUrl !== DEVFLAGS.defaultHostUrl) {

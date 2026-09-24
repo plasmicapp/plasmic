@@ -18,14 +18,14 @@ export function unsetComponentInstanceProp(
   opts: {
     vs: VariantSetting;
     tplMgr: TplMgr;
-  }
+  },
 ): UnsetComponentInstancePropResult {
   const { vs, tplMgr } = opts;
   const component = tpl.component;
 
   const varName = toVarName(propName);
   const param = component.params.find(
-    (p) => paramToVarName(component, p) === varName
+    (p) => paramToVarName(component, p) === varName,
   );
   if (!param) {
     return err({

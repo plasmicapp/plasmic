@@ -14,7 +14,7 @@ async function checkVercelDomain() {
         Authorization: `Bearer ${getVercelSecrets().authBearerToken}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
   const data = await response.json();
   console.log(data);

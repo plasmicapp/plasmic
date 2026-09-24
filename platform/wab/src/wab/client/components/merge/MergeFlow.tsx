@@ -119,8 +119,7 @@ export const MergeModalWrapper = observer(function MergeModalWrapper({
 });
 
 export interface MergeFlowProps
-  extends DefaultMergeFlowProps,
-    MergeModalWrapperProps {
+  extends DefaultMergeFlowProps, MergeModalWrapperProps {
   mergeModalContext: MergeModalContext;
 }
 
@@ -136,7 +135,7 @@ function MergeFlow_(
     currentBranch,
     ...props
   }: MergeFlowProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const appCtx = useAppCtx();
   const api = appCtx.api;
@@ -155,7 +154,7 @@ function MergeFlow_(
         setPreviousTags([
           ...new Set(projectReleases?.map((release) => release.tags).flat()),
         ] as string[]);
-      })()
+      })(),
     );
   }, []);
 
@@ -179,25 +178,25 @@ function MergeFlow_(
       const ancestorPkgVersion = await api.getPkgVersion(
         pretendMergeResult.pkgId,
         pretendMergeResult.ancestorPkgVersionString,
-        pretendMergeResult.ancestorPkgVersionBranchId ?? undefined
+        pretendMergeResult.ancestorPkgVersionBranchId ?? undefined,
       );
       const bundler = new FastBundler();
       const ancestorSite = unbundleProjectDependency(
         bundler,
         ancestorPkgVersion.pkg,
-        ancestorPkgVersion.depPkgs
+        ancestorPkgVersion.depPkgs,
       ).projectDependency.site;
       const { site: fromSite } = unbundleSite(
         bundler,
         `from-${projectId}`,
         getBundle(fromSiteResponse.rev, appCtx.lastBundleVersion),
-        fromSiteResponse.depPkgs
+        fromSiteResponse.depPkgs,
       );
       const { site: toSite } = unbundleSite(
         bundler,
         `to-${projectId}`,
         getBundle(toSiteResponse.rev, appCtx.lastBundleVersion),
-        toSiteResponse.depPkgs
+        toSiteResponse.depPkgs,
       );
 
       const mergedUuid = mkUuid();
@@ -205,7 +204,7 @@ function MergeFlow_(
       const mergedSite = (
         bundler.unbundle(
           ancestorPkgVersion.pkg.model,
-          mergedUuid
+          mergedUuid,
         ) as ProjectDependency
       ).site;
 
@@ -215,11 +214,11 @@ function MergeFlow_(
         toSite,
         mergedSite,
         bundler,
-        undefined
+        undefined,
       );
       const commitGraph = ensure(
         fromSiteResponse?.project.extraData.commitGraph,
-        "By the time we get to merge, we should have already created commits (for creating branches)"
+        "By the time we get to merge, we should have already created commits (for creating branches)",
       );
       return {
         ancestorPkgVersion,
@@ -242,7 +241,7 @@ function MergeFlow_(
       revalidateIfStale: false,
       revalidateOnReconnect: false,
       revalidateOnFocus: false,
-    }
+    },
   );
 
   const [showAll, setShowAll] = useState(false);
@@ -306,7 +305,7 @@ function MergeFlow_(
         isKnownComponent(item.mergedParent)
         ? item.mergedParent.uuid
         : "";
-    }
+    },
   );
 
   const fromBranch = branches.find((branch) => branch.id === fromBranchId);
@@ -318,7 +317,7 @@ function MergeFlow_(
 
   const successDescription = `${describeBranch(
     toBranch,
-    true
+    true,
   )} has been updated. ${
     !isMainBranchId(fromBranchId)
       ? `${describeBranch(fromBranch, true)} has been archived.`
@@ -336,7 +335,7 @@ function MergeFlow_(
     "concurrent destination branch changes during merge": {
       message: `${describeBranch(
         toBranch,
-        true
+        true,
       )} got changed since merge started`,
       description:
         "Someone else changed the branch since you started this merge. Please cancel out and try the merge again.",
@@ -344,7 +343,7 @@ function MergeFlow_(
     "concurrent source branch changes during merge": {
       message: `${describeBranch(
         fromBranch,
-        true
+        true,
       )} got changed since merge started`,
       description:
         "Someone else changed the branch since you started this merge. Please cancel out and try the merge again.",
@@ -416,7 +415,7 @@ function MergeFlow_(
 
   function renderReconciliationGroup(
     recs: AutoReconciliation[],
-    mergedParent: AutoReconciliationOfDuplicateNames["mergedParent"]
+    mergedParent: AutoReconciliationOfDuplicateNames["mergedParent"],
   ): ReactElement | null {
     return (
       <>
@@ -440,7 +439,7 @@ function MergeFlow_(
 
     if (!semverItem) {
       reportSilentErrorMessage(
-        "Unexpected: Trying to render reconciliation on objects that are not valid semver elements"
+        "Unexpected: Trying to render reconciliation on objects that are not valid semver elements",
       );
       return null;
     }
@@ -452,7 +451,7 @@ function MergeFlow_(
               ? new EffectiveVariantSetting(rec.mergedInst, [
                   ensureBaseVariantSetting(rec.mergedInst),
                 ])
-              : undefined
+              : undefined,
           )
         : undefined;
 
@@ -498,12 +497,12 @@ function MergeFlow_(
         const leftInst = keyPathGet(
           fromSite,
           path.slice(0, key.length),
-          bundler
+          bundler,
         );
         const rightInst = keyPathGet(
           toSite,
           path.slice(0, key.length),
-          bundler
+          bundler,
         );
         const label = grouping.label(leftInst, fromSite, rightInst, toSite);
         const semverItem = maybeMkSemVerSiteElement(leftInst);
@@ -516,9 +515,9 @@ function MergeFlow_(
           <>
             {labelPart} <strong>{name}</strong>{" "}
           </>,
-          semverItem
+          semverItem,
         );
-      })
+      }),
     );
 
     const innermostIcon =
@@ -526,8 +525,8 @@ function MergeFlow_(
         descriptionsAndTypes.map(([_, semverItem]) =>
           semverItem && semverItem.type !== "Element"
             ? objIcon(semverItem)
-            : undefined
-        )
+            : undefined,
+        ),
       )[0] ?? null;
 
     return (
@@ -604,7 +603,7 @@ function MergeFlow_(
               setMode(
                 isMainBranchId(toBranchId)
                   ? "source branch changes"
-                  : "destination branch changes"
+                  : "destination branch changes",
               );
             },
           }}
@@ -640,7 +639,7 @@ function MergeFlow_(
               setMode(
                 isMainBranchId(toBranchId)
                   ? "destination branch changes"
-                  : "source branch changes"
+                  : "source branch changes",
               );
             },
           }}
@@ -658,9 +657,9 @@ function MergeFlow_(
                 }
                 return renderReconciliationGroup(
                   items,
-                  (items[0] as AutoReconciliationOfDuplicateNames).mergedParent
+                  (items[0] as AutoReconciliationOfDuplicateNames).mergedParent,
                 );
-              }
+              },
             ),
           }}
           showAllSwitchContainer={{
@@ -695,7 +694,7 @@ function MergeFlow_(
                 bundler.bundle(
                   mergedSite,
                   mergedUuid,
-                  appCtx.lastBundleVersion
+                  appCtx.lastBundleVersion,
                 );
 
                 // left === from and right === to in the merge-core, but
@@ -723,11 +722,11 @@ function MergeFlow_(
                             ? "left"
                             : "right"
                           : isMainBranchId(toBranchId)
-                          ? "right"
-                          : "left"
-                      )
-                    )
-                  )
+                            ? "right"
+                            : "left",
+                      ),
+                    ),
+                  ),
                 );
 
                 const specialPicks = specialPairedChanges.flatMap((cf) => [
@@ -739,14 +738,14 @@ function MergeFlow_(
                           ? "left"
                           : "right"
                         : isMainBranchId(toBranchId)
-                        ? "right"
-                        : "left"
-                    )
+                          ? "right"
+                          : "left",
+                    ),
                   ),
                 ]);
 
                 const picksMap: DirectConflictPickMap = Object.fromEntries(
-                  genericPicks.concat(specialPicks)
+                  genericPicks.concat(specialPicks),
                 );
 
                 const realMerge = await api.tryMergeBranch(projectId, {
@@ -786,7 +785,7 @@ function MergeFlow_(
                   .catch((err) => {
                     setIsMerging(false);
                     throw err;
-                  })
+                  }),
               );
             },
           }}

@@ -28,7 +28,7 @@ export interface InsertItemEventData extends InsertOpts {
 }
 
 export function getEventDataForTplComponent(
-  tplNode: TplComponent
+  tplNode: TplComponent,
 ): Omit<InsertItemEventData, "from"> {
   const { component } = tplNode;
   return {

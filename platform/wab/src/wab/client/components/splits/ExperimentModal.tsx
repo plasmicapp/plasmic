@@ -51,7 +51,7 @@ export const ExperimentModal = observer(function ExperimentModal(props: {
           }
         });
         return ok();
-      })
+      }),
     );
   };
 
@@ -71,7 +71,7 @@ export const ExperimentModal = observer(function ExperimentModal(props: {
                     split.name = newName;
                   }
                   return ok();
-                })
+                }),
               );
             }
           }}
@@ -92,7 +92,7 @@ export const ExperimentModal = observer(function ExperimentModal(props: {
             studioCtx.change(() => {
               split.description = e.target.value;
               return ok();
-            })
+            }),
           );
         },
       }}
@@ -131,7 +131,7 @@ export const ExperimentModal = observer(function ExperimentModal(props: {
               studioCtx.change(() => {
                 split.targetEvents = newEvents;
                 return ok();
-              })
+              }),
             );
           },
         },
@@ -157,7 +157,7 @@ export const ExperimentModal = observer(function ExperimentModal(props: {
                   split.slices[1].externalId = value;
                 }
                 return ok();
-              })
+              }),
             );
           },
         },
@@ -175,7 +175,7 @@ export const ExperimentModal = observer(function ExperimentModal(props: {
                 studioCtx.change(() => {
                   split.status = value as "new" | "running" | "stopped";
                   return ok();
-                })
+                }),
               );
             }
           },

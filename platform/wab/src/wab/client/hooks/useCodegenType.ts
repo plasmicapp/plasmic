@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 export function useCodegenType(): "loader" | "codegen" {
   const appCtx = useAppCtx();
   const [codegenType, setCodegenType] = useState<"loader" | "codegen">(
-    "codegen"
+    "codegen",
   );
 
   useEffect(() => {
@@ -21,8 +21,8 @@ export function useCodegenType(): "loader" | "codegen" {
           if (storedCodegenType) {
             setCodegenType(storedCodegenType as any);
           }
-        }
-      )
+        },
+      ),
     );
     const uniqueId = mkUuid();
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -32,7 +32,7 @@ export function useCodegenType(): "loader" | "codegen" {
         if (key === codegenTypeKey && newValue) {
           setCodegenType(newValue as any);
         }
-      })
+      }),
     );
     return () => {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises

@@ -19,7 +19,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   for (const component of site.components) {
@@ -33,12 +33,12 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
               ["setVariable", "toggleVariable"].includes(interaction.actionName)
             ) {
               const varArg = interaction.args.find(
-                (a) => a.name === "variable"
+                (a) => a.name === "variable",
               );
               if (varArg && isKnownCustomCode(varArg.expr)) {
                 const varName = JSON.parse(varArg.expr.code);
                 const variable = component.states.find(
-                  (s) => s.param.variable.name === varName
+                  (s) => s.param.variable.name === varName,
                 )?.param.variable;
                 if (variable) {
                   varArg.expr = new VarRef({ variable });
@@ -55,7 +55,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
               if (varArg && isKnownCustomCode(varArg.expr)) {
                 const varName = JSON.parse(varArg.expr.code);
                 const variable = component.params.find(
-                  (p) => p.variable.name === varName
+                  (p) => p.variable.name === varName,
                 )?.variable;
                 if (variable) {
                   varArg.name = "vgroup";
@@ -71,12 +71,12 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
 
               if (valueArg && isKnownCustomCode(valueArg.expr)) {
                 const variantNames = ensureArray(
-                  JSON.parse(valueArg.expr.code)
+                  JSON.parse(valueArg.expr.code),
                 );
                 const variants = withoutNils(
                   variantNames.map((vname) =>
-                    component.variants.find((v) => v.name === vname)
-                  )
+                    component.variants.find((v) => v.name === vname),
+                  ),
                 );
                 valueArg.expr = new VariantsRef({ variants });
               }
@@ -84,16 +84,16 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
 
             if (interaction.actionName === "toggleVariant") {
               const variantArg = interaction.args.find(
-                (a) => a.name === "variant"
+                (a) => a.name === "variant",
               );
               if (variantArg && isKnownCustomCode(variantArg.expr)) {
                 const variantNames = ensureArray(
-                  JSON.parse(variantArg.expr.code)
+                  JSON.parse(variantArg.expr.code),
                 );
                 const variants = withoutNils(
                   variantNames.map((vname) =>
-                    component.variants.find((v) => v.name === vname)
-                  )
+                    component.variants.find((v) => v.name === vname),
+                  ),
                 );
                 variantArg.expr = new VariantsRef({ variants });
               }
@@ -107,7 +107,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "85-interaction-args"
+    "85-interaction-args",
   );
   Object.assign(bundle, newBundle);
 };

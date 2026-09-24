@@ -7,14 +7,14 @@ import path from "path";
 
 export async function writeCodeBundlesToDisk(
   dir: string,
-  outputs: CachedCodegenOutputBundle[]
+  outputs: CachedCodegenOutputBundle[],
 ) {
   // Create a fake package.json
   await fs.writeFile(path.join(dir, "package.json"), `{}`);
 
   // Install @plasmicapp/react-web so it is baked into the generated bundle.
   const nodeModulesPath = path.resolve(
-    path.join(process.cwd(), "..", "loader-bundle-env", "node_modules")
+    path.join(process.cwd(), "..", "loader-bundle-env", "node_modules"),
   );
   logger().info(`Using node_modules at ${nodeModulesPath}`);
   await fs.symlink(nodeModulesPath, path.join(dir, "node_modules"));
@@ -30,7 +30,7 @@ export async function writeCodeBundlesToDisk(
     `
 import {PlasmicRootProvider} from "@plasmicapp/react-web/skinny";
 export default PlasmicRootProvider;
-    `
+    `,
   );
 
   // entrypoint.tsx exports all the generated components, variants, and
@@ -43,33 +43,33 @@ ${outputs
   .map((output) =>
     output.projectConfig.projectModuleBundle
       ? `export const project__${toVarName(
-          output.projectConfig.projectId
+          output.projectConfig.projectId,
         )} = import("./${stripExtension(
-          output.projectConfig.projectModuleBundle.fileName
+          output.projectConfig.projectModuleBundle.fileName,
         )}");`
-      : ""
+      : "",
   )
   .join("\n")}
 ${outputs
   .map((output) =>
     output.projectConfig.styleTokensProviderBundle
       ? `export const styletokensprovider__${toVarName(
-          output.projectConfig.projectId
+          output.projectConfig.projectId,
         )} = import("./${stripExtension(
-          output.projectConfig.styleTokensProviderBundle.fileName
+          output.projectConfig.styleTokensProviderBundle.fileName,
         )}");`
-      : ""
+      : "",
   )
   .join("\n")}
 ${outputs
   .map((output) =>
     output.projectConfig.dataTokensBundle
       ? `export const datatokens__${toVarName(
-          output.projectConfig.projectId
+          output.projectConfig.projectId,
         )} = import("./${stripExtension(
-          output.projectConfig.dataTokensBundle.fileName
+          output.projectConfig.dataTokensBundle.fileName,
         )}");`
-      : ""
+      : "",
   )
   .join("\n")}
 ${outputs
@@ -77,20 +77,20 @@ ${outputs
     output.components.map(
       (comp) =>
         `export const comp__${toVarName(comp.id)} = import("./${stripExtension(
-          comp.isPage ? comp.renderModuleFileName : comp.skeletonModuleFileName
-        )}");`
-    )
+          comp.isPage ? comp.renderModuleFileName : comp.skeletonModuleFileName,
+        )}");`,
+    ),
   )
   .join("\n")}
 ${outputs
   .map((output) =>
     output.projectConfig.globalContextBundle
       ? `export const context__${makeGlobalContextsProviderImportName(
-          output.projectConfig.projectId
+          output.projectConfig.projectId,
         )} = import("./${makeGlobalContextsProviderFileName(
-          output.projectConfig.projectId
+          output.projectConfig.projectId,
         )}");`
-      : ""
+      : "",
   )
   .join("\n")}
 ${outputs
@@ -98,12 +98,12 @@ ${outputs
     output.globalVariants.map(
       (v) =>
         `export const variant__${toVarName(v.id)} = import("./${stripExtension(
-          v.contextFileName
-        )}");`
-    )
+          v.contextFileName,
+        )}");`,
+    ),
   )
   .join("\n")}
-`
+`,
   );
 
   // We use postcss to bundle up "common", non-component css into one css chunk.
@@ -122,19 +122,19 @@ ${outputs
     ${outputs
       .map((output) => `import "./${output.projectConfig.cssFileName}";`)
       .join("\n")}
-    `
+    `,
   );
 }
 
 async function writeCodeBundleToDisk(
   dir: string,
-  output: CachedCodegenOutputBundle
+  output: CachedCodegenOutputBundle,
 ) {
   for (const comp of output.components) {
     if (comp.renderModule) {
       await fs.writeFile(
         path.join(dir, comp.renderModuleFileName),
-        comp.renderModule
+        comp.renderModule,
       );
       // The render module imports its css module unconditionally, so the css
       // must be written whenever the render module is, even when the rules are empty.
@@ -144,14 +144,14 @@ async function writeCodeBundleToDisk(
     if (comp.skeletonModule) {
       await fs.writeFile(
         path.join(dir, comp.skeletonModuleFileName),
-        comp.skeletonModule
+        comp.skeletonModule,
       );
     }
 
     if (comp.rscMetadata?.serverQueriesExecFunc) {
       await fs.writeFile(
         path.join(dir, comp.rscMetadata!.serverQueriesExecFunc.fileName),
-        comp.rscMetadata!.serverQueriesExecFunc.module
+        comp.rscMetadata!.serverQueriesExecFunc.module,
       );
     }
   }
@@ -163,50 +163,50 @@ async function writeCodeBundleToDisk(
   for (const img of output.imageAssets) {
     await fs.writeFile(
       path.join(dir, img.fileName),
-      Buffer.from(img.blob, "base64")
+      Buffer.from(img.blob, "base64"),
     );
   }
 
   for (const globalVariant of output.globalVariants) {
     await fs.writeFile(
       path.join(dir, globalVariant.contextFileName),
-      globalVariant.contextModule
+      globalVariant.contextModule,
     );
   }
 
   await fs.writeFile(
     path.join(dir, output.projectConfig.cssFileName),
-    output.projectConfig.cssRules
+    output.projectConfig.cssRules,
   );
   await fs.writeFile(
     path.join(dir, output.defaultStyles.defaultStyleCssFileName),
-    output.defaultStyles.defaultStyleCssRules
+    output.defaultStyles.defaultStyleCssRules,
   );
   if (output.projectConfig.projectModuleBundle) {
     await fs.writeFile(
       path.join(dir, output.projectConfig.projectModuleBundle.fileName),
-      output.projectConfig.projectModuleBundle.module
+      output.projectConfig.projectModuleBundle.module,
     );
   }
   if (output.projectConfig.styleTokensProviderBundle) {
     await fs.writeFile(
       path.join(dir, output.projectConfig.styleTokensProviderBundle.fileName),
-      output.projectConfig.styleTokensProviderBundle.module
+      output.projectConfig.styleTokensProviderBundle.module,
     );
   }
   if (output.projectConfig.dataTokensBundle) {
     await fs.writeFile(
       path.join(dir, output.projectConfig.dataTokensBundle.fileName),
-      output.projectConfig.dataTokensBundle.module
+      output.projectConfig.dataTokensBundle.module,
     );
   }
   if (output.projectConfig.globalContextBundle) {
     await fs.writeFile(
       path.join(
         dir,
-        makeGlobalContextsProviderFileName(output.projectConfig.projectId)
+        makeGlobalContextsProviderFileName(output.projectConfig.projectId),
       ),
-      output.projectConfig.globalContextBundle.contextModule
+      output.projectConfig.globalContextBundle.contextModule,
     );
   }
 }

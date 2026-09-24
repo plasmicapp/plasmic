@@ -68,8 +68,8 @@ const ApiCmsQuerySchema = z.object({
           field: z.string(),
           dir: z.union([z.literal("asc"), z.literal("desc")]),
         }),
-      ])
-    )
+      ]),
+    ),
   ),
   fields: z.optional(z.array(z.string())),
 });
@@ -118,7 +118,7 @@ export const publicCmsReadsContract = c.router({
       q: z.optional(
         z
           .string()
-          .transform(zParseJson(ApiCmsQuerySchema.pick({ where: true })))
+          .transform(zParseJson(ApiCmsQuerySchema.pick({ where: true }))),
       ),
       // draft=1 to query draft rows
       draft: z.optional(z.union([z.string(), z.literal("1")])),

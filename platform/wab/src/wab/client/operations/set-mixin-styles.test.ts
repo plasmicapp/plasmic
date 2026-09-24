@@ -18,7 +18,7 @@ describe("setMixinStyles", () => {
     const mixin = mkMixin();
 
     expect(
-      setMixinStyles(mixin.rs, { "font-size": "24px", color: "#fff" })
+      setMixinStyles(mixin.rs, { "font-size": "24px", color: "#fff" }),
     ).toEqual([]);
     expect(mixin.rs.values).toEqual({ "font-size": "24px", color: "#fff" });
 
@@ -38,7 +38,7 @@ describe("setMixinStyles", () => {
     expect(Object.keys(mixin.rs.values)).toHaveLength(19);
 
     expect(
-      setMixinStyles(mixin.rs, { padding: null, border: null, gap: null })
+      setMixinStyles(mixin.rs, { padding: null, border: null, gap: null }),
     ).toEqual([]);
     expect(mixin.rs.values).toEqual({ color: "#fff" });
   });
@@ -47,7 +47,7 @@ describe("setMixinStyles", () => {
     const mixin = mkMixin();
 
     expect(setMixinStyles(mixin.rs, { display: "grid", gap: "4px" })).toEqual(
-      []
+      [],
     );
     expect(mixin.rs.values).toEqual({
       display: "grid",
@@ -179,7 +179,7 @@ describe("setMixinVariantedStyles", () => {
         variants: [variant],
         styles: { "font-size": "16px" },
       }).isOk(),
-      "expected success result"
+      "expected success result",
     );
     expect(mixin.rs.values).toEqual({ "font-size": "24px", color: "#fff" });
     expect(mixin.variantedRs.length).toEqual(1);
@@ -212,7 +212,7 @@ describe("setMixinVariantedStyles", () => {
         variants: [variant],
         styles: null,
       }).isOk(),
-      "expected success result"
+      "expected success result",
     );
     expect(mixin.variantedRs).toEqual([]);
   });

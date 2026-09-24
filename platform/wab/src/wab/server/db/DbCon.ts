@@ -33,16 +33,16 @@ let migrationClasses: Promise<Function[]> | undefined;
 function getMigrationClasses() {
   return (migrationClasses ??= (async () => {
     const files = (await fs.readdir(MIGRATIONS_PATH)).filter((file) =>
-      file.endsWith(".ts")
+      file.endsWith(".ts"),
     );
     const mods = await Promise.all(
-      files.map((file) => importByPath(path.join(MIGRATIONS_PATH, file)))
+      files.map((file) => importByPath(path.join(MIGRATIONS_PATH, file))),
     );
     return mods.flatMap(
       (mod) =>
         Object.values(mod).filter(
-          (exported) => typeof exported === "function"
-        ) as Function[]
+          (exported) => typeof exported === "function",
+        ) as Function[],
     );
   })());
 }
@@ -65,7 +65,7 @@ export function getWabConnectionOptions(): Promise<ConnectionOptions> {
 }
 
 function getDatabaseUriForConnectionOptions(
-  dburi: string | ConnectionOptions
+  dburi: string | ConnectionOptions,
 ): string | undefined {
   if (typeof dburi === "string") {
     return dburi;
@@ -75,7 +75,7 @@ function getDatabaseUriForConnectionOptions(
 
 function existingConnectionMatches(
   conn: Connection,
-  dburi: string | ConnectionOptions
+  dburi: string | ConnectionOptions,
 ) {
   const requestedUri = getDatabaseUriForConnectionOptions(dburi);
   const existingUri = (conn.options as ConnectionOptions & { url?: string })
@@ -98,7 +98,7 @@ export async function ensureDbConnection(
   opts?: {
     maxConnections?: number;
     useEnvPassword?: boolean;
-  }
+  },
 ) {
   const maxConnections = opts?.maxConnections ?? 15;
   const connMgr = getConnectionManager();
@@ -109,7 +109,7 @@ export async function ensureDbConnection(
       if (conn.isConnected) {
         if (!existingConnectionMatches(conn, dburi)) {
           logger().info(
-            `Closing typeorm connection pool for ${name} because its database URI changed`
+            `Closing typeorm connection pool for ${name} because its database URI changed`,
           );
           await conn.close();
         } else {
@@ -148,7 +148,7 @@ export async function ensureDbConnection(
           }
         : {
             url: dburi,
-          }
+          },
     );
   } else {
     connOpts = dburi;
@@ -204,7 +204,7 @@ export async function ensureDbConnections(
     defaultPoolSize?: number;
     migrationPoolSize?: number;
     useEnvPassword?: boolean;
-  }
+  },
 ) {
   await ensureDbConnection(dbUri, "default", {
     maxConnections: opts?.defaultPoolSize ?? 15,
@@ -218,13 +218,13 @@ export async function ensureDbConnections(
 
 async function withAdvisoryLock(
   conn: Connection,
-  callback: () => Promise<void>
+  callback: () => Promise<void>,
 ): Promise<void> {
   const lockName = stringToPair("migration-lock");
   try {
     // wait to acquire lock
     await conn.manager.query(
-      `SELECT pg_advisory_lock(${lockName[0]}, ${lockName[1]})`
+      `SELECT pg_advisory_lock(${lockName[0]}, ${lockName[1]})`,
     );
 
     // execute our code inside the lock
@@ -232,14 +232,14 @@ async function withAdvisoryLock(
   } finally {
     // unlock the acquired lock
     const [{ pg_advisory_unlock: wasLocked }]: [
-      { pg_advisory_unlock: boolean }
+      { pg_advisory_unlock: boolean },
     ] = await conn.manager.query(
-      `SELECT pg_advisory_unlock(${lockName[0]}, ${lockName[1]})`
+      `SELECT pg_advisory_unlock(${lockName[0]}, ${lockName[1]})`,
     );
 
     if (!wasLocked) {
       logger().warn(
-        `Advisory lock was not locked: ${lockName[0]}, ${lockName[1]}`
+        `Advisory lock was not locked: ${lockName[0]}, ${lockName[1]}`,
       );
     }
   }
@@ -252,7 +252,7 @@ export async function maybeMigrateDatabase() {
     if (migrations.length > 0) {
       logger().info(
         `Successfully ran ${migrations.length} migrations`,
-        migrations
+        migrations,
       );
     }
   });

@@ -12,13 +12,13 @@ import { promisify } from "util";
 export function doLogin(
   request: Request,
   user: User,
-  done: (err: any) => void
+  done: (err: any) => void,
 ) {
   spawn(
     disconnectUserSockets(request).then(() => {
       request.logIn(user, done);
       request.analytics.identify(user.id, makeUserTraits(user));
-    })
+    }),
   );
 }
 
@@ -45,7 +45,7 @@ export async function doLogout(request: Request, response: Response) {
 export async function verifyClientCredentials(
   whiteLabelName: string,
   token: string,
-  info: Exclude<TeamWhiteLabelInfo["apiClientCredentials"], undefined>
+  info: Exclude<TeamWhiteLabelInfo["apiClientCredentials"], undefined>,
 ) {
   const verifier = new OktaJwtVerifier({
     issuer: info.issuer,
@@ -58,7 +58,7 @@ export async function verifyClientCredentials(
     await verifier.verifyAccessToken(token, info.aud);
   } catch (err) {
     logger().error(
-      `Failed to verify client credentials for ${whiteLabelName}: ${token}: ${err}`
+      `Failed to verify client credentials for ${whiteLabelName}: ${token}: ${err}`,
     );
     throw new ForbiddenError(`Invalid client token: ${err.userMessage}`);
   }

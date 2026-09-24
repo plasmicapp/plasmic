@@ -21,7 +21,7 @@ function leaf(param: Param): PropTreeNode {
 function folder(
   name: string,
   children: PropTreeNode[],
-  path?: string
+  path?: string,
 ): PropFolderNode {
   return { kind: "folder", name, path: path ?? name, children };
 }

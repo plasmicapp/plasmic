@@ -14,13 +14,13 @@ describe("XMultiSelect", () => {
       <XMultiSelect<string>
         filterOptions={(options) => options}
         options={["Option"]}
-      />
+      />,
     );
 
     fireEvent.focus(screen.getByRole("textbox"));
 
     expect(
-      (await screen.findByText("Option")).closest(".xselect")
+      (await screen.findByText("Option")).closest(".xselect"),
     ).toBeTruthy();
   });
 });

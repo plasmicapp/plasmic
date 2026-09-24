@@ -7,7 +7,7 @@ import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
 async function createAndSwitchToButtonArena(
   page: Page,
-  models: PageModels
+  models: PageModels,
 ): Promise<FrameLocator> {
   await models.studio.createNewPageInOwnArena("Homepage");
   await waitForFrameToLoad(page);
@@ -30,7 +30,7 @@ async function createAndSwitchToButtonArena(
 
 async function waitForVariantFrame(
   models: PageModels,
-  action: () => Promise<void>
+  action: () => Promise<void>,
 ): Promise<FrameLocator> {
   const existingCount = await models.studio.frames.count();
   await action();
@@ -44,7 +44,7 @@ async function waitForVariantFrame(
   }
 
   const newFrame = models.studio.frame.frameLocator(
-    `.canvas-editor__frames .canvas-editor__viewport[data-test-frame-uid="${frameUid}"]`
+    `.canvas-editor__frames .canvas-editor__viewport[data-test-frame-uid="${frameUid}"]`,
   );
   await newFrame.locator("body").waitFor({ state: "attached", timeout: 60000 });
 
@@ -54,10 +54,10 @@ async function waitForVariantFrame(
 async function addRegisteredVariantFromVariantsTab(
   models: PageModels,
   variantName: string,
-  { expectNewFrame = true }: { expectNewFrame?: boolean } = {}
+  { expectNewFrame = true }: { expectNewFrame?: boolean } = {},
 ): Promise<FrameLocator | null> {
   const variantSelectorButton = models.studio.frame.locator(
-    '[data-test-id="variant-selector-button"]'
+    '[data-test-id="variant-selector-button"]',
   );
   const action = async () => {
     const registeredVariantsSection = models.studio.frame
@@ -91,7 +91,7 @@ async function addRegisteredVariantFromVariantsTab(
 async function editRegisteredVariantFromCanvas(
   page: Page,
   models: PageModels,
-  newVariantName: string
+  newVariantName: string,
 ) {
   const variantsList = models.studio.frame
     .locator('[class*="variantsList"]')
@@ -111,7 +111,7 @@ async function editRegisteredVariantFromVariantsTab(
   page: Page,
   models: PageModels,
   existingVariantName: string,
-  newVariantName: string
+  newVariantName: string,
 ) {
   await models.studio.rightPanel.switchToComponentDataTab();
   const variantRow = models.studio.frame
@@ -132,7 +132,7 @@ async function editRegisteredVariantFromVariantsTab(
 
 async function deleteRegisteredVariantFromVariantsTab(
   models: PageModels,
-  variantName: string
+  variantName: string,
 ) {
   await models.studio.rightPanel.switchToComponentDataTab();
   const variantRow = models.studio.frame
@@ -174,7 +174,7 @@ async function resetVariants(models: PageModels) {
     await baseVariant.click();
   } else {
     const activeVariants = models.studio.frame.locator(
-      '[data-test-class="variant-pin-button-deactivate"]'
+      '[data-test-class="variant-pin-button-deactivate"]',
     );
     const count = await activeVariants.count();
     for (let i = 0; i < count; i++) {
@@ -185,7 +185,7 @@ async function resetVariants(models: PageModels) {
 
 async function activateRegisteredVariant(
   models: PageModels,
-  variantName: string
+  variantName: string,
 ) {
   await models.studio.rightPanel.switchToComponentDataTab();
   const row = models.studio.frame
@@ -219,7 +219,7 @@ test.describe("registered variants", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -240,7 +240,7 @@ test.describe("registered variants", () => {
 
     const hoverFrame = await addRegisteredVariantFromVariantsTab(
       models,
-      "Hovered"
+      "Hovered",
     );
     if (!hoverFrame) {
       throw new Error("Expected a new variant frame to be created");
@@ -297,7 +297,7 @@ test.describe("registered variants", () => {
     await page.waitForTimeout(200);
 
     const confirmButton = models.studio.frame.locator(
-      '[data-test-id="confirm"]'
+      '[data-test-id="confirm"]',
     );
     await confirmButton.waitFor({ state: "visible", timeout: 5000 });
     await confirmButton.click();
@@ -365,7 +365,7 @@ test.describe("registered variants", () => {
 
     const hoverFrame = await addRegisteredVariantFromVariantsTab(
       models,
-      "Hovered"
+      "Hovered",
     );
 
     if (!hoverFrame) {
@@ -447,7 +447,7 @@ test.describe("registered variants", () => {
       page,
       models,
       "Hovered",
-      "Pressed"
+      "Pressed",
     );
     await expectVariantPresent(models, "Pressed");
     await expectVariantAbsent(models, "Hovered");
@@ -567,7 +567,7 @@ test.describe("registered variants", () => {
 
     await models.studio.withinLiveMode(async (liveFrame) => {
       await expect(
-        liveFrame.getByRole("button", { name: "this button is disabled" })
+        liveFrame.getByRole("button", { name: "this button is disabled" }),
       ).toHaveCSS("font-size", "20px");
       await expect(liveFrame.getByText("Button", { exact: true })).toBeHidden();
     });
@@ -583,7 +583,7 @@ test.describe("registered variants", () => {
       page,
       models,
       "Disabled",
-      "Hovered"
+      "Hovered",
     );
     await expectVariantPresent(models, "Hovered");
     await expectVariantAbsent(models, "Disabled");

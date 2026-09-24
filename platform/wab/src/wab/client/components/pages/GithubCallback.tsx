@@ -1,9 +1,6 @@
+import { githubStateKey, githubTokenKey } from "@/wab/client/LocalStorageKey";
 import { NonAuthCtx } from "@/wab/client/app-ctx";
 import { getURL } from "@/wab/client/components/auth/GithubConnect";
-import {
-  githubStateKey,
-  githubTokenKey,
-} from "@/wab/client/LocalStorageKey";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import * as React from "react";
 

@@ -4,12 +4,12 @@ import {
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
 import { Bundler } from "@/wab/shared/bundler";
+import { findExprsInComponent } from "@/wab/shared/core/tpls";
 import {
   DataSourceTemplate,
   isKnownDataSourceOpExpr,
   isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
-import { findExprsInComponent } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();
@@ -17,7 +17,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   for (const component of site.components) {
@@ -35,7 +35,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "168-pg-data-source-remove-quotes"
+    "168-pg-data-source-remove-quotes",
   );
   Object.assign(bundle, newBundle);
 };

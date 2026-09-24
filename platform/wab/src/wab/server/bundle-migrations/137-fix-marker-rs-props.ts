@@ -1,6 +1,6 @@
-import { normProp } from "@/wab/shared/css";
-import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { BundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
+import { normProp } from "@/wab/shared/css";
 
 export const migrate: BundledMigrationFn = async (bundle) => {
   for (const inst of Object.values(bundle.map)) {

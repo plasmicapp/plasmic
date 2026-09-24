@@ -16,7 +16,7 @@ testMultiplayer.describe("multiplayer comments", () => {
       user1,
       user2,
       "multiplayer-comments-test",
-      { comments: true }
+      { comments: true },
     );
   });
 
@@ -40,7 +40,7 @@ testMultiplayer.describe("multiplayer comments", () => {
 
       // admin adds comment and waits for marker to appear
       const commentText = `${fullName(
-        admin.user
+        admin.user,
       )}: Initial comment on text element`;
       await adminStudio.addCommentToSelection(commentText);
       const adminCommentMarker = adminStudio.commentMarkers.first();
@@ -63,9 +63,8 @@ testMultiplayer.describe("multiplayer comments", () => {
           "Enter some text",
         ]);
 
-        const marker = await session.models.studio.getCommentMarketById(
-          threadIdValue
-        );
+        const marker =
+          await session.models.studio.getCommentMarketById(threadIdValue);
         await expect(marker).toBeVisible({ timeout: 10000 });
 
         // Each user opens the comment thread
@@ -108,7 +107,7 @@ testMultiplayer.describe("multiplayer comments", () => {
       // User 2 creates a new comment on a different element
       await user1.models.studio.leftPanel.insertNode("Link");
       await user1.models.studio.addCommentToSelection(
-        `${fullName(user1.user)}: Comment on link element`
+        `${fullName(user1.user)}: Comment on link element`,
       );
 
       // Get the new comment id
@@ -159,17 +158,16 @@ testMultiplayer.describe("multiplayer comments", () => {
 
       await forEachAsync(sessions, async (session) => {
         // The comment marker should not be visible anymore
-        const deletedMarker = await session.models.studio.getCommentMarketById(
-          threadIdValue
-        );
+        const deletedMarker =
+          await session.models.studio.getCommentMarketById(threadIdValue);
         await expect(deletedMarker).not.toBeVisible({ timeout: 10000 });
 
         // But the comment should still exist in the comments tab
         const commentInTab = session.models.studio.frame.locator(
-          `.comments-tab [data-test-id="comment-post-${threadIdValue}"]`
+          `.comments-tab [data-test-id="comment-post-${threadIdValue}"]`,
         );
         await expect(commentInTab).toBeVisible({ timeout: 5000 });
       });
-    }
+    },
   );
 });

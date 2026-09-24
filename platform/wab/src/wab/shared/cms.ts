@@ -17,10 +17,10 @@ export const ALLOWED_UNIQUE_TYPES = [
 export function getUniqueFieldsData(
   table: ApiCmsTable,
   data: CmsRowData,
-  opts?: { nulls: "only" }
+  opts?: { nulls: "only" },
 ) {
   const uniques = new Set(
-    table.schema.fields.filter((f) => f.unique).map((f) => f.identifier)
+    table.schema.fields.filter((f) => f.unique).map((f) => f.identifier),
   );
   return Object.fromEntries(
     Object.entries(getDefaultLocale(data)).filter(
@@ -35,7 +35,7 @@ export function getUniqueFieldsData(
         } else {
           return !isNull;
         }
-      }
-    )
+      },
+    ),
   );
 }

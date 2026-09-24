@@ -80,8 +80,8 @@ export class BackgroundLayer extends BackgroundLayerArgs {
         "repeat",
         "origin",
         "clip",
-        "attachment"
-      )
+        "attachment",
+      ),
     );
   }
 
@@ -264,7 +264,7 @@ export class BackgroundLayer extends BackgroundLayerArgs {
 
 export function mkBackgroundLayer(
   image: BackgroundLayer["image"],
-  overrides?: Omit<BackgroundLayerArgs, "image">
+  overrides?: Omit<BackgroundLayerArgs, "image">,
 ) {
   return new BackgroundLayer({
     image,
@@ -315,7 +315,7 @@ export class Background extends BackgroundArgs {
   showCss() {
     return showCssValues(
       "background",
-      this.layers.map((l) => l.showCss())
+      this.layers.map((l) => l.showCss()),
     );
   }
 }
@@ -350,7 +350,7 @@ export class ImageBackground extends ImageBackgroundArgs {
     }
 
     const imageBackground = findAndMap(valueAst.children.toArray(), (node) =>
-      parseImageBackground(node)
+      parseImageBackground(node),
     );
 
     return imageBackground;
@@ -442,7 +442,7 @@ export class LinearGradient extends LinearGradientArgs {
     }
 
     const linearGradient = findAndMap(valueAst.children.toArray(), (node) =>
-      parseLinearGradient(node)
+      parseLinearGradient(node),
     );
 
     return linearGradient;
@@ -470,7 +470,7 @@ export class RadialGradient extends RadialGradientArgs {
     super();
     Object.assign(
       this,
-      pick(args, "repeating", "cx", "cy", "rx", "ry", "stops", "sizeKeyword")
+      pick(args, "repeating", "cx", "cy", "rx", "ry", "stops", "sizeKeyword"),
     );
   }
   static fromCss(value: string): RadialGradient | null {
@@ -480,7 +480,7 @@ export class RadialGradient extends RadialGradientArgs {
     }
 
     const gradient = findAndMap(valueAst.children.toArray(), (node) =>
-      parseRadialGradient(node)
+      parseRadialGradient(node),
     );
 
     return gradient;
@@ -502,7 +502,10 @@ export class RadialGradient extends RadialGradientArgs {
 
 export const STOP_DIM_MISSING_IDENTIFIER = "DIM_MISSING";
 export class Stop {
-  constructor(public color: string, public dim: Dim) {
+  constructor(
+    public color: string,
+    public dim: Dim,
+  ) {
     this.color = color;
     this.dim = dim;
   }
@@ -521,14 +524,17 @@ export class Stop {
   showCss() {
     assert(
       this.dim.unit !== STOP_DIM_MISSING_IDENTIFIER,
-      `Dim.unit cannot be ${STOP_DIM_MISSING_IDENTIFIER}.`
+      `Dim.unit cannot be ${STOP_DIM_MISSING_IDENTIFIER}.`,
     );
     return withoutNils(tuple(this.color, this.dim.showCss())).join(" ");
   }
 }
 
 export class Dim {
-  constructor(public value: string, public unit: string = "") {}
+  constructor(
+    public value: string,
+    public unit: string = "",
+  ) {}
 
   /**
    * Returns true if this Dim represents a CSS function (calc, min, max, clamp)
@@ -544,7 +550,7 @@ export class Dim {
     const parsed = parseFloat(this.value);
     assert(
       !isNaN(parsed),
-      `Cannot parse numeric value from Dim: ${this.value}`
+      `Cannot parse numeric value from Dim: ${this.value}`,
     );
     return parsed;
   }
@@ -563,7 +569,7 @@ export class Dim {
     } else {
       const { num, units } = ensure(
         parseCssNumericNew(v),
-        "Unexpected undefined css numeric value"
+        "Unexpected undefined css numeric value",
       );
       this.value = `${num}`;
       this.unit = units;
@@ -578,7 +584,7 @@ export class Dim {
     }
     const { num, units } = ensure(
       parseCssNumericNew(value),
-      "Unexpected undefined css numeric value"
+      "Unexpected undefined css numeric value",
     );
     return new Dim(`${num}`, units);
   }
@@ -597,13 +603,13 @@ export class BoxShadow extends BoxShadowArgs {
     super();
     Object.assign(
       this,
-      pick(args, "inset", "x", "y", "blur", "spread", "color")
+      pick(args, "inset", "x", "y", "blur", "spread", "color"),
     );
   }
   showCss() {
     const inset = this.inset ? "inset " : "";
     const parts = [this.x, this.y, this.blur, this.spread].map((x: Dim) =>
-      x.showCss()
+      x.showCss(),
     );
     return `${inset}${parts.join(" ")} ${this.color}`;
   }
@@ -715,7 +721,7 @@ function parseImageBackground(node: CssNode) {
  * Parses background image from a CSS AST node
  */
 function parseBackgroundLayerImage(
-  node: CssNode
+  node: CssNode,
 ): BackgroundLayer["image"] | null {
   if (node.type === "Identifier" && node.name === "none") {
     return new NoneBackground();
@@ -984,7 +990,7 @@ function parseStop(nodes: CssNode[]) {
       color,
       dim && !dim.isCssFunction()
         ? dim
-        : new Dim("0", STOP_DIM_MISSING_IDENTIFIER)
+        : new Dim("0", STOP_DIM_MISSING_IDENTIFIER),
     );
   }
 

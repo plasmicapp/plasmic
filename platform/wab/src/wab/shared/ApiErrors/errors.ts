@@ -45,7 +45,7 @@ export class BadRequestError extends ApiError {
       ...errorOptions
     }: ErrorOptions & {
       issues?: unknown;
-    } = {}
+    } = {},
   ) {
     super(message, errorOptions);
     this.issues = issues;

@@ -42,7 +42,7 @@ it("resolves rendered provider clones through the global wrapper chain only", ()
   const resolve = (name: string) =>
     BaseCliSvrEvaluator.prototype.getGlobalContextTpl.call(
       { valRoot: outer.val },
-      name
+      name,
     );
   expect(resolve("HelloGlobalContext")).toBe(hello.val.tpl);
   expect(resolve("HelloGlobalContext")).not.toBe(hello.settingsTpl);
@@ -65,7 +65,7 @@ it("tracks providers that finish rendering after the editor opens", () => {
   const dispose = autorun(() => {
     tpl = BaseCliSvrEvaluator.prototype.getGlobalContextTpl.call(
       evaluator,
-      "HelloGlobalContext"
+      "HelloGlobalContext",
     );
   });
   expect(tpl).toBeUndefined();

@@ -14,7 +14,7 @@ import * as React from "react";
 export type BranchSwitcherProps = DefaultBranchSwitcherProps;
 
 const BranchSwitcher = observer(function BranchSwitcher(
-  props: BranchSwitcherProps
+  props: BranchSwitcherProps,
 ) {
   const studioCtx = useStudioCtx();
   const currentBranch = studioCtx.dbCtx().branchInfo;

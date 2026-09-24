@@ -20,7 +20,7 @@ export type { AsyncStateRetry as AsyncState } from "react-use/lib/useAsyncRetry"
  */
 export function useAsyncStrict<T extends FnReturningPromise>(
   fn: T,
-  deps?: React.DependencyList
+  deps?: React.DependencyList,
 ): AsyncState<PromiseType<ReturnType<T>>> {
   const state = useAsyncRetry(fn, deps);
   React.useEffect(() => {
@@ -39,7 +39,7 @@ export function useAsyncStrict<T extends FnReturningPromise>(
 export function useAsyncFnStrict<T extends FnReturningPromise>(
   fn: T,
   deps?: React.DependencyList,
-  initialState?: AsyncState<PromiseType<ReturnType<T>>>
+  initialState?: AsyncState<PromiseType<ReturnType<T>>>,
 ): AsyncFnReturn<T> {
   const [state, fetch] = useAsyncFn(fn, deps, initialState);
   React.useEffect(() => {

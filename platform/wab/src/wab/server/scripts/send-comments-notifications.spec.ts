@@ -19,12 +19,12 @@ import * as uuid from "uuid";
 async function addComment(
   dbManager: DbMgr,
   projectId: string,
-  threadId?: CommentThreadId
+  threadId?: CommentThreadId,
 ) {
   const comment = threadId
     ? await dbManager.postCommentInThread(
         { projectId },
-        { body: "reply text", threadId, id: uuid.v4() as CommentId }
+        { body: "reply text", threadId, id: uuid.v4() as CommentId },
       )
     : await dbManager.postRootCommentInProject(
         { projectId },
@@ -33,7 +33,7 @@ async function addComment(
           location: { subject: { uuid: "", iid: "" }, variants: [] },
           commentId: uuid.v4() as CommentId,
           commentThreadId: uuid.v4() as CommentThreadId,
-        }
+        },
       );
   return comment;
 }
@@ -41,12 +41,12 @@ async function addComment(
 async function updatedThreadStatus(
   dbManager: DbMgr,
   threadId: CommentThreadId,
-  status: boolean = false
+  status: boolean = false,
 ) {
   const threadHistory = await dbManager.resolveThreadInProject(
     uuid.v4() as ThreadHistoryId,
     threadId,
-    Boolean(status)
+    Boolean(status),
   );
   return threadHistory;
 }
@@ -57,14 +57,14 @@ async function reactOnComment(dbManager: DbMgr, commentId: CommentId) {
     commentId,
     {
       emojiName: "1f44d",
-    }
+    },
   );
   return commentReaction;
 }
 
 async function removeReactionOnComment(
   dbManager: DbMgr,
-  reactionId: CommentReactionId
+  reactionId: CommentReactionId,
 ) {
   await dbManager.removeCommentReaction(reactionId);
 }
@@ -87,7 +87,7 @@ describe("sendCommentsNotificationEmails", () => {
           await processUnnotifiedCommentsNotifications(sudo);
 
         expect(notificationsByUser).toEqual(new Map());
-      }
+      },
     );
   });
   it("should send notifications based on user settings", async () => {
@@ -107,7 +107,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user1ReplyToUser0Comment = await addComment(
           userDbs[1](),
           project.id,
-          user0comment.commentThreadId
+          user0comment.commentThreadId,
         );
 
         const { notificationsByUser, recentCommentThreads } =
@@ -128,7 +128,7 @@ describe("sendCommentsNotificationEmails", () => {
 
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -147,7 +147,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user0comment.createdAt,
                     { type: "COMMENT", comment: user0comment },
-                    sudo
+                    sudo,
                   ),
                   await createNotification(
                     user1ReplyToUser0Comment.commentThreadId,
@@ -156,7 +156,7 @@ describe("sendCommentsNotificationEmails", () => {
 
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -169,7 +169,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1Comment.createdAt,
                     { type: "COMMENT", comment: user1Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -185,7 +185,7 @@ describe("sendCommentsNotificationEmails", () => {
           user1Comment.commentThreadId,
           user0comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
 
@@ -205,7 +205,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user0Reply = await addComment(
           userDbs[0](),
           project.id,
-          user0comment.commentThreadId
+          user0comment.commentThreadId,
         );
 
         const { notificationsByUser, recentCommentThreads } =
@@ -226,7 +226,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user0comment.createdAt,
                     { type: "COMMENT", comment: user0comment },
-                    sudo
+                    sudo,
                   ),
                   await createNotification(
                     user0Reply.commentThreadId,
@@ -234,7 +234,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user0Reply.createdAt,
                     { type: "COMMENT", comment: user0Reply },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -247,7 +247,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1Comment.createdAt,
                     { type: "COMMENT", comment: user1Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -262,7 +262,7 @@ describe("sendCommentsNotificationEmails", () => {
           user1Comment.commentThreadId,
           user0comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
 
@@ -282,7 +282,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user0SelfReply = await addComment(
           userDbs[0](),
           project.id,
-          user0comment.commentThreadId
+          user0comment.commentThreadId,
         );
 
         // User 1 comment
@@ -292,14 +292,14 @@ describe("sendCommentsNotificationEmails", () => {
         const user1ReplyToUser0Comment = await addComment(
           userDbs[1](),
           project.id,
-          user0comment.commentThreadId
+          user0comment.commentThreadId,
         );
 
         // user 0 replied to user 1 comment should be notified
         const user0Replied = await addComment(
           userDbs[0](),
           project.id,
-          user1Comment.commentThreadId
+          user1Comment.commentThreadId,
         );
 
         const { notificationsByUser, recentCommentThreads } =
@@ -311,7 +311,7 @@ describe("sendCommentsNotificationEmails", () => {
             .get(users[1].id)
             ?.get(project.id)
             ?.get("main")
-            ?.get(user0comment.commentThreadId)
+            ?.get(user0comment.commentThreadId),
         ).toBeUndefined();
         // user 1 will be notified about user 0 reply to their comment
         expect(
@@ -319,7 +319,7 @@ describe("sendCommentsNotificationEmails", () => {
             .get(users[1].id)
             ?.get(project.id)
             ?.get("main")
-            ?.get(user1Comment.commentThreadId)?.length
+            ?.get(user1Comment.commentThreadId)?.length,
         ).toBe(1);
 
         // Check if the processed threads match the recentThreads
@@ -327,7 +327,7 @@ describe("sendCommentsNotificationEmails", () => {
           user0comment.commentThreadId,
           user1Comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
 
@@ -349,7 +349,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user1Reply = await addComment(
           userDbs[1](),
           project.id,
-          user0comment.commentThreadId
+          user0comment.commentThreadId,
         );
 
         // user 1 reply to user 0 comment, should not be notified
@@ -359,7 +359,7 @@ describe("sendCommentsNotificationEmails", () => {
             body: `@<${users[0].email}> should check`,
             threadId: user1Comment.commentThreadId,
             id: uuid.v4() as CommentId,
-          }
+          },
         );
 
         // user 1 resolved a thread that user has participated but will not be notified
@@ -367,7 +367,7 @@ describe("sendCommentsNotificationEmails", () => {
           await updatedThreadStatus(
             userDbs[1](),
             user0comment.commentThreadId,
-            false
+            false,
           );
 
         // user 1 reacted to user 0 comment but user 0 should not be notified
@@ -389,7 +389,7 @@ describe("sendCommentsNotificationEmails", () => {
           user1Comment.commentThreadId,
           user0comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
 
@@ -406,7 +406,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user1Reply = await addComment(
           userDbs[1](),
           project.id,
-          user0comment.commentThreadId
+          user0comment.commentThreadId,
         );
 
         // Process notifications and send out emails
@@ -428,7 +428,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1Reply.createdAt,
                     { type: "COMMENT", comment: user1Reply },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -451,7 +451,7 @@ describe("sendCommentsNotificationEmails", () => {
             user1Comment.commentThreadId,
             user1Reply.commentThreadId,
           ],
-          notifiedDate
+          notifiedDate,
         );
 
         // Process notifications again after the comments have been notified
@@ -460,7 +460,7 @@ describe("sendCommentsNotificationEmails", () => {
 
         // Check that user 0 has no notifications and no 'projects' entry
         expect(secondNotificationCheck.get(users[0].id)).toBeUndefined();
-      }
+      },
     );
   });
 
@@ -486,7 +486,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user1Reply = await addComment(
           userDbs[1](),
           project.id,
-          user0Comment.commentThreadId
+          user0Comment.commentThreadId,
         );
 
         // user 1 posts a comment
@@ -496,7 +496,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user2Reply = await addComment(
           userDbs[2](),
           project.id,
-          user1Comment.commentThreadId
+          user1Comment.commentThreadId,
         );
 
         // Process notifications
@@ -518,7 +518,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1Reply.createdAt,
                     { type: "COMMENT", comment: user1Reply },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -537,7 +537,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user0Comment.createdAt,
                     { type: "COMMENT", comment: user0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -550,7 +550,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user2Reply.createdAt,
                     { type: "COMMENT", comment: user2Reply },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -559,7 +559,7 @@ describe("sendCommentsNotificationEmails", () => {
         ]);
 
         expect(notificationsByUser.get(users[1].id)).toEqual(
-          expectedNotification.get(users[1].id)
+          expectedNotification.get(users[1].id),
         );
 
         // Validate that user 2 receives no notifications
@@ -570,7 +570,7 @@ describe("sendCommentsNotificationEmails", () => {
           user0Comment.commentThreadId,
           user1Comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
 
@@ -591,7 +591,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user1ReplyToUser0Comment = await addComment(
           userDbs[1](),
           project.id,
-          user0comment.commentThreadId
+          user0comment.commentThreadId,
         );
 
         // user 0 resolved his thread which should notify user1 because he has participated
@@ -599,7 +599,7 @@ describe("sendCommentsNotificationEmails", () => {
           await updatedThreadStatus(
             userDbs[0](),
             user0comment.commentThreadId,
-            true
+            true,
           );
 
         const { notificationsByUser, recentCommentThreads } =
@@ -623,7 +623,7 @@ describe("sendCommentsNotificationEmails", () => {
                       type: "THREAD_HISTORY",
                       history: commentThreadResolvedHistoryForUser0Comment,
                     },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -642,7 +642,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -657,7 +657,7 @@ describe("sendCommentsNotificationEmails", () => {
           user1Comment.commentThreadId,
           user0comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
 
@@ -674,7 +674,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user1ReplyToUser0Comment = await addComment(
           userDbs[1](),
           project.id,
-          user0comment.commentThreadId
+          user0comment.commentThreadId,
         );
 
         // user 0 resolved his thread which should notify user1 because he has participated
@@ -682,13 +682,13 @@ describe("sendCommentsNotificationEmails", () => {
           await updatedThreadStatus(
             userDbs[0](),
             user0comment.commentThreadId,
-            true
+            true,
           );
         const commentThreadUnResolvedHistoryForUser0Comment =
           await updatedThreadStatus(
             userDbs[0](),
             user0comment.commentThreadId,
-            false
+            false,
           );
 
         const { notificationsByUser, recentCommentThreads } =
@@ -712,7 +712,7 @@ describe("sendCommentsNotificationEmails", () => {
                       type: "THREAD_HISTORY",
                       history: commentThreadResolvedHistoryForUser0Comment,
                     },
-                    sudo
+                    sudo,
                   ),
                   await createNotification(
                     user0comment.commentThreadId,
@@ -723,7 +723,7 @@ describe("sendCommentsNotificationEmails", () => {
                       type: "THREAD_HISTORY",
                       history: commentThreadUnResolvedHistoryForUser0Comment,
                     },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -742,7 +742,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -757,7 +757,7 @@ describe("sendCommentsNotificationEmails", () => {
           user1Comment.commentThreadId,
           user0comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
 
@@ -778,7 +778,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user1ReplyToUser0Comment = await addComment(
           userDbs[1](),
           project.id,
-          user0comment.commentThreadId
+          user0comment.commentThreadId,
         );
 
         // user 0 resolved his thread which should notify user1 because he has participated
@@ -786,7 +786,7 @@ describe("sendCommentsNotificationEmails", () => {
           await updatedThreadStatus(
             userDbs[0](),
             user0comment.commentThreadId,
-            true
+            true,
           );
 
         const { notificationsByUser, recentCommentThreads } =
@@ -807,7 +807,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -829,7 +829,7 @@ describe("sendCommentsNotificationEmails", () => {
                       type: "THREAD_HISTORY",
                       history: commentThreadResolvedHistoryForUser0Comment,
                     },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -844,7 +844,7 @@ describe("sendCommentsNotificationEmails", () => {
           user1Comment.commentThreadId,
           user0comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
 
@@ -861,7 +861,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user1ReplyToUser0Comment = await addComment(
           userDbs[1](),
           project.id,
-          user0comment.commentThreadId
+          user0comment.commentThreadId,
         );
 
         // user 1 resolved his thread and user should not be notified
@@ -869,7 +869,7 @@ describe("sendCommentsNotificationEmails", () => {
           await updatedThreadStatus(
             userDbs[1](),
             user1Comment.commentThreadId,
-            true
+            true,
           );
 
         const { notificationsByUser, recentCommentThreads } =
@@ -890,7 +890,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -905,7 +905,7 @@ describe("sendCommentsNotificationEmails", () => {
           user0comment.commentThreadId,
           user1Comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
 
@@ -922,13 +922,13 @@ describe("sendCommentsNotificationEmails", () => {
         const user1ReplyToUser0Comment = await addComment(
           userDbs[1](),
           project.id,
-          user0comment.commentThreadId
+          user0comment.commentThreadId,
         );
 
         // user 0 reacted to user 1 comment, user 1 should be notified
         const user0CommentReaction = await reactOnComment(
           userDbs[0](),
-          user1Comment.id
+          user1Comment.id,
         );
 
         const { notificationsByUser, recentCommentThreads } =
@@ -949,7 +949,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -971,7 +971,7 @@ describe("sendCommentsNotificationEmails", () => {
                       type: "REACTION",
                       reaction: user0CommentReaction,
                     },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -986,7 +986,7 @@ describe("sendCommentsNotificationEmails", () => {
           user0comment.commentThreadId,
           user1Comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
 
@@ -1003,12 +1003,12 @@ describe("sendCommentsNotificationEmails", () => {
         const user1ReplyToUser0Comment = await addComment(
           userDbs[1](),
           project.id,
-          user0comment.commentThreadId
+          user0comment.commentThreadId,
         );
         // user 0 reacted to user 1 comment, user 1
         const user0CommentReaction = await reactOnComment(
           userDbs[0](),
-          user1Comment.id
+          user1Comment.id,
         );
         // removed the reaction now user should not be notified for this reaction
         await removeReactionOnComment(userDbs[0](), user0CommentReaction.id);
@@ -1031,7 +1031,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1046,7 +1046,7 @@ describe("sendCommentsNotificationEmails", () => {
           user0comment.commentThreadId,
           user1Comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
 
@@ -1063,7 +1063,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user1ReplyToUser0Comment = await addComment(
           userDbs[1](),
           project.id,
-          user0comment.commentThreadId
+          user0comment.commentThreadId,
         );
 
         const { notificationsByUser, recentCommentThreads, notifiedDate } =
@@ -1084,7 +1084,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1104,7 +1104,7 @@ describe("sendCommentsNotificationEmails", () => {
         // You can either mark them as notified in the system or simulate this in your mock logic
         await sudo.markCommentThreadsAsNotified(
           [user1Comment.commentThreadId, user0comment.commentThreadId],
-          notifiedDate
+          notifiedDate,
         );
 
         // users are notified now we add a reaction on an old comment, it should only notify for reaction
@@ -1112,7 +1112,7 @@ describe("sendCommentsNotificationEmails", () => {
         // user 0 reacted to user 1 comment, user 1
         const user0CommentReaction = await reactOnComment(
           userDbs[0](),
-          user1Comment.id
+          user1Comment.id,
         );
 
         const {
@@ -1143,7 +1143,7 @@ describe("sendCommentsNotificationEmails", () => {
                               type: "REACTION",
                               reaction: user0CommentReaction,
                             },
-                            sudo
+                            sudo,
                           ),
                         ],
                       ],
@@ -1158,7 +1158,7 @@ describe("sendCommentsNotificationEmails", () => {
 
         // Check if the processed threads match the recentThreads
         expect(recentCommentThreads2).toEqual([user1Comment.commentThreadId]);
-      }
+      },
     );
   });
 
@@ -1175,13 +1175,13 @@ describe("sendCommentsNotificationEmails", () => {
         const user1ReplyToUser0Comment = await addComment(
           userDbs[1](),
           project.id,
-          user0comment.commentThreadId
+          user0comment.commentThreadId,
         );
 
         // user 0 reacted to user 1 comment, user 1
         const user0CommentReaction = await reactOnComment(
           userDbs[0](),
-          user1Comment.id
+          user1Comment.id,
         );
 
         const { notificationsByUser, recentCommentThreads } =
@@ -1204,7 +1204,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1226,7 +1226,7 @@ describe("sendCommentsNotificationEmails", () => {
                       type: "REACTION",
                       reaction: user0CommentReaction,
                     },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1241,7 +1241,7 @@ describe("sendCommentsNotificationEmails", () => {
           user0comment.commentThreadId,
           user1Comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
 
@@ -1258,7 +1258,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user1ReplyToUser0Comment = await addComment(
           userDbs[1](),
           project.id,
-          user0comment.commentThreadId
+          user0comment.commentThreadId,
         );
 
         const { notificationsByUser, recentCommentThreads, notifiedDate } =
@@ -1279,7 +1279,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1299,7 +1299,7 @@ describe("sendCommentsNotificationEmails", () => {
         // You can either mark them as notified in the system or simulate this in your mock logic
         await sudo.markCommentThreadsAsNotified(
           [user1Comment.commentThreadId, user0comment.commentThreadId],
-          notifiedDate
+          notifiedDate,
         );
 
         // users are notified now we resolved an old thread, it should only notify for thread history
@@ -1308,7 +1308,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user0CommentThreadHistory = await updatedThreadStatus(
           userDbs[0](),
           user0comment.commentThreadId,
-          true
+          true,
         );
 
         const {
@@ -1340,7 +1340,7 @@ describe("sendCommentsNotificationEmails", () => {
                               type: "THREAD_HISTORY",
                               history: user0CommentThreadHistory,
                             },
-                            sudo
+                            sudo,
                           ),
                         ],
                       ],
@@ -1355,7 +1355,7 @@ describe("sendCommentsNotificationEmails", () => {
 
         // Check if the processed threads match the recentThreads
         expect(recentCommentThreads2).toEqual([user0comment.commentThreadId]);
-      }
+      },
     );
   });
 
@@ -1372,14 +1372,14 @@ describe("sendCommentsNotificationEmails", () => {
         const user1ReplyToUser0Comment = await addComment(
           userDbs[1](),
           project.id,
-          user0comment.commentThreadId
+          user0comment.commentThreadId,
         );
 
         // user 0 resolved their thread
         const user0CommentThreadHistory = await updatedThreadStatus(
           userDbs[0](),
           user0comment.commentThreadId,
-          true
+          true,
         );
 
         const { notificationsByUser, recentCommentThreads } =
@@ -1402,7 +1402,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1424,7 +1424,7 @@ describe("sendCommentsNotificationEmails", () => {
                       type: "THREAD_HISTORY",
                       history: user0CommentThreadHistory,
                     },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1439,7 +1439,7 @@ describe("sendCommentsNotificationEmails", () => {
           user1Comment.commentThreadId,
           user0comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
 
@@ -1460,7 +1460,7 @@ describe("sendCommentsNotificationEmails", () => {
             body: `@<${users[2].email}> should check`,
             threadId: user0comment.commentThreadId,
             id: uuid.v4() as CommentId,
-          }
+          },
         );
 
         const { notificationsByUser, recentCommentThreads } =
@@ -1481,7 +1481,7 @@ describe("sendCommentsNotificationEmails", () => {
 
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1501,7 +1501,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1517,7 +1517,7 @@ describe("sendCommentsNotificationEmails", () => {
           user1Comment.commentThreadId,
           user0comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
 
@@ -1538,7 +1538,7 @@ describe("sendCommentsNotificationEmails", () => {
             body: `@<${users[1].email}> should check`,
             threadId: user0comment.commentThreadId,
             id: uuid.v4() as CommentId,
-          }
+          },
         );
 
         const { notificationsByUser, recentCommentThreads } =
@@ -1559,7 +1559,7 @@ describe("sendCommentsNotificationEmails", () => {
 
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1575,7 +1575,7 @@ describe("sendCommentsNotificationEmails", () => {
           user1Comment.commentThreadId,
           user0comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
 
@@ -1601,7 +1601,7 @@ describe("sendCommentsNotificationEmails", () => {
             body: `@<${users[2].email}> should check`,
             threadId: user0comment.commentThreadId,
             id: uuid.v4() as CommentId,
-          }
+          },
         );
 
         const { notificationsByUser, recentCommentThreads } =
@@ -1622,7 +1622,7 @@ describe("sendCommentsNotificationEmails", () => {
 
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1642,7 +1642,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1658,7 +1658,7 @@ describe("sendCommentsNotificationEmails", () => {
           user1Comment.commentThreadId,
           user0comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
 
@@ -1679,7 +1679,7 @@ describe("sendCommentsNotificationEmails", () => {
             body: `<${users[2].email}> should check`,
             threadId: user0comment.commentThreadId,
             id: uuid.v4() as CommentId,
-          }
+          },
         );
 
         const { notificationsByUser, recentCommentThreads } =
@@ -1700,7 +1700,7 @@ describe("sendCommentsNotificationEmails", () => {
 
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1716,7 +1716,7 @@ describe("sendCommentsNotificationEmails", () => {
           user1Comment.commentThreadId,
           user0comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
   it("should notify user for all recent notifications with 'all' notification preference", async () => {
@@ -1737,7 +1737,7 @@ describe("sendCommentsNotificationEmails", () => {
         const user2Reply = await addComment(
           userDbs[2](),
           project.id,
-          user1Comment.commentThreadId
+          user1Comment.commentThreadId,
         );
 
         // user 2 mentioned user 1
@@ -1747,7 +1747,7 @@ describe("sendCommentsNotificationEmails", () => {
             body: `@<${users[1].email}> should check`,
             threadId: user0comment.commentThreadId,
             id: uuid.v4() as CommentId,
-          }
+          },
         );
 
         // user 2 resolved a thread that user has participated
@@ -1755,13 +1755,13 @@ describe("sendCommentsNotificationEmails", () => {
           await updatedThreadStatus(
             userDbs[2](),
             user1Comment.commentThreadId,
-            false
+            false,
           );
 
         // user 1 reacted to user 0 comment
         const user1Reaction = await reactOnComment(
           userDbs[1](),
-          user0comment.id
+          user0comment.id,
         );
 
         const { notificationsByUser, recentCommentThreads } =
@@ -1782,7 +1782,7 @@ describe("sendCommentsNotificationEmails", () => {
 
                     user1Comment.createdAt,
                     { type: "COMMENT", comment: user1Comment },
-                    sudo
+                    sudo,
                   ),
                   await createNotification(
                     user2Reply.commentThreadId,
@@ -1791,7 +1791,7 @@ describe("sendCommentsNotificationEmails", () => {
 
                     user2Reply.createdAt,
                     { type: "COMMENT", comment: user2Reply },
-                    sudo
+                    sudo,
                   ),
                   await createNotification(
                     commentThreadUnResolvedHistoryForUser1Comment.commentThreadId,
@@ -1803,7 +1803,7 @@ describe("sendCommentsNotificationEmails", () => {
                       type: "THREAD_HISTORY",
                       history: commentThreadUnResolvedHistoryForUser1Comment,
                     },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1820,7 +1820,7 @@ describe("sendCommentsNotificationEmails", () => {
                       type: "COMMENT",
                       comment: user2MentionUser1,
                     },
-                    sudo
+                    sudo,
                   ),
                   await createNotification(
                     user0comment.commentThreadId,
@@ -1829,7 +1829,7 @@ describe("sendCommentsNotificationEmails", () => {
 
                     user1Reaction.createdAt,
                     { type: "REACTION", reaction: user1Reaction },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1848,7 +1848,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user2Reply.createdAt,
                     { type: "COMMENT", comment: user2Reply },
-                    sudo
+                    sudo,
                   ),
                   await createNotification(
                     commentThreadUnResolvedHistoryForUser1Comment.commentThreadId,
@@ -1860,7 +1860,7 @@ describe("sendCommentsNotificationEmails", () => {
                       type: "THREAD_HISTORY",
                       history: commentThreadUnResolvedHistoryForUser1Comment,
                     },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1873,7 +1873,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user2MentionUser1.createdAt,
                     { type: "COMMENT", comment: user2MentionUser1 },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1888,7 +1888,7 @@ describe("sendCommentsNotificationEmails", () => {
           user1Comment.commentThreadId,
           user0comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
   it("should not notify user if reacted to self comment", async () => {
@@ -1904,19 +1904,19 @@ describe("sendCommentsNotificationEmails", () => {
         const user1ReplyToUser0Comment = await addComment(
           userDbs[1](),
           project.id,
-          user0comment.commentThreadId
+          user0comment.commentThreadId,
         );
 
         // user 0 reacted to self comment, user 0 should not be notified
         const user0CommentReaction = await reactOnComment(
           userDbs[0](),
-          user0comment.id
+          user0comment.id,
         );
 
         // user 0 reacted to user 1 comment, user 1 should be notified
         const user1CommentReaction = await reactOnComment(
           userDbs[0](),
-          user1Comment.id
+          user1Comment.id,
         );
 
         const { notificationsByUser, recentCommentThreads } =
@@ -1938,7 +1938,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1ReplyToUser0Comment.createdAt,
                     { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1957,7 +1957,7 @@ describe("sendCommentsNotificationEmails", () => {
                     project,
                     user1CommentReaction.createdAt,
                     { type: "REACTION", reaction: user1CommentReaction },
-                    sudo
+                    sudo,
                   ),
                 ],
               ],
@@ -1972,7 +1972,7 @@ describe("sendCommentsNotificationEmails", () => {
           user0comment.commentThreadId,
           user1Comment.commentThreadId,
         ]);
-      }
+      },
     );
   });
   it("should not send notifications if there is no activity", async () => {
@@ -1990,7 +1990,7 @@ describe("sendCommentsNotificationEmails", () => {
 
         // Check if the processed threads match the recentThreads
         expect(recentCommentThreads).toEqual([]);
-      }
+      },
     );
   });
 });

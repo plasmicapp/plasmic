@@ -152,7 +152,7 @@ if (officialHook) {
       getRenderState(placeholderData.frameUid).unregisterSlotPlaceholder(
         placeholderData.key,
         placeholderData.fullKey,
-        node
+        node,
       );
     }
     officialHook.plasmic.fiberToSlotPlaceholderKeys.delete(node);
@@ -170,7 +170,7 @@ if (officialHook) {
   const mergeValsInSubtree = (node: Fiber) => {
     const nodeChildren = fiberChildren(node);
     const valsInSubtree = nodeChildren.flatMap(
-      (child) => fiberToValSubtrees.get(child) ?? []
+      (child) => fiberToValSubtrees.get(child) ?? [],
     );
 
     const mergeArgsInSubtree = () => {
@@ -181,7 +181,7 @@ if (officialHook) {
       } else {
         return (
           structuralMerge(
-            nodeChildren.map((n) => fiberToSlotArgsInSubtree.get(n) ?? {})
+            nodeChildren.map((n) => fiberToSlotArgsInSubtree.get(n) ?? {}),
           ) ?? {}
         );
       }
@@ -197,7 +197,7 @@ if (officialHook) {
           .map((n) => fiberToSlotCanvasEnvInSubtree.get(n))
           .filter(
             (v): v is Record<string, SlotCanvasEnv> =>
-              !!v && Object.keys(v).length > 0
+              !!v && Object.keys(v).length > 0,
           );
         if (infos.length === 0) {
           return {};
@@ -221,7 +221,7 @@ if (officialHook) {
         }
         return (
           structuralMerge(
-            nodeChildren.map((n) => fiberToSlotCanvasEnvInSubtree.get(n) ?? {})
+            nodeChildren.map((n) => fiberToSlotCanvasEnvInSubtree.get(n) ?? {}),
           ) ?? {}
         );
       }
@@ -369,12 +369,12 @@ if (officialHook) {
           const updateArgValCount = (
             valCompKey: string,
             paramId: string,
-            valKey: string
+            valKey: string,
           ) => {
             const args = withDefaultFunc(
               valCompToArgToValKeyToCount,
               valCompKey,
-              MAKE_EMPTY_OBJECT
+              MAKE_EMPTY_OBJECT,
             );
             const vals = withDefaultFunc(args, paramId, MAKE_EMPTY_OBJECT);
             const count = withDefault(vals, valKey, 0);
@@ -445,7 +445,7 @@ if (officialHook) {
                 return updateArgValCount(
                   slotTplCompKey,
                   slotParamUuid,
-                  valKey ?? "placeholder"
+                  valKey ?? "placeholder",
                 );
               }
 
@@ -475,12 +475,12 @@ if (officialHook) {
 
                 function deriveValOwner(ownerKey: string) {
                   const ownerCandidates = valStack.filter(
-                    ({ val }) => val.key === ownerKey
+                    ({ val }) => val.key === ownerKey,
                   );
                   if (ownerCandidates.length > 0) {
                     return ensureInstance(
                       last(ownerCandidates).val,
-                      ValComponent
+                      ValComponent,
                     );
                   }
 
@@ -496,7 +496,7 @@ if (officialHook) {
 
                   const ownerTplNode = ensure(
                     officialHook?.plasmic.uuidToTplNode.get(ownerUuid)?.deref(),
-                    () => `Couldn't find TplNode from uuid ${ownerUuid}`
+                    () => `Couldn't find TplNode from uuid ${ownerUuid}`,
                   );
 
                   // We derive the valOwner first, since deriving the valOwner may mutate the valStack
@@ -515,7 +515,7 @@ if (officialHook) {
                         // inside the rendering-ctx, but since this is an unexpected scenario, we're just going
                         // to use a stable value
                         FAKE_NODE_CHILD_PARAM,
-                        ownerKey
+                        ownerKey,
                       )
                     : 0;
 
@@ -577,7 +577,7 @@ if (officialHook) {
                 const tplUuid = last(instanceKey.split("."));
                 const tplNode = ensure(
                   officialHook.plasmic.uuidToTplNode.get(tplUuid)?.deref(),
-                  () => `Couldn't find TplNode from uuid ${tplUuid}`
+                  () => `Couldn't find TplNode from uuid ${tplUuid}`,
                 );
 
                 const valNode = createValNode({
@@ -593,7 +593,7 @@ if (officialHook) {
 
                 const cachedValNode = ensure(
                   getRenderState(valNode.frameUid).registerVal(valNode),
-                  () => `Should have at least one val node to merge`
+                  () => `Should have at least one val node to merge`,
                 );
                 fiberToNonCachedVal.set(node, valNode);
                 officialHook.plasmic.fiberToVal.set(node, cachedValNode);
@@ -612,8 +612,8 @@ if (officialHook) {
                   isString(tplCompKey) && isString(paramUuid),
                   () =>
                     `Couldn't parse slot placeholder key: ${JSON.stringify(
-                      slotPlaceholderKey
-                    )}`
+                      slotPlaceholderKey,
+                    )}`,
                 );
                 const tplCompFullKey = computeFullKey(tplCompKey);
                 const slotPlaceholderFullkey = `${tplCompFullKey}~${paramUuid}[${
@@ -629,7 +629,7 @@ if (officialHook) {
                         getRenderState(frameUid).fullKey2val(tplCompFullKey);
                       if (valComp && valComp instanceof ValComponent) {
                         const param = valComp.tpl.component.params.find(
-                          (p) => p.uuid === paramUuid
+                          (p) => p.uuid === paramUuid,
                         );
                         if (param) {
                           return new SlotSelection({
@@ -645,7 +645,7 @@ if (officialHook) {
                 getRenderState(currentFrameUid).registerSlotPlaceholder(
                   slotPlaceholderKey,
                   slotPlaceholderFullkey,
-                  node
+                  node,
                 );
               }
             } catch (err) {
@@ -722,15 +722,15 @@ if (officialHook) {
               last(instanceKeyStack).valKey === instanceKey,
               () =>
                 `Expected "instanceKey" ${instanceKey} to match the last element of "instanceKeyStack", but got ${JSON.stringify(
-                  instanceKeyStack
-                )}`
+                  instanceKeyStack,
+                )}`,
             );
 
             instanceKeyStack.pop();
 
             assert(
               valStack.length === 0 || !last(valStack).isFake,
-              "The last val node in valStack should be a real one"
+              "The last val node in valStack should be a real one",
             );
 
             if (valStack.length > 0 && last(valStack).node === node) {
@@ -743,7 +743,7 @@ if (officialHook) {
 
                 assert(
                   instanceKeyStack.length > 0 && last(instanceKeyStack).isFake,
-                  "While popping fake nodes, instanceKeyStack should have a respective fake node"
+                  "While popping fake nodes, instanceKeyStack should have a respective fake node",
                 );
                 instanceKeyStack.pop();
               }
@@ -752,12 +752,12 @@ if (officialHook) {
             const cachedVal = ensure(
               officialHook.plasmic.fiberToVal.get(node),
               () =>
-                `Fiber with valKey ${valKey} should have a corresopnding ValNode`
+                `Fiber with valKey ${valKey} should have a corresopnding ValNode`,
             );
             const nonCachedVal = ensure(
               fiberToNonCachedVal.get(node),
               () =>
-                `Fiber with valKey ${valKey} should have a corresponding nonCachedVal node`
+                `Fiber with valKey ${valKey} should have a corresponding nonCachedVal node`,
             );
 
             /**
@@ -776,7 +776,7 @@ if (officialHook) {
                 .when(ValComponent, (valComp: ValComponent) => {
                   const nonCachedComp = ensureInstance(
                     nonCachedVal,
-                    ValComponent
+                    ValComponent,
                   ) as UpdateableVal<ValComponent>;
                   const contents = valsInSubtree.map(({ cached }) => cached);
                   if (
@@ -794,12 +794,12 @@ if (officialHook) {
                   if (argsData) {
                     Object.entries(argsData).forEach(([uuid, vs]) => {
                       const p = valComp.tpl.component.params.find(
-                        (param) => param.uuid === uuid
+                        (param) => param.uuid === uuid,
                       );
                       if (p) {
                         nonCachedComp.slotArgs.set(
                           p,
-                          vs.map(({ cached }) => cached)
+                          vs.map(({ cached }) => cached),
                         );
                         vs.map(({ nonCached }) => nonCached).forEach((v) => {
                           v.slotInfo = new SlotInfo(
@@ -809,10 +809,10 @@ if (officialHook) {
                             // the tpl.component is a PlasmicComponent may not be enough, since the user can re-expose the slot
                             // of a code component through a Plasmic component.
                             !isCodeComponent(valComp.tpl.component) &&
-                            isValSlot(v.parent)
+                              isValSlot(v.parent)
                               ? ensureInstance(v.parent, ValSlot)
                               : undefined,
-                            valComp
+                            valComp,
                           );
                           renderState.recomputeCachedVal(v.fullKey);
                         });
@@ -829,12 +829,12 @@ if (officialHook) {
                     Object.entries(slotCanvasEnvs).forEach(
                       ([uuid, slotEnv]) => {
                         const p = valComp.tpl.component.params.find(
-                          (param) => param.uuid === uuid
+                          (param) => param.uuid === uuid,
                         );
                         if (p) {
                           nonCachedComp.slotCanvasEnvs.set(p, slotEnv);
                         }
-                      }
+                      },
                     );
                   }
                   // Do not use omit as it performs a deep clone for plain objects
@@ -844,19 +844,19 @@ if (officialHook) {
                 .when(ValTag, () => {
                   const nonCachedTag = ensureInstance(
                     nonCachedVal,
-                    ValTag
+                    ValTag,
                   ) as UpdateableVal<ValTag>;
                   nonCachedTag.children = valsInSubtree.map(
-                    ({ cached }) => cached
+                    ({ cached }) => cached,
                   );
                 })
                 .when(ValSlot, () => {
                   const nonCachedSlot = ensureInstance(
                     nonCachedVal,
-                    ValSlot
+                    ValSlot,
                   ) as UpdateableVal<ValSlot>;
                   nonCachedSlot.contents = valsInSubtree.map(
-                    ({ cached }) => cached
+                    ({ cached }) => cached,
                   );
                 })
                 .result();
@@ -901,7 +901,7 @@ if (officialHook) {
                 // Root Node
                 officialHook.plasmic.frameUidToValRoot.set(
                   maybeFrameUid,
-                  ensureInstance(cachedVal, ValComponent)
+                  ensureInstance(cachedVal, ValComponent),
                 );
               }
             } catch (err) {
@@ -926,7 +926,7 @@ if (officialHook) {
             const argsInSubtree = fiberToSlotArgsInSubtree.get(node);
             if (argsInSubtree) {
               for (const [valCompId, argsData] of Object.entries(
-                argsInSubtree
+                argsInSubtree,
               )) {
                 for (const [paramId, vals] of Object.entries(argsData)) {
                   for (const val of vals) {
@@ -955,7 +955,7 @@ if (officialHook) {
                   enterNodeSubtree,
                   leaveNodeSubtree,
                   rmNode,
-                  enterUnchangedNode
+                  enterUnchangedNode,
                 );
               } else {
                 // New tree
@@ -963,7 +963,7 @@ if (officialHook) {
                   rootNode,
                   enterNodeSubtree,
                   leaveNodeSubtree,
-                  false
+                  false,
                 );
               }
             }
@@ -971,16 +971,16 @@ if (officialHook) {
           assert(
             ancestorKeys.size === 0,
             () =>
-              "`ancestorUids` should be empty at the end of the tree traversal"
+              "`ancestorUids` should be empty at the end of the tree traversal",
           );
           assert(
             instanceKeyStack.length === 0,
             () =>
-              "`instanceKeyStack` should be empty at the end of the tree traversal"
+              "`instanceKeyStack` should be empty at the end of the tree traversal",
           );
           assert(
             valStack.length === 0,
-            () => "`valStack` should be empty at the end of the tree traversal"
+            () => "`valStack` should be empty at the end of the tree traversal",
           );
           // Disable this assertion while we don't handle linking slot args from
           // "logic" components to the component's parent (when the "logic"
@@ -1003,7 +1003,7 @@ if (officialHook) {
       officialHookProps.onCommitFiberRoot?.(
         rendererID,
         fiberRoot,
-        ...otherArgs
+        ...otherArgs,
       );
     },
   };

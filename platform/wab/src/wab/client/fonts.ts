@@ -55,8 +55,8 @@ Webdings
 Wingdings
 MS Sans Serif
 system-ui\
-`.trim()
-  ) as string[]
+`.trim(),
+  ) as string[],
 )
   .uniq()
   .sort()
@@ -95,21 +95,21 @@ export class FontManager {
     L.uniq([
       ...this.site.userManagedFonts,
       ...this.site.projectDependencies.flatMap(
-        (pd) => pd.site.userManagedFonts
+        (pd) => pd.site.userManagedFonts,
       ),
-    ])
+    ]),
   );
 
   constructor(readonly site: Site) {
     this.usedFonts.push(
       ...extractUsedFontsFromComponents(site, site.components),
       ...walkDependencyTree(site, "all").flatMap((dep) =>
-        extractUsedFontsFromComponents(dep.site, dep.site.components)
-      )
+        extractUsedFontsFromComponents(dep.site, dep.site.components),
+      ),
     );
 
     const googleFonts = getGoogFontsMeta().items.map((m) =>
-      toGoogleFontInstallSpec(m)
+      toGoogleFontInstallSpec(m),
     );
     this._availPlasmicManagedFonts.push(...googleFonts);
 
@@ -119,11 +119,11 @@ export class FontManager {
           ...commonLocalFonts,
           ...this.userManagedFonts(),
           ...this.usedFonts.map((f) => f.fontFamily),
-        ])
+        ]),
       ).then((avails) => {
         // Add installed commonLocalFonts to this._availPlasmicManagedFonts
         const availCommonLocalFonts = commonLocalFonts.filter((f) =>
-          avails.includes(f)
+          avails.includes(f),
         );
         this._availPlasmicManagedFonts.push(
           ...availCommonLocalFonts.map((fontFamily) => {
@@ -131,18 +131,18 @@ export class FontManager {
               fontType: "local" as const,
               fontFamily,
             };
-          })
+          }),
         );
         this.localFontInstallAttempts.forEach((spec) =>
-          this.tryWarnMissingPlasmicManagedFont(spec.fontFamily)
+          this.tryWarnMissingPlasmicManagedFont(spec.fontFamily),
         );
         this._loaded = true;
         avails
           .filter(
-            (f) => !googleFonts.map((spec) => spec.fontFamily).includes(f)
+            (f) => !googleFonts.map((spec) => spec.fontFamily).includes(f),
           )
           .forEach((f) => this._availLocalFonts.add(f));
-      })
+      }),
     );
   }
 
@@ -177,7 +177,7 @@ export class FontManager {
 
   private tryWarnMissingPlasmicManagedFont = (fontFamily: string) => {
     const availableFontFamilies = this._availPlasmicManagedFonts.map(
-      (s) => s.fontFamily
+      (s) => s.fontFamily,
     );
     if (!availableFontFamilies.includes(fontFamily)) {
       const notifier = this.notifiers.get(fontFamily);
@@ -192,8 +192,8 @@ export class FontManager {
               description: "This font won't be rendered correctly.",
             },
             // 1 day
-            24 * 3600 * 1000
-          )
+            24 * 3600 * 1000,
+          ),
         );
       }
     }
@@ -208,7 +208,7 @@ export class FontManager {
 
   private installFont = (
     htmlHeads: Array<JQuery>,
-    fontSpec: FontInstallSpec
+    fontSpec: FontInstallSpec,
   ) => {
     if (fontSpec.fontType === "local") {
       if (!this.site.userManagedFonts.includes(fontSpec.fontFamily)) {
@@ -246,7 +246,7 @@ export class FontManager {
     return this.usedFonts
       .filter(
         (f) =>
-          f.fontType === "local" && !this._availLocalFonts.has(f.fontFamily)
+          f.fontType === "local" && !this._availLocalFonts.has(f.fontFamily),
       )
       .map((f) => f.fontFamily);
   };
@@ -254,7 +254,7 @@ export class FontManager {
   useFont = (studioCtx: StudioCtx, fontFamily: string) => {
     fontFamily = derefTokenRefs(
       siteFinalStyleTokensAllDeps(studioCtx.site),
-      fontFamily
+      fontFamily,
     );
     if (this.usedFonts.find((fs) => fs.fontFamily === fontFamily)) {
       // already installed
@@ -264,7 +264,7 @@ export class FontManager {
     this.usedFonts.push(installSpec);
     this.installFont(
       studioCtx.viewCtxs.map((vc) => vc.canvasCtx.$head()),
-      installSpec
+      installSpec,
     );
     if (installSpec.fontType === "local") {
       // This is mostly used by paste from Figma, where fonts are not added
@@ -274,7 +274,7 @@ export class FontManager {
           if (avails.length === 1) {
             this._availLocalFonts.add(installSpec.fontFamily);
           }
-        })
+        }),
       );
     }
     // Install font globally for style tokens.
@@ -284,7 +284,7 @@ export class FontManager {
   installDepFonts(studioCtx: StudioCtx, dep: ProjectDependency) {
     const usages = extractUsedFontsFromComponents(
       dep.site,
-      dep.site.components
+      dep.site.components,
     );
     for (const usage of usages) {
       this.useFont(studioCtx, usage.fontFamily);

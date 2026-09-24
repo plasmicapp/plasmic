@@ -110,7 +110,7 @@ describe("switchType", function () {
       common
         .switchType(null as any as Foo)
         .when(Foo, () => "Foo")
-        .result()
+        .result(),
     ).toThrow());
   it("should not treat nulls, or scalars as Objects", () => {
     for (const query of [null, "", 0]) {
@@ -281,14 +281,14 @@ describe("multimap", () =>
     const x = "x";
     const y = "y";
     return expect(
-      demapify(multimap([tuple(x, 0), tuple(y, 2), tuple(x, 1), tuple(y, 3)]))
+      demapify(multimap([tuple(x, 0), tuple(y, 2), tuple(x, 1), tuple(y, 3)])),
     ).toEqual(
       demapify(
         new Map([
           [x, [0, 1]],
           [y, [2, 3]],
-        ])
-      )
+        ]),
+      ),
     );
   }));
 
@@ -301,9 +301,9 @@ describe("xpick", function () {
             [0, 1],
             [2, 3],
           ]),
-          0
-        )
-      )
+          0,
+        ),
+      ),
     ).toEqual(demapify(new Map([tuple(0, 1)]))));
   return it("should fail on missing keys", () =>
     expect(() => xpick(new Map([tuple(0, 1)]), 2)).toThrow());
@@ -316,22 +316,22 @@ describe("uniqueName", () => {
     expect(uniqueName(["a", "b", "my thing"], "my thing 1")).toBe("my thing 1");
     expect(uniqueName(["a", "b", "my thing 1"], "my thing")).toBe("my thing");
     expect(uniqueName(["a", "b", "my thing 1"], "my thing 1")).toBe(
-      "my thing 2"
+      "my thing 2",
     );
     expect(uniqueName(["a", "b", "my thing 9"], "my thing 9")).toBe(
-      "my thing 10"
+      "my thing 10",
     );
     expect(uniqueName(["a", "b", "my thing 19"], "my thing 19")).toBe(
-      "my thing 20"
+      "my thing 20",
     );
     expect(uniqueName(["a", "b", "my thing", "my thing 2"], "my thing")).toBe(
-      "my thing 3"
+      "my thing 3",
     );
     expect(uniqueName(["a", "b", "my thing", "my thing 2"], "my thing 2")).toBe(
-      "my thing 3"
+      "my thing 3",
     );
     expect(uniqueName(["a", "b", "my thing", "my thing 3"], "my thing")).toBe(
-      "my thing 2"
+      "my thing 2",
     );
     expect(uniqueName(["a", "a 2", "a 3", "a 4", "a 5"], "a")).toBe("a 6");
     expect(uniqueName(["a", "a2", "a3", "a4", "a5"], "a")).toBe("a 2");
@@ -342,31 +342,31 @@ describe("uniqueName", () => {
 
     expect(uniqueName(["a", "b"], "my thing", opts)).toBe("my thing");
     expect(uniqueName(["a", "b", "my thing"], "my thing", opts)).toBe(
-      "my thing2"
+      "my thing2",
     );
     expect(uniqueName(["a", "b", "my thing"], "my thing1", opts)).toBe(
-      "my thing1"
+      "my thing1",
     );
     expect(uniqueName(["a", "b", "my thing1"], "my thing", opts)).toBe(
-      "my thing"
+      "my thing",
     );
     expect(uniqueName(["a", "b", "my thing1"], "my thing1", opts)).toBe(
-      "my thing2"
+      "my thing2",
     );
     expect(uniqueName(["a", "b", "my thing9"], "my thing9", opts)).toBe(
-      "my thing10"
+      "my thing10",
     );
     expect(uniqueName(["a", "b", "my thing19"], "my thing19", opts)).toBe(
-      "my thing20"
+      "my thing20",
     );
     expect(
-      uniqueName(["a", "b", "my thing", "my thing2"], "my thing", opts)
+      uniqueName(["a", "b", "my thing", "my thing2"], "my thing", opts),
     ).toBe("my thing3");
     expect(
-      uniqueName(["a", "b", "my thing", "my thing2"], "my thing2", opts)
+      uniqueName(["a", "b", "my thing", "my thing2"], "my thing2", opts),
     ).toBe("my thing3");
     expect(
-      uniqueName(["a", "b", "my thing", "my thing3"], "my thing", opts)
+      uniqueName(["a", "b", "my thing", "my thing3"], "my thing", opts),
     ).toBe("my thing2");
     expect(uniqueName(["a", "a2", "a3", "a4", "a5"], "a", opts)).toBe("a6");
     expect(uniqueName(["a", "a 2", "a 3", "a 4", "a 5"], "a", opts)).toBe("a2");
@@ -377,25 +377,25 @@ describe("uniqueName", () => {
       uniqueName(["current index"], "currentIndex", {
         separator: "",
         normalize: toVarName,
-      })
+      }),
     ).toBe("currentIndex2");
     expect(
       uniqueName(["currentIndex"], "current index", {
         separator: "",
         normalize: toVarName,
-      })
+      }),
     ).toBe("current index2");
     expect(
       uniqueName(["current index"], "currentIndex", {
         separator: " ",
         normalize: toVarName,
-      })
+      }),
     ).toBe("currentIndex 2");
     expect(
       uniqueName(["currentIndex"], "current index", {
         separator: " ",
         normalize: toVarName,
-      })
+      }),
     ).toBe("current index 2");
   });
 });
@@ -448,7 +448,7 @@ describe("tryCatchElse", function () {
           let res;
           return (res = "unexpected");
         },
-      })
+      }),
     ).toThrow());
   return it("should throw anything thrown from else clause", () =>
     expect(() =>
@@ -460,14 +460,14 @@ describe("tryCatchElse", function () {
         else: () => {
           throw new Error("third");
         },
-      })
+      }),
     ).toThrow());
 });
 
 describe("xOmit", () =>
   it("should work", function () {
     const expected = demapify(
-      xOmit(mapify({ a: 0, b: 1, c: 2, d: 3 }), "a", "b", "e")
+      xOmit(mapify({ a: 0, b: 1, c: 2, d: 3 }), "a", "b", "e"),
     );
     return expect(expected).toEqual({ c: 2, d: 3 });
   }));
@@ -475,7 +475,7 @@ describe("xOmit", () =>
 describe("xExtend", () =>
   it("should work", function () {
     const expected = demapify(
-      xExtend(mapify({ a: 0 }), mapify({ b: 0 }), mapify({ b: 1, c: 2 }))
+      xExtend(mapify({ a: 0 }), mapify({ b: 0 }), mapify({ b: 1, c: 2 })),
     );
     return expect(expected).toEqual({ a: 0, b: 1, c: 2 });
   }));
@@ -491,10 +491,10 @@ describe("reSplitAll", () =>
           a,
           coalesce(
             maybe(b, (x) => x.slice()),
-            () => null
-          )
+            () => null,
+          ),
         );
-      })
+      }),
     ).toEqual([tuple("", ["a"]), tuple("b", ["a"]), tuple("b", null)]);
   }));
 
@@ -549,33 +549,33 @@ describe("mergeAllowEmpty", () => {
     expect(
       common.mergeSane(
         { x: 1, y: 2, z: { z1: 1, z2: 2 } },
-        { x: 3, z: { z2: 10 } }
-      )
+        { x: 3, z: { z2: 10 } },
+      ),
     ).toEqual({ x: 3, y: 2, z: { z1: 1, z2: 10 } });
     expect(
-      common.mergeSane({ x: 1, y: 2, z: { z1: 1, z2: 2 } }, { x: 3, z: {} })
+      common.mergeSane({ x: 1, y: 2, z: { z1: 1, z2: 2 } }, { x: 3, z: {} }),
     ).toEqual({ x: 3, y: 2, z: {} });
     expect(
-      common.mergeSane({ x: 1, y: 2, z: ["a", "b", "c"] }, { x: 3, z: [] })
+      common.mergeSane({ x: 1, y: 2, z: ["a", "b", "c"] }, { x: 3, z: [] }),
     ).toEqual({ x: 3, y: 2, z: [] });
     expect(
       common.mergeSane(
         { x: 1, y: 2, z: [{ a: 3 }, { b: 4 }, { c: 5 }] },
-        { x: 3, z: [] }
-      )
+        { x: 3, z: [] },
+      ),
     ).toEqual({ x: 3, y: 2, z: [] });
     expect(
       common.mergeSane(
         { x: 1, y: 2, z: [{ a: 3 }, { b: 4 }, { c: 5 }] },
-        { x: 3, z: [{ a2: 30 }, { b: 40 }] }
-      )
+        { x: 3, z: [{ a2: 30 }, { b: 40 }] },
+      ),
     ).toEqual({ x: 3, y: 2, z: [{ a2: 30 }, { b: 40 }] });
     expect(
       common.mergeSane(
         { x: { x1: 1 }, y: 2, z: [{ a: 3 }] },
         { x: {}, z: [{ a2: 30 }, { b: 40 }] },
-        { z: [] }
-      )
+        { z: [] },
+      ),
     ).toEqual({ x: {}, y: 2, z: [] });
 
     // L.merge merges two array element wise...
@@ -590,8 +590,8 @@ describe("mergeAllowEmpty", () => {
           ],
         },
         { time: 5 },
-        { z: [{ id: "2", scheme: "direct" }] }
-      )
+        { z: [{ id: "2", scheme: "direct" }] },
+      ),
     ).toEqual({
       x: { x1: 1 },
       time: 5,
@@ -604,40 +604,40 @@ describe("mergeAllowEmpty", () => {
       expect(
         common.assignAllowEmpty(
           { x: 1, y: 2, z: { z1: 1, z2: 2 } },
-          { x: 3, z: { z2: 10 } }
-        )
+          { x: 3, z: { z2: 10 } },
+        ),
       ).toEqual({ x: 3, y: 2, z: { z2: 10 } });
 
       expect(
         common.assignAllowEmpty(
           { x: 1, y: 2, z: { z1: 1, z2: 2 } },
-          { x: 3, z: {} }
-        )
+          { x: 3, z: {} },
+        ),
       ).toEqual({ x: 3, y: 2, z: {} });
       expect(
         common.assignAllowEmpty(
           { x: 1, y: 2, z: ["a", "b", "c"] },
-          { x: 3, z: [] }
-        )
+          { x: 3, z: [] },
+        ),
       ).toEqual({ x: 3, y: 2, z: [] });
       expect(
         common.assignAllowEmpty(
           { x: 1, y: 2, z: [{ a: 3 }, { b: 4 }, { c: 5 }] },
-          { x: 3, z: [] }
-        )
+          { x: 3, z: [] },
+        ),
       ).toEqual({ x: 3, y: 2, z: [] });
       expect(
         common.assignAllowEmpty(
           { x: 1, y: 2, z: [{ a: 3 }, { b: 4 }, { c: 5 }] },
-          { x: 3, z: [{ a2: 30 }, { b: 40 }] }
-        )
+          { x: 3, z: [{ a2: 30 }, { b: 40 }] },
+        ),
       ).toEqual({ x: 3, y: 2, z: [{ a2: 30 }, { b: 40 }] });
       expect(
         common.assignAllowEmpty(
           { x: { x1: 1 }, y: 2, z: [{ a: 3 }] },
           { x: {}, z: [{ a2: 30 }, { b: 40 }] },
-          { z: [] }
-        )
+          { z: [] },
+        ),
       ).toEqual({ x: {}, y: 2, z: [] });
 
       expect(
@@ -651,8 +651,8 @@ describe("mergeAllowEmpty", () => {
             ],
           },
           { time: 5 },
-          { z: [{ id: "2", scheme: "direct" }] }
-        )
+          { z: [{ id: "2", scheme: "direct" }] },
+        ),
       ).toEqual({
         x: { x1: 1 },
         time: 5,
@@ -667,12 +667,12 @@ describe("swallow", () => {
     expect(
       swallow(() => {
         throw new Error("bad bad bad");
-      })
+      }),
     ).toBeNull();
     expect(
       swallow(() => {
         return "foobar";
-      })
+      }),
     ).toEqual("foobar");
   });
 });
@@ -688,31 +688,31 @@ describe("swallowAsync", () => {
     };
     await expect(swallowAsync(fn2())).resolves.toBeUndefined();
     await expect(swallowAsync(Promise.resolve("foobar"))).resolves.toEqual(
-      "foobar"
+      "foobar",
     );
     await expect(
-      swallowAsync(Promise.reject("bad bad bad"))
+      swallowAsync(Promise.reject("bad bad bad")),
     ).resolves.toBeUndefined();
     await expect(
       swallowAsync(
         new Promise((resolve, reject) => {
           resolve("foobar");
-        })
-      )
+        }),
+      ),
     ).resolves.toEqual("foobar");
     await expect(
       swallowAsync(
         new Promise((resolve, reject) => {
           reject("bad bad bad");
-        })
-      )
+        }),
+      ),
     ).resolves.toBeUndefined();
     await expect(
       swallowAsync(
         new Promise((resolve, reject) => {
           throw new Error("bad bad bad");
-        })
-      )
+        }),
+      ),
     ).resolves.toBeUndefined();
   });
 });
@@ -774,8 +774,8 @@ describe("sortAs", () => {
       sortAs(
         [{ name: "red" }, { name: "blue" }, { name: "green" }],
         ["blue", "red", "yellow", "green"],
-        (x) => x.name
-      )
+        (x) => x.name,
+      ),
     ).toEqual([{ name: "blue" }, { name: "red" }, { name: "green" }]);
   });
   it("works for missing keys", () => {
@@ -783,8 +783,8 @@ describe("sortAs", () => {
       sortAs(
         [{ name: "red" }, { name: "blue" }, { name: "green" }],
         ["blue", "red", "yellow"],
-        (x) => x.name
-      )
+        (x) => x.name,
+      ),
     ).toEqual([{ name: "blue" }, { name: "red" }, { name: "green" }]);
   });
 });
@@ -837,8 +837,8 @@ describe("structuralMerge", () => {
     expect(
       common.structuralMerge2(
         { x: { y: [1, 2, 3], z: "ok" }, a: "yes" },
-        { x: { y: ["a", "b"], w: "nope" }, a: "no" }
-      )
+        { x: { y: ["a", "b"], w: "nope" }, a: "no" },
+      ),
     ).toEqual({ x: { y: [1, 2, 3, "a", "b"], z: "ok", w: "nope" }, a: "yes" });
   });
 });
@@ -854,8 +854,8 @@ describe("sortByKeys", () => {
           { name: "bob", age: 12 },
           { name: "alice", age: 26 },
         ],
-        (person) => [person.name, person.age]
-      )
+        (person) => [person.name, person.age],
+      ),
     ).toEqual([
       { name: "alice", age: 18 },
       { name: "alice", age: 26 },

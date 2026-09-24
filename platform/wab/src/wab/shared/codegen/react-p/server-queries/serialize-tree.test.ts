@@ -52,7 +52,7 @@ function createMockComponent(name: string): Component {
 
 function createMockCustomFunction(
   importName: string,
-  params: { argName: string }[] = []
+  params: { argName: string }[] = [],
 ): CustomFunction {
   return {
     importName,
@@ -71,7 +71,7 @@ function createMockCustomFunction(
 function createMockServerQuery(
   name: string,
   func: CustomFunction,
-  args: { argName: string; exprCode: string }[] = []
+  args: { argName: string; exprCode: string }[] = [],
 ): ServerQueryWithOperation {
   const functionArgs: FunctionArg[] = args.map(
     (arg) =>
@@ -79,7 +79,7 @@ function createMockServerQuery(
         uuid: mkShortId(),
         argType: typeFactory.arg(arg.argName, typeFactory.text()),
         expr: customCode(arg.exprCode),
-      })
+      }),
   );
   return new ComponentServerQuery({
     uuid: mkShortId(),
@@ -94,7 +94,7 @@ function createMockServerQuery(
 function createSimpleQueryTree(
   component: Component,
   queries: ServerQueryWithOperation[],
-  children: ServerComponentNode["children"] = []
+  children: ServerComponentNode["children"] = [],
 ): ServerQueryTree {
   const componentNode: ServerComponentNode = {
     type: "component",
@@ -137,7 +137,7 @@ describe("serializeServerQueryTree", () => {
     expect(serialized).toContain("fn: $$.fetchData");
     // args should be a function expression, not an array of strings
     expect(serialized).toContain(
-      "args: ({ $q, $props, $ctx, $state }) => [$props.userId]"
+      "args: ({ $q, $props, $ctx, $state }) => [$props.userId]",
     );
     // Should not have the old func field
     expect(serialized).not.toContain('"func"');
@@ -217,7 +217,7 @@ describe("serializeServerQueryTree", () => {
     expect(serialized).toContain("fn: $$.fetchChild");
     // propsContext values are now function expressions
     expect(serialized).toContain(
-      "({ $q, $props, $ctx, $state }) => ($props.parentProp)"
+      "({ $q, $props, $ctx, $state }) => ($props.parentProp)",
     );
     expect(serialized).not.toContain("componentUuid");
     // Child component emits stateSpecs so its $state is populated before query args run.
@@ -226,7 +226,7 @@ describe("serializeServerQueryTree", () => {
     expect(serialized).toContain("initFunc:");
     // Child query args reference $state.counter.
     expect(serialized).toContain(
-      "args: ({ $q, $props, $ctx, $state }) => [$state.counter]"
+      "args: ({ $q, $props, $ctx, $state }) => [$state.counter]",
     );
     // Every component node emits stateSpecs (root uses `[]` since it has no states,
     // child has the counter state).
@@ -270,7 +270,7 @@ describe("serializeServerQueryTree", () => {
     expect(serialized).toContain('type: "visibility"');
     // visibilityExpr is now a function
     expect(serialized).toContain(
-      "visibilityExpr: ({ $q, $props, $ctx, $state }) => ($props.isVisible)"
+      "visibilityExpr: ({ $q, $props, $ctx, $state }) => ($props.isVisible)",
     );
   });
 
@@ -312,7 +312,7 @@ describe("serializeServerQueryTree", () => {
     expect(serialized).toContain('type: "repeated"');
     // collectionExpr is now a function (no item vars in scope at repeated node level)
     expect(serialized).toContain(
-      "collectionExpr: ({ $q, $props, $ctx, $state }) => ($props.items)"
+      "collectionExpr: ({ $q, $props, $ctx, $state }) => ($props.items)",
     );
     expect(serialized).toContain('itemName: "currentItem"');
     expect(serialized).toContain('indexName: "currentIndex"');
@@ -359,10 +359,10 @@ describe("serializeServerQueryTree", () => {
 
     // Child of repeated node: args and propsContext should destructure item vars
     expect(serialized).toContain(
-      "({ $q, $props, $ctx, $state, $scopedItemVars: { currentItem, currentIndex } }) => [currentItem.url]"
+      "({ $q, $props, $ctx, $state, $scopedItemVars: { currentItem, currentIndex } }) => [currentItem.url]",
     );
     expect(serialized).toContain(
-      "({ $q, $props, $ctx, $state, $scopedItemVars: { currentItem, currentIndex } }) => (currentItem)"
+      "({ $q, $props, $ctx, $state, $scopedItemVars: { currentItem, currentIndex } }) => (currentItem)",
     );
   });
 
@@ -404,7 +404,7 @@ describe("serializeServerQueryTree", () => {
     expect(serialized).toContain('name: "userData"');
     // data is now a function
     expect(serialized).toContain(
-      "data: ({ $q, $props, $ctx, $state }) => ($props.user)"
+      "data: ({ $q, $props, $ctx, $state }) => ($props.user)",
     );
   });
 });

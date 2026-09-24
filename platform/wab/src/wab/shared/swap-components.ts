@@ -32,12 +32,12 @@ import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 export function makeComponentSwapper(
   site: Site,
   fromComp: Component,
-  toComp: Component
+  toComp: Component,
 ) {
   if (componentToDeepReferenced(toComp).has(fromComp)) {
     throw new UserError(
       `Cannot replace components`,
-      `Component "${toComp.name}" is using instances of component "${fromComp.name}"; swapping would lead to component cycles.`
+      `Component "${toComp.name}" is using instances of component "${fromComp.name}"; swapping would lead to component cycles.`,
     );
   }
 
@@ -62,7 +62,7 @@ export function makeComponentSwapper(
   for (const fromParam of fromComp.params) {
     const fromParamType = getParamType(fromComp, fromParam);
     const toParam = toComp.params.find(
-      (p) => p.variable.name === fromParam.variable.name
+      (p) => p.variable.name === fromParam.variable.name,
     );
     if (toParam && fromParamType === getParamType(toComp, toParam)) {
       // Only allow this mapping if the param type matches
@@ -75,7 +75,7 @@ export function makeComponentSwapper(
     // We only attempt to preserve public explicit states
     if (isPublicState(fromState) && !fromState.implicitState) {
       const toState = toComp.states.find(
-        (s) => s.param.variable.name === fromState.param.variable.name
+        (s) => s.param.variable.name === fromState.param.variable.name,
       );
       if (
         toState &&
@@ -93,7 +93,7 @@ export function makeComponentSwapper(
   const variantMap = new Map<Variant, Variant>();
   for (const fromGroup of fromComp.variantGroups) {
     const toGroup = toComp.variantGroups.find(
-      (g) => g.param.variable.name === fromGroup.param.variable.name
+      (g) => g.param.variable.name === fromGroup.param.variable.name,
     );
     if (!toGroup) {
       continue;
@@ -101,7 +101,7 @@ export function makeComponentSwapper(
 
     for (const fromVariant of fromGroup.variants) {
       const toVariant = toGroup.variants.find(
-        (v) => v.name === fromVariant.name
+        (v) => v.name === fromVariant.name,
       );
       if (toVariant) {
         variantMap.set(fromVariant, toVariant);
@@ -110,13 +110,13 @@ export function makeComponentSwapper(
   }
 
   const toVariantGroupParams = new Set(
-    toComp.variantGroups.map((g) => g.param)
+    toComp.variantGroups.map((g) => g.param),
   );
 
   const swapTplComponent = (tpl: TplComponent, owner: Component) => {
     assert(
       tpl.component === fromComp,
-      "Expected tpl to be a tpl component of fromComp"
+      "Expected tpl to be a tpl component of fromComp",
     );
     for (const vs of tpl.vsettings) {
       for (const arg of [...vs.args]) {

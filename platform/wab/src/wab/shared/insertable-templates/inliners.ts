@@ -108,7 +108,7 @@ function tryCopyBaseVariantStyles(from: TplNode, to: TplNode): void {
   // Copy the styles
   const targetRsHelper = new RuleSetHelpers(
     toBaseVs.rs,
-    isKnownTplTag(to) ? to.tag : "div"
+    isKnownTplTag(to) ? to.tag : "div",
   );
   targetRsHelper.mergeRs(fromBaseVs.rs);
 
@@ -151,7 +151,7 @@ export function inlineMixins(tplTree: TplNode) {
 export function inlineTokens(
   tplTree: TplNode,
   tokens: ReadonlyArray<FinalToken<StyleToken>>,
-  onFontSeen?: (font: string) => void
+  onFontSeen?: (font: string) => void,
 ) {
   // Walk TplTree
   const vsAndTpls = [...findVariantSettingsUnderTpl(tplTree)];
@@ -192,7 +192,7 @@ export const getSiteMatchingPlumeComponent = (
   sourceSite: Site,
   sourceTpl: TplComponent,
   targetPlumeSite: Site | undefined,
-  info: Pick<InsertableTemplateExtraInfo, "screenVariant">
+  info: Pick<InsertableTemplateExtraInfo, "screenVariant">,
 ) => {
   if (!isPlumeComponent(sourceTpl.component)) {
     return undefined;
@@ -201,7 +201,7 @@ export const getSiteMatchingPlumeComponent = (
   const sourceComponent = sourceTpl.component;
   const targetType = sourceComponent.plumeInfo.type;
   const requiredParams = sourceTpl.vsettings[0].args.map(
-    (a) => `Param-${a.param.variable.name}`
+    (a) => `Param-${a.param.variable.name}`,
   );
   const getVariantName = (v: Variant) => {
     return `Variant-${v.name}+${(v.selectors || []).join(",")}`;
@@ -212,7 +212,7 @@ export const getSiteMatchingPlumeComponent = (
         return a.expr.variants.map(getVariantName);
       }
       return [];
-    })
+    }),
   );
 
   const getVariantNames = (x: PlumeComponent) => {
@@ -240,7 +240,7 @@ export const getSiteMatchingPlumeComponent = (
     (c) =>
       isPlumeComponent(c) &&
       c.plumeInfo.type === targetType &&
-      matchingNameReferences(c)
+      matchingNameReferences(c),
   );
 
   if (existingComponent) {
@@ -252,7 +252,7 @@ export const getSiteMatchingPlumeComponent = (
       site,
       plumeComponent.uuid,
       plumeComponent.name,
-      true
+      true,
     );
 
     // Since we can clone a plume component from another site, we have to check the following cases:
@@ -283,7 +283,7 @@ export const getSiteMatchingPlumeComponent = (
     (c): c is PlumeComponent =>
       isPlumeComponent(c) &&
       c.plumeInfo.type === targetType &&
-      c.uuid === sourceComponent.uuid // since we are cloning from the same site, we can use the uuid
+      c.uuid === sourceComponent.uuid, // since we are cloning from the same site, we can use the uuid
   );
 
   if (sourceSiteComponent) {
@@ -298,7 +298,7 @@ export const getSiteMatchingPlumeComponent = (
   const plumeComponents = targetPlumeSite.components;
   const plumeComponent = plumeComponents.find(
     (c): c is PlumeComponent =>
-      isPlumeComponent(c) && c.plumeInfo.type === targetType
+      isPlumeComponent(c) && c.plumeInfo.type === targetType,
   );
 
   if (!plumeComponent) {
@@ -322,7 +322,7 @@ export const getSiteMatchingPlumeComponent = (
  */
 export function inlineComponents(
   tplTree: TplNode,
-  ctx: InlineComponentContext
+  ctx: InlineComponentContext,
 ): Set<string> {
   let isModified: boolean;
   /**
@@ -336,7 +336,7 @@ export function inlineComponents(
     isModified = _inlineComponentsHelper(
       tplTree,
       ctx,
-      adjustedTplComponentUuids
+      adjustedTplComponentUuids,
     );
   } while (isModified);
   return adjustedTplComponentUuids;
@@ -345,7 +345,7 @@ export function inlineComponents(
 function _inlineComponentsHelper(
   tplTree: TplNode,
   ctx: InlineComponentContext,
-  adjustedComponents: Set<string>
+  adjustedComponents: Set<string>,
 ): boolean {
   const queue: TplComponent[] = [];
   walkTpls(tplTree, {
@@ -389,7 +389,7 @@ function _inlineComponentsHelper(
 function inlineTplComponent(
   tplComp: TplNode,
   sourceComp: Component,
-  sourceSite: Site
+  sourceSite: Site,
 ) {
   assert(isTplComponent(tplComp), "Expected a TplComponent");
 
@@ -401,7 +401,7 @@ function inlineTplComponent(
   const slotArgs = getSlotArgs(tplComp);
   const baseVs = ensure(
     tryGetBaseVariantSetting(tplComp),
-    "Should have base variant"
+    "Should have base variant",
   );
   const activeVariants = getActiveVariantsInArg(tplComp.component, baseVs.args);
 
@@ -414,11 +414,11 @@ function inlineTplComponent(
       t,
       activeVariants,
       sourceComp,
-      sourceSite
+      sourceSite,
     );
     const baseVsForNode = ensure(
       tryGetBaseVariantSetting(t),
-      "Should have base variant"
+      "Should have base variant",
     );
     adaptEffectiveVariantSetting(t, baseVsForNode, effectiveVs);
   }
@@ -467,7 +467,7 @@ export function inlineSlots(tplTree: TplNode, slotArgs?: Arg[]): boolean {
 
     const tplParent = ensure(
       tplSlot.parent,
-      "TplSlot must have a parent in insertable templates"
+      "TplSlot must have a parent in insertable templates",
     );
     const arg = slotArgs
       ? slotArgs.find((a) => a.param === tplSlot.param)
@@ -502,7 +502,7 @@ export function inlineSlots(tplTree: TplNode, slotArgs?: Arg[]): boolean {
 const adjustInsertableTemplateComponentArgs = (
   sourceTpl: TplComponent,
   component: Component,
-  ctx: InlineComponentContext
+  ctx: InlineComponentContext,
 ) => {
   const oldArgs = sourceTpl.vsettings[0].args;
   sourceTpl.vsettings[0].args = [];
@@ -512,7 +512,7 @@ const adjustInsertableTemplateComponentArgs = (
   ]);
   oldArgs.forEach((arg) => {
     const param = component.params.find(
-      (p) => p.variable.name === arg.param.variable.name
+      (p) => p.variable.name === arg.param.variable.name,
     );
     if (!param) {
       return;
@@ -523,9 +523,9 @@ const adjustInsertableTemplateComponentArgs = (
           return allComponentVariants.find(
             (v2) =>
               v2.name === v.name &&
-              arrayEqIgnoreOrder(v2.selectors || [], v.selectors || [])
+              arrayEqIgnoreOrder(v2.selectors || [], v.selectors || []),
           );
-        })
+        }),
       );
       sourceTpl.vsettings[0].args.push(
         new Arg({
@@ -533,7 +533,7 @@ const adjustInsertableTemplateComponentArgs = (
           expr: new VariantsRef({
             variants: argVariants,
           }),
-        })
+        }),
       );
     } else if (isKnownCustomCode(arg.expr)) {
       sourceTpl.vsettings[0].args.push(
@@ -543,7 +543,7 @@ const adjustInsertableTemplateComponentArgs = (
             code: arg.expr.code,
             fallback: undefined,
           }),
-        })
+        }),
       );
     } else if (isKnownRenderExpr(arg.expr)) {
       // If we are dealing with RenderExpr (slot content) we have to adjust the parent
@@ -558,7 +558,7 @@ const adjustInsertableTemplateComponentArgs = (
               isPlumeComponent(component) &&
               component.subComps.find(
                 (_subComp) =>
-                  _subComp.plumeInfo?.type === tpl.component.plumeInfo?.type
+                  _subComp.plumeInfo?.type === tpl.component.plumeInfo?.type,
               );
             if (!subComp) {
               // if there is no sub comp it must be a general plume component
@@ -595,7 +595,7 @@ const adjustInsertableTemplateComponentArgs = (
               const newTpl = inlineTplComponent(
                 tpl,
                 ctx.sourceComp,
-                ctx.sourceSite
+                ctx.sourceSite,
               );
               newTpl.parent = sourceTpl;
               tplTag = newTpl;
@@ -610,7 +610,7 @@ const adjustInsertableTemplateComponentArgs = (
             // tpl slot
             return null;
           }
-        })
+        }),
       );
       sourceTpl.vsettings[0].args.push(
         new Arg({
@@ -618,7 +618,7 @@ const adjustInsertableTemplateComponentArgs = (
           expr: new RenderExpr({
             tpl: renderTpl,
           }),
-        })
+        }),
       );
     }
   });
@@ -626,7 +626,7 @@ const adjustInsertableTemplateComponentArgs = (
 
 const adjustPlumeComponent = (
   tpl: TplComponent,
-  ctx: InlineComponentContext
+  ctx: InlineComponentContext,
 ): boolean => {
   const { targetSite, targetBaseVariant, plumeSite } = ctx;
 
@@ -636,7 +636,7 @@ const adjustPlumeComponent = (
 
   if (isPlumeComponent(tpl.component)) {
     const newVSettings = tpl.vsettings.filter((vs) =>
-      isBaseVariant(vs.variants)
+      isBaseVariant(vs.variants),
     );
     // ensure that vsettings has size at most 1
     newVSettings.splice(1);
@@ -652,7 +652,7 @@ const adjustPlumeComponent = (
       ctx.sourceSite,
       tpl,
       plumeSite,
-      ctx.extraInfo
+      ctx.extraInfo,
     );
 
     if (matchedComponent && tpl.component === matchedComponent) {
@@ -675,11 +675,11 @@ const adjustPlumeComponent = (
 export function ensureHostLessDepComponent(
   targetSite: Site,
   comp: Component,
-  info: Pick<InsertableTemplateExtraInfo, "site" | "hostLessDependencies">
+  info: Pick<InsertableTemplateExtraInfo, "site" | "hostLessDependencies">,
 ) {
   assert(
     isHostLessCodeComponent(comp),
-    `Should only be called for hostless components`
+    `Should only be called for hostless components`,
   );
 
   const { site: sourceSite } = info;
@@ -691,7 +691,7 @@ export function ensureHostLessDepComponent(
   // info.sourceSite, because it is unbundled by a different bundler.
   const ownerDep = Object.values(info.hostLessDependencies).find(
     ({ projectDependency }) =>
-      projectDependency.site.components.some((c) => c.name === comp.name)
+      projectDependency.site.components.some((c) => c.name === comp.name),
   )?.projectDependency;
 
   assert(ownerDep, `Unknown hostless dependency for component ${comp.name}`);
@@ -699,12 +699,12 @@ export function ensureHostLessDepComponent(
   const neededDeps = [
     ownerDep,
     ...ownerDep.site.projectDependencies.filter((d) =>
-      isHostLessPackage(d.site)
+      isHostLessPackage(d.site),
     ),
   ];
 
   const missingDeps = neededDeps.filter(
-    (d) => !targetSite.projectDependencies.find((td) => d.pkgId === td.pkgId)
+    (d) => !targetSite.projectDependencies.find((td) => d.pkgId === td.pkgId),
   );
 
   for (const missingDep of missingDeps) {
@@ -720,23 +720,23 @@ export function ensureHostLessDepComponent(
     const newGlobalContexts = targetSite.globalContexts.filter(
       (gc) =>
         !oldGlobalContexts.some(
-          (oldGc) => oldGc.component.name === gc.component.name
-        )
+          (oldGc) => oldGc.component.name === gc.component.name,
+        ),
     );
 
     newGlobalContexts.forEach((gc) => {
       const sourceSiteGc = sourceSite.globalContexts.find(
-        (sourceGc) => sourceGc.component.name === gc.component.name
+        (sourceGc) => sourceGc.component.name === gc.component.name,
       )!;
       sourceSiteGc.vsettings[0].args.forEach((arg) => {
         gc.vsettings[0].args.push(
           new Arg({
             param: strictFind(
               gc.component.params,
-              (p) => p.variable.name === arg.param.variable.name
+              (p) => p.variable.name === arg.param.variable.name,
             ),
             expr: cloneExpr(arg.expr),
-          })
+          }),
         );
       });
     });
@@ -745,14 +745,14 @@ export function ensureHostLessDepComponent(
   // Find the new corresponding component
   const newComp = ensure(
     ownerDep.site.components.find((c) => c.name === comp.name),
-    `Must succeed because we checked this earlier`
+    `Must succeed because we checked this earlier`,
   );
   return newComp;
 }
 
 const adjustHostedCodeComponent = (
   tpl: TplComponent,
-  ctx: InlineComponentContext
+  ctx: InlineComponentContext,
 ) => {
   if (
     !isCodeComponent(tpl.component) ||
@@ -761,15 +761,15 @@ const adjustHostedCodeComponent = (
     return false;
   }
   const newComp = ctx.targetSite.components.find(
-    (c) => isCodeComponent(c) && c.name === tpl.component.name
+    (c) => isCodeComponent(c) && c.name === tpl.component.name,
   );
   assert(
     newComp,
-    `Component ${tpl.component.name} isn't available in this project`
+    `Component ${tpl.component.name} isn't available in this project`,
   );
   assert(
     isCodeComponent(newComp),
-    "must succeed because it was checked before"
+    "must succeed because it was checked before",
   );
   tpl.component = newComp;
   adjustInsertableTemplateComponentArgs(tpl, newComp, ctx);
@@ -778,7 +778,7 @@ const adjustHostedCodeComponent = (
 
 const adjustHostLessCodeComponent = (
   tpl: TplComponent,
-  ctx: InlineComponentContext
+  ctx: InlineComponentContext,
 ) => {
   if (!isHostLessCodeComponent(tpl.component)) {
     return false;
@@ -787,7 +787,7 @@ const adjustHostLessCodeComponent = (
   const comp = ensureHostLessDepComponent(
     ctx.targetSite,
     tpl.component,
-    ctx.extraInfo
+    ctx.extraInfo,
   );
   tpl.component = comp;
   adjustInsertableTemplateComponentArgs(tpl, comp, ctx);
@@ -797,7 +797,7 @@ const adjustHostLessCodeComponent = (
 /** Returns true if component is handled and should not be inlined. */
 const adjustInsertableTemplateComponent = (
   tpl: TplComponent,
-  ctx: InlineComponentContext
+  ctx: InlineComponentContext,
 ): boolean => {
   // Don't inline default components (usually Plexus components).
   if (isDefaultComponent(ctx.sourceSite, tpl.component)) {

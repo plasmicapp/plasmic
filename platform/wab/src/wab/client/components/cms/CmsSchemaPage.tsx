@@ -15,7 +15,7 @@ export type CmsSchemaPageProps = DefaultCmsSchemaPageProps;
 
 function CmsSchemaPage_(
   props: CmsSchemaPageProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const m = useMatchedRoute(APP_ROUTES.cmsSchemaRoot);
   const database = useCmsDatabase(m?.pathParams.databaseId);
@@ -29,8 +29,8 @@ function CmsSchemaPage_(
     a.isArchived == b.isArchived
       ? b.id.localeCompare(a.id)
       : a.isArchived
-      ? 1
-      : -1
+        ? 1
+        : -1,
   );
   return (
     <Switch

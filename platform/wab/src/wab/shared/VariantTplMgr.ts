@@ -143,7 +143,7 @@ export class VariantTplMgr {
     private site: Site,
     private tplMgr: TplMgr,
     private globalFrame: GlobalVariantFrame,
-    private getCanvasEnvForTpl?: (node: TplNode) => CanvasEnv | undefined
+    private getCanvasEnvForTpl?: (node: TplNode) => CanvasEnv | undefined,
   ) {}
 
   ensureBaseVariantSetting(tpl: TplNode) {
@@ -156,7 +156,7 @@ export class VariantTplMgr {
     const baseVs = mkVariantSetting({ variants: [variant] });
     assert(
       !addingBaseToTplWithExistingBase(tpl, variant),
-      "Trying to add base vs to tpl with existing base vs"
+      "Trying to add base vs to tpl with existing base vs",
     );
     tpl.vsettings.push(baseVs);
 
@@ -229,7 +229,7 @@ export class VariantTplMgr {
     opts: {
       includePrivate: boolean;
       ignoreSlotDefaultContent: boolean;
-    } & StylePropOpts
+    } & StylePropOpts,
   ) {
     const frame = this.getContainingFrame(tpl);
     if (!frame) {
@@ -248,7 +248,7 @@ export class VariantTplMgr {
         } else {
           return true;
         }
-      }
+      },
     );
 
     const isOnlyVisibleOnCurrentCombo = () => {
@@ -261,7 +261,7 @@ export class VariantTplMgr {
       // (We know this function isn't called when currentCombo is base).
       if (
         !isInvisible(
-          getTplVisibilityAsDescendant(tpl, [getBaseVariant(frame.component)])
+          getTplVisibilityAsDescendant(tpl, [getBaseVariant(frame.component)]),
         )
       ) {
         return false;
@@ -283,7 +283,7 @@ export class VariantTplMgr {
           combo = combo.filter(
             (v) =>
               !isScreenVariant(v) ||
-              !isAncestorScreenVariant(v, currentCombo[0])
+              !isAncestorScreenVariant(v, currentCombo[0]),
           );
         }
         if (isBaseVariant(combo) || arrayEqIgnoreOrder(currentCombo, combo)) {
@@ -377,7 +377,7 @@ export class VariantTplMgr {
         () =>
           `Expected only one vsettings, but got ${tpl.vsettings
             .map((vs) => vs.variants.map((v) => v.name).join(","))
-            .join("; ")}`
+            .join("; ")}`,
       );
       return {
         variants,
@@ -388,7 +388,7 @@ export class VariantTplMgr {
     const vsettings = sortedVariantSettingStack(
       tpl.vsettings,
       [...variants],
-      makeVariantComboSorter(this.site, frame.component)
+      makeVariantComboSorter(this.site, frame.component),
     );
     return { variants, vsettings };
   }
@@ -421,7 +421,7 @@ export class VariantTplMgr {
         } else {
           assert(
             this.getCanvasEnvForTpl,
-            "Expected VariantTplMgr to have getCanvasEnvForTpl"
+            "Expected VariantTplMgr to have getCanvasEnvForTpl",
           );
           const canvasEnv = this.getCanvasEnvForTpl(tpl);
           const evaledExpr = tryEvalExpr(
@@ -430,10 +430,10 @@ export class VariantTplMgr {
               component,
               inStudio: true,
             }).code,
-            canvasEnv ?? {}
+            canvasEnv ?? {},
           ).val;
           resolveVariantGroupValue(vg, evaledExpr).variants.forEach((v) =>
-            variants.add(v)
+            variants.add(v),
           );
         }
       }
@@ -467,7 +467,7 @@ export class VariantTplMgr {
     const implicitlyActivated = getImplicitlyActivatedStyleVariants(
       allCompVariants,
       variants,
-      tpl
+      tpl,
     );
     implicitlyActivated.forEach((v) => variants.add(v));
 
@@ -534,7 +534,7 @@ export class VariantTplMgr {
     return this._ensureVariantSetting(
       tpl,
       this.getTargetVariantComboForNode(tpl),
-      owningComponent
+      owningComponent,
     );
   }
 
@@ -545,7 +545,7 @@ export class VariantTplMgr {
   tryGetCurrentSharedVariantSetting(tpl: TplNode) {
     return tryGetVariantSetting(
       tpl,
-      this.getCurrentSharedVariantComboForNode(tpl)
+      this.getCurrentSharedVariantComboForNode(tpl),
     );
   }
 
@@ -554,15 +554,15 @@ export class VariantTplMgr {
   ensureVariantSetting(
     tpl: TplNode,
     variantCombo?: VariantCombo,
-    owningComponent?: Component
+    owningComponent?: Component,
   ) {
     variantCombo = variantCombo || this.getTargetVariantComboForNode(tpl);
     const allCompVariants = this.getVariantsForNode(tpl);
     assert(
       variantCombo.every(
-        (v) => isGlobalVariant(v) || allCompVariants.includes(v)
+        (v) => isGlobalVariant(v) || allCompVariants.includes(v),
       ),
-      "Variant combo has variants from other component"
+      "Variant combo has variants from other component",
     );
     return this._ensureVariantSetting(tpl, variantCombo, owningComponent);
   }
@@ -578,8 +578,8 @@ export class VariantTplMgr {
         "(unattached)";
       throw new Error(
         `Missing variant setting for variant "${variants}" on tpl "${summarizeTpl(
-          tpl
-        )}" in component "${tplComponent}`
+          tpl,
+        )}" in component "${tplComponent}`,
       );
     }
     return vs;
@@ -588,14 +588,14 @@ export class VariantTplMgr {
   tryGetTargetVariantSetting(tpl: TplNode, opts?: StylePropOpts) {
     return tryGetVariantSetting(
       tpl,
-      this.getTargetVariantComboForNode(tpl, opts)
+      this.getTargetVariantComboForNode(tpl, opts),
     );
   }
 
   private _ensureBaseRuleVariantSetting(
     tpl: TplNode,
     variantCombo: VariantCombo,
-    owningComponent?: Component
+    owningComponent?: Component,
   ) {
     const component = this._getComponentForTpl(tpl, owningComponent);
     if (isTplVariantable(component.tplTree)) {
@@ -614,13 +614,13 @@ export class VariantTplMgr {
   private _ensureVariantSetting(
     tpl: TplNode,
     variantCombo: VariantCombo,
-    owningComponent?: Component
+    owningComponent?: Component,
   ): VariantSetting {
     const component = this._getComponentForTpl(tpl, owningComponent);
 
     assert(
       component === this.getOwningComponentForNewNode(),
-      `Cannot to edit element outside of current component context`
+      `Cannot to edit element outside of current component context`,
     );
     ensureComponentsObserved([component]);
 
@@ -638,23 +638,23 @@ export class VariantTplMgr {
             : swallow(() =>
                 getComponentDisplayName(
                   this.tplMgr.findComponentContainingBaseVariant(
-                    variantCombo[0]
-                  )
-                )
+                    variantCombo[0],
+                  ),
+                ),
               ) || "(unattached)";
         const oldBaseComponent =
           swallow(() =>
             getComponentDisplayName(
               this.tplMgr.findComponentContainingBaseVariant(
-                tpl.vsettings[0].variants[0]
-              )
-            )
+                tpl.vsettings[0].variants[0],
+              ),
+            ),
           ) || "(unattached)";
         const tplComponent =
           swallow(() => getComponentDisplayName(getTplOwnerComponent(tpl))) ||
           "(unattached)";
         return `Tried adding base variant of component "${newBaseComponent}" to tpl "${summarizeTpl(
-          tpl
+          tpl,
         )}" in component "${tplComponent}" - currently has base variant of component "${oldBaseComponent}". Tpl's parent is ${
           tpl.parent?.uuid
         }`;
@@ -667,23 +667,23 @@ export class VariantTplMgr {
 
   effectiveVariantSetting(
     tpl: TplNode,
-    variantCombo?: VariantCombo
+    variantCombo?: VariantCombo,
   ): EffectiveVariantSetting {
     if (variantCombo) {
       const component = ensure(
         this.getOwningComponent(tpl),
-        "Given tpl must have owning component"
+        "Given tpl must have owning component",
       );
       const vsettings = sortedVariantSettingStack(
         tpl.vsettings,
         variantCombo,
-        makeVariantComboSorter(this.site, component)
+        makeVariantComboSorter(this.site, component),
       );
       return new EffectiveVariantSetting(
         tpl,
         vsettings,
         this.site,
-        variantCombo
+        variantCombo,
       );
     } else {
       const { variants, vsettings } =
@@ -697,11 +697,11 @@ export class VariantTplMgr {
    */
   effectiveRsh(
     tpl: TplNode,
-    variantCombo?: VariantCombo
+    variantCombo?: VariantCombo,
   ): ReadonlyIRuleSetHelpersX {
     return this.effectiveVariantSetting(
       tpl,
-      variantCombo
+      variantCombo,
     ).rshWithThemeAndParentStyle();
   }
 
@@ -712,7 +712,7 @@ export class VariantTplMgr {
   effectiveTargetVariantSetting(tpl: TplNode) {
     return this.effectiveVariantSetting(
       tpl,
-      this.getTargetVariantComboForNode(tpl)
+      this.getTargetVariantComboForNode(tpl),
     );
   }
 
@@ -740,13 +740,13 @@ export class VariantTplMgr {
     const component = this.getOwningComponentForNewNode();
     assert(
       component.params.includes(param),
-      "Param must belong to owning component"
+      "Param must belong to owning component",
     );
 
     if (defaultContents) {
       // Default contents can only have settings for the base variant
       defaultContents.forEach((node) =>
-        this.ensureSlotDefaultContentSetting(node)
+        this.ensureSlotDefaultContentSetting(node),
       );
     }
 
@@ -770,7 +770,7 @@ export class VariantTplMgr {
         adaptEffectiveVariantSetting(
           tpl,
           baseVs,
-          this.effectiveVariantSetting(tpl)
+          this.effectiveVariantSetting(tpl),
         );
         if (baseVs.dataCond) {
           // Always visible
@@ -789,12 +789,12 @@ export class VariantTplMgr {
     tag: string,
     opts?: MkTplTagOpts,
     rawChildren?: ChildSet,
-    forceBase?: boolean
+    forceBase?: boolean,
   ) {
     const baseVariant = this.getBaseVariantForNewNode();
     const rawChildrenArr = ensureArray(rawChildren || []);
     const children = rawChildrenArr.map((child) =>
-      isKnownTplNode(child) ? child : this.mkTplInlinedText(child)
+      isKnownTplNode(child) ? child : this.mkTplInlinedText(child),
     );
     const tpl = mkTplTagX(tag, { baseVariant, ...opts }, ...children);
     this.initializeVariantsForNewTpl(tpl, forceBase);
@@ -804,7 +804,7 @@ export class VariantTplMgr {
   mkTplInlinedText = (
     text: string,
     tag: string = "div",
-    opts?: MkTplTagOpts
+    opts?: MkTplTagOpts,
   ) => {
     const tpl = this.mkTplTagX(tag, { type: TplTagType.Text, ...(opts || {}) });
     this.ensureBaseVariantSetting(tpl).text = new RawText({
@@ -823,7 +823,7 @@ export class VariantTplMgr {
   }) => {
     const type = ensure(
       opts.asset ? opts.asset.type : opts.type,
-      "mkTplImage expects asset or type"
+      "mkTplImage expects asset or type",
     );
     const finalAttrs = L.assign(
       {},
@@ -834,7 +834,7 @@ export class VariantTplMgr {
             [getTagAttrForImageAsset(opts.asset.type as ImageAssetType)]:
               new ImageAssetRef({ asset: opts.asset }),
           }
-        : {}
+        : {},
     );
     const node = this.mkTplTagX(type === ImageAssetType.Icon ? "svg" : "img", {
       type: TplTagType.Image,
@@ -881,7 +881,7 @@ export class VariantTplMgr {
 
     const curVs = this.ensureCurrentVariantSetting(
       tpl,
-      this.getOwningComponentForNewNode()
+      this.getOwningComponentForNewNode(),
     );
     const variants = this.getTargetVariantComboForNode(tpl);
     if (!isBaseVariant(variants) && !forceBase) {
@@ -893,7 +893,7 @@ export class VariantTplMgr {
   private getVariantSettingForArg(tpl: TplComponent, argVar: Var) {
     return ensure(
       this.tryGetVariantSettingForArg(tpl, argVar),
-      "Expected existing variant setting for arg"
+      "Expected existing variant setting for arg",
     );
   }
 
@@ -916,7 +916,7 @@ export class VariantTplMgr {
 
   getEffectiveArgForParam(
     tpl: TplComponent,
-    param: Param
+    param: Param,
   ): Readonly<Arg> | undefined {
     const argAndSource = this.getEffectiveArgAndSourceForParam(tpl, param);
     return argAndSource ? argAndSource.value : undefined;
@@ -924,7 +924,7 @@ export class VariantTplMgr {
 
   getEffectiveArgAndSourceForParam(
     tpl: TplComponent,
-    param: Param
+    param: Param,
   ): ReplaceKey<ArgSource, "value", Readonly<Arg>> | undefined {
     const vs = this.effectiveVariantSetting(tpl);
     const argAndSourceStack = vs.getArgSource(param);
@@ -933,27 +933,27 @@ export class VariantTplMgr {
 
   getArgAndDefinedIndicator(
     tpl: TplComponent,
-    param: Param
+    param: Param,
   ): [DefinedIndicatorType, Readonly<Arg> | undefined] {
     const vs = this.effectiveVariantSetting(tpl);
     const argAndSourceStack = vs.getArgSource(param);
 
     const component = ensure(
       this.getOwningComponent(tpl),
-      "tpl is expected to have an owning component"
+      "tpl is expected to have an owning component",
     );
     const defined: DefinedIndicatorType = computeDefinedIndicator(
       this.site,
       component,
       argAndSourceStack,
-      this.getTargetIndicatorComboForNode(tpl)
+      this.getTargetIndicatorComboForNode(tpl),
     );
     return [
       defined,
       argAndSourceStack
         ? ensure(
             L.last(argAndSourceStack),
-            "Arg source is expected to be non-empty"
+            "Arg source is expected to be non-empty",
           ).value
         : undefined,
     ];
@@ -963,7 +963,7 @@ export class VariantTplMgr {
     return this.delArgFromVariantSetting(
       tpl,
       argVar,
-      this.ensureVariantSettingForArg(tpl, argVar)
+      this.ensureVariantSettingForArg(tpl, argVar),
     );
   }
 
@@ -975,7 +975,7 @@ export class VariantTplMgr {
     return this.tplMgr.tryDelArg(
       tpl,
       this.getVariantSettingForArg(tpl, argVar),
-      argVar
+      argVar,
     );
   }
 
@@ -984,7 +984,7 @@ export class VariantTplMgr {
       tpl,
       argVar,
       expr,
-      this.ensureVariantSettingForArg(tpl, argVar)
+      this.ensureVariantSettingForArg(tpl, argVar),
     );
   }
 
@@ -992,7 +992,7 @@ export class VariantTplMgr {
     tpl: TplComponent,
     argVar: Var,
     expr: Expr,
-    vs: VariantSetting
+    vs: VariantSetting,
   ) {
     return this.tplMgr.setArg(tpl, vs, argVar, expr);
   }
@@ -1019,7 +1019,7 @@ export class VariantTplMgr {
    */
   getAnimationInfoForVariantCombo(
     tpl: TplTag,
-    variantCombo: VariantCombo
+    variantCombo: VariantCombo,
   ): {
     animations: Animation[];
     definedIndicator: DefinedIndicatorType;
@@ -1027,7 +1027,7 @@ export class VariantTplMgr {
   } {
     const component = ensure(
       $$$(tpl).tryGetOwningComponent(),
-      "tpl must have owning component"
+      "tpl must have owning component",
     );
 
     // Compute defined indicator
@@ -1037,7 +1037,7 @@ export class VariantTplMgr {
       this.site,
       component,
       sourceStack,
-      variantCombo
+      variantCombo,
     );
 
     const definedIndicatorAnimations =
@@ -1049,7 +1049,7 @@ export class VariantTplMgr {
     // Private style variants only show directly-set animations (not inherited).
     // Component variants show inherited animations via the defined indicator.
     const animations = privateStyleVariant
-      ? tryGetVariantSetting(tpl, variantCombo)?.rs.animations ?? []
+      ? (tryGetVariantSetting(tpl, variantCombo)?.rs.animations ?? [])
       : definedIndicatorAnimations;
 
     return {
@@ -1067,7 +1067,7 @@ export class VariantTplMgr {
   addAnimation(
     tpl: TplTag,
     animation: Animation,
-    variantCombo?: VariantCombo
+    variantCombo?: VariantCombo,
   ): Animation[] {
     variantCombo = variantCombo ?? this.getTargetVariantComboForNode(tpl);
     const vs = this.ensureVariantSetting(tpl, variantCombo);
@@ -1077,7 +1077,7 @@ export class VariantTplMgr {
 
     const baseAnimations = shouldCloneAnimationsFromOtherVariants
       ? animations.map((anim) => cloneAnimation(anim))
-      : vs.rs.animations ?? [];
+      : (vs.rs.animations ?? []);
 
     const newAnimations = [...baseAnimations, animation];
     vs.rs.animations = newAnimations;
@@ -1092,7 +1092,7 @@ export class VariantTplMgr {
   removeAnimation(
     tpl: TplTag,
     animation: Animation,
-    variantCombo?: VariantCombo
+    variantCombo?: VariantCombo,
   ): Animation[] {
     variantCombo = variantCombo ?? this.getTargetVariantComboForNode(tpl);
     const vs = this.ensureVariantSetting(tpl, variantCombo);
@@ -1117,7 +1117,7 @@ export class VariantTplMgr {
     tpl: TplTag,
     fromIndex: number,
     toIndex: number,
-    variantCombo?: VariantCombo
+    variantCombo?: VariantCombo,
   ): Animation[] {
     variantCombo = variantCombo ?? this.getTargetVariantComboForNode(tpl);
     const vs = this.ensureVariantSetting(tpl, variantCombo);
@@ -1141,7 +1141,7 @@ export class VariantTplMgr {
    */
   ensureAnimationsForEditing(
     tpl: TplTag,
-    variantCombo?: VariantCombo
+    variantCombo?: VariantCombo,
   ): Animation[] {
     variantCombo = variantCombo ?? this.getTargetVariantComboForNode(tpl);
     const vs = this.ensureVariantSetting(tpl, variantCombo);
@@ -1172,7 +1172,7 @@ export class VariantTplMgr {
       if (!frame) {
         console.log(
           `debug info for getComponentFrame issue: tpl ${summarizeTpl(
-            tpl
+            tpl,
           )} from component ${
             component.name
           } does not have a frame; current stack: ${this.stack
@@ -1180,7 +1180,7 @@ export class VariantTplMgr {
             .join(", ")}`,
           tpl,
           component,
-          this.stack
+          this.stack,
         );
         throw new Error("getComponentFrame did not return a valid frame");
       }
@@ -1197,7 +1197,7 @@ export class VariantTplMgr {
 
   private getComponentFrame(component: Component) {
     return arrayReversed(this.stack).find(
-      (frame) => frame.component === component
+      (frame) => frame.component === component,
     );
   }
 }
@@ -1212,7 +1212,7 @@ export function ensureBaseVariantSetting(component: Component, tpl: TplNode) {
   const baseVs = mkVariantSetting({ variants: [variant] });
   assert(
     !addingBaseToTplWithExistingBase(tpl, variant),
-    "Trying to add base vs to tpl with existing base vs"
+    "Trying to add base vs to tpl with existing base vs",
   );
   tpl.vsettings.push(baseVs);
 

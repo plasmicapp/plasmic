@@ -29,7 +29,7 @@ function CodeQuickstartDisplay_(
     subjectComponentInfo,
     ...props
   }: CodeQuickstartDisplayProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const appCtx = useAppCtx();
   const [shown, setShown] = useState("nextjs");
@@ -62,8 +62,8 @@ function CodeQuickstartDisplay_(
         style: appCtx.appConfig.hiddenQuickstartPlatforms.includes(f)
           ? { display: "none" }
           : {},
-      })
-    )
+      }),
+    ),
   );
 
   const params = new URLSearchParams({

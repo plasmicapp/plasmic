@@ -142,9 +142,9 @@ describe("merging", () => {
         .map(([k, v]) =>
           tuple(
             k,
-            v === undefined ? null : isJsonScalar(v) ? v : isArray(v) ? [] : {}
-          )
-        )
+            v === undefined ? null : isJsonScalar(v) ? v : isArray(v) ? [] : {},
+          ),
+        ),
     );
   }
 
@@ -163,7 +163,7 @@ describe("merging", () => {
           new VariantedValue({
             value: mkTokenRef(site.styleTokens[0]),
             variants: [site.globalVariantGroups[0].variants[0]],
-          })
+          }),
         );
       },
     });
@@ -183,7 +183,7 @@ describe("merging", () => {
     expect(
       (rez.mergedSite.components[0].tplTree as TplTag).vsettings[0].rs.values[
         "line-height"
-      ]
+      ],
     ).toEqual("1");
     expect(rez.mergedSite.styleTokens[0].name).not.toEqual(leftSubject.name);
     expect(rez.mergedSite.styleTokens[0].value).toEqual("1");
@@ -196,14 +196,14 @@ describe("merging", () => {
         ancestorSite: basicSite(),
         a: (site) => {},
         b: (site) => upsertTokens(site, { x: 2 }),
-      })
+      }),
     ).toMatchObject(
       ensureType<PartialDeep<MergeStep, { recurseIntoArrays: true }>>({
         status: "merged",
         mergedSite: {
           styleTokens: [{ name: "x", value: "2" }, {}],
         },
-      })
+      }),
     );
   });
 
@@ -213,14 +213,14 @@ describe("merging", () => {
         ancestorSite: basicSite(),
         a: (site) => upsertTokens(site, { x: 2 }),
         b: (site) => upsertTokens(site, { x: 2 }),
-      })
+      }),
     ).toMatchObject(
       ensureType<PartialDeep<MergeStep, { recurseIntoArrays: true }>>({
         status: "merged",
         mergedSite: {
           styleTokens: [{ name: "x", value: "2" }, {}],
         },
-      })
+      }),
     );
   });
 
@@ -230,7 +230,7 @@ describe("merging", () => {
         ancestorSite: basicSite(),
         a: (site) => upsertTokens(site, { x: 2 }),
         b: (site) => upsertTokens(site, { y: 2 }),
-      })
+      }),
     ).toMatchObject(
       ensureType<PartialDeep<MergeStep, { recurseIntoArrays: true }>>({
         status: "merged",
@@ -246,7 +246,7 @@ describe("merging", () => {
             },
           ],
         },
-      })
+      }),
     );
   });
 
@@ -256,7 +256,7 @@ describe("merging", () => {
         ancestorSite: basicSite(),
         a: (site) => upsertTokens(site, { a: 1 }),
         b: (site) => upsertTokens(site, { b: 1 }),
-      })
+      }),
     ).toMatchObject(
       ensureType<PartialDeep<MergeStep, { recurseIntoArrays: true }>>({
         status: "merged",
@@ -280,7 +280,7 @@ describe("merging", () => {
             },
           ],
         },
-      })
+      }),
     );
   });
 
@@ -290,14 +290,14 @@ describe("merging", () => {
         ancestorSite: basicSite(),
         a: (site) => {},
         b: (site) => upsertTokens(site, { b: 1 }),
-      })
+      }),
     ).toMatchObject(
       ensureType<PartialDeep<MergeStep, { recurseIntoArrays: true }>>({
         status: "merged",
         mergedSite: {
           styleTokens: [{}, {}, { name: "b", value: "1" }],
         },
-      })
+      }),
     );
   });
 
@@ -312,7 +312,7 @@ describe("merging", () => {
             styles: {
               color: "red",
             },
-          })
+          }),
         );
       },
       b: (site) => {
@@ -323,22 +323,22 @@ describe("merging", () => {
             styles: {
               "font-size": "20px",
             },
-          })
+          }),
         );
       },
     });
     expect(res).toMatchObject(
       ensureType<PartialDeep<MergeStep>>({
         status: "merged",
-      })
+      }),
     );
     expect(
       pick(
         last((res.mergedSite.components[0].tplTree as TplTag).vsettings).rs
           .values,
         "color",
-        "font-size"
-      )
+        "font-size",
+      ),
     ).toMatchObject({
       color: "red",
       "font-size": "20px",
@@ -378,12 +378,12 @@ describe("merging", () => {
             ],
           },
         ],
-      })
+      }),
     );
     expect(
       (res.mergedSite.components[0].tplTree as TplTag).vsettings[0].rs.values[
         "color"
-      ]
+      ],
     ).toEqual("blue");
   });
 
@@ -397,7 +397,7 @@ describe("merging", () => {
             if (isKnownTplTag(tpl) && tpl.name === "A") {
               tplTagA = tpl;
             }
-          }
+          },
         );
         tplTagA.vsettings[0].rs.values["background"] =
           "linear-gradient(#EA0D0D, #EA0D0D)";
@@ -409,7 +409,7 @@ describe("merging", () => {
             if (isKnownTplTag(tpl) && tpl.name === "A") {
               tplTagA = tpl;
             }
-          }
+          },
         );
         tplTagA.vsettings[0].rs.values["background"] =
           "linear-gradient(#EEEEEE, #EEEEEE)";
@@ -440,7 +440,7 @@ describe("merging", () => {
             ],
           },
         ],
-      })
+      }),
     );
     let tplTagA;
     flattenTpls(res.mergedSite.components[0].tplTree).forEach((tpl) => {
@@ -449,7 +449,7 @@ describe("merging", () => {
       }
     });
     expect((tplTagA as TplTag).vsettings[0].rs.values["background"]).toEqual(
-      "linear-gradient(#EEEEEE, #EEEEEE)"
+      "linear-gradient(#EEEEEE, #EEEEEE)",
     );
   });
 
@@ -468,14 +468,14 @@ describe("merging", () => {
     expect(res).toMatchObject(
       ensureType<PartialDeep<MergeStep>>({
         status: "merged",
-      })
+      }),
     );
     expect(
       pick(
         (res.mergedSite.components[0].tplTree as TplTag).vsettings[0].rs.values,
         "color",
-        "font-size"
-      )
+        "font-size",
+      ),
     ).toMatchObject({
       color: "red",
       "font-size": "20px",
@@ -492,12 +492,12 @@ describe("merging", () => {
         b: (site) => {
           site.styleTokens[0].name = "x";
         },
-      }))
+      })),
     ).toMatchObject({
       status: "merged",
     });
     expect(
-      res.mergedSite.styleTokens.length === basicSite().styleTokens.length - 1
+      res.mergedSite.styleTokens.length === basicSite().styleTokens.length - 1,
     );
   });
 
@@ -511,12 +511,12 @@ describe("merging", () => {
         b: (site) => {
           site.components[0].name = "aoeu";
         },
-      }))
+      })),
     ).toMatchObject({
       status: "merged",
     });
     expect(
-      res.mergedSite.components.length === basicSite().components.length - 1
+      res.mergedSite.components.length === basicSite().components.length - 1,
     );
   });
 
@@ -532,7 +532,7 @@ describe("merging", () => {
           (rightSubject = site.styleTokens[1]).name = "b";
         },
         directConflictsPicks: ["right"],
-      }))
+      })),
     ).toMatchObject({
       status: "needs-resolution",
       genericDirectConflicts: [
@@ -570,7 +570,7 @@ describe("merging", () => {
         width: 100,
         pinnedGlobalVariants: {},
         pinnedVariants: {},
-      })
+      }),
     );
     expect(
       (res = testMerge({
@@ -581,13 +581,13 @@ describe("merging", () => {
         b: (site) => {
           site.arenas[0].children[0].name = "aoeu";
         },
-      }))
+      })),
     ).toMatchObject({
       status: "merged",
     });
     expect(
       res.mergedSite.arenas[0].children.length ===
-        ancSite.arenas[0].children.length - 1
+        ancSite.arenas[0].children.length - 1,
     );
   });
 
@@ -598,7 +598,7 @@ describe("merging", () => {
           ancestorSite: basicSite(),
           a: (site) => ([leftSubject] = upsertTokens(site, { aaa: 1 })),
           b: (site) => ([rightSubject] = upsertTokens(site, { aaa: 1 })),
-        })
+        }),
       ).toMatchObject({
         status: "merged",
         autoReconciliations: [
@@ -629,7 +629,7 @@ describe("merging", () => {
               type: ComponentType.Plain,
               name: "X",
             })),
-        })
+        }),
       ).toMatchObject({
         status: "merged",
         autoReconciliations: [
@@ -727,19 +727,19 @@ describe("merging", () => {
       });
 
       const tplTree = ensureKnownTplTag(
-        testResult.mergedSite.components[0].tplTree
+        testResult.mergedSite.components[0].tplTree,
       );
       const pathA = ensureKnownObjectPath(
         ensureKnownExprText(
           ensureKnownTplTag(ensureKnownTplTag(tplTree.children[0]).children[5])
-            .vsettings[0].text
-        ).expr
+            .vsettings[0].text,
+        ).expr,
       ).path;
       const pathB = ensureKnownObjectPath(
         ensureKnownExprText(
           ensureKnownTplTag(ensureKnownTplTag(tplTree.children[1]).children[1])
-            .vsettings[0].text
-        ).expr
+            .vsettings[0].text,
+        ).expr,
       ).path;
       expect(pathA).toStrictEqual(["$state", "variable"]);
       expect(pathB).toStrictEqual(["$state", "variable2"]);
@@ -752,16 +752,16 @@ describe("merging", () => {
           a: (site, tplMgr) => {
             tplMgr.renameVariantGroup(
               (leftSubject = site.components[0]).variantGroups[0],
-              "clash"
+              "clash",
             );
           },
           b: (site, tplMgr) => {
             tplMgr.renameVariantGroup(
               (rightSubject = site.components[0]).variantGroups[2],
-              "clash"
+              "clash",
             );
           },
-        })
+        }),
       ).toMatchObject({
         status: "merged",
         autoReconciliations: [
@@ -787,7 +787,7 @@ describe("merging", () => {
         a: (site) => ([leftSubject] = upsertTokens(site, { x: 2 })),
         b: (site) => ([rightSubject] = upsertTokens(site, { x: 3 })),
         directConflictsPicks: ["left"],
-      }))
+      })),
     ).toMatchObject({
       status: "needs-resolution",
       genericDirectConflicts: [
@@ -816,7 +816,7 @@ describe("merging", () => {
           rightSubject = site.styleTokens[0];
         },
         directConflictsPicks: ["right"],
-      }))
+      })),
     ).toMatchObject({
       status: "needs-resolution",
       genericDirectConflicts: [
@@ -845,7 +845,7 @@ describe("merging", () => {
           rightSubject = site.styleTokens[0];
         },
         directConflictsPicks: ["right"],
-      })
+      }),
     ).toMatchObject({
       status: "needs-resolution",
       genericDirectConflicts: [
@@ -875,7 +875,7 @@ describe("merging", () => {
           (rightSubject = site).globalVariant.description = "b";
         },
         directConflictsPicks: ["left"],
-      }))
+      })),
     ).toMatchObject({
       status: "needs-resolution",
       genericDirectConflicts: [
@@ -901,7 +901,7 @@ describe("merging", () => {
           (rightSubject = site.components[0]).name = "b";
         },
         directConflictsPicks: ["right"],
-      }))
+      })),
     ).toMatchObject({
       status: "needs-resolution",
       genericDirectConflicts: [
@@ -928,7 +928,7 @@ describe("merging", () => {
             site.components[0].variantGroups[0].param).variable.name = "b";
         },
         directConflictsPicks: ["left"],
-      }))
+      })),
     ).toMatchObject({
       status: "needs-resolution",
       genericDirectConflicts: [
@@ -940,7 +940,7 @@ describe("merging", () => {
       ],
     });
     expect(
-      res.mergedSite.components[0].variantGroups[0].param.variable.name
+      res.mergedSite.components[0].variantGroups[0].param.variable.name,
     ).toBe("a");
   });
 
@@ -957,7 +957,7 @@ describe("merging", () => {
             "screen-b";
         },
         directConflictsPicks: ["right"],
-      }))
+      })),
     ).toMatchObject({
       status: "needs-resolution",
       genericDirectConflicts: [
@@ -969,7 +969,7 @@ describe("merging", () => {
       ],
     });
     expect(res.mergedSite.globalVariantGroups[0].param.variable.name).toBe(
-      "screen-b"
+      "screen-b",
     );
   });
 
@@ -986,7 +986,7 @@ describe("merging", () => {
             "media-query-b";
         },
         directConflictsPicks: ["left"],
-      }))
+      })),
     ).toMatchObject({
       status: "needs-resolution",
       genericDirectConflicts: [
@@ -998,7 +998,7 @@ describe("merging", () => {
       ],
     });
     expect(res.mergedSite.globalVariantGroups[0].variants[0].mediaQuery).toBe(
-      "media-query-a"
+      "media-query-a",
     );
   });
 
@@ -1016,7 +1016,7 @@ describe("merging", () => {
             site.components[0].variantGroups[0].variants[0]).description = "b";
         },
         directConflictsPicks: ["left"],
-      }))
+      })),
     ).toMatchObject({
       status: "needs-resolution",
       genericDirectConflicts: [
@@ -1028,7 +1028,7 @@ describe("merging", () => {
       ],
     });
     expect(
-      res.mergedSite.components[0].variantGroups[0].variants[0].description
+      res.mergedSite.components[0].variantGroups[0].variants[0].description,
     ).toBe("a");
   });
 
@@ -1040,7 +1040,7 @@ describe("merging", () => {
         a: (site) => {
           (leftSubject = ensure(
             site.components.find((c) => c.type === ComponentType.Page),
-            ""
+            "",
           ) as PageComponent).pageMeta.openGraphImage = new ImageAssetRef({
             asset: site.imageAssets[0],
           });
@@ -1048,13 +1048,13 @@ describe("merging", () => {
         b: (site) => {
           (rightSubject = ensure(
             site.components.find((c) => c.type === ComponentType.Page),
-            ""
+            "",
           ) as PageComponent).pageMeta.openGraphImage = new ImageAssetRef({
             asset: site.imageAssets[1],
           });
         },
         directConflictsPicks: ["right"],
-      }))
+      })),
     ).toMatchObject({
       status: "needs-resolution",
       genericDirectConflicts: [
@@ -1068,7 +1068,7 @@ describe("merging", () => {
     const resSubject = (
       ensure(
         res.mergedSite.components.find((c) => c.type === ComponentType.Page),
-        ""
+        "",
       ) as PageComponent
     ).pageMeta.openGraphImage;
     expect((resSubject as ImageAssetRef).asset.name).toBe("image 2");
@@ -1097,7 +1097,7 @@ describe("merging", () => {
             (site.components[0].tplTree as TplTag).vsettings[0].attrs["c"] =
               codeLit("3");
           },
-        }))
+        })),
       ).toMatchObject({
         status: "merged",
       });
@@ -1106,21 +1106,21 @@ describe("merging", () => {
           (res.mergedSite.components[0].tplTree as TplTag).vsettings[0].attrs[
             "a"
           ] as CustomCode
-        ).code
+        ).code,
       ).toBe('"1"');
       expect(
         (
           (res.mergedSite.components[0].tplTree as TplTag).vsettings[0].attrs[
             "b"
           ] as CustomCode
-        ).code
+        ).code,
       ).toBe('"2"');
       expect(
         (
           (res.mergedSite.components[0].tplTree as TplTag).vsettings[0].attrs[
             "c"
           ] as CustomCode
-        ).code
+        ).code,
       ).toBe('"3"');
     });
 
@@ -1143,7 +1143,7 @@ describe("merging", () => {
               codeLit("3");
           },
           directConflictsPicks: ["right"],
-        }))
+        })),
       ).toMatchObject({
         status: "needs-resolution",
         genericDirectConflicts: [
@@ -1159,21 +1159,21 @@ describe("merging", () => {
           (res.mergedSite.components[0].tplTree as TplTag).vsettings[0].attrs[
             "a"
           ] as CustomCode
-        ).code
+        ).code,
       ).toBe('"11"');
       expect(
         (
           (res.mergedSite.components[0].tplTree as TplTag).vsettings[0].attrs[
             "b"
           ] as CustomCode
-        ).code
+        ).code,
       ).toBe('"2"');
       expect(
         (
           (res.mergedSite.components[0].tplTree as TplTag).vsettings[0].attrs[
             "c"
           ] as CustomCode
-        ).code
+        ).code,
       ).toBe('"3"');
     });
 
@@ -1189,7 +1189,7 @@ describe("merging", () => {
             rightSubject = site.components[0].metadata["a"] = "1";
             rightSubject = site.components[0].metadata["c"] = "3";
           },
-        }))
+        })),
       ).toMatchObject({
         status: "merged",
       });
@@ -1213,7 +1213,7 @@ describe("merging", () => {
             site.components[0].metadata["c"] = "3";
           },
           directConflictsPicks: ["right"],
-        }))
+        })),
       ).toMatchObject({
         status: "needs-resolution",
         genericDirectConflicts: [
@@ -1260,7 +1260,7 @@ describe("merging", () => {
                 styles: {
                   color: "red",
                 },
-              })
+              }),
             );
           }
         },
@@ -1274,11 +1274,11 @@ describe("merging", () => {
                 styles: {
                   color: "green",
                 },
-              })
+              }),
             );
           }
         },
-      })
+      }),
     ).toMatchObject({
       status: "needs-resolution",
       genericDirectConflicts: [
@@ -1317,7 +1317,7 @@ describe("merging", () => {
               text: "a",
             });
           },
-        })
+        }),
       ).toMatchObject({
         status: "merged",
       });
@@ -1342,7 +1342,7 @@ describe("merging", () => {
             });
           },
           directConflictsPicks: ["right"],
-        }))
+        })),
       ).toMatchObject({
         status: "needs-resolution",
         genericDirectConflicts: [
@@ -1357,7 +1357,7 @@ describe("merging", () => {
         (
           (res.mergedSite.components[0].tplTree as TplTag).vsettings[0]
             .text as RawText
-        ).text
+        ).text,
       ).toBe("b");
     });
 
@@ -1375,7 +1375,7 @@ describe("merging", () => {
               (rightSubject = site.components[0]).tplTree as TplTag
             ).vsettings[0].attrs["title"] = codeLit("0");
           },
-        })
+        }),
       ).toMatchObject({
         status: "merged",
       });
@@ -1397,7 +1397,7 @@ describe("merging", () => {
             site.userManagedFonts.splice(0, 1);
             (rightSubject = site.userManagedFonts).push("b");
           },
-        })
+        }),
       ).toMatchObject({
         status: "merged",
         mergedSite: {
@@ -1448,7 +1448,7 @@ describe("merging", () => {
             cyclicShift((rightSubject = vg).variants, false);
           },
           directConflictsPicks: ["left", "right"],
-        }))
+        })),
       ).toMatchObject({
         status: "needs-resolution",
         genericDirectConflicts: [
@@ -1466,8 +1466,8 @@ describe("merging", () => {
       });
       expect(
         res.mergedSite.components[0].variantGroups[0].variants.map(
-          (v) => v.name
-        )
+          (v) => v.name,
+        ),
       ).toEqual(["b", "Rounded", "Flat"]);
     });
 
@@ -1502,7 +1502,7 @@ describe("merging", () => {
             ];
           },
           directConflictsPicks: ["right"],
-        }))
+        })),
       ).toMatchObject({
         status: "needs-resolution",
         genericDirectConflicts: [
@@ -1514,7 +1514,7 @@ describe("merging", () => {
         ],
       });
       expect(
-        (res.mergedSite.components[0].tplTree as TplTag).vsettings[0].rs.mixins
+        (res.mergedSite.components[0].tplTree as TplTag).vsettings[0].rs.mixins,
       ).toMatchObject([
         {
           name: "My mixin 2",
@@ -1574,12 +1574,12 @@ describe("merging", () => {
             removeVariantGroup(
               site,
               component,
-              site.components[0].variantGroups[0]
+              site.components[0].variantGroups[0],
             );
             removeVariantGroup(
               site,
               component,
-              site.components[0].variantGroups[0]
+              site.components[0].variantGroups[0],
             );
             leftSubject = component;
           },
@@ -1588,15 +1588,15 @@ describe("merging", () => {
             removeVariantGroup(
               site,
               component,
-              site.components[0].variantGroups[1]
+              site.components[0].variantGroups[1],
             );
             rightSubject = component;
           },
-        }))
+        })),
       ).toMatchObject(
         ensureType<PartialDeep<MergeStep>>({
           status: "merged",
-        })
+        }),
       );
       expect(res.mergedSite.components[0].variantGroups).toMatchObject([
         { param: { variable: { name: "Color" } } },
@@ -1632,7 +1632,7 @@ describe("merging", () => {
               ...component.params.slice(3),
             ];
           },
-        })
+        }),
       ).toMatchObject({
         status: "merged",
       });
@@ -1661,7 +1661,7 @@ describe("merging", () => {
               (rightSubject = site.components[0]).tplTree as TplTag
             ).vsettings[0].rs.mixins = [site.mixins[1]];
           },
-        })
+        }),
       ).toMatchObject({
         status: "merged",
       });
@@ -1687,7 +1687,7 @@ describe("merging", () => {
               (rightSubject = site.components[0]).tplTree as TplTag
             ).vsettings[0].rs.mixins = [site.mixins[0], site.mixins[2]];
           },
-        })
+        }),
       ).toMatchObject({
         status: "merged",
       });
@@ -1706,7 +1706,7 @@ describe("merging", () => {
                   vgroup.variants[1],
                   vgroup.variants[2],
                 ],
-              })
+              }),
             );
             return site;
           })(),
@@ -1730,7 +1730,7 @@ describe("merging", () => {
               vgroup.variants[0],
             ];
           },
-        })
+        }),
       ).toMatchObject({
         status: "merged",
       });
@@ -1756,7 +1756,7 @@ describe("merging", () => {
             new VariantedValue({
               variants: [site.globalVariantGroups[0].variants[0]],
               value: "1",
-            })
+            }),
           );
         },
         b: (site) => {
@@ -1767,7 +1767,7 @@ describe("merging", () => {
                 site.globalVariantGroups[1].variants[0],
               ],
               value: "2",
-            })
+            }),
           );
         },
       });
@@ -1817,7 +1817,7 @@ describe("merging", () => {
                 site.globalVariantGroups[1].variants[0],
               ],
               value: "1",
-            })
+            }),
           );
         },
         b: (site) => {
@@ -1828,7 +1828,7 @@ describe("merging", () => {
                 site.globalVariantGroups[1].variants[0],
               ],
               value: "2",
-            })
+            }),
           );
         },
         directConflictsPicks: ["right"],
@@ -1884,7 +1884,7 @@ describe("merging", () => {
           const site = basicSite();
           const cmp = ensure(
             site.components.find((c) => c.name === "Button"),
-            () => `Component "Button" not found`
+            () => `Component "Button" not found`,
           );
           cmp.tplTree.vsettings.push(
             mkVariantSetting({
@@ -1895,21 +1895,21 @@ describe("merging", () => {
               attrs: {
                 foo: codeLit(10),
               },
-            })
+            }),
           );
           return site;
         })(),
         a: (site) => {
           const cmp = ensure(
             site.components.find((c) => c.name === "Button"),
-            () => `Component "Button" not found`
+            () => `Component "Button" not found`,
           );
           removeVariantGroup(site, cmp, cmp.variantGroups[0]);
         },
         b: (site) => {
           const cmp = ensure(
             site.components.find((c) => c.name === "Button"),
-            () => `Component "Button" not found`
+            () => `Component "Button" not found`,
           );
           cmp.tplTree.vsettings.push(
             mkVariantSetting({
@@ -1917,7 +1917,7 @@ describe("merging", () => {
               attrs: {
                 foo: codeLit(2),
               },
-            })
+            }),
           );
           removeVariantGroup(site, cmp, cmp.variantGroups[0]);
         },
@@ -1927,11 +1927,11 @@ describe("merging", () => {
       });
       const cmp = ensure(
         res.mergedSite.components.find((c) => c.name === "Button"),
-        () => `Component "Button" not found`
+        () => `Component "Button" not found`,
       );
       expect(cmp.tplTree.vsettings.length).toBe(2);
       expect(
-        ensureKnownCustomCode(cmp.tplTree.vsettings[1].attrs["foo"]).code
+        ensureKnownCustomCode(cmp.tplTree.vsettings[1].attrs["foo"]).code,
       ).toBe("2");
     });
 
@@ -1950,24 +1950,24 @@ describe("merging", () => {
               invalidationKeys: undefined,
             }),
           }),
-        })
+        }),
       );
       res = testMerge({
         ancestorSite: baseSite,
         a: (site) => {
           site.components[0].dataQueries[0].op!.queryInvalidation!.invalidationQueries.push(
-            "testing-string-equal"
+            "testing-string-equal",
           );
           site.components[0].dataQueries[0].op!.queryInvalidation!.invalidationQueries.push(
-            new QueryRef({ ref: site.components[0].dataQueries[0] })
+            new QueryRef({ ref: site.components[0].dataQueries[0] }),
           );
         },
         b: (site) => {
           site.components[0].dataQueries[0].op!.queryInvalidation!.invalidationQueries.push(
-            new QueryRef({ ref: site.components[0].dataQueries[0] })
+            new QueryRef({ ref: site.components[0].dataQueries[0] }),
           );
           site.components[0].dataQueries[0].op!.queryInvalidation!.invalidationQueries.push(
-            "testing-string-equal"
+            "testing-string-equal",
           );
         },
       });
@@ -1976,8 +1976,8 @@ describe("merging", () => {
       });
       expect(
         res.mergedSite.components[0].dataQueries[0].op!.queryInvalidation!.invalidationQueries!.map(
-          (v) => (isString(v) ? v : v.ref.uuid)
-        )
+          (v) => (isString(v) ? v : v.ref.uuid),
+        ),
       ).toMatchObject([
         "testing-string-equal",
         baseSite.components[0].dataQueries[0].uuid,
@@ -2014,7 +2014,7 @@ describe("merging", () => {
             });
             $$$(tplTagD).append(tplTagBB);
           },
-        })
+        }),
       ).toMatchObject({
         status: "merged",
       });
@@ -2048,7 +2048,7 @@ describe("merging", () => {
             });
             $$$(tplTagC).append(tplTagAA);
           },
-        })
+        }),
       ).toMatchObject({
         status: "merged",
       });
@@ -2068,7 +2068,7 @@ describe("merging", () => {
                 if (isKnownTplTag(tpl) && tpl.name === "AA") {
                   tplTagAA = tpl;
                 }
-              }
+              },
             );
             $$$(tplTagC).append(tplTagAA);
           },
@@ -2082,13 +2082,13 @@ describe("merging", () => {
                 if (isKnownTplTag(tpl) && tpl.name === "AA") {
                   tplTagAA = tpl;
                 }
-              }
+              },
             );
             $$$(tplTagD).append(tplTagAA);
           },
           useLegacyResolveConflicts: true,
           directConflictsPicks: ["right"],
-        }))
+        })),
       ).toMatchObject({
         status: "needs-resolution",
         specialDirectConflicts: [
@@ -2109,7 +2109,7 @@ describe("merging", () => {
           ).find((tag) => tag.name === "D")?.children as TplTag[]
         )
           .slice(-1)
-          .map((tag) => tag.name)
+          .map((tag) => tag.name),
       ).toEqual(["AA"]);
     });
 
@@ -2129,7 +2129,7 @@ describe("merging", () => {
               type: ComponentType.Plain,
             });
           },
-        })
+        }),
       ).toMatchObject({
         status: "merged",
         mergedSite: {
@@ -2151,7 +2151,7 @@ describe("merging", () => {
                     variants: [getBaseVariant(site.components[0])],
                   }),
                 ],
-              })
+              }),
             );
           },
           b: (site) => {
@@ -2163,10 +2163,10 @@ describe("merging", () => {
                     variants: [getBaseVariant(site.components[0])],
                   }),
                 ],
-              })
+              }),
             );
           },
-        })
+        }),
       ).toMatchObject({
         status: "merged",
         mergedSite: {
@@ -2199,24 +2199,24 @@ describe("merging", () => {
                 if (isKnownTplTag(tpl) && tpl.name === "A") {
                   tplTagA = tpl;
                 }
-              }
+              },
             );
             // Swap A1 and A2
             const indexA1 = tplTagA.children.findIndex(
-              (tpl) => isKnownTplTag(tpl) && tpl.name === "A1"
+              (tpl) => isKnownTplTag(tpl) && tpl.name === "A1",
             );
             assert(
               tplTagA.children[indexA1 + 1].name === "A2",
-              () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`
+              () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`,
             );
             tplTagA.children[indexA1] = tplTagA.children.splice(
               indexA1 + 1,
               1,
-              tplTagA.children[indexA1]
+              tplTagA.children[indexA1],
             )[0];
           },
           b: () => {},
-        })
+        }),
       ).toMatchObject({
         status: "merged",
       });
@@ -2233,20 +2233,20 @@ describe("merging", () => {
                 if (isKnownTplTag(tpl) && tpl.name === "A") {
                   tplTagA = tpl;
                 }
-              }
+              },
             );
             // Swap A1 and A2
             const indexA1 = tplTagA.children.findIndex(
-              (tpl) => isKnownTplTag(tpl) && tpl.name === "A1"
+              (tpl) => isKnownTplTag(tpl) && tpl.name === "A1",
             );
             assert(
               tplTagA.children[indexA1 + 1].name === "A2",
-              () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`
+              () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`,
             );
             tplTagA.children[indexA1] = tplTagA.children.splice(
               indexA1 + 1,
               1,
-              tplTagA.children[indexA1]
+              tplTagA.children[indexA1],
             )[0];
           },
           b: (site) => {
@@ -2256,23 +2256,23 @@ describe("merging", () => {
                 if (isKnownTplTag(tpl) && tpl.name === "A") {
                   tplTagA = tpl;
                 }
-              }
+              },
             );
             // Swap A1 and A2
             const indexA1 = tplTagA.children.findIndex(
-              (tpl) => isKnownTplTag(tpl) && tpl.name === "A1"
+              (tpl) => isKnownTplTag(tpl) && tpl.name === "A1",
             );
             assert(
               tplTagA.children[indexA1 + 1].name === "A2",
-              () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`
+              () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`,
             );
             tplTagA.children[indexA1] = tplTagA.children.splice(
               indexA1 + 1,
               1,
-              tplTagA.children[indexA1]
+              tplTagA.children[indexA1],
             )[0];
           },
-        })
+        }),
       ).toMatchObject({
         status: "merged",
       });
@@ -2289,20 +2289,20 @@ describe("merging", () => {
                 if (isKnownTplTag(tpl) && tpl.name === "A") {
                   tplTagA = tpl;
                 }
-              }
+              },
             );
             // Swap A1 and A2
             const indexA1 = tplTagA.children.findIndex(
-              (tpl) => isKnownTplTag(tpl) && tpl.name === "A1"
+              (tpl) => isKnownTplTag(tpl) && tpl.name === "A1",
             );
             assert(
               tplTagA.children[indexA1 + 1].name === "A2",
-              () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`
+              () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`,
             );
             tplTagA.children[indexA1] = tplTagA.children.splice(
               indexA1 + 1,
               1,
-              tplTagA.children[indexA1]
+              tplTagA.children[indexA1],
             )[0];
           },
           b: (site) => {
@@ -2312,25 +2312,25 @@ describe("merging", () => {
                 if (isKnownTplTag(tpl) && tpl.name === "A") {
                   tplTagA = tpl;
                 }
-              }
+              },
             );
             // Swap A2 and A3
             const indexA2 = tplTagA.children.findIndex(
-              (tpl) => isKnownTplTag(tpl) && tpl.name === "A2"
+              (tpl) => isKnownTplTag(tpl) && tpl.name === "A2",
             );
             assert(
               tplTagA.children[indexA2 + 1].name === "A3",
-              () => `Expected A3 but got ${tplTagA.children[indexA2 + 1].name}`
+              () => `Expected A3 but got ${tplTagA.children[indexA2 + 1].name}`,
             );
             tplTagA.children[indexA2] = tplTagA.children.splice(
               indexA2 + 1,
               1,
-              tplTagA.children[indexA2]
+              tplTagA.children[indexA2],
             )[0];
           },
           useLegacyResolveConflicts: true,
           directConflictsPicks: ["right"],
-        }))
+        })),
       ).toMatchObject({
         status: "needs-resolution",
       });
@@ -2341,7 +2341,7 @@ describe("merging", () => {
             (res.mergedSite.components[0].tplTree as TplTag)
               .children[0] as TplTag
           ).children as TplTag[]
-        ).map((x) => x.name)
+        ).map((x) => x.name),
       ).toEqual(["AA", "A1", "A3", "A2", "A4"]);
     });
 
@@ -2355,20 +2355,20 @@ describe("merging", () => {
               if (isKnownTplTag(tpl) && tpl.name === "A") {
                 tplTagA = tpl;
               }
-            }
+            },
           );
           // Swap A1 and A2
           const indexA1 = tplTagA.children.findIndex(
-            (tpl) => isKnownTplTag(tpl) && tpl.name === "A1"
+            (tpl) => isKnownTplTag(tpl) && tpl.name === "A1",
           );
           assert(
             tplTagA.children[indexA1 + 1].name === "A2",
-            () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`
+            () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`,
           );
           tplTagA.children[indexA1] = tplTagA.children.splice(
             indexA1 + 1,
             1,
-            tplTagA.children[indexA1]
+            tplTagA.children[indexA1],
           )[0];
         },
         b: (site) => {
@@ -2378,20 +2378,20 @@ describe("merging", () => {
               if (isKnownTplTag(tpl) && tpl.name === "A") {
                 tplTagA = tpl;
               }
-            }
+            },
           );
           // Swap A2 and A3
           const indexA2 = tplTagA.children.findIndex(
-            (tpl) => isKnownTplTag(tpl) && tpl.name === "A2"
+            (tpl) => isKnownTplTag(tpl) && tpl.name === "A2",
           );
           assert(
             tplTagA.children[indexA2 + 1].name === "A3",
-            () => `Expected A3 but got ${tplTagA.children[indexA2 + 1].name}`
+            () => `Expected A3 but got ${tplTagA.children[indexA2 + 1].name}`,
           );
           tplTagA.children[indexA2] = tplTagA.children.splice(
             indexA2 + 1,
             1,
-            tplTagA.children[indexA2]
+            tplTagA.children[indexA2],
           )[0];
         },
         directConflictsPicks: ["left"],
@@ -2403,7 +2403,7 @@ describe("merging", () => {
           if (isKnownTplTag(tpl) && tpl.name === "A") {
             tplTagA = tpl;
           }
-        }
+        },
       );
       const childrenNames = tplTagA.children
         .map((child) => child.name)
@@ -2421,20 +2421,20 @@ describe("merging", () => {
               if (isKnownTplTag(tpl) && tpl.name === "A") {
                 tplTagA = tpl;
               }
-            }
+            },
           );
           // Swap A1 and A2
           const indexA1 = tplTagA.children.findIndex(
-            (tpl) => isKnownTplTag(tpl) && tpl.name === "A1"
+            (tpl) => isKnownTplTag(tpl) && tpl.name === "A1",
           );
           assert(
             tplTagA.children[indexA1 + 1].name === "A2",
-            () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`
+            () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`,
           );
           tplTagA.children[indexA1] = tplTagA.children.splice(
             indexA1 + 1,
             1,
-            tplTagA.children[indexA1]
+            tplTagA.children[indexA1],
           )[0];
         },
         b: (site) => {
@@ -2444,20 +2444,20 @@ describe("merging", () => {
               if (isKnownTplTag(tpl) && tpl.name === "A") {
                 tplTagA = tpl;
               }
-            }
+            },
           );
           // Swap A2 and A3
           const indexA2 = tplTagA.children.findIndex(
-            (tpl) => isKnownTplTag(tpl) && tpl.name === "A2"
+            (tpl) => isKnownTplTag(tpl) && tpl.name === "A2",
           );
           assert(
             tplTagA.children[indexA2 + 1].name === "A3",
-            () => `Expected A3 but got ${tplTagA.children[indexA2 + 1].name}`
+            () => `Expected A3 but got ${tplTagA.children[indexA2 + 1].name}`,
           );
           tplTagA.children[indexA2] = tplTagA.children.splice(
             indexA2 + 1,
             1,
-            tplTagA.children[indexA2]
+            tplTagA.children[indexA2],
           )[0];
         },
         directConflictsPicks: ["right"],
@@ -2469,7 +2469,7 @@ describe("merging", () => {
           if (isKnownTplTag(tpl) && tpl.name === "A") {
             tplTagA = tpl;
           }
-        }
+        },
       );
       const childrenNames = tplTagA.children
         .map((child) => child.name)
@@ -2484,7 +2484,7 @@ describe("merging", () => {
       a: (site) => {
         const comp = ensure(
           site.components.find((c) => c.name === "InstantiateSlotArgs"),
-          () => "Couldn't find InstantiateSlotArgs"
+          () => "Couldn't find InstantiateSlotArgs",
         );
         let tplComp: TplComponent = undefined as any;
         flattenTpls(comp.tplTree).forEach((tpl) => {
@@ -2494,7 +2494,7 @@ describe("merging", () => {
         });
         const slot2 = ensure(
           $$$(tplComp).getSlotArg("slot2"),
-          () => `No slot arg for slot2`
+          () => `No slot arg for slot2`,
         );
         const baseVariant = getBaseVariant(comp);
         const [node2, node3] = ensureKnownRenderExpr(slot2.expr).tpl;
@@ -2504,21 +2504,21 @@ describe("merging", () => {
             name: "prepend",
             baseVariant,
             variants: [mkVariantSetting({ variants: [baseVariant] })],
-          })
+          }),
         );
         ensureKnownRenderExpr(slot2.expr).tpl.push(
           mkTplTagX("div", {
             name: "append",
             baseVariant,
             variants: [mkVariantSetting({ variants: [baseVariant] })],
-          })
+          }),
         );
         tplChildren(tplComp).forEach((child) => (child.parent = tplComp));
       },
       b: (site) => {
         const comp = ensure(
           site.components.find((c) => c.name === "InstantiateSlotArgs"),
-          () => "Couldn't find InstantiateSlotArgs"
+          () => "Couldn't find InstantiateSlotArgs",
         );
         let tplComp: TplComponent = undefined as any;
         flattenTpls(comp.tplTree).forEach((tpl) => {
@@ -2528,13 +2528,13 @@ describe("merging", () => {
         });
         const slot1 = ensure(
           $$$(ensure(tplComp, () => `tplComp is undefined`)).getSlotArg(
-            "slot1"
+            "slot1",
           ),
-          () => `No slot arg for slot1`
+          () => `No slot arg for slot1`,
         );
         const slot2 = ensure(
           $$$(tplComp).getSlotArg("slot2"),
-          () => `No slot arg for slot2`
+          () => `No slot arg for slot2`,
         );
         const [node1] = ensureKnownRenderExpr(slot1.expr).tpl;
         const [node2, node3] = ensureKnownRenderExpr(slot2.expr).tpl;
@@ -2550,7 +2550,7 @@ describe("merging", () => {
     const { mergedSite } = res;
     const comp = ensure(
       mergedSite.components.find((c) => c.name === "InstantiateSlotArgs"),
-      () => "Couldn't find InstantiateSlotArgs"
+      () => "Couldn't find InstantiateSlotArgs",
     );
     let tplComp: TplComponent = undefined as any;
     flattenTpls(comp.tplTree).forEach((tpl) => {
@@ -2560,17 +2560,17 @@ describe("merging", () => {
     });
     const slot1 = ensure(
       $$$(ensure(tplComp, () => `tplComp is undefined`)).getSlotArg("slot1"),
-      () => `No slot arg for slot1`
+      () => `No slot arg for slot1`,
     );
     const slot2 = ensure(
       $$$(tplComp).getSlotArg("slot2"),
-      () => `No slot arg for slot2`
+      () => `No slot arg for slot2`,
     );
     expect(
-      ensureKnownRenderExpr(slot1.expr).tpl.map((tpl) => (tpl as any).name)
+      ensureKnownRenderExpr(slot1.expr).tpl.map((tpl) => (tpl as any).name),
     ).toEqual(["SlotArgNode3", "SlotArgNode1"]);
     expect(
-      ensureKnownRenderExpr(slot2.expr).tpl.map((tpl) => (tpl as any).name)
+      ensureKnownRenderExpr(slot2.expr).tpl.map((tpl) => (tpl as any).name),
     ).toEqual(["prepend", "SlotArgNode2", "append"]);
   });
   it("merges default slot contents and updates virtual slot arg", () => {
@@ -2579,7 +2579,7 @@ describe("merging", () => {
       a: (site) => {
         const comp = ensure(
           site.components.find((c) => c.name === "HasSlots"),
-          () => "Couldn't find HasSlots"
+          () => "Couldn't find HasSlots",
         );
         let tplSlot: TplSlot = undefined as any;
         flattenTpls(comp.tplTree).forEach((tpl) => {
@@ -2593,13 +2593,13 @@ describe("merging", () => {
             name: "append",
             baseVariant,
             variants: [mkVariantSetting({ variants: [baseVariant] })],
-          })
+          }),
         );
       },
       b: (site) => {
         const comp = ensure(
           site.components.find((c) => c.name === "HasSlots"),
-          () => "Couldn't find HasSlots"
+          () => "Couldn't find HasSlots",
         );
         let tplSlot: TplSlot = undefined as any;
         flattenTpls(comp.tplTree).forEach((tpl) => {
@@ -2613,7 +2613,7 @@ describe("merging", () => {
             name: "prepend",
             baseVariant,
             variants: [mkVariantSetting({ variants: [baseVariant] })],
-          })
+          }),
         );
       },
     });
@@ -2623,7 +2623,7 @@ describe("merging", () => {
     const { mergedSite } = res;
     const comp = ensure(
       mergedSite.components.find((c) => c.name === "InstantiateSlotArgs"),
-      () => "Couldn't find InstantiateSlotArgs"
+      () => "Couldn't find InstantiateSlotArgs",
     );
     let tplComp2: TplComponent = undefined as any;
     flattenTpls(comp.tplTree).forEach((tpl) => {
@@ -2633,12 +2633,12 @@ describe("merging", () => {
     });
     const slot1 = ensure(
       $$$(ensure(tplComp2, () => `tplComp2 is undefined`)).getSlotArg("slot1"),
-      () => `No slot arg for slot1`
+      () => `No slot arg for slot1`,
     );
     expect(
       ensureKnownVirtualRenderExpr(slot1.expr).tpl.map(
-        (tpl) => (tpl as any).name
-      )
+        (tpl) => (tpl as any).name,
+      ),
     ).toMatchObject(["prepend", "defaultContent", "append"]);
   });
   it("Can move tpl into slot of a new TplComponent", () => {
@@ -2648,7 +2648,7 @@ describe("merging", () => {
         // Just adds a new tpl to `InstantiateSlotArgs`
         const comp = ensure(
           site.components.find((c) => c.name === "InstantiateSlotArgs"),
-          () => "Couldn't find InstantiateSlotArgs"
+          () => "Couldn't find InstantiateSlotArgs",
         );
         const baseVariant = getBaseVariant(comp);
         $$$(comp.tplTree).append(
@@ -2656,18 +2656,18 @@ describe("merging", () => {
             name: "append",
             baseVariant,
             variants: [mkVariantSetting({ variants: [baseVariant] })],
-          })
+          }),
         );
       },
       b: (site) => {
         // Moves `tplComp2` into `newTplComp`
         const hasSlots = ensure(
           site.components.find((c) => c.name === "HasSlots"),
-          () => "Couldn't find InstantiateSlotArgs"
+          () => "Couldn't find InstantiateSlotArgs",
         );
         const comp = ensure(
           site.components.find((c) => c.name === "InstantiateSlotArgs"),
-          () => "Couldn't find InstantiateSlotArgs"
+          () => "Couldn't find InstantiateSlotArgs",
         );
         const instantiateSlotArgsBaseVariant = getBaseVariant(comp);
         $$$(comp.tplTree).prepend(
@@ -2690,7 +2690,7 @@ describe("merging", () => {
                 ],
               }),
             },
-          })
+          }),
         );
         let tplComp: TplComponent = undefined as any;
         flattenTpls(comp.tplTree).forEach((tpl) => {
@@ -2706,9 +2706,9 @@ describe("merging", () => {
         });
         const slot1 = ensure(
           $$$(ensure(tplComp, () => `tplComp is undefined`)).getSlotArg(
-            "slot1"
+            "slot1",
           ),
-          () => `No slot arg for slot1`
+          () => `No slot arg for slot1`,
         );
 
         $$$(tplComp2).remove({ deep: true });
@@ -2720,7 +2720,7 @@ describe("merging", () => {
               ensureKnownRenderExpr(arg.expr).tpl.push(tplComp2);
             },
           }),
-          { deepRemove: false }
+          { deepRemove: false },
         );
       },
     });
@@ -2730,7 +2730,7 @@ describe("merging", () => {
     const { mergedSite } = res;
     const comp = ensure(
       mergedSite.components.find((c) => c.name === "InstantiateSlotArgs"),
-      () => "Couldn't find InstantiateSlotArgs"
+      () => "Couldn't find InstantiateSlotArgs",
     );
     let tplComp: TplComponent = undefined as any;
     flattenTpls(comp.tplTree).forEach((tpl) => {
@@ -2740,17 +2740,17 @@ describe("merging", () => {
     });
     expect(
       tplChildren(comp.tplTree).map(
-        (tpl) => (tpl as TplComponent | TplTag).name
-      )
+        (tpl) => (tpl as TplComponent | TplTag).name,
+      ),
     ).toEqual(["newTplComp", "tplComp", "append"]);
     const slot1 = ensure(
       $$$(ensure(tplComp, () => `tplComp is undefined`)).getSlotArg("slot1"),
-      () => `No slot arg for slot1`
+      () => `No slot arg for slot1`,
     );
     expect(
       ensureKnownRenderExpr(slot1.expr).tpl.map(
-        (tpl) => (tpl as TplComponent | TplTag).name
-      )
+        (tpl) => (tpl as TplComponent | TplTag).name,
+      ),
     ).toEqual(["NewSlotArgNode", "tplComp2"]);
   });
   it("Handles re-rooting with no conflict", () => {
@@ -2778,18 +2778,18 @@ describe("merging", () => {
           $$$(oldRoot).detach();
           $$$(newRoot).append(oldRoot);
         },
-      }))
+      })),
     ).toMatchObject({
       status: "merged",
     });
     expect(ensureKnownTplTag(res.mergedSite.components[0].tplTree).name).toBe(
-      "rightRoot"
+      "rightRoot",
     );
     expect(
       $$$(res.mergedSite.components[0].tplTree)
         .children()
         .toArray()
-        .map((tpl) => (tpl as any).name)
+        .map((tpl) => (tpl as any).name),
     ).toMatchObject(["oldRoot"]);
   });
   it("merges conflict re-rooting the component", () => {
@@ -2830,18 +2830,18 @@ describe("merging", () => {
       directConflictsPicks: ["left"],
     });
     expect(ensureKnownTplTag(res.mergedSite.components[0].tplTree).name).toBe(
-      "leftRoot"
+      "leftRoot",
     );
     expect(
       $$$(res.mergedSite.components[0].tplTree)
         .children()
         .toArray()
-        .map((tpl) => (tpl as any).name)
+        .map((tpl) => (tpl as any).name),
     ).toMatchObject(["oldRoot"]);
   });
   it("Name collisions with code components, props and normal components", () => {
     const result = testMergeFromJsonBundle(
-      hackyCast<ProjectFullDataResponse>(codeComponentsWithSameNameBundle)
+      hackyCast<ProjectFullDataResponse>(codeComponentsWithSameNameBundle),
     );
     expect(result).toMatchObject({
       status: "merged",
@@ -2849,42 +2849,42 @@ describe("merging", () => {
     const merged = result.mergedSite;
     const page = ensure(
       merged.components.find((c) => c.name === "Page"),
-      () => "Couldn't find Page"
+      () => "Couldn't find Page",
     );
     const children = tplChildren(page.tplTree);
     expect(children.length).toBe(5);
     expect(
       merged.components.filter(
-        (c) => c.name.startsWith("Comp") && !!c.codeComponentMeta
-      ).length
+        (c) => c.name.startsWith("Comp") && !!c.codeComponentMeta,
+      ).length,
     ).toBe(1);
     expect(
       merged.components.find((c) => c.name === "Comp" && !!c.codeComponentMeta)
-        ?.params.length
+        ?.params.length,
     ).toBe(1);
     expect(
       merged.components.filter((c) => c.name === "Comp" && !c.codeComponentMeta)
-        .length
+        .length,
     ).toBe(1);
     expect(
       merged.components.filter(
-        (c) => c.name === "Comp 2" && !c.codeComponentMeta
-      ).length
+        (c) => c.name === "Comp 2" && !c.codeComponentMeta,
+      ).length,
     ).toBe(1);
     const comp1 = children.find(
-      (child) => isKnownTplComponent(child) && child.name === "comp1"
+      (child) => isKnownTplComponent(child) && child.name === "comp1",
     );
     const comp2 = children.find(
-      (child) => isKnownTplComponent(child) && child.name === "comp2"
+      (child) => isKnownTplComponent(child) && child.name === "comp2",
     );
     const comp3 = children.find(
-      (child) => isKnownTplComponent(child) && child.name === "comp3"
+      (child) => isKnownTplComponent(child) && child.name === "comp3",
     );
     const plasmicComp1 = children.find(
-      (child) => isKnownTplComponent(child) && child.name === "plasmicComp1"
+      (child) => isKnownTplComponent(child) && child.name === "plasmicComp1",
     );
     const plasmicComp2 = children.find(
-      (child) => isKnownTplComponent(child) && child.name === "plasmicComp2"
+      (child) => isKnownTplComponent(child) && child.name === "plasmicComp2",
     );
     expect(comp1).toBeTruthy();
     expect(comp2).toBeTruthy();
@@ -2896,45 +2896,45 @@ describe("merging", () => {
         projectFlags: getProjectFlags(merged),
         component: page,
         inStudio: true,
-      }).code
+      }).code,
     ).toContain("arg1");
     expect(
       asCode(comp2?.vsettings[0].args[0]?.expr as any, {
         projectFlags: getProjectFlags(merged),
         component: page,
         inStudio: true,
-      }).code
+      }).code,
     ).toContain("arg2");
     expect(
       asCode(comp3?.vsettings[0].args[0]?.expr as any, {
         projectFlags: getProjectFlags(merged),
         component: page,
         inStudio: true,
-      }).code
+      }).code,
     ).toContain("arg3");
     expect(
       [comp1, comp2, comp3].map(
-        (tpl) => tpl!.vsettings[0].args[0].param.variable.name
-      )
+        (tpl) => tpl!.vsettings[0].args[0].param.variable.name,
+      ),
     ).toEqual(["param1", "param1", "param1"]);
     expect(
       asCode(plasmicComp1?.vsettings[0].args[0]?.expr as any, {
         projectFlags: getProjectFlags(merged),
         component: page,
         inStudio: true,
-      }).code
+      }).code,
     ).toContain("plasmicArg1");
     expect(
       asCode(plasmicComp2?.vsettings[0].args[0]?.expr as any, {
         projectFlags: getProjectFlags(merged),
         component: page,
         inStudio: true,
-      }).code
+      }).code,
     ).toContain("plasmicArg2");
   });
   it("Test tpl tree operations", () => {
     const result = testMergeFromJsonBundle(
-      hackyCast<ProjectFullDataResponse>(mergeTplsBundle)
+      hackyCast<ProjectFullDataResponse>(mergeTplsBundle),
     );
     expect(result).toMatchObject({
       status: "merged",
@@ -2943,19 +2943,19 @@ describe("merging", () => {
     const findComp = (name: string) =>
       ensure(
         site.components.find((c) => c.name === name),
-        () => `Couldn't find component ${name}`
+        () => `Couldn't find component ${name}`,
       );
     const findFrame = (name: string) =>
       ensure(
         site.arenas[0].children.find((f) => f.name === name),
-        () => `Couldn't find artboard ${name}`
+        () => `Couldn't find artboard ${name}`,
       );
     const mainFrameComp = findFrame("mainArtboard").container.component;
 
     const findTpl = (name: string, comp: Component = mainFrameComp) =>
       ensure(
         flattenTpls(comp.tplTree).find((tpl) => (tpl as any).name === name),
-        () => `Couldn't find tpl ${name} in component ${comp.name}`
+        () => `Couldn't find tpl ${name} in component ${comp.name}`,
       );
 
     const childrenNames = (tpl: TplNode) =>
@@ -2967,7 +2967,7 @@ describe("merging", () => {
       const comp = findComp("Section1Comp");
       const childrenSlot = ensure(
         flattenTpls(comp.tplTree).find((tpl) => isKnownTplSlot(tpl)) as TplSlot,
-        () => `Couldn't find any tpl slot`
+        () => `Couldn't find any tpl slot`,
       );
       expect(childrenNames(childrenSlot)).toMatchObject([null]);
       const oldContent = findTpl("oldDefaultContent", comp);
@@ -2978,9 +2978,9 @@ describe("merging", () => {
       const section2TplComp = ensure(
         flattenTpls(section2).find(
           (tpl) =>
-            isKnownTplComponent(tpl) && tpl.component.name === "Section2Comp"
+            isKnownTplComponent(tpl) && tpl.component.name === "Section2Comp",
         ),
-        () => `Found no instance of Section2Comp`
+        () => `Found no instance of Section2Comp`,
       );
       expect($$$(section2TplComp).children().length()).toBe(0);
       const tpl = findTpl("section2TplTag");
@@ -2991,7 +2991,7 @@ describe("merging", () => {
       const cycle2 = findTpl("cycle2");
       assert(
         cycle1.parent === cycle2 || cycle2.parent === cycle1,
-        () => `Expected cycle to have been flattened`
+        () => `Expected cycle to have been flattened`,
       );
     }
     {
@@ -3008,9 +3008,9 @@ describe("merging", () => {
       expect(childrenNames(section5comp)[0]).toBe("child1");
       assert(
         isKnownVirtualRenderExpr(
-          $$$(section5comp).getSlotArg("children")?.expr
+          $$$(section5comp).getSlotArg("children")?.expr,
         ),
-        () => `Didn't preserve VirtualRenderExpr`
+        () => `Didn't preserve VirtualRenderExpr`,
       );
     }
     {
@@ -3028,9 +3028,9 @@ describe("merging", () => {
         childrenNames(
           only(
             ensureKnownRenderExpr($$$(section7).getSlotArg("children")?.expr)
-              .tpl
-          )
-        )
+              .tpl,
+          ),
+        ),
       ).toMatchObject([
         "section7order3",
         "section7order1",
@@ -3041,7 +3041,7 @@ describe("merging", () => {
     {
       const newArtboard = findFrame("newartboard");
       expect(
-        newArtboard.targetGlobalVariants.map((variant) => variant.name)
+        newArtboard.targetGlobalVariants.map((variant) => variant.name),
       ).toMatchObject(["Mobile"]);
     }
     {
@@ -3049,13 +3049,13 @@ describe("merging", () => {
         !!swallow(() => findFrame("section10arena1")) ||
           !!swallow(() => findFrame("section10arena2")),
         () =>
-          `Couldn't find artboard section10arena after a harmless conflict renaming it`
+          `Couldn't find artboard section10arena after a harmless conflict renaming it`,
       );
     }
   });
   it("Test merging project deps", () => {
     const result = testMergeFromJsonBundle(
-      hackyCast<ProjectFullDataResponse>(mergeDepsBundle)
+      hackyCast<ProjectFullDataResponse>(mergeDepsBundle),
     );
     expect(result).toMatchObject({
       status: "merged",
@@ -3066,18 +3066,18 @@ describe("merging", () => {
     const findTpl = (name: string) =>
       ensure(
         flattenTpls(mainArtboardComp.tplTree).find(
-          (tpl) => (tpl as any).name === name
+          (tpl) => (tpl as any).name === name,
         ),
-        () => `Couldn't find tpl ${name}`
+        () => `Couldn't find tpl ${name}`,
       );
     {
       // Add new dep
       const dep = only(
-        site.projectDependencies.filter((d) => d.name === "section-1-dep")
+        site.projectDependencies.filter((d) => d.name === "section-1-dep"),
       );
       const container = findTpl("section1container");
       const child = ensureKnownTplComponent(
-        only(ensureKnownTplTag(container).children)
+        only(ensureKnownTplTag(container).children),
       );
       expect(child.name).toBe("section1comp");
       expect(child.component.name).toBe("Section1Comp");
@@ -3086,11 +3086,11 @@ describe("merging", () => {
     {
       // Remove dep
       expect(site.projectDependencies.map((dep) => dep.name)).not.toContain(
-        "section-2-dep"
+        "section-2-dep",
       );
       const container = findTpl("section2container");
       const children = ensureKnownTplTag(container).children.map((child) =>
-        ensureKnownTplComponent(child)
+        ensureKnownTplComponent(child),
       );
       expect(children.map((child) => child.name)).toMatchObject([
         "section2comp1",
@@ -3099,20 +3099,20 @@ describe("merging", () => {
       assert(
         children.every((tpl) => site.components.includes(tpl.component)),
         () =>
-          `Referencing component not in the site after deleting section-2-dep`
+          `Referencing component not in the site after deleting section-2-dep`,
       );
       children.forEach((child) =>
-        expect(child.component.name).toStartWith("Section2Comp")
+        expect(child.component.name).toStartWith("Section2Comp"),
       );
     }
     {
       // Upgrade dep in one branch and remove it in the other
       expect(site.projectDependencies.map((dep) => dep.name)).not.toContain(
-        "section-3-dep"
+        "section-3-dep",
       );
       const container = findTpl("section3container");
       const children = ensureKnownTplTag(container).children.map((child) =>
-        ensureKnownTplComponent(child)
+        ensureKnownTplComponent(child),
       );
       expect(children.map((child) => child.name)).toMatchObject([
         "section3comp1",
@@ -3121,7 +3121,7 @@ describe("merging", () => {
       assert(
         children.every((tpl) => site.components.includes(tpl.component)),
         () =>
-          `Referencing component not in the site after deleting section-3-dep`
+          `Referencing component not in the site after deleting section-3-dep`,
       );
       expect(children.map((child) => child.component.name)).toMatchObject([
         "Section3Comp",
@@ -3131,11 +3131,11 @@ describe("merging", () => {
     {
       // Upgrade dep in both branches (same version)
       const dep = only(
-        site.projectDependencies.filter((d) => d.name === "section-4-dep")
+        site.projectDependencies.filter((d) => d.name === "section-4-dep"),
       );
       const container = findTpl("section4container");
       const child = ensureKnownTplComponent(
-        only(ensureKnownTplTag(container).children)
+        only(ensureKnownTplTag(container).children),
       );
       expect(child.name).toBe("section4comp");
       expect(child.component.name).toBe("Section4CompV2");
@@ -3144,11 +3144,11 @@ describe("merging", () => {
     {
       // Upgrade dep in both branches (different versions)
       const dep = only(
-        site.projectDependencies.filter((d) => d.name === "section-5-dep")
+        site.projectDependencies.filter((d) => d.name === "section-5-dep"),
       );
       const container = findTpl("section5container");
       const child = ensureKnownTplComponent(
-        only(ensureKnownTplTag(container).children)
+        only(ensureKnownTplTag(container).children),
       );
       expect(child.name).toBe("section5comp");
       expect(child.component.name).toBe("Section5CompV3");
@@ -3157,11 +3157,11 @@ describe("merging", () => {
     {
       // Add new dep in both branches (same version)
       const dep = only(
-        site.projectDependencies.filter((d) => d.name === "section-6-dep")
+        site.projectDependencies.filter((d) => d.name === "section-6-dep"),
       );
       const container = findTpl("section6container");
       const children = ensureKnownTplTag(container).children.map((child) =>
-        ensureKnownTplComponent(child)
+        ensureKnownTplComponent(child),
       );
       expect(sorted(children.map((child) => child.name))).toMatchObject([
         "section6comp1",
@@ -3175,11 +3175,11 @@ describe("merging", () => {
     {
       // Add new dep in both branches (different version)
       const dep = only(
-        site.projectDependencies.filter((d) => d.name === "section-7-dep")
+        site.projectDependencies.filter((d) => d.name === "section-7-dep"),
       );
       const container = findTpl("section7container");
       const children = ensureKnownTplTag(container).children.map((child) =>
-        ensureKnownTplComponent(child)
+        ensureKnownTplComponent(child),
       );
       expect(sorted(children.map((child) => child.name))).toMatchObject([
         "section7comp1",
@@ -3194,7 +3194,7 @@ describe("merging", () => {
   it("Regression tests and edge cases", () => {
     const result = testMergeFromJsonBundle(
       hackyCast<ProjectFullDataResponse>(edgeCasesBundle),
-      { conflictPicks: ["right"] }
+      { conflictPicks: ["right"] },
     );
     expect(result).toMatchObject({
       status: "merged",
@@ -3203,27 +3203,27 @@ describe("merging", () => {
     const findComp = (name: string) =>
       ensure(
         site.components.find((c) => c.name === name),
-        () => `Couldn't find component ${name}`
+        () => `Couldn't find component ${name}`,
       );
     const findFrame = (name: string) =>
       ensure(
         site.arenas[0].children.find((f) => f.name === name),
-        () => `Couldn't find artboard ${name}`
+        () => `Couldn't find artboard ${name}`,
       );
     const mainFrameComp = findFrame("").container.component;
     const findTpl = (name: string, comp: Component = mainFrameComp) =>
       ensure(
         flattenTpls(comp.tplTree).find((tpl) => (tpl as any).name === name),
-        () => `Couldn't find tpl ${name} in component ${comp.name}`
+        () => `Couldn't find tpl ${name} in component ${comp.name}`,
       );
     {
       const newArtboard = findFrame("newFrame");
       expect(Object.keys(newArtboard.pinnedGlobalVariants)).toMatchObject([
         ensure(
           site.globalVariantGroups.find(
-            (group) => group.param.variable.name === "Mode"
+            (group) => group.param.variable.name === "Mode",
           ),
-          () => `Couldn't find Mode global variant group`
+          () => `Couldn't find Mode global variant group`,
         ).variants[0].uuid,
       ]);
     }
@@ -3231,43 +3231,43 @@ describe("merging", () => {
       const tpl1 = findTpl("section2codeComp1");
       const tpl2 = findTpl("section2codeComp2");
       expect(
-        sorted(findComp("CodeComp").params.map((p) => p.variable.name))
+        sorted(findComp("CodeComp").params.map((p) => p.variable.name)),
       ).toMatchObject(["choiceParam", "param1"]);
       expect(
         asCode(only(only(tpl1.vsettings).args).expr, {
           projectFlags: getProjectFlags(site),
           component: mainFrameComp,
           inStudio: true,
-        }).code
+        }).code,
       ).toInclude("value1");
       expect(
         asCode(only(only(tpl2.vsettings).args).expr, {
           projectFlags: getProjectFlags(site),
           component: mainFrameComp,
           inStudio: true,
-        }).code
+        }).code,
       ).toInclude("value2");
       expect(only(only(tpl1.vsettings).args).param).toBe(
-        only(only(tpl2.vsettings).args).param
+        only(only(tpl2.vsettings).args).param,
       );
     }
     {
       const comp = findComp("Section3Comp");
       const slot = ensureKnownTplSlot(
-        only(flattenTpls(comp.tplTree).filter((tpl) => isKnownTplSlot(tpl)))
+        only(flattenTpls(comp.tplTree).filter((tpl) => isKnownTplSlot(tpl))),
       );
       expect(ensureKnownTplTag(only(slot.defaultContents)).name).toBe("tplTag");
     }
     {
       const tpl = findTpl("section4comp");
       expect(ensureKnownTplTag(only(tplChildren(tpl))).name).toBe(
-        "section4tpl"
+        "section4tpl",
       );
     }
     {
       const tpl = findTpl("section5comp");
       expect(
-        tplChildren(tpl).map((child) => ensureKnownTplTag(child).name)
+        tplChildren(tpl).map((child) => ensureKnownTplTag(child).name),
       ).toMatchObject(["section5fstChild", "section5tpl", "section5lastChild"]);
     }
     {
@@ -3285,7 +3285,7 @@ describe("merging", () => {
           projectFlags: getProjectFlags(site),
           component: comp,
           inStudio: true,
-        }).code
+        }).code,
       ).toInclude("true");
     }
     {
@@ -3308,7 +3308,7 @@ describe("merging", () => {
           projectFlags: getProjectFlags(site),
           component: mainFrameComp,
           inStudio: true,
-        }).code
+        }).code,
       ).toInclude("value2");
     }
     {
@@ -3329,13 +3329,13 @@ describe("merging", () => {
     {
       const tpl = findTpl("section13comp");
       expect(
-        tplChildren(tpl).map((child) => ensureKnownTplTag(child).name)
+        tplChildren(tpl).map((child) => ensureKnownTplTag(child).name),
       ).toMatchObject(["section13tpl2", "section13tpl1", "section13newTpl"]);
     }
   });
   it("Regression tests and edge cases", () => {
     const result = testMergeFromJsonBundle(
-      hackyCast<ProjectFullDataResponse>(edgeCasesBundle2)
+      hackyCast<ProjectFullDataResponse>(edgeCasesBundle2),
     );
     expect(result).toMatchObject({
       status: "merged",
@@ -3344,18 +3344,18 @@ describe("merging", () => {
     const findFrame = (name: string) =>
       ensure(
         site.arenas[0].children.find((f) => f.name === name),
-        () => `Couldn't find artboard ${name}`
+        () => `Couldn't find artboard ${name}`,
       );
     const mainFrameComp = findFrame("mainFrame").container.component;
     const findComp = (name: string) =>
       ensure(
         site.components.find((c) => c.name === name),
-        () => `Couldn't find component ${name}`
+        () => `Couldn't find component ${name}`,
       );
     const findTpl = (name: string, comp: Component = mainFrameComp) =>
       ensure(
         flattenTpls(comp.tplTree).find((tpl) => (tpl as any).name === name),
-        () => `Couldn't find tpl ${name} in component ${comp.name}`
+        () => `Couldn't find tpl ${name} in component ${comp.name}`,
       );
     {
       const tpl = findTpl("section1newTpl");
@@ -3384,7 +3384,7 @@ describe("merging", () => {
             name: "registered-1",
             type: "line-height",
             value: "100",
-          })
+          }),
         );
         return site;
       })(),
@@ -3403,7 +3403,7 @@ describe("merging", () => {
             name: "registered-1",
             type: "font-size",
             value: "101",
-          })
+          }),
         );
         ensureKnownTplTag(site.components[0].tplTree).vsettings[0].rs.values[
           "font-size"
@@ -3413,7 +3413,7 @@ describe("merging", () => {
             name: "registered-2",
             type: "spacing",
             value: "102",
-          })
+          }),
         );
         ensureKnownTplTag(site.components[0].tplTree).vsettings[0].rs.values[
           "margin-top"
@@ -3434,7 +3434,7 @@ describe("merging", () => {
             name: "registered-1",
             type: "font-size",
             value: "111",
-          })
+          }),
         );
         ensureKnownTplTag(site.components[1].tplTree).vsettings[0].rs.values[
           "font-size"
@@ -3444,7 +3444,7 @@ describe("merging", () => {
             name: "registered-2",
             type: "spacing",
             value: "112",
-          })
+          }),
         );
         ensureKnownTplTag(site.components[1].tplTree).vsettings[0].rs.values[
           "margin-top"
@@ -3462,31 +3462,31 @@ describe("merging", () => {
       ],
     });
     expect(
-      sorted(result.mergedSite.styleTokens.map((t) => t.name))
+      sorted(result.mergedSite.styleTokens.map((t) => t.name)),
     ).toMatchObject(
       sorted([
         "nonRegistered",
         "nonRegistered 2",
         "registered-1",
         "registered-2",
-      ])
+      ]),
     );
 
     const props = ["line-height", "font-size", "margin-top"];
     const ruleValues = [
       ...props.map(
         (prop) =>
-          result.mergedSite.components[0].tplTree.vsettings[0].rs.values[prop]
+          result.mergedSite.components[0].tplTree.vsettings[0].rs.values[prop],
       ),
       ...props.map(
         (prop) =>
-          result.mergedSite.components[1].tplTree.vsettings[0].rs.values[prop]
+          result.mergedSite.components[1].tplTree.vsettings[0].rs.values[prop],
       ),
     ];
     const getTokenByName = (name: string) =>
       ensure(
         result.mergedSite.styleTokens.find((t) => t.name === name),
-        () => `Couldn't find token ${name}`
+        () => `Couldn't find token ${name}`,
       );
     const usedTokens = [
       getTokenByName("nonRegistered"),
@@ -3560,7 +3560,7 @@ describe("merging", () => {
             args: {
               prop1: codeLit("expr1"),
             },
-          })
+          }),
         );
         return site;
       })(),
@@ -3579,9 +3579,9 @@ describe("merging", () => {
         tplMgr.swapComponents(
           ensure(
             site.components.find((c) => c.name === "InstantiatedComp"),
-            () => "Should have InstantiatedComp"
+            () => "Should have InstantiatedComp",
           ),
-          newComp
+          newComp,
         );
       },
       b: () => {},
@@ -3594,9 +3594,9 @@ describe("merging", () => {
       ensureKnownTplComponent(
         ensureKnownTplTag(
           result.mergedSite.components.find((c) => c.name === "ParentComp")!
-            .tplTree
-        ).children[0]
-      ).vsettings[0].args.map((arg) => ensureKnownCustomCode(arg.expr).code)
+            .tplTree,
+        ).children[0],
+      ).vsettings[0].args.map((arg) => ensureKnownCustomCode(arg.expr).code),
     ).toMatchObject(['"expr1"']);
   });
   it("Handles swapping components", () => {
@@ -3630,7 +3630,7 @@ describe("merging", () => {
             args: {
               prop1: codeLit("expr1"),
             },
-          })
+          }),
         );
 
         const { valueParam, onChangeParam } = mkParamsForState({
@@ -3669,20 +3669,20 @@ describe("merging", () => {
         tplMgr.swapComponents(
           ensure(
             site.components.find((c) => c.name === "InstantiatedComp"),
-            () => "Should have InstantiatedComp"
+            () => "Should have InstantiatedComp",
           ),
-          newComp
+          newComp,
         );
         const tplComp = ensureKnownTplComponent(
           ensureKnownTplTag(
-            site.components.find((c) => c.name === "ParentComp")!.tplTree
-          ).children[0]
+            site.components.find((c) => c.name === "ParentComp")!.tplTree,
+          ).children[0],
         );
         tplComp.vsettings[0].args.push(
           new Arg({
             expr: codeLit("expr2"),
             param: prop2,
-          })
+          }),
         );
         const { valueParam, onChangeParam } = mkParamsForState({
           name: "state2",
@@ -3702,7 +3702,7 @@ describe("merging", () => {
       b: (site) => {
         // Add new params and implicit states
         const instantiated = site.components.find(
-          (c) => c.name === "InstantiatedComp"
+          (c) => c.name === "InstantiatedComp",
         )!;
         const prop2 = mkParam({
           name: "prop2",
@@ -3712,14 +3712,14 @@ describe("merging", () => {
         instantiated.params.push(prop2);
         const tplComp = ensureKnownTplComponent(
           ensureKnownTplTag(
-            site.components.find((c) => c.name === "ParentComp")!.tplTree
-          ).children[0]
+            site.components.find((c) => c.name === "ParentComp")!.tplTree,
+          ).children[0],
         );
         tplComp.vsettings[0].args.push(
           new Arg({
             expr: codeLit("expr3"),
             param: prop2,
-          })
+          }),
         );
         const { valueParam, onChangeParam } = mkParamsForState({
           name: "state3",
@@ -3745,14 +3745,14 @@ describe("merging", () => {
       ensureKnownTplComponent(
         ensureKnownTplTag(
           result.mergedSite.components.find((c) => c.name === "ParentComp")!
-            .tplTree
-        ).children[0]
-      ).vsettings[0].args.map((arg) => ensureKnownCustomCode(arg.expr).code)
+            .tplTree,
+        ).children[0],
+      ).vsettings[0].args.map((arg) => ensureKnownCustomCode(arg.expr).code),
     ).toMatchObject(['"expr1"', '"expr2"']);
     expect(
       result.mergedSite.components
         .find((c) => c.name === "ParentComp")!
-        .states.map((state) => state.implicitState?.param.variable.name)
+        .states.map((state) => state.implicitState?.param.variable.name),
     ).toMatchObject(["state2"]);
   });
   it("Handles the same expression moved to two different places in the tree", () => {
@@ -3778,17 +3778,17 @@ describe("merging", () => {
       autoReconciliations: [],
     });
     expect(rez.mergedSite.components[0].tplTree.vsettings[0].attrs["id"]).toBe(
-      undefined
+      undefined,
     );
     expect(
       ensureKnownCustomCode(
-        rez.mergedSite.components[1].tplTree.vsettings[0].attrs["id"]
-      ).code
+        rez.mergedSite.components[1].tplTree.vsettings[0].attrs["id"],
+      ).code,
     ).toBe('"expr1"');
     expect(
       ensureKnownCustomCode(
-        rez.mergedSite.components[2].tplTree.vsettings[0].attrs["id"]
-      ).code
+        rez.mergedSite.components[2].tplTree.vsettings[0].attrs["id"],
+      ).code,
     ).toBe('"expr1"');
   });
   it("Swap component with virtual slot args", () => {
@@ -3852,14 +3852,14 @@ describe("merging", () => {
         tplMgr.swapComponents(
           ensure(
             site.components.find((c) => c.name === "InstantiatedComp"),
-            () => "Should have InstantiatedComp"
+            () => "Should have InstantiatedComp",
           ),
-          newComp
+          newComp,
         );
         const tplComp = ensureKnownTplComponent(
           ensureKnownTplTag(
-            site.components.find((c) => c.name === "ParentComp")!.tplTree
-          ).children[0]
+            site.components.find((c) => c.name === "ParentComp")!.tplTree,
+          ).children[0],
         );
         fillVirtualSlotContents(tplMgr, tplComp);
       },
@@ -3873,9 +3873,9 @@ describe("merging", () => {
       ensureKnownTplComponent(
         ensureKnownTplTag(
           result.mergedSite.components.find((c) => c.name === "ParentComp")!
-            .tplTree
-        ).children[0]
-      ).vsettings[0].args.length
+            .tplTree,
+        ).children[0],
+      ).vsettings[0].args.length,
     ).toBe(1);
   });
   it("Make sure references in object keys are tracked", () => {
@@ -3884,21 +3884,21 @@ describe("merging", () => {
       a: (site, tplMgr) => {
         const arena = ensure(
           site.arenas.find((a) => a.name === "My custom arena"),
-          `Arena "My custom arena" not found`
+          `Arena "My custom arena" not found`,
         );
         const cmp = ensure(
           site.components.find((c) => c.name === "Button"),
-          () => `Component "Button" not found`
+          () => `Component "Button" not found`,
         );
         const [options, color, type] = ["Options", "Color", "Type"].map(
           (group) =>
             ensure(
               cmp.variantGroups.find(
                 (g) =>
-                  g.param.variable.name.toLowerCase() === group.toLowerCase()
+                  g.param.variable.name.toLowerCase() === group.toLowerCase(),
               ),
-              () => `VariantGroup "${group}" not found`
-            )
+              () => `VariantGroup "${group}" not found`,
+            ),
         );
         const frame = tplMgr.addNewMixedArenaFrame(
           arena,
@@ -3906,7 +3906,7 @@ describe("merging", () => {
           cmp,
           {
             insertPt: new Pt(1500, 0),
-          }
+          },
         );
         frame.pinnedVariants[options.variants[0].uuid] = true;
         frame.pinnedVariants[color.variants[0].uuid] = false;
@@ -3915,15 +3915,16 @@ describe("merging", () => {
       b: (site, tplMgr) => {
         const cmp = ensure(
           site.components.find((c) => c.name === "Button"),
-          () => `Component "Button" not found`
+          () => `Component "Button" not found`,
         );
         const [options, color] = ["Options", "Color"].map((group) =>
           ensure(
             cmp.variantGroups.find(
-              (g) => g.param.variable.name.toLowerCase() === group.toLowerCase()
+              (g) =>
+                g.param.variable.name.toLowerCase() === group.toLowerCase(),
             ),
-            () => `VariantGroup "${group}" not found`
-          )
+            () => `VariantGroup "${group}" not found`,
+          ),
         );
         [options, color].forEach((vg) => {
           tplMgr.tryRemoveVariant(vg.variants[0], cmp);
@@ -3933,23 +3934,23 @@ describe("merging", () => {
     const site = result.mergedSite;
     const arena = ensure(
       site.arenas.find((a) => a.name === "My custom arena"),
-      `Arena "My custom arena" not found`
+      `Arena "My custom arena" not found`,
     );
     const cmp = ensure(
       site.components.find((c) => c.name === "Button"),
-      () => `Component "Button" not found`
+      () => `Component "Button" not found`,
     );
     const [type] = ["Type"].map((group) =>
       ensure(
         cmp.variantGroups.find(
-          (g) => g.param.variable.name.toLowerCase() === group.toLowerCase()
+          (g) => g.param.variable.name.toLowerCase() === group.toLowerCase(),
         ),
-        () => `VariantGroup "${group}" not found`
-      )
+        () => `VariantGroup "${group}" not found`,
+      ),
     );
     const frame = ensure(
       arena.children.find((c) => c.name === "PinnedVariants"),
-      `Frame "PinnedVariants" not found`
+      `Frame "PinnedVariants" not found`,
     );
     expect(Object.entries(frame.pinnedVariants)).toMatchObject([
       [type.variants[0].uuid, true],
@@ -3961,13 +3962,13 @@ describe("merging", () => {
       a: (site) => {
         const cmp = ensure(
           site.components.find((c) => c.name === "Button"),
-          () => `Component "Button" not found`
+          () => `Component "Button" not found`,
         );
         const group = ensure(
           cmp.variantGroups.find(
-            (g) => g.param.variable.name.toLowerCase() === "color"
+            (g) => g.param.variable.name.toLowerCase() === "color",
           ),
-          () => `VariantGroup "Color" not found`
+          () => `VariantGroup "Color" not found`,
         );
         const vs = ensureVariantSetting(cmp.tplTree, [group.variants[0]]);
         vs.rs.values["color"] = "red";
@@ -3975,13 +3976,13 @@ describe("merging", () => {
       b: (site, tplMgr) => {
         const cmp = ensure(
           site.components.find((c) => c.name === "Button"),
-          () => `Component "Button" not found`
+          () => `Component "Button" not found`,
         );
         const group = ensure(
           cmp.variantGroups.find(
-            (g) => g.param.variable.name.toLowerCase() === "color"
+            (g) => g.param.variable.name.toLowerCase() === "color",
           ),
-          () => `VariantGroup "Color" not found`
+          () => `VariantGroup "Color" not found`,
         );
         tplMgr.tryRemoveVariant(group.variants[0], cmp);
       },
@@ -3989,7 +3990,7 @@ describe("merging", () => {
     const site = result.mergedSite;
     const cmp = ensure(
       site.components.find((c) => c.name === "Button"),
-      () => `Component "Button" not found`
+      () => `Component "Button" not found`,
     );
     expect(cmp.tplTree.vsettings.length).toBe(1);
     expect(cmp.tplTree.vsettings[0].rs.values["color"]).toBe(undefined);
@@ -4000,10 +4001,10 @@ describe("merging", () => {
       a: (site, tplMgr) => {
         const cmp = ensure(
           site.components.find((c) => c.name === "Button"),
-          () => `Component "Button" not found`
+          () => `Component "Button" not found`,
         );
         const tpl = ensureKnownTplTag(
-          ensureKnownTplTag(cmp.tplTree).children[0]
+          ensureKnownTplTag(cmp.tplTree).children[0],
         );
         const styleVariant = tplMgr.createPrivateStyleVariant(cmp, tpl, [
           "Hover",
@@ -4014,10 +4015,10 @@ describe("merging", () => {
       b: (site) => {
         const cmp = ensure(
           site.components.find((c) => c.name === "Button"),
-          () => `Component "Button" not found`
+          () => `Component "Button" not found`,
         );
         const tpl = ensureKnownTplTag(
-          ensureKnownTplTag(cmp.tplTree).children[0]
+          ensureKnownTplTag(cmp.tplTree).children[0],
         );
         $$$(tpl).remove({ deep: true });
       },
@@ -4025,7 +4026,7 @@ describe("merging", () => {
     const site = result.mergedSite;
     const cmp = ensure(
       site.components.find((c) => c.name === "Button"),
-      () => `Component "Button" not found`
+      () => `Component "Button" not found`,
     );
     const tpl = ensureKnownTplTag(ensureKnownTplTag(cmp.tplTree).children[0]);
     expect(tpl.vsettings.length).toBe(1);
@@ -4037,10 +4038,10 @@ describe("merging", () => {
       a: (site, tplMgr) => {
         const cmp = ensure(
           site.components.find((c) => c.name === "Button"),
-          () => `Component "Button" not found`
+          () => `Component "Button" not found`,
         );
         const tpl = ensureKnownTplTag(
-          ensureKnownTplTag(cmp.tplTree).children[0]
+          ensureKnownTplTag(cmp.tplTree).children[0],
         );
         const styleVariant = tplMgr.createPrivateStyleVariant(cmp, tpl, [
           "Hover",
@@ -4051,10 +4052,10 @@ describe("merging", () => {
       b: (site, tplMgr) => {
         const cmp = ensure(
           site.components.find((c) => c.name === "Button"),
-          () => `Component "Button" not found`
+          () => `Component "Button" not found`,
         );
         const tpl = ensureKnownTplTag(
-          ensureKnownTplTag(cmp.tplTree).children[0]
+          ensureKnownTplTag(cmp.tplTree).children[0],
         );
         const styleVariant = tplMgr.createPrivateStyleVariant(cmp, tpl, [
           "Hover",
@@ -4066,7 +4067,7 @@ describe("merging", () => {
     const site = result.mergedSite;
     const cmp = ensure(
       site.components.find((c) => c.name === "Button"),
-      () => `Component "Button" not found`
+      () => `Component "Button" not found`,
     );
     const tpl = ensureKnownTplTag(ensureKnownTplTag(cmp.tplTree).children[0]);
     expect(tpl.vsettings.length).toBe(2);
@@ -4128,65 +4129,65 @@ describe("merging", () => {
       a: (site) => {
         const cmp = ensure(
           site.components.find((c) => c.name === "ParentComp"),
-          () => `Component "ParentComp" not found`
+          () => `Component "ParentComp" not found`,
         );
         const tpl = ensureKnownTplComponent(
-          ensureKnownTplTag(cmp.tplTree).children[0]
+          ensureKnownTplTag(cmp.tplTree).children[0],
         );
         tpl.vsettings[0].args.push(
           new Arg({
             param: ensure(
               tpl.component.params.find((p) => p.variable.name === "prop2"),
-              () => `Couldn't find param prop2`
+              () => `Couldn't find param prop2`,
             ),
             expr: ensure(
               tpl.vsettings[0].args.find(
-                (arg) => arg.param.variable.name === "prop1"
+                (arg) => arg.param.variable.name === "prop1",
               ),
-              () => `Couldn't find arg for prop1`
+              () => `Couldn't find arg for prop1`,
             ).expr,
-          })
+          }),
         );
         removeWhere(
           tpl.vsettings[0].args,
-          (arg) => arg.param.variable.name === "prop1"
+          (arg) => arg.param.variable.name === "prop1",
         );
       },
       b: (site) => {
         const cmp = ensure(
           site.components.find((c) => c.name === "ParentComp"),
-          () => `Component "ParentComp" not found`
+          () => `Component "ParentComp" not found`,
         );
         const tpl = ensureKnownTplComponent(
-          ensureKnownTplTag(cmp.tplTree).children[0]
+          ensureKnownTplTag(cmp.tplTree).children[0],
         );
         tpl.vsettings[0].args.push(
           new Arg({
             param: ensure(
               tpl.component.params.find((p) => p.variable.name === "prop3"),
-              () => `Couldn't find param prop3`
+              () => `Couldn't find param prop3`,
             ),
             expr: ensure(
               tpl.vsettings[0].args.find(
-                (arg) => arg.param.variable.name === "prop1"
+                (arg) => arg.param.variable.name === "prop1",
               ),
-              () => `Couldn't find arg for prop1`
+              () => `Couldn't find arg for prop1`,
             ).expr,
-          })
+          }),
         );
         removeWhere(
           tpl.vsettings[0].args,
-          (arg) => arg.param.variable.name === "prop1"
+          (arg) => arg.param.variable.name === "prop1",
         );
       },
     });
     const site = result.mergedSite;
     const cmp = ensure(
       site.components.find((c) => c.name === "ParentComp"),
-      () => `Component "ParentComp" not found`
+      () => `Component "ParentComp" not found`,
     );
     const tpl = ensureKnownTplComponent(
-      ensureKnownTplTag(cmp.tplTree).children[0]
+      ensureKnownTplTag(cmp.tplTree).children[0],
     );
     expect(
       sortBy(
@@ -4196,8 +4197,8 @@ describe("merging", () => {
             arg.param.variable.name,
             ensureKnownCustomCode(arg.expr).code,
           ]),
-        ([propName]) => propName
-      )
+        ([propName]) => propName,
+      ),
     ).toMatchObject([
       ["prop2", '"a"'],
       ["prop3", '"a"'],
@@ -4234,12 +4235,12 @@ describe("merging", () => {
         });
         const variantSetting = ensureBaseVariantSetting(
           instantiatedComp,
-          tplText
+          tplText,
         );
         const childTextTpl = mkTplInlinedText(
           "Heading",
           [ensureBaseVariant(instantiatedComp)],
-          "h1"
+          "h1",
         );
         childTextTpl.name = "childText";
         // Hack: it seems no longer possible to get a `RawText` to point
@@ -4278,29 +4279,29 @@ describe("merging", () => {
       a: (site) => {
         const instantiatedComp = ensure(
           site.components.find((c) => c.name === "InstantiatedComp"),
-          () => `Component "InstantiatedComp" not found`
+          () => `Component "InstantiatedComp" not found`,
         );
         const tplText = ensureKnownTplTag(
           flattenTpls(instantiatedComp.tplTree).find(
-            (tpl) => (tpl as any).name === "tplText"
-          )
+            (tpl) => (tpl as any).name === "tplText",
+          ),
         );
         tplText.children = [];
       },
       b: (site) => {
         const instantiatedComp = ensure(
           site.components.find((c) => c.name === "InstantiatedComp"),
-          () => `Component "InstantiatedComp" not found`
+          () => `Component "InstantiatedComp" not found`,
         );
         const tplText = ensureKnownTplTag(
           flattenTpls(instantiatedComp.tplTree).find(
-            (tpl) => (tpl as any).name === "tplText"
-          )
+            (tpl) => (tpl as any).name === "tplText",
+          ),
         );
         const childTextTpl = ensureKnownTplTag(
           flattenTpls(instantiatedComp.tplTree).find(
-            (tpl) => (tpl as any).name === "childText"
-          )
+            (tpl) => (tpl as any).name === "childText",
+          ),
         );
         const text = ensureKnownRawText(tplText.vsettings[0].text);
         text.markers = [
@@ -4318,12 +4319,12 @@ describe("merging", () => {
     });
     const instantiatedComp = ensure(
       result.mergedSite.components.find((c) => c.name === "InstantiatedComp"),
-      () => `Component "InstantiatedComp" not found`
+      () => `Component "InstantiatedComp" not found`,
     );
     const tplText = ensureKnownTplTag(
       flattenTpls(instantiatedComp.tplTree).find(
-        (tpl) => (tpl as any).name === "tplText"
-      )
+        (tpl) => (tpl as any).name === "tplText",
+      ),
     );
     const text = ensureKnownRawText(tplText.vsettings[0].text);
     expect(tplText.children.length).toBe(0);
@@ -4332,27 +4333,27 @@ describe("merging", () => {
   it("Test merging rich text with conflict", () => {
     const result = testMergeFromJsonBundle(
       hackyCast<ProjectFullDataResponse>(richTextConflict),
-      { conflictPicks: ["left"] }
+      { conflictPicks: ["left"] },
     );
     expect(result).toMatchObject({
       status: "merged",
     });
     const comp = ensure(
       result.mergedSite.components.find((c) => !c.name),
-      () => `Couldn't find arena frame`
+      () => `Couldn't find arena frame`,
     );
     const tplText = ensureKnownTplTag(
-      ensureKnownTplTag(comp.tplTree).children[0]
+      ensureKnownTplTag(comp.tplTree).children[0],
     );
     const parentText = ensureKnownRawText(tplText.vsettings[0].text);
     expect(parentText.text).toBe("Test [child] child2");
     expect(parentText.markers.length).toBe(1);
     expect(tplText.children.length).toBe(1);
     expect(ensureKnownNodeMarker(parentText.markers[0]).tpl).toBe(
-      tplText.children[0]
+      tplText.children[0],
     );
     const childText = ensureKnownRawText(
-      ensureKnownTplTag(tplText.children[0]).vsettings[0].text
+      ensureKnownTplTag(tplText.children[0]).vsettings[0].text,
     );
     expect(childText.text).toBe("w/");
     expect(childText.markers.length).toBe(0);
@@ -4409,19 +4410,19 @@ describe("merging", () => {
       b: (site) => {
         const parentComp = ensure(
           site.components.find((c) => c.name === "ParentComp"),
-          () => `Component "ParentComp" not found`
+          () => `Component "ParentComp" not found`,
         );
         const tplComp = ensure(
           flattenTpls(parentComp.tplTree).find(
-            (tpl) => (tpl as any).name === "tplComp"
+            (tpl) => (tpl as any).name === "tplComp",
           ),
-          () => `Couldn't find tpl "tplComp"`
+          () => `Couldn't find tpl "tplComp"`,
         );
         const tplToMove = ensure(
           flattenTpls(parentComp.tplTree).find(
-            (tpl) => (tpl as any).name === "tplToMove"
+            (tpl) => (tpl as any).name === "tplToMove",
           ),
-          () => `Couldn't find tpl "tplToMove"`
+          () => `Couldn't find tpl "tplToMove"`,
         );
         $$$(tplToMove).remove({ deep: false });
         $$$(tplComp).append(tplToMove);
@@ -4430,19 +4431,19 @@ describe("merging", () => {
     expect(result.status).toBe("merged");
     const parentComp = ensure(
       result.mergedSite.components.find((c) => c.name === "ParentComp"),
-      () => `Component "ParentComp" not found`
+      () => `Component "ParentComp" not found`,
     );
     const tplComp = ensure(
       flattenTpls(parentComp.tplTree).find(
-        (tpl) => (tpl as any).name === "tplComp"
+        (tpl) => (tpl as any).name === "tplComp",
       ),
-      () => `Couldn't find tpl "tplComp"`
+      () => `Couldn't find tpl "tplComp"`,
     );
     const tplToMove = ensure(
       flattenTpls(parentComp.tplTree).find(
-        (tpl) => (tpl as any).name === "tplToMove"
+        (tpl) => (tpl as any).name === "tplToMove",
       ),
-      () => `Couldn't find tpl "tplToMove"`
+      () => `Couldn't find tpl "tplToMove"`,
     );
     expect(tplToMove.parent).toBe(tplComp);
     expect(tplToMove.uuid).toBe(tplToMoveUuid);
@@ -4450,14 +4451,14 @@ describe("merging", () => {
 
   it("Global context should merge without conflicts", () => {
     const result = testMergeFromJsonBundle(
-      hackyCast<ProjectFullDataResponse>(globalContextBundle)
+      hackyCast<ProjectFullDataResponse>(globalContextBundle),
     );
     expect(result).toMatchObject({
       status: "merged",
     });
     const site = result.mergedSite;
     const globalContextComponent = site.components.filter(
-      (c) => c.name === "GlobalContext"
+      (c) => c.name === "GlobalContext",
     );
     expect(globalContextComponent.length).toBe(1);
     expect(site.globalContexts.length).toBe(1);
@@ -4465,10 +4466,10 @@ describe("merging", () => {
     const argValues = globalContextTpl.vsettings[0].args;
     expect(argValues.length).toBe(2);
     expect(
-      argValues.find((arg) => arg.param.variable.name === "propA")
+      argValues.find((arg) => arg.param.variable.name === "propA"),
     ).not.toBeNil();
     expect(
-      argValues.find((arg) => arg.param.variable.name === "propB")
+      argValues.find((arg) => arg.param.variable.name === "propB"),
     ).not.toBeNil();
     expect(tryExtractJson(argValues[0].expr)).toBe("set");
     expect(tryExtractJson(argValues[1].expr)).toBe("set");
@@ -4476,7 +4477,7 @@ describe("merging", () => {
 
   it("Style tokens should not have conflicts when removing", () => {
     const result = testMergeFromJsonBundle(
-      hackyCast<ProjectFullDataResponse>(styleTokenBundle)
+      hackyCast<ProjectFullDataResponse>(styleTokenBundle),
     );
 
     expect(result).toMatchObject({
@@ -4546,7 +4547,7 @@ describe("merging", () => {
                 variants: [variant],
               }),
             ],
-          })
+          }),
         );
       },
       b: (site) => {
@@ -4562,7 +4563,7 @@ describe("merging", () => {
             token: site.styleTokens[1],
             value: "2000",
             variantedValues: [],
-          })
+          }),
         );
       },
       directConflictsPicks: ["left"], // Select branch
@@ -4599,7 +4600,7 @@ describe("merging", () => {
             token: token,
             value: "20",
             variantedValues: [],
-          })
+          }),
         );
       },
       b: (site) => {
@@ -4616,7 +4617,7 @@ describe("merging", () => {
                 variants: [variant],
               }),
             ],
-          })
+          }),
         );
       },
       directConflictsPicks: ["left"], // Select branch
@@ -4647,7 +4648,7 @@ describe("merging", () => {
             token: token,
             value: "20",
             variantedValues: [],
-          })
+          }),
         );
       },
       b: (site) => {
@@ -4664,7 +4665,7 @@ describe("merging", () => {
                 variants: [variant],
               }),
             ],
-          })
+          }),
         );
       },
       directConflictsPicks: ["right"], // Select main
@@ -4683,13 +4684,13 @@ describe("merging", () => {
 
   it("Reroot should not delete entire tpl tree", () => {
     const result = testMergeFromJsonBundle(
-      hackyCast<ProjectFullDataResponse>(rerootBundle)
+      hackyCast<ProjectFullDataResponse>(rerootBundle),
     );
     expect(result).toMatchObject({
       status: "merged",
     });
     const tplTree = result.mergedSite.components.find(
-      (c) => c.name === "Test"
+      (c) => c.name === "Test",
     )!.tplTree;
     assert(isKnownTplTag(tplTree), "Root should be tpl tag");
     expect(tplTree.children.length).toBe(1);
@@ -4753,17 +4754,17 @@ describe("merging", () => {
         originalUuidSlotArg1 = (
           ensure(
             flattenTpls(parentComp.tplTree).find(
-              (tpl) => tpl instanceof TplTag && tpl.name === "slot1Element1"
+              (tpl) => tpl instanceof TplTag && tpl.name === "slot1Element1",
             ),
-            () => `Couldn't find slot1Element1`
+            () => `Couldn't find slot1Element1`,
           ) as TplTag
         ).uuid;
         originalUuidSlotArg2 = (
           ensure(
             flattenTpls(parentComp.tplTree).find(
-              (tpl) => tpl instanceof TplTag && tpl.name === "slot2Element1"
+              (tpl) => tpl instanceof TplTag && tpl.name === "slot2Element1",
             ),
-            () => `Couldn't find slot2Element1`
+            () => `Couldn't find slot2Element1`,
           ) as TplTag
         ).uuid;
         return site;
@@ -4772,24 +4773,24 @@ describe("merging", () => {
         // Edit the first slot to append a new element in the default contents
         const instantiatedComp = ensure(
           site.components.find((c) => c.name === "InstantiatedComp"),
-          () => "Should have InstantiatedComp"
+          () => "Should have InstantiatedComp",
         );
         const parentComp = ensure(
           site.components.find((c) => c.name === "ParentComp"),
-          () => "Should have ParentComp"
+          () => "Should have ParentComp",
         );
         const tplComp = ensure(
           flattenTpls(parentComp.tplTree).find(
-            (tpl) => tpl instanceof TplComponent && tpl.name === "tplComp"
+            (tpl) => tpl instanceof TplComponent && tpl.name === "tplComp",
           ),
-          () => `Couldn't find tplComp`
+          () => `Couldn't find tplComp`,
         ) as TplComponent;
         const tplSlot1 = ensure(
           flattenTpls(instantiatedComp.tplTree).find(
             (tpl) =>
-              tpl instanceof TplSlot && tpl.param.variable.name === "slot1"
+              tpl instanceof TplSlot && tpl.param.variable.name === "slot1",
           ),
-          () => `Couldn't find slot1`
+          () => `Couldn't find slot1`,
         ) as TplSlot;
         const instantiatedBaseVariant = getBaseVariant(instantiatedComp);
         $$$(tplSlot1).append(
@@ -4799,7 +4800,7 @@ describe("merging", () => {
             variants: [
               mkVariantSetting({ variants: [instantiatedBaseVariant] }),
             ],
-          })
+          }),
         );
         fillVirtualSlotContents(tplMgr, tplComp, [tplSlot1]);
       },
@@ -4807,24 +4808,24 @@ describe("merging", () => {
         // Edit the first slot to prepend a new element in the default contents
         const instantiatedComp = ensure(
           site.components.find((c) => c.name === "InstantiatedComp"),
-          () => "Should have InstantiatedComp"
+          () => "Should have InstantiatedComp",
         );
         const parentComp = ensure(
           site.components.find((c) => c.name === "ParentComp"),
-          () => "Should have ParentComp"
+          () => "Should have ParentComp",
         );
         const tplComp = ensure(
           flattenTpls(parentComp.tplTree).find(
-            (tpl) => tpl instanceof TplComponent && tpl.name === "tplComp"
+            (tpl) => tpl instanceof TplComponent && tpl.name === "tplComp",
           ),
-          () => `Couldn't find tplComp`
+          () => `Couldn't find tplComp`,
         ) as TplComponent;
         const tplSlot1 = ensure(
           flattenTpls(instantiatedComp.tplTree).find(
             (tpl) =>
-              tpl instanceof TplSlot && tpl.param.variable.name === "slot1"
+              tpl instanceof TplSlot && tpl.param.variable.name === "slot1",
           ),
-          () => `Couldn't find slot1`
+          () => `Couldn't find slot1`,
         ) as TplSlot;
         const instantiatedBaseVariant = getBaseVariant(instantiatedComp);
         $$$(tplSlot1).prepend(
@@ -4834,7 +4835,7 @@ describe("merging", () => {
             variants: [
               mkVariantSetting({ variants: [instantiatedBaseVariant] }),
             ],
-          })
+          }),
         );
         fillVirtualSlotContents(tplMgr, tplComp, [tplSlot1]);
       },
@@ -4845,32 +4846,32 @@ describe("merging", () => {
     });
     const parentComp = ensure(
       result.mergedSite.components.find((c) => c.name === "ParentComp"),
-      () => "Should have ParentComp"
+      () => "Should have ParentComp",
     );
     const mergedUuidSlotArg1 = (
       ensure(
         flattenTpls(parentComp.tplTree).find(
-          (tpl) => tpl instanceof TplTag && tpl.name === "slot1Element1"
+          (tpl) => tpl instanceof TplTag && tpl.name === "slot1Element1",
         ),
-        () => `Couldn't find slot1Element1`
+        () => `Couldn't find slot1Element1`,
       ) as TplTag
     ).uuid;
     const mergedUuidSlotArg2 = (
       ensure(
         flattenTpls(parentComp.tplTree).find(
-          (tpl) => tpl instanceof TplTag && tpl.name === "slot2Element1"
+          (tpl) => tpl instanceof TplTag && tpl.name === "slot2Element1",
         ),
-        () => `Couldn't find slot2Element1`
+        () => `Couldn't find slot2Element1`,
       ) as TplTag
     ).uuid;
     const tplComp = ensure(
       flattenTpls(parentComp.tplTree).find(
-        (tpl) => tpl instanceof TplComponent && tpl.name === "tplComp"
+        (tpl) => tpl instanceof TplComponent && tpl.name === "tplComp",
       ),
-      () => `Couldn't find tplComp`
+      () => `Couldn't find tplComp`,
     ) as TplComponent;
     expect(
-      tplChildren(tplComp).map((tpl) => tpl instanceof TplTag && tpl.name)
+      tplChildren(tplComp).map((tpl) => tpl instanceof TplTag && tpl.name),
     ).toMatchObject([
       "slot1Element0",
       "slot1Element1",
@@ -4885,15 +4886,15 @@ describe("merging", () => {
     function findElementsInSite(site: Site, compName: string, tplName: string) {
       const component = ensure(
         site.components.find((c) => c.name === compName),
-        `Component ${compName} not found`
+        `Component ${compName} not found`,
       );
       const tpls = flattenTpls(component.tplTree);
       const tpl = ensure(
         tpls.find(
           (_tpl): _tpl is TplNamable =>
-            isTplNamable(_tpl) && _tpl.name === tplName
+            isTplNamable(_tpl) && _tpl.name === tplName,
         ),
-        `Tpl ${tplName} not found`
+        `Tpl ${tplName} not found`,
       );
       return {
         component,
@@ -4914,7 +4915,7 @@ describe("merging", () => {
             name: "A-Wrapper",
             baseVariant,
             variants: [mkVariantSetting({ variants: [baseVariant] })],
-          })
+          }),
         );
       },
     });
@@ -4923,7 +4924,7 @@ describe("merging", () => {
     const { tpl: tplWrapper, component } = findElementsInSite(
       mergedSite,
       "Button",
-      "A-Wrapper"
+      "A-Wrapper",
     );
     const { tpl: tplA } = findElementsInSite(mergedSite, "Button", "Newer A");
     assert(isKnownTplTag(tplWrapper), "Expected wrapper to be a TplTag");
@@ -4932,7 +4933,7 @@ describe("merging", () => {
     expect(tplA.parent).toBe(tplWrapper);
     expect(tplA.vsettings[0].attrs["id"]).toBeInstanceOf(CustomCode);
     expect((tplA.vsettings[0].attrs["id"] as CustomCode).code).toBe(
-      '"Dynamic ID"'
+      '"Dynamic ID"',
     );
   });
 
@@ -4943,7 +4944,7 @@ describe("merging", () => {
       b: (site, tplMgr) => {
         const button = ensure(
           site.components.find((c) => c.name === "Button"),
-          "Button not found"
+          "Button not found",
         );
         tplMgr.removeComponent(button);
         tplMgr.addComponent({
@@ -4965,14 +4966,14 @@ describe("merging", () => {
       b: (site, tplMgr) => {
         const button = ensure(
           site.components.find((c) => c.name === "Button"),
-          "Button not found"
+          "Button not found",
         );
         const tpls = flattenTpls(button.tplTree);
         const nodeA = ensure(
           tpls.find(
-            (tpl): tpl is TplNamable => isTplNamable(tpl) && tpl.name === "A"
+            (tpl): tpl is TplNamable => isTplNamable(tpl) && tpl.name === "A",
           ),
-          "Tpl with name A not found"
+          "Tpl with name A not found",
         );
         nodeA.name = "OldA";
 
@@ -4982,7 +4983,7 @@ describe("merging", () => {
             name: "A",
             baseVariant,
             variants: [mkVariantSetting({ variants: [baseVariant] })],
-          })
+          }),
         );
       },
     });
@@ -4996,7 +4997,7 @@ describe("merging", () => {
       b: (site) => {
         const comp = ensure(
           site.components.find((c) => c.name === "InstantiateSlotArgs"),
-          () => "Couldn't find InstantiateSlotArgs"
+          () => "Couldn't find InstantiateSlotArgs",
         );
         let tplComp: TplComponent = undefined as any;
         flattenTpls(comp.tplTree).forEach((tpl) => {
@@ -5006,13 +5007,13 @@ describe("merging", () => {
         });
         const slot1 = ensure(
           $$$(ensure(tplComp, () => `tplComp is undefined`)).getSlotArg(
-            "slot1"
+            "slot1",
           ),
-          () => `No slot arg for slot1`
+          () => `No slot arg for slot1`,
         );
         const slot2 = ensure(
           $$$(tplComp).getSlotArg("slot2"),
-          () => `No slot arg for slot2`
+          () => `No slot arg for slot2`,
         );
         const [node1] = ensureKnownRenderExpr(slot1.expr).tpl;
         const [node2, node3] = ensureKnownRenderExpr(slot2.expr).tpl;
@@ -5033,7 +5034,7 @@ describe("merging", () => {
       b: (site) => {
         const comp = ensure(
           site.components.find((c) => c.name === "InstantiateSlotArgs"),
-          () => "Couldn't find InstantiateSlotArgs"
+          () => "Couldn't find InstantiateSlotArgs",
         );
         let tplComp: TplComponent = undefined as any;
         flattenTpls(comp.tplTree).forEach((tpl) => {
@@ -5043,13 +5044,13 @@ describe("merging", () => {
         });
         const slot1 = ensure(
           $$$(ensure(tplComp, () => `tplComp is undefined`)).getSlotArg(
-            "slot1"
+            "slot1",
           ),
-          () => `No slot arg for slot1`
+          () => `No slot arg for slot1`,
         );
         const slot2 = ensure(
           $$$(tplComp).getSlotArg("slot2"),
-          () => `No slot arg for slot2`
+          () => `No slot arg for slot2`,
         );
         const [node1] = ensureKnownRenderExpr(slot1.expr).tpl;
         const [node2, node3] = ensureKnownRenderExpr(slot2.expr).tpl;
@@ -5081,7 +5082,7 @@ describe("merging", () => {
         const tplMgr = new TplMgr({ site });
         const comp = ensure(
           site.components.find((c) => c.name === "InstantiateSlotArgs"),
-          () => "Couldn't find InstantiateSlotArgs"
+          () => "Couldn't find InstantiateSlotArgs",
         );
         let tplComp: TplComponent = undefined as any;
         flattenTpls(comp.tplTree).forEach((tpl) => {
@@ -5091,13 +5092,13 @@ describe("merging", () => {
         });
         const slot1 = ensure(
           $$$(ensure(tplComp, () => `tplComp is undefined`)).getSlotArg(
-            "slot1"
+            "slot1",
           ),
-          () => `No slot arg for slot1`
+          () => `No slot arg for slot1`,
         );
         const slot2 = ensure(
           $$$(tplComp).getSlotArg("slot2"),
-          () => `No slot arg for slot2`
+          () => `No slot arg for slot2`,
         );
         const [node1] = ensureKnownRenderExpr(slot1.expr).tpl;
         const [node2, node3] = ensureKnownRenderExpr(slot2.expr).tpl;
@@ -5121,7 +5122,7 @@ describe("merging", () => {
             props: {},
             importPath: "",
           },
-          {}
+          {},
         );
         tplMgr.attachComponent(codeComponentWithSlots);
         const baseVariantCcWithSlots = getBaseVariant(codeComponentWithSlots);
@@ -5140,7 +5141,7 @@ describe("merging", () => {
             attrs: {},
             baseVariant: baseVariantCcWithSlots,
           },
-          [slot1cc, slot2cc]
+          [slot1cc, slot2cc],
         );
 
         tplMgr.swapComponents(tplComp.component, codeComponentWithSlots);
@@ -5156,7 +5157,7 @@ describe("merging", () => {
 
     const comp = ensure(
       site.components.find((c) => c.name === "InstantiateSlotArgs"),
-      () => "Couldn't find InstantiateSlotArgs"
+      () => "Couldn't find InstantiateSlotArgs",
     );
     let tplComp: TplComponent = undefined as any;
     flattenTpls(comp.tplTree).forEach((tpl) => {
@@ -5167,20 +5168,20 @@ describe("merging", () => {
 
     expect(
       tplComp.vsettings[0].args.filter(
-        (arg) => arg.param.variable.name === "slot1"
-      ).length
+        (arg) => arg.param.variable.name === "slot1",
+      ).length,
     ).toEqual(1);
 
     expect(
       tplComp.vsettings[0].args.filter(
-        (arg) => arg.param.variable.name === "slot2"
-      ).length
+        (arg) => arg.param.variable.name === "slot2",
+      ).length,
     ).toEqual(1);
   });
 
   it("merge tpls do not have multiple parents", () => {
     const result = testMergeFromJsonBundle(
-      hackyCast<ProjectFullDataResponse>(mergeTplParentBundle)
+      hackyCast<ProjectFullDataResponse>(mergeTplParentBundle),
     );
 
     expect(result).toMatchObject({
@@ -5191,7 +5192,7 @@ describe("merging", () => {
 
   it("should remove dangling refs with incremental observable", () => {
     const result = testMergeFromJsonBundle(
-      hackyCast<ProjectFullDataResponse>(danglingRefDeletionBundle)
+      hackyCast<ProjectFullDataResponse>(danglingRefDeletionBundle),
     );
 
     const bundler = new FastBundler();
@@ -5492,7 +5493,7 @@ describe("merging", () => {
         ancestorSite: ancestor,
         a: (site) => {
           const leftSeq = site.animationSequences.find(
-            (s) => s.name === "fadeIn"
+            (s) => s.name === "fadeIn",
           )!;
           const leftTplRoot = site.components[0].tplTree as TplTag;
           const anim = createAnimation(leftSeq);
@@ -5501,7 +5502,7 @@ describe("merging", () => {
         },
         b: (site) => {
           const rightSeq = site.animationSequences.find(
-            (s) => s.name === "fadeIn"
+            (s) => s.name === "fadeIn",
           )!;
           const rightTplRoot = site.components[0].tplTree as TplTag;
           const anim = createAnimation(rightSeq);

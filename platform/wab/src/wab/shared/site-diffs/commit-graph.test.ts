@@ -30,7 +30,7 @@ const parentGraph = {
 const commitGraph = {
   // One branch for each commit in the parentGraph
   branches: Object.fromEntries(
-    Object.keys(parentGraph).map((key) => [key, key])
+    Object.keys(parentGraph).map((key) => [key, key]),
   ),
   parents: parentGraph,
 } as CommitGraph;
@@ -69,22 +69,22 @@ describe("commit-graph", () => {
       expect(
         ancestors(
           bigCommitGraph.commitGraph.parents,
-          bigCommitGraph.commitGraph.branches.main as PkgVersionId
-        )
+          bigCommitGraph.commitGraph.branches.main as PkgVersionId,
+        ),
       ).toMatchSnapshot();
 
       expect(
         ancestors(
           bigCommitGraph.commitGraph.parents,
-          bigCommitGraph.commitGraph.branches.branchA as PkgVersionId
-        )
+          bigCommitGraph.commitGraph.branches.branchA as PkgVersionId,
+        ),
       ).toMatchSnapshot();
 
       expect(
         ancestors(
           bigCommitGraph.commitGraph.parents,
-          bigCommitGraph.commitGraph.branches.branchB as PkgVersionId
-        )
+          bigCommitGraph.commitGraph.branches.branchB as PkgVersionId,
+        ),
       ).toMatchSnapshot();
     });
   });
@@ -92,7 +92,7 @@ describe("commit-graph", () => {
   describe("subgraph", () => {
     it("should filter a graph based on a set of nodes", () => {
       expect(
-        subgraph(parentGraph, ["1", "2", "3", "4"] as PkgVersionId[])
+        subgraph(parentGraph, ["1", "2", "3", "4"] as PkgVersionId[]),
       ).toEqual({
         "1": [],
         "2": ["1"],
@@ -101,7 +101,7 @@ describe("commit-graph", () => {
       });
 
       expect(
-        subgraph(parentGraph, ["5", "6", "7", "8"] as PkgVersionId[])
+        subgraph(parentGraph, ["5", "6", "7", "8"] as PkgVersionId[]),
       ).toEqual({
         "5": [],
         "6": ["5"],
@@ -122,11 +122,11 @@ describe("commit-graph", () => {
       expect(leaves(parentGraph)).toEqual(["6", "9"]);
 
       expect(
-        leaves(subgraph(parentGraph, ["1", "2", "3", "4"] as PkgVersionId[]))
+        leaves(subgraph(parentGraph, ["1", "2", "3", "4"] as PkgVersionId[])),
       ).toEqual(["3", "4"]);
 
       expect(
-        leaves(subgraph(parentGraph, ["5", "6", "7", "8"] as PkgVersionId[]))
+        leaves(subgraph(parentGraph, ["5", "6", "7", "8"] as PkgVersionId[])),
       ).toEqual(["6", "8"]);
     });
   });
@@ -138,8 +138,8 @@ describe("commit-graph", () => {
           projectId,
           commitGraph,
           "2" as BranchId,
-          "1" as BranchId
-        )
+          "1" as BranchId,
+        ),
       ).toEqual("1");
 
       expect(
@@ -147,8 +147,8 @@ describe("commit-graph", () => {
           projectId,
           commitGraph,
           "3" as BranchId,
-          "1" as BranchId
-        )
+          "1" as BranchId,
+        ),
       ).toEqual("1");
 
       expect(
@@ -156,8 +156,8 @@ describe("commit-graph", () => {
           projectId,
           commitGraph,
           "4" as BranchId,
-          "2" as BranchId
-        )
+          "2" as BranchId,
+        ),
       ).toEqual("2");
 
       expect(
@@ -165,8 +165,8 @@ describe("commit-graph", () => {
           projectId,
           commitGraph,
           "5" as BranchId,
-          "4" as BranchId
-        )
+          "4" as BranchId,
+        ),
       ).toEqual("4");
 
       expect(
@@ -174,8 +174,8 @@ describe("commit-graph", () => {
           projectId,
           commitGraph,
           "5" as BranchId,
-          "3" as BranchId
-        )
+          "3" as BranchId,
+        ),
       ).toEqual("3");
     });
 
@@ -185,8 +185,8 @@ describe("commit-graph", () => {
           projectId,
           commitGraph,
           "7" as BranchId,
-          "5" as BranchId
-        )
+          "5" as BranchId,
+        ),
       ).toEqual("4");
 
       expect(
@@ -194,8 +194,8 @@ describe("commit-graph", () => {
           projectId,
           commitGraph,
           "8" as BranchId,
-          "6" as BranchId
-        )
+          "6" as BranchId,
+        ),
       ).toEqual("4");
 
       expect(
@@ -203,8 +203,8 @@ describe("commit-graph", () => {
           projectId,
           commitGraph,
           "9" as BranchId,
-          "6" as BranchId
-        )
+          "6" as BranchId,
+        ),
       ).toEqual("5");
 
       expect(
@@ -212,8 +212,8 @@ describe("commit-graph", () => {
           projectId,
           commitGraph,
           "9" as BranchId,
-          "5" as BranchId
-        )
+          "5" as BranchId,
+        ),
       ).toEqual("5");
     });
   });

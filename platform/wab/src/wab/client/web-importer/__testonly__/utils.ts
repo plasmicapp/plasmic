@@ -190,7 +190,7 @@ export function createComponentTestSite(): Site {
         }),
       ],
       tplTree: mkTplTagX("div"),
-    })
+    }),
   );
 
   return site;

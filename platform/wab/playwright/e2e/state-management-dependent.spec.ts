@@ -16,7 +16,7 @@ test.describe("state-management-dependents", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -30,7 +30,7 @@ test.describe("state-management-dependents", () => {
     await models.studio.leftPanel.insertNode("Select");
 
     const optionsProp = models.studio.frame.locator(
-      '[data-test-id="prop-editor-row-options"]'
+      '[data-test-id="prop-editor-row-options"]',
     );
     await optionsProp.click({ button: "right" });
     await models.studio.allowExternalAccessButton.click();
@@ -100,7 +100,7 @@ test.describe("state-management-dependents", () => {
 
     await models.studio.rightPanel.switchToComponentDataTab();
     const statesSection = models.studio.rightPanel.frame.locator(
-      '[data-test-id="variables-section"]'
+      '[data-test-id="variables-section"]',
     );
     await expect(statesSection).toBeVisible();
 
@@ -145,7 +145,7 @@ test.describe("state-management-dependents", () => {
         await expect(textInput1).toHaveCount(1);
 
         const textInput2 = appDiv.locator(
-          `input[value="${opt.toUpperCase()}"]`
+          `input[value="${opt.toUpperCase()}"]`,
         );
         await expect(textInput2).toHaveCount(1);
 
@@ -155,7 +155,7 @@ test.describe("state-management-dependents", () => {
         await expect(updatedTextInput1).toHaveCount(1);
 
         const updatedTextInput2 = appDiv.locator(
-          `input[value="${opt.toUpperCase()}HELLO"]`
+          `input[value="${opt.toUpperCase()}HELLO"]`,
         );
         await expect(updatedTextInput2).toHaveCount(1);
       }

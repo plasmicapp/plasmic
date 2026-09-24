@@ -64,7 +64,7 @@ export function updateComponentProp(
   opts: {
     component: Component;
     tplMgr: TplMgr;
-  }
+  },
 ): UpdateComponentPropResult {
   const { component, tplMgr } = opts;
   const { name, options, defaultValue, previewValue, advanced, isLocalizable } =
@@ -115,7 +115,7 @@ export function updateComponentProp(
         "Default",
         propTypeData,
         options,
-        param.defaultExpr
+        param.defaultExpr,
       );
       if (staleMessage) {
         return err({
@@ -128,7 +128,7 @@ export function updateComponentProp(
         "Preview",
         propTypeData,
         options,
-        param.previewExpr
+        param.previewExpr,
       );
       if (staleMessage) {
         return err({
@@ -147,7 +147,7 @@ export function updateComponentProp(
       "Default",
       propTypeData,
       effectiveOptions,
-      defaultValue
+      defaultValue,
     );
     if (invalidMessage) {
       return err({ message: invalidMessage });
@@ -157,7 +157,7 @@ export function updateComponentProp(
       // initial value, so the state's dynamic-value rule applies to it.
       const invalidStateMessage = validateStateAccessType(
         param.state.accessType as StateAccessType,
-        defaultValue
+        defaultValue,
       );
       if (invalidStateMessage) {
         return err({ message: invalidStateMessage });
@@ -169,7 +169,7 @@ export function updateComponentProp(
       "Preview",
       propTypeData,
       effectiveOptions,
-      previewValue
+      previewValue,
     );
     if (invalidMessage) {
       return err({ message: invalidMessage });

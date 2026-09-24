@@ -13,18 +13,16 @@ export async function getAppCtx(req: Request, res: Response) {
     // Return empty response if called by a non-normal user or user waiting
     // email verification.
     res.json(
-      ensureType<AppCtxResponse>({ teams: [], workspaces: [], perms: [] })
+      ensureType<AppCtxResponse>({ teams: [], workspaces: [], perms: [] }),
     );
     return;
   }
 
   const teams: ApiTeam[] = await Promise.all(
-    (
-      await userMgr.getAffiliatedTeams()
-    ).map(async (t) => {
+    (await userMgr.getAffiliatedTeams()).map(async (t) => {
       await checkFreeTrialDuration(req, t);
       return mkApiTeam(t);
-    })
+    }),
   );
   const workspaces: ApiWorkspace[] = (
     await userMgr.getAffiliatedWorkspaces()

@@ -53,7 +53,7 @@ describe("auth", () => {
         password: "SuperStrongPassword!!",
         firstName: "GivenName",
         lastName: "FamilyName",
-      })
+      }),
     ).toMatchObject({
       status: true,
       user: {
@@ -85,7 +85,7 @@ describe("auth", () => {
           password: "1234",
           firstName: "GivenName",
           lastName: "FamilyName",
-        })
+        }),
       ).toEqual({
         status: false,
         reason: "WeakPasswordError",
@@ -106,7 +106,7 @@ describe("auth", () => {
 
       signUpParams.password = signUpParams.password.slice(
         0,
-        MAX_PASSWORD_LENGTH
+        MAX_PASSWORD_LENGTH,
       );
       expect(await api.signUp(signUpParams)).toMatchObject({
         status: true,
@@ -208,11 +208,11 @@ describe("auth", () => {
           email: `recipient-${i}@example.com`,
           teamId: "fake-team" as TeamId,
           accessLevel: "editor" as const,
-        })
+        }),
       );
 
       await expect(api.grantRevoke({ grants, revokes: [] })).rejects.toThrow(
-        BadRequestError
+        BadRequestError,
       );
     });
   });
@@ -269,7 +269,7 @@ describe("auth", () => {
         api.login({
           email,
           password: "SuperStrongPassword!!",
-        })
+        }),
       ).resolves.toMatchObject({
         status: false,
         reason: "IncorrectLoginError",

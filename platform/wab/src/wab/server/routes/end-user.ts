@@ -45,7 +45,7 @@ import validator from "validator";
 
 function mkApiEndUser(
   endUser: EndUser,
-  groups: ApiDirectoryEndUserGroup[]
+  groups: ApiDirectoryEndUserGroup[],
 ): ApiEndUser {
   return {
     ...pick(endUser, ["id", "email"]),
@@ -58,25 +58,25 @@ export function mkApiAppRole(role: AppRole): ApiAppRole {
 }
 
 export function mkApiAppEndUserAccess(
-  appEndUserAccess: AppEndUserAccess
+  appEndUserAccess: AppEndUserAccess,
 ): ApiAppEndUserAccessRule {
   const identifier = appEndUserAccess.email
     ? {
         email: appEndUserAccess.email,
       }
     : appEndUserAccess.directoryEndUserGroupId
-    ? {
-        directoryEndUserGroupId: appEndUserAccess.directoryEndUserGroupId,
-      }
-    : appEndUserAccess.domain
-    ? {
-        domain: appEndUserAccess.domain,
-      }
-    : appEndUserAccess.externalId
-    ? {
-        externalId: appEndUserAccess.externalId,
-      }
-    : undefined;
+      ? {
+          directoryEndUserGroupId: appEndUserAccess.directoryEndUserGroupId,
+        }
+      : appEndUserAccess.domain
+        ? {
+            domain: appEndUserAccess.domain,
+          }
+        : appEndUserAccess.externalId
+          ? {
+              externalId: appEndUserAccess.externalId,
+            }
+          : undefined;
 
   if (!identifier) {
     throw new Error("Invalid app end user access");
@@ -91,13 +91,13 @@ export function mkApiAppEndUserAccess(
 }
 
 function mkApiEndUserDirectory(
-  directory: EndUserDirectory
+  directory: EndUserDirectory,
 ): ApiEndUserDirectory {
   return pick(directory, ["id", "name"]);
 }
 
 function mkApiEndUserGroup(
-  directoryGroup: DirectoryEndUserGroup
+  directoryGroup: DirectoryEndUserGroup,
 ): ApiDirectoryEndUserGroup {
   return pick(directoryGroup, ["id", "name"]);
 }
@@ -105,7 +105,7 @@ function mkApiEndUserGroup(
 function mkApiAppAccessRegistry(
   appAccessRegistry: AppAccessRegistry,
   endUser: EndUser,
-  matchedRoles: RoleMatchingInfo[]
+  matchedRoles: RoleMatchingInfo[],
 ): ApiAppAccessRegistry {
   return {
     id: appAccessRegistry.id,
@@ -123,7 +123,7 @@ function mkApiAppAccessRegistry(
 }
 
 export function mkApiAppAuthConfig(
-  appAuthConfig: AppAuthConfig
+  appAuthConfig: AppAuthConfig,
 ): ApiAppAuthConfig {
   return pick(appAuthConfig, [
     "id",
@@ -138,7 +138,7 @@ export function mkApiAppAuthConfig(
 }
 
 function mkApiAppUserOpConfig(
-  appAuthConfig: AppAuthConfig
+  appAuthConfig: AppAuthConfig,
 ): ApiAppUserOpConfig {
   return pick(appAuthConfig, [
     "userPropsOpId",
@@ -185,7 +185,7 @@ export async function getAppCurrentUserOpConfig(req: Request, res: Response) {
   const migratedOpBundle = await getMigratedUserPropsOpBundle(
     mgr,
     projectId,
-    config.userPropsBundledOp
+    config.userPropsBundledOp,
   );
 
   const opConfig = mkApiAppUserOpConfig(config);
@@ -251,7 +251,7 @@ export async function getAppCurrentUserProperties(req: Request, res: Response) {
     req.con,
     mgr,
     projectId as ProjectId,
-    identifier
+    identifier,
   );
   res.json(properties ?? {});
 }
@@ -260,7 +260,7 @@ async function getCurrentUserDataProperties(
   dbCon: Connection,
   mgr: DbMgr,
   appId: string,
-  currentUserIdentifier: EndUserIdentifier
+  currentUserIdentifier: EndUserIdentifier,
 ) {
   // We skip permission check because if the currentUser is the current studio user
   // we still want to allow the project to be usuable in studio, permissions checks
@@ -273,13 +273,13 @@ async function getCurrentUserDataProperties(
         appAuthConfig.userPropsDataSourceId!,
         {
           skipPermissionCheck: true,
-        }
+        },
       );
 
       const op = await getDataSourceOperation(
         mgr,
         appAuthConfig.userPropsDataSourceId!,
-        appAuthConfig.userPropsOpId
+        appAuthConfig.userPropsOpId,
       );
 
       const userPropertiesData = (
@@ -290,7 +290,7 @@ async function getCurrentUserDataProperties(
           undefined,
           {},
           currentUserIdentifier,
-          false
+          false,
         )
       ).data;
 
@@ -310,7 +310,7 @@ export async function getAppUserInfo(
   dbCon: Connection,
   mgr: DbMgr,
   tokenInfo: ReturnType<typeof extractAppUserFromToken>,
-  includeCustomProperties = true
+  includeCustomProperties = true,
 ): Promise<ApiAppUser | {}> {
   if (!tokenInfo.endUserId || !tokenInfo.appId) {
     return {};
@@ -320,7 +320,7 @@ export async function getAppUserInfo(
     {
       id: tokenInfo.endUserId,
     },
-    tokenInfo.appId
+    tokenInfo.appId,
   );
 
   if (!endUser) {
@@ -368,7 +368,7 @@ export async function buildFakeCurrentUser(
   mgr: DbMgr,
   appId: string,
   identifier: EndUserIdentifier | undefined,
-  includeCustomProperties = true
+  includeCustomProperties = true,
 ) {
   if (!identifier) {
     return {};
@@ -409,7 +409,7 @@ function fakeRoleEmailFromRole(role: AppRole) {
 export async function buildFakeCurrentUserFromRole(
   mgr: DbMgr,
   appId: string,
-  roleId: string | undefined
+  roleId: string | undefined,
 ) {
   if (!roleId) {
     return {};
@@ -513,17 +513,17 @@ export async function deleteDirectory(req: Request, res: Response) {
 export async function getUsersWithGroups(
   mgr: DbMgr,
   directoryId: string,
-  users: EndUser[]
+  users: EndUser[],
 ): Promise<ApiEndUser[]> {
   const rawUserGroups = await mgr.listEndUsersGroups(
     directoryId as string,
-    users.map((u) => u.id)
+    users.map((u) => u.id),
   );
   const groupIds = new Set(rawUserGroups.map((g) => g.directoryEndUserGroupId));
 
   const rawDirectoryGroups = await mgr.getDirectoryGroupsByIds([...groupIds]);
   const directoryGroups = new Map(
-    rawDirectoryGroups.map((g) => [g.id, g])
+    rawDirectoryGroups.map((g) => [g.id, g]),
   ) as Map<string, DirectoryEndUserGroup>;
 
   const groups = groupBy(rawUserGroups, (g) => g.endUserId);
@@ -569,11 +569,11 @@ export async function updateEndUserGroups(req: Request, res: Response) {
   const { groupIds } = req.body;
   const currentUserGroups = await mgr.listEndUsersGroups(directoryId, [userId]);
   const currentUserGroupsIds = currentUserGroups.map(
-    (g) => g.directoryEndUserGroupId
+    (g) => g.directoryEndUserGroupId,
   );
   const groupsToAdd = groupIds.filter((g) => !currentUserGroupsIds.includes(g));
   const groupsToRemove = currentUserGroupsIds.filter(
-    (g) => !groupIds.includes(g)
+    (g) => !groupIds.includes(g),
   );
   await mgr.addEndUserToGroups(directoryId, userId, groupsToAdd);
   await mgr.removeEndUserFromGroups(directoryId, userId, groupsToRemove);
@@ -665,11 +665,11 @@ export async function createAccessRules(req: Request, res: Response) {
     .map((domain) => domain.trim())
     .filter(
       (domain) =>
-        domain.startsWith("@") && validator.isFQDN(domain.substring(1))
+        domain.startsWith("@") && validator.isFQDN(domain.substring(1)),
     );
 
   const validatedExternalIds = (externalIds ?? []).filter((externalId) =>
-    isString(externalId)
+    isString(externalId),
   );
 
   const users = await mgr.createAccessRules(
@@ -680,7 +680,7 @@ export async function createAccessRules(req: Request, res: Response) {
       directoryEndUserGroupIds: directoryEndUserGroupIds ?? [],
       domains: validatedDomains,
     },
-    roleId
+    roleId,
   );
 
   if (notify) {
@@ -742,7 +742,7 @@ export async function updateDirectoryGroup(req: Request, res: Response) {
   const group = await mgr.updateDirectoryGroup(
     directoryId,
     groupId as string,
-    name
+    name,
   );
   res.json(mkApiEndUserGroup(group));
 }
@@ -763,10 +763,10 @@ export async function listAppAccessRegistries(req: Request, res: Response) {
   const { projectId } = req.params;
   const pageSize = Math.min(
     JSON.parse((req.query.pageSize ?? "20") as string) as number,
-    100
+    100,
   );
   const pageIndex = JSON.parse(
-    (req.query.pageIndex ?? "0") as string
+    (req.query.pageIndex ?? "0") as string,
   ) as number;
   const search = JSON.parse((req.query.search ?? '""') as string) as string;
 
@@ -776,7 +776,7 @@ export async function listAppAccessRegistries(req: Request, res: Response) {
       size: pageSize,
       page: pageIndex,
     },
-    search
+    search,
   );
 
   const endUserIds = registries.map((registry) => registry.endUserId);
@@ -792,11 +792,11 @@ export async function listAppAccessRegistries(req: Request, res: Response) {
               })
             : [];
         return [user.id.toString(), matchingRoles!];
-      })
-    )
+      }),
+    ),
   );
   const endUsersById = new Map(
-    endUsers.map((user) => [user.id.toString(), user])
+    endUsers.map((user) => [user.id.toString(), user]),
   );
   res.json({
     accesses: registries
@@ -805,8 +805,8 @@ export async function listAppAccessRegistries(req: Request, res: Response) {
         mkApiAppAccessRegistry(
           registry,
           endUsersById.get(registry.endUserId)!,
-          matchingRolesByEndUserid.get(registry.endUserId)!
-        )
+          matchingRolesByEndUserid.get(registry.endUserId)!,
+        ),
       ),
     total: await mgr.countAppAccessRegistries(projectId, search),
   });
@@ -842,7 +842,7 @@ async function buildCurrentUserFromEmail(
   mgr: DbMgr,
   projectId: string,
   userEmail: string,
-  roles: AppRole[]
+  roles: AppRole[],
 ): Promise<ApiAppUser | undefined> {
   const role = await getUserRoleForApp(mgr, projectId, {
     email: userEmail,
@@ -857,7 +857,7 @@ async function buildCurrentUserFromEmail(
     projectId,
     {
       skipDirectoryPermsCheck: true,
-    }
+    },
   );
   const extraProperties = await getCurrentUserDataProperties(
     dbCon,
@@ -865,7 +865,7 @@ async function buildCurrentUserFromEmail(
     projectId,
     {
       email: userEmail,
-    }
+    },
   );
 
   return {
@@ -897,7 +897,7 @@ export async function listAppUsers(req: Request, res: Response) {
         mgr,
         projectId,
         userEmail,
-        roles
+        roles,
       );
       if (appUser) {
         appUsers.push(appUser);
@@ -920,24 +920,24 @@ export async function listAppUsers(req: Request, res: Response) {
       size: 10,
       page: 0,
     },
-    ""
+    "",
   );
   const endUsers = await mgr.getEndUsersByIds(
-    accessRegistries.map((r) => r.endUserId)
+    accessRegistries.map((r) => r.endUserId),
   );
 
   const userEmails = uniq(
     [
       ...emailRules.map((rule) => rule.email),
       ...endUsers.map((user) => user.email),
-    ].filter((email): email is string => !!email)
+    ].filter((email): email is string => !!email),
   );
 
   const appUsers = await Promise.all(
     userEmails.map(
       async (email): Promise<ApiAppUser | undefined> =>
-        buildCurrentUserFromEmail(req.con, mgr, projectId, email, roles)
-    )
+        buildCurrentUserFromEmail(req.con, mgr, projectId, email, roles),
+    ),
   );
 
   res.json({
@@ -963,7 +963,7 @@ export async function getInitialUserToViewAs(req: Request, res: Response) {
           mgr,
           projectId,
           userEmail,
-          roles
+          roles,
         ),
       });
     } else {
@@ -981,7 +981,7 @@ export async function getInitialUserToViewAs(req: Request, res: Response) {
           mgr,
           projectId,
           emailRule.email,
-          roles
+          roles,
         ),
       });
     } else {
@@ -996,7 +996,7 @@ export async function checkPermissionToPerformOperationAsUser(
   req: Request,
   mgr: DbMgr,
   projectId: string,
-  identifier: EndUserIdentifier
+  identifier: EndUserIdentifier,
 ) {
   // If no identifier, allowed
   if (!identifier.email && !identifier.externalId) {
@@ -1043,7 +1043,7 @@ interface RoleMatchingInfo {
 export async function getMatchingRolesForUser(
   mgr: DbMgr,
   appId: string,
-  identifier: EndUserIdentifier
+  identifier: EndUserIdentifier,
 ): Promise<RoleMatchingInfo[]> {
   const appAuthConfig = await mgr.getPublicAppAuthConfig(appId);
   if (!appAuthConfig) {
@@ -1092,7 +1092,7 @@ export async function getMatchingRolesForUser(
       appId,
       {
         externalId: identifier.externalId,
-      }
+      },
     );
 
     if (accessByExternalId && accessByExternalId.role) {
@@ -1119,16 +1119,16 @@ export async function getMatchingRolesForUser(
       [endUser.id],
       {
         skipDirectoryPermsCheck: true,
-      }
+      },
     );
 
     if (endUserGroups.length > 0) {
       const endUserGroupsIds = endUserGroups.map(
-        (group) => group.directoryEndUserGroupId
+        (group) => group.directoryEndUserGroupId,
       );
       const accessesByGroup = await mgr.getAppEndUserAccessByGroups(
         appId,
-        endUserGroupsIds
+        endUserGroupsIds,
       );
       matchedRoles.push(
         ...accessesByGroup
@@ -1138,8 +1138,8 @@ export async function getMatchingRolesForUser(
               role: access.role!,
               reason: "group",
               accessId: access.id,
-            })
-          )
+            }),
+          ),
       );
     }
   }
@@ -1150,7 +1150,7 @@ export async function getMatchingRolesForUser(
 export async function getUserRoleForApp(
   mgr: DbMgr,
   appId: string,
-  identifier: EndUserIdentifier
+  identifier: EndUserIdentifier,
 ): Promise<AppRole | undefined> {
   const matchedRoles = (
     await getMatchingRolesForUser(mgr, appId, identifier)
@@ -1177,7 +1177,7 @@ export async function canCurrentUserExecuteOperation(
   mgr: DbMgr,
   appId: string,
   currentUser: Awaited<ReturnType<typeof getAppUserInfo>>,
-  op: OperationTemplate
+  op: OperationTemplate,
 ) {
   if (!op.roleId) {
     // No role requirement, then the operation can be considered public
@@ -1224,7 +1224,7 @@ export async function canRoleExecuteOperation(
   mgr: DbMgr,
   appId: string,
   roleId: string,
-  op: OperationTemplate
+  op: OperationTemplate,
 ) {
   if (!op.roleId) {
     // No role requirement, then the operation can be considered public

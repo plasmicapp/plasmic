@@ -1,4 +1,3 @@
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   getConversionRate,
   getConversions,
@@ -12,6 +11,7 @@ import { getTeamCurrentPeriodRange } from "@/wab/server/routes/team-plans";
 import { userDbMgr } from "@/wab/server/routes/util";
 import { TeamId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Request, Response } from "express-serve-static-core";
 
 export async function getAnalyticsForTeam(req: Request, res: Response) {
@@ -109,7 +109,7 @@ export async function getAnalyticsProjectMeta(req: Request, res: Response) {
   const bundler = new Bundler();
   const site = await unbundleProjectFromData(mgr, bundler, projectRev);
   const recentlyTrackedComponents = new Set(
-    await getRecentlyTrackedProjectComponents(projectId)
+    await getRecentlyTrackedProjectComponents(projectId),
   );
 
   const pages = site.components
@@ -136,20 +136,20 @@ export async function getAnalyticsProjectMeta(req: Request, res: Response) {
 
 export async function getAnalyticsBillingInfoForTeam(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   const mgr = userDbMgr(req);
   const { teamId } = req.params;
   await mgr.checkTeamPerms(
     teamId as TeamId,
     "viewer",
-    "view analytics billing"
+    "view analytics billing",
   );
   const team = await mgr.getTeamById(teamId as TeamId);
   const currentTier = team.featureTier || req.devflags.freeTier;
   const { start, end } = await getTeamCurrentPeriodRange(
     team,
-    team.trialDays ?? req.devflags.freeTrialDays
+    team.trialDays ?? req.devflags.freeTrialDays,
   );
   const renders = await getRendersInTimestampRange({
     start,

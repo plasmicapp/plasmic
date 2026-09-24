@@ -135,7 +135,7 @@ interface RichTextToolbarProps extends DefaultRichTextToolbarProps {
 
 function RichTextToolbar_(
   { ctx, ...props }: RichTextToolbarProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // This is just a wrapper to use the run() function from
   // viewCtx.editingTextContext() with no need to check if it's undefined.
@@ -229,7 +229,7 @@ function RichTextToolbar_(
     {
       isContentCreator: studioCtx.contentEditorMode,
       defaultContentEditorVisible: false, // matches what's chosen in Sections.tsx
-    }
+    },
   );
 
   const inlineMenuItems = textInlineTags

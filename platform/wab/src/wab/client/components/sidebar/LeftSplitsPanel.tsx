@@ -35,14 +35,14 @@ const VARIANT_NAME = "override";
 
 function LeftSplitsPanel_(
   props: LeftSplitsPanelProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const studioCtx = useStudioCtx();
   const splits = studioCtx.site.splits;
   const readOnly = studioCtx.getLeftTabPermission("splits") === "readable";
 
   const [editSplit, setEditSplit] = React.useState<Split | undefined>(
-    undefined
+    undefined,
   );
   const [state, setState] = React.useState<Array<"panel" | "modal">>(["panel"]);
 
@@ -66,11 +66,11 @@ function LeftSplitsPanel_(
     return studioCtx.change(() => {
       const tplMgr = studioCtx.tplMgr();
       const globalVariantGroup = tplMgr.createGlobalVariantGroup(
-        getGlobalVariantNameBySplitType(type)
+        getGlobalVariantNameBySplitType(type),
       );
       const globalVariant = tplMgr.createGlobalVariant(
         globalVariantGroup,
-        VARIANT_NAME
+        VARIANT_NAME,
       );
 
       const split = studioCtx.tplMgr().addGlobalVariantSplit({

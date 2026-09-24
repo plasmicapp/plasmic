@@ -15,8 +15,8 @@ export const OPTIONAL_VAR = Symbol();
 type ValueConfig<T> = null extends T
   ? never
   : undefined extends T
-  ? Exclude<T, undefined> | typeof OPTIONAL_VAR
-  : T | typeof REQUIRED_VAR;
+    ? Exclude<T, undefined> | typeof OPTIONAL_VAR
+    : T | typeof REQUIRED_VAR;
 type EnvConfig = {
   [Key in keyof typeof ENV]: ValueConfig<(typeof ENV)[Key]>;
 };
@@ -31,7 +31,7 @@ type EnvConfig = {
  * - Any other value: Uses the provided value directly
  */
 export function mkDefinePluginOptsForEnv(
-  envConfig: EnvConfig
+  envConfig: EnvConfig,
 ): ConstructorParameters<typeof DefinePlugin>[0] {
   return Object.fromEntries(
     Object.entries(envConfig).map(([key, value]) => {
@@ -58,6 +58,6 @@ export function mkDefinePluginOptsForEnv(
         }
         return [envKey, JSON.stringify(value)];
       }
-    })
+    }),
   );
 }

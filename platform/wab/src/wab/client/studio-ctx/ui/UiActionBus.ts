@@ -19,7 +19,7 @@ export class UiActionBus<UiId> {
     if (this.handlers.has(id)) {
       console.warn(
         `Duplicate registerHandler() call for UiId "${id}"`,
-        handler
+        handler,
       );
     }
 
@@ -63,7 +63,7 @@ export class UiActionBus<UiId> {
   dispatch(id: UiId, type: UiActionType) {
     if (this.pending) {
       console.warn(
-        `Dispatch of "${this.pending.type}" to UiId "${this.pending.id}" canceled due to new dispatch`
+        `Dispatch of "${this.pending.type}" to UiId "${this.pending.id}" canceled due to new dispatch`,
       );
       clearTimeout(this.pending.timeoutId);
       this.pending = null;
@@ -82,7 +82,7 @@ export class UiActionBus<UiId> {
       const timeoutId = setTimeout(() => {
         if (this.pending?.timeoutId === timeoutId) {
           console.warn(
-            `Dispatch of "${this.pending.type}" to UiId "${this.pending.id}" canceled due to timeout`
+            `Dispatch of "${this.pending.type}" to UiId "${this.pending.id}" canceled due to timeout`,
           );
           clearTimeout(this.pending.timeoutId);
           this.pending = null;

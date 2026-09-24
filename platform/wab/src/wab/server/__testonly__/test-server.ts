@@ -13,7 +13,7 @@ export interface TestServer {
 
 export async function startTestServer(
   ipAddr: string,
-  requestListener: RequestListener
+  requestListener: RequestListener,
 ): Promise<TestServer> {
   let requestCount = 0;
   const server = http.createServer((req, res) => {
@@ -41,7 +41,7 @@ const INTERNAL_IP_CANDIDATES = ["::1", "127.0.0.2"];
 
 /** Starts the "internal" SSRF test server on the first bindable loopback addr. */
 export async function startInternalTestServer(
-  requestListener: RequestListener
+  requestListener: RequestListener,
 ): Promise<TestServer> {
   let lastErr: unknown;
   for (const ipAddr of INTERNAL_IP_CANDIDATES) {
@@ -53,8 +53,8 @@ export async function startInternalTestServer(
   }
   throw new Error(
     `Could not bind internal test server to any of [${INTERNAL_IP_CANDIDATES.join(
-      ", "
-    )}]: ${String(lastErr)}`
+      ", ",
+    )}]: ${String(lastErr)}`,
   );
 }
 
@@ -107,14 +107,14 @@ export async function setupSsrfTestServers(): Promise<SsrfTestServers> {
     (_req, res) => {
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(expectedGoodContent);
-    }
+    },
   );
   const externalBadServer = await startTestServer(
     externalIpAddr,
     (_req, res) => {
       res.writeHead(302, { Location: `${internalServer!.url}` });
       res.end();
-    }
+    },
   );
   ssrfAllowedIpAddresses.push(externalIpAddr);
   return {

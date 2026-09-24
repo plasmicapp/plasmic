@@ -24,7 +24,7 @@ export type QuickInsertItemOldProps = DefaultQuickInsertItemOldProps;
 
 function QuickInsertItemOld_(
   props: QuickInsertItemOldProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicQuickInsertItemOld to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

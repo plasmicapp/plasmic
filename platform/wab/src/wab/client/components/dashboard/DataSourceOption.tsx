@@ -26,7 +26,7 @@ export interface DataSourceOptionProps extends DefaultDataSourceOptionProps {
 
 function DataSourceOption_(
   props: DataSourceOptionProps,
-  ref: HTMLElementRefOf<"a">
+  ref: HTMLElementRefOf<"a">,
 ) {
   // Use PlasmicDataSourceOption to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

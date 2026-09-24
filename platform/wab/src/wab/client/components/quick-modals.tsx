@@ -56,8 +56,8 @@ function showTemporaryWidget(children: React.ReactElement<any>) {
 export async function showTemporaryPrompt<T>(
   children: (
     onSubmit: (val: T) => void,
-    onCancel: () => void
-  ) => React.ReactElement<any>
+    onCancel: () => void,
+  ) => React.ReactElement<any>,
 ) {
   let modalResolve: (result?: T) => void;
   const promise = new Promise<T | undefined>((resolve) => {
@@ -312,7 +312,7 @@ export async function deleteStudioElementConfirm(
     element: StudioElement;
     summary: UsageSummary;
   }[],
-  message?: React.ReactNode
+  message?: React.ReactNode,
 ) {
   return await reactConfirm({
     title,
@@ -325,29 +325,29 @@ export async function deleteStudioElementConfirm(
             <ul>
               {makeUsageControl(
                 "Components",
-                summary.components?.map(getComponentDisplayName)
+                summary.components?.map(getComponentDisplayName),
               )}
               {makeUsageControl(
                 FRAMES_CAP,
                 summary.frames?.map(
-                  (frame) => frame.name || `unnamed ${FRAME_LOWER}`
-                )
+                  (frame) => frame.name || `unnamed ${FRAME_LOWER}`,
+                ),
               )}
               {makeUsageControl(
                 MIXINS_CAP,
-                summary.mixins?.map((m) => m.name)
+                summary.mixins?.map((m) => m.name),
               )}
               {makeUsageControl(
                 "Tokens",
-                summary.styleTokens?.map((t) => t.name)
+                summary.styleTokens?.map((t) => t.name),
               )}
               {makeUsageControl(
                 "Token Overrides",
-                summary.styleTokenOverrides?.map((t) => t.token.name)
+                summary.styleTokenOverrides?.map((t) => t.token.name),
               )}
               {makeUsageControl(
                 "Default Typography Styles",
-                summary.themes?.map((t) => t.style.name)
+                summary.themes?.map((t) => t.style.name),
               )}
               {makeUsageControl("Initial Styles", summary.addItemPrefs)}
             </ul>
@@ -369,7 +369,7 @@ const makeUsageControl = (usageName: string, names?: Array<string>) => {
       <span className="asset-usage-items">
         {joinReactNodes(
           names.map((name, i) => <code key={i}>{name}</code>),
-          ", "
+          ", ",
         )}
       </span>
     </li>

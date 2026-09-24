@@ -4,7 +4,7 @@ import { EntityManager } from "typeorm";
 
 export async function fixInvalidImplicitStates(
   em: EntityManager,
-  projectId: string
+  projectId: string,
 ) {
   const dbMgr = new DbMgr(em, SUPER_USER);
   const rev = await dbMgr.getLatestProjectRev(projectId);

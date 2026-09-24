@@ -27,14 +27,14 @@ import { useLocalStorage } from "react-use";
 interface ComponentTogglesPanelProps {}
 
 const ComponentTogglesPanel = observer(function ComponentTogglesPanel(
-  props: ComponentTogglesPanelProps
+  props: ComponentTogglesPanelProps,
 ) {
   const docsCtx = useDocsPortalCtx();
   const component = docsCtx.tryGetFocusedComponent();
 
   const [dismissed, setDismissed] = useLocalStorage(
     "ComponentTogglesPanel--dismissComponentInfo",
-    false
+    false,
   );
 
   if (!component) {
@@ -42,7 +42,7 @@ const ComponentTogglesPanel = observer(function ComponentTogglesPanel(
   }
 
   const variantGroups = component.variantGroups.filter(
-    (vg) => vg.variants.length > 0
+    (vg) => vg.variants.length > 0,
   );
 
   const slots = getTplSlots(component);
@@ -50,12 +50,12 @@ const ComponentTogglesPanel = observer(function ComponentTogglesPanel(
   const otherProps = component.params.filter(
     (p) =>
       !slots.some((s) => s.param === p) &&
-      !component.variantGroups.some((g) => g.param === p)
+      !component.variantGroups.some((g) => g.param === p),
   );
 
   const nodeNamer = makeNodeNamer(component);
   const namedNodes = flattenTplsWithoutThrowawayNodes(component).filter(
-    (n) => !!nodeNamer(n) && isTplTagOrComponent(n)
+    (n) => !!nodeNamer(n) && isTplTagOrComponent(n),
   );
 
   return (
@@ -241,7 +241,7 @@ const BlackboxComponentMessage = observer(
         </div>
       );
     }
-  }
+  },
 );
 
 function VariantPropsTooltip() {

@@ -30,7 +30,7 @@ test.describe("Table and form tutorial", () => {
       await apiClient.removeProjectAfterTest(
         clonedProjectId,
         "user2@example.com",
-        "!53kr3tz!"
+        "!53kr3tz!",
       );
     }
 
@@ -44,8 +44,8 @@ test.describe("Table and form tutorial", () => {
 
     await expect(
       frame.getByText(
-        "Let's learn how the Plasmic Studio works and build your portfolio main page in 3 minutes. 🚀"
-      )
+        "Let's learn how the Plasmic Studio works and build your portfolio main page in 3 minutes. 🚀",
+      ),
     ).toBeVisible({ timeout: 15_000 });
 
     await expect(frame.locator("#tour-popup-welcome")).toBeVisible();

@@ -21,7 +21,7 @@ function addHostingRoutes(app: Application) {
 function addPaymentRoutes(app: Application) {
   app.get(
     "/api/v1/billing/subscription/:teamId",
-    withNext(getBillingSubscription)
+    withNext(getBillingSubscription),
   );
 }
 

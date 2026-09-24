@@ -88,10 +88,10 @@ export class ManipulatorAbortedError extends CustomError {
 
 export function mkFreestyleManipForFocusedDomElt(
   vc: ViewCtx,
-  obj?: Selectable
+  obj?: Selectable,
 ): Result<FreestyleManipulator, ManipulatorAbortedError> {
   const val = maybe(obj || vc.focusedSelectable(), (focused) =>
-    ensureInstance(focused, ValTag, ValComponent)
+    ensureInstance(focused, ValTag, ValComponent),
   );
   if (!val) {
     // Maybe someone else deleted the object
@@ -100,17 +100,17 @@ export function mkFreestyleManipForFocusedDomElt(
   const vtm = vc.variantTplMgr();
   const exp = makeMergedExpProxy(
     vtm.effectiveVariantSetting(val.tpl).rsh(),
-    () => vtm.targetRshForNode(val.tpl)
+    () => vtm.targetRshForNode(val.tpl),
   );
   const domElt = ensureArray(
-    vc.renderState.sel2dom(val, vc.canvasCtx)
+    vc.renderState.sel2dom(val, vc.canvasCtx),
   )[0] as HTMLElement;
   return ok(new FreestyleManipulator(exp, domElt, vc.studioCtx.site));
 }
 
 export function mkFreestyleManipForFocusedFrame(
   sc: StudioCtx,
-  frame?: ArenaFrame
+  frame?: ArenaFrame,
 ): Result<FreestyleManipulator, ManipulatorAbortedError> {
   const focusedFrame =
     frame ||
@@ -124,7 +124,7 @@ export function mkFreestyleManipForFocusedFrame(
   const domElt = vc
     ? vc.canvasCtx.viewportContainer()
     : (document.querySelector(
-        `.CanvasFrame__Container[data-frame-id="${focusedFrame.uid}"]`
+        `.CanvasFrame__Container[data-frame-id="${focusedFrame.uid}"]`,
       ) as HTMLElement | undefined);
 
   if (!domElt) {
@@ -176,7 +176,7 @@ export class FreestyleManipulator {
   constructor(
     private readonly exp: IRuleSetHelpers,
     private readonly domElt: HTMLElement,
-    private readonly site: Site
+    private readonly site: Site,
   ) {}
 
   private getExpAndDomElt() {
@@ -200,7 +200,7 @@ export class FreestyleManipulator {
       return parseAtomicSize(
         isSpecialSizeVal(size) || size === "none"
           ? "auto"
-          : lazyDerefTokenRefsWithDeps(size, this.site, "Spacing")
+          : lazyDerefTokenRefsWithDeps(size, this.site, "Spacing"),
       );
     };
 
@@ -224,8 +224,8 @@ export class FreestyleManipulator {
     function getInitDims() {
       return safeCast(
         Object.fromEntries(
-          dimProps.map((prop) => tuple(prop, getAtomicSize(getSmartDim(prop))))
-        ) as Dims
+          dimProps.map((prop) => tuple(prop, getAtomicSize(getSmartDim(prop)))),
+        ) as Dims,
       );
     }
 
@@ -245,10 +245,10 @@ export class FreestyleManipulator {
     exp: IRuleSetHelpers,
     dimProp: DimProp,
     deltaPx: number | undefined,
-    newPx?: number
+    newPx?: number,
   ) {
     function getSmartDimProp(
-      prop: DimProp
+      prop: DimProp,
     ): DimProp | "max-width" | "min-height" {
       // We used to also map height to min-height,
       // but this causes issues for images.
@@ -272,7 +272,7 @@ export class FreestyleManipulator {
       domElt,
       unit,
       newPx_,
-      dimPropToSizeAxis(dimProp)
+      dimPropToSizeAxis(dimProp),
     );
     // Allow negative offsets but not sizes.
     if (newNum < 0 && ["width", "height"].includes(dimProp)) {
@@ -293,7 +293,7 @@ export class FreestyleManipulator {
   resize(
     state: ManipState,
     part: Corner | Side,
-    e: SimpleMouseEvent
+    e: SimpleMouseEvent,
   ): ManipState {
     const { exp } = this.getExpAndDomElt();
 
@@ -302,8 +302,8 @@ export class FreestyleManipulator {
         e,
         new Pt(e.deltaFrameX, e.deltaFrameY),
         state.initOffsetRect,
-        part
-      )
+        part,
+      ),
     ).rect();
 
     const initNormalRect = Box.fromRect(state.initOffsetRect).rect();
@@ -326,7 +326,7 @@ export class FreestyleManipulator {
               exp,
               dimProp,
               undefined,
-              desiredOffsetRect[dimProp]
+              desiredOffsetRect[dimProp],
             );
           }
         } else {
@@ -348,7 +348,7 @@ export class FreestyleManipulator {
               exp,
               dimProp,
               undefined,
-              desiredOffsetRect[dimProp]
+              desiredOffsetRect[dimProp],
             );
           }
         }
@@ -367,14 +367,14 @@ export class FreestyleManipulator {
       const moveAxis = (props: DimProp[], deltaPx: number) => {
         const sides = ifEmpty(
           props.filter((side) => exp.get(side) !== "auto"),
-          () => [props[0]] as DimProp[]
+          () => [props[0]] as DimProp[],
         );
         for (const side of sides) {
           this.updateDimProp(
             state,
             exp,
             side,
-            (isEndSide(ensureSide(side)) ? -1 : 1) * deltaPx
+            (isEndSide(ensureSide(side)) ? -1 : 1) * deltaPx,
           );
         }
       };
@@ -382,13 +382,13 @@ export class FreestyleManipulator {
         ["left", "right"],
         !e.shiftKey || Math.abs(e.deltaFrameX) >= Math.abs(e.deltaFrameY)
           ? e.deltaFrameX
-          : 0
+          : 0,
       );
       moveAxis(
         ["top", "bottom"],
         !e.shiftKey || Math.abs(e.deltaFrameX) < Math.abs(e.deltaFrameY)
           ? e.deltaFrameY
-          : 0
+          : 0,
       );
     }
   }
@@ -408,7 +408,7 @@ export function resizeRect(
   mouseEvent: ModifierStates,
   dragVec: Pt,
   initRect: Rect,
-  part: Side | Corner
+  part: Side | Corner,
 ) {
   // Resize first.  Need to double the resize amount if symmetric resize.
   const initBox = Box.fromRect(initRect);
@@ -416,9 +416,9 @@ export function resizeRect(
   let box = initBox.adjustSides(
     Object.fromEntries(
       sideOrCornerToSides(part).map((side) =>
-        tuple(side, sideToOrient(side) === "horiz" ? dragVec.x : dragVec.y)
-      )
-    )
+        tuple(side, sideToOrient(side) === "horiz" ? dragVec.x : dragVec.y),
+      ),
+    ),
   );
 
   if (mouseEvent.shiftKey) {
@@ -429,8 +429,11 @@ export function resizeRect(
       // possibility.
       box = box.withSizeOfBox(
         Box.fromRect(initRect).scaleSizeOnly(
-          Math.max(box.width() / initRect.width, box.height() / initRect.height)
-        )
+          Math.max(
+            box.width() / initRect.width,
+            box.height() / initRect.height,
+          ),
+        ),
       );
     } else {
       const len = absmax(box.width(), box.height());
@@ -442,7 +445,7 @@ export function resizeRect(
   // The "origin" or "anchor" or "fixed" point should not be moving.
   box = box.alignTo(
     initBox,
-    mouseEvent.altKey ? "center" : oppSideOrCorner(part)
+    mouseEvent.altKey ? "center" : oppSideOrCorner(part),
   );
 
   return box.absBox().rect();
@@ -454,7 +457,7 @@ export class DragMoveFrameManager {
   constructor(
     private studioCtx: StudioCtx,
     private frame: ArenaFrame,
-    private startingClientPt: Pt
+    private startingClientPt: Pt,
   ) {
     studioCtx.startUnlogged();
     mkFreestyleManipForFocusedFrame(studioCtx, frame).match(
@@ -463,7 +466,7 @@ export class DragMoveFrameManager {
       },
       () => {
         this._aborted = false;
-      }
+      },
     );
   }
 
@@ -482,15 +485,15 @@ export class DragMoveFrameManager {
                 metaKey: modifiers.metaKey,
                 altKey: modifiers.altKey,
                 ctrlKey: modifiers.ctrlKey,
-              })
-          )
+              }),
+          ),
       );
       maybeAborted.match(
         () => {},
         () => {
           this._aborted = true;
           this.endDrag();
-        }
+        },
       );
     }
   }
@@ -507,7 +510,7 @@ export class DragMoveFrameManager {
           this.studioCtx.stopUnlogged();
         }
         return ok();
-      })
+      }),
     );
   }
 }

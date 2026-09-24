@@ -6,7 +6,7 @@ import { goToProject } from "../../utils/studio-utils";
 async function setHtmlId(page: Page, rightPanel: FrameLocator, id: string) {
   const collapseButton = rightPanel
     .locator(
-      '[data-test-id="html-attributes-section"] button[data-test-id="collapse"]'
+      '[data-test-id="html-attributes-section"] button[data-test-id="collapse"]',
     )
     .first();
   if ((await collapseButton.count()) > 0) {
@@ -66,7 +66,7 @@ test.describe("Antd5 pagination", () => {
       .waitFor({ state: "visible", timeout: 5000 });
 
     const disablePane1 = models.studio.frame.locator(
-      ".canvas-editor__disable-right-pane"
+      ".canvas-editor__disable-right-pane",
     );
     const count1 = await disablePane1.count();
     if (count1 > 0) {
@@ -87,7 +87,7 @@ test.describe("Antd5 pagination", () => {
       .click();
 
     const disablePane2 = models.studio.frame.locator(
-      ".canvas-editor__disable-right-pane"
+      ".canvas-editor__disable-right-pane",
     );
     const count2 = await disablePane2.count();
     if (count2 > 0) {
@@ -105,7 +105,7 @@ test.describe("Antd5 pagination", () => {
     await models.studio.rightPanel.insertMonacoCode("true");
 
     const disablePane3 = models.studio.frame.locator(
-      ".canvas-editor__disable-right-pane"
+      ".canvas-editor__disable-right-pane",
     );
     const count3 = await disablePane3.count();
     if (count3 > 0) {
@@ -120,11 +120,11 @@ test.describe("Antd5 pagination", () => {
     await models.studio.useDynamicValueButton.click();
     await models.studio.frame.getByText("Switch to Code").click();
     await models.studio.rightPanel.insertMonacoCode(
-      "`https://test.com?_page=${pageNo}&_limit=${pageSize}`"
+      "`https://test.com?_page=${pageNo}&_limit=${pageSize}`",
     );
 
     const disablePane4 = models.studio.frame.locator(
-      ".canvas-editor__disable-right-pane"
+      ".canvas-editor__disable-right-pane",
     );
     const count4 = await disablePane4.count();
     if (count4 > 0) {
@@ -145,11 +145,11 @@ test.describe("Antd5 pagination", () => {
     await setHtmlId(
       page,
       models.studio.rightPanel.frame,
-      "pagination-state-current-page"
+      "pagination-state-current-page",
     );
 
     const disablePane5 = models.studio.frame.locator(
-      ".canvas-editor__disable-right-pane"
+      ".canvas-editor__disable-right-pane",
     );
     const count5 = await disablePane5.count();
     if (count5 > 0) {
@@ -189,10 +189,10 @@ test.describe("Antd5 pagination", () => {
     await setHtmlId(
       page,
       models.studio.rightPanel.frame,
-      "pagination-state-page-size"
+      "pagination-state-page-size",
     );
     const disablePane6 = models.studio.frame.locator(
-      ".canvas-editor__disable-right-pane"
+      ".canvas-editor__disable-right-pane",
     );
     const count6 = await disablePane6.count();
     if (count6 > 0) {
@@ -232,10 +232,10 @@ test.describe("Antd5 pagination", () => {
     await setHtmlId(
       page,
       models.studio.rightPanel.frame,
-      "pagination-state-start-index"
+      "pagination-state-start-index",
     );
     const disablePane7 = models.studio.frame.locator(
-      ".canvas-editor__disable-right-pane"
+      ".canvas-editor__disable-right-pane",
     );
     const count7 = await disablePane7.count();
     if (count7 > 0) {
@@ -275,10 +275,10 @@ test.describe("Antd5 pagination", () => {
     await setHtmlId(
       page,
       models.studio.rightPanel.frame,
-      "pagination-state-end-index"
+      "pagination-state-end-index",
     );
     const disablePane8 = models.studio.frame.locator(
-      ".canvas-editor__disable-right-pane"
+      ".canvas-editor__disable-right-pane",
     );
     const count8 = await disablePane8.count();
     if (count8 > 0) {
@@ -320,17 +320,17 @@ test.describe("Antd5 pagination", () => {
     await models.studio.leftPanel.insertNode("Text");
 
     const repeatButton = models.studio.rightPanel.frame.locator(
-      `[data-test-id="btn-repeating-element-add"]`
+      `[data-test-id="btn-repeating-element-add"]`,
     );
     await repeatButton.click();
     const collectionInput = models.studio.rightPanel.frame.locator(
-      `[data-test-id="repeating-element-collection"] .code-editor-input`
+      `[data-test-id="repeating-element-collection"] .code-editor-input`,
     );
     await collectionInput.click();
     const switchToCodeBtn = models.studio.frame.getByText("Switch to Code");
     await switchToCodeBtn.click();
     const monacoContainer = models.studio.frame.locator(
-      '[data-test-id="data-picker"] .react-monaco-editor-container'
+      '[data-test-id="data-picker"] .react-monaco-editor-container',
     );
     await monacoContainer.click();
 
@@ -363,7 +363,7 @@ const query = ${JSON.stringify(query.data)};
           });
           element.dispatchEvent(pasteEvent);
         },
-        repeatCode
+        repeatCode,
       );
     } else {
       await page.keyboard.type(repeatCode);
@@ -371,7 +371,7 @@ const query = ${JSON.stringify(query.data)};
     await models.studio.rightPanel.saveDataPicker();
 
     const disablePane9 = models.studio.frame.locator(
-      ".canvas-editor__disable-right-pane"
+      ".canvas-editor__disable-right-pane",
     );
     const count9 = await disablePane9.count();
     if (count9 > 0) {
@@ -386,7 +386,7 @@ const query = ${JSON.stringify(query.data)};
     await models.studio.useDynamicValueButton.click();
     await models.studio.frame.getByText("Switch to Code").click();
     await models.studio.rightPanel.insertMonacoCode(
-      "`${currentItem.order_id}. ${currentItem.ship_name}`"
+      "`${currentItem.order_id}. ${currentItem.ship_name}`",
     );
 
     await models.studio.waitForSave();
@@ -397,19 +397,19 @@ const query = ${JSON.stringify(query.data)};
         .locator("#pagination-state-current-page")
         .waitFor({ state: "visible" });
       await expect(
-        liveFrame.locator("#pagination-state-current-page")
+        liveFrame.locator("#pagination-state-current-page"),
       ).toHaveText("1");
       await expect(liveFrame.locator("#pagination-state-page-size")).toHaveText(
-        "10"
+        "10",
       );
       await expect(
-        liveFrame.locator("#pagination-state-start-index")
+        liveFrame.locator("#pagination-state-start-index"),
       ).toHaveText("0");
       await expect(liveFrame.locator("#pagination-state-end-index")).toHaveText(
-        "9"
+        "9",
       );
       await expect(liveFrame.locator(".ant-pagination-total-text")).toHaveText(
-        "1,10 / 830"
+        "1,10 / 830",
       );
 
       const northwindOrders = liveFrame
@@ -417,33 +417,33 @@ const query = ${JSON.stringify(query.data)};
         .locator("> *");
       await expect(northwindOrders).toHaveCount(10);
       await expect(northwindOrders.nth(0)).toHaveText(
-        "10248. Vins et alcools Chevalier"
+        "10248. Vins et alcools Chevalier",
       );
 
       const quickJumperInput = liveFrame.locator(
-        ".ant-pagination-options-quick-jumper input"
+        ".ant-pagination-options-quick-jumper input",
       );
       await quickJumperInput.fill("4");
       await quickJumperInput.press("Enter");
 
       await expect(
-        liveFrame.locator("#pagination-state-current-page")
+        liveFrame.locator("#pagination-state-current-page"),
       ).toHaveText("4");
       await expect(liveFrame.locator("#pagination-state-page-size")).toHaveText(
-        "10"
+        "10",
       );
       await expect(
-        liveFrame.locator("#pagination-state-start-index")
+        liveFrame.locator("#pagination-state-start-index"),
       ).toHaveText("30");
       await expect(liveFrame.locator("#pagination-state-end-index")).toHaveText(
-        "39"
+        "39",
       );
       await expect(liveFrame.locator(".ant-pagination-total-text")).toHaveText(
-        "31,40 / 830"
+        "31,40 / 830",
       );
       await expect(northwindOrders).toHaveCount(10);
       await expect(northwindOrders.nth(0)).toHaveText(
-        "10278. Berglunds snabbköp"
+        "10278. Berglunds snabbköp",
       );
 
       const pageSelector = liveFrame.locator(".ant-select-selector");
@@ -451,53 +451,53 @@ const query = ${JSON.stringify(query.data)};
       await liveFrame.getByText("20 / page").click();
 
       await expect(
-        liveFrame.locator("#pagination-state-current-page")
+        liveFrame.locator("#pagination-state-current-page"),
       ).toHaveText("4");
       await expect(liveFrame.locator("#pagination-state-page-size")).toHaveText(
-        "20"
+        "20",
       );
       await expect(
-        liveFrame.locator("#pagination-state-start-index")
+        liveFrame.locator("#pagination-state-start-index"),
       ).toHaveText("60");
       await expect(liveFrame.locator("#pagination-state-end-index")).toHaveText(
-        "79"
+        "79",
       );
       await expect(liveFrame.locator(".ant-pagination-total-text")).toHaveText(
-        "61,80 / 830"
+        "61,80 / 830",
       );
       await expect(northwindOrders).toHaveCount(20);
       await expect(northwindOrders.nth(0)).toHaveText(
-        "10308. Ana Trujillo Emparedados y helados"
+        "10308. Ana Trujillo Emparedados y helados",
       );
 
       const paginationLink = liveFrame.locator(
-        ".ant-pagination-item[title='3'] a[href='https://test.com?_page=3&_limit=20'][rel='prev']"
+        ".ant-pagination-item[title='3'] a[href='https://test.com?_page=3&_limit=20'][rel='prev']",
       );
       await expect(paginationLink).toBeVisible();
 
       const paginationItem3 = liveFrame.locator(
-        ".ant-pagination-item[title='3']"
+        ".ant-pagination-item[title='3']",
       );
       await paginationItem3.click();
 
       await expect(
-        liveFrame.locator("#pagination-state-current-page")
+        liveFrame.locator("#pagination-state-current-page"),
       ).toHaveText("3");
       await expect(liveFrame.locator("#pagination-state-page-size")).toHaveText(
-        "20"
+        "20",
       );
       await expect(
-        liveFrame.locator("#pagination-state-start-index")
+        liveFrame.locator("#pagination-state-start-index"),
       ).toHaveText("40");
       await expect(liveFrame.locator("#pagination-state-end-index")).toHaveText(
-        "59"
+        "59",
       );
       await expect(liveFrame.locator(".ant-pagination-total-text")).toHaveText(
-        "41,60 / 830"
+        "41,60 / 830",
       );
       await expect(northwindOrders).toHaveCount(20);
       await expect(northwindOrders.nth(0)).toHaveText(
-        "10288. Reggiani Caseifici"
+        "10288. Reggiani Caseifici",
       );
     });
   });

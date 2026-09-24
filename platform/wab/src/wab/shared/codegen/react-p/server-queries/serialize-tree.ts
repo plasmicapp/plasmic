@@ -38,11 +38,11 @@ import { groupBy } from "lodash";
  */
 function makeContextFn(
   exprCode: DynamicExprCode,
-  scopedItemVars: string[]
+  scopedItemVars: string[],
 ): string {
   if (scopedItemVars.length > 0) {
     return `({ $q, $props, $ctx, $state, $scopedItemVars: { ${scopedItemVars.join(
-      ", "
+      ", ",
     )} } }) => (${exprCode})`;
   }
   return `({ $q, $props, $ctx, $state }) => (${exprCode})`;
@@ -57,7 +57,7 @@ function makeContextFn(
 function makeArgsFn(argExprs: string[], scopedItemVars: string[]): string {
   if (scopedItemVars.length > 0) {
     return `({ $q, $props, $ctx, $state, $scopedItemVars: { ${scopedItemVars.join(
-      ", "
+      ", ",
     )} } }) => [${argExprs.join(", ")}]`;
   }
   return `({ $q, $props, $ctx, $state }) => [${argExprs.join(", ")}]`;
@@ -70,7 +70,7 @@ function makeArgsFn(argExprs: string[], scopedItemVars: string[]): string {
  */
 export function serializeServerQueryTree(
   tree: ServerQueryTree,
-  ctx: SerializerBaseContext
+  ctx: SerializerBaseContext,
 ): string {
   return serializeComponentNode(tree.rootNode, ctx, []);
 }
@@ -81,15 +81,16 @@ export function serializeServerQueryTree(
  */
 export function serializeRootComponentQueries(
   queries: ServerQueryWithOperation[],
-  ctx: SerializerBaseContext
+  ctx: SerializerBaseContext,
 ): string {
   const hasStates = ctx.component.states.some(
-    (state) => !state.tplNode || !ctx.fakeTpls.includes(state.tplNode)
+    (state) => !state.tplNode || !ctx.fakeTpls.includes(state.tplNode),
   );
   const stateSpecs = hasStates ? serializeStateSpecs(ctx.component, ctx) : "[]";
   const queriesEntries = queries
     .map(
-      (q) => `${toVarName(q.name)}: ${serializeServerQuery(q, ctx.exprCtx, [])}`
+      (q) =>
+        `${toVarName(q.name)}: ${serializeServerQuery(q, ctx.exprCtx, [])}`,
     )
     .join(", ");
   return `{
@@ -104,7 +105,7 @@ export function serializeRootComponentQueries(
 function serializeComponentNode(
   node: ServerComponentNode,
   ctx: SerializerBaseContext,
-  scopedItemVars: string[]
+  scopedItemVars: string[],
 ): string {
   const { exprCtx } = ctx;
   const queriesEntries = node.queries
@@ -113,8 +114,8 @@ function serializeComponentNode(
         `${toVarName(q.name)}: ${serializeServerQuery(
           q,
           exprCtx,
-          scopedItemVars
-        )}`
+          scopedItemVars,
+        )}`,
     )
     .join(", ");
   const propsEntries = Object.entries(node.propsContext)
@@ -124,7 +125,7 @@ function serializeComponentNode(
     .map((c) => serializeServerNode(c, ctx, scopedItemVars))
     .join(", ");
   const hasStates = node.states.some(
-    (state) => !state.tplNode || !ctx.fakeTpls.includes(state.tplNode)
+    (state) => !state.tplNode || !ctx.fakeTpls.includes(state.tplNode),
   );
   const stateSpecsCode = hasStates
     ? serializeStateSpecs(node.component, ctx)
@@ -141,7 +142,7 @@ function serializeComponentNode(
 function serializeServerNode(
   node: ServerNode,
   ctx: SerializerBaseContext,
-  scopedItemVars: string[]
+  scopedItemVars: string[],
 ): string {
   const { type } = node;
   switch (type) {
@@ -207,7 +208,7 @@ function serializeServerNode(
 function serializeServerQuery(
   query: ServerQueryWithOperation,
   exprCtx: ExprCtx,
-  scopedItemVars: string[]
+  scopedItemVars: string[],
 ): string {
   if (isKnownCustomCode(query.op)) {
     return serializeCustomCode(query.uuid, query.op, scopedItemVars);
@@ -219,14 +220,14 @@ function serializeServerQuery(
 function serializeCustomCode(
   queryUuid: string,
   op: CustomCode,
-  scopedItemVars: string[]
+  scopedItemVars: string[],
 ): string {
   const { usedDollarVarKeys } = parseCodeExpression(stripParens(op.code));
 
   const paramList =
     scopedItemVars.length > 0
       ? `{ $q, $props, $ctx, $state, $scopedItemVars: { ${scopedItemVars.join(
-          ", "
+          ", ",
         )} } }`
       : `{ $q, $props, $ctx, $state }`;
 
@@ -239,14 +240,14 @@ function serializeCustomCode(
   const $stateDeps = [...usedDollarVarKeys.$state];
   // Access the most-specific path, e.g. `$state.tpl.input` over `$state.tpl`.
   const $statePaths = $stateDeps.filter(
-    (path) => !$stateDeps.some((other) => other.startsWith(path + "."))
+    (path) => !$stateDeps.some((other) => other.startsWith(path + ".")),
   );
   const $stateAccessLines = $statePaths.map(
     (p) =>
       `    $state${p
         .split(".")
         .map((seg) => `[${JSON.stringify(seg)}]`)
-        .join("")};`
+        .join("")};`,
   );
   const $allAccessLines = [...$qAccessLines, ...$stateAccessLines];
 
@@ -281,7 +282,7 @@ function serializeCustomCode(
   id: ${jsLiteral(makeCustomCodeQueryKey(queryUuid))},
   fn: ${convertToFunction(
     stripParens(op.code),
-    "{ $q, $props, $ctx, $state }"
+    "{ $q, $props, $ctx, $state }",
   )},
   args: ${argsCode},
 }`;
@@ -290,7 +291,7 @@ function serializeCustomCode(
 function serializeCustomFunctionExpr(
   op: CustomFunctionExpr,
   exprCtx: ExprCtx,
-  scopedItemVars: string[]
+  scopedItemVars: string[],
 ): string {
   const namespace = op.func.namespace ? `${op.func.namespace}.` : "";
   const fnCode = `$$.${namespace}${op.func.importName}`;
@@ -303,7 +304,7 @@ function serializeCustomFunctionExpr(
       return "undefined";
     }
     return stripParensAndMaybeConvertToIife(
-      asCode(mappedArg[0].expr, exprCtx).code
+      asCode(mappedArg[0].expr, exprCtx).code,
     );
   });
   return `{

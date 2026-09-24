@@ -28,7 +28,7 @@ export type UntrustedRequestConfig = Omit<
  * Defaults to return raw string body by not transforming the response.
  */
 export async function fetchUntrusted<T = string>(
-  req: UntrustedRequestConfig
+  req: UntrustedRequestConfig,
 ): Promise<AxiosResponse<T>> {
   // Default: return AxiosResponse since it's easier to handle than AxiosError
   const validateStatus = req.validateStatus ?? null;

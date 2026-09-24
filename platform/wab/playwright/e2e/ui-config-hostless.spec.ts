@@ -16,7 +16,7 @@ test.describe("ui-config-hostless", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -31,7 +31,7 @@ test.describe("ui-config-hostless", () => {
 
   function installableItem(models: PageModels) {
     return models.studio.leftPanel.frame.locator(
-      'li[data-plasmic-add-item-name="Plasmic Design System"]'
+      'li[data-plasmic-add-item-name="Plasmic Design System"]',
     );
   }
 
@@ -69,8 +69,8 @@ test.describe("ui-config-hostless", () => {
     await searchInsertPanel(models, "More HTML elements");
     await expect(
       models.studio.leftPanel.frame.locator(
-        'li[data-plasmic-add-item-name="More HTML elements"]'
-      )
+        'li[data-plasmic-add-item-name="More HTML elements"]',
+      ),
     ).toBeVisible();
   });
 });

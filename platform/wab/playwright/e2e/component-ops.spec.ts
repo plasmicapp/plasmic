@@ -13,7 +13,7 @@ test.describe("component-ops - tricky operations", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -33,7 +33,7 @@ test.describe("component-ops - tricky operations", () => {
     await models.studio.rightPanel.addComponentProp(
       "withDefaultValue",
       "text",
-      "defaultValue1"
+      "defaultValue1",
     );
 
     await models.studio.rightPanel.addState({
@@ -131,12 +131,12 @@ test.describe("component-ops - tricky operations", () => {
       .contentFrame();
     const compBFrame = models.studio.frame
       .locator(
-        "div:nth-child(2) > .CanvasFrame__Container > .canvas-editor__viewport"
+        "div:nth-child(2) > .CanvasFrame__Container > .canvas-editor__viewport",
       )
       .contentFrame();
     const compCFrame = models.studio.frame
       .locator(
-        "div:nth-child(3) > .CanvasFrame__Container > .canvas-editor__viewport"
+        "div:nth-child(3) > .CanvasFrame__Container > .canvas-editor__viewport",
       )
       .contentFrame();
 

@@ -16,11 +16,11 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
         !inst["selectors"][0].startsWith(":")
       ) {
         const comp = site.components.filter(
-          (c) => c.variants.filter((v) => v.uuid === inst.uuid).length > 0
+          (c) => c.variants.filter((v) => v.uuid === inst.uuid).length > 0,
         )[0];
         if (isTplCodeComponent(comp.tplTree)) {
           inst["codeComponentVariantKeys"] = inst["selectors"].map((sel) =>
-            sel.replace("$cc-variant$", "")
+            sel.replace("$cc-variant$", ""),
           );
           inst["selectors"] = null;
           inst["codeComponentName"] = comp.tplTree.component.name;

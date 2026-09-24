@@ -181,16 +181,16 @@ const cssInitialsOverrides = {
 function sidesOverrides(prop: string, vals: Record<string, string>) {
   const token = ensure(
     ["{side}", "{vside}", "{hside}"].find((s) => prop.includes(s)),
-    "prop is expected to include {site}, {vside} or {hside}"
+    "prop is expected to include {site}, {vside} or {hside}",
   );
   const sides =
     token === "{side}"
       ? standardSides
       : token === "{vside}"
-      ? verticalSides
-      : horizontalSides;
+        ? verticalSides
+        : horizontalSides;
   return Object.fromEntries(
-    sides.map((side) => tuple(prop.replace(token, side), vals))
+    sides.map((side) => tuple(prop.replace(token, side), vals)),
   );
 }
 
@@ -203,17 +203,17 @@ const cssInitialsOverridesReverseMaps = new Map(
         : new Map(
             flatten(
               Object.entries(entry).map(([tags, val]) =>
-                simpleWords(tags).map((tag) => tuple(tag, val))
-              )
-            )
-          )
-    )
-  )
+                simpleWords(tags).map((tag) => tuple(tag, val)),
+              ),
+            ),
+          ),
+    ),
+  ),
 );
 
 export function tryGetCssInitial(
   prop: string,
-  tag: string | undefined
+  tag: string | undefined,
 ): string | undefined {
   if (tag == null) {
     tag = undefined;
@@ -233,10 +233,10 @@ export const getTagsWithCssOverrides = memoizeOne(
     return uniq([
       "*",
       ...[...cssInitialsOverridesReverseMaps.entries()].flatMap(
-        ([_prop, tagMap]) => [...tagMap.keys()]
+        ([_prop, tagMap]) => [...tagMap.keys()],
       ),
     ]);
-  }
+  },
 );
 
 export function getCssOverrides(tag: string, forExprText: boolean) {
@@ -264,7 +264,7 @@ export function getCssOverrides(tag: string, forExprText: boolean) {
     if (tagMap.has(tag)) {
       result[prop] = ensure(
         tagMap.get(tag),
-        "tagMap is expected to contain tag"
+        "tagMap is expected to contain tag",
       );
     }
   }
@@ -274,7 +274,7 @@ export function getCssOverrides(tag: string, forExprText: boolean) {
 export function getCssInitial(prop: string, tag: string | undefined) {
   return ensure(
     tryGetCssInitial(prop, tag),
-    "tryGetCssInitial is expected to be non-null"
+    "tryGetCssInitial is expected to be non-null",
   );
 }
 
@@ -285,7 +285,7 @@ export function tryGetBrowserCssInitial(prop: string): string | undefined {
 export function parseCssNumericNew(x: /*TWZ*/ string) {
   // Parse strings like "30", "30px", "30%", "30px /* blah blah */"
   const res = x.match(
-    /^\s*(-?(?:\d+\.\d*|\d*\.\d+|\d+))\s*((?!auto)[a-z]*|%)\s*(?:\/\*.*)?$/i
+    /^\s*(-?(?:\d+\.\d*|\d*\.\d+|\d+))\s*((?!auto)[a-z]*|%)\s*(?:\/\*.*)?$/i,
   );
   if (res == null) {
     return undefined;
@@ -327,7 +327,7 @@ export function showWidthHeight(w: string, h: string) {
 
 export function getCssRulesFromRs(
   rs: RuleSet | null | undefined,
-  _camelCase = false
+  _camelCase = false,
 ) {
   if (!rs) {
     return {};
@@ -476,7 +476,7 @@ export function autoUnit(val: string, defaultUnit: string, prev?: string) {
     defaultUnit === ""
       ? ""
       : maybes(prev)((_prev) => parseCssNumericNew(_prev))(
-          (parsed) => parsed.units
+          (parsed) => parsed.units,
         )() || defaultUnit;
   return newNum !== undefined && isFinite(newNum)
     ? showSizeCss(createNumericSize(newNum, ensureUnit(unit)))
@@ -503,7 +503,7 @@ export function uniqifyClassName(className: string) {
 
 export function camelCssPropsToKebab(props: CSSProperties) {
   return Object.fromEntries(
-    Object.entries(props).map(([k, v]) => tuple(normProp(k), v))
+    Object.entries(props).map(([k, v]) => tuple(normProp(k), v)),
   );
 }
 
@@ -554,7 +554,7 @@ export function expandGapProperty(gapValue: string, isGrid: boolean = false) {
 
 export function parseShorthandProperties(
   property: ShorthandProperty,
-  valueNode: Value
+  valueNode: Value,
 ): Record<string, string> {
   const value = generate(valueNode);
   const parts = parseCssShorthand(value);
@@ -624,31 +624,31 @@ export function parseCss(
       | "backgroundImage"
       | "background"
       | "linearGradient";
-  }
+  },
 ) {
   if (opts.startRule === "boxShadows") {
     return ensure(BoxShadows.fromCss(value), "Expected BoxShadow but got null");
   } else if (opts.startRule === "linearGradient") {
     return ensure(
       LinearGradient.fromCss(value),
-      "Expected LinearGradient but got null"
+      "Expected LinearGradient but got null",
     );
   } else if (opts.startRule === "backgroundLayer") {
     return ensure(
       BackgroundLayer.fromCss(value),
-      "Expected BackgroundLayer but got null"
+      "Expected BackgroundLayer but got null",
     );
   } else if (opts.startRule === "backgroundImage") {
     return ensure(
       BackgroundLayer.fromCss(value)?.image,
-      "Expected BackgroundLayer image but got null"
+      "Expected BackgroundLayer image but got null",
     );
   } else if (opts.startRule === "backgroundColor") {
     return ensure(ColorFill.fromCss(value), "Expected ColorFill but got null");
   } else if (opts.startRule === "background") {
     return ensure(
       Background.fromCss(value),
-      "Expected BackgroundLayer image but got null"
+      "Expected BackgroundLayer image but got null",
     );
   } else {
     return cssPegParser.parse(value, opts);

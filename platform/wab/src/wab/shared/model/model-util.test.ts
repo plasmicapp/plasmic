@@ -13,8 +13,8 @@ describe("model-util", () => {
     const bundle = JSON.parse(
       readFileSync(
         "src/wab/shared/codegen/__testonly__/bundles/todomvc.json",
-        "utf8"
-      )
+        "utf8",
+      ),
     );
     const bundler = new Bundler();
     const site = bundler.unbundle(bundle, "uuid") as Site;
@@ -27,7 +27,7 @@ describe("wabToTsType", () => {
   describe("choice", () => {
     it("emits a string-literal union for primitive options", () => {
       expect(wabToTsType(typeFactory.choice(["red", "blue", "green"]))).toBe(
-        `"red"|"blue"|"green"`
+        `"red"|"blue"|"green"`,
       );
     });
 
@@ -38,8 +38,8 @@ describe("wabToTsType", () => {
             { label: "Red", value: "red" },
             { label: "Blue", value: "blue" },
             { label: "Green", value: "green" },
-          ])
-        )
+          ]),
+        ),
       ).toBe(`"red"|"blue"|"green"`);
     });
 
@@ -50,8 +50,8 @@ describe("wabToTsType", () => {
             "red",
             { label: "Blue", value: "blue" },
             "green",
-          ] as any)
-        )
+          ] as any),
+        ),
       ).toBe(`"red"|"blue"|"green"`);
     });
 
@@ -61,8 +61,8 @@ describe("wabToTsType", () => {
           typeFactory.choice([
             { label: "One", value: 1 },
             { label: "Two", value: 2 },
-          ])
-        )
+          ]),
+        ),
       ).toBe(`1|2`);
     });
 
@@ -74,7 +74,7 @@ describe("wabToTsType", () => {
   describe("multiChoice", () => {
     it("emits an array union for primitive options", () => {
       expect(
-        wabToTsType(typeFactory.multiChoice(["red", "blue", "green"]))
+        wabToTsType(typeFactory.multiChoice(["red", "blue", "green"])),
       ).toBe(`("red"|"blue"|"green")[]`);
     });
 
@@ -85,8 +85,8 @@ describe("wabToTsType", () => {
             { label: "Red", value: "red" },
             { label: "Blue", value: "blue" },
             { label: "Green", value: "green" },
-          ])
-        )
+          ]),
+        ),
       ).toBe(`("red"|"blue"|"green")[]`);
     });
 
@@ -97,8 +97,8 @@ describe("wabToTsType", () => {
             "red",
             { label: "Blue", value: "blue" },
             "green",
-          ] as any)
-        )
+          ] as any),
+        ),
       ).toBe(`("red"|"blue"|"green")[]`);
     });
 
@@ -108,8 +108,8 @@ describe("wabToTsType", () => {
           typeFactory.multiChoice([
             { label: "One", value: 1 },
             { label: "Two", value: 2 },
-          ])
-        )
+          ]),
+        ),
       ).toBe(`(1|2)[]`);
     });
 
@@ -128,9 +128,9 @@ describe("wabToTsType", () => {
         wabToTsType(
           typeFactory.func(
             typeFactory.arg("event", typeFactory.any()),
-            typeFactory.arg("count", typeFactory.num())
-          )
-        )
+            typeFactory.arg("count", typeFactory.num()),
+          ),
+        ),
       ).toBe("(event: any, count: number) => void");
     });
   });
@@ -157,7 +157,7 @@ describe("wabToTsType", () => {
 
     it("returns React.ReactNode when forCodeGen is true", () => {
       expect(wabToTsType(typeFactory.renderable(), true)).toBe(
-        "React.ReactNode"
+        "React.ReactNode",
       );
     });
   });
@@ -173,7 +173,7 @@ describe("wabToTsType", () => {
 
     it("passes through {value, label} objects and falls back to value", () => {
       expect(
-        normalizeToChoiceObjects([{ value: "x", label: "X" }, { value: "y" }])
+        normalizeToChoiceObjects([{ value: "x", label: "X" }, { value: "y" }]),
       ).toEqual([
         { value: "x", label: "X" },
         { value: "y", label: "y" },

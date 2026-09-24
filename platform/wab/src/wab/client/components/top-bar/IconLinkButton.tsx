@@ -39,11 +39,11 @@ export function IconLinkButton(props: IconLinkButtonProps) {
 
   const onTooltipVisibleChange = React.useCallback(
     (v) => setShowingTooltip(v),
-    []
+    [],
   );
   const onDropdownVisibleChange = React.useCallback(
     (v) => setShowingDropdown(v),
-    []
+    [],
   );
 
   React.useEffect(() => {
@@ -122,7 +122,7 @@ export function IconLinkButton(props: IconLinkButtonProps) {
             </widgets.PlainLinkButton>
           </Dropdown>
         </div>
-      </div>
+      </div>,
     );
   } else if (menu) {
     // A drop-down button
@@ -145,7 +145,7 @@ export function IconLinkButton(props: IconLinkButtonProps) {
             >
               <Icon icon={TriangleBottomIcon} />
             </div>
-          </widgets.PlainLinkButton>
+          </widgets.PlainLinkButton>,
         )}
       </Dropdown>
     );
@@ -154,7 +154,7 @@ export function IconLinkButton(props: IconLinkButtonProps) {
     return wrapTooltip(
       <widgets.PlainLinkButton {...plainButtonProps} className={outerClassName}>
         {buttonContent}
-      </widgets.PlainLinkButton>
+      </widgets.PlainLinkButton>,
     );
   }
 }

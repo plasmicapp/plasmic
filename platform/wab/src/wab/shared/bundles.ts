@@ -79,7 +79,7 @@ export function setBundle(obj: HasBundle, bundle: Bundle) {
 
 export function isExpectedBundleVersion(
   bundle: UnsafeBundle,
-  expectedVersion: string
+  expectedVersion: string,
 ): bundle is Bundle {
   return bundle.version === expectedVersion;
 }
@@ -95,9 +95,9 @@ export function getBundle(obj: HasBundle, expectedVersion: string): Bundle {
   spawn(
     (async function fn() {
       throw new OutdatedBundleError(
-        `Bundle with version ${bundle.version} is not up to date. Expected version: ${expectedVersion}`
+        `Bundle with version ${bundle.version} is not up to date. Expected version: ${expectedVersion}`,
       );
-    })()
+    })(),
   );
 
   return bundle as Bundle;

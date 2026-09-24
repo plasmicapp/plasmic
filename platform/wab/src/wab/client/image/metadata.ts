@@ -6,7 +6,7 @@
  * is replaced with a server implementation using sharp.
  */
 export async function getImageSize(
-  input: Buffer<ArrayBuffer> | Uint8Array<ArrayBuffer>
+  input: Buffer<ArrayBuffer> | Uint8Array<ArrayBuffer>,
 ) {
   return new Promise<{ height: number; width: number }>((resolve, reject) => {
     const objectUrl = URL.createObjectURL(new Blob([input]));

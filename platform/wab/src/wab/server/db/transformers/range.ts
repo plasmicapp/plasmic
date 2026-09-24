@@ -4,7 +4,7 @@ import { mkRange, Range } from "@/wab/shared/range";
 import { regex } from "regex";
 
 export function mkRangeTransformer<T>(
-  transformer: Transformer<T>
+  transformer: Transformer<T>,
 ): Transformer<Range<T>> {
   return {
     serialize: (x: Range<T>) => {
@@ -28,7 +28,7 @@ $
 
 function toPgRange<T>(
   range: Range<T>,
-  toString: (element: T) => string
+  toString: (element: T) => string,
 ): string {
   return (
     (range.lowerExclusive ? "(" : "[") +
@@ -41,11 +41,11 @@ function toPgRange<T>(
 
 function fromPgRange<T>(
   pgRange: string,
-  fromString: (pgElement: string) => T
+  fromString: (pgElement: string) => T,
 ): Range<T> {
   const match = ensure(
     pgRange.match(PG_RANGE_REGEXP),
-    `failed to parse PG range: ${pgRange}`
+    `failed to parse PG range: ${pgRange}`,
   );
   const groups = match.groups!;
   return mkRange(
@@ -54,7 +54,7 @@ function fromPgRange<T>(
     {
       lowerExclusive: groups["left"] === "(",
       upperExclusive: groups["right"] === ")",
-    }
+    },
   );
 }
 

@@ -19,7 +19,7 @@ import { isNumType } from "@/wab/shared/model/model-util";
 describe("updateComponentState", () => {
   function setupWithState() {
     const { site, tplMgr } = setupComponentWithTplTree(
-      Tpls.mkTplTagX("div", {})
+      Tpls.mkTplTagX("div", {}),
     );
     const created = createComponent({
       tplMgr,
@@ -60,7 +60,7 @@ describe("updateComponentState", () => {
     const result = updateComponentState(
       state,
       { variableType: "number" },
-      opts
+      opts,
     );
 
     assert(result.isOk(), "expected success result");
@@ -75,7 +75,7 @@ describe("updateComponentState", () => {
     const result = updateComponentState(
       state,
       { variableType: "number", initialValue: codeLit(42) },
-      opts
+      opts,
     );
 
     assert(result.isOk(), "expected success result");
@@ -88,7 +88,7 @@ describe("updateComponentState", () => {
     const result = updateComponentState(
       state,
       { variableType: "number", initialValue: codeLit("oops") },
-      opts
+      opts,
     );
 
     assert(result.isErr(), "expected error result");
@@ -102,7 +102,7 @@ describe("updateComponentState", () => {
     const toReadonly = updateComponentState(
       state,
       { accessType: "readonly" },
-      opts
+      opts,
     );
     assert(toReadonly.isOk(), "expected success result");
     expect(state.accessType).toEqual("readonly");
@@ -111,7 +111,7 @@ describe("updateComponentState", () => {
     const toPrivate = updateComponentState(
       state,
       { accessType: "private" },
-      opts
+      opts,
     );
     assert(toPrivate.isOk(), "expected success result");
     expect(state.onChangeParam.exportType).toEqual(ParamExportType.ToolsOnly);
@@ -124,18 +124,18 @@ describe("updateComponentState", () => {
     const blocked = updateComponentState(
       state,
       { accessType: "writable" },
-      opts
+      opts,
     );
     assert(blocked.isErr(), "expected error result");
     expect(blocked.error.message).toEqual(
-      "Initial value for read-and-write state cannot contain references to dynamic values that are available only in the current component context."
+      "Initial value for read-and-write state cannot contain references to dynamic values that are available only in the current component context.",
     );
     expect(state.accessType).toEqual("private");
 
     const replaced = updateComponentState(
       state,
       { accessType: "writable", initialValue: codeLit("en") },
-      opts
+      opts,
     );
     assert(replaced.isOk(), "expected success result");
     expect(state.accessType).toEqual("writable");
@@ -167,19 +167,19 @@ describe("updateComponentState", () => {
     const madeWritable = updateComponentState(
       state,
       { accessType: "writable" },
-      opts
+      opts,
     );
     assert(madeWritable.isOk(), "setup failed");
 
     const result = updateComponentState(
       state,
       { initialValue: customCode("$ctx.locale") },
-      opts
+      opts,
     );
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toEqual(
-      "Initial value for read-and-write state cannot contain references to dynamic values that are available only in the current component context."
+      "Initial value for read-and-write state cannot contain references to dynamic values that are available only in the current component context.",
     );
     expect(tryExtractJson(state.param.defaultExpr!)).toEqual("");
   });
@@ -199,7 +199,7 @@ describe("updateComponentState", () => {
 
     // Reference the implicit copy from the containing page.
     const implicitState = page.states.find(
-      (s) => s.implicitState === state && s.tplNode === instance
+      (s) => s.implicitState === state && s.tplNode === instance,
     );
     assert(implicitState, "expected an implicit state on the page");
     const pageRoot = page.tplTree as TplTag;
@@ -210,7 +210,7 @@ describe("updateComponentState", () => {
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toEqual(
-      "Variable is referenced in UnnamedComponent."
+      "Variable is referenced in UnnamedComponent.",
     );
     expect(state.accessType).toEqual("readonly");
   });
@@ -227,7 +227,7 @@ describe("updateComponentState", () => {
     });
     const state = unwrap(created);
     const implicitState = page.states.find(
-      (s) => s.implicitState === state && s.tplNode === instance
+      (s) => s.implicitState === state && s.tplNode === instance,
     );
     assert(implicitState, "expected an implicit state on the page");
     const opts = { site, component: page, tplMgr };
@@ -235,17 +235,17 @@ describe("updateComponentState", () => {
     const renamed = updateComponentState(
       implicitState,
       { name: "renamed" },
-      opts
+      opts,
     );
     assert(renamed.isErr(), "expected error result");
     expect(renamed.error.message).toEqual(
-      'State "button.count2" is an implicit state of element "Button"; only its access type can be changed.'
+      'State "button.count2" is an implicit state of element "Button"; only its access type can be changed.',
     );
 
     const exposed = updateComponentState(
       implicitState,
       { accessType: "readonly" },
-      opts
+      opts,
     );
     assert(exposed.isOk(), "expected success result");
     expect(implicitState.accessType).toEqual("readonly");
@@ -260,7 +260,7 @@ describe("updateComponentState", () => {
 
     assert(renamed.isErr(), "expected error result");
     expect(renamed.error.message).toEqual(
-      'State "size" backs a variant group; only its access type and initial value can be changed.'
+      'State "size" backs a variant group; only its access type and initial value can be changed.',
     );
     expect(state.param.variable.name).toEqual("size");
 
@@ -278,7 +278,7 @@ describe("updateComponentState", () => {
     const dynamic = updateComponentState(
       state,
       { initialValue: customCode("$ctx.density") },
-      opts
+      opts,
     );
     assert(dynamic.isOk(), "expected success result");
     expect(state.param.defaultExpr).not.toBeNull();
@@ -296,21 +296,21 @@ describe("updateComponentState", () => {
     const unknownChoice = updateComponentState(
       sizeGroup.linkedState,
       { initialValue: codeLit("huge") },
-      opts
+      opts,
     );
     assert(unknownChoice.isErr(), "expected error result");
     expect(unknownChoice.error.message).toEqual(
-      'Initial value refers to "huge", which is not a variant of group "size"; expected values: "small", "large".'
+      'Initial value refers to "huge", which is not a variant of group "size"; expected values: "small", "large".',
     );
 
     const unknownInList = updateComponentState(
       featuresGroup.linkedState,
       { initialValue: codeLit(["rounded", "wat"]) },
-      opts
+      opts,
     );
     assert(unknownInList.isErr(), "expected error result");
     expect(unknownInList.error.message).toEqual(
-      'Initial value refers to "wat", which is not a variant of group "features"; expected values: "rounded", "shadow".'
+      'Initial value refers to "wat", which is not a variant of group "features"; expected values: "rounded", "shadow".',
     );
   });
 
@@ -322,38 +322,38 @@ describe("updateComponentState", () => {
     const choiceByName = updateComponentState(
       sizeGroup.linkedState,
       { initialValue: codeLit("small") },
-      opts
+      opts,
     );
     assert(choiceByName.isOk(), "expected success result");
     expect(tryExtractJson(sizeGroup.linkedState.param.defaultExpr!)).toEqual(
-      "small"
+      "small",
     );
 
     const multiAsList = updateComponentState(
       featuresGroup.linkedState,
       { initialValue: codeLit(["rounded"]) },
-      opts
+      opts,
     );
     assert(multiAsList.isOk(), "expected success result");
 
     const multiAsBareName = updateComponentState(
       featuresGroup.linkedState,
       { initialValue: codeLit("rounded") },
-      opts
+      opts,
     );
     assert(multiAsBareName.isOk(), "expected success result");
 
     const toggleAsBoolean = updateComponentState(
       darkGroup.linkedState,
       { initialValue: codeLit(true) },
-      opts
+      opts,
     );
     assert(toggleAsBoolean.isOk(), "expected success result");
 
     const toggleByName = updateComponentState(
       darkGroup.linkedState,
       { initialValue: codeLit("dark") },
-      opts
+      opts,
     );
     assert(toggleByName.isOk(), "expected success result");
   });
@@ -365,19 +365,19 @@ describe("updateComponentState", () => {
     const madeWritable = updateComponentState(
       state,
       { accessType: "writable" },
-      opts
+      opts,
     );
     assert(madeWritable.isOk(), "setup failed");
 
     const result = updateComponentState(
       state,
       { initialValue: customCode("$ctx.density") },
-      opts
+      opts,
     );
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toEqual(
-      "Initial value for read-and-write state cannot contain references to dynamic values that are available only in the current component context."
+      "Initial value for read-and-write state cannot contain references to dynamic values that are available only in the current component context.",
     );
     expect(state.param.defaultExpr).toBeFalsy();
   });
@@ -389,14 +389,14 @@ describe("updateComponentState", () => {
     const setDynamic = updateComponentState(
       state,
       { initialValue: customCode("$ctx.density") },
-      opts
+      opts,
     );
     assert(setDynamic.isOk(), "setup failed");
 
     const result = updateComponentState(
       state,
       { accessType: "writable" },
-      opts
+      opts,
     );
 
     assert(result.isErr(), "expected error result");
@@ -412,7 +412,7 @@ describe("updateComponentState", () => {
     const exposed = updateComponentState(
       state,
       { accessType: "readonly" },
-      opts
+      opts,
     );
 
     assert(exposed.isOk(), "expected success result");
@@ -420,8 +420,8 @@ describe("updateComponentState", () => {
     expect(state.onChangeParam.exportType).toEqual(ParamExportType.External);
     expect(
       page.states.some(
-        (s) => s.implicitState === state && s.tplNode === instance
-      )
+        (s) => s.implicitState === state && s.tplNode === instance,
+      ),
     ).toEqual(true);
 
     const hidden = updateComponentState(state, { accessType: "private" }, opts);

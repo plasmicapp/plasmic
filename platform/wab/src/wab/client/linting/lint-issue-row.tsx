@@ -84,7 +84,7 @@ export function getLintIssueTypeName(type: LintIssueType) {
 
 function renderIssueListItem(
   content: JSX.Element,
-  elaboration: ReactNode = "hello"
+  elaboration: ReactNode = "hello",
 ) {
   return (
     <ListItem hideIcon style={{ paddingTop: 8, paddingBottom: 8, height: 48 }}>
@@ -211,8 +211,8 @@ const ScreenVariantOverrideLintIssueRow = observer(
         {issue.prop.type === "attr"
           ? `attribute ${issue.prop.attr}`
           : issue.prop.type === "arg"
-          ? `prop ${issue.prop.param.variable.name}`
-          : "text content"}{" "}
+            ? `prop ${issue.prop.param.variable.name}`
+            : "text content"}{" "}
         in responsive variant{" "}
         {issue.vs.variants.length === 1 ? (
           <strong>
@@ -239,9 +239,9 @@ const ScreenVariantOverrideLintIssueRow = observer(
         <p>{content}</p>
 
         {SCREEN_VARIANT_OVERRIDE_INSTRUCTIONS}
-      </>
+      </>,
     );
-  }
+  },
 );
 
 const InvalidDomNestingLintIssueRow = observer(
@@ -270,9 +270,9 @@ const InvalidDomNestingLintIssueRow = observer(
         <p>{content}</p>
 
         {INVALID_DOM_NESTING_INSTRUCTIONS}
-      </>
+      </>,
     );
-  }
+  },
 );
 
 const InvisibleElementLintIssueRow = observer(
@@ -291,9 +291,9 @@ const InvisibleElementLintIssueRow = observer(
       <>
         <p>{content}</p>
         {INVISIBLE_ELEMENT_INSTRUCTIONS}
-      </>
+      </>,
     );
-  }
+  },
 );
 
 const ChoicePropValuesLintIssueRow = observer(
@@ -312,9 +312,9 @@ const ChoicePropValuesLintIssueRow = observer(
       <>
         <p>{content}</p>
         {PROP_ALLOWED_VALUES_INSTRUCTIONS}
-      </>
+      </>,
     );
-  }
+  },
 );
 
 const LinkedPropDriftLintIssueRow = observer(
@@ -334,9 +334,9 @@ const LinkedPropDriftLintIssueRow = observer(
       <>
         <p>{content}</p>
         {LINKED_PROP_DRIFT_INSTRUCTIONS}
-      </>
+      </>,
     );
-  }
+  },
 );
 
 const UnprotectedDataQuerytLintIssueRow = observer(
@@ -366,9 +366,9 @@ const UnprotectedDataQuerytLintIssueRow = observer(
           currentRole={issue.currentRole}
           expectedRole={issue.expectedRole}
         />
-      </>
+      </>,
     );
-  }
+  },
 );
 
 const TplLink = observer(function TplLink(props: {

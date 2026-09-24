@@ -14,7 +14,7 @@ interface ComponentListItemProps {
 }
 
 const ComponentListItem = observer(function ComponentListItem(
-  props: ComponentListItemProps
+  props: ComponentListItemProps,
 ) {
   const { component, docsCtx } = props;
   const url = APP_ROUTES.projectDocsComponent.fill({

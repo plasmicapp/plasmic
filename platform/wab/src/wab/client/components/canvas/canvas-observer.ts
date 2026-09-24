@@ -16,7 +16,7 @@ function objectToBeRetainedByReactFactory() {
 
 export const mkCanvasObserver = computedFn(
   (sub, vc) => (props: { children: () => React.ReactElement | null }) =>
-    mkUseCanvasObserver(sub, vc)(props.children)
+    mkUseCanvasObserver(sub, vc)(props.children),
 );
 
 export const mkUseCanvasObserver = computedFn(
@@ -33,17 +33,17 @@ export const mkUseCanvasObserver = computedFn(
     function useObserver<T>(
       fn: () => T,
       baseComponentName: string = "observed",
-      onUpdateCallback?: () => void
+      onUpdateCallback?: () => void,
     ): T {
       const [objectRetainedByReact] = sub.React.useState(
-        objectToBeRetainedByReactFactory
+        objectToBeRetainedByReactFactory,
       );
 
       const forceUpdate = useCanvasForceUpdate(sub);
 
       const rerenderOnEval = sub.React.useCallback(
         () => vc.addRerenderObserver(forceUpdate),
-        [forceUpdate]
+        [forceUpdate],
       );
       const onUpdate = onUpdateCallback ?? rerenderOnEval;
 
@@ -51,7 +51,7 @@ export const mkUseCanvasObserver = computedFn(
       // rendered and abandoned multiple times, so we need to track leaked
       // Reactions.
       const reactionTrackingRef = sub.React.useRef<IReactionTracking | null>(
-        null
+        null,
       );
 
       if (!reactionTrackingRef.current) {
@@ -74,14 +74,14 @@ export const mkUseCanvasObserver = computedFn(
               // when (and if) useEffect() arrives.
               trackingData.changedBeforeMount = true;
             }
-          }
+          },
         );
         vc.canvasObservers.add(newReaction);
 
         const trackingData = addReactionToTrack(
           reactionTrackingRef,
           newReaction,
-          objectRetainedByReact
+          objectRetainedByReact,
         );
       }
 
@@ -114,7 +114,7 @@ export const mkUseCanvasObserver = computedFn(
               () => {
                 // We've definitely already been mounted at this point
                 onUpdate();
-              }
+              },
             ),
             mounted: true,
             changedBeforeMount: false,
@@ -153,7 +153,7 @@ export const mkUseCanvasObserver = computedFn(
       }
 
       return rendering;
-    }
+    },
 );
 
 function observerComponentNameFor(baseComponentName: string) {
@@ -173,7 +173,7 @@ const cleanupTokenToReactionTrackingMap = new Map<number, IReactionTracking>();
 let globalCleanupTokensCounter = 1;
 
 const registry = new FinalizationRegistry(function cleanupFunction(
-  token: number
+  token: number,
 ) {
   const trackedReaction = cleanupTokenToReactionTrackingMap.get(token);
   if (trackedReaction) {
@@ -187,7 +187,7 @@ const registry = new FinalizationRegistry(function cleanupFunction(
 function addReactionToTrack(
   reactionTrackingRef: React.MutableRefObject<IReactionTracking | null>,
   reaction: Reaction,
-  objectRetainedByReact: object
+  objectRetainedByReact: object,
 ) {
   const token = globalCleanupTokensCounter++;
 
@@ -200,7 +200,7 @@ function addReactionToTrack(
 }
 
 function recordReactionAsCommitted(
-  reactionRef: React.MutableRefObject<IReactionTracking | null>
+  reactionRef: React.MutableRefObject<IReactionTracking | null>,
 ) {
   registry.unregister(reactionRef);
 
@@ -209,7 +209,7 @@ function recordReactionAsCommitted(
     reactionRef.current.finalizationRegistryCleanupToken
   ) {
     cleanupTokenToReactionTrackingMap.delete(
-      reactionRef.current.finalizationRegistryCleanupToken
+      reactionRef.current.finalizationRegistryCleanupToken,
     );
   }
 }

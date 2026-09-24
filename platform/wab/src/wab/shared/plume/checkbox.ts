@@ -74,12 +74,12 @@ export const CheckboxPlugin: PlumePlugin = {
           Object.assign(impl, getCompMeta()),
           componentProps,
           checkboxConfig as any,
-          ref
+          ref,
         );
         if (usingDefaultChildren) {
           assert(
             plasmicProps.args.children === usingDefaultChildren,
-            () => `Expected children to match slot stub`
+            () => `Expected children to match slot stub`,
           );
           delete plasmicProps.args.children;
         }
@@ -87,7 +87,7 @@ export const CheckboxPlugin: PlumePlugin = {
           ...plasmicProps,
           ...internalProps,
         });
-      })
+      }),
     );
     (Comp as any).__plasmicFormFieldValueProp = "isChecked";
     return Comp;
@@ -114,7 +114,7 @@ export const CheckboxPlugin: PlumePlugin = {
   genDefaultExternalProps(ctx: SerializerBaseContext, opts) {
     const { component } = ctx;
     const params = getExternalParams(ctx).filter(
-      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name))
+      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name)),
     );
     return `
       export interface ${
@@ -126,8 +126,8 @@ export const CheckboxPlugin: PlumePlugin = {
               `"${paramToVarName(ctx.component, param)}"?: ${serializeParamType(
                 component,
                 param,
-                ctx.projectFlags
-              )}`
+                ctx.projectFlags,
+              )}`,
           )
           .join(";\n")}
       }
@@ -149,12 +149,12 @@ export const CheckboxPlugin: PlumePlugin = {
     return `
       import * as React from "react";
       import {${plasmicComponentName}, ${defaultPropsName}} from "${
-      ctx.exportOpts.relPathFromImplToManagedDir
-    }/${makeComponentImportPath(
-      component,
-      ctx,
-      "render"
-    )}";  // plasmic-import: ${component.uuid}/render
+        ctx.exportOpts.relPathFromImplToManagedDir
+      }/${makeComponentImportPath(
+        component,
+        ctx,
+        "render",
+      )}";  // plasmic-import: ${component.uuid}/render
     ${this.genSkeletonImports(ctx).imports}
 
       ${componentSubstitutionApi}
@@ -189,7 +189,7 @@ export const CheckboxPlugin: PlumePlugin = {
       imports: `
       import {CheckboxRef} from "${getPlumePackageName(
         ctx.exportOpts,
-        "checkbox"
+        "checkbox",
       )}";`,
       refName: "CheckboxRef",
     };

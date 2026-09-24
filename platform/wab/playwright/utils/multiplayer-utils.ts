@@ -61,7 +61,7 @@ export function fullName(user: TestUserCredentials): string {
 export async function makeUserFixture(
   args: MakeUserArgs,
   credentials: TestUserCredentials,
-  use: (page: TestUserFixture) => Promise<void>
+  use: (page: TestUserFixture) => Promise<void>,
 ) {
   const ctx = await args.browser.newContext();
   const page = await ctx.newPage();
@@ -88,7 +88,7 @@ export async function makeUserFixture(
 
 export function forEachAsync<T>(
   items: T[],
-  testFn: (item: T, index: number) => Promise<void>
+  testFn: (item: T, index: number) => Promise<void>,
 ) {
   return Promise.all(items.map(testFn));
 }
@@ -110,7 +110,7 @@ export async function setupMultiplayerProject(
   user1: TestUserFixture,
   user2: TestUserFixture,
   projectName: string,
-  devFlags?: Record<string, any>
+  devFlags?: Record<string, any>,
 ) {
   const sessions = [admin, user1, user2];
 
@@ -128,12 +128,12 @@ export async function setupMultiplayerProject(
   await admin.apiClient.grantProjectPermission(
     projectId,
     USER1.email,
-    "editor"
+    "editor",
   );
   await admin.apiClient.grantProjectPermission(
     projectId,
     USER2.email,
-    "editor"
+    "editor",
   );
 
   return projectId;

@@ -36,14 +36,14 @@ export async function maybeTriggerPaywall<T>(
   },
   opts?: {
     verifyMonthlyViews: boolean;
-  }
+  },
 ): Promise<MayTriggerPaywall<T>> {
   return passPaywall(passResponse);
 }
 
 export async function getTeamCurrentPeriodRange(
   team?: Team,
-  freeTrialDays = 15
+  freeTrialDays = 15,
 ) {
   const now = moment();
   return {
@@ -55,7 +55,7 @@ export async function getTeamCurrentPeriodRange(
 export async function checkAndResetTeamTrial(
   teamId: TeamId,
   mgr: DbMgr,
-  devflags: DevFlagsType
+  devflags: DevFlagsType,
 ) {}
 
 export const stripe = new Stripe("BAD_KEY", {
@@ -65,13 +65,13 @@ export const stripe = new Stripe("BAD_KEY", {
 export function mkStripeCustomerData(
   team: Team,
   teamUrl?: string,
-  syncName?: boolean
+  syncName?: boolean,
 ) {}
 
 export async function resetStripeCustomer(
   userMgr: DbMgr,
   superMgr: DbMgr,
-  team: Team
+  team: Team,
 ) {}
 
 export async function syncDataWithStripe(team: Team, host: string) {}

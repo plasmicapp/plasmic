@@ -82,7 +82,7 @@ test.describe("Antd5 progress", () => {
     await models.studio.useDynamicValueButton.click();
     await models.studio.frame.getByText("Switch to Code").click();
     await models.studio.rightPanel.insertMonacoCode(
-      `successPercent + "/" + percent`
+      `successPercent + "/" + percent`,
     );
 
     await models.studio.leftPanel.insertNode("Button");
@@ -104,28 +104,28 @@ test.describe("Antd5 progress", () => {
     await page.waitForTimeout(1000);
 
     const addActionButton = models.studio.rightPanel.frame.locator(
-      '[data-test-id="add-new-action"]'
+      '[data-test-id="add-new-action"]',
     );
     await addActionButton.waitFor({ timeout: 5000 });
     await addActionButton.click();
     await page.waitForTimeout(1500);
 
     const actionDropdown = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="action-name"]'
+      '[data-plasmic-prop="action-name"]',
     );
     await actionDropdown.waitFor({ timeout: 15000 });
     await actionDropdown.click();
     await page.waitForTimeout(500);
 
     const actionOption = models.studio.rightPanel.frame.locator(
-      `[data-key="customFunction"]`
+      `[data-key="customFunction"]`,
     );
     await actionOption.waitFor({ timeout: 10000 });
     await actionOption.click();
 
     await page.waitForTimeout(500);
     const customFunctionInput = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="customFunction"]'
+      '[data-plasmic-prop="customFunction"]',
     );
     await customFunctionInput.waitFor({ timeout: 3000 });
     await customFunctionInput.click();
@@ -133,7 +133,7 @@ test.describe("Antd5 progress", () => {
     await models.studio.rightPanel.insertMonacoCode(`$state.basePercent += 5;`);
 
     const closeModalButton = models.studio.rightPanel.frame.locator(
-      '[data-test-id="close-sidebar-modal"]'
+      '[data-test-id="close-sidebar-modal"]',
     );
     await closeModalButton.waitFor({ timeout: 5000 });
     await closeModalButton.click();
@@ -158,28 +158,28 @@ test.describe("Antd5 progress", () => {
     await page.waitForTimeout(1000);
 
     const addActionButton2 = models.studio.rightPanel.frame.locator(
-      '[data-test-id="add-new-action"]'
+      '[data-test-id="add-new-action"]',
     );
     await addActionButton2.waitFor({ timeout: 5000 });
     await addActionButton2.click();
     await page.waitForTimeout(1500);
 
     const actionDropdown2 = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="action-name"]'
+      '[data-plasmic-prop="action-name"]',
     );
     await actionDropdown2.waitFor({ timeout: 15000 });
     await actionDropdown2.click();
     await page.waitForTimeout(500);
 
     const actionOption2 = models.studio.rightPanel.frame.locator(
-      `[data-key="customFunction"]`
+      `[data-key="customFunction"]`,
     );
     await actionOption2.waitFor({ timeout: 10000 });
     await actionOption2.click();
 
     await page.waitForTimeout(500);
     const customFunctionInput2 = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="customFunction"]'
+      '[data-plasmic-prop="customFunction"]',
     );
     await customFunctionInput2.waitFor({ timeout: 3000 });
     await customFunctionInput2.click();
@@ -187,7 +187,7 @@ test.describe("Antd5 progress", () => {
     await models.studio.rightPanel.insertMonacoCode(`$state.success += 5;`);
 
     const closeModalButton2 = models.studio.rightPanel.frame.locator(
-      '[data-test-id="close-sidebar-modal"]'
+      '[data-test-id="close-sidebar-modal"]',
     );
     await closeModalButton2.waitFor({ timeout: 5000 });
     await closeModalButton2.click();

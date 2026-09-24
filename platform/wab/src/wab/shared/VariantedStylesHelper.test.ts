@@ -13,7 +13,7 @@ describe("VariantedStylesHelper", () => {
       const themeGlobalVariantGroup = tplMgr.createGlobalVariantGroup("Theme");
       const darkThemeVariant = tplMgr.createGlobalVariant(
         themeGlobalVariantGroup,
-        "Dark"
+        "Dark",
       );
 
       const token = new MutableToken(
@@ -21,7 +21,7 @@ describe("VariantedStylesHelper", () => {
           name: "primary",
           tokenType: "Color",
           value: "#FF0000",
-        })
+        }),
       );
       token.setVariantedValue([darkThemeVariant], "#000000");
 
@@ -35,11 +35,11 @@ describe("VariantedStylesHelper", () => {
       const themeGlobalVariantGroup = tplMgr.createGlobalVariantGroup("Theme");
       const darkThemeVariant = tplMgr.createGlobalVariant(
         themeGlobalVariantGroup,
-        "Dark"
+        "Dark",
       );
       const lightThemeVariant = tplMgr.createGlobalVariant(
         themeGlobalVariantGroup,
-        "Light"
+        "Light",
       );
 
       const vsh = new VariantedStylesHelper(site, [darkThemeVariant]);
@@ -49,7 +49,7 @@ describe("VariantedStylesHelper", () => {
           name: "primary",
           tokenType: "Color",
           value: "#FF0000",
-        })
+        }),
       );
       token.setVariantedValue([lightThemeVariant], "#FFFFFF");
       token.setVariantedValue([darkThemeVariant], "#000000");
@@ -66,7 +66,7 @@ describe("VariantedStylesHelper", () => {
       const localThemeGroup = tplMgr.createGlobalVariantGroup("Theme");
       const localDarkVariant = tplMgr.createGlobalVariant(
         localThemeGroup,
-        "Dark"
+        "Dark",
       );
 
       // Create a dependency site with a global variant group
@@ -75,7 +75,7 @@ describe("VariantedStylesHelper", () => {
       const depThemeGroup = depTplMgr.createGlobalVariantGroup("Theme");
       const depDarkVariant = depTplMgr.createGlobalVariant(
         depThemeGroup,
-        "Dark"
+        "Dark",
       );
 
       // Add the dependency to the main site
@@ -97,7 +97,7 @@ describe("VariantedStylesHelper", () => {
           name: "primary",
           tokenType: "Color",
           value: "#FF0000", // base value
-        })
+        }),
       );
       // Token has varianted value for depDarkVariant (different UUID but same name and group name)
       token.setVariantedValue([depDarkVariant], "#000000");
@@ -123,7 +123,7 @@ describe("VariantedStylesHelper", () => {
           name: "primary",
           tokenType: "Color",
           value: "#FF0000",
-        })
+        }),
       );
       // Token has varianted value for light variant (different name, so no fallback)
       token.setVariantedValue([lightVariant2], "#FFFFFF");

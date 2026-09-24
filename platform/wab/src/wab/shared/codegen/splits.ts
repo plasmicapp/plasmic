@@ -1,18 +1,18 @@
+import { toClassName, toVarName } from "@/wab/shared/codegen/util";
 import { withDefault } from "@/wab/shared/common";
 import {
   allGlobalVariantsReferencedByComponent,
   isPageComponent,
 } from "@/wab/shared/core/components";
-import { toClassName, toVarName } from "@/wab/shared/codegen/util";
+import { SplitStatus, SplitType } from "@/wab/shared/core/splits";
 import {
-  isKnownGlobalVariantSplitContent,
   RandomSplitSlice,
   SegmentSplitSlice,
   Site,
   Split,
   SplitContent,
+  isKnownGlobalVariantSplitContent,
 } from "@/wab/shared/model/classes";
-import { SplitStatus, SplitType } from "@/wab/shared/core/splits";
 import { sumBy, uniq } from "lodash";
 
 interface SerializedGlobalVariantSplitContent {
@@ -78,7 +78,7 @@ function parseSplitCond(str: string, projectId: string) {
     return obj;
   } catch (e) {
     console.error(
-      `[split] Failed to parse condition in projectId=${projectId} ${str} `
+      `[split] Failed to parse condition in projectId=${projectId} ${str} `,
     );
     return {};
   }
@@ -92,7 +92,7 @@ function convertRowsToJsonLogic(obj: any) {
 function serializeSplit(
   split: Split,
   projectId: string,
-  globalVariantsToPathsMap: Record<string, string[]>
+  globalVariantsToPathsMap: Record<string, string[]>,
 ) {
   const common: ActiveSplit = {
     id: split.uuid,
@@ -108,7 +108,7 @@ function serializeSplit(
           }
           return [];
         });
-      })
+      }),
     ),
   };
 
@@ -125,7 +125,7 @@ function serializeSplit(
           externalId: slice.externalId,
           prob: slice.prob / slicesSum,
           contents: slice.contents.map((c) =>
-            serializeSplitContent(c, projectId)
+            serializeSplitContent(c, projectId),
           ),
         })),
       };
@@ -141,7 +141,7 @@ function serializeSplit(
           externalId: slice.externalId,
           cond: convertRowsToJsonLogic(parseSplitCond(slice.cond, projectId)),
           contents: slice.contents.map((c) =>
-            serializeSplitContent(c, projectId)
+            serializeSplitContent(c, projectId),
           ),
         })),
       };
@@ -157,7 +157,7 @@ function serializeSplit(
           externalId: slice.externalId,
           cond: parseSplitCond(slice.cond, projectId),
           contents: slice.contents.map((c) =>
-            serializeSplitContent(c, projectId)
+            serializeSplitContent(c, projectId),
           ),
         })),
       };
@@ -170,7 +170,7 @@ function serializeSplit(
 
 export function exportActiveSplitsConfig(site: Site, projectId: string) {
   const activeSplits = site.splits.filter(
-    (split) => split.status === SplitStatus.Running
+    (split) => split.status === SplitStatus.Running,
   );
 
   const globalVariantsToPathsMap: Record<string, string[]> = {};
@@ -188,6 +188,6 @@ export function exportActiveSplitsConfig(site: Site, projectId: string) {
   });
 
   return activeSplits.map((s) =>
-    serializeSplit(s, projectId, globalVariantsToPathsMap)
+    serializeSplit(s, projectId, globalVariantsToPathsMap),
   );
 }

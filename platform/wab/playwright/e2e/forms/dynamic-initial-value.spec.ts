@@ -26,7 +26,7 @@ test.describe("dynamic-initial-value", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -40,7 +40,7 @@ test.describe("dynamic-initial-value", () => {
     const formFrame = models.studio.frames.first().contentFrame();
 
     const outlineButton = (models.studio as any).studioFrame.locator(
-      'button[data-test-tabkey="outline"]'
+      'button[data-test-tabkey="outline"]',
     );
     const isPressed = await outlineButton.getAttribute("data-state-isselected");
     if (isPressed === "true") {
@@ -51,27 +51,27 @@ test.describe("dynamic-initial-value", () => {
       for (const [key, fieldValue] of Object.entries(value)) {
         await expect(formFrame.locator("body")).toContainText(
           `${JSON.stringify(key)}:${JSON.stringify(fieldValue)}`,
-          { timeout: 10_000 }
+          { timeout: 10_000 },
         );
       }
     }
 
     await models.studio.leftPanel.insertNode("Text");
     await models.studio.rightPanel.bindTextContentToCustomCode(
-      "JSON.stringify($state.form.value)"
+      "JSON.stringify($state.form.value)",
     );
 
     await models.studio.leftPanel.insertNode("plasmic-antd5-form");
 
     const formItemsAddBtn = models.studio.frame.locator(
-      '[data-test-id="formItems-add-btn"]'
+      '[data-test-id="formItems-add-btn"]',
     );
     await formItemsAddBtn.click();
     await page.waitForTimeout(500);
     await models.studio.rightPanel.setDataPlasmicProp("name", "testField");
     await models.studio.rightPanel.setDataPlasmicProp(
       "initialValue",
-      "initial text value"
+      "initial text value",
     );
     await expectFormState({ testField: "initial text value" });
 
@@ -101,7 +101,7 @@ test.describe("dynamic-initial-value", () => {
     await models.studio.rightPanel.setSelectByLabel("inputType", "Text Area");
     await models.studio.rightPanel.setDataPlasmicProp(
       "initialValue",
-      "foo bar text area"
+      "foo bar text area",
     );
     await expectFormState({
       testField: "initial text value",
@@ -126,7 +126,7 @@ test.describe("dynamic-initial-value", () => {
 
     await models.studio.withinLiveMode(async (liveFrame) => {
       const checkbox = liveFrame.locator(
-        'input[name="checkboxFalse"][type="checkbox"]'
+        'input[name="checkboxFalse"][type="checkbox"]',
       );
       await expect(checkbox).toBeChecked({ checked: false });
     });
@@ -145,7 +145,7 @@ test.describe("dynamic-initial-value", () => {
 
     await models.studio.withinLiveMode(async (liveFrame) => {
       const checkbox = liveFrame.locator(
-        'input[name="checkboxTrue"][type="checkbox"]'
+        'input[name="checkboxTrue"][type="checkbox"]',
       );
       await expect(checkbox).toBeChecked({ checked: true });
     });
@@ -178,7 +178,7 @@ test.describe("dynamic-initial-value", () => {
         studioFrame
           .locator('[data-test-id="data-picker"]')
           .getByText(text, { exact: false })
-          .first()
+          .first(),
       ).toBeVisible({ timeout: 10_000 });
     }
 
@@ -191,7 +191,7 @@ test.describe("dynamic-initial-value", () => {
 
     async function expandRow(row: Locator) {
       const expander = row.locator(
-        '.tpltree__label__expander[data-state-isopen="false"]'
+        '.tpltree__label__expander[data-state-isopen="false"]',
       );
       if (await expander.isVisible({ timeout: 500 }).catch(() => false)) {
         await expander.click();
@@ -208,7 +208,7 @@ test.describe("dynamic-initial-value", () => {
         throw new Error("Parent tree row missing data-test-id");
       }
       let rows = studioFrame.locator(
-        `.tpltree__label[data-test-parent-id="${parentId}"]`
+        `.tpltree__label[data-test-parent-id="${parentId}"]`,
       );
       if (hasText) {
         rows = rows.filter({ hasText });
@@ -247,7 +247,7 @@ test.describe("dynamic-initial-value", () => {
     // Bind a Text node to the form state so the canvas shows JSON output.
     await models.studio.leftPanel.insertNode("Text");
     await models.studio.rightPanel.bindTextContentToCustomCode(
-      "JSON.stringify($state.form.value)"
+      "JSON.stringify($state.form.value)",
     );
 
     // Insert a default form, remove the two default items, then toggle to
@@ -256,7 +256,7 @@ test.describe("dynamic-initial-value", () => {
     await models.studio.rightPanel.removeItemFromArrayProp("formItems", 0);
     await models.studio.rightPanel.removeItemFromArrayProp("formItems", 0);
     await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle"
+      "simplified-mode-toggle",
     );
     await page.waitForTimeout(500);
 
@@ -282,7 +282,7 @@ test.describe("dynamic-initial-value", () => {
     await expectFormState({ test: "hello" });
     await checkFormValues(
       [{ name: "test", label: "Label", type: "Text", value: "hello" }],
-      formFrame
+      formFrame,
     );
 
     // Delete the Input, then re-open the data picker on initialValue and
@@ -303,7 +303,7 @@ test.describe("dynamic-initial-value", () => {
     await expectFormState({ test: 123 });
     await checkFormValues(
       [{ name: "test", label: "Label", type: "Number", value: "123" }],
-      formFrame
+      formFrame,
     );
     await focusFormItemChild();
     await page.keyboard.press("Delete");
@@ -321,7 +321,7 @@ test.describe("dynamic-initial-value", () => {
     await expectFormState({ test: true });
     await checkFormValues(
       [{ name: "test", label: "Label", type: "Checkbox", value: true }],
-      formFrame
+      formFrame,
     );
     await focusFormItemChild();
     await page.keyboard.press("Delete");
@@ -336,12 +336,12 @@ test.describe("dynamic-initial-value", () => {
     await models.studio.rightPanel.setDataPlasmicProp(
       "initialValue",
       "option1",
-      { reset: true }
+      { reset: true },
     );
     await expectFormState({ test: "option1" });
     await checkFormValues(
       [{ name: "test", label: "Label", type: "Select", value: "Option 1" }],
-      formFrame
+      formFrame,
     );
     await focusFormItemChild();
     await page.keyboard.press("Delete");
@@ -356,7 +356,7 @@ test.describe("dynamic-initial-value", () => {
     await models.studio.rightPanel.setDataPlasmicProp(
       "initialValue",
       "option2",
-      { reset: true }
+      { reset: true },
     );
     await expectFormState({ test: "option2" });
     await checkFormValues(
@@ -368,7 +368,7 @@ test.describe("dynamic-initial-value", () => {
           value: "option2",
         },
       ],
-      formFrame
+      formFrame,
     );
     await focusFormItemChild();
     await page.keyboard.press("Delete");
@@ -386,7 +386,7 @@ test.describe("dynamic-initial-value", () => {
     await expectFormState({ test: true });
     await checkFormValues(
       [{ name: "test", label: "Label", type: "Checkbox", value: true }],
-      formFrame
+      formFrame,
     );
     await focusFormItemChild();
     await page.keyboard.press("Delete");
@@ -401,12 +401,12 @@ test.describe("dynamic-initial-value", () => {
     await models.studio.rightPanel.setDataPlasmicProp(
       "initialValue",
       "foo bar",
-      { reset: true }
+      { reset: true },
     );
     await expectFormState({ test: "foo bar" });
     await checkFormValues(
       [{ name: "test", label: "Label", type: "Text", value: "foo bar" }],
-      formFrame
+      formFrame,
     );
 
     await models.studio.rightPanel.checkNoErrors();

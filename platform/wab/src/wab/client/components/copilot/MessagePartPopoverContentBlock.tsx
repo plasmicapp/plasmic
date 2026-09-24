@@ -25,12 +25,12 @@ export type MessagePartPopoverContentBlockProps =
 
 function MessagePartPopoverContentBlock_(
   props: MessagePartPopoverContentBlockProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   return <PlasmicMessagePartPopoverContentBlock root={{ ref }} {...props} />;
 }
 
 const MessagePartPopoverContentBlock = React.forwardRef(
-  MessagePartPopoverContentBlock_
+  MessagePartPopoverContentBlock_,
 );
 export { MessagePartPopoverContentBlock };

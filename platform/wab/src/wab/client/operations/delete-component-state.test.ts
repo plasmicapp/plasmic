@@ -16,7 +16,7 @@ import { TplTag, isKnownVariantGroupState } from "@/wab/shared/model/classes";
 describe("deleteComponentState", () => {
   function setupWithState() {
     const { site, tplMgr } = setupComponentWithTplTree(
-      Tpls.mkTplTagX("div", {})
+      Tpls.mkTplTagX("div", {}),
     );
     const created = createComponent({
       tplMgr,
@@ -75,7 +75,7 @@ describe("deleteComponentState", () => {
     });
     assert(created.isOk(), "state setup failed");
     const implicitState = page.states.find(
-      (s) => s.implicitState === created.value && s.tplNode === instance
+      (s) => s.implicitState === created.value && s.tplNode === instance,
     );
     assert(implicitState, "expected an implicit state on the page");
     const pageRoot = page.tplTree as TplTag;
@@ -130,7 +130,7 @@ describe("deleteComponentState", () => {
     });
     assert(created.isOk(), "state setup failed");
     const implicitState = page.states.find(
-      (s) => s.implicitState === created.value && s.tplNode === instance
+      (s) => s.implicitState === created.value && s.tplNode === instance,
     );
     assert(implicitState, "expected an implicit state on the page");
 
@@ -149,7 +149,7 @@ describe("deleteComponentState", () => {
   it("rejects variant-group states", () => {
     const { site, button } = setupComponentWithInstance();
     const variantGroupState = button.states.find((s) =>
-      isKnownVariantGroupState(s)
+      isKnownVariantGroupState(s),
     );
     assert(variantGroupState, "expected a variant-group state");
 

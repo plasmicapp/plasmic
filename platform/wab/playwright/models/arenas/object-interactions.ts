@@ -6,7 +6,7 @@ export class ObjectInteractionsArena extends BaseModel {
     page: Page,
     readonly contentFrame: FrameLocator,
     readonly setToButton: Locator,
-    readonly clearButton: Locator
+    readonly clearButton: Locator,
   ) {
     super(page);
   }
@@ -29,7 +29,7 @@ export class ObjectInteractionsArena extends BaseModel {
       page,
       contentFrame,
       setToButton,
-      clearButton
+      clearButton,
     );
     return instance;
   }

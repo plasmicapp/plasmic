@@ -29,17 +29,17 @@ export function useEmailVerification(selfInfo: ApiUser) {
   const token = new URL(location.href).searchParams.get("token") ?? "";
 
   const [mode, setMode] = React.useState<string>(
-    token ? "loading" : "email-sent"
+    token ? "loading" : "email-sent",
   );
 
   React.useEffect(() => {
     if (token) {
       spawn(
         Promise.resolve(
-          nonAuthCtx.api.confirmEmail({ email: selfInfo.email, token })
+          nonAuthCtx.api.confirmEmail({ email: selfInfo.email, token }),
         ).then((response: ConfirmEmailResponse) => {
           setMode(response.status ? "valid-token" : "invalid-token");
-        })
+        }),
       );
     }
   }, [selfInfo.email, token, nonAuthCtx]);

@@ -36,30 +36,30 @@ describe("getFrameSizeForTargetScreenVariant", () => {
       });
       // Handle base
       expect(
-        getFrameSizeForTargetScreenVariant(prepSite([mobile]), undefined)
+        getFrameSizeForTargetScreenVariant(prepSite([mobile]), undefined),
       ).toBe(normalDesktopWidth);
       // Handle wider base
       expect(
         getFrameSizeForTargetScreenVariant(
           prepSite([wideDesktop, mobile]),
-          undefined
-        )
+          undefined,
+        ),
       ).toBe(1921);
       // Handle empty
       expect(getFrameSizeForTargetScreenVariant(prepSite([]), undefined)).toBe(
-        normalDesktopWidth
+        normalDesktopWidth,
       );
       // Handle midpoint
       expect(
-        getFrameSizeForTargetScreenVariant(prepSite([tablet, mobile]), tablet)
+        getFrameSizeForTargetScreenVariant(prepSite([tablet, mobile]), tablet),
       ).toBe(Math.ceil((960 + 769) / 2));
       // Handle smallest - pick a reasonable mobile device size
       expect(
-        getFrameSizeForTargetScreenVariant(prepSite([mobile]), mobile)
+        getFrameSizeForTargetScreenVariant(prepSite([mobile]), mobile),
       ).toBe(normalMobileWidth);
       // Handle narrower smallest
       expect(getFrameSizeForTargetScreenVariant(prepSite([tiny]), tiny)).toBe(
-        1
+        1,
       );
     }
 
@@ -82,23 +82,29 @@ describe("getFrameSizeForTargetScreenVariant", () => {
       });
       // Handle base
       expect(
-        getFrameSizeForTargetScreenVariant(prepSite([desktop]), undefined)
+        getFrameSizeForTargetScreenVariant(prepSite([desktop]), undefined),
       ).toBe(normalMobileWidth);
       // Handle narrower base
       expect(
-        getFrameSizeForTargetScreenVariant(prepSite([desktop, tiny]), undefined)
+        getFrameSizeForTargetScreenVariant(
+          prepSite([desktop, tiny]),
+          undefined,
+        ),
       ).toBe(0);
       // Handle midpoint
       expect(
-        getFrameSizeForTargetScreenVariant(prepSite([desktop, tablet]), tablet)
+        getFrameSizeForTargetScreenVariant(prepSite([desktop, tablet]), tablet),
       ).toBe(Math.floor((768 + 960 - 1) / 2));
       // Handle widest - pick a reasonable desktop device size
       expect(
-        getFrameSizeForTargetScreenVariant(prepSite([desktop]), desktop)
+        getFrameSizeForTargetScreenVariant(prepSite([desktop]), desktop),
       ).toBe(normalDesktopWidth);
       // Handle wider widest
       expect(
-        getFrameSizeForTargetScreenVariant(prepSite([wideDesktop]), wideDesktop)
+        getFrameSizeForTargetScreenVariant(
+          prepSite([wideDesktop]),
+          wideDesktop,
+        ),
       ).toBe(1440);
     }
   });

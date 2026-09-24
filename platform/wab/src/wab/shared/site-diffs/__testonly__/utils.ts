@@ -103,35 +103,35 @@ export function basicSite({
       name: "A",
       baseVariant,
       variants: [mkVariantSetting({ variants: [baseVariant] })],
-    }))
+    })),
   );
   $$$(cmp.tplTree).append(
     (tplTagB = mkTplTagX("div", {
       name: "B",
       baseVariant,
       variants: [mkVariantSetting({ variants: [baseVariant] })],
-    }))
+    })),
   );
   $$$(cmp.tplTree).append(
     mkTplTagX("div", {
       name: "C",
       baseVariant,
       variants: [mkVariantSetting({ variants: [baseVariant] })],
-    })
+    }),
   );
   $$$(cmp.tplTree).append(
     mkTplTagX("div", {
       name: "D",
       baseVariant,
       variants: [mkVariantSetting({ variants: [baseVariant] })],
-    })
+    }),
   );
   $$$(tplTagA).append(
     mkTplTagX("div", {
       name: "AA",
       baseVariant,
       variants: [mkVariantSetting({ variants: [baseVariant] })],
-    })
+    }),
   );
   range(4).forEach((i) => {
     // Add A1 to A4 as children of A
@@ -140,7 +140,7 @@ export function basicSite({
         name: "A" + (i + 1),
         baseVariant,
         variants: [mkVariantSetting({ variants: [baseVariant] })],
-      })
+      }),
     );
   });
   $$$(tplTagB).append(
@@ -148,7 +148,7 @@ export function basicSite({
       name: "BB",
       baseVariant,
       variants: [mkVariantSetting({ variants: [baseVariant] })],
-    })
+    }),
   );
 
   const cmp1 = tplMgr.addComponent({
@@ -260,7 +260,7 @@ export function basicSite({
           ],
         }),
       },
-    })
+    }),
   );
 
   const tplComp2 = mkTplComponentX({
@@ -315,20 +315,20 @@ export function applyTestMerge({
   // We want to use a new bundler with no instances in the cache
   const cleanedUpBundler = new Bundler();
   const ancestorSite = ensureKnownSite(
-    cleanedUpBundler.unbundle(jsonClone(ancestorBundle), ancestorUuid)
+    cleanedUpBundler.unbundle(jsonClone(ancestorBundle), ancestorUuid),
   );
   const aSite = ensureKnownSite(
-    cleanedUpBundler.unbundle(jsonClone(aBundle), aUuid)
+    cleanedUpBundler.unbundle(jsonClone(aBundle), aUuid),
   );
   const bSite = ensureKnownSite(
-    cleanedUpBundler.unbundle(jsonClone(bBundle), bUuid)
+    cleanedUpBundler.unbundle(jsonClone(bBundle), bUuid),
   );
 
   // Make sure the initial sites are valid
   const fastBundler = new FastBundler();
   fastBundler.unbundleAndRecomputeParents(
     jsonClone(ancestorBundle),
-    ancestorUuid
+    ancestorUuid,
   );
   fastBundler.unbundleAndRecomputeParents(jsonClone(aBundle), aUuid);
   fastBundler.unbundleAndRecomputeParents(jsonClone(bBundle), bUuid);
@@ -337,7 +337,7 @@ export function applyTestMerge({
   assertSiteInvariants(bSite);
 
   const mergedSite = ensureKnownSite(
-    cleanedUpBundler.unbundle(jsonClone(ancestorBundle), mergedUuid)
+    cleanedUpBundler.unbundle(jsonClone(ancestorBundle), mergedUuid),
   );
 
   const result: MergeStep & { preMergedSite?: Site } = tryMerge(
@@ -346,17 +346,17 @@ export function applyTestMerge({
     bSite,
     mergedSite,
     cleanedUpBundler,
-    undefined
+    undefined,
   );
   const mergedBundle = cleanedUpBundler.bundle(
     mergedSite,
     mergedUuid,
-    lastBundleVersion
+    lastBundleVersion,
   );
   if (result.status === "needs-resolution") {
     assert(
       directConflictsPicks,
-      "directConflictsPick must be supplied for any tests with conflicts"
+      "directConflictsPick must be supplied for any tests with conflicts",
     );
     const directConflicts = [
       ...result.genericDirectConflicts,
@@ -364,7 +364,7 @@ export function applyTestMerge({
     ];
     const directConflictsRes = strictZip(
       directConflicts,
-      directConflictsPicks
+      directConflictsPicks,
     ).map(([conflict, chosenSide]) => {
       return { ...conflict, side: chosenSide };
     });
@@ -374,15 +374,15 @@ export function applyTestMerge({
         cf.conflictType === "generic"
           ? cf.conflictDetails.map((dt) => tuple(dt.pathStr, cf.side))
           : cf.conflictType === "special"
-          ? [tuple(cf.pathStr, cf.side)]
-          : []
-      )
+            ? [tuple(cf.pathStr, cf.side)]
+            : [],
+      ),
     );
 
     const newMergedUuid = mkUuid();
     const newMergedSite = cleanedUpBundler.unbundle(
       jsonClone(ancestorBundle),
-      newMergedUuid
+      newMergedUuid,
     ) as Site;
 
     const rez = tryMerge(
@@ -391,7 +391,7 @@ export function applyTestMerge({
       bSite,
       newMergedSite,
       cleanedUpBundler,
-      directConflictsMap
+      directConflictsMap,
     );
     assert(rez.status === "merged", "");
     result.preMergedSite = mergedSite;
@@ -399,7 +399,7 @@ export function applyTestMerge({
     const newMergedBundle = cleanedUpBundler.bundle(
       newMergedSite,
       newMergedUuid,
-      lastBundleVersion
+      lastBundleVersion,
     );
     expect(newMergedBundle.deps).toEqual([]);
   }
@@ -429,7 +429,7 @@ export function testMerge({
   const bundle = bundler.bundle(
     typeof ancestorSite === "function" ? ancestorSite() : ancestorSite,
     ancestorUuid,
-    lastBundleVersion
+    lastBundleVersion,
   );
 
   const aUuid = mkUuid();
@@ -474,15 +474,15 @@ export function testMergeFromJsonBundle(
   }: {
     conflictPicks?: BranchSide[];
     skipConflictsChecks?: boolean;
-  } = {}
+  } = {},
 ) {
   assert(
     json.branches.length === 1,
-    () => `Expected only one branch (other than main)`
+    () => `Expected only one branch (other than main)`,
   );
   assert(
     json.revisions.length === 2,
-    () => `Expected only two revisions (latest From and To branches)`
+    () => `Expected only two revisions (latest From and To branches)`,
   );
   const commitGraph = json.project.commitGraph;
   const ancestorCommit = ensure(
@@ -490,39 +490,39 @@ export function testMergeFromJsonBundle(
       json.project.id,
       commitGraph,
       json.branches[0].id,
-      undefined
+      undefined,
     ),
-    () => `Did not find ancestor commit between branch and main`
+    () => `Did not find ancestor commit between branch and main`,
   );
   const ancestorPkgVersion = ensure(
     json.pkgVersions.find((pkgVersion) => pkgVersion.id === ancestorCommit),
-    () => `Did not find ancestor commit ${ancestorCommit}`
+    () => `Did not find ancestor commit ${ancestorCommit}`,
   );
   const bundler = new Bundler();
   json.pkgVersions.forEach((dep) =>
-    bundler.unbundle(jsonClone(dep.data), dep.id)
+    bundler.unbundle(jsonClone(dep.data), dep.id),
   );
   const ancestorSite = ensureKnownProjectDependency(
-    bundler.unbundle(jsonClone(ancestorPkgVersion.data), ancestorCommit)
+    bundler.unbundle(jsonClone(ancestorPkgVersion.data), ancestorCommit),
   ).site;
   const aSite = ensureKnownSite(
     bundler.unbundle(
       jsonClone(json.revisions[0].data),
-      json.revisions[0].branchId
-    )
+      json.revisions[0].branchId,
+    ),
   );
 
   const bSite = ensureKnownSite(
     bundler.unbundle(
       jsonClone(json.revisions[1].data),
-      json.revisions[1].branchId
-    )
+      json.revisions[1].branchId,
+    ),
   );
   const mergedSite = ensureKnownProjectDependency(
     bundler.unbundle(
       jsonClone(ancestorPkgVersion.data),
-      `merged-${ancestorCommit}`
-    )
+      `merged-${ancestorCommit}`,
+    ),
   ).site;
   const result: MergeStep & { preMergedResults?: MergeDirectConflict } =
     tryMerge(ancestorSite, aSite, bSite, mergedSite, bundler, undefined);
@@ -534,7 +534,7 @@ export function testMergeFromJsonBundle(
   if (result.status === "needs-resolution") {
     assert(
       conflictPicks,
-      "conflictPicks must be supplied for any tests with conflicts"
+      "conflictPicks must be supplied for any tests with conflicts",
     );
     const directConflicts = [
       ...result.genericDirectConflicts,
@@ -543,7 +543,7 @@ export function testMergeFromJsonBundle(
     const directConflictsRes = strictZip(directConflicts, conflictPicks).map(
       ([conflict, chosenSide]) => {
         return { ...conflict, side: chosenSide };
-      }
+      },
     );
 
     const directConflictsMap = Object.fromEntries(
@@ -551,16 +551,16 @@ export function testMergeFromJsonBundle(
         cf.conflictType === "generic"
           ? cf.conflictDetails.map((dt) => tuple(dt.pathStr, cf.side))
           : cf.conflictType === "special"
-          ? [tuple(cf.pathStr, cf.side)]
-          : []
-      )
+            ? [tuple(cf.pathStr, cf.side)]
+            : [],
+      ),
     );
 
     const newMergedSite = ensureKnownProjectDependency(
       bundler.unbundle(
         jsonClone(ancestorPkgVersion.data),
-        `merged-with-picks-${ancestorCommit}`
-      )
+        `merged-with-picks-${ancestorCommit}`,
+      ),
     ).site;
 
     const rez: MergeStep & { preMergedResults?: MergeDirectConflict } =
@@ -570,7 +570,7 @@ export function testMergeFromJsonBundle(
         bSite,
         newMergedSite,
         bundler,
-        directConflictsMap
+        directConflictsMap,
       );
     assert(rez.status === "merged", "should have merged");
     rez.preMergedResults = result;

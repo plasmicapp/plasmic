@@ -32,7 +32,7 @@ export function DataInspector({
       onContextMenu={(e) => {
         const target = e.target as HTMLElement;
         const nodeEl = target.closest(
-          "[data-insert-path]"
+          "[data-insert-path]",
         ) as HTMLElement | null;
         if (nodeEl?.dataset.insertPath) {
           const insertPath = nodeEl.dataset.insertPath;
@@ -54,7 +54,7 @@ export function DataInspector({
               >
                 Copy JS path
               </Menu.Item>
-            </Menu>
+            </Menu>,
           );
         }
       }}

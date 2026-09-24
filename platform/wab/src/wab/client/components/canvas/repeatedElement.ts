@@ -5,10 +5,10 @@ import {
 import React from "react";
 
 export type RepeatedElementFnType = <
-  T extends React.ReactElement | React.ReactElement[]
+  T extends React.ReactElement | React.ReactElement[],
 >(
   cloneIndex: boolean | number,
-  e: T
+  e: T,
 ) => T;
 
 export function genRepeatedElement(react: typeof React) {
@@ -27,8 +27,8 @@ export function genRepeatedElement(react: typeof React) {
         typeof cloneIndex === "number"
           ? cloneIndex
           : cloneIndex
-          ? 0
-          : NO_INDEX_COPY,
+            ? 0
+            : NO_INDEX_COPY,
     }) as any;
   };
   return repeatedElement;

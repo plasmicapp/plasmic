@@ -11,7 +11,7 @@ import {
  * include the new overrides, while DEVFLAGS will stay the same.
  */
 export async function getDevFlagsMergedWithOverrides(
-  mgr: DbMgr
+  mgr: DbMgr,
 ): Promise<DevFlagsType> {
   const overrides = await mgr.tryGetDevFlagOverrides();
   return applyDevFlagOverridesToDefaults(JSON.parse(overrides?.data ?? "{}"));

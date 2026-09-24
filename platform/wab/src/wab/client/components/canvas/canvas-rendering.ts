@@ -386,8 +386,9 @@ export interface RenderingCtx {
   updateVariant: (changes: Record<string, boolean>) => void;
 }
 
-interface CanvasComponentProps
-  extends Partial<Record<(typeof internalCanvasElementProps)[number], any>> {
+interface CanvasComponentProps extends Partial<
+  Record<(typeof internalCanvasElementProps)[number], any>
+> {
   [valKeyProp]: string;
   [dataCanvasEnvsProp]: { env: CanvasEnv; wrappingEnv: CanvasEnv };
   [renderingCtxProp]: RenderingCtx;
@@ -403,7 +404,7 @@ interface CanvasComponentProps
 export const createCanvasComponent = computedFn(
   (
     viewCtx: ViewCtx,
-    component: Component
+    component: Component,
   ): React.ComponentType<CanvasComponentProps> => {
     const canvasCtx = viewCtx.canvasCtx;
     const sub = canvasCtx.Sub;
@@ -412,14 +413,14 @@ export const createCanvasComponent = computedFn(
       internalVariantProps: componentToVariantParamNames(component),
     });
     const CanvasComponent: React.ComponentType<CanvasComponentProps> = (
-      originalProps
+      originalProps,
     ) => {
       return mkUseCanvasObserver(sub, viewCtx)(() => {
         const ctx = useCtxFromInternalComponentProps(
           originalProps,
           viewCtx,
           component,
-          getArgsAndVariants
+          getArgsAndVariants,
         );
 
         return sub.React.createElement(
@@ -429,7 +430,7 @@ export const createCanvasComponent = computedFn(
             component,
             childrenFn: (newCtx) =>
               wrapInComponentDataQueries(newCtx, component),
-          }
+          },
         );
       }, component.name);
     };
@@ -445,7 +446,7 @@ export const createCanvasComponent = computedFn(
         getArgsAndVariants,
         component,
         viewCtx,
-        (_comp) => createCanvasComponent(viewCtx, _comp)
+        (_comp) => createCanvasComponent(viewCtx, _comp),
       ) as React.ComponentType<CanvasComponentProps>) ?? CanvasComponent;
     const CanvasComponentWrapper = sub.React.forwardRef((props, ref) =>
       sub.React.createElement<CanvasErrorBoundaryProps>(
@@ -457,8 +458,8 @@ export const createCanvasComponent = computedFn(
             ...props,
             ref,
           }),
-        }
-      )
+        },
+      ),
     ) as typeof MaybePlumeComp;
     Object.assign(CanvasComponentWrapper, {
       displayName: getExportedComponentName(component),
@@ -472,7 +473,7 @@ export const createCanvasComponent = computedFn(
   },
   {
     keepAlive: true,
-  }
+  },
 );
 
 export interface ExtraSlotCanvasEnvData {
@@ -487,14 +488,14 @@ export function mkEventHandlerEnv(
   reactWeb: RenderingCtx["sub"]["reactWeb"],
   plasmicInvalidate: RenderingCtx["plasmicInvalidate"],
   win: typeof window,
-  dataSources?: RenderingCtx["sub"]["dataSources"]
+  dataSources?: RenderingCtx["sub"]["dataSources"],
 ) {
   return {
     ...env,
     __wrapUserFunction: (
       loc: InteractionLoc | InteractionArgLoc,
       fn: () => any,
-      args: Record<string, any>
+      args: Record<string, any>,
     ) => {
       if (isInteractionLoc(loc)) {
         // Special handling for some interactions on canvas.
@@ -508,7 +509,7 @@ export function mkEventHandlerEnv(
           } else {
             showCanvasPageNavigationNotification(
               studioCtx,
-              `${args.destination}`
+              `${args.destination}`,
             );
           }
           return;
@@ -528,7 +529,7 @@ export function mkEventHandlerEnv(
     },
     __wrapUserPromise: async (
       loc: InteractionLoc | InteractionArgLoc,
-      promise: Promise<unknown>
+      promise: Promise<unknown>,
     ) => {
       try {
         return await promise;
@@ -554,7 +555,7 @@ function mkEventHandlerEnvFromRenderingCtx(ctx: RenderingCtx) {
     ctx.sub.reactWeb,
     ctx.plasmicInvalidate,
     ctx.viewCtx.canvasCtx.win(),
-    ctx.sub.dataSources
+    ctx.sub.dataSources,
   );
 }
 
@@ -563,7 +564,7 @@ function mkInitFuncExpr(
   variantCombo: VariantCombo,
   viewCtx: ViewCtx,
   exprCtx: ExprCtx,
-  isForRegisterInitFunc?: boolean
+  isForRegisterInitFunc?: boolean,
 ) {
   if (viewCtx.component !== exprCtx.component && isWritableState(state)) {
     // we need to transform the root component writable states
@@ -573,7 +574,7 @@ function mkInitFuncExpr(
 
   const isCurrentComponent = computed(
     () => viewCtx.currentComponent() === exprCtx.component,
-    { name: "mkInitFuncExpr.isCurrentComponent" }
+    { name: "mkInitFuncExpr.isCurrentComponent" },
   ).get();
 
   if (!state.tplNode && state.variableType === "variant") {
@@ -585,11 +586,11 @@ function mkInitFuncExpr(
         state.param.previewExpr && viewCtx.component === exprCtx.component
           ? getRawCode(state.param.previewExpr, exprCtx)
           : state.param.defaultExpr &&
-            (viewCtx.component !== exprCtx.component ||
-              viewCtx.studioCtx.isInteractiveMode)
-          ? getRawCode(state.param.defaultExpr, exprCtx)
-          : `$props["${getStateValuePropName(state)}"]`
-      }`
+              (viewCtx.component !== exprCtx.component ||
+                viewCtx.studioCtx.isInteractiveMode)
+            ? getRawCode(state.param.defaultExpr, exprCtx)
+            : `$props["${getStateValuePropName(state)}"]`
+      }`,
     );
   } else if (!state.tplNode && state.param.previewExpr && isCurrentComponent) {
     return state.param.previewExpr;
@@ -598,7 +599,7 @@ function mkInitFuncExpr(
   } else if (state.tplNode) {
     const effectiveVs = getEffectiveVariantSetting(state.tplNode, variantCombo);
     const maybeArg = effectiveVs.args.find(
-      (arg) => arg.param === state.implicitState?.param
+      (arg) => arg.param === state.implicitState?.param,
     );
     const maybeAttr = isTplTag(state.tplNode)
       ? effectiveVs.attrs[toVarName(ensureKnownNamedState(state).name)]
@@ -650,7 +651,7 @@ function mkInitFuncFromExpr(
   viewCtx: ViewCtx,
   env: Record<string, any> | undefined,
   exprCtx: ExprCtx,
-  isForRegisterInitFunc?: boolean
+  isForRegisterInitFunc?: boolean,
 ) {
   return evalCodeWithEnv(
     `(({$props, $state, $queries, $q${
@@ -659,7 +660,7 @@ function mkInitFuncFromExpr(
       ${getRawCode(initFuncExpr, exprCtx)}
     ))`,
     { ...(env ?? {}) },
-    viewCtx.canvasCtx.win()
+    viewCtx.canvasCtx.win(),
   );
 }
 
@@ -669,14 +670,14 @@ function mkInitFunc(
   viewCtx: ViewCtx,
   env: Record<string, any> | undefined,
   exprCtx: ExprCtx,
-  isForRegisterInitFunc?: boolean
+  isForRegisterInitFunc?: boolean,
 ) {
   const initFuncExpr = mkInitFuncExpr(
     state,
     variantCombo,
     viewCtx,
     exprCtx,
-    isForRegisterInitFunc
+    isForRegisterInitFunc,
   );
   if (!initFuncExpr) {
     return undefined;
@@ -686,7 +687,7 @@ function mkInitFunc(
     viewCtx,
     env,
     exprCtx,
-    isForRegisterInitFunc
+    isForRegisterInitFunc,
   );
 }
 
@@ -694,7 +695,7 @@ function mkInitFuncHash(
   state: State,
   variantCombo: VariantCombo,
   viewCtx: ViewCtx,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ) {
   const initFuncExpr = mkInitFuncExpr(state, variantCombo, viewCtx, exprCtx);
   return initFuncExpr
@@ -716,7 +717,7 @@ const mkTriggers = computedFn(
     viewCtx: ViewCtx,
     // The number of hooks to be called depends on `reactHookSpec`, so we create
     // a new component when the number of specs change.
-    _reactHookSpecsKey: string
+    _reactHookSpecsKey: string,
   ) {
     return function WithTriggers({
       ctx,
@@ -729,7 +730,7 @@ const mkTriggers = computedFn(
     }): React.ReactElement | null {
       return mkUseCanvasObserver(
         sub,
-        viewCtx
+        viewCtx,
       )(() => {
         const isInteractive = ctx.viewCtx.studioCtx.isInteractiveMode;
 
@@ -737,7 +738,7 @@ const mkTriggers = computedFn(
         const { triggers, triggerProps } = useTriggers(
           ctx.viewCtx.canvasCtx,
           ctx.reactHookSpecs,
-          isInteractive
+          isInteractive,
         );
 
         const newCtx: RenderingCtx = {
@@ -758,7 +759,7 @@ const mkTriggers = computedFn(
               // Style variants of built-in components (like vertical stack's hover)
               if (!isCodeComponentVariant(variant)) {
                 const hook = ctx.reactHookSpecs.find(
-                  (spec) => spec.sv === variant
+                  (spec) => spec.sv === variant,
                 );
                 return hook && triggers[hook.hookName];
               }
@@ -774,7 +775,7 @@ const mkTriggers = computedFn(
               // Non-interactive registered variants (like Button CC's disabled) do no harm to rich-text editing and can be applied in non-interactive mode
               return variant.codeComponentVariantKeys.reduce(
                 (prev, key) => prev && ctx.$ccVariants[key],
-                true
+                true,
               );
             }),
           ]),
@@ -785,13 +786,13 @@ const mkTriggers = computedFn(
   },
   {
     keepAlive: true,
-  }
+  },
 );
 
 function useTriggers(
   canvasCtx: CanvasCtx,
   reactHookSpecs: ReactHookSpec[],
-  interactive: boolean
+  interactive: boolean,
 ) {
   const sub = canvasCtx.Sub;
   const uniqSpecs = uniqBy(reactHookSpecs, (s) => s.hookName);
@@ -806,7 +807,7 @@ function useTriggers(
     for (const opt of getTriggerableSelectors(spec.sv)) {
       const trigger = ensure(
         opt.trigger,
-        "Trigger condition is expected to be not null"
+        "Trigger condition is expected to be not null",
       );
       const [expr, prop] = sub.reactWeb.useTrigger(trigger.hookName as any, {});
       triggered = triggered && (trigger.isOpposite ? !expr : expr);
@@ -832,14 +833,14 @@ function useCtxFromInternalComponentProps(
   getArgsAndVariants: () => {
     internalVariantProps: string[];
     internalArgProps: string[];
-  }
+  },
 ) {
   const canvasCtx = viewCtx.canvasCtx;
   const sub = canvasCtx.Sub;
 
   const viewState = ensure(
     sub.React.useContext(createViewStateContext(viewCtx)),
-    "Must be rendered with ViewState context"
+    "Must be rendered with ViewState context",
   );
 
   const nodeNamer = computedNodeNamer(component);
@@ -858,7 +859,7 @@ function useCtxFromInternalComponentProps(
       descendantNames: componentToElementNames(component),
       internalArgPropNames: argAndVariantNames.internalArgProps,
       internalVariantPropNames: argAndVariantNames.internalVariantProps,
-    }
+    },
   );
 
   // Sometimes we trigger a re-render after renaming a slot, which runs on the
@@ -874,12 +875,12 @@ function useCtxFromInternalComponentProps(
         if (
           arr.length > 0 &&
           arr.every(
-            (v: any) => v && sub.React.isValidElement(v) && isSlotArgElement(v)
+            (v: any) => v && sub.React.isValidElement(v) && isSlotArgElement(v),
           )
         ) {
           delete eltOverrides.props[key];
         }
-      })
+      }),
   );
 
   const reactHookSpecs = deriveReactHookSpecs(component, nodeNamer);
@@ -905,7 +906,7 @@ function useCtxFromInternalComponentProps(
     variants,
     viewState.pinMap,
     viewState.globalPins,
-    renderingCtx
+    renderingCtx,
   );
 
   const meta = maybeGetCodeComponentMeta(viewCtx, component);
@@ -924,15 +925,15 @@ function useCtxFromInternalComponentProps(
       component.states.map((s) => [
         mkMetaName(getStateValuePropName(s)),
         dataPickerHiddenMeta,
-      ])
+      ]),
     ),
     // we need to use the canvas constructors
     ...viewCtx.canvasCtx.win().JSON.parse(JSON.stringify(variantProps)),
     // Hide $props.on<propName>Change from data picker.
     ...Object.fromEntries(
       withoutNils(component.states.map((s) => getStateOnChangePropName(s))).map(
-        (s) => [mkMetaName(s), dataPickerHiddenMeta]
-      )
+        (s) => [mkMetaName(s), dataPickerHiddenMeta],
+      ),
     ),
   };
 
@@ -957,12 +958,12 @@ function useCtxFromInternalComponentProps(
         return { ...prev, ...changes };
       });
     },
-    []
+    [],
   );
 
   const $globalActions = sub.useGlobalActions?.();
   const [evaluatedDataTokens, setEvaluatedDataTokens] = sub.React.useState(
-    computeDataTokens(viewCtx.site, viewCtx.studioCtx.siteInfo.id, {})
+    computeDataTokens(viewCtx.site, viewCtx.studioCtx.siteInfo.id, {}),
   );
 
   sub.React.useEffect(() => {
@@ -970,7 +971,7 @@ function useCtxFromInternalComponentProps(
       () => computeDataTokens(viewCtx.site, viewCtx.studioCtx.siteInfo.id, {}),
       (computedDataTokens) => {
         setEvaluatedDataTokens(computedDataTokens);
-      }
+      },
     );
     return () => dispose();
   }, [viewCtx.site]);
@@ -1001,13 +1002,13 @@ function useCtxFromInternalComponentProps(
       Array.from(initialActiveVariants),
       viewCtx,
       env,
-      { component, projectFlags, inStudio: true }
+      { component, projectFlags, inStudio: true },
     ),
     initFuncHash: mkInitFuncHash(
       state,
       Array.from(initialActiveVariants),
       viewCtx,
-      { component, projectFlags, inStudio: true }
+      { component, projectFlags, inStudio: true },
     ),
     ...(state.accessType !== "private"
       ? { onChangeProp: getStateOnChangePropName(state) }
@@ -1037,14 +1038,14 @@ function useCtxFromInternalComponentProps(
     { $props, $queries, $q, $ctx, $refs },
     {
       inCanvas: true,
-    }
+    },
   );
   const activeVariants = deriveActiveVariants(
     component,
     $state,
     viewState.pinMap,
     viewState.globalPins,
-    renderingCtx
+    renderingCtx,
   );
   if (viewCtx.studioCtx.isInteractiveMode && viewCtx.component === component) {
     const variantsController = makeVariantsController(viewCtx.studioCtx);
@@ -1081,7 +1082,7 @@ function deriveActiveVariants(
   variants: Record<string, any>,
   pinMap: PinMap,
   globalPins: Map<Variant, boolean>,
-  ctx: RenderingCtx
+  ctx: RenderingCtx,
 ) {
   return new Set<Variant>([
     ...[...globalPins.entries()].filter(([_, b]) => !!b).map(([v]) => v),
@@ -1093,7 +1094,7 @@ function deriveActiveVariants(
         const groupName = toVarName(vg.param.variable.name);
         const variantName = toVarName(v.name);
         return ctx.sub.reactWeb.hasVariant(variants, groupName, variantName);
-      })
+      }),
     ),
   ]);
 }
@@ -1101,7 +1102,7 @@ function deriveActiveVariants(
 function variantsToProps(
   component: Component,
   variants: Variant[],
-  opts?: { hideFromDataPicker: boolean }
+  opts?: { hideFromDataPicker: boolean },
 ): Record<string, string | string[] | boolean | undefined> {
   const props = Object.fromEntries(
     component.variantGroups.map((vg) => {
@@ -1116,7 +1117,7 @@ function variantsToProps(
         return [vgName, values];
       }
       return [vgName, undefined];
-    })
+    }),
   );
   if (opts?.hideFromDataPicker) {
     const keys = Object.keys(props);
@@ -1140,7 +1141,7 @@ function buildForceValComponentKeyWithDefaultSlotContents(vc: ViewCtx) {
       // so we walk up the valComp owners and cross reference them with TplComponents
       // in the componentStackFrames().
       const contextTplComponents = new Set(
-        vc.componentStackFrames().map((f) => f.tplComponent)
+        vc.componentStackFrames().map((f) => f.tplComponent),
       );
       let owner = valComp.valOwner;
       while (owner) {
@@ -1168,12 +1169,12 @@ const createViewStateContext = computedFn(
   {
     keepAlive: true,
     name: "createViewStateProvider",
-  }
+  },
 );
 
 export function useRenderedFrameRoot(
   viewCtx: ViewCtx,
-  root: TplNode
+  root: TplNode,
 ): React.ReactElement {
   const sub = viewCtx.canvasCtx.Sub;
   const ViewStateContext = createViewStateContext(viewCtx);
@@ -1192,7 +1193,7 @@ export function useRenderedFrameRoot(
     {
       equals: (a, b) => setEquals(a, b),
       name: `renderFrameRoot.buildForceValComponentKeyWithDefaultSlotContents`,
-    }
+    },
   ).get();
 
   const viewState = sub.React.useMemo(
@@ -1201,7 +1202,7 @@ export function useRenderedFrameRoot(
       pinMap,
       forceValComponentKeysWithDefaultSlotContents,
     }),
-    [globalPins, pinMap, forceValComponentKeysWithDefaultSlotContents]
+    [globalPins, pinMap, forceValComponentKeysWithDefaultSlotContents],
   );
 
   const r = sub.React.createElement;
@@ -1215,7 +1216,7 @@ export function useRenderedFrameRoot(
         viewCtx.site.globalVariant,
         ...[...globalPins.entries()].filter(([_, b]) => !!b).map(([v]) => v),
       ]),
-    })
+    }),
   );
 
   const reactMajorVersion = +sub.React.version.split(".")[0];
@@ -1233,8 +1234,8 @@ export function useRenderedFrameRoot(
         {
           fallback: "Loading...",
         },
-        content
-      )
+        content,
+      ),
     );
   }
 
@@ -1304,7 +1305,7 @@ export function renderTplNode(node: TplNode, ctx: RenderingCtx) {
     () => cachedRenderTplNode(node, ctx, () => renderReppable(node, ctx)),
     {
       hasLoadingBoundary: ctx.env.$ctx[hasLoadingBoundaryKey],
-    }
+    },
   );
 }
 
@@ -1365,7 +1366,7 @@ function getAutoOpenSelectionInfo(ctx: RenderingCtx, node: TplNode) {
     {
       name: "getAutoOpenSelectionInfo",
       equals: comparer.structural,
-    }
+    },
   )();
 }
 
@@ -1382,11 +1383,11 @@ function renderReppable(tplNode: TplNode, ctx: RenderingCtx) {
             component: ctx.ownerComponent ?? null,
             projectFlags: ctx.projectFlags,
             inStudio: true,
-          }
+          },
         ),
         ctx.env,
-        ctx.viewCtx.canvasCtx.win()
-      )
+        ctx.viewCtx.canvasCtx.win(),
+      ),
     );
     const idx = getNumberOfRepeatingAncestors(node) - 1;
     const elementInternalName = getRepetitionItemInternalName(idx);
@@ -1409,11 +1410,11 @@ function renderReppable(tplNode: TplNode, ctx: RenderingCtx) {
               },
               wrappingEnv: ctx.env,
             },
-            activeVSettings
+            activeVSettings,
           ),
-          (rendered) => mkRepeatedElement(ctx.sub.React)(index, rendered)
-        )
-      )
+          (rendered) => mkRepeatedElement(ctx.sub.React)(index, rendered),
+        ),
+      ),
     );
     if (contents.length === 0) {
       return null;
@@ -1438,7 +1439,7 @@ function renderReppable(tplNode: TplNode, ctx: RenderingCtx) {
         {
           key: `${repFragmentKey}-${ctx.valKey}`,
         },
-        ...contents
+        ...contents,
       );
     }
   } else {
@@ -1448,14 +1449,14 @@ function renderReppable(tplNode: TplNode, ctx: RenderingCtx) {
         ...ctx,
         wrappingEnv: ctx.env,
       },
-      activeVSettings
+      activeVSettings,
     );
   }
 }
 
 export function getSortedActiveVariantSettings(
   tpl: TplNode,
-  ctx: Pick<RenderingCtx, "site" | "activeVariants" | "ownerComponent">
+  ctx: Pick<RenderingCtx, "site" | "activeVariants" | "ownerComponent">,
 ) {
   const activeSettings = getActiveVariantSettings(tpl, ctx.activeVariants);
   if (activeSettings.length <= 1) {
@@ -1468,16 +1469,16 @@ export function getSortedActiveVariantSettings(
       ctx.site,
       ensure(
         ctx.ownerComponent,
-        () => `ownerComponent should exist in tplNodes with multiple vsettings`
-      )
-    )
+        () => `ownerComponent should exist in tplNodes with multiple vsettings`,
+      ),
+    ),
   );
 }
 
 function renderNonReppable(
   node: TplNode,
   ctx: RenderingCtx,
-  activeVSettings: VariantSetting[]
+  activeVSettings: VariantSetting[],
 ) {
   return switchType(node)
     .when(TplComponent, (tpl) => renderTplComponent(tpl, ctx, activeVSettings))
@@ -1497,12 +1498,12 @@ function maybeGetCodeComponentMeta(viewCtx: ViewCtx, component: Component) {
 function renderTplComponent(
   node: TplComponent,
   ctx: RenderingCtx,
-  activeVSettings: VariantSetting[]
+  activeVSettings: VariantSetting[],
 ): React.ReactElement | null {
   const effectiveVs = new EffectiveVariantSetting(
     node,
     activeVSettings,
-    ctx.site
+    ctx.site,
   );
 
   const { rendered } = determineAutoOpenState(ctx, node, effectiveVs);
@@ -1541,7 +1542,7 @@ function renderTplComponent(
       ...activeVSettings.map((vs) => classNameForRuleSet(vs.rs)),
     ]
       .filter(Boolean)
-      .join(" ")
+      .join(" "),
   );
 
   if (isCodeComponent(node.component)) {
@@ -1561,7 +1562,7 @@ function renderTplComponent(
       ...getRealClassNames(positionClassName),
     ]).join(" ");
     props[setControlContextDataProp] = ctx.viewCtx.createSetContextDataFn(
-      ctx.valKey
+      ctx.valKey,
     );
 
     if (isComponentRoot && isTplRootWithCodeComponentVariants(node)) {
@@ -1575,15 +1576,15 @@ function renderTplComponent(
           (isPlainObjectPropType(propMeta) && propMeta.type === "slot");
         if (isSlotProp && props[prop] == null) {
           const param = node.component.params.find(
-            (p) => p.variable.name === prop
+            (p) => p.variable.name === prop,
           );
           if (param) {
             const selKey = slotSelectionKeyFromRenderingCtx(
               ensure(
                 ctx.valKey,
-                () => `valKey should exist for slot placeholders`
+                () => `valKey should exist for slot placeholders`,
               ),
-              param
+              param,
             );
             if (
               !ctx.viewCtx.studioCtx.showSlotPlaceholder() ||
@@ -1605,7 +1606,7 @@ function renderTplComponent(
                 computed(
                   () =>
                     makeSelectableKey(ctx.viewCtx.focusedSelectable()) !==
-                    selKey
+                    selKey,
                 ).get())
             ) {
               continue;
@@ -1618,7 +1619,7 @@ function renderTplComponent(
                 component: node.component,
                 isPropOrSlot: "prop",
                 slotSelectionKey: selKey,
-              }
+              },
             );
             props[prop] = isRenderFuncType(param.type)
               ? () => slotPlaceholder
@@ -1651,7 +1652,7 @@ function renderTplComponent(
     const remountProps = Object.entries(meta.meta.props)
       .filter(
         ([_name, propType]) =>
-          isPlainObjectPropType(propType) && (propType as any).forceRemount
+          isPlainObjectPropType(propType) && (propType as any).forceRemount,
       )
       .map(([name]) => props[name]);
     props["key"] =
@@ -1661,7 +1662,7 @@ function renderTplComponent(
   }
 
   const dataReps = serializeDataRepsIndexName(node).map(
-    (varName) => ctx.env[varName]
+    (varName) => ctx.env[varName],
   );
   const builtinEventHandlers: Record<string, any[]> = {};
   ctx.ownerComponent?.states
@@ -1669,7 +1670,7 @@ function renderTplComponent(
     .forEach((state) => {
       assert(
         !!state.implicitState,
-        `${getStateDisplayName(state)} should be an implicit state`
+        `${getStateDisplayName(state)} should be an implicit state`,
       );
       const tplVarName = toVarName(state.tplNode!.name ?? "undefined");
       const statePath = [
@@ -1678,13 +1679,13 @@ function renderTplComponent(
         toVarName(getLastPartOfImplicitStateName(state)),
       ];
       const maybeOnChangePropName = getStateOnChangePropName(
-        state.implicitState
+        state.implicitState,
       );
       const stateHelpers =
         isTplCodeComponent(node) && meta
           ? tryGetStateHelpers(
               meta.meta,
-              ensureKnownNamedState(state.implicitState)
+              ensureKnownNamedState(state.implicitState),
             )
           : undefined;
       if (maybeOnChangePropName) {
@@ -1692,7 +1693,7 @@ function renderTplComponent(
           withDefaultFunc(
             builtinEventHandlers,
             maybeOnChangePropName,
-            () => []
+            () => [],
           ).push(handler);
         };
         if (node.component.plumeInfo) {
@@ -1700,15 +1701,15 @@ function renderTplComponent(
           pushEventHandler((...args: unknown[]) => {
             ctx.sub.reactWeb.generateStateOnChangeProp(
               ctx.env.$state,
-              statePath
+              statePath,
             )(
               plugin?.genOnChangeEventToValue
                 ? evalCodeWithEnv(
                     plugin.genOnChangeEventToValue,
                     mkEventHandlerEnvFromRenderingCtx(ctx),
-                    ctx.viewCtx.canvasCtx.win()
+                    ctx.viewCtx.canvasCtx.win(),
                   ).apply(null, args)
-                : args[0]
+                : args[0],
             );
           });
         } else if (
@@ -1718,15 +1719,15 @@ function renderTplComponent(
           pushEventHandler((...eventArgs: any[]) => {
             ctx.sub.reactWeb.generateStateOnChangeProp(
               ctx.env.$state,
-              statePath
+              statePath,
             )(stateHelpers.onChangeArgsToValue?.apply(null, eventArgs));
           });
         } else {
           pushEventHandler(
             ctx.sub.reactWeb.generateStateOnChangeProp(
               ctx.env.$state,
-              statePath
-            )
+              statePath,
+            ),
           );
         }
       }
@@ -1741,7 +1742,7 @@ function renderTplComponent(
       builtinEventHandlers,
       !isTplCodeComponent(node)
         ? getComponentStateOnChangePropNames(ctx.ownerComponent, node)
-        : new Set()
+        : new Set(),
     );
   }
 
@@ -1754,7 +1755,7 @@ function renderTplComponent(
       Array.from(ctx.activeVariants),
       ctx.viewCtx,
       exprCtx,
-      true
+      true,
     );
     if (
       initFuncExpr &&
@@ -1763,7 +1764,7 @@ function renderTplComponent(
       ctx.env.$state.registerInitFunc?.(
         getStateVarName(state),
         mkInitFuncFromExpr(initFuncExpr, ctx.viewCtx, ctx.env, exprCtx, true),
-        dataReps
+        dataReps,
       );
     }
   });
@@ -1797,7 +1798,7 @@ function renderTplComponent(
             getStateVarName(state),
             ({ $props }) => stateHelper.initFunc?.($props),
             dataReps,
-            { $props: props }
+            { $props: props },
           );
         }
       }
@@ -1810,7 +1811,8 @@ function renderTplComponent(
     props["plasmicNotifyAutoOpenedContent"] = () => {
       ctx.viewCtx.autoOpenedUuid =
         node.component.params.find(
-          (p) => p.variable.name === codeComponentSelectionInfo.selectedSlotName
+          (p) =>
+            p.variable.name === codeComponentSelectionInfo.selectedSlotName,
         )?.uuid ?? node.uuid;
     };
   }
@@ -1831,7 +1833,7 @@ function renderTplComponent(
         nodeOrComponent: node,
         children: elt,
         nodeProps: props,
-      }
+      },
     );
   }
   return elt;
@@ -1843,7 +1845,7 @@ function isFrameRoot(ctx: RenderingCtx) {
 
 function maybeUnwrapFragments(
   sub: SubDeps,
-  child: React.ReactElement | undefined | null
+  child: React.ReactElement | undefined | null,
 ) {
   if (
     child?.type === sub.React.Fragment &&
@@ -1858,7 +1860,7 @@ function computeRenderedArg(
   param: Param,
   tpls: TplNode[],
   ctx: RenderingCtx,
-  envOverrides: Partial<CanvasEnv>
+  envOverrides: Partial<CanvasEnv>,
 ) {
   if (tpls.length === 0) {
     return null;
@@ -1903,7 +1905,7 @@ function computeRenderedArg(
             existingKey.startsWith(slotFragmentKey)
           ) {
             const existingAttrs = JSON.parse(
-              existingKey.slice(slotFragmentKey.length)
+              existingKey.slice(slotFragmentKey.length),
             );
             attrs = { ...existingAttrs, ...attrs };
           }
@@ -1912,7 +1914,7 @@ function computeRenderedArg(
           };
         }
         return ctx.sub.React.cloneElement(v, attrs);
-      })
+      }),
   );
   if (param.variable.name === "children") {
     return elements;
@@ -1920,14 +1922,14 @@ function computeRenderedArg(
   return elements.length === 0
     ? null
     : elements.length === 1
-    ? elements[0]
-    : ctx.sub.React.createElement(ctx.sub.React.Fragment, {}, elements);
+      ? elements[0]
+      : ctx.sub.React.createElement(ctx.sub.React.Fragment, {}, elements);
 }
 
 function computeTplComponentArgs(
   tpl: TplComponent,
   effectiveVs: EffectiveVariantSetting,
-  ctx: RenderingCtx
+  ctx: RenderingCtx,
 ) {
   const ofCodeComponent = isCodeComponent(tpl.component);
   const exprCtx: ExprCtx = {
@@ -1938,7 +1940,7 @@ function computeTplComponentArgs(
 
   const evalArgExpr = (
     param: DeepReadonly<Param>,
-    expr: DeepReadonly<Expr>
+    expr: DeepReadonly<Expr>,
   ) => {
     return switchType(expr)
       .when(RenderExpr, (_expr) => {
@@ -1960,11 +1962,11 @@ function computeTplComponentArgs(
                           ...envOverrides,
                           ...zipObject(
                             paramType.params.map((p) => p.argName),
-                            args
+                            args,
                           ),
-                        })
+                        }),
                       ),
-                  }
+                  },
                 );
               };
             } else {
@@ -2000,9 +2002,9 @@ function computeTplComponentArgs(
                     hasLoadingBoundary:
                       $newCtx?.[hasLoadingBoundaryKey] ||
                       ctx.env.$ctx?.[hasLoadingBoundaryKey],
-                  }
+                  },
                 ),
-              `DataCtxReaderChildren(${tpl.uuid}.${param.variable.name})`
+              `DataCtxReaderChildren(${tpl.uuid}.${param.variable.name})`,
             );
           }
           return contents({});
@@ -2012,7 +2014,7 @@ function computeTplComponentArgs(
         return evalCodeWithEnv(
           getCodeExpressionWithFallback(_expr, exprCtx),
           ctx.env,
-          ctx.viewCtx.canvasCtx.win()
+          ctx.viewCtx.canvasCtx.win(),
         );
       })
       .when(DataSourceOpExpr, (_expr) => {
@@ -2021,13 +2023,13 @@ function computeTplComponentArgs(
         return evalCodeWithEnv(
           asCode(_expr, exprCtx).code,
           rest,
-          ctx.viewCtx.canvasCtx.win()
+          ctx.viewCtx.canvasCtx.win(),
         );
       })
       .when(VarRef, (_expr) => {
         const component = ensure(
           ctx.ownerComponent,
-          () => `ownerComponent should exist as we're passing VarRef args`
+          () => `ownerComponent should exist as we're passing VarRef args`,
         );
         const referencedParam = extractReferencedParam(component, _expr);
         if (!referencedParam) {
@@ -2049,35 +2051,35 @@ function computeTplComponentArgs(
         evalCodeWithEnv(
           asCode(_expr, exprCtx).code,
           ctx.env,
-          ctx.viewCtx.canvasCtx.win()
-        )
+          ctx.viewCtx.canvasCtx.win(),
+        ),
       )
       .when(ImageAssetRef, (_expr) =>
         ofCodeComponent
           ? _expr.asset.dataUri
-          : maybeMakePlasmicImgSrc(_expr.asset, exprCtx)
+          : maybeMakePlasmicImgSrc(_expr.asset, exprCtx),
       )
       .when(VariantsRef, (_expr) =>
-        _expr.variants.map((v) => toVarName(v.name))
+        _expr.variants.map((v) => toVarName(v.name)),
       )
       .when(ObjectPath, (_expr) =>
         evalCodeWithEnv(
           getCodeExpressionWithFallback(_expr, exprCtx),
           ctx.env,
-          ctx.viewCtx.canvasCtx.win()
-        )
+          ctx.viewCtx.canvasCtx.win(),
+        ),
       )
       .when(EventHandler, (_expr) => {
         return evalCodeWithEnv(
           getRawCode(expr, exprCtx),
           mkEventHandlerEnvFromRenderingCtx(ctx),
-          ctx.viewCtx.canvasCtx.win()
+          ctx.viewCtx.canvasCtx.win(),
         );
       })
       .when(FunctionArg, (functionArg) => evalArgExpr(param, functionArg.expr))
       .when(CollectionExpr, (collectionExpr) => [
         ...collectionExpr.exprs.map((_expr) =>
-          _expr ? evalArgExpr(param, _expr) : undefined
+          _expr ? evalArgExpr(param, _expr) : undefined,
         ),
       ])
       .when(MapExpr, (_expr) =>
@@ -2087,10 +2089,10 @@ function computeTplComponentArgs(
             evalCodeWithEnv(
               getRawCode(iexpr, exprCtx),
               ctx.env,
-              ctx.viewCtx.canvasCtx.win()
+              ctx.viewCtx.canvasCtx.win(),
             ),
-          ])
-        )
+          ]),
+        ),
       )
       .when(StyleExpr, (_expr) => {
         // For a ClassNamePropType (with StyleExpr value), we actually don't
@@ -2115,31 +2117,31 @@ function computeTplComponentArgs(
         evalCodeWithEnv(
           getRawCode(templatedString, exprCtx),
           ctx.env,
-          ctx.viewCtx.canvasCtx.win()
-        )
+          ctx.viewCtx.canvasCtx.win(),
+        ),
       )
       .when(FunctionExpr, (functionExpr) =>
         evalCodeWithEnv(
           asCode(functionExpr, exprCtx).code,
           ctx.env,
-          ctx.viewCtx.canvasCtx.win()
-        )
+          ctx.viewCtx.canvasCtx.win(),
+        ),
       )
       .when(TplRef, (_expr) =>
-        unexpected(`Cannot evaluate TplRef as a component arg`)
+        unexpected(`Cannot evaluate TplRef as a component arg`),
       )
       .when(QueryInvalidationExpr, (_expr) =>
-        unexpected(`Cannot evaluate QueryInvalidationExpr as component arg`)
+        unexpected(`Cannot evaluate QueryInvalidationExpr as component arg`),
       )
       .when(CompositeExpr, (_expr) =>
         evalCodeWithEnv(
           asCode(_expr, exprCtx).code,
           mkEventHandlerEnvFromRenderingCtx(ctx),
-          ctx.viewCtx.canvasCtx.win()
-        )
+          ctx.viewCtx.canvasCtx.win(),
+        ),
       )
       .when(CustomFunctionExpr, (_expr) =>
-        unexpected(`Cannot evaluate CustomFunctionExpr as a component arg`)
+        unexpected(`Cannot evaluate CustomFunctionExpr as a component arg`),
       )
       .result();
   };
@@ -2191,11 +2193,11 @@ function computeTplComponentArgs(
   const isInCurrentComponentStack = computed(
     () => {
       const currentComponentSet = new Set(
-        ctx.viewCtx.componentStackFrames().map((f) => f.tplComponent)
+        ctx.viewCtx.componentStackFrames().map((f) => f.tplComponent),
       );
       return currentComponentSet.has(tpl);
     },
-    { name: "computeTplComponentArgs.isInCurrentComponentStack" }
+    { name: "computeTplComponentArgs.isInCurrentComponentStack" },
   ).get();
 
   const ccMeta = maybeGetCodeComponentMeta(ctx.viewCtx, tpl.component);
@@ -2243,21 +2245,21 @@ function computeTplComponentArgs(
         makeStyleScopeClassName(
           tpl,
           makeCanvasRuleNamers(tpl.component).nonInteractive,
-          param.type.scopeName
-        )
+          param.type.scopeName,
+        ),
       );
     } else if (isKnownDefaultStylesClassNamePropType(param.type)) {
       addToEnv(
         param,
         getComponentRootTagResetClassNames(
           ctx,
-          param.type.includeTagStyles
-        ).join(" ")
+          param.type.includeTagStyles,
+        ).join(" "),
       );
     } else if (isKnownDefaultStylesPropType(param.type)) {
       addToEnv(
         param,
-        makeDefaultStyleValuesDict(ctx.site, Array.from(ctx.activeVariants))
+        makeDefaultStyleValuesDict(ctx.site, Array.from(ctx.activeVariants)),
       );
     } else if (
       rootDefaults &&
@@ -2273,15 +2275,15 @@ function computeTplComponentArgs(
 
 function getComponentRootTagResetClassNames(
   ctx: RenderingCtx,
-  includeTagStyles: boolean
+  includeTagStyles: boolean,
 ) {
   const component = ensure(
     ctx.ownerComponent,
-    "isComponentRoot means it must have an owning component"
+    "isComponentRoot means it must have an owning component",
   );
   const rootResetClass = makeRootResetClassName(
     `${getOwnerSite(component).uid}`,
-    { targetEnv: "canvas", stylesOpts: { scheme: "css" } }
+    { targetEnv: "canvas", stylesOpts: { scheme: "css" } },
   );
   return withoutNils([
     "plasmic-tokens",
@@ -2290,7 +2292,7 @@ function getComponentRootTagResetClassNames(
     ...Array.from(ctx.activeVariants)
       // Get class names for non-screen variants only, as screen variants are handled via media query
       .filter(
-        (v) => isGlobalVariant(v) && !isScreenVariant(v) && !isBaseVariant(v)
+        (v) => isGlobalVariant(v) && !isScreenVariant(v) && !isBaseVariant(v),
       )
       // Include each global variant class name separately (instead of as a combo),
       // because the Studio UI and codegen only support varianted tokens with 1 variant.
@@ -2299,14 +2301,14 @@ function getComponentRootTagResetClassNames(
           makeCssClassNameForVariantCombo([v], {
             targetEnv: "canvas",
             prefix: "__wab_",
-          }) ?? undefined
+          }) ?? undefined,
       ),
   ]);
 }
 
 function canvasParamToVarName(
   component: Component,
-  param: DeepReadonly<Param>
+  param: DeepReadonly<Param>,
 ) {
   return paramToVarName(component, param, { useControlledProp: true });
 }
@@ -2314,12 +2316,12 @@ function canvasParamToVarName(
 function mergeEventHandlers(
   userAttrs: Record<string, any>,
   builtinEventHandlers: Record<string, any[]>,
-  onChangeAttrs: Set<JsIdentifier> = new Set()
+  onChangeAttrs: Set<JsIdentifier> = new Set(),
 ) {
   const chained = (
     attr: string,
     attrBuiltinEventHandlers: any[],
-    userAttr: any[]
+    userAttr: any[],
   ) => {
     return async (...args: any[]) => {
       for (const handler of attrBuiltinEventHandlers) {
@@ -2345,7 +2347,7 @@ function mergeEventHandlers(
     userAttrs[key] = chained(
       toJsIdentifier(key),
       withoutNils(builtinEventHandlers[key]),
-      withoutNils([userAttrs[key]])
+      withoutNils([userAttrs[key]]),
     );
   });
 }
@@ -2353,19 +2355,19 @@ function mergeEventHandlers(
 function renderTplTag(
   node: TplTag,
   ctx: RenderingCtx,
-  activeVSettingsWithoutDisabled: VariantSetting[]
+  activeVSettingsWithoutDisabled: VariantSetting[],
 ): React.ReactElement | null {
   const effectiveVsWithoutDisabled = new EffectiveVariantSetting(
     node,
     activeVSettingsWithoutDisabled,
-    ctx.site
+    ctx.site,
   );
   const { activeVSettings, evaledAttrs, effectiveVs, isComponentRoot } =
     computeActiveVariantsForMaybeDisabledTag(
       node,
       ctx,
       activeVSettingsWithoutDisabled,
-      effectiveVsWithoutDisabled
+      effectiveVsWithoutDisabled,
     );
 
   const { rendered, style } = determineAutoOpenState(ctx, node, effectiveVs);
@@ -2375,7 +2377,7 @@ function renderTplTag(
   }
 
   const variantRuleSetClasses = activeVSettings.map((vs) =>
-    classNameForRuleSet(vs.rs)
+    classNameForRuleSet(vs.rs),
   );
   // classNames for variant settings where all variants either evaluate to true,
   // or is a private pseudo selector.  That's because we should always include
@@ -2383,7 +2385,7 @@ function renderTplTag(
   const pseudoVariantClasses = getActivePseudoElementVariantClasses(
     isComponentRoot,
     node,
-    ctx
+    ctx,
   );
   const isPlaceholder =
     (node.tag === "img" && !evaledAttrs["src"]) ||
@@ -2420,7 +2422,7 @@ function renderTplTag(
         (node.tag === "img" ? "__wab_img_instance" : "__wab_svg"),
     ]
       .filter(Boolean)
-      .join(" ")
+      .join(" "),
   );
   const attrs = {
     ...evaledAttrs,
@@ -2441,12 +2443,14 @@ function renderTplTag(
               slate: ctx.slate,
               effectiveVs,
               ctx,
-            }
+            },
           ),
         }
       : !isTplImage(node) && !isTplTextBlock(node)
-      ? { children: deriveTplTagChildren(node, ctx, effectiveVs, evaledAttrs) }
-      : {}),
+        ? {
+            children: deriveTplTagChildren(node, ctx, effectiveVs, evaledAttrs),
+          }
+        : {}),
     ...(ctx.slate
       ? { ...ctx.slate.attributes, "data-nonselectable": true }
       : {}),
@@ -2465,7 +2469,7 @@ function renderTplTag(
     attrs["loader"] = "plasmic";
   }
   const state = ctx.ownerComponent?.states.find(
-    (istate) => istate.tplNode === node
+    (istate) => istate.tplNode === node,
   );
   if (state) {
     assert(state.tplNode?.name, "a stateful tag should have a named tplNode");
@@ -2473,7 +2477,7 @@ function renderTplTag(
       .filter(isTplRepeated)
       .map(
         (parentNode) =>
-          ctx.env[getRepetitionIndexName(parentNode.vsettings[0].dataRep!)]
+          ctx.env[getRepetitionIndexName(parentNode.vsettings[0].dataRep!)],
       )
       .reverse();
 
@@ -2482,14 +2486,14 @@ function renderTplTag(
     const statePath = [tplVarName, ...dataReps, stateVarName];
     attrs["value"] = ctx.sub.reactWeb.generateStateValueProp(
       ctx.env.$state,
-      statePath
+      statePath,
     );
     const builtinEventHandlers: Record<string, any> = {
       onChange: [
         (e: React.ChangeEvent<HTMLInputElement>) =>
           ctx.sub.reactWeb.generateStateOnChangeProp(
             ctx.env.$state,
-            statePath
+            statePath,
           )(e.target.value),
       ],
     };
@@ -2539,7 +2543,7 @@ function computeActiveVariantsForMaybeDisabledTag(
   node: TplTag,
   ctx: RenderingCtx,
   activeVSettings: VariantSetting[],
-  effectiveVs: EffectiveVariantSetting
+  effectiveVs: EffectiveVariantSetting,
 ) {
   const evaledAttrs = Object.fromEntries(
     Object.entries(effectiveVs.attrs).map(([attr, expr]) =>
@@ -2550,10 +2554,10 @@ function computeActiveVariantsForMaybeDisabledTag(
           : evalCodeWithEnv(
               evalTagAttrExprToString(node, attr, expr, ctx),
               mkEventHandlerEnvFromRenderingCtx(ctx),
-              ctx.viewCtx.canvasCtx.win()
-            )
-      )
-    )
+              ctx.viewCtx.canvasCtx.win(),
+            ),
+      ),
+    ),
   );
 
   if (node.tag === "input") {
@@ -2563,7 +2567,7 @@ function computeActiveVariantsForMaybeDisabledTag(
   const disabled = evaledAttrs["disabled"] === true;
   const component = ensure(
     ctx.ownerComponent,
-    () => `TplTag should have have owner component`
+    () => `TplTag should have have owner component`,
   );
   const isComponentRoot = component.tplTree === node;
 
@@ -2582,12 +2586,12 @@ function computeActiveVariantsForMaybeDisabledTag(
         return false;
       }
       const disabledVariants = vs.variants.filter((v) =>
-        isDisabledPseudoSelectorVariantForTpl(v, isComponentRoot)
+        isDisabledPseudoSelectorVariantForTpl(v, isComponentRoot),
       );
       if (
         disabledVariants.length > 0 &&
         without(vs.variants, ...disabledVariants).every(
-          (v) => isBaseVariant(v) || ctx.activeVariants.has(v)
+          (v) => isBaseVariant(v) || ctx.activeVariants.has(v),
         )
       ) {
         return true;
@@ -2600,12 +2604,12 @@ function computeActiveVariantsForMaybeDisabledTag(
       // from private variants.
       activeVSettings = sortedVariantSettings(
         [...activeVSettings, ...activeDisabledVSettings],
-        makeVariantComboSorter(ctx.site, component)
+        makeVariantComboSorter(ctx.site, component),
       );
       effectiveVs = new EffectiveVariantSetting(
         node,
         activeVSettings,
-        ctx.site
+        ctx.site,
       );
     }
     if (isComponentRoot) {
@@ -2617,7 +2621,7 @@ function computeActiveVariantsForMaybeDisabledTag(
         (v) =>
           (isDisabledPseudoSelectorVariantForTpl(v, true) &&
             isBaseVariant(v)) ||
-          ctx.activeVariants.has(v)
+          ctx.activeVariants.has(v),
       );
       if (activeDisabledCompVariants.length > 0) {
         ctx.activeVariants = new Set([
@@ -2644,7 +2648,7 @@ function evalTagAttrExprToString(
   tpl: TplTag,
   attr: string,
   expr: Expr,
-  ctx: RenderingCtx
+  ctx: RenderingCtx,
 ): string {
   const exprCtx: ExprCtx = {
     component: ctx.ownerComponent ?? null,
@@ -2668,7 +2672,7 @@ function evalTagAttrExprToString(
         return JSON.stringify(parseDataUrlToSvgXml(dataUri));
       }
       return JSON.stringify(
-        maybeMakePlasmicImgSrc(imageAssetRef.asset, exprCtx)
+        maybeMakePlasmicImgSrc(imageAssetRef.asset, exprCtx),
       );
     })
     .when(PageHref, (pageHref: PageHref) => {
@@ -2703,7 +2707,7 @@ function evalTagAttrExprToString(
       ],
       (_) => {
         assert(false, "Unexpected expr type");
-      }
+      },
     )
     .result();
 }
@@ -2711,7 +2715,7 @@ function evalTagAttrExprToString(
 function getActivePseudoElementVariantClasses(
   isComponentRoot: boolean,
   tpl: TplNode,
-  ctx: RenderingCtx
+  ctx: RenderingCtx,
 ) {
   const settings = tpl.vsettings.filter((vs) => {
     if (
@@ -2721,7 +2725,7 @@ function getActivePseudoElementVariantClasses(
         (v) =>
           isBaseVariant(v) ||
           ctx.activeVariants.has(v) ||
-          isPseudoElementVariantForTpl(v, isComponentRoot)
+          isPseudoElementVariantForTpl(v, isComponentRoot),
       );
     }
     return false;
@@ -2732,7 +2736,7 @@ function getActivePseudoElementVariantClasses(
 function adjustFinalAttrs(
   finalAttrs: any,
   tpl: TplTag,
-  activeVariantSettings: VariantSetting[]
+  activeVariantSettings: VariantSetting[],
 ) {
   if (tpl.tag === "input" || tpl.tag === "textarea") {
     // When rendering input, we always set "value", so that we are always
@@ -2748,8 +2752,8 @@ function adjustFinalAttrs(
     if (
       activeVariantSettings.some((vs) =>
         vs.variants.some((v) =>
-          variantHasPrivatePseudoElementSelector(v, "::placeholder")
-        )
+          variantHasPrivatePseudoElementSelector(v, "::placeholder"),
+        ),
       )
     ) {
       // If we are explicitly targeting the
@@ -2769,7 +2773,7 @@ function adjustFinalAttrs(
 
 function evalDataCondExpr(
   ctx: RenderingCtx,
-  effectiveVs: EffectiveVariantSetting
+  effectiveVs: EffectiveVariantSetting,
 ) {
   const dataCondExpr = effectiveVs.dataCond;
   if (dataCondExpr == null) {
@@ -2787,7 +2791,7 @@ function evalDataCondExpr(
     return !!evalCodeWithEnv(
       getCodeExpressionWithFallback(dataCondExpr, exprCtx),
       ctx.env,
-      ctx.viewCtx.canvasCtx.win()
+      ctx.viewCtx.canvasCtx.win(),
     );
   } catch {
     return false;
@@ -2797,7 +2801,7 @@ function evalDataCondExpr(
 function determineAutoOpenState(
   ctx: RenderingCtx,
   node: TplNode,
-  effectiveVs: EffectiveVariantSetting
+  effectiveVs: EffectiveVariantSetting,
 ) {
   function getVisibilityWithAutoOpen() {
     const visibility = getEffectiveVsVisibility(effectiveVs);
@@ -2842,7 +2846,7 @@ function determineAutoOpenState(
           style: autoOpenInfo.isSelected
             ? {
                 display: normalizeDisplayValue(
-                  effectiveVs.rsh().get("display")
+                  effectiveVs.rsh().get("display"),
                 ),
               }
             : undefined,
@@ -2869,19 +2873,19 @@ function deriveTplTagChildren(
   node: TplTag,
   ctx: RenderingCtx,
   effectiveVs: EffectiveVariantSetting,
-  evaledAttrs: Record<string, any>
+  evaledAttrs: Record<string, any>,
 ): React.ReactNode {
   const r = ctx.sub.React.createElement;
   if (node.tag === "select") {
     return [...node.children].map((child) => {
       assert(
         isTplTag(child),
-        "Select is expected to have only TplTag children"
+        "Select is expected to have only TplTag children",
       );
       const childEffectiveVs = new EffectiveVariantSetting(
         child,
         getSortedActiveVariantSettings(child, ctx),
-        ctx.site
+        ctx.site,
       );
       return r(
         "option",
@@ -2891,15 +2895,15 @@ function deriveTplTagChildren(
               node,
               "value",
               childEffectiveVs.attrs.value,
-              ctx
+              ctx,
             ),
             ctx.env,
-            ctx.viewCtx.canvasCtx.win()
+            ctx.viewCtx.canvasCtx.win(),
           ),
         },
         ...(isRawText(childEffectiveVs.text)
           ? [childEffectiveVs.text.text]
-          : [])
+          : []),
       );
     });
   } else if (evaledAttrs.children) {
@@ -2909,7 +2913,7 @@ function deriveTplTagChildren(
       renderTplNode(child, {
         ...ctx,
         valKey: ctx.valKey + "." + child.uuid,
-      })
+      }),
     );
     if (children.length === 1) {
       return children[0];
@@ -2919,7 +2923,7 @@ function deriveTplTagChildren(
     const suppressPlaceholder = supressContainerPlaceholder(
       node,
       ctx,
-      effectiveVs
+      effectiveVs,
     );
     if (!suppressPlaceholder) {
       return r(mkEmptyContainerPlaceholder(ctx.sub), {
@@ -2947,7 +2951,7 @@ function deriveTplTagChildren(
 function supressContainerPlaceholder(
   node: TplTag,
   ctx: RenderingCtx,
-  effectiveVs: EffectiveVariantSetting
+  effectiveVs: EffectiveVariantSetting,
 ) {
   if (!ctx.viewCtx.studioCtx.showContainerPlaceholder()) {
     return true;
@@ -3031,20 +3035,20 @@ const mkEmptyContainerPlaceholder = computedFn(
                 r(
                   "div",
                   { className: "__wab_placeholder_border" },
-                  r("div", { className: "__wab_placeholder_border_inner" })
-                )
+                  r("div", { className: "__wab_placeholder_border_inner" }),
+                ),
               );
             },
             {
               hasLoadingBoundary: ctx.env.$ctx[hasLoadingBoundaryKey],
-            }
+            },
           ),
-        `mkEmptyContainerPlaceholder(${node.uuid})`
+        `mkEmptyContainerPlaceholder(${node.uuid})`,
       );
     },
   {
     keepAlive: true,
-  }
+  },
 );
 
 interface CanvasIconProps extends React.ComponentProps<"svg"> {
@@ -3072,7 +3076,7 @@ const mkCanvasIcon = computedFn(
     },
   {
     keepAlive: true,
-  }
+  },
 );
 
 const mkRepeatedElement = computedFn(
@@ -3080,7 +3084,7 @@ const mkRepeatedElement = computedFn(
   {
     keepAlive: true,
     name: "mkRepeatedElement",
-  }
+  },
 );
 
 interface RichTextProps {
@@ -3095,7 +3099,7 @@ const mkRichText = computedFn(
   (react: typeof React) =>
     react.forwardRef(function RichText(
       { ctx, node, attrs, tag, effectiveVs, ...rest }: RichTextProps,
-      ref
+      ref,
     ) {
       return mkUseCanvasObserver(ctx.sub, ctx.viewCtx)(
         () =>
@@ -3138,7 +3142,7 @@ const mkRichText = computedFn(
                     textCtx.draftText = new RawTextLike(text, markers);
                   }
                 },
-                [ctx.viewCtx]
+                [ctx.viewCtx],
               );
 
               const subOnUpdateContext = react.useCallback(
@@ -3148,7 +3152,7 @@ const mkRichText = computedFn(
                     Object.assign(textCtx, partialCtx);
                   }
                 },
-                [ctx.viewCtx]
+                [ctx.viewCtx],
               );
 
               return ctx.sub.React.createElement(
@@ -3210,19 +3214,19 @@ const mkRichText = computedFn(
                             key: "readonly",
                           })),
                   }),
-                }
+                },
               );
             },
             {
               hasLoadingBoundary: ctx.env.$ctx[hasLoadingBoundaryKey],
-            }
+            },
           ),
-        `mkRichText(${node.uuid})`
+        `mkRichText(${node.uuid})`,
       );
     }),
   {
     keepAlive: true,
-  }
+  },
 );
 
 function isEditable(node: TplNode, ctx: RenderingCtx) {
@@ -3240,12 +3244,12 @@ function isEditable(node: TplNode, ctx: RenderingCtx) {
 function renderTplSlot(
   node: TplSlot,
   ctx: RenderingCtx,
-  activeVSettings: VariantSetting[]
+  activeVSettings: VariantSetting[],
 ): React.ReactElement | null {
   const { rendered } = determineAutoOpenState(
     ctx,
     node,
-    new EffectiveVariantSetting(node, activeVSettings, ctx.site)
+    new EffectiveVariantSetting(node, activeVSettings, ctx.site),
   );
 
   if (!rendered) {
@@ -3275,7 +3279,7 @@ function renderTplSlot(
             $state: {},
           },
           valKey: ctx.valKey + "." + child.uuid,
-        })
+        }),
       );
     } else {
       contents = undefined;
@@ -3298,7 +3302,7 @@ function renderTplSlot(
   ) {
     const ownerKey = ensure(
       ctx.ownerKey,
-      () => `ownerKey should exist for slot placeholders`
+      () => `ownerKey should exist for slot placeholders`,
     );
     contents = [
       ctx.sub.React.createElement(mkCanvasSlotPlaceholder(ctx.sub), {
@@ -3307,12 +3311,12 @@ function renderTplSlot(
         param: node.param,
         component: ensure(
           ctx.ownerComponent,
-          "Must be rendering slot belonging to some component"
+          "Must be rendering slot belonging to some component",
         ),
         isPropOrSlot: isKeyInEditableStack(ctx, ctx.valKey) ? "slot" : "prop",
         slotSelectionKey: slotSelectionKeyFromRenderingCtx(
           ownerKey,
-          node.param
+          node.param,
         ),
       }),
     ];
@@ -3337,13 +3341,13 @@ function renderTplSlot(
         className: slotClass,
         ...internalAttrs,
       },
-      ...(contents ?? [])
+      ...(contents ?? []),
     );
   } else {
     return ctx.sub.React.createElement(
       ctx.sub.React.Fragment,
       { key: `${slotFragmentKey}${JSON.stringify(internalAttrs)}` },
-      ...(contents ?? [])
+      ...(contents ?? []),
     );
   }
 }
@@ -3373,7 +3377,7 @@ function isKeyInEditableStack(ctx: RenderingCtx, valKey: string) {
     () => {
       return ctx.viewCtx.valComponentStack().some((v) => v.key === valKey);
     },
-    { name: "isKeyInEditableStack" }
+    { name: "isKeyInEditableStack" },
   ).get();
 }
 
@@ -3428,7 +3432,7 @@ const mkCanvasSlotPlaceholder = computedFn(
                   { className: "__wab_placeholder__tag" },
                   `${getComponentDisplayName(component)} ${
                     isPropOrSlot === "prop" ? "Slot" : "Slot Target"
-                  }: ${param.variable.name}`
+                  }: ${param.variable.name}`,
                 ),
                 r(
                   "div",
@@ -3437,20 +3441,20 @@ const mkCanvasSlotPlaceholder = computedFn(
                   },
                   r("div", {
                     className: cx({ __wab_placeholder_border_inner: true }),
-                  })
-                )
+                  }),
+                ),
               );
             },
             {
               hasLoadingBoundary: ctx.env.$ctx[hasLoadingBoundaryKey],
-            }
+            },
           ),
-        `mkCanvasSlotPlaceholder(${component.name}.${param.variable.name})`
+        `mkCanvasSlotPlaceholder(${component.name}.${param.variable.name})`,
       );
     },
   {
     keepAlive: true,
-  }
+  },
 );
 
 // Should keep in sync with `makeSlotSelectionKey` and parse it in globalHook.ts
@@ -3460,17 +3464,17 @@ function slotSelectionKeyFromRenderingCtx(tplCompKey: string, param: Param) {
 
 export function getCodeComponentStub(
   component: Component,
-  react: typeof React
+  react: typeof React,
 ) {
   assert(isCodeComponent(component), "Expected Code component");
   const slotNames = getSlotParams(component).map(
-    (param) => param.variable.name
+    (param) => param.variable.name,
   );
   return (props: object) => {
     return react.createElement(
       "div",
       omit(props, slotNames),
-      ...withoutNils(slotNames.map((name) => props[name]))
+      ...withoutNils(slotNames.map((name) => props[name])),
     );
   };
 }
@@ -3479,11 +3483,11 @@ function createPlasmicElementProxy(
   node: TplNode,
   ctx: RenderingCtx,
   impl: React.ElementType<any> | string,
-  attrs: object
+  attrs: object,
 ) {
   const nodeName = ctx.nodeNamer?.(node);
   const triggeredHooks = ctx.reactHookSpecs.filter(
-    (spec) => spec.triggerNode === node
+    (spec) => spec.triggerNode === node,
   );
   return ctx.sub.reactWeb.createPlasmicElementProxy(impl as React.ElementType, {
     ...attrs,
@@ -3511,7 +3515,7 @@ function createPlasmicElementProxy(
           "data-plasmic-trigger-props": triggeredHooks.flatMap((spec) =>
             spec
               .getTriggerPropNames()
-              .map((propName) => ctx.triggerProps[propName])
+              .map((propName) => ctx.triggerProps[propName]),
           ),
         }
       : {}),
@@ -3564,7 +3568,7 @@ export const mkCanvas = computedFn(
                 "--viewport-height": `${height}px`,
               },
             },
-            children
+            children,
           );
 
           if (sub.dataSourcesContext?.PlasmicDataSourceContextProvider) {
@@ -3577,29 +3581,29 @@ export const mkCanvas = computedFn(
                     roleId: appUserCtx.appUser.roleId,
                     roleName: appUserCtx.appUser.roleName,
                     roleIds: appUserCtx.appUser.roleIds?.map(
-                      (roleId) => roleId
+                      (roleId) => roleId,
                     ),
                     roleNames: appUserCtx.appUser.roleNames?.map(
-                      (roleName) => roleName
+                      (roleName) => roleName,
                     ),
                     isLoggedIn: appUserCtx.appUser.isLoggedIn,
                   } as any,
                   userAuthToken: appUserCtx.fakeAuthToken,
                 },
               },
-              wrapped
+              wrapped,
             );
           }
 
           return wrapped;
         },
         "mkCanvas",
-        forceUpdate
+        forceUpdate,
       );
     },
   {
     keepAlive: true,
-  }
+  },
 );
 
 function computeFullKey(ctx: RenderingCtx) {
@@ -3642,7 +3646,7 @@ const mkCanvasWrapper = computedFn(function mkCanvasWrapper(sub: SubDeps) {
 function wrapInDataCtxReader(
   ctx: RenderingCtx,
   contents: ($ctx: DataDict | undefined) => React.ReactNode,
-  label: string
+  label: string,
 ) {
   return ctx.sub.React.createElement(
     ctx.sub.DataCtxReader as React.FunctionComponent<{
@@ -3652,10 +3656,10 @@ function wrapInDataCtxReader(
       children: ($newCtx) => {
         return mkUseCanvasObserver(ctx.sub, ctx.viewCtx)(
           () => contents($newCtx),
-          label
+          label,
         );
       },
-    }
+    },
   );
 }
 
@@ -3666,7 +3670,7 @@ type DataOrServerQueries = Record<
 
 function updateCtxQueries(
   oldQueries: DataOrServerQueries,
-  newQueries: DataOrServerQueries
+  newQueries: DataOrServerQueries,
 ) {
   let shouldUpdate = false;
   Object.keys(newQueries).forEach((k) => {
@@ -3695,7 +3699,7 @@ function updateCtxQueries(
 function useReactiveDollarQ(
   sub: SubDeps,
   new$Q: Record<string, PlasmicQueryResult | undefined>,
-  setDollarQ: (q: Record<string, PlasmicQueryResult | undefined>) => void
+  setDollarQ: (q: Record<string, PlasmicQueryResult | undefined>) => void,
 ) {
   sub.React.useEffect(() => {
     let cleanup = false;
@@ -3751,7 +3755,7 @@ function countExecutableServerQueries(ctx: RenderingCtx, component: Component) {
     .filter(isServerQueryWithOperation)
     .filter(
       (query) =>
-        isKnownCustomCode(query.op) || !!getServerQueryFuncReg(ctx, query.op)
+        isKnownCustomCode(query.op) || !!getServerQueryFuncReg(ctx, query.op),
     ).length;
 }
 
@@ -3779,7 +3783,7 @@ function getQueryFetcherHookCounts(ctx: RenderingCtx, component: Component) {
 function useComponentLevelQueries(
   sub: SubDeps,
   ctx: RenderingCtx,
-  component: Component
+  component: Component,
 ) {
   // Rebuild the tree when any query's id, name, or op changes (e.g. on rename)
   // otherwise `usePlasmicQueries` returns results keyed by stale names.
@@ -3825,9 +3829,9 @@ function useComponentLevelQueries(
                     // Match QueryResultPreview/modal custom-code id.
                     makeCustomCodeQueryKey(query.uuid),
                     query.op.code,
-                    () => ctx.env
+                    () => ctx.env,
                   ),
-                  wrapFetch
+                  wrapFetch,
                 ),
               ] as const;
             }
@@ -3844,7 +3848,7 @@ function useComponentLevelQueries(
                   wrapFetch(
                     funcId,
                     funcReg.function as any,
-                    ...fnArgs
+                    ...fnArgs,
                   )) as typeof funcReg.function,
                 args: ({
                   $q,
@@ -3865,13 +3869,13 @@ function useComponentLevelQueries(
                       projectFlags: ctx.projectFlags,
                       inStudio: true,
                     },
-                    ctx.viewCtx.canvasCtx.win()
+                    ctx.viewCtx.canvasCtx.win(),
                   );
                 },
               },
             ] as const;
           })
-          .filter(notNil)
+          .filter(notNil),
       ),
       stateSpecs: ctx.stateSpecs,
       propsContext: {},
@@ -3881,7 +3885,7 @@ function useComponentLevelQueries(
       component,
       ctx.viewCtx.canvasCtx,
       serverQueriesByKey.map((q) => q.key).join("|"),
-    ]
+    ],
   );
   const new$Q =
     sub.dataSources?.usePlasmicQueries?.(serverQueryTree, {
@@ -3897,7 +3901,7 @@ function useComponentLevelQueries(
 
   const getDataOp = (
     query: ComponentDataQuery,
-    $queries: DataOrServerQueries
+    $queries: DataOrServerQueries,
   ) =>
     query.op
       ? () => {
@@ -3908,7 +3912,7 @@ function useComponentLevelQueries(
               inStudio: true,
             }).code,
             { ...ctx.env, $queries },
-            ctx.viewCtx.canvasCtx.win()
+            ctx.viewCtx.canvasCtx.win(),
           );
         }
       : undefined;
@@ -3919,7 +3923,7 @@ function useComponentLevelQueries(
   const soFar$Queries: DataOrServerQueries = { ...ctx.env.$queries };
   for (const query of component.dataQueries.filter((q) => !!q.op)) {
     const result = sub.dataSources?.usePlasmicDataOp(
-      getDataOp(query, soFar$Queries)
+      getDataOp(query, soFar$Queries),
     );
     new$Queries[toVarName(query.name)] = result;
     soFar$Queries[toVarName(query.name)] = result;
@@ -3962,11 +3966,11 @@ function useComponentLevelQueries(
  */
 const mkComponentLevelQueryFetcher = computedFn(
   (
-      sub: SubDeps,
-      viewCtx: ViewCtx,
-      _dataQueriesCount: number,
-      _executableServerQueriesCount: number
-    ) =>
+    sub: SubDeps,
+    viewCtx: ViewCtx,
+    _dataQueriesCount: number,
+    _executableServerQueriesCount: number,
+  ) =>
     ({
       ctx,
       component,
@@ -3976,12 +3980,12 @@ const mkComponentLevelQueryFetcher = computedFn(
     }): React.ReactElement | null => {
       return mkUseCanvasObserver(
         sub,
-        viewCtx
+        viewCtx,
       )(() => {
         useComponentLevelQueries(sub, ctx, component);
         return renderTplNode(component.tplTree, ctx);
       });
-    }
+    },
 );
 
 /**
@@ -3992,13 +3996,13 @@ function wrapInComponentDataQueries(ctx: RenderingCtx, component: Component) {
     mkComponentLevelQueryFetcher(
       ctx.sub,
       ctx.viewCtx,
-      ...getQueryFetcherHookCounts(ctx, component)
+      ...getQueryFetcherHookCounts(ctx, component),
     ),
     {
       key: component.uuid,
       ctx,
       component,
-    }
+    },
   );
 }
 

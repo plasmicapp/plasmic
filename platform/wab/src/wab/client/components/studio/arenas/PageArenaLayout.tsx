@@ -79,7 +79,7 @@ export const PageArenaLayout = observer(function PageArenaLayout(props: {
                     spawn(
                       studioCtx.changeUnsafe(() => {
                         studioCtx.siteOps().addScreenSizeToPageArenas(size);
-                      })
+                      }),
                     );
                   },
                 })

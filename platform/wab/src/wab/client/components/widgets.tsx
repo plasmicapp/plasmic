@@ -74,7 +74,7 @@ export function PlainLinkButton(props: PlainLinkButtonProps) {
             "non-link-btn": true,
             "non-link-btn--disabled": disabled,
           },
-          className
+          className,
         )}
         onClick={disabled ? undefined : onClick}
         tabIndex={disabled ? -1 : 0}
@@ -88,7 +88,7 @@ export function PlainLink(
   props: React.ComponentProps<"a"> & {
     disabled?: boolean;
     activeClassName?: string;
-  }
+  },
 ) {
   const { href, className, activeClassName, disabled, ...forwardedProps } =
     props;
@@ -101,7 +101,7 @@ export function PlainLink(
           "plain-link--disabled": disabled,
         },
         className,
-        href && isCurrentlyWithinPath(href) ? activeClassName : undefined
+        href && isCurrentlyWithinPath(href) ? activeClassName : undefined,
       )}
       tabIndex={disabled ? -1 : 0}
       href={href}
@@ -180,7 +180,7 @@ export class Loadable<T> extends React.Component<
   render() {
     if (this.state.loaded) {
       return this.props.contents(
-        ensure(this.state.data, "Data state not defined in Loadable component")
+        ensure(this.state.data, "Data state not defined in Loadable component"),
       );
     } else {
       return this.props.loadingContents();
@@ -264,7 +264,9 @@ class _Tabs extends React.Component<_TabsProps, {}> {
                           this.props.tabs.length > 1 && tab.pullRight,
                       },
                       this.props.tabClassName,
-                      tabKey === key ? this.props.activeTabClassName : undefined
+                      tabKey === key
+                        ? this.props.activeTabClassName
+                        : undefined,
                     )}
                     id={`nav-tab-${key}`}
                     onClick={() => {
@@ -284,7 +286,7 @@ class _Tabs extends React.Component<_TabsProps, {}> {
               })}
             </div>
             {this.props.tabBarExtraContent}
-          </div>
+          </div>,
         )}
 
         <div
@@ -354,7 +356,7 @@ export function DragItem({
               >
                 {dragHandle()}
               </div>,
-              document.body
+              document.body,
             )}
           {children}
         </div>
@@ -768,8 +770,8 @@ export function PopupFocuser(props: {
           targetRef.current?.focus();
         }
       },
-      [targetRef]
-    )
+      [targetRef],
+    ),
   );
   return null;
 }
@@ -792,7 +794,7 @@ export const IFrameAwareDropdownMenu = (props: {
         onVisibleChange(visible);
       }
     },
-    [setMenuVisibleState, onVisibleChange]
+    [setMenuVisibleState, onVisibleChange],
   );
 
   const onIFrameClick = React.useCallback(() => {
@@ -866,13 +868,16 @@ export function ClickStopper({
 }
 
 export function SearchBox(
-  props: Omit<React.ComponentProps<typeof Textbox>, "prefixIcon" | "suffixIcon">
+  props: Omit<
+    React.ComponentProps<typeof Textbox>,
+    "prefixIcon" | "suffixIcon"
+  >,
 ) {
   const ref = React.useRef<TextboxRef>(null);
 
   const getInput = React.useCallback(
     () => maybe(ref.current, (x) => x.input()),
-    [ref]
+    [ref],
   );
   useFocusOnDisplayed(getInput, { autoFocus: props.autoFocus });
 
@@ -885,7 +890,7 @@ export function SearchBox(
         const input = ref.current.input();
         const fakeEvent = createFakeEvent<React.ChangeEvent<HTMLInputElement>>(
           e,
-          input
+          input,
         );
         const originalInputValue = input.value;
         input.value = "";
@@ -922,7 +927,7 @@ export function SearchBox(
  * and sets scroll properly for the table body
  */
 export function VerticalFillTable(
-  props: React.ComponentProps<typeof Table> & { wrapperClassName?: string }
+  props: React.ComponentProps<typeof Table> & { wrapperClassName?: string },
 ) {
   const { wrapperClassName, ...rest } = props;
   return (

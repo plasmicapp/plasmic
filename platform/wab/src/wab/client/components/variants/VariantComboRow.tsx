@@ -12,15 +12,15 @@ import {
 import Chip from "@/wab/client/components/widgets/Chip";
 import { PlasmicVariantComboRow } from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicVariantComboRow";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { maybe } from "@/wab/shared/common";
-import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import {
+  VariantCombo,
   isVariantSettingEmpty,
   makeVariantName,
   tryGetVariantSetting,
-  VariantCombo,
 } from "@/wab/shared/Variants";
+import { maybe } from "@/wab/shared/common";
 import { isTplVariantable, summarizeTpl } from "@/wab/shared/core/tpls";
+import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import { Menu } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -33,7 +33,7 @@ interface VariantComboRowProps {
 }
 
 const VariantComboRow = observer(function VariantComboRow(
-  props: VariantComboRowProps
+  props: VariantComboRowProps,
 ) {
   const { viewCtx, combo, onClick, onActivate } = props;
   const tpl = viewCtx.focusedTpl() ?? undefined;
@@ -41,7 +41,7 @@ const VariantComboRow = observer(function VariantComboRow(
     tpl &&
     isTplVariantable(tpl) &&
     maybe(tryGetVariantSetting(tpl, combo), (vs) =>
-      isVariantSettingEmpty(vs) ? undefined : vs
+      isVariantSettingEmpty(vs) ? undefined : vs,
     );
 
   const contextMenuProps = useContextMenu({
@@ -55,7 +55,7 @@ const VariantComboRow = observer(function VariantComboRow(
                 const frame = viewCtx.studioCtx.focusedFrame();
                 if (frame) {
                   return viewCtx.change(() =>
-                    viewCtx.getViewOps().clearFrameComboSettings(frame)
+                    viewCtx.getViewOps().clearFrameComboSettings(frame),
                   );
                 }
                 onActivate();
@@ -64,7 +64,7 @@ const VariantComboRow = observer(function VariantComboRow(
             key={`clear-combo-settings`}
           >
             <MenuItemContent>Clear settings for this combo</MenuItemContent>
-          </Menu.Item>
+          </Menu.Item>,
         );
       });
       return builder.build({
@@ -111,9 +111,9 @@ const VariantComboRow = observer(function VariantComboRow(
                     isTplVariantable(tpl)
                       ? getEffectiveVariantSetting(
                           tpl,
-                          indicatedVs?.variants
+                          indicatedVs?.variants,
                         ).rsh()
-                      : undefined
+                      : undefined,
                   )}`}
                 </VariantSettingPopoverTitle>
               ),

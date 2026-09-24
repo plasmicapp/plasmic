@@ -7,7 +7,7 @@ export type BackgroundPositionKeyword =
 
 export function isBackgroundPositionKeyword(value: string) {
   return backgroundPositionKeywords.includes(
-    value as BackgroundPositionKeyword
+    value as BackgroundPositionKeyword,
   );
 }
 
@@ -45,7 +45,7 @@ export type BackgroundAttachmentKeyword =
 
 export function isBackgroundAttachmentKeyword(value: string) {
   return backgroundAttachmentKeywords.includes(
-    value as BackgroundAttachmentKeyword
+    value as BackgroundAttachmentKeyword,
   );
 }
 
@@ -87,6 +87,6 @@ export type RadialGradiantSizeKeyword =
 
 export function isRadialGradiantSizeKeyword(value: string) {
   return radialGradientSizeKeywords.includes(
-    value as RadialGradiantSizeKeyword
+    value as RadialGradiantSizeKeyword,
   );
 }

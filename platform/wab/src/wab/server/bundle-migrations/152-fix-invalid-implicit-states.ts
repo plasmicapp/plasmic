@@ -19,7 +19,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   for (const comp of site.components) {
@@ -46,7 +46,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "151-fix-invalid-implicit-states"
+    "151-fix-invalid-implicit-states",
   );
   Object.assign(bundle, newBundle);
 };

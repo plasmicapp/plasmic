@@ -5,23 +5,23 @@ import {
   hasLayoutBox,
 } from "@/wab/client/dom";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { IRuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { ensure, isHTMLElt, maybe, precisionRound } from "@/wab/shared/common";
 import { parseCssNumericNew } from "@/wab/shared/css";
 import {
+  AtomicSize,
+  Unit,
+  createNumericSize,
+  showSizeCss,
+} from "@/wab/shared/css-size";
+import {
   DimProp,
+  SizeAxis,
   dimPropToSizeAxis,
   isStandardSide,
   oppSide,
   sideToSize,
-  SizeAxis,
 } from "@/wab/shared/geom";
-import {
-  AtomicSize,
-  createNumericSize,
-  showSizeCss,
-  Unit,
-} from "@/wab/shared/css-size";
-import { IRuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { Menu } from "antd";
 import * as React from "react";
 
@@ -30,7 +30,7 @@ export class DimManip {
     private studioCtx: StudioCtx,
     private forDom: JQuery | undefined | null,
     private exp: () => IRuleSetHelpers,
-    private prop: DimProp
+    private prop: DimProp,
   ) {}
 
   /**
@@ -57,7 +57,7 @@ export class DimManip {
         forDom[0],
         unit,
         getOffsetRect(forDom[0])[prop],
-        dimPropToSizeAxis(prop)
+        dimPropToSizeAxis(prop),
       );
     }
     this.setNum(showSizeCss(createNumericSize(newNum, unit)));
@@ -97,7 +97,7 @@ export function offsetPxAsUnits(
   unit: Unit,
   offsetPx: number,
   sizeAxis: SizeAxis,
-  precision: number = 2
+  precision: number = 2,
 ) {
   const effectiveOffsetParent = getEffectiveOffsetParent(domElt);
 
@@ -124,7 +124,7 @@ export function roundDim(
   val: number,
   unit: string,
   precision: number = 2,
-  allowFractionalUnitless: boolean = false
+  allowFractionalUnitless: boolean = false,
 ) {
   if (
     unit === "%" ||

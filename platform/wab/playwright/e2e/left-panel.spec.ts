@@ -14,7 +14,7 @@ test.describe("left-panel", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -32,7 +32,7 @@ test.describe("left-panel", () => {
       .hover();
 
     const indicators = models.studio.frame.locator(
-      '[data-test-class="indicator-clear"]'
+      '[data-test-class="indicator-clear"]',
     );
     const count = await indicators.count();
     for (let i = count - 1; i >= 0; i -= 1) {
@@ -40,7 +40,7 @@ test.describe("left-panel", () => {
     }
 
     await expect(
-      selectedNode.locator('[data-test-class="left-panel-indicator"] > div')
+      selectedNode.locator('[data-test-class="left-panel-indicator"] > div'),
     ).toBeVisible();
   });
 

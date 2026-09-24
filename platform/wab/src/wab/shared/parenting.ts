@@ -116,7 +116,7 @@ export interface ViolatesSlotTypeMsg {
 
 export function canAddChildrenAndWhy(
   tpl: TplNode | SlotSelection,
-  child?: TplNode
+  child?: TplNode,
 ): true | CantAddChildMsg {
   if (tpl instanceof SlotSelection) {
     return canAddChildrenToSlotSelectionAndWhy(tpl, child);
@@ -126,7 +126,7 @@ export function canAddChildrenAndWhy(
     }
     const slotParam = ensure(
       tpl.component.params.find((p) => p.variable.name === "children"),
-      "Should have children slot"
+      "Should have children slot",
     );
     if (!isKnownSlotParam(slotParam)) {
       return { type: "CantAddToTplComponent", tpl };
@@ -236,7 +236,7 @@ export function canAddChildrenAndWhy(
 
 export function canAddChildrenToSelectableAndWhy(
   obj: Selectable,
-  child?: TplNode
+  child?: TplNode,
 ) {
   const tplOrSelection = obj instanceof ValNode ? obj.tpl : obj;
   return canAddChildrenAndWhy(tplOrSelection, child);
@@ -247,7 +247,7 @@ export const canAddChildren = (tpl: TplNode | SlotSelection, child?: TplNode) =>
 
 export function canAddChildrenToSlotSelection(
   ss: SlotSelection,
-  child?: TplNode
+  child?: TplNode,
 ) {
   return canAddChildrenToSlotSelectionAndWhy(ss, child) === true;
 }
@@ -304,7 +304,7 @@ export function getSlotLikeType(slotLike: TplSlot | SlotSelection) {
 
 export function canAddChildrenToSlotSelectionAndWhy(
   ss: SlotSelection,
-  child?: TplNode
+  child?: TplNode,
 ): ViolatesSlotTypeMsg | CantAddToSelfDescendantMsg | true {
   if (child) {
     if ($$$(ss.getTpl()).ancestors().toArrayOfTplNodes().includes(child)) {
@@ -348,7 +348,7 @@ export interface CantAddSiblingToSlotSelection {
 }
 export function canAddSiblingsAndWhy(
   tpl: TplNode | SlotSelection,
-  toInsert?: TplNode | SlotSelection
+  toInsert?: TplNode | SlotSelection,
 ): true | CantAddSiblingMsg {
   if (tpl instanceof SlotSelection || toInsert instanceof SlotSelection) {
     return {
@@ -364,7 +364,7 @@ export function canAddSiblingsAndWhy(
   }
   const parent = ensure(
     getParentOrSlotSelection(tpl),
-    "already checked before"
+    "already checked before",
   );
   const canAddToParent = canAddChildrenAndWhy(parent, toInsert);
   if (canAddToParent !== true) {

@@ -21,7 +21,7 @@ import * as React from "react";
  */
 export function useModelUiActionHandler(
   typeTag: ModelTypeTag,
-  handler: (uuid: string, type: UiActionType) => void
+  handler: (uuid: string, type: UiActionType) => void,
 ) {
   const studioCtx = useStudioCtx();
   const handlerRef = React.useRef(handler);
@@ -49,7 +49,7 @@ export function UiActionsOverlay({ uiId }: { uiId: UiId }) {
 
   React.useEffect(() => {
     const { dispose } = studioCtx.uiActionBus.registerHandler(uiId, (type) =>
-      setAction(type)
+      setAction(type),
     );
     return dispose;
   }, [studioCtx, uiId]);

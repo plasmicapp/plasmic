@@ -1,15 +1,15 @@
 import { recomputeBounds } from "@/wab/client/components/canvas/HoverBox";
 import { frameToScalerRect } from "@/wab/client/coords";
 import { hasLayoutBox } from "@/wab/client/dom";
-import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
 import { adjustSpotLightDueToZoom } from "@/wab/client/studio-ctx/StudioCtx";
+import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { swallowClick } from "@/wab/commons/components/ReactUtil";
+import { getTplSlots } from "@/wab/shared/SlotUtils";
 import * as common from "@/wab/shared/common";
 import { ensure, maybe, swallow } from "@/wab/shared/common";
-import { swallowClick } from "@/wab/commons/components/ReactUtil";
-import { Box } from "@/wab/shared/geom";
-import { getTplSlots } from "@/wab/shared/SlotUtils";
 import { SlotSelection } from "@/wab/shared/core/slots";
+import { Box } from "@/wab/shared/geom";
 import { Switch } from "antd";
 import $ from "jquery";
 import { reaction } from "mobx";
@@ -46,7 +46,7 @@ function Spotlight_(props: { viewCtx: ViewCtx }) {
     // Re-render spotlight mode whenever styles change, as DOM size
     // may change as a result
     const listener = viewCtx.styleChanged.add(() =>
-      setSpotlightDomInfo(getSpotlightDomInfo(viewCtx))
+      setSpotlightDomInfo(getSpotlightDomInfo(viewCtx)),
     );
     return () => {
       listener.detach();
@@ -76,7 +76,7 @@ function Spotlight_(props: { viewCtx: ViewCtx }) {
       },
       {
         fireImmediately: true,
-      }
+      },
     );
     return () => {
       dispose();
@@ -136,17 +136,17 @@ function Spotlight_(props: { viewCtx: ViewCtx }) {
                         slotParam: s.param,
                         val: valComponent,
                       }),
-                      viewCtx.canvasCtx
-                    ) || []
+                      viewCtx.canvasCtx,
+                    ) || [],
                   )
-                  .filter((x) => !!x && x.tagName !== "STYLE")
+                  .filter((x) => !!x && x.tagName !== "STYLE"),
               ) || [];
             if (valDoms.length === 0) {
               return null;
             }
             const valRect = ensure(
               Box.mergeBBs(valDoms.map((d) => d.getBoundingClientRect())),
-              "Should return a Box"
+              "Should return a Box",
             ).rect();
             const valScalerRect = frameToScalerRect(valRect, viewCtx);
             return (
@@ -170,12 +170,12 @@ function Spotlight_(props: { viewCtx: ViewCtx }) {
 
 export function getSpotlightDomInfo(viewCtx: ViewCtx) {
   const valComponent = maybe(viewCtx.currentComponentCtx(), (x: ComponentCtx) =>
-    x.valComponent()
+    x.valComponent(),
   );
   const $focused = valComponent
     ? maybe(
         viewCtx.renderState.sel2dom(valComponent, viewCtx.canvasCtx),
-        (doms) => $(doms)
+        (doms) => $(doms),
       )
     : undefined;
 
@@ -197,10 +197,10 @@ export function getSpotlightDomInfo(viewCtx: ViewCtx) {
 
 export function getSpotlightInfo(viewCtx: ViewCtx) {
   const tplComponent = maybe(viewCtx.currentComponentCtx(), (x: ComponentCtx) =>
-    x.tplComponent()
+    x.tplComponent(),
   );
   const valComponent = maybe(viewCtx.currentComponentCtx(), (x: ComponentCtx) =>
-    x.valComponent()
+    x.valComponent(),
   );
   const shouldRender =
     tplComponent && valComponent && !viewCtx.studioCtx.isLiveMode;

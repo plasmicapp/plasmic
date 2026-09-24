@@ -37,7 +37,7 @@ describe("loader", () => {
         {
           email: "user@example.com",
         },
-        4
+        4,
       );
       user = userAndProjects.user;
       projects = userAndProjects.projects;
@@ -70,7 +70,7 @@ describe("loader", () => {
       const siteBundle = new Bundler().bundle(
         site,
         "",
-        await getLastBundleVersion()
+        await getLastBundleVersion(),
       );
       await db.saveProjectRev({
         projectId: polyfillProjectObj.id,
@@ -111,7 +111,7 @@ describe("loader", () => {
 
     const versionedRes = await publicApi.rawReq(
       "get",
-      "/api/v1/loader/code/versioned?cb=23&platform=nextjs&loaderVersion=7"
+      "/api/v1/loader/code/versioned?cb=23&platform=nextjs&loaderVersion=7",
     );
     expect(versionedRes.status()).toEqual(400);
   });
@@ -123,7 +123,7 @@ describe("loader", () => {
     expect(res.status()).toEqual(200);
     const body = await res.json();
     expect(body.redirectUrl).toEqual(
-      `/api/v1/loader/code/versioned?cb=23&platform=react&loaderVersion=7&projectId=${polyfillProject.id}%400.0.1`
+      `/api/v1/loader/code/versioned?cb=23&platform=react&loaderVersion=7&projectId=${polyfillProject.id}%400.0.1`,
     );
     expect(res.headers()["cache-control"]).toEqual("s-maxage=30");
   });
@@ -134,7 +134,7 @@ describe("loader", () => {
     });
     expect(res.status()).toEqual(302);
     expect(res.headers()["location"]).toEqual(
-      `/api/v1/loader/code/versioned?cb=23&platform=react&loaderVersion=7&projectId=${projects[0].id}%400.0.2`
+      `/api/v1/loader/code/versioned?cb=23&platform=react&loaderVersion=7&projectId=${projects[0].id}%400.0.2`,
     );
     expect(res.headers()["cache-control"]).toEqual("s-maxage=30");
   });
@@ -157,7 +157,7 @@ describe("loader", () => {
     expect(res.status()).toEqual(302);
     // expect in sorted order
     expect(res.headers()["location"]).toEqual(
-      `/api/v1/loader/code/versioned?cb=23&platform=react&loaderVersion=7&projectId=${a.id}%400.0.2&projectId=${b.id}%400.0.2`
+      `/api/v1/loader/code/versioned?cb=23&platform=react&loaderVersion=7&projectId=${a.id}%400.0.2&projectId=${b.id}%400.0.2`,
     );
     expect(res.headers()["cache-control"]).toEqual("s-maxage=30");
   });
@@ -165,40 +165,40 @@ describe("loader", () => {
   it("fails if any project has no prefilled versions", async () => {
     const res = await publicApi.getPublishedLoaderAssets(
       [projects[0], projects[2]],
-      {}
+      {},
     );
     expect(res.status()).toEqual(404);
     expect(res.headers()["cache-control"]).toEqual(
-      "no-store, no-cache, must-revalidate, private"
+      "no-store, no-cache, must-revalidate, private",
     );
   });
 
   it("fails if any project is unpublished", async () => {
     const res = await publicApi.getPublishedLoaderAssets(
       [projects[0], projects[3]],
-      {}
+      {},
     );
     expect(res.status()).toEqual(400);
     expect(res.headers()["cache-control"]).toEqual(
-      "no-store, no-cache, must-revalidate, private"
+      "no-store, no-cache, must-revalidate, private",
     );
   });
 
   it("resolves component as HTML", async () => {
     const redirectRes = await publicApi.getPublishedLoaderHtml(
       projects[0],
-      "Homepage"
+      "Homepage",
     );
     expect(redirectRes.status()).toEqual(302);
     expect(redirectRes.headers()["location"]).toEqual(
-      `/api/v1/loader/html/versioned/${projects[0].id}@0.0.2/Homepage?cb=23&embedHydrate=0&hydrate=0&componentProps=%7B%7D&globalVariants=%5B%5D&prepass=0`
+      `/api/v1/loader/html/versioned/${projects[0].id}@0.0.2/Homepage?cb=23&embedHydrate=0&hydrate=0&componentProps=%7B%7D&globalVariants=%5B%5D&prepass=0`,
     );
     expect(redirectRes.headers()["cache-control"]).toEqual("s-maxage=30");
 
     const htmlRes = await publicApi.getPublishedLoaderHtml(
       projects[0],
       "Homepage",
-      { followRedirect: true }
+      { followRedirect: true },
     );
     expect(htmlRes.status()).toEqual(200);
     expect(await htmlRes.text()).toInclude("Hello, world!");
@@ -207,18 +207,18 @@ describe("loader", () => {
   it("resolves component as HTML with hydration", async () => {
     const redirectRes = await publicApi.getPublishedLoaderHtml(
       projects[0],
-      "Homepage?hydrate=1&embedHydrate=1"
+      "Homepage?hydrate=1&embedHydrate=1",
     );
     expect(redirectRes.status()).toEqual(302);
     expect(redirectRes.headers()["location"]).toEqual(
-      `/api/v1/loader/html/versioned/${projects[0].id}@0.0.2/Homepage?cb=23&embedHydrate=1&hydrate=1&componentProps=%7B%7D&globalVariants=%5B%5D&prepass=0`
+      `/api/v1/loader/html/versioned/${projects[0].id}@0.0.2/Homepage?cb=23&embedHydrate=1&hydrate=1&componentProps=%7B%7D&globalVariants=%5B%5D&prepass=0`,
     );
     expect(redirectRes.headers()["cache-control"]).toEqual("s-maxage=30");
 
     const htmlRes = await publicApi.getPublishedLoaderHtml(
       projects[0],
       "Homepage?hydrate=1&embedHydrate=1",
-      { followRedirect: true }
+      { followRedirect: true },
     );
     expect(htmlRes.status()).toEqual(200);
     expect(await htmlRes.text()).toInclude("Hello, world!");
@@ -227,18 +227,18 @@ describe("loader", () => {
   it("responds 404 if component does not exist", async () => {
     const redirectRes = await publicApi.getPublishedLoaderHtml(
       projects[0],
-      "NonExistentComponent"
+      "NonExistentComponent",
     );
     expect(redirectRes.status()).toEqual(302);
     expect(redirectRes.headers()["location"]).toEqual(
-      `/api/v1/loader/html/versioned/${projects[0].id}@0.0.2/NonExistentComponent?cb=23&embedHydrate=0&hydrate=0&componentProps=%7B%7D&globalVariants=%5B%5D&prepass=0`
+      `/api/v1/loader/html/versioned/${projects[0].id}@0.0.2/NonExistentComponent?cb=23&embedHydrate=0&hydrate=0&componentProps=%7B%7D&globalVariants=%5B%5D&prepass=0`,
     );
     expect(redirectRes.headers()["cache-control"]).toEqual("s-maxage=30");
 
     const htmlRes = await publicApi.getPublishedLoaderHtml(
       projects[0],
       "NonExistentComponent",
-      { followRedirect: true }
+      { followRedirect: true },
     );
     expect(htmlRes.status()).toEqual(404);
     expect(await htmlRes.json()).toEqual({
@@ -255,7 +255,7 @@ describe("loader", () => {
 
     const htmlRes = await publicApi.getPreviewLoaderHtml(
       projects[0],
-      component
+      component,
     );
     expect(htmlRes.status()).toEqual(404);
     const etag = htmlRes.headers()["etag"];
@@ -264,7 +264,7 @@ describe("loader", () => {
     const cachedRes = await publicApi.getPreviewLoaderHtml(
       projects[0],
       component,
-      { ifNoneMatch: etag }
+      { ifNoneMatch: etag },
     );
     expect(cachedRes.status()).toEqual(304);
   });
@@ -273,7 +273,7 @@ describe("loader", () => {
 async function publish(
   db: DbMgr,
   project: Project,
-  prefill: boolean
+  prefill: boolean,
 ): Promise<string> {
   let pkgVersion = (
     await db.publishProject(project.id, undefined, [], "description")
@@ -285,7 +285,7 @@ async function publish(
       pkgVersion.branchId,
       {
         isPrefilled: true,
-      }
+      },
     );
   }
   return pkgVersion.version;

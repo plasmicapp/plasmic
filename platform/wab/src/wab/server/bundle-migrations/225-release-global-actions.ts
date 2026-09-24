@@ -48,7 +48,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   for (const component of site.components) {
@@ -74,20 +74,20 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
             (arg) => {
               const argType = propTypeToWabType(site, arg.type).match(
                 (val) => val,
-                () => typeFactory.any()
+                () => typeFactory.any(),
               );
               assert(
                 !isKnownRenderableType(argType) && !isRenderFuncType(argType),
                 () =>
-                  `RenderableType and RenderFuncType should only be used for slots`
+                  `RenderableType and RenderFuncType should only be used for slots`,
               );
               assert(
                 !isKnownFunctionType(argType),
-                () => `Can't have recursive FunctionType`
+                () => `Can't have recursive FunctionType`,
               );
               return typeFactory.arg(arg.name, argType, arg.displayName);
-            }
-          )
+            },
+          ),
         );
 
         const parameters = actions[actionName] as string[];
@@ -96,7 +96,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
         });
         for (let i = 0; i < parameters.length; i++) {
           const arg = interaction.args.find(
-            (iarg) => iarg.name === parameters[i]
+            (iarg) => iarg.name === parameters[i],
           );
           if (!arg) {
             continue;
@@ -120,7 +120,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "225-release-global-actions"
+    "225-release-global-actions",
   );
   Object.assign(bundle, newBundle);
 };

@@ -108,10 +108,10 @@ export const FullCodeEditor = React.forwardRef(
     };
 
     const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor | null>(
-      null
+      null,
     );
     const [containerEl, setContainerEl] = React.useState<HTMLElement | null>(
-      null
+      null,
     );
     const editorActions = useMonacoEditor(containerEl, {
       modelFilePath: createFilePathWithExtension(fileName, language),
@@ -154,7 +154,7 @@ export const FullCodeEditor = React.forwardRef(
           handlersRef.current.onChange?.(actions.getUserValue());
         });
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () =>
-          handlersRef.current.onSave?.(actions.getUserValue())
+          handlersRef.current.onSave?.(actions.getUserValue()),
         );
         if (autoFocus) {
           setTimeout(() => {
@@ -187,7 +187,7 @@ export const FullCodeEditor = React.forwardRef(
           editor.focus();
         },
       }),
-      [editorActions, defaultValue]
+      [editorActions, defaultValue],
     );
 
     return (
@@ -197,12 +197,12 @@ export const FullCodeEditor = React.forwardRef(
         className="react-monaco-editor-container"
       />
     );
-  }
+  },
 );
 
 function dataObjToCode(
   data: Record<string, any>,
-  schema?: DataPickerTypesSchema
+  schema?: DataPickerTypesSchema,
 ): string {
   // If schema is given, make sure we also output type info for
   // schema keys, even if they don't exist in `data`

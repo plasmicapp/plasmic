@@ -9,7 +9,7 @@ export class MultiVariantInteractionsArena extends BaseModel {
     readonly multiToggleButtons: Locator,
     readonly multiActivateButtons: Locator,
     readonly multiDeactivateButtons: Locator,
-    readonly clearValueButton: Locator
+    readonly clearValueButton: Locator,
   ) {
     super(page);
   }
@@ -26,13 +26,13 @@ export class MultiVariantInteractionsArena extends BaseModel {
       .contentFrame();
     const newValueButtons = contentFrame.locator('[data-test-id="newValue"]');
     const multiToggleButtons = contentFrame.locator(
-      '[data-test-id="multiToggle"]'
+      '[data-test-id="multiToggle"]',
     );
     const multiActivateButtons = contentFrame.locator(
-      '[data-test-id="multiActivate"]'
+      '[data-test-id="multiActivate"]',
     );
     const multiDeactivateButtons = contentFrame.locator(
-      '[data-test-id="multiDeactivate"]'
+      '[data-test-id="multiDeactivate"]',
     );
     const clearValueButton = contentFrame
       .locator('[data-test-id="clearValue"]')
@@ -44,7 +44,7 @@ export class MultiVariantInteractionsArena extends BaseModel {
       multiToggleButtons,
       multiActivateButtons,
       multiDeactivateButtons,
-      clearValueButton
+      clearValueButton,
     );
     return instance;
   }

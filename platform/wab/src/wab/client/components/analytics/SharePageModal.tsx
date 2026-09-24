@@ -26,7 +26,7 @@ const COPIED_TIME = 3300;
 
 function SharePageModal_(
   props: SharePageModalProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const curUrl = window.location.href;
 

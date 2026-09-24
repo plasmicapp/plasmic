@@ -126,14 +126,14 @@ function getGlobalContextPath(globalContext: TplComponent, bundler: Bundler) {
 
 function getNewAndDeletedComponents(
   ancestorComponents: Component[],
-  components: Component[]
+  components: Component[],
 ) {
   return {
     added: components.filter(
-      (c) => !ancestorComponents.find((anc) => anc.uuid === c.uuid)
+      (c) => !ancestorComponents.find((anc) => anc.uuid === c.uuid),
     ),
     deleted: ancestorComponents.filter(
-      (anc) => !components.find((c) => c.uuid === anc.uuid)
+      (anc) => !components.find((c) => c.uuid === anc.uuid),
     ),
   };
 }
@@ -143,7 +143,7 @@ function getNewAndDeletedComponents(
 function updateParent(
   mergedTpl: TplNode,
   tplInBranch: TplNode,
-  cloneInst: (tpl: TplNode) => TplNode
+  cloneInst: (tpl: TplNode) => TplNode,
 ) {
   const oldParent = mergedTpl.parent;
   const newParent = tplInBranch.parent && cloneInst(tplInBranch.parent);
@@ -152,17 +152,17 @@ function updateParent(
     // Remove the pointer in the old parent
     switchType(oldParent)
       .when(TplTag, (tpl) =>
-        removeWhere(tpl.children, (child) => child === mergedTpl)
+        removeWhere(tpl.children, (child) => child === mergedTpl),
       )
       .when(TplSlot, (tpl) =>
-        removeWhere(tpl.defaultContents, (child) => child === mergedTpl)
+        removeWhere(tpl.defaultContents, (child) => child === mergedTpl),
       )
       .when(TplComponent, (tpl) =>
         [...(tryGetBaseVariantSetting(tpl)?.args ?? [])].forEach(
           (arg) =>
             isKnownRenderExpr(arg.expr) &&
-            removeWhere(arg.expr.tpl, (child) => child === mergedTpl)
-        )
+            removeWhere(arg.expr.tpl, (child) => child === mergedTpl),
+        ),
       )
       .result();
   }
@@ -170,7 +170,7 @@ function updateParent(
     // Update the children for the new parent
     const parentInBranch = ensure(
       tplInBranch.parent,
-      `Updated parent must come from branchTpl`
+      `Updated parent must come from branchTpl`,
     );
     let childrenArrayToUpdate: TplNode[] = [];
     let childrenArrayInBranch: TplNode[] = [];
@@ -187,18 +187,18 @@ function updateParent(
       .when(TplComponent, (tpl) => {
         const argInBranch = ensure(
           tryGetBaseVariantSetting(
-            ensureKnownTplComponent(parentInBranch)
+            ensureKnownTplComponent(parentInBranch),
           )?.args.find(
             (arg) =>
               isKnownRenderExpr(arg.expr) &&
-              !!arg.expr.tpl.find((child) => child.uuid === mergedTpl.uuid)
+              !!arg.expr.tpl.find((child) => child.uuid === mergedTpl.uuid),
           ),
-          `Couldn't find arg in parent tpl component`
+          `Couldn't find arg in parent tpl component`,
         );
         const paramInBranch = argInBranch.param;
         const renderExprInBranch = ensureKnownRenderExpr(argInBranch.expr);
         const param = getSlotParams(tpl.component).find(
-          (p) => p.uuid === paramInBranch.uuid
+          (p) => p.uuid === paramInBranch.uuid,
         );
         if (!param) {
           // The corresponding param has been deleted! Simply delete this node
@@ -211,7 +211,7 @@ function updateParent(
           $$$(tpl)
             .getBaseArgs()
             .push(
-              (arg = new Arg({ param, expr: new RenderExpr({ tpl: [] }) }))
+              (arg = new Arg({ param, expr: new RenderExpr({ tpl: [] }) })),
             );
         } else {
           arg = maybeArg;
@@ -229,7 +229,7 @@ function updateParent(
     // Insert the element after all nodes that were before it in the branch
     const indexInBranch = ensure(
       childrenArrayInBranch.indexOf(tplInBranch),
-      `Couldn't find node in its parent children`
+      `Couldn't find node in its parent children`,
     );
     childrenArrayToUpdate.splice(
       Math.max(
@@ -238,19 +238,19 @@ function updateParent(
           ...childrenArrayInBranch
             .slice(0, indexInBranch)
             .map((tpl) =>
-              childrenArrayToUpdate.findIndex((tpl2) => tpl2.uuid === tpl.uuid)
+              childrenArrayToUpdate.findIndex((tpl2) => tpl2.uuid === tpl.uuid),
             ),
-        ])
+        ]),
       ) + 1,
       0,
-      mergedTpl
+      mergedTpl,
     );
   }
 }
 
 function deriveKeyFuncFromClassNameAndField<
   Cls extends keyof ModelConflictsMeta,
-  F extends keyof ModelConflictsMeta[Cls] & string
+  F extends keyof ModelConflictsMeta[Cls] & string,
 >(className: Cls, fieldName: F, bundler: Bundler) {
   return deriveKeyFunc(
     modelConflictsMeta[className][fieldName] as FieldConflictDescriptorMeta,
@@ -258,7 +258,7 @@ function deriveKeyFuncFromClassNameAndField<
     {
       cls: meta.clsByName[className],
       field: meta.getFieldByName(className, fieldName),
-    }
+    },
   );
 }
 
@@ -267,7 +267,7 @@ function calcRootToNodesPaths(
   bundler: Bundler,
   processNode: (node: TplNode, path: string[]) => void = () => null,
   currPath = ["tplTree"] as string[],
-  nodeToPath = new Map<TplNode, string[]>()
+  nodeToPath = new Map<TplNode, string[]>(),
 ) {
   nodeToPath.set(node, currPath);
   processNode(node, currPath);
@@ -285,12 +285,12 @@ function calcRootToNodesPaths(
             deriveKeyFuncFromClassNameAndField(
               "TplTag",
               "children",
-              bundler
+              bundler,
             )(child),
           ],
-          nodeToPath
+          nodeToPath,
         );
-      })
+      }),
     )
     .when(TplSlot, (_node) =>
       _node.defaultContents.forEach((child) => {
@@ -304,12 +304,12 @@ function calcRootToNodesPaths(
             deriveKeyFuncFromClassNameAndField(
               "TplSlot",
               "defaultContents",
-              bundler
+              bundler,
             )(child),
           ],
-          nodeToPath
+          nodeToPath,
         );
-      })
+      }),
     )
     .when(TplComponent, (_node) =>
       getSlotArgs(_node).forEach((arg) =>
@@ -319,14 +319,14 @@ function calcRootToNodesPaths(
             const argKey = deriveKeyFuncFromClassNameAndField(
               "VariantSetting",
               "args",
-              bundler
+              bundler,
             )(arg);
 
             // Getting the key of the tpl in the arg
             const tplKey = deriveKeyFuncFromClassNameAndField(
               "RenderExpr",
               "tpl",
-              bundler
+              bundler,
             )(child);
 
             calcRootToNodesPaths(
@@ -343,11 +343,11 @@ function calcRootToNodesPaths(
                 "tpl",
                 tplKey,
               ],
-              nodeToPath
+              nodeToPath,
             );
-          }
-        )
-      )
+          },
+        ),
+      ),
     )
     .result();
 
@@ -361,7 +361,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
   mergedSiteCtx,
   bundler,
   picks,
-  recorder
+  recorder,
 ): DirectConflict[] => {
   const [siteAncestor, siteA, siteB, mergedSite] = [
     siteAncestorCtx,
@@ -369,7 +369,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
     siteBCtx,
     mergedSiteCtx,
   ].map((ctx) =>
-    ensure(ctx.node, "tryMergeComponents expects all nodes to exist")
+    ensure(ctx.node, "tryMergeComponents expects all nodes to exist"),
   );
 
   const cloneInst = <T extends ObjInst>(node: T, branch: Site) =>
@@ -377,11 +377,11 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
 
   const deltaA = getNewAndDeletedComponents(
     siteAncestor.components,
-    siteA.components
+    siteA.components,
   );
   const deltaB = getNewAndDeletedComponents(
     siteAncestor.components,
-    siteB.components
+    siteB.components,
   );
 
   const deletedUuids = new Set([
@@ -422,7 +422,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
     if (
       isCodeComponent(deletedComp) &&
       mergedSite.components.find(
-        (c) => isCodeComponent(c) && c.name === deletedComp.name
+        (c) => isCodeComponent(c) && c.name === deletedComp.name,
       )
     ) {
       // Right now we make sure to add the old versions of the component to the end
@@ -435,7 +435,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
   const updatedComponentsUuids = inferUpdatedComponents(
     siteAncestor,
     siteA,
-    siteB
+    siteB,
   );
 
   // Checking direct conflicts between updated tpls
@@ -446,16 +446,16 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
     }
 
     const equivalentOnA = siteA.components.find(
-      (comp) => ancestorComp.uuid === comp.uuid
+      (comp) => ancestorComp.uuid === comp.uuid,
     );
     const equivalentOnB = siteB.components.find(
-      (comp) => ancestorComp.uuid === comp.uuid
+      (comp) => ancestorComp.uuid === comp.uuid,
     );
 
     if (equivalentOnA && equivalentOnB) {
       const mergedComp = ensure(
         mergedSite.components.find((comp) => ancestorComp.uuid === comp.uuid),
-        `Merged site is missing component ${ancestorComp.uuid}`
+        `Merged site is missing component ${ancestorComp.uuid}`,
       );
       const compA = equivalentOnA;
       const compB = equivalentOnB;
@@ -484,7 +484,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
           bundler,
           picks,
           recorder,
-        })
+        }),
       );
       if (
         ancestorComp.tplTree.uuid !== compA.tplTree.uuid &&
@@ -505,14 +505,14 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
                 compA.tplTree,
                 siteA,
                 mergedSite,
-                bundler
+                bundler,
               );
             } else {
               mergedComp.tplTree = cloneObjInstToMergedSite(
                 compB.tplTree,
                 siteB,
                 mergedSite,
-                bundler
+                bundler,
               );
             }
             fixParentPointers(mergedComp.tplTree);
@@ -522,8 +522,8 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
           const side = ensure(
             picks[pathStr],
             `Could not find the corresponding pick with pathStr ${pathStr}, got resolutions for: ${JSON.stringify(
-              Object.keys(picks)
-            )}`
+              Object.keys(picks),
+            )}`,
           );
           conf.pickSide(side);
         } else {
@@ -535,20 +535,20 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
         mergedComp.tplTree = cloneInst(compB.tplTree, siteB);
       }
       const tplInAncestorByUuid = new Map(
-        flattenComponent(ancestorComp).map((tpl) => [tpl.uuid, tpl])
+        flattenComponent(ancestorComp).map((tpl) => [tpl.uuid, tpl]),
       );
       const tplInAByUuid = new Map(
-        flattenComponent(compA).map((tpl) => [tpl.uuid, tpl])
+        flattenComponent(compA).map((tpl) => [tpl.uuid, tpl]),
       );
       const tplInBByUuid = new Map(
-        flattenComponent(compB).map((tpl) => [tpl.uuid, tpl])
+        flattenComponent(compB).map((tpl) => [tpl.uuid, tpl]),
       );
 
       // Check for cycles of disconnected nodes after updating the parents
       const checkAndFixCycle = () => {
         while (true) {
           const reachableTplUuids = new Set(
-            flattenComponent(mergedComp).map((tpl) => tpl.uuid)
+            flattenComponent(mergedComp).map((tpl) => tpl.uuid),
           );
           const tplInDisconnectedCycle = (tplAnc: TplNode) => {
             if (
@@ -560,7 +560,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
             }
             let tpl: TplNode | null | undefined = cloneInst(
               tplAnc,
-              siteAncestor
+              siteAncestor,
             );
             const seenUuids = new Set<string>();
             while (tpl) {
@@ -573,7 +573,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
             return false;
           };
           let maybeDisconnectedTplInAnc = flattenComponent(ancestorComp).find(
-            tplInDisconnectedCycle
+            tplInDisconnectedCycle,
           );
           // `cloneInst` will just get the matching object in the merged site as
           // it already existed
@@ -602,7 +602,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
             updateParent(
               maybeDisconnectedTpl,
               maybeDisconnectedTplInAnc,
-              (tpl) => cloneInst(tpl, siteAncestor)
+              (tpl) => cloneInst(tpl, siteAncestor),
             );
             // Repeat the cycle check to see if there are more nodes to fix
             continue;
@@ -662,11 +662,11 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
               pickSide: (side) => {
                 if (side === "left") {
                   updateParent(tplMerged, tplA, (tpl) =>
-                    cloneObjInstToMergedSite(tpl, siteA, mergedSite, bundler)
+                    cloneObjInstToMergedSite(tpl, siteA, mergedSite, bundler),
                   );
                 } else {
                   updateParent(tplMerged, tplB, (tpl) =>
-                    cloneObjInstToMergedSite(tpl, siteB, mergedSite, bundler)
+                    cloneObjInstToMergedSite(tpl, siteB, mergedSite, bundler),
                   );
                 }
                 checkAndFixCycle();
@@ -677,8 +677,8 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
               const side = ensure(
                 picks[pathStr],
                 `Could not find the corresponding pick with pathStr ${pathStr}, got resolutions for: ${JSON.stringify(
-                  Object.keys(picks)
-                )}`
+                  Object.keys(picks),
+                )}`,
               );
               conf.pickSide(side);
             } else {
@@ -716,15 +716,15 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
           if (tplA && tplB && tplAnc) {
             const nodePathAnc = ensure(
               nodeToPathAnc.get(tplAnc),
-              "Path to tplNode must exist."
+              "Path to tplNode must exist.",
             );
             const nodePathA = ensure(
               nodeToPathA.get(tplA),
-              "Path to tplNode must exist."
+              "Path to tplNode must exist.",
             );
             const nodePathB = ensure(
               nodeToPathB.get(tplB),
-              "Path to tplNode must exist."
+              "Path to tplNode must exist.",
             );
             directConflicts.push(
               ...getDirectConflicts({
@@ -754,10 +754,10 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
                 bundler,
                 picks,
                 recorder,
-              })
+              }),
             );
           }
-        }
+        },
       );
 
       for (const tplMerged of flattenComponent(mergedComp)) {
@@ -771,8 +771,8 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
           const changedTplAndBranch = tplA
             ? ([tplA, siteA] as const)
             : tplB
-            ? ([tplB, siteB] as const)
-            : undefined;
+              ? ([tplB, siteB] as const)
+              : undefined;
           if (changedTplAndBranch) {
             // If it has been deleted only in one branch, and it has been moved
             // to a new node in the other branch, we might need to update its
@@ -785,7 +785,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
                 v,
                 branch,
                 mergedSite,
-                bundler
+                bundler,
               );
             instUtil.allInstFields(tplMerged).forEach((f) => {
               tplMerged[f.name] = cloneFieldValue(f, changedTpl[f.name]);
@@ -799,7 +799,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
                   isKnownTplTag(parentTagOrSlot)
                     ? parentTagOrSlot.children
                     : parentTagOrSlot.defaultContents,
-                  (child) => tplMerged.uuid === child.uuid
+                  (child) => tplMerged.uuid === child.uuid,
                 );
               })
               .when(TplComponent, (parentTplComp) => {
@@ -808,8 +808,8 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
                     isKnownRenderExpr(arg.expr) &&
                     removeWhere(
                       arg.expr.tpl,
-                      (tpl) => tpl.uuid === tplMerged.uuid
-                    )
+                      (tpl) => tpl.uuid === tplMerged.uuid,
+                    ),
                 );
               })
               .result();
@@ -838,7 +838,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
   rightCtx,
   mergedCtx,
   bundler,
-  picks
+  picks,
 ) => {
   const [ancestor, left, right, merged] = [
     ancestorCtx,
@@ -846,7 +846,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
     rightCtx,
     mergedCtx,
   ].map((ctx) =>
-    ensure(ctx.node, "mergeTplNodeChildren expects all nodes to exist")
+    ensure(ctx.node, "mergeTplNodeChildren expects all nodes to exist"),
   );
   const conflicts: DirectConflict[] = [];
   assertSameInstType(ancestor, left, right, merged);
@@ -856,8 +856,8 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
       tpl.vsettings[0].args.map((arg) =>
         isKnownRenderExpr(arg.expr) && !isKnownVirtualRenderExpr(arg.expr)
           ? arg.param.uuid
-          : null
-      )
+          : null,
+      ),
     );
 
   if (
@@ -865,9 +865,9 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
       (tpl) =>
         arrayEq(
           tplChildren(tpl).map((child) => child.uuid),
-          tplChildren(ancestor).map((child) => child.uuid)
+          tplChildren(ancestor).map((child) => child.uuid),
         ) &&
-        arrayEq(getNonVirtualArgUuids(tpl), getNonVirtualArgUuids(ancestor))
+        arrayEq(getNonVirtualArgUuids(tpl), getNonVirtualArgUuids(ancestor)),
     )
   ) {
     // No changes, early exit
@@ -893,14 +893,14 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
         (previous, children) =>
           xIntersect(
             previous,
-            new Set(children.map((node) => bundler.addrOfUnsafe(node).iid))
+            new Set(children.map((node) => bundler.addrOfUnsafe(node).iid)),
           ),
-        new Set(ancChildren.map((node) => bundler.addrOfUnsafe(node).iid))
+        new Set(ancChildren.map((node) => bundler.addrOfUnsafe(node).iid)),
       );
 
       const mergedNodeByIid = keyBy(
         mergedChildren,
-        (child) => bundler.addrOfUnsafe(child).iid
+        (child) => bundler.addrOfUnsafe(child).iid,
       );
       const previousOrder = ancChildren
         .map((child) => bundler.addrOfUnsafe(child).iid)
@@ -943,7 +943,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
                 if (finalOrder[nextIidIndex] !== iid) {
                   mergedChildren[i] = ensure(
                     mergedNodeByIid[finalOrder[nextIidIndex]],
-                    `Don't know about iid ${finalOrder[nextIidIndex]}`
+                    `Don't know about iid ${finalOrder[nextIidIndex]}`,
                   );
                 }
                 nextIidIndex++;
@@ -956,8 +956,8 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
           const side = ensure(
             picks[pathStr],
             `Could not find the corresponding pick with pathStr ${pathStr}, got resolutions for: ${JSON.stringify(
-              Object.keys(picks)
-            )}`
+              Object.keys(picks),
+            )}`,
           );
           conf.pickSide(side);
         } else {
@@ -971,7 +971,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
             if (finalOrder[nextIidIndex] !== iid) {
               mergedChildren[i] = ensure(
                 mergedNodeByIid[finalOrder[nextIidIndex]],
-                `Don't know about iid ${finalOrder[nextIidIndex]}`
+                `Don't know about iid ${finalOrder[nextIidIndex]}`,
               );
             }
             nextIidIndex++;
@@ -989,11 +989,11 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
       ancChildren
         .filter((child) =>
           [leftCtx, rightCtx].some(
-            (branch) => !equivOnBranch(child, branch.site)
-          )
+            (branch) => !equivOnBranch(child, branch.site),
+          ),
         )
         .forEach((child) =>
-          removeWhere(mergedChildren, (child2) => child.uuid === child2.uuid)
+          removeWhere(mergedChildren, (child2) => child.uuid === child2.uuid),
         );
 
       // New nodes
@@ -1007,10 +1007,12 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
           .filter((child) => !equivOnBranch(child, ancestorCtx.site))
           .forEach((child) => {
             const previousUuids = new Set(
-              children.slice(0, children.indexOf(child)).map(({ uuid }) => uuid)
+              children
+                .slice(0, children.indexOf(child))
+                .map(({ uuid }) => uuid),
             );
             const index = findLastIndex(mergedChildren, (node) =>
-              previousUuids.has(node.uuid)
+              previousUuids.has(node.uuid),
             );
             mergedChildren.splice(
               index + 1,
@@ -1019,8 +1021,8 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
                 child,
                 branch.site,
                 mergedCtx.site,
-                bundler
-              )
+                bundler,
+              ),
             );
           });
       });
@@ -1030,20 +1032,20 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
         isKnownTplComponent(left) &&
           isKnownTplComponent(right) &&
           isKnownTplComponent(merged),
-        `Already checked equivalent inst types`
+        `Already checked equivalent inst types`,
       );
       const existingSlotParams = new Set(
-        getSlotParams(merged.component).map((param) => param.uuid)
+        getSlotParams(merged.component).map((param) => param.uuid),
       );
 
       const getFilteredSlotArgs = (tpl: TplComponent) =>
         getSlotArgs(tpl).filter((arg) =>
-          existingSlotParams.has(arg.param.uuid)
+          existingSlotParams.has(arg.param.uuid),
         );
 
       const tplFilteredChildren = (tpl: TplComponent) =>
         getFilteredSlotArgs(tpl).flatMap((arg) =>
-          isKnownRenderExpr(arg.expr) ? arg.expr.tpl : []
+          isKnownRenderExpr(arg.expr) ? arg.expr.tpl : [],
         );
 
       const ancChildren = tplFilteredChildren(anc);
@@ -1053,7 +1055,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
 
       const mergedNodeByIid = keyBy(
         mergedChildren,
-        (child) => bundler.addrOfUnsafe(child).iid
+        (child) => bundler.addrOfUnsafe(child).iid,
       );
 
       // First get the nodes that haven't changed but might have moved
@@ -1061,9 +1063,9 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
         (previous, children) =>
           xIntersect(
             previous,
-            new Set(children.map((node) => bundler.addrOfUnsafe(node).iid))
+            new Set(children.map((node) => bundler.addrOfUnsafe(node).iid)),
           ),
-        new Set(ancChildren.map((node) => bundler.addrOfUnsafe(node).iid))
+        new Set(ancChildren.map((node) => bundler.addrOfUnsafe(node).iid)),
       );
 
       // Then compute their relative order along with their respective arg.param
@@ -1079,10 +1081,10 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
                     : ensureKnownRenderExpr(arg.expr)
                         .tpl.map((tpl) => bundler.addrOfUnsafe(tpl).iid)
                         .filter((iid) => commonIids.has(iid)),
-                ] as const
+                ] as const,
             )
             .filter(([_uuid, iids]) => iids.length > 0),
-          ([uuid]) => uuid
+          ([uuid]) => uuid,
         );
       };
 
@@ -1120,7 +1122,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
       const applyFinalOrder = () => {
         assert(
           typeof finalOrder !== "string",
-          `Expected finalOrder to be already defined`
+          `Expected finalOrder to be already defined`,
         );
 
         const argsAndBranchCtx = [
@@ -1138,9 +1140,9 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
                   return [arg, ctx] as const;
                 }
                 return null;
-              })
+              }),
             )[0],
-            `Couldn't find arg for param ${uuid}`
+            `Couldn't find arg for param ${uuid}`,
           );
         };
 
@@ -1150,7 +1152,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
             arg.param,
             ctx.site,
             mergedCtx.site,
-            bundler
+            bundler,
           );
 
           if (maybeIids === "VirtualRenderExpr") {
@@ -1173,7 +1175,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
             (
               maybe(
                 $$$(merged).getSlotArgForParam(mergedParam),
-                (mergedArg) => [...ensureKnownRenderExpr(mergedArg.expr).tpl]
+                (mergedArg) => [...ensureKnownRenderExpr(mergedArg.expr).tpl],
               ) ?? []
             ).map((tpl) => {
               const iid = bundler.addrOfUnsafe(tpl).iid;
@@ -1187,19 +1189,19 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
 
               const newTpl = ensure(
                 mergedNodeByIid[iids[index]],
-                `Don't know about iid ${iids[index]}`
+                `Don't know about iid ${iids[index]}`,
               );
               index++;
               return newTpl;
-            })
+            }),
           );
 
           while (index < iids.length) {
             mergedArgChildren.push(
               ensure(
                 mergedNodeByIid[iids[index]],
-                `Don't know about iid ${iids[index]}`
-              )
+                `Don't know about iid ${iids[index]}`,
+              ),
             );
             index++;
           }
@@ -1235,8 +1237,8 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
           const side = ensure(
             picks[pathStr],
             `Could not find the corresponding pick with pathStr ${pathStr}, got resolutions for: ${JSON.stringify(
-              Object.keys(picks)
-            )}`
+              Object.keys(picks),
+            )}`,
           );
           conf.pickSide(side);
         } else {
@@ -1256,15 +1258,15 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
       ancChildren
         .filter((child) =>
           [leftCtx, rightCtx].some(
-            (branch) => !equivOnBranch(child, branch.site)
-          )
+            (branch) => !equivOnBranch(child, branch.site),
+          ),
         )
         .forEach((child) =>
           getSlotArgs(merged).forEach(
             (arg) =>
               isKnownRenderExpr(arg.expr) &&
-              removeWhere(arg.expr.tpl, (tpl) => tpl.uuid === child.uuid)
-          )
+              removeWhere(arg.expr.tpl, (tpl) => tpl.uuid === child.uuid),
+          ),
         );
 
       // Handle new nodes
@@ -1283,22 +1285,22 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
               expr.tpl
                 .slice(
                   0,
-                  expr.tpl.findIndex((v) => v === child)
+                  expr.tpl.findIndex((v) => v === child),
                 )
-                .map(({ uuid }) => uuid)
+                .map(({ uuid }) => uuid),
             );
 
             const mergedParam = cloneObjInstToMergedSite(
               arg.param,
               branch.site,
               mergedCtx.site,
-              bundler
+              bundler,
             );
 
             setMergedSlotArg(merged, mergedParam, (mergedExpr) => {
               const argTpls = [...mergedExpr.tpl];
               const index = findLastIndex(argTpls, (node) =>
-                previousUuids.has(node.uuid)
+                previousUuids.has(node.uuid),
               );
               argTpls.splice(
                 index + 1,
@@ -1307,8 +1309,8 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
                   child,
                   branch.site,
                   mergedCtx.site,
-                  bundler
-                )
+                  bundler,
+                ),
               );
               mergedExpr.tpl = argTpls;
               return mergedExpr;
@@ -1328,7 +1330,7 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
   mergedCtx,
   bundler,
   picks,
-  recorder
+  recorder,
 ) => {
   const [ancestor, left, right, merged] = [
     ancestorCtx,
@@ -1346,8 +1348,8 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
         mergedCtx,
         bundler,
         picks,
-        recorder
-      )
+        recorder,
+      ),
     );
   }
 
@@ -1356,8 +1358,8 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
     return node.vsettings.find((vs2) =>
       arrayEqIgnoreOrder(
         variantKeys,
-        vs2.variants.map((v) => toVariantKey(v))
-      )
+        vs2.variants.map((v) => toVariantKey(v)),
+      ),
     );
   };
 
@@ -1405,7 +1407,7 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
           bundler,
           picks,
           recorder,
-        })
+        }),
       );
     }
   });
@@ -1420,18 +1422,18 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
         bundler.bundle(
           ancestorVS,
           bundler.addrOfUnsafe(ancestorCtx.site).uuid,
-          ""
+          "",
         );
         const mergedVS = cloneObjInstToMergedSite(
           ancestorVS,
           ancestorCtx.site,
           mergedCtx.site,
-          bundler
+          bundler,
         );
 
         // Fix the variants
         mergedVS.variants = vs.variants.map((v) =>
-          cloneObjInstToMergedSite(v, leftCtx.site, mergedCtx.site, bundler)
+          cloneObjInstToMergedSite(v, leftCtx.site, mergedCtx.site, bundler),
         );
 
         merged.vsettings.push(mergedVS);
@@ -1477,11 +1479,11 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
             bundler,
             picks,
             recorder,
-          })
+          }),
         );
       } else {
         merged.vsettings.push(
-          cloneObjInstToMergedSite(vs, leftCtx.site, mergedCtx.site, bundler)
+          cloneObjInstToMergedSite(vs, leftCtx.site, mergedCtx.site, bundler),
         );
       }
     });
@@ -1489,7 +1491,7 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
     .filter((vs) => !findEquivVS(ancestor, vs) && !findEquivVS(left, vs))
     .forEach((vs) => {
       merged.vsettings.push(
-        cloneObjInstToMergedSite(vs, rightCtx.site, mergedCtx.site, bundler)
+        cloneObjInstToMergedSite(vs, rightCtx.site, mergedCtx.site, bundler),
       );
     });
   return conflicts;
@@ -1508,7 +1510,7 @@ export function fixDuplicatedCodeComponents(mergedSite: Site) {
     const toComponent = components[0];
     components.slice(1).forEach((duplicatedComponent) => {
       const toParams = new Map(
-        toComponent.params.map((p) => tuple(p.variable.name, p))
+        toComponent.params.map((p) => tuple(p.variable.name, p)),
       );
       visitComponentRefs(mergedSite, duplicatedComponent, (tplComponent) => {
         tplComponent.component = toComponent;
@@ -1522,7 +1524,7 @@ export function fixDuplicatedCodeComponents(mergedSite: Site) {
               }
               arg.param = newParam;
               return arg;
-            })
+            }),
           );
         });
       });
@@ -1543,9 +1545,9 @@ export function fixDuplicatedCodeComponents(mergedSite: Site) {
         const validArgsVarNameSet = new Set(
           vs.args
             .filter(
-              (arg) => paramsByName[arg.param.variable.name]?.[0] === arg.param
+              (arg) => paramsByName[arg.param.variable.name]?.[0] === arg.param,
             )
-            .map((arg) => arg.param.variable.name)
+            .map((arg) => arg.param.variable.name),
         );
 
         removeWhere(vs.args, (arg) => {
@@ -1570,7 +1572,7 @@ export function fixDuplicatedCodeComponents(mergedSite: Site) {
     });
     removeWhere(
       component.params,
-      (p) => p !== paramsByName[p.variable.name][0]
+      (p) => p !== paramsByName[p.variable.name][0],
     );
     attachRenderableTplSlots(component);
   });
@@ -1586,13 +1588,13 @@ export function fixDuplicatedCodeComponents(mergedSite: Site) {
 function setMergedSlotArg(
   merged: TplComponent,
   mergedParam: Param,
-  setChildren: (expr: RenderExpr) => RenderExpr
+  setChildren: (expr: RenderExpr) => RenderExpr,
 ) {
   let mergedArg = $$$(merged).getSlotArgForParam(mergedParam);
   const mergedExpr = setChildren(
     mergedArg && isKnownRenderExpr(mergedArg.expr)
       ? mergedArg.expr
-      : new RenderExpr({ tpl: [] })
+      : new RenderExpr({ tpl: [] }),
   );
   mergedExpr.tpl.forEach((child) => (child.parent = merged));
   if (!mergedArg) {
@@ -1625,16 +1627,16 @@ export function fixSwappedTplComponents(
   ancestor: Site,
   left: Site,
   right: Site,
-  merged: Site
+  merged: Site,
 ) {
   const ancestorCompByUuid = new Map(
-    ancestor.components.map((c) => [c.uuid, c] as const)
+    ancestor.components.map((c) => [c.uuid, c] as const),
   );
   const leftCompByUuid = new Map(
-    left.components.map((c) => [c.uuid, c] as const)
+    left.components.map((c) => [c.uuid, c] as const),
   );
   const rightCompByUuid = new Map(
-    right.components.map((c) => [c.uuid, c] as const)
+    right.components.map((c) => [c.uuid, c] as const),
   );
 
   /* We want to replace VSettings.args wrong variant with valid VariantGroup variant,
@@ -1655,13 +1657,13 @@ export function fixSwappedTplComponents(
     const tplInAncestorByUuid = new Map(
       ancestorComp
         ? flattenComponent(ancestorComp).map((tpl) => [tpl.uuid, tpl])
-        : []
+        : [],
     );
     const tplInAByUuid = new Map(
-      compA ? flattenComponent(compA).map((tpl) => [tpl.uuid, tpl]) : []
+      compA ? flattenComponent(compA).map((tpl) => [tpl.uuid, tpl]) : [],
     );
     const tplInBByUuid = new Map(
-      compB ? flattenComponent(compB).map((tpl) => [tpl.uuid, tpl]) : []
+      compB ? flattenComponent(compB).map((tpl) => [tpl.uuid, tpl]) : [],
     );
     flattenComponent(component).forEach((tplMerged) => {
       if (isKnownTplComponent(tplMerged)) {
@@ -1672,7 +1674,7 @@ export function fixSwappedTplComponents(
           uniq(
             [tplAnc, tplA, tplB]
               .filter(isKnownTplComponent)
-              .map((tpl) => tpl.component.uuid)
+              .map((tpl) => tpl.component.uuid),
           ).length > 1
         ) {
           // Some component got swapped by another one. Remove args and
@@ -1686,7 +1688,7 @@ export function fixSwappedTplComponents(
           const componentVariantsMap = new Map(
             allComponentVariants(tplMerged.component, {
               includeSuperVariants: true,
-            }).map((v) => tuple(toArgVariantKeyWithName(v), v))
+            }).map((v) => tuple(toArgVariantKeyWithName(v), v)),
           );
 
           /* Fix a wrong Arg variant in VSettings by replacing it with a valid
@@ -1697,8 +1699,8 @@ export function fixSwappedTplComponents(
               if (isKnownVariantsRef(arg.expr)) {
                 arg.expr.variants = withoutFalsy(
                   arg.expr.variants.map((v) =>
-                    componentVariantsMap.get(toArgVariantKeyWithName(v))
-                  )
+                    componentVariantsMap.get(toArgVariantKeyWithName(v)),
+                  ),
                 );
               }
             }
@@ -1709,7 +1711,7 @@ export function fixSwappedTplComponents(
             (state) =>
               state.tplNode === tplMerged &&
               !!state.implicitState &&
-              !toComponentStates.has(state.implicitState)
+              !toComponentStates.has(state.implicitState),
           );
         }
       }
@@ -1722,7 +1724,7 @@ export const mergeComponentVariants: MergeSpecialFieldHandler<Component> = (
   aCompCtx,
   bCompCtx,
   mergedCompCtx,
-  bundler
+  bundler,
 ) => {
   const cloneInst = <T extends ObjInst>(node: T, branch: Site) =>
     cloneObjInstToMergedSite(node, branch, mergedCompCtx.site, bundler);
@@ -1730,8 +1732,8 @@ export const mergeComponentVariants: MergeSpecialFieldHandler<Component> = (
     (ctx) =>
       ensure(
         ctx.node,
-        () => `mergeComponentVariants expects all nodes to exist`
-      )
+        () => `mergeComponentVariants expects all nodes to exist`,
+      ),
   );
 
   const variantKey = (v: Variant) => {
@@ -1740,7 +1742,7 @@ export const mergeComponentVariants: MergeSpecialFieldHandler<Component> = (
   };
 
   const mergedVariantKeys = new Set(
-    mergedComp.variants.map((v) => variantKey(v))
+    mergedComp.variants.map((v) => variantKey(v)),
   );
   (
     [
@@ -1756,7 +1758,7 @@ export const mergeComponentVariants: MergeSpecialFieldHandler<Component> = (
     });
   });
   const allVariants = new Set(
-    [...aComp.variants, ...bComp.variants].map((v) => variantKey(v))
+    [...aComp.variants, ...bComp.variants].map((v) => variantKey(v)),
   );
   removeWhere(mergedComp.variants, (v) => !allVariants.has(variantKey(v)));
   mergedComp.variants = uniqBy(mergedComp.variants, (v) => variantKey(v));
@@ -1785,17 +1787,17 @@ export function fixVirtualSlotArgs(mergedSite: Site, recorder: ChangeRecorder) {
       const component =
         change.path &&
         (change.path.find(
-          (node) => node.inst instanceof Component && node.field === "tplTree"
+          (node) => node.inst instanceof Component && node.field === "tplTree",
         )?.inst as Component | undefined);
       const tplSlot =
         change.path &&
         (change.path.find(
           (node) =>
-            node.inst instanceof TplSlot && node.field === "defaultContents"
+            node.inst instanceof TplSlot && node.field === "defaultContents",
         )?.inst as TplSlot | undefined);
       if (component && tplSlot) {
         xSetDefault(componentToUpdatedTplSlots, component, () => new Set()).add(
-          tplSlot
+          tplSlot,
         );
       }
       if (
@@ -1825,7 +1827,7 @@ export function fixVirtualSlotArgs(mergedSite: Site, recorder: ChangeRecorder) {
         const updatedTplSlots = xSetDefault(
           componentToUpdatedTplSlots,
           tpl.component,
-          () => new Set()
+          () => new Set(),
         );
         if (newComponents.has(tpl.component)) {
           fillVirtualSlotContents(tplMgr, tpl);
@@ -1833,7 +1835,7 @@ export function fixVirtualSlotArgs(mergedSite: Site, recorder: ChangeRecorder) {
           fillVirtualSlotContents(
             tplMgr,
             tpl,
-            Array.from(updatedTplSlots.keys())
+            Array.from(updatedTplSlots.keys()),
           );
         }
         const slots = getTplSlots(tpl.component);
@@ -1873,32 +1875,32 @@ export const tryMergeGlobalContexts: MergeSpecialFieldHandler<Site> = (
   mergedCtx,
   bundler,
   picks,
-  recorder
+  recorder,
 ): DirectConflict[] => {
   const directConflicts: DirectConflict[] = [];
   const globalContextsNames: Set<string> = new Set();
   [ancestorCtx, leftCtx, rightCtx].forEach((ctx) =>
     ctx.site.globalContexts.forEach((tpl) => {
       globalContextsNames.add(tpl.component.name);
-    })
+    }),
   );
 
   globalContextsNames.forEach((globalContextName) => {
     let ancestorTpl = ancestorCtx.site.globalContexts.find(
-      (tpl) => tpl.component.name === globalContextName
+      (tpl) => tpl.component.name === globalContextName,
     );
     const leftTpl = leftCtx.site.globalContexts.find(
-      (tpl) => tpl.component.name === globalContextName
+      (tpl) => tpl.component.name === globalContextName,
     );
     const rightTpl = rightCtx.site.globalContexts.find(
-      (tpl) => tpl.component.name === globalContextName
+      (tpl) => tpl.component.name === globalContextName,
     );
 
     // Deleted Global Context
     if ((!leftTpl || !rightTpl) && ancestorTpl) {
       removeWhere(
         mergedCtx.site.globalContexts,
-        (tpl) => tpl.component.name === globalContextName
+        (tpl) => tpl.component.name === globalContextName,
       );
     }
     // Added Global Context
@@ -1907,7 +1909,7 @@ export const tryMergeGlobalContexts: MergeSpecialFieldHandler<Site> = (
         leftTpl,
         leftCtx.site,
         mergedCtx.site,
-        bundler
+        bundler,
       );
 
       mergedCtx.site.globalContexts.push(mergedTpl);
@@ -1916,7 +1918,7 @@ export const tryMergeGlobalContexts: MergeSpecialFieldHandler<Site> = (
         rightTpl!,
         rightCtx.site,
         mergedCtx.site,
-        bundler
+        bundler,
       );
       mergedCtx.site.globalContexts.push(mergedTpl);
     }
@@ -1928,12 +1930,12 @@ export const tryMergeGlobalContexts: MergeSpecialFieldHandler<Site> = (
         const ancestorComponent = mkCodeComponent(
           globalContextName,
           { name: globalContextName, props: {}, importPath: "" },
-          {}
+          {},
         );
         bundler.bundle(
           ancestorComponent,
           bundler.addrOfUnsafe(ancestorCtx.site).uuid,
-          ""
+          "",
         );
         ancestorTpl = mkTplComponentX({
           component: ancestorComponent,
@@ -1942,27 +1944,27 @@ export const tryMergeGlobalContexts: MergeSpecialFieldHandler<Site> = (
         bundler.bundle(
           ancestorTpl,
           bundler.addrOfUnsafe(ancestorCtx.site).uuid,
-          ""
+          "",
         );
         const mergedTpl = cloneObjInstToMergedSite(
           ancestorTpl,
           ancestorCtx.site,
           mergedCtx.site,
-          bundler
+          bundler,
         );
         mergedTpl.component = cloneObjInstToMergedSite(
           leftTpl.component,
           leftCtx.site,
           mergedCtx.site,
-          bundler
+          bundler,
         );
         mergedCtx.site.globalContexts.push(mergedTpl);
       }
       const mergedTpl = ensure(
         mergedCtx.site.globalContexts.find(
-          (tpl) => tpl.component.name === globalContextName
+          (tpl) => tpl.component.name === globalContextName,
         ),
-        "If Global Context exists in both left and right site, it should also exist in the merged site"
+        "If Global Context exists in both left and right site, it should also exist in the merged site",
       );
 
       directConflicts.push(
@@ -2009,7 +2011,7 @@ export const tryMergeGlobalContexts: MergeSpecialFieldHandler<Site> = (
                 ? conflict.conflictDetails.length > 0
                   ? conflict.conflictDetails[0].pathStr
                   : `[]`
-                : conflict.pathStr
+                : conflict.pathStr,
             );
             if (
               pathStr.length === 3 &&
@@ -2020,7 +2022,7 @@ export const tryMergeGlobalContexts: MergeSpecialFieldHandler<Site> = (
             }
             return true;
           },
-        })
+        }),
       );
     }
   });
@@ -2031,7 +2033,7 @@ export const mergeComponentUpdatedAt: MergeSpecialFieldHandler<Component> = (
   ancestorCtx,
   leftCtx,
   rightCtx,
-  mergedCtx
+  mergedCtx,
 ) => {
   // Components special handlers should only be called when all the nodes exist
   const [ancestor, left, right, merged] = [
@@ -2040,7 +2042,10 @@ export const mergeComponentUpdatedAt: MergeSpecialFieldHandler<Component> = (
     rightCtx,
     mergedCtx,
   ].map((ctx) =>
-    ensure(ctx.node, () => `mergeComponentUpdatedAt expects all nodes to exist`)
+    ensure(
+      ctx.node,
+      () => `mergeComponentUpdatedAt expects all nodes to exist`,
+    ),
   );
 
   // If the ancestor is nil, we will use the merge as a point to mark the component as updated
@@ -2056,7 +2061,7 @@ export const mergeComponentUpdatedAt: MergeSpecialFieldHandler<Component> = (
   if (isLeftUnchanged && isRightUnchanged) {
     assert(
       merged.updatedAt === ancestor.updatedAt,
-      () => `Merged component should have the same updatedAt as the ancestor`
+      () => `Merged component should have the same updatedAt as the ancestor`,
     );
   } else if (isLeftUnchanged) {
     merged.updatedAt = right.updatedAt;
@@ -2084,13 +2089,13 @@ export const mergeComponentUpdatedAt: MergeSpecialFieldHandler<Component> = (
 export function inferUpdatedComponents(
   ancestor: Site,
   left: Site,
-  right: Site
+  right: Site,
 ) {
   const leftComponentsUpdatedAt = Object.fromEntries(
-    left.components.map((component) => [component.uuid, component.updatedAt])
+    left.components.map((component) => [component.uuid, component.updatedAt]),
   );
   const rightComponentsUpdatedAt = Object.fromEntries(
-    right.components.map((component) => [component.uuid, component.updatedAt])
+    right.components.map((component) => [component.uuid, component.updatedAt]),
   );
   const updatedComponents = ancestor.components.filter((component) => {
     if (isNil(component.updatedAt)) {

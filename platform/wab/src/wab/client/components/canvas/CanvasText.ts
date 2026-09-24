@@ -101,7 +101,7 @@ type ShortcutFn = (
   editor: SlateEditor,
   opts: ShortcutFnOpts,
   sub: SubDeps,
-  params?: any
+  params?: any,
 ) => Promise<void>;
 
 // RunFn is like a ShortcutFn, but it gets an `action` string and params -
@@ -118,7 +118,7 @@ interface Shortcut {
 function wrapInStyleMarker(
   props: CSSProperties,
   sub: SubDeps,
-  toggle = true
+  toggle = true,
 ): ShortcutFn {
   const { Editor } = sub.slate;
   return async function (editor: SlateEditor) {
@@ -146,8 +146,8 @@ function wrapInInlineTag(
   sub: SubDeps,
   getProps?: (
     editor: SlateEditor,
-    opts: ShortcutFnOpts
-  ) => Promise<InlineTagProps | undefined>
+    opts: ShortcutFnOpts,
+  ) => Promise<InlineTagProps | undefined>,
 ): ShortcutFn {
   return async function (editor: SlateEditor, opts: ShortcutFnOpts) {
     // Unwrap existing element before adding a new one.
@@ -226,7 +226,7 @@ function wrapInBlockTag(tag: TagName | null, sub: SubDeps): ShortcutFn {
           Transforms.setNodes(
             editor,
             { uuid: mkShortId(), tag },
-            { match: (n) => n === listContainer }
+            { match: (n) => n === listContainer },
           );
         }
       } else if (isTagListContainer(tag)) {
@@ -238,7 +238,7 @@ function wrapInBlockTag(tag: TagName | null, sub: SubDeps): ShortcutFn {
             uuid: mkShortId(),
             tag: "li",
           },
-          { match: (n) => n === existingBlock }
+          { match: (n) => n === existingBlock },
         );
         const newListContainer = mkTplTagElement(mkShortId(), tag, {}, [
           { text: "" },
@@ -262,7 +262,7 @@ function wrapInBlockTag(tag: TagName | null, sub: SubDeps): ShortcutFn {
             uuid: mkShortId(),
             tag,
           },
-          { match: (n) => n === existingBlock }
+          { match: (n) => n === existingBlock },
         );
       }
     } else {
@@ -300,7 +300,7 @@ const mkRichTextShortcuts: (sub: SubDeps) => Shortcut[] = computedFn(
         await wrapInStyleMarker(params.props, sub2, params.toggle)(
           editor,
           opts,
-          sub
+          sub,
         );
       },
     },
@@ -332,14 +332,14 @@ const mkRichTextShortcuts: (sub: SubDeps) => Shortcut[] = computedFn(
         sub,
         async function (
           editor: SlateEditor,
-          { prompt }
+          { prompt },
         ): Promise<InlineTagProps | undefined> {
           const href = await prompt({ message: "Destination URL" });
           sub.slateReact.ReactEditor.focus(editor);
           return href
             ? { attrs: { href }, children: [{ text: href }] }
             : undefined;
-        }
+        },
       ),
     },
     {
@@ -392,7 +392,7 @@ const mkRichTextShortcuts: (sub: SubDeps) => Shortcut[] = computedFn(
   ],
   {
     keepAlive: true,
-  }
+  },
 );
 
 const MARKDOWN_BLOCKS: Record<string, TagName | Array<TagName>> = {
@@ -412,7 +412,7 @@ const MARKDOWN_BLOCKS: Record<string, TagName | Array<TagName>> = {
 function wrapOrInsertTplTag(
   editor: SlateEditor,
   element: SlateElement,
-  sub: SubDeps
+  sub: SubDeps,
 ) {
   const { Range, Transforms } = sub.slate;
   const { selection } = editor;
@@ -429,7 +429,7 @@ function wrapOrInsertTplTag(
 function matchNodeMarker(
   n: SlateNode,
   sub: SubDeps,
-  tags?: readonly string[]
+  tags?: readonly string[],
 ): boolean {
   return (
     !sub.slate.Editor.isEditor(n) &&
@@ -451,7 +451,7 @@ function matchBlockNodeMarker(n: SlateNode, sub: SubDeps): boolean {
 function isInNodeMarker(
   editor: SlateEditor,
   sub: SubDeps,
-  tags?: readonly string[]
+  tags?: readonly string[],
 ) {
   const [node] = sub.slate.Editor.nodes(editor, {
     match: (n) => matchNodeMarker(n, sub, tags),
@@ -483,7 +483,7 @@ function splitList(editor: SlateEditor, list: TplTagElement, sub: SubDeps) {
   Transforms.setNodes(
     editor,
     { uuid: mkShortId() },
-    { match: (n) => matchNodeMarker(n, sub, listContainerTags) && n !== list }
+    { match: (n) => matchNodeMarker(n, sub, listContainerTags) && n !== list },
   );
 }
 
@@ -517,7 +517,7 @@ function splitListRemovingCurrentItem(editor: SlateEditor, sub: SubDeps) {
     {
       at: Editor.after(editor, Editor.above(editor)![1]),
       match: (n) => matchNodeMarker(n, sub, listContainerTags),
-    }
+    },
   );
 }
 
@@ -586,7 +586,7 @@ function maybeAddNewItem(editor: SlateEditor, sub: SubDeps): boolean {
       },
       {
         at: Path.next(list[1]),
-      }
+      },
     );
 
     // Move cursor to new paragraph.
@@ -615,7 +615,7 @@ function maybeAddNewItem(editor: SlateEditor, sub: SubDeps): boolean {
   Transforms.setNodes(
     editor,
     { uuid: mkShortId() },
-    { match: (n) => !!newItem && n === newItem[0] }
+    { match: (n) => !!newItem && n === newItem[0] },
   );
 
   return true;
@@ -697,7 +697,7 @@ function maybeLeaveBlock(editor: SlateEditor, sub: SubDeps): boolean {
     },
     {
       at: Path.next(block[1]),
-    }
+    },
   );
 
   // Move cursor to new paragraph.
@@ -738,7 +738,7 @@ const inlineCursorFix = (key: number, sub: SubDeps) =>
       key,
       style: { fontSize: 0, lineHeight: 0 },
     },
-    String.fromCodePoint(160)
+    String.fromCodePoint(160),
   );
 
 const isModEnter = isHotkey("mod+enter");
@@ -753,7 +753,7 @@ type PlasmicRichTextOpts = {
 const withPlasmic = (
   editor: SlateEditor,
   opts: PlasmicRichTextOpts,
-  sub: SubDeps
+  sub: SubDeps,
 ) => {
   const { insertFragment, insertText, isInline, isVoid } = editor;
 
@@ -850,12 +850,12 @@ const withPlasmic = (
 function mkRunFn(
   editor: SlateEditor,
   opts: ShortcutFnOpts,
-  sub: SubDeps
+  sub: SubDeps,
 ): RunFn {
   return async function (act: string, params: any) {
     sub.slateReact.ReactEditor.focus(editor);
     for (const { fn } of mkRichTextShortcuts(sub).filter(
-      ({ action }) => act === action
+      ({ action }) => act === action,
     )) {
       await fn(editor, opts, sub, params);
     }
@@ -866,7 +866,7 @@ function mkExprTextProps(
   node: TplTag,
   effectiveVs: EffectiveVariantSetting,
   env: CanvasEnv,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ) {
   if (!isExprText(effectiveVs.text)) {
     throw new Error("mkExprTextProps expects ValTag with ExprText");
@@ -876,14 +876,14 @@ function mkExprTextProps(
     ? asCode(textExpr, exprCtx).code
     : getCodeExpressionWithFallback(
         ensureInstance(textExpr, CustomCode, ObjectPath),
-        exprCtx
+        exprCtx,
       );
   const content = evalCodeWithEnv(expr, env);
   if (content && typeof content === "object") {
     throw new Error(
       `Invalid dynamic text content; expected text or number, but found: ${JSON.stringify(
-        content
-      )}`
+        content,
+      )}`,
     );
   }
   return effectiveVs.text.html
@@ -916,9 +916,9 @@ export const mkCanvasText = computedFn(
             withPlasmic(
               withReact(withHistory(createEditor())),
               { inline },
-              sub
+              sub,
             ),
-          [inline]
+          [inline],
         );
 
         const shortcutOpts: ShortcutFnOpts = { prompt: reactPrompt, vc };
@@ -941,7 +941,7 @@ export const mkCanvasText = computedFn(
             const newVals = resolveNodesToMarkers(newValue, true);
             onChange(newVals.text, newVals.markers);
           },
-          [onChange]
+          [onChange],
         );
 
         react.useEffect(() => {
@@ -1017,7 +1017,7 @@ export const mkCanvasText = computedFn(
                   projectFlags: ctx.projectFlags,
                   component: ctx.ownerComponent ?? null,
                   inStudio: true,
-                }
+                },
               );
               return inline
                 ? react.createElement("span", {
@@ -1035,7 +1035,7 @@ export const mkCanvasText = computedFn(
             },
             {
               hasLoadingBoundary: ctx.env.$ctx[hasLoadingBoundaryKey],
-            }
+            },
           );
         }
 
@@ -1060,7 +1060,7 @@ export const mkCanvasText = computedFn(
                 inlineElement = isTagInline(element.tag);
                 if (element.uuid) {
                   const tplNodeData = descendants.find(
-                    ([tpl]) => tpl.uuid === element.uuid
+                    ([tpl]) => tpl.uuid === element.uuid,
                   );
                   if (tplNodeData) {
                     const [child, suffix] = tplNodeData;
@@ -1086,7 +1086,7 @@ export const mkCanvasText = computedFn(
                               }
                             : {}),
                         },
-                      }
+                      },
                     );
                   }
                 }
@@ -1106,10 +1106,10 @@ export const mkCanvasText = computedFn(
                       tag,
                       projectId: canvasProjectId,
                     }),
-                    isTagInline(tag) && "__wab_inline"
+                    isTagInline(tag) && "__wab_inline",
                   ),
                 },
-                children
+                children,
               );
             },
             renderLeaf: ({ attributes, children, leaf }) => {
@@ -1127,9 +1127,9 @@ export const mkCanvasText = computedFn(
                       mkSlateString(
                         react,
                         ctx.sub.slateDom,
-                        ctx.sub.slateReact
+                        ctx.sub.slateReact,
                       ),
-                      childrenProps
+                      childrenProps,
                     );
                   } else {
                     return children;
@@ -1148,7 +1148,7 @@ export const mkCanvasText = computedFn(
                 childrenNode = react.createElement(
                   "span",
                   { key: 1, style: { [key]: val } },
-                  childrenNode
+                  childrenNode,
                 );
               });
               return react.createElement("span", attributes, childrenNode);
@@ -1323,7 +1323,7 @@ export const mkCanvasText = computedFn(
     },
   {
     keepAlive: true,
-  }
+  },
 );
 
 const mkTextChild = computedFn(
@@ -1331,9 +1331,9 @@ const mkTextChild = computedFn(
     ({ node, ctx }: { node: TplNode; ctx: RenderingCtx }) =>
       mkUseCanvasObserver(vc.canvasCtx.Sub, vc)(
         () => renderTplNode(node, ctx),
-        `mkTextChild(${node.uuid})`
+        `mkTextChild(${node.uuid})`,
       ),
-  { keepAlive: true }
+  { keepAlive: true },
 );
 
 // Builds read-only React children for RawText. Unlike codegen, plain-text runs are wrapped
@@ -1342,11 +1342,11 @@ const mkTextChild = computedFn(
 function renderRawTextChildren(
   react: typeof React,
   rawText: ReturnType<typeof ensureKnownRawText>,
-  ctx: RenderingCtx
+  ctx: RenderingCtx,
 ): React.ReactNode[] {
   const spanClassName = defaultStyleClassNames(
     studioDefaultStylesClassNameBase,
-    { tag: "span", projectId: canvasProjectId }
+    { tag: "span", projectId: canvasProjectId },
   ).join(" ");
 
   return renderRichTextChildren<React.ReactNode>(
@@ -1368,7 +1368,7 @@ function renderRawTextChildren(
         });
       },
     },
-    { spanClassName }
+    { spanClassName },
   );
 }
 
@@ -1401,7 +1401,7 @@ export const mkReadOnlyCanvasText = computedFn(
                     projectFlags: ctx.projectFlags,
                     component: ctx.ownerComponent ?? null,
                     inStudio: true,
-                  }
+                  },
                 );
                 return react.createElement(tag, {
                   className,
@@ -1419,12 +1419,12 @@ export const mkReadOnlyCanvasText = computedFn(
             },
             {
               hasLoadingBoundary: ctx.env.$ctx[hasLoadingBoundaryKey],
-            }
+            },
           ),
-        `mkReadOnlyCanvasText(${node.uuid})`
+        `mkReadOnlyCanvasText(${node.uuid})`,
       );
     },
-  { keepAlive: true }
+  { keepAlive: true },
 );
 
 interface SlateChildrenProps {
@@ -1491,20 +1491,20 @@ export const mkSlateChildren = computedFn(
             },
             {
               hasLoadingBoundary: ctx.env.$ctx[hasLoadingBoundaryKey],
-            }
+            },
           ),
-        `mkSlateChildren(${node.uuid})`
+        `mkSlateChildren(${node.uuid})`,
       );
     },
   {
     keepAlive: true,
-  }
+  },
 );
 
 function mkClassName(node: TplTag, inline: boolean): string {
   return cx(
     node.type === "text" ? "__wab_rich_text" : undefined,
-    inline ? "__wab_inline" : undefined
+    inline ? "__wab_inline" : undefined,
   );
 }
 
@@ -1540,7 +1540,7 @@ function isBlockTplTagParagraph(children: Descendant[]) {
 function tplToSlateNodes(
   node: TplTag,
   ctx: Pick<RenderingCtx, "site" | "activeVariants" | "ownerComponent">,
-  effectiveVs: EffectiveVariantSetting
+  effectiveVs: EffectiveVariantSetting,
 ): Descendant[] {
   if (!effectiveVs.text) {
     // If the node is not of "text" type, we should simply convert and return
@@ -1551,7 +1551,7 @@ function tplToSlateNodes(
       const childEffectiveVs = new EffectiveVariantSetting(
         child,
         childVSettings,
-        ctx.site
+        ctx.site,
       );
       return {
         type: "TplTag",
@@ -1586,12 +1586,12 @@ function tplToSlateNodes(
         .filter(
           (marker) =>
             marker.position >= minMarkerPosition &&
-            marker.position < maxMarkerPosition
+            marker.position < maxMarkerPosition,
         )
         .map((marker) =>
           Object.assign({}, marker, {
             position: marker.position - minMarkerPosition,
-          })
+          }),
         );
 
       minMarkerPosition += markerText.length + 1;
@@ -1599,13 +1599,13 @@ function tplToSlateNodes(
       const children = normalizeMarkers(
         markersForThisSlice,
         markerText.length,
-        isTagInline(node.tag)
+        isTagInline(node.tag),
       ).flatMap((marker): Descendant => {
         if (marker.type === "styleMarker") {
           return {
             text: markerText.slice(
               marker.position,
-              marker.position + marker.length
+              marker.position + marker.length,
             ),
             ...getCssRulesFromRs(marker.rs),
           };
@@ -1617,7 +1617,7 @@ function tplToSlateNodes(
           const childEffectiveVs = new EffectiveVariantSetting(
             childTpl,
             childVSettings,
-            ctx.site
+            ctx.site,
           );
           const meta = {
             type: isExprText(childEffectiveVs.text)
@@ -1640,7 +1640,7 @@ function tplToSlateNodes(
         return {
           text: markerText.slice(
             marker.position,
-            marker.position + marker.length
+            marker.position + marker.length,
           ),
         };
       });

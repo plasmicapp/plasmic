@@ -25,7 +25,7 @@ export type MultiplayerFollowingBorderProps =
 
 function MultiplayerFollowingBorder_(
   props: MultiplayerFollowingBorderProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicMultiplayerFollowingBorder to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,
@@ -46,6 +46,6 @@ function MultiplayerFollowingBorder_(
 }
 
 const MultiplayerFollowingBorder = React.forwardRef(
-  MultiplayerFollowingBorder_
+  MultiplayerFollowingBorder_,
 );
 export default MultiplayerFollowingBorder;

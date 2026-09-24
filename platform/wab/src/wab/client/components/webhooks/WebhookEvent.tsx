@@ -43,24 +43,24 @@ function WebhookEvent(props: WebhookEventProps) {
             state: event.status >= 300 ? "failed" : undefined,
           }
         : webhook
-        ? {
-            method: webhook.method,
-            url: webhook.url,
-            indicator: !webhook.event
-              ? {
-                  render: () => <PublishSpinner />,
-                }
-              : undefined,
-            status: `${webhook.event?.status}`,
-            createdAt: webhook.event?.createdAt.toString(),
-            response: webhook.event?.response,
-            state: !webhook.event
-              ? "loading"
-              : webhook.event.status >= 300
-              ? "failed"
-              : undefined,
-          }
-        : {})}
+          ? {
+              method: webhook.method,
+              url: webhook.url,
+              indicator: !webhook.event
+                ? {
+                    render: () => <PublishSpinner />,
+                  }
+                : undefined,
+              status: `${webhook.event?.status}`,
+              createdAt: webhook.event?.createdAt.toString(),
+              response: webhook.event?.response,
+              state: !webhook.event
+                ? "loading"
+                : webhook.event.status >= 300
+                  ? "failed"
+                  : undefined,
+            }
+          : {})}
     />
   );
 }

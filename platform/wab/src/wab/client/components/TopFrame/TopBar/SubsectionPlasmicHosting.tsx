@@ -38,8 +38,7 @@ export type StatusPlasmicHosting = {
 };
 
 export interface SubsectionPlasmicHostingProps
-  extends DefaultSubsectionPlasmicHostingProps,
-    VisibleEnableBlock {
+  extends DefaultSubsectionPlasmicHostingProps, VisibleEnableBlock {
   appCtx: AppCtx;
   project: ApiProject;
   refreshProjectAndPerms: () => void;
@@ -52,12 +51,12 @@ export interface SubsectionPlasmicHostingProps
  */
 async function removeCustomDomain(
   appCtx: AppCtx,
-  projectId: ProjectId
+  projectId: ProjectId,
 ): Promise<SetCustomDomainFailure | undefined> {
   try {
     const response = await appCtx.api.setCustomDomainForProject(
       undefined,
-      projectId
+      projectId,
     );
     return getSetCustomDomainFailure(response);
   } catch (err) {
@@ -68,7 +67,7 @@ async function removeCustomDomain(
 
 function SubsectionPlasmicHosting_(
   props: SubsectionPlasmicHostingProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const {
     appCtx,
@@ -84,7 +83,7 @@ function SubsectionPlasmicHosting_(
   } = props;
 
   const domainValidator = new DomainValidator(
-    appCtx.appConfig.plasmicHostingSubdomainSuffix
+    appCtx.appConfig.plasmicHostingSubdomainSuffix,
   );
 
   const [showHosting, setShowHosting] = React.useState(false);
@@ -175,7 +174,7 @@ function SubsectionPlasmicHosting_(
                       status: failure.status,
                       vercelErrorCode: failure.vercelErrorCode,
                       operation: pickFailedOperation(failure),
-                    }
+                    },
                   ),
                 });
                 return;
@@ -207,10 +206,10 @@ function SubsectionPlasmicHosting_(
                     failure.error.type === "Cloudflare challenge"
                       ? "Blocked by Cloudflare challenge, please allow calls to /api/revalidate route on your domain or disable Cloudflare."
                       : failure.error.type === "Invalid JSON response"
-                      ? "Unable to call /api/revalidate"
-                      : failure.error.type === "HTTP error"
-                      ? `/api/revalidate returned HTTP ${failure.error.status}`
-                      : "please retry later";
+                        ? "Unable to call /api/revalidate"
+                        : failure.error.type === "HTTP error"
+                          ? `/api/revalidate returned HTTP ${failure.error.status}`
+                          : "please retry later";
                   return (
                     <GitJobStep
                       status={"failed"}

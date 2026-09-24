@@ -73,7 +73,7 @@ const EditableVariantName = observer(function EditableVariantName(props: {
               studioCtx.change(() => {
                 variant.name = newName;
                 return ok();
-              })
+              }),
             );
           }
         }
@@ -87,7 +87,7 @@ const EditableVariantName = observer(function EditableVariantName(props: {
 
 function ExperimentPanel_(
   props: ExperimentPanelProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { split, idx, values, changeValues } = props;
 
@@ -99,7 +99,7 @@ function ExperimentPanel_(
     ? content.variant
     : undefined;
   const [isTargeting, setIsTargeting] = React.useState(
-    testVariant && vcontroller?.isTargeted(testVariant)
+    testVariant && vcontroller?.isTargeted(testVariant),
   );
   const slice = split.slices[idx];
   const isBase = idx === 0;
@@ -120,7 +120,7 @@ function ExperimentPanel_(
           } to the base variant`,
         });
         return ok();
-      })
+      }),
     );
   };
 
@@ -146,7 +146,7 @@ function ExperimentPanel_(
                 testVariant.name = e.target.value;
               }
               return ok();
-            })
+            }),
           );
         },
       }}
@@ -193,7 +193,7 @@ function ExperimentPanel_(
                   }
                 }
                 return ok();
-              })
+              }),
             );
             setIsTargeting(!isTargeting);
           }

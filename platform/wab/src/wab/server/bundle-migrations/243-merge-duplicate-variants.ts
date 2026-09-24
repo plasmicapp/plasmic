@@ -42,7 +42,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   let hasBundleChanged = false;
@@ -170,7 +170,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
       // Replace duplicate variant references inside column settings.
       if (isTplColumns(tpl) && tpl.columnsSetting?.screenBreakpoint) {
         const ownerVariant = dupVariantOwnerMap.get(
-          tpl.columnsSetting.screenBreakpoint
+          tpl.columnsSetting.screenBreakpoint,
         );
         if (ownerVariant) {
           tpl.columnsSetting.screenBreakpoint = ownerVariant;
@@ -193,11 +193,11 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   if (hasBundleChanged) {
     if (checkDuplicateVsExists(site)) {
       console.log(
-        `MIGRATION_VS_ISSUE_EXISTS_AFTER_MERGE: PROJECT=${projectId} has still duplicate VariantSettings after merging.`
+        `MIGRATION_VS_ISSUE_EXISTS_AFTER_MERGE: PROJECT=${projectId} has still duplicate VariantSettings after merging.`,
       );
     } else {
       console.log(
-        `MIGRATION_VS_ISSUE_RESOLVED_AFTER_MERGE: PROJECT=${projectId} has no more duplicate VariantSettings after merging.`
+        `MIGRATION_VS_ISSUE_RESOLVED_AFTER_MERGE: PROJECT=${projectId} has no more duplicate VariantSettings after merging.`,
       );
     }
   }
@@ -205,7 +205,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "243-merge-duplicate-variants"
+    "243-merge-duplicate-variants",
   );
   Object.assign(bundle, newBundle);
 };

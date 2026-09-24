@@ -26,7 +26,7 @@ export const parseGlobalVariants = (rawGlobalVariants?: any) => {
     for (const variant of globalVariants) {
       if (!variant.name || !variant.value) {
         throw new BadRequestError(
-          "Invalid globalVariants.name or globalVariants.value"
+          "Invalid globalVariants.name or globalVariants.value",
         );
       }
     }

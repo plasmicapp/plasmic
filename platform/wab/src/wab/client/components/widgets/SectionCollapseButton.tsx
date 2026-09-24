@@ -8,14 +8,13 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Tooltip } from "antd";
 import * as React from "react";
 
-export interface SectionCollapseButtonProps
-  extends DefaultSectionCollapseButtonProps {
+export interface SectionCollapseButtonProps extends DefaultSectionCollapseButtonProps {
   tooltip?: React.ReactNode | (() => React.ReactNode);
 }
 
 function SectionCollapseButton_(
   props: SectionCollapseButtonProps,
-  ref: HTMLElementRefOf<"button">
+  ref: HTMLElementRefOf<"button">,
 ) {
   const { tooltip, ...rest } = props;
   return (

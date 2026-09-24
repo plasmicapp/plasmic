@@ -33,7 +33,7 @@ export function initSentryBrowser(opts: {
         new opts.posthog.SentryIntegration(
           opts.posthog,
           opts.orgId,
-          opts.projId
+          opts.projId,
         ),
     ]),
     ignoreErrors: ERROR_PATTERNS_TO_IGNORE,
@@ -81,7 +81,7 @@ export function initSentryBrowser(opts: {
       }
 
       const studioCtx = hackyCast<StudioCtx | undefined>(
-        hackyCast(window).studioCtx
+        hackyCast(window).studioCtx,
       );
       const maybeProjectId = studioCtx?.siteInfo.id;
       if (maybeProjectId) {
@@ -107,7 +107,7 @@ export function initSentryBrowser(opts: {
         event.tags.tier = "plasmic";
       } else {
         const userTiers = withoutFalsy(
-          appCtx?.teams.map((t) => t.featureTier?.name) ?? []
+          appCtx?.teams.map((t) => t.featureTier?.name) ?? [],
         );
         event.tags.tier = getMaximumTier(userTiers);
       }

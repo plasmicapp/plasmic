@@ -103,7 +103,7 @@ export async function githubData(req: Request, res: Response) {
     }
 
     repositories.push(
-      ...(await fetchGithubRepositories(octokit, installationId))
+      ...(await fetchGithubRepositories(octokit, installationId)),
     );
   }
 
@@ -111,7 +111,7 @@ export async function githubData(req: Request, res: Response) {
     ensureType<GithubData>({
       organizations,
       repositories,
-    })
+    }),
   );
 }
 
@@ -145,7 +145,7 @@ export async function setupNewGithubRepo(req: Request, res: Response) {
             domain,
           }: NewGithubRepoRequest = req.body;
           const token = ensureString(
-            maybeToken ?? tryGetGithubTokenHeader(req)
+            maybeToken ?? tryGetGithubTokenHeader(req),
           );
 
           const octokit = new Octokit({ auth: token });
@@ -163,7 +163,7 @@ export async function setupNewGithubRepo(req: Request, res: Response) {
                       name,
                       private: privateRepo,
                     }),
-              (e) => e as Error
+              (e) => e as Error,
             )()
           ).mapErr((e) => {
             if ("errors" in e) {
@@ -201,7 +201,7 @@ export async function setupNewGithubRepo(req: Request, res: Response) {
           }
 
           const maybeCleanup = async <T, E>(
-            _res: PromiseLike<Result<T, E>>
+            _res: PromiseLike<Result<T, E>>,
           ): Promise<Result<T, E>> => {
             if ((await _res).isErr()) {
               await cleanup();
@@ -217,8 +217,8 @@ export async function setupNewGithubRepo(req: Request, res: Response) {
                   owner,
                   repo,
                 }),
-              (e) => e as Error
-            )()
+              (e) => e as Error,
+            )(),
           );
 
           if (domain) {
@@ -231,10 +231,10 @@ export async function setupNewGithubRepo(req: Request, res: Response) {
                     repo,
                     branch: "gh-pages",
                   },
-                  domain
+                  domain,
                 ),
-                (e) => e as Error
-              ).andThen((r) => r)
+                (e) => e as Error,
+              ).andThen((r) => r),
             );
 
             yield* await maybeCleanup(
@@ -246,8 +246,8 @@ export async function setupNewGithubRepo(req: Request, res: Response) {
                     repo,
                     branch: data.default_branch,
                   }),
-                (e) => e as Error
-              )()
+                (e) => e as Error,
+              )(),
             );
           }
 
@@ -259,9 +259,9 @@ export async function setupNewGithubRepo(req: Request, res: Response) {
               defaultBranch: data.default_branch,
             },
           });
-        }
+        },
       ),
-    (e) => e as Error
+    (e) => e as Error,
   )().andThen((r) => r);
 
   result.match(
@@ -276,13 +276,13 @@ export async function setupNewGithubRepo(req: Request, res: Response) {
             ensureType<NewGithubRepoResponse>({
               type: "KnownError",
               knownError: err,
-            })
+            }),
           );
           break;
         default:
           throw err;
       }
-    }
+    },
   );
 }
 
@@ -347,7 +347,7 @@ export async function getProjectRepositories(req: Request, res: Response) {
     try {
       const branches = await fetchGithubBranches(
         item.installationId,
-        item.repository
+        item.repository,
       );
 
       projectRepositories.push({
@@ -405,9 +405,8 @@ export async function fireGitAction(req: Request, res: Response) {
   const user = getUser(req);
 
   const mgr = userDbMgr(req);
-  const projectRepository = await mgr.getProjectRepositoryById(
-    projectRepositoryId
-  );
+  const projectRepository =
+    await mgr.getProjectRepositoryById(projectRepositoryId);
   assert(projectId === projectRepository.projectId, "Unexpected projectId");
 
   const run = await runGitJob({
@@ -429,9 +428,8 @@ export async function getLatestWorkflowRun(req: Request, res: Response) {
   const { projectId } = parseQueryParams(req);
 
   const mgr = userDbMgr(req);
-  const projectRepository = await mgr.getProjectRepositoryById(
-    projectRepositoryId
-  );
+  const projectRepository =
+    await mgr.getProjectRepositoryById(projectRepositoryId);
   assert(projectId === projectRepository.projectId, "Unexpected projectId");
 
   const [owner, repo] = projectRepository.repository.split("/");
@@ -451,9 +449,8 @@ export async function getGitWorkflowJob(req: Request, res: Response) {
   const { projectId } = parseQueryParams(req);
 
   const mgr = userDbMgr(req);
-  const projectRepository = await mgr.getProjectRepositoryById(
-    projectRepositoryId
-  );
+  const projectRepository =
+    await mgr.getProjectRepositoryById(projectRepositoryId);
   assert(projectId === projectRepository.projectId, "Unexpected projectId");
   const { installationId, repository } = projectRepository;
   const [owner, repo] = repository.split("/");
@@ -480,7 +477,7 @@ export async function detectOptionsFromDirectory(req: Request, res: Response) {
       owner,
       repo,
       branch,
-      dir
+      dir,
     );
 
     res.json({ syncOptions });

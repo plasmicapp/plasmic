@@ -63,7 +63,7 @@ export const Typography = observer(_Typography);
 
 function mkFontWeightOptions(
   sc: StyleComponent,
-  currentFontWeight: string | undefined
+  currentFontWeight: string | undefined,
 ): StyleSelectOption[] {
   const exp = sc.exp();
 
@@ -79,11 +79,11 @@ function mkFontWeightOptions(
     isValidFontWeight(option.value, spec)
       ? option
       : option.value == currentFontWeight
-      ? // font-weight is set to a value that is not supported by this font. In
-        // this case, we want to show the current value for font-weight in the
-        // options, but disabled.
-        { ...option, isDisabled: true }
-      : false
+        ? // font-weight is set to a value that is not supported by this font. In
+          // this case, we want to show the current value for font-weight in the
+          // options, but disabled.
+          { ...option, isDisabled: true }
+        : false,
   );
 }
 
@@ -101,7 +101,7 @@ function _Typography({
 
   const currentFontWeight = maybe(
     exp.get("font-weight"),
-    (x) => `${fontWeightNumber(x)}`
+    (x) => `${fontWeightNumber(x)}`,
   );
 
   return (
@@ -162,7 +162,7 @@ function _Typography({
                 if (val) {
                   const derefedVal = derefTokenRefs(
                     siteFinalStyleTokensAllDeps(sc.studioCtx().site),
-                    val
+                    val,
                   );
                   const parsed = parseCssNumericNew(derefedVal);
                   if (
@@ -254,8 +254,8 @@ function _Typography({
           {
             collapsible: !isSetOrInherited(
               getValueSetState(
-                ...sc.definedIndicators("line-height", "letter-spacing")
-              )
+                ...sc.definedIndicators("line-height", "letter-spacing"),
+              ),
             ),
             content: (
               <LetterSpacingLineHeightControls readOnly={readOnly} vsh={vsh} />
@@ -264,8 +264,8 @@ function _Typography({
           {
             collapsible: !isSetOrInherited(
               getValueSetState(
-                ...sc.definedIndicators("user-select", "text-transform")
-              )
+                ...sc.definedIndicators("user-select", "text-transform"),
+              ),
             ),
             content: (
               <>
@@ -306,7 +306,7 @@ function _Typography({
           },
           {
             collapsible: !isSetOrInherited(
-              getValueSetState(...sc.definedIndicators("white-space"))
+              getValueSetState(...sc.definedIndicators("white-space")),
             ),
             content: (
               <>
@@ -318,7 +318,7 @@ function _Typography({
                     onChange={(val) => {
                       props.onChange(
                         "white-space",
-                        val ? "pre-wrap" : "nowrap"
+                        val ? "pre-wrap" : "nowrap",
                       );
                       if (val) {
                         props.unset("text-overflow");
@@ -350,8 +350,8 @@ function _Typography({
                             "text-overflow",
                             ensure(
                               val,
-                              "Unexpected undefined text-overflow value"
-                            )
+                              "Unexpected undefined text-overflow value",
+                            ),
                           );
                           props.onChange("overflow", "hidden");
                         }

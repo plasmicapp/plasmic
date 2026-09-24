@@ -17,7 +17,7 @@ export function traverseUpdates(
   enter: (node: Fiber) => void,
   leave: (node: Fiber) => void,
   onFakeUnmount: (node: Fiber) => void,
-  unchanged: (node: Fiber) => void
+  unchanged: (node: Fiber) => void,
 ) {
   // Suspense nodes are special cases that need some magic
   // (when they timout, they don't unmount because might lose important state)
@@ -42,7 +42,7 @@ export function traverseUpdates(
         enter,
         leave,
         onFakeUnmount,
-        unchanged
+        unchanged,
       );
     }
   } else if (prevDidTimeout && !nextDidTimeOut) {
@@ -71,7 +71,7 @@ export function traverseUpdates(
             enter,
             leave,
             onFakeUnmount,
-            unchanged
+            unchanged,
           );
         } else {
           traverseTree(child, enter, leave, false);
@@ -89,7 +89,7 @@ export function traverseTree(
   root: Fiber,
   enter: (node: Fiber) => void,
   leave: (node: Fiber) => void,
-  visitSiblings: boolean
+  visitSiblings: boolean,
 ): void {
   let node: Fiber | null = root;
 

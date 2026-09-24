@@ -75,7 +75,7 @@ export function mkGlobalVariantSplit(opts: {
     new GlobalVariantSplitContent({
       group,
       variant,
-    })
+    }),
   );
 
   return new Split({
@@ -98,7 +98,7 @@ export function removeVariantGroupFromSplits(site: Site, group: VariantGroup) {
           .when(ComponentSwapSplitContent, () => false)
           .when(
             [GlobalVariantSplitContent, ComponentVariantSplitContent],
-            (variantContent) => variantContent.group === group
+            (variantContent) => variantContent.group === group,
           )
           .result();
       });
@@ -108,7 +108,7 @@ export function removeVariantGroupFromSplits(site: Site, group: VariantGroup) {
 
 export function isGlobalVariantGroupUsedInSplits(
   site: Site,
-  group: VariantGroup
+  group: VariantGroup,
 ) {
   return site.splits.some((split) =>
     split.slices.some((slice) =>
@@ -116,11 +116,11 @@ export function isGlobalVariantGroupUsedInSplits(
         switchType(content)
           .when(
             GlobalVariantSplitContent,
-            (variantContent) => variantContent.group === group
+            (variantContent) => variantContent.group === group,
           )
-          .elseUnsafe(() => false)
-      )
-    )
+          .elseUnsafe(() => false),
+      ),
+    ),
   );
 }
 

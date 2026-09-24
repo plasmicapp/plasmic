@@ -84,7 +84,7 @@ const ImageAssetPickerWithDynamicValue = observer(
       if (isDynamic && isKnownExpr(openGraphImage) && pageMetaEnv) {
         const evaluated = tryEvalExpr(
           asCode(openGraphImage, exprCtx).code,
-          pageMetaEnv
+          pageMetaEnv,
         );
         return evaluated?.val;
       }
@@ -92,7 +92,7 @@ const ImageAssetPickerWithDynamicValue = observer(
     }, [isDynamic, openGraphImage, pageMetaEnv, exprCtx]);
 
     const updateOpenGraphImage = (
-      raw: TemplatedString | ImageAsset | string | null
+      raw: TemplatedString | ImageAsset | string | null,
     ) => {
       const value =
         raw && isKnownImageAsset(raw) ? new ImageAssetRef({ asset: raw }) : raw;
@@ -106,9 +106,9 @@ const ImageAssetPickerWithDynamicValue = observer(
             new ObjectPath({
               path: ["undefined"],
               fallback: codeLit(undefined),
-            })
+            }),
           );
-        })
+        }),
       );
       setIsDataPickerVisible(true);
     };
@@ -150,9 +150,9 @@ const ImageAssetPickerWithDynamicValue = observer(
               viewCtx={viewCtx}
               value={extractValueSavedFromDataPicker(
                 getLastDynExprFromTemplatedString(
-                  openGraphImage as TemplatedString
+                  openGraphImage as TemplatedString,
                 ),
-                exprCtx
+                exprCtx,
               )}
               onChange={(val) => {
                 if (!val) {
@@ -195,7 +195,7 @@ const ImageAssetPickerWithDynamicValue = observer(
                 (isKnownImageAsset(imageValue) ||
                   typeof imageValue === "string")
                 ? imageValue
-                : undefined
+                : undefined,
             )}
             keepOpen={true}
             onPicked={(picked) => {
@@ -205,7 +205,7 @@ const ImageAssetPickerWithDynamicValue = observer(
         )}
       </ContextMenuIndicator>
     );
-  }
+  },
 );
 
 const PageSettings = observer(function PageSettings({
@@ -220,15 +220,15 @@ const PageSettings = observer(function PageSettings({
 
   const title = React.useMemo(
     () => convertPageMetaStringToExpr(page.pageMeta?.title),
-    [page.pageMeta?.title]
+    [page.pageMeta?.title],
   );
   const description = React.useMemo(
     () => convertPageMetaStringToExpr(page.pageMeta?.description),
-    [page.pageMeta?.description]
+    [page.pageMeta?.description],
   );
   const canonical = React.useMemo(
     () => convertPageMetaStringToExpr(page.pageMeta?.canonical),
-    [page.pageMeta?.canonical]
+    [page.pageMeta?.canonical],
   );
 
   const env = viewCtx.getCanvasEnvForTpl(page.tplTree);

@@ -24,7 +24,7 @@ export interface DataSourceProps extends DefaultDataSourceProps {
 
 function DataSource_(
   { source, appCtx, onUpdate, matcher, ...props }: DataSourceProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const renderMenu = () => (
     <Menu>
@@ -43,7 +43,7 @@ function DataSource_(
             appCtx,
             null,
             false,
-            "Move"
+            "Move",
           );
           if (!response) {
             return;

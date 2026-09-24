@@ -35,7 +35,7 @@ interface TeamPageHeaderProps extends DefaultTeamPageHeaderProps {
 
 function TeamPageHeader_(
   props: TeamPageHeaderProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const appCtx = useAppCtx();
   const history = useHistory();
@@ -52,7 +52,7 @@ function TeamPageHeader_(
   const teamAccessLevel = getAccessLevelToResource(
     { type: "team", resource: team },
     appCtx.selfInfo,
-    perms
+    perms,
   );
 
   return (
@@ -109,8 +109,8 @@ function TeamPageHeader_(
         accessLevelRank(teamAccessLevel) < accessLevelRank("viewer")
           ? "none"
           : accessLevelRank(teamAccessLevel) < accessLevelRank("editor")
-          ? "cantEdit"
-          : undefined
+            ? "cantEdit"
+            : undefined
       }
       numProjects={`${numProjects}`}
       numMembers={`${numMembers}`}

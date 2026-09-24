@@ -55,7 +55,7 @@ describe("CMS public routes", () => {
         {
           email: "user@example.com",
         },
-        0
+        0,
       );
       user = userAndProjects.user;
 
@@ -139,10 +139,10 @@ describe("CMS public routes", () => {
                         num % 15 === 0
                           ? "fizzbuzz"
                           : num % 3 === 0
-                          ? "fizz"
-                          : num % 5 === 0
-                          ? "buzz"
-                          : null,
+                            ? "fizz"
+                            : num % 5 === 0
+                              ? "buzz"
+                              : null,
                       draft: false,
                       secretNum: 120 - num,
                     },
@@ -151,10 +151,10 @@ describe("CMS public routes", () => {
                         num % 15 === 0
                           ? "FIZZBUZZ"
                           : num % 3 === 0
-                          ? "FIZZ"
-                          : num % 5 === 0
-                          ? "BUZZ"
-                          : null,
+                            ? "FIZZ"
+                            : num % 5 === 0
+                              ? "BUZZ"
+                              : null,
                     },
                   }
                 : undefined,
@@ -165,15 +165,15 @@ describe("CMS public routes", () => {
                   num % 15 === 0
                     ? "fizzbuzz"
                     : num % 3 === 0
-                    ? "fizz"
-                    : num % 5 === 0
-                    ? "buzz"
-                    : null,
+                      ? "fizz"
+                      : num % 5 === 0
+                        ? "buzz"
+                        : null,
                 draft: true,
               },
             },
           };
-        })
+        }),
       );
 
       // Create animal table
@@ -571,7 +571,7 @@ describe("CMS public routes", () => {
 
       const publicTokenRes =
         await publicApi.tsRestClient.publicCmsReadsContract.queryTable(
-          draftRequest
+          draftRequest,
         );
       const {
         body: { error },
@@ -1049,7 +1049,7 @@ describe("CMS public routes", () => {
 
       const publicTokenRes =
         await publicApi.tsRestClient.publicCmsReadsContract.countTable(
-          draftRequest
+          draftRequest,
         );
       const {
         body: { error },

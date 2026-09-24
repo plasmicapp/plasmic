@@ -38,7 +38,7 @@ export const lte = (v1: string, v2: string) => eq(v1, v2) || lt(v1, v2);
 export const neq = (v1: string, v2: string) => !eq(v1, v2);
 export const sortAsc = (versions: string[]) =>
   L.cloneDeep(versions).sort((v1, v2) =>
-    gt(v1, v2) ? +1 : eq(v1, v2) ? 0 : -1
+    gt(v1, v2) ? +1 : eq(v1, v2) ? 0 : -1,
   );
 export const sortDesc = (versions: string[]) => sortAsc(versions).reverse();
 export const minSatisfying = (versions: string[], range: string) =>

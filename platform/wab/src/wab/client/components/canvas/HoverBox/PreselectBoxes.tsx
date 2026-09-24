@@ -42,7 +42,7 @@ function PreselectBoxes_() {
     // subscribed to any hover change.
     .filter((vc) => !!vc.$hoveredDomElt())
     .find((vc) =>
-      getArenaFrames(studioCtx.currentArena).includes(vc.arenaFrame())
+      getArenaFrames(studioCtx.currentArena).includes(vc.arenaFrame()),
     );
 
   const hoveredSelectable = viewCtx?.hoveredSelectable();
@@ -91,7 +91,7 @@ function PreselectBox_(props: {
   const $element = maybe(
     viewCtx &&
       viewCtx.renderState.sel2dom(selectable, viewCtx.canvasCtx, cloneKey),
-    (dom) => $(dom)
+    (dom) => $(dom),
   );
   const $focused =
     viewCtx === studioCtx.focusedViewCtx() && viewCtx?.focusedDomElt();
@@ -145,7 +145,7 @@ function PreselectBoxInner(props: {
   const leftOffset = useTagLeftOffset(
     hoverTagRef,
     scalerRect.width,
-    studioCtx.zoom
+    studioCtx.zoom,
   );
 
   const isTargetingSomeNonBaseVariant =

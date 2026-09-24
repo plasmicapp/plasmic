@@ -53,7 +53,7 @@ export type StyleTokenFolderActions = TokenFolderActions<
 interface TokenHeader<
   TToken extends Token,
   TType extends TokenType,
-  TValue extends TokenValue
+  TValue extends TokenValue,
 > {
   type: "header";
   tokenType: TType;
@@ -64,28 +64,28 @@ interface TokenHeader<
 
 type OnAddToken<TType extends TokenType> = (
   type: TType,
-  folderName?: string
+  folderName?: string,
 ) => Promise<void>;
 
 type OnFolderRenamed<
   TToken extends Token,
   TType extends TokenType,
-  TValue extends TokenValue
+  TValue extends TokenValue,
 > = (
   folder: TokenFolder<TToken, TType, TValue>,
-  newName: string
+  newName: string,
 ) => Promise<void>;
 
 type OnDeleteFolder<
   TToken extends Token,
   TType extends TokenType,
-  TValue extends TokenValue
+  TValue extends TokenValue,
 > = (folder: TokenFolder<TToken, TType, TValue>) => Promise<void>;
 
 interface TokenFolderActions<
   TToken extends Token,
   TType extends TokenType,
-  TValue extends TokenValue
+  TValue extends TokenValue,
 > {
   onAddToken: OnAddToken<TType>;
   onDeleteFolder: OnDeleteFolder<TToken, TType, TValue>;
@@ -95,7 +95,7 @@ interface TokenFolderActions<
 export interface TokenFolder<
   TToken extends Token,
   TType extends TokenType,
-  TValue extends TokenValue
+  TValue extends TokenValue,
 > {
   type: "folder" | "folder-token";
   tokenType: TType;
@@ -118,7 +118,7 @@ interface TokenData<TToken extends Token, TValue extends TokenValue> {
 type TokenPanelRow<
   TToken extends Token,
   TType extends TokenType,
-  TValue extends TokenValue
+  TValue extends TokenValue,
 > =
   | TokenHeader<TToken, TType, TValue>
   | TokenFolder<TToken, TType, TValue>
@@ -153,7 +153,7 @@ export type TokenIndicatorType = "set" | "overriding" | "inherited" | undefined;
  */
 export const getTokenIndicatorType = (
   token: FinalToken<StyleToken>,
-  vsh = new VariantedStylesHelper()
+  vsh = new VariantedStylesHelper(),
 ): TokenIndicatorType => {
   if (vsh.isTargetBaseVariant()) {
     if (token instanceof MutableToken) {
@@ -189,7 +189,7 @@ export const newTokenValueAllowed = (
   token: FinalToken<StyleToken>,
   site: Site,
   newValue: string,
-  vsh?: VariantedStylesHelper
+  vsh?: VariantedStylesHelper,
 ) => {
   const allTokensOfSameType = siteFinalStyleTokensOfType(site, token.type, {
     includeDeps: "direct",
@@ -199,7 +199,7 @@ export const newTokenValueAllowed = (
     token,
     allTokensOfSameType,
     newValue,
-    vsh
+    vsh,
   );
   if (!maybeCycle) {
     return true;
@@ -228,7 +228,7 @@ function maybeTokenRefCycle(
   token: FinalToken<StyleToken>,
   tokens: ReadonlyArray<FinalToken<StyleToken>>,
   newValue: string,
-  vsh?: VariantedStylesHelper
+  vsh?: VariantedStylesHelper,
 ): string[] | undefined {
   const visited = new Set<StyleToken>([token.base]);
   let curValue = newValue;
@@ -245,7 +245,7 @@ function maybeTokenRefCycle(
       assert(
         referredToken.base === token.base,
         () =>
-          `token ${token.name} (${token.uuid}) is cyclically referencing ${referredToken.name} (${referredToken.uuid})`
+          `token ${token.name} (${token.uuid}) is cyclically referencing ${referredToken.name} (${referredToken.uuid})`,
       );
       const cycle = [...visited].map((t) => t.name);
       cycle.push(referredToken.name);

@@ -38,7 +38,7 @@ export const GRID_DEFAULT_TEMPLATE: FixedSize = {
 
 export function parseGridCssPropsToSpec(
   rsh: ReadonlyIRuleSetHelpers,
-  resolver: CssVarResolver
+  resolver: CssVarResolver,
 ): GridSpec {
   const parseProp = (prop: string, startRule: string) => {
     if (!rsh.has(prop)) {
@@ -51,7 +51,7 @@ export function parseGridCssPropsToSpec(
   };
   ensure(
     rsh.get("display") === "grid",
-    "Grid element is expected to have display:grid"
+    "Grid element is expected to have display:grid",
   );
   return {
     gridTemplateColumns: parseProp("grid-template-columns", "axisTemplate"),
@@ -80,13 +80,13 @@ export function parseGridChildCssProps(rsh: ReadonlyIRuleSetHelpers) {
 }
 
 export function isTrackTemplate(
-  template: ReadonlyArray<Track> | FlexibleSize | FixedSize
+  template: ReadonlyArray<Track> | FlexibleSize | FixedSize,
 ): template is ReadonlyArray<Track> {
   return isArray(template);
 }
 
 export function isFlexibleSize(
-  template: ReadonlyArray<Track> | FlexibleSize | FixedSize
+  template: ReadonlyArray<Track> | FlexibleSize | FixedSize,
 ): template is FlexibleSize {
   return !isTrackTemplate(template) && template.type === "FlexibleSize";
 }

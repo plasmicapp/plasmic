@@ -66,7 +66,7 @@ export type UniqueFieldStatus =
 
 function dataToUniqueStatus(
   uniqueData: Dict<unknown>,
-  status: "not started" | "pending" | "ok"
+  status: "not started" | "pending" | "ok",
 ): Dict<UniqueFieldStatus> {
   const uniqueStatus: Dict<UniqueFieldStatus> = {};
   Object.entries(uniqueData).forEach(([fieldIdentifier, fieldValue]) => {
@@ -81,7 +81,7 @@ function dataToUniqueStatus(
 export function getRowIdentifierText(
   table: ApiCmsTable,
   row: ApiCmseRow,
-  formIdentifier?: string
+  formIdentifier?: string,
 ) {
   const identifier = formIdentifier ?? row.identifier;
   if (identifier) {
@@ -89,7 +89,7 @@ export function getRowIdentifierText(
   }
 
   const firstTextField = table.schema.fields.find((field, _) =>
-    [CmsMetaType.TEXT, CmsMetaType.LONG_TEXT].includes(field.type)
+    [CmsMetaType.TEXT, CmsMetaType.LONG_TEXT].includes(field.type),
   )?.identifier;
   if (firstTextField) {
     const placeholder = (row.draftData?.[""]?.[firstTextField] ||
@@ -105,12 +105,12 @@ export function getRowIdentifierText(
 export function getRowIdentifierNode(
   table: ApiCmsTable,
   row: ApiCmseRow,
-  formIdentifier?: string
+  formIdentifier?: string,
 ) {
   const { identifier, placeholder } = getRowIdentifierText(
     table,
     row,
-    formIdentifier
+    formIdentifier,
   );
   return (
     identifier ?? <div className="dimfg">{placeholder || "Untitled entry"}</div>
@@ -119,7 +119,7 @@ export function getRowIdentifierNode(
 
 function CmsEntryDetails_(
   props: CmsEntryDetailsProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { ...rest } = props;
   const match = useMatchedRoute<{
@@ -153,7 +153,7 @@ export function renderContentEntryFormFields(
   database: ApiCmsDatabase,
   locales: string[],
   disabled: boolean,
-  uniqueFieldStatus?: Dict<UniqueFieldStatus>
+  uniqueFieldStatus?: Dict<UniqueFieldStatus>,
 ) {
   return (
     <>
@@ -205,7 +205,7 @@ function CmsEntryDetailsForm_(
     table: ApiCmsTable;
     row: ApiCmseRow;
   },
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { database, table, row, ...rest } = props;
   const api = useApi();
@@ -214,7 +214,7 @@ function CmsEntryDetailsForm_(
   const [isPublishing, setPublishing] = React.useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = React.useState(false);
   const [hasUnpublishedChanges, setHasUnpublishedChanges] = React.useState(
-    !!row?.draftData
+    !!row?.draftData,
   );
   const [showDuplicateModal, setShowDuplicateModal] = React.useState(false);
   const [isDuplicating, setDuplicating] = React.useState(false);
@@ -257,25 +257,25 @@ function CmsEntryDetailsForm_(
         return copy;
       });
     },
-    [setUniqueFieldsStatus]
+    [setUniqueFieldsStatus],
   );
 
   const isSomeUniqueStatus = (status: string) => {
     return Object.values(uniqueFieldsStatus).some(
-      (fieldStatus) => fieldStatus.status === status
+      (fieldStatus) => fieldStatus.status === status,
     );
   };
   const isUniqueFieldUpdated = React.useMemo(
     () => isSomeUniqueStatus("not started"),
-    [uniqueFieldsStatus]
+    [uniqueFieldsStatus],
   );
   const isCheckingUniqueness = React.useMemo(
     () => isSomeUniqueStatus("pending"),
-    [uniqueFieldsStatus]
+    [uniqueFieldsStatus],
   );
   const hasUniqueViolation = React.useMemo(
     () => isSomeUniqueStatus("violation"),
-    [uniqueFieldsStatus]
+    [uniqueFieldsStatus],
   );
 
   const mutateRow = async () => {
@@ -295,7 +295,7 @@ function CmsEntryDetailsForm_(
 
   const dataEquals = (
     data1: CmsRowData | null | undefined,
-    data2: CmsRowData | null | undefined
+    data2: CmsRowData | null | undefined,
   ) => {
     const fields = table.schema.fields
       .filter((f) => !f.hidden)
@@ -303,12 +303,12 @@ function CmsEntryDetailsForm_(
     return isEqual(
       mapValues(
         pickBy(data1, (v, _k) => !isNil(v)),
-        (v) => pickBy(v, (v2, k) => !isNil(v2) && fields?.includes(k))
+        (v) => pickBy(v, (v2, k) => !isNil(v2) && fields?.includes(k)),
       ),
       mapValues(
         pickBy(data2, (v, _k) => !isNil(v)),
-        (v) => pickBy(v, (v2, k) => !isNil(v2) && fields?.includes(k))
-      )
+        (v) => pickBy(v, (v2, k) => !isNil(v2) && fields?.includes(k)),
+      ),
     );
   };
 
@@ -319,7 +319,7 @@ function CmsEntryDetailsForm_(
       return Object.fromEntries(
         Object.entries(obj)
           .map(([key, value]) => [key, removeUndefined(value)])
-          .filter(([_key, value]) => value !== undefined)
+          .filter(([_key, value]) => value !== undefined),
       );
     } else {
       return obj;
@@ -365,7 +365,7 @@ function CmsEntryDetailsForm_(
                   content: "Refreshing data...",
                   key: "update-message",
                   duration: undefined,
-                })
+                }),
               );
               await mutateRow();
               notification.destroy("cms-row-conflict");
@@ -392,7 +392,7 @@ function CmsEntryDetailsForm_(
         }
         return acc;
       },
-      {}
+      {},
     );
 
     if (Object.keys(updatedUniqueFields).length === 0) {
@@ -471,7 +471,7 @@ function CmsEntryDetailsForm_(
           message.info({
             content: "Updated to latest changes",
             key: "update-message",
-          })
+          }),
         );
         setRevision(row.revision);
         await resetFormByRow();
@@ -494,7 +494,7 @@ function CmsEntryDetailsForm_(
 
   useBeforeNavigation(
     hasUnsavedChanges,
-    "You have unsaved changes, are you sure?"
+    "You have unsaved changes, are you sure?",
   );
 
   const { identifier: entryIdenfitier, placeholder: entryPlaceholder } =
@@ -520,7 +520,7 @@ function CmsEntryDetailsForm_(
                       databaseId: database.id,
                       tableId: table.id,
                       rowId: row.id,
-                    })
+                    }),
                   )
                 }
                 open={true}
@@ -542,7 +542,7 @@ function CmsEntryDetailsForm_(
         layout={"vertical"}
         name={"number"}
         initialValues={{
-          ...(row ? row.draftData ?? row.data ?? {} : undefined),
+          ...(row ? (row.draftData ?? row.data ?? {}) : undefined),
           identifier: row.identifier,
         }}
         labelCol={{ span: 8 }}
@@ -555,7 +555,7 @@ function CmsEntryDetailsForm_(
             setUniqueFieldsStatus((prev) => {
               const changedUniqueData = getUniqueFieldsData(
                 table,
-                changedValues
+                changedValues,
               );
               const nullUniqueData = getUniqueFieldsData(table, changedValues, {
                 nulls: "only",
@@ -608,7 +608,7 @@ function CmsEntryDetailsForm_(
                       (row.draftData?.[""] ?? row.data?.[""] ?? {}) as Record<
                         string,
                         string
-                      >
+                      >,
                     ),
                     target: "_blank",
                   },
@@ -645,7 +645,7 @@ function CmsEntryDetailsForm_(
                             message.success({
                               content: "Your changes have been published.",
                               duration: 5,
-                            })
+                            }),
                           );
                           await triggerPublishWebhooksAndNotify(api, table);
                         } catch (err) {
@@ -673,15 +673,15 @@ function CmsEntryDetailsForm_(
                       hasFormError()
                         ? "Cannot publish because some fields are invalid"
                         : !hasUnpublishedChanges
-                        ? "All changes have been published"
-                        : "Publish this entry publicly"
+                          ? "All changes have been published"
+                          : "Publish this entry publicly"
                     }
                     children={
                       isPublishing
                         ? "Publishing..."
                         : !hasUnpublishedChanges
-                        ? "Published"
-                        : "Publish"
+                          ? "Published"
+                          : "Publish"
                     }
                   />
                 )}
@@ -700,7 +700,7 @@ function CmsEntryDetailsForm_(
                           message.loading({
                             key: "unpublish-message",
                             content: `Unpublishing ${entryDisplayName}...`,
-                          })
+                          }),
                         );
                         await api.updateCmsRow(row.id, {
                           data: null,
@@ -711,7 +711,7 @@ function CmsEntryDetailsForm_(
                             key: "unpublish-message",
                             content: `Unpublished ${entryDisplayName}.`,
                             duration: 5,
-                          })
+                          }),
                         );
                         await mutateRow();
                         setHasUnpublishedChanges(hasPublishableChanges());
@@ -732,7 +732,7 @@ function CmsEntryDetailsForm_(
                             message.loading({
                               key: "revert-message",
                               content: `Reverting ${entryDisplayName}...`,
-                            })
+                            }),
                           );
                           await api.updateCmsRow(row.id, {
                             draftData: null,
@@ -743,7 +743,7 @@ function CmsEntryDetailsForm_(
                               key: "revert-message",
                               content: `Reverted ${entryDisplayName}.`,
                               duration: 5,
-                            })
+                            }),
                           );
                           await mutateRow();
                           await resetFormByRow();
@@ -779,7 +779,7 @@ function CmsEntryDetailsForm_(
                         message.loading({
                           key: "delete-message",
                           content: `Deleting ${entryDisplayName}...`,
-                        })
+                        }),
                       );
                       await api.deleteCmsRow(row.id);
                       spawn(
@@ -787,14 +787,14 @@ function CmsEntryDetailsForm_(
                           key: "delete-message",
                           content: `Deleted ${entryDisplayName}.`,
                           duration: 5,
-                        })
+                        }),
                       );
                       await mutateRow();
                       history.push(
                         APP_ROUTES.cmsModelContent.fill({
                           databaseId: database.id,
                           tableId: table.id,
-                        })
+                        }),
                       );
                       await triggerPublishWebhooksAndNotify(api, table);
                     }
@@ -820,14 +820,14 @@ function CmsEntryDetailsForm_(
                 database,
                 database.extraData.locales,
                 inConflict,
-                uniqueFieldsStatus
+                uniqueFieldsStatus,
               )}
             </div>
           }
           entryNameValue={getRowIdentifierNode(
             table,
             row,
-            form.getFieldValue("identifier")
+            form.getFieldValue("identifier"),
           )}
           entryName={{
             wrap: (x) => (
@@ -851,7 +851,7 @@ function CmsEntryDetailsForm_(
             message.loading({
               key: "duplicate-message",
               content: `Duplicating ${entryDisplayName}...`,
-            })
+            }),
           );
           try {
             setDuplicating(true);
@@ -865,14 +865,14 @@ function CmsEntryDetailsForm_(
                 databaseId: database.id,
                 tableId: table.id,
                 rowId: clonedRow.id,
-              })
+              }),
             );
             spawn(
               message.success({
                 key: "duplicate-message",
                 content: `A duplicate of ${entryDisplayName} has been created. You are now viewing the duplicated entry.`,
                 duration: 5,
-              })
+              }),
             );
           } finally {
             setDuplicating(false);
@@ -891,10 +891,10 @@ const CmsEntryDetailsForm = React.forwardRef(CmsEntryDetailsForm_);
  */
 async function triggerPublishWebhooksAndNotify(
   api: PromisifyMethods<Api>,
-  table: ApiCmsTable
+  table: ApiCmsTable,
 ): Promise<void> {
   const hooks = table.settings?.webhooks?.filter(
-    (hook) => hook.event === "publish"
+    (hook) => hook.event === "publish",
   );
   if (!hooks) {
     return;
@@ -902,18 +902,21 @@ async function triggerPublishWebhooksAndNotify(
 
   const hooksResp = await api.triggerCmsTableWebhooks(table.id, "publish");
   const failures = hooksResp.responses.filter(
-    (r) => r.status < 200 || r.status >= 300
+    (r) => r.status < 200 || r.status >= 300,
   );
   if (failures.length === 0) {
     spawn(
-      message.success({ content: `Publish webhook(s) succeeded.`, duration: 5 })
+      message.success({
+        content: `Publish webhook(s) succeeded.`,
+        duration: 5,
+      }),
     );
   } else {
     spawn(
       message.error({
         content: `${failures.length} publish webhook(s) responded with non-2xx response code.`,
         duration: 5,
-      })
+      }),
     );
   }
 }

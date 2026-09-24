@@ -91,7 +91,10 @@ import * as Sentry from "@sentry/browser";
 import L, { uniqBy } from "lodash";
 
 export class InvariantError extends Error {
-  constructor(message: string, public data?: any) {
+  constructor(
+    message: string,
+    public data?: any,
+  ) {
     super(`Cannot save project - ${message}`);
     debugger;
   }
@@ -99,10 +102,10 @@ export class InvariantError extends Error {
 
 export function assertSiteInvariants(
   site: Site,
-  componentUuidsToSkip?: Set<string>
+  componentUuidsToSkip?: Set<string>,
 ) {
   const errors: InvariantError[] = Array.from(
-    genSiteErrors(site, componentUuidsToSkip)
+    genSiteErrors(site, componentUuidsToSkip),
   );
   if (errors.length > 0) {
     console.error("Site invariant errors", errors);
@@ -127,7 +130,7 @@ export function* genSiteErrors(site: Site, componentUuidsToSkip?: Set<string>) {
     }
     if (componentNames.has(component.name)) {
       Sentry.captureException(
-        new InvariantError(`Duplicated component name: ${component.name}`)
+        new InvariantError(`Duplicated component name: ${component.name}`),
       );
     } else {
       componentNames.add(component.name);
@@ -163,11 +166,11 @@ function* genGenericModelErrors(site: Site) {
         switch (conflictsMeta.conflictType) {
           case "rename": {
             const names = new Set(
-              vals.map((val) => pathGet(val, conflictsMeta.nameKey.split(".")))
+              vals.map((val) => pathGet(val, conflictsMeta.nameKey.split("."))),
             );
             if (names.size < vals.length) {
               yield new InvariantError(
-                `Field ${field.name} has duplicate names: ${names}`
+                `Field ${field.name} has duplicate names: ${names}`,
               );
             }
             break;
@@ -178,13 +181,13 @@ function* genGenericModelErrors(site: Site) {
                 conflictsMeta.mergeKeyIsIdentity
                   ? val
                   : conflictsMeta.mergeKey
-                  ? pathGet(val, conflictsMeta.mergeKey.split("."))
-                  : conflictsMeta.mergeKeyFn(val)
-              )
+                    ? pathGet(val, conflictsMeta.mergeKey.split("."))
+                    : conflictsMeta.mergeKeyFn(val),
+              ),
             );
             if (keys.size < vals.length) {
               yield new InvariantError(
-                `Field ${field.name} has duplicate merge-key: ${keys}`
+                `Field ${field.name} has duplicate merge-key: ${keys}`,
               );
             }
             break;
@@ -198,13 +201,13 @@ function* genGenericModelErrors(site: Site) {
 const genStyleTokenErrors = maybeComputedFn(
   (
     token: FinalToken<StyleToken>,
-    allTokens: ReadonlyArray<FinalToken<StyleToken>>
-  ) => Array.from(_genStyleTokenErrors(token, allTokens))
+    allTokens: ReadonlyArray<FinalToken<StyleToken>>,
+  ) => Array.from(_genStyleTokenErrors(token, allTokens)),
 );
 
 function* _genStyleTokenErrors(
   token: FinalToken<StyleToken>,
-  allTokens: ReadonlyArray<FinalToken<StyleToken>>
+  allTokens: ReadonlyArray<FinalToken<StyleToken>>,
 ) {
   const tokenRefs = [
     token.value,
@@ -213,14 +216,14 @@ function* _genStyleTokenErrors(
   for (const tokenRef of tokenRefs) {
     if (!tryParseTokenRef(tokenRef, allTokens)) {
       yield new InvariantError(
-        `Token ${token.name} references an unexisting token: ${tokenRef}`
+        `Token ${token.name} references an unexisting token: ${tokenRef}`,
       );
     }
   }
 }
 
 const genComponentErrors = maybeComputedFn((site: Site, component: Component) =>
-  Array.from(_genComponentErrors(site, component))
+  Array.from(_genComponentErrors(site, component)),
 );
 
 function* _genComponentErrors(site: Site, component: Component) {
@@ -230,26 +233,26 @@ function* _genComponentErrors(site: Site, component: Component) {
     if (!isTplTag(root) || root.tag !== "div") {
       yield new InvariantError(
         `Component ${getComponentDisplayName(
-          component
+          component,
         )}'s root node is not a div tag`,
-        { site, component }
+        { site, component },
       );
     } else {
       if (root.locked) {
         yield new InvariantError(
           `Component ${getComponentDisplayName(
-            component
+            component,
           )}'s root node cannot be locked`,
-          { site, component }
+          { site, component },
         );
       }
       for (const child of root.children) {
         if (!isTplSlot(child)) {
           yield new InvariantError(
             `Component ${getComponentDisplayName(
-              component
+              component,
             )}'s cannot contain non slot direct child`,
-            { site, component }
+            { site, component },
           );
         }
       }
@@ -258,7 +261,7 @@ function* _genComponentErrors(site: Site, component: Component) {
 
   if (isFrameComponent(component)) {
     const frames = getSiteArenas(site).flatMap((arena) =>
-      getArenaFrames(arena)
+      getArenaFrames(arena),
     );
     if (!frames.find((f) => f.container.component === component)) {
       yield new InvariantError(`Frame component has no arena frame`, {
@@ -272,17 +275,17 @@ function* _genComponentErrors(site: Site, component: Component) {
     if (component.subComps.length > 0) {
       yield new InvariantError(
         `Page ${getComponentDisplayName(
-          component
+          component,
         )} cannot contain sub components`,
-        { site, component }
+        { site, component },
       );
     }
     if (component.superComp) {
       yield new InvariantError(
         `Page ${getComponentDisplayName(
-          component
+          component,
         )} cannot have a super component`,
-        { site, component }
+        { site, component },
       );
     }
   }
@@ -291,9 +294,9 @@ function* _genComponentErrors(site: Site, component: Component) {
     if (!site.components.includes(component.superComp)) {
       yield new InvariantError(
         `Component ${getComponentDisplayName(
-          component
+          component,
         )} has dangling reference to superComp ${component.superComp.name}`,
-        { site, component }
+        { site, component },
       );
     }
     if (!component.superComp.subComps.includes(component)) {
@@ -301,7 +304,7 @@ function* _genComponentErrors(site: Site, component: Component) {
         `Component ${getComponentDisplayName(component)} has superComp ${
           component.superComp.name
         } which does not reference it back`,
-        { site, component }
+        { site, component },
       );
     }
   }
@@ -311,9 +314,9 @@ function* _genComponentErrors(site: Site, component: Component) {
       if (!site.components.includes(subComp)) {
         yield new InvariantError(
           `Component ${getComponentDisplayName(
-            component
+            component,
           )} has dangling reference to subComp ${subComp.name}`,
-          { site, component, subComp }
+          { site, component, subComp },
         );
       }
       if (subComp.superComp !== component) {
@@ -321,7 +324,7 @@ function* _genComponentErrors(site: Site, component: Component) {
           `Component ${getComponentDisplayName(component)} has subComp ${
             subComp.name
           } which does not reference it back`,
-          { site, component, subComp }
+          { site, component, subComp },
         );
       }
     }
@@ -330,23 +333,23 @@ function* _genComponentErrors(site: Site, component: Component) {
   if (component.tplTree.parent !== null) {
     yield new InvariantError(
       `Component ${getComponentDisplayName(
-        component
+        component,
       )}'s root node has a non null parent`,
-      { site, component }
+      { site, component },
     );
   }
 
   if (component.variants.length === 0) {
     yield new InvariantError(
       `Component ${getComponentDisplayName(component)} has no base variant`,
-      { site, component }
+      { site, component },
     );
   } else if (!isBaseVariant(component.variants[0])) {
     yield new InvariantError(
       `Component ${getComponentDisplayName(
-        component
+        component,
       )} does not have the base variant as its first variant`,
-      { site, component }
+      { site, component },
     );
   }
 
@@ -355,8 +358,8 @@ function* _genComponentErrors(site: Site, component: Component) {
     if (seenVariantKeys.includes(toVariantKey(variant))) {
       yield new InvariantError(
         `Component ${getComponentDisplayName(
-          component
-        )} contains duplicate variant ${toVariantKey(variant)}`
+          component,
+        )} contains duplicate variant ${toVariantKey(variant)}`,
       );
     }
 
@@ -370,9 +373,9 @@ function* _genComponentErrors(site: Site, component: Component) {
     if (seenTplUuids.has(tpl.uuid)) {
       yield new InvariantError(
         `Component ${getComponentDisplayName(
-          component
+          component,
         )} has a tpl with duplicate id ${tpl.uuid}`,
-        { site, component, tpl }
+        { site, component, tpl },
       );
     }
     seenTplUuids.add(tpl.uuid);
@@ -389,7 +392,7 @@ function* _genComponentErrors(site: Site, component: Component) {
           `Component ${getComponentDisplayName(component)} has slot param ${
             param.variable.name
           } with no corresponding TplSlot`,
-          { site, component, param }
+          { site, component, param },
         );
       }
       if (slot !== param.tplSlot || slot.param !== param) {
@@ -397,7 +400,7 @@ function* _genComponentErrors(site: Site, component: Component) {
           `Component ${getComponentDisplayName(component)} has slot param ${
             param.variable.name
           } whose TplSlot doesn't point back`,
-          { site, component, param }
+          { site, component, param },
         );
       }
     }
@@ -410,24 +413,24 @@ function* _genComponentErrors(site: Site, component: Component) {
       if (vg.linkedState.param !== vg.param) {
         yield new InvariantError(
           `Component ${getComponentDisplayName(
-            component
+            component,
           )} has variant group "${vgName}" linking to state with a different param`,
-          { site, component, vg }
+          { site, component, vg },
         );
       }
       if (vg.linkedState.variantGroup !== vg) {
         yield new InvariantError(
           `Component ${getComponentDisplayName(
-            component
-          )} has variant group "${vgName}" whose state doesn't point back`
+            component,
+          )} has variant group "${vgName}" whose state doesn't point back`,
         );
       }
     } else {
       yield new InvariantError(
         `Component ${getComponentDisplayName(
-          component
+          component,
         )} has variant group "${vgName}" with no linked state`,
-        { site, component, vg }
+        { site, component, vg },
       );
     }
   }
@@ -439,23 +442,23 @@ function* _genComponentErrors(site: Site, component: Component) {
         yield new InvariantError(
           `Component ${getComponentDisplayName(component)} has variant state "${
             state.param.variable.name
-          }" not pointing to the corresponding variant group`
+          }" not pointing to the corresponding variant group`,
         );
       }
       const maybeGroup = component.variantGroups.find(
-        (vg) => vg.linkedState === state
+        (vg) => vg.linkedState === state,
       );
       if (!maybeGroup) {
         yield new InvariantError(
           `Component ${getComponentDisplayName(component)} has variant state "${
             state.param.variable.name
-          }" with no correspondent variant group`
+          }" with no correspondent variant group`,
         );
       } else if (maybeGroup.linkedState !== state) {
         yield new InvariantError(
           `Component ${getComponentDisplayName(component)} has variant state "${
             state.param.variable.name
-          }" whose variant group doesn't point back`
+          }" whose variant group doesn't point back`,
         );
       }
     }
@@ -468,12 +471,12 @@ function* _genComponentErrors(site: Site, component: Component) {
       if (!state.tplNode.component.states.includes(state.implicitState)) {
         yield new InvariantError(
           `Component ${getComponentDisplayName(
-            component
+            component,
           )} has an implicit state ${getComponentDisplayName(
-            state.tplNode.component
+            state.tplNode.component,
           )}.${
             state.implicitState.param.variable.name
-          } which doesn't actually exist`
+          } which doesn't actually exist`,
         );
       }
     }
@@ -485,7 +488,7 @@ function* _genComponentErrors(site: Site, component: Component) {
       yield new InvariantError(
         `Component ${getComponentDisplayName(component)} has state "${
           state.param.variable.name
-        }" whose param doesn't point back`
+        }" whose param doesn't point back`,
       );
     }
     if (!isCodeComponent(component) && !isPlumeComponent(component)) {
@@ -494,14 +497,14 @@ function* _genComponentErrors(site: Site, component: Component) {
           yield new InvariantError(
             `Component ${getComponentDisplayName(component)} has state "${
               state.param.variable.name
-            }" whose onChange param doesn't point back`
+            }" whose onChange param doesn't point back`,
           );
         }
       } else {
         yield new InvariantError(
           `Component ${getComponentDisplayName(component)} has state "${
             state.param.variable.name
-          }" whose onChange param is not a StateChangeHandlerParam`
+          }" whose onChange param is not a StateChangeHandlerParam`,
         );
       }
     }
@@ -511,7 +514,7 @@ function* _genComponentErrors(site: Site, component: Component) {
       yield new InvariantError(
         `Component ${getComponentDisplayName(component)} has param "${
           param.variable.name
-        }" whose state doesn't point back`
+        }" whose state doesn't point back`,
       );
     }
     if (
@@ -520,10 +523,10 @@ function* _genComponentErrors(site: Site, component: Component) {
     ) {
       yield new InvariantError(
         `Component ${getComponentDisplayName(
-          component
+          component,
         )} has state change handler param "${
           param.variable.name
-        }" whose state doesn't point back`
+        }" whose state doesn't point back`,
       );
     }
     if (
@@ -533,12 +536,12 @@ function* _genComponentErrors(site: Site, component: Component) {
     ) {
       yield new InvariantError(
         `Component ${getComponentDisplayName(
-          component
+          component,
         )} has state change handler param "${
           param.variable.name
         }" whose state is ${param.state.accessType} but has exportType "${
           param.exportType
-        }"`
+        }"`,
       );
     }
   }
@@ -550,9 +553,9 @@ function* _genComponentErrors(site: Site, component: Component) {
     if (!validRefs.has(token)) {
       yield new InvariantError(
         `Component ${getComponentDisplayName(
-          component
+          component,
         )} references an invalid token ${token.name}`,
-        { site, component, token }
+        { site, component, token },
       );
     }
   }
@@ -562,9 +565,9 @@ function* _genComponentErrors(site: Site, component: Component) {
     if (!validRefs.has(mixin)) {
       yield new InvariantError(
         `Component ${getComponentDisplayName(
-          component
+          component,
         )} references an invalid ${MIXIN_LOWER} ${mixin.name}`,
-        { site, component, mixin }
+        { site, component, mixin },
       );
     }
   }
@@ -574,9 +577,9 @@ function* _genComponentErrors(site: Site, component: Component) {
     if (!validRefs.has(asset)) {
       yield new InvariantError(
         `Component ${getComponentDisplayName(
-          component
+          component,
         )} references an invalid asset ${asset.name}`,
-        { site, component, asset }
+        { site, component, asset },
       );
     }
   }
@@ -594,7 +597,7 @@ export const isInvalidDimValue = (v: string) => {
 
 const genTplErrors = maybeComputedFn(
   (site: Site, component: Component, tpl: TplNode) =>
-    Array.from(_genTplErrors(site, component, tpl))
+    Array.from(_genTplErrors(site, component, tpl)),
 );
 
 function getTplName(tpl: TplNode | undefined | null) {
@@ -604,7 +607,7 @@ function getTplName(tpl: TplNode | undefined | null) {
     return `TplTag[${tpl.uuid}, tag=${tpl.tag}]`;
   } else if (isTplComponent(tpl)) {
     return `TplComponent[${tpl.uuid}, comp=${getComponentDisplayName(
-      tpl.component
+      tpl.component,
     )}]`;
   } else if (isTplSlot(tpl)) {
     return `TplSlot([${tpl.uuid}, slot=${tpl.param.variable.name}])`;
@@ -615,18 +618,18 @@ function getTplName(tpl: TplNode | undefined | null) {
 
 function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
   const tplName = `${getTplName(tpl)} of Component ${getComponentDisplayName(
-    component
+    component,
   )}`;
 
   tplChildren(tpl).forEach((child, i) => {
     if (child.parent !== tpl) {
       throw new InvariantError(
         `${tplName} has child #${i} (${getTplName(
-          child
+          child,
         )}) whose parent pointer doesn't point back; instead it points to ${getTplName(
-          child.parent
+          child.parent,
         )}`,
-        { site, tpl, component, child }
+        { site, tpl, component, child },
       );
     }
   });
@@ -640,7 +643,7 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
 
       if (seenVariantsCombo.has(combinationKey)) {
         yield new InvariantError(
-          `${tplName} contains duplicate variant combo ${combinationKey}`
+          `${tplName} contains duplicate variant combo ${combinationKey}`,
         );
       } else {
         seenVariantsCombo.add(combinationKey);
@@ -651,7 +654,7 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
         if (!getGlobalVariants(site).includes(variant)) {
           yield new InvariantError(
             `${tplName} references non-existent global variant ${variant.name}`,
-            { site, tpl, component, variant }
+            { site, tpl, component, variant },
           );
         }
       }
@@ -659,7 +662,7 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
         if (!getComponentVariants(component).includes(variant)) {
           yield new InvariantError(
             `${tplName} references non-existent component variant ${variant.name}`,
-            { site, tpl, component, variant }
+            { site, tpl, component, variant },
           );
         }
       }
@@ -667,7 +670,7 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
         if (isTplComponent(tpl) && !tpl.component.params.includes(arg.param)) {
           yield new InvariantError(
             `${tplName}'s ${arg.param.variable.name} referencing non-existing param for component ${tpl.component.name}`,
-            { site, tpl, arg }
+            { site, tpl, arg },
           );
         }
         if (isSlot(arg.param)) {
@@ -676,8 +679,8 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
               `${tplName}'s ${
                 arg.param.variable.name
               } argument has wrong type - expected renderable, but got ${describeValueOrType(
-                arg.expr
-              )}`
+                arg.expr,
+              )}`,
             );
           }
         } else if (arg.expr && isKnownRenderExpr(arg.expr)) {
@@ -686,7 +689,7 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
               arg.param.variable.name
             } argument has wrong type - expected ${
               arg.param.type.name
-            }, but got ${describeValueOrType(arg.expr)}`
+            }, but got ${describeValueOrType(arg.expr)}`,
           );
         }
       }
@@ -732,12 +735,12 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
           isInvalidDimValue(val)
         ) {
           yield new InvariantError(
-            `${tplName}'s property ${sty} has bad value: ${val}`
+            `${tplName}'s property ${sty} has bad value: ${val}`,
           );
         }
         if (sty.startsWith("background-")) {
           yield new InvariantError(
-            `${tplName} has old background property ${sty}; Should be using new background system`
+            `${tplName} has old background property ${sty}; Should be using new background system`,
           );
         }
         if (sty === "background") {
@@ -745,7 +748,7 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
             parseCss(val, { startRule: "background" });
           } catch (err) {
             yield new InvariantError(
-              "Failed to parse background: " + err.message
+              "Failed to parse background: " + err.message,
             );
           }
         }
@@ -753,7 +756,8 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
 
       if (duplicatedProps.length > 0) {
         yield new InvariantError(
-          `${tplName} has duplicated style props: ` + duplicatedProps.join(", ")
+          `${tplName} has duplicated style props: ` +
+            duplicatedProps.join(", "),
         );
       }
 
@@ -768,7 +772,7 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
             {
               tpl,
               vs,
-            }
+            },
           );
         }
         if (
@@ -778,7 +782,7 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
           // base variant is only allowed when it is the only variant
           yield new InvariantError(
             `${tplName} targets variant combo that includes the base variant`,
-            { tpl, vs }
+            { tpl, vs },
           );
         }
         if (privates.some((v) => v.forTpl !== tpl)) {
@@ -787,20 +791,20 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
             {
               tpl,
               vs,
-            }
+            },
           );
         }
         if (privates.length > 1) {
           yield new InvariantError(
             `${tplName} targets variant combo with multiple private variants`,
-            { tpl, vs }
+            { tpl, vs },
           );
         }
         const styleVariants = locals.filter(isComponentStyleVariant);
         if (styleVariants.length > 1) {
           yield new InvariantError(
             `${tplName} targets variant combo with multiple style variants`,
-            { tpl, vs }
+            { tpl, vs },
           );
         }
       }
@@ -810,28 +814,28 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
       // actually creating a base rule vs in case it does not exist.
       if (vs.variants.some((v) => !isBaseRuleVariant(v))) {
         const baseRuleVariants = vs.variants.filter((v) =>
-          isBaseRuleVariant(v)
+          isBaseRuleVariant(v),
         );
         const baseRuleVs = tryGetVariantSetting(tpl, baseRuleVariants);
         if (!baseRuleVs) {
           yield new InvariantError(
             `${tplName} has variant setting with no corresponding base rule variant setting`,
-            { tpl, vs }
+            { tpl, vs },
           );
         }
 
         if (isTplVariantable(component.tplTree)) {
           const rootTplVariants = vs.variants.filter(
-            (v) => !isStyleOrCodeComponentVariant(v) && !isScreenVariant(v)
+            (v) => !isStyleOrCodeComponentVariant(v) && !isScreenVariant(v),
           );
           const rootTplVs = tryGetVariantSetting(
             component.tplTree,
-            rootTplVariants
+            rootTplVariants,
           );
           if (!rootTplVs) {
             yield new InvariantError(
               `Component root does not have base rule variant setting corresponding to a variant setting of ${tplName}`,
-              { tpl, vs }
+              { tpl, vs },
             );
           }
         }
@@ -844,15 +848,15 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
     if (!component.params.includes(tpl.param)) {
       yield new InvariantError(
         `${tplName} is a TplSlot for a missing param ${tpl.param.variable.name}`,
-        { site, component, tpl }
+        { site, component, tpl },
       );
 
       if (tpl.param.tplSlot !== tpl) {
         yield new InvariantError(
           `Component ${getComponentDisplayName(
-            component
+            component,
           )} has TplSlot ${tplName} whose SlotParam doesn't point back`,
-          { site, component, tpl }
+          { site, component, tpl },
         );
       }
     }
@@ -862,7 +866,7 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
     if (ancestorSlot) {
       yield new InvariantError(
         `${tplName} is a TplSlot that is the default contents of another TplSlot`,
-        { site, component, tpl, ancestorSlot }
+        { site, component, tpl, ancestorSlot },
       );
     }
   }
@@ -877,7 +881,7 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
         ) {
           yield new InvariantError(
             `${tplName} has attr ${key} referencing missing param ${expr.variable.name}`,
-            { site, component, tpl, key, expr }
+            { site, component, tpl, key, expr },
           );
         }
       }
@@ -889,9 +893,9 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
     if (!getValidRefs(site).has(tpl.component)) {
       yield new InvariantError(
         `${tplName} is an instance of ${getComponentDisplayName(
-          tpl.component
+          tpl.component,
         )} which is not owned by this site or its direct deps`,
-        { site, tpl, component }
+        { site, tpl, component },
       );
     }
 
@@ -899,9 +903,9 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
     if (isContextCodeComponent(tpl.component)) {
       yield new InvariantError(
         `${tplName} is an instance of ${getComponentDisplayName(
-          tpl.component
+          tpl.component,
         )} which is a global context and should not be on the tpl tree`,
-        { site, tpl, component }
+        { site, tpl, component },
       );
     }
 
@@ -912,13 +916,13 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
         if (!isBase && isSlot(arg.param)) {
           yield new InvariantError(
             `${tplName} has slot arg for a non-base vsetting`,
-            { site, component, tpl, vs, arg }
+            { site, component, tpl, vs, arg },
           );
         }
         if (!tpl.component.params.includes(arg.param)) {
           yield new InvariantError(
             `${tplName} has arg referencing missing param ${arg.param.variable.name}`,
-            { site, component, tpl, vs, arg }
+            { site, component, tpl, vs, arg },
           );
         }
         const r = tryGetVariantGroupValueFromArg(tpl.component, arg);
@@ -929,11 +933,11 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
             const variant = ensure(
               r.variants.find((v) => !variantsInVg.has(v)),
               () =>
-                `Already that r.variants contains a variant not in variantsInVg`
+                `Already that r.variants contains a variant not in variantsInVg`,
             );
             yield new InvariantError(
               `${tplName} has variant arg ${variant.uuid} referencing a missing variant for variant group "${arg.param.variable.name}"`,
-              { site, component, tpl, vs, vg: r.vg, arg }
+              { site, component, tpl, vs, vg: r.vg, arg },
             );
           }
         } else {
@@ -941,7 +945,7 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
           // in the component
           if (isKnownVariantsRef(arg.expr)) {
             yield new InvariantError(
-              `${tplName} has arg referencing variants from another component`
+              `${tplName} has arg referencing variants from another component`,
             );
           }
         }
@@ -951,7 +955,7 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
     // Check that TplComponents of components with public states are named
     if (!tpl.name && tpl.component.states.some((s) => !isPrivateState(s))) {
       yield new InvariantError(
-        `Instance of ${tpl.component.name} (component with public states) is not named`
+        `Instance of ${tpl.component.name} (component with public states) is not named`,
       );
     }
   }
@@ -972,18 +976,18 @@ function* genGlobalContextErrors(site: Site) {
       allComponents(site, {
         includeDeps: "all",
       }).filter((c) => isContextCodeComponent(c)),
-      (c) => c.name
-    )
+      (c) => c.name,
+    ),
   );
 
   const globalContextsTpls = new Set(
-    site.globalContexts.map((t) => t.component)
+    site.globalContexts.map((t) => t.component),
   );
 
   for (const gc of registeredGlobalContexts) {
     if (!globalContextsTpls.has(gc)) {
       yield new InvariantError(
-        `Global Context ${gc.name} has component registered but no corresponding tpl`
+        `Global Context ${gc.name} has component registered but no corresponding tpl`,
       );
     }
   }
@@ -991,12 +995,12 @@ function* genGlobalContextErrors(site: Site) {
   for (const gc of globalContextsTpls) {
     if (!registeredGlobalContexts.has(gc as ContextCodeComponent)) {
       yield new InvariantError(
-        `Global Context ${gc.name} has tpl but no corresponding registered component`
+        `Global Context ${gc.name} has tpl but no corresponding registered component`,
       );
     }
     if (seenComponents.has(gc.name)) {
       yield new InvariantError(
-        `Global Context ${gc.name} has duplicate tpl component`
+        `Global Context ${gc.name} has duplicate tpl component`,
       );
     }
     seenComponents.add(gc.name);
@@ -1018,7 +1022,7 @@ function* genFrameErrors(site: Site, arena: AnyArena, frame: ArenaFrame) {
   ) {
     yield new InvariantError(
       `Root TplComponent of frame ${frameName} has the wrong base variant for its single vsetting`,
-      { site, arena, frame }
+      { site, arena, frame },
     );
   }
 
@@ -1027,7 +1031,7 @@ function* genFrameErrors(site: Site, arena: AnyArena, frame: ArenaFrame) {
     if (!globalVariantKeys.includes(variantKey)) {
       yield new InvariantError(
         `Frame ${frameName} pins non-existent global variant, ${variantKey}`,
-        { site, arena, frame, variantKey }
+        { site, arena, frame, variantKey },
       );
     }
   }
@@ -1036,7 +1040,7 @@ function* genFrameErrors(site: Site, arena: AnyArena, frame: ArenaFrame) {
     if (!globalVariants.includes(variant)) {
       yield new InvariantError(
         `Frame ${frameName} targets non-existent global variant, ${variant.name}`,
-        { site, arena, frame, variant }
+        { site, arena, frame, variant },
       );
     }
   }
@@ -1048,12 +1052,12 @@ function* genFrameErrors(site: Site, arena: AnyArena, frame: ArenaFrame) {
     if (!variant) {
       yield new InvariantError(
         `Frame ${frameName} pins non-existent component variant, ${variantKey}`,
-        { site, arena, frame, variantKey }
+        { site, arena, frame, variantKey },
       );
     } else if (isPrivateStyleVariant(variant)) {
       yield new InvariantError(
         `Frame ${frameName} pins private style variant, ${variantKey}`,
-        { site, arena, frame, variantKey }
+        { site, arena, frame, variantKey },
       );
     }
   }
@@ -1061,13 +1065,13 @@ function* genFrameErrors(site: Site, arena: AnyArena, frame: ArenaFrame) {
     if (!componentVariants.includes(variant)) {
       yield new InvariantError(
         `Frame ${frameName} targets non-existent component variant, ${variant.name}`,
-        { site, arena, frame, variant }
+        { site, arena, frame, variant },
       );
     }
     if (isPrivateStyleVariant(variant)) {
       yield new InvariantError(
         `Frame ${frameName} targets private style variant`,
-        { site, arena, frame, variant }
+        { site, arena, frame, variant },
       );
     }
   }
@@ -1081,13 +1085,13 @@ function getComponentVariants(component: Component) {
   if (!componentToVariants.has(component)) {
     componentToVariants.set(
       component,
-      allComponentVariants(component, { includeSuperVariants: true })
+      allComponentVariants(component, { includeSuperVariants: true }),
     );
   }
 
   return ensure(
     componentToVariants.get(component),
-    () => `Already checked this exists`
+    () => `Already checked this exists`,
   );
 }
 
@@ -1095,12 +1099,12 @@ function getGlobalVariants(site: Site) {
   if (!siteToGlobalVariants.has(site)) {
     siteToGlobalVariants.set(
       site,
-      allGlobalVariants(site, { includeDeps: "direct" })
+      allGlobalVariants(site, { includeDeps: "direct" }),
     );
   }
   return ensure(
     siteToGlobalVariants.get(site),
-    () => `Already checked this exists`
+    () => `Already checked this exists`,
   );
 }
 
@@ -1113,7 +1117,7 @@ function getValidRefs(site: Site) {
         ...siteStyleTokensAllDeps(site),
         ...allMixins(site, { includeDeps: "all" }),
         ...allImageAssets(site, { includeDeps: "all" }),
-      ])
+      ]),
     );
   }
   return ensure(siteToValidRefs.get(site), () => `Already checked this exists`);

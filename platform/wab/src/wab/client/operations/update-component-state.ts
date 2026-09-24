@@ -59,7 +59,7 @@ export function updateComponentState(
     site: Site;
     component: Component;
     tplMgr: TplMgr;
-  }
+  },
 ): UpdateComponentStateResult {
   const { site, component, tplMgr } = opts;
   const { name, variableType, accessType, initialValue } = changes;
@@ -108,7 +108,7 @@ export function updateComponentState(
       const invalidMessage = validateStateInitialValue(
         variableType ?? state.variableType,
         staticValue,
-        component.variantGroups.find((vg) => vg.linkedState === state)
+        component.variantGroups.find((vg) => vg.linkedState === state),
       );
       if (invalidMessage) {
         return err({ message: invalidMessage });
@@ -117,7 +117,7 @@ export function updateComponentState(
   }
   if (accessType === "private" && state.accessType !== "private") {
     const referencingComponents = uniq(
-      findImplicitUsages(site, state).map((usage) => usage.component)
+      findImplicitUsages(site, state).map((usage) => usage.component),
     );
     if (referencingComponents.length > 0) {
       return err({
@@ -134,11 +134,11 @@ export function updateComponentState(
       initialValue !== undefined
         ? initialValue
         : variableType !== undefined && variableType !== state.variableType
-        ? codeLit(getDefaultValueForStateVariableType(variableType))
-        : state.param.defaultExpr;
+          ? codeLit(getDefaultValueForStateVariableType(variableType))
+          : state.param.defaultExpr;
     const invalidMessage = validateStateAccessType(
       accessType ?? (state.accessType as StateAccessType),
-      finalDefaultExpr
+      finalDefaultExpr,
     );
     if (invalidMessage) {
       return err({ message: invalidMessage });
@@ -152,7 +152,7 @@ export function updateComponentState(
     state.param.type = convertVariableTypeToWabType(variableType);
     state.variableType = variableType;
     state.param.defaultExpr = codeLit(
-      getDefaultValueForStateVariableType(variableType)
+      getDefaultValueForStateVariableType(variableType),
     );
   }
   if (initialValue !== undefined) {

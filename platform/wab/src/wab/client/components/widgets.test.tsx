@@ -20,11 +20,11 @@ describe("FileUploader", () => {
 
   function dragFileOver(accept: FileUploaderAccept) {
     const { container } = render(
-      <FileUploader accept={accept} onChange={vi.fn()} />
+      <FileUploader accept={accept} onChange={vi.fn()} />,
     );
     const input = ensure(
       container.querySelector("input[type=file]"),
-      "FileUploader renders a file input"
+      "FileUploader renders a file input",
     );
     expect(container.querySelector(".drop-overlay")).toBeNull();
 

@@ -58,7 +58,7 @@ import { ReactElement, ReactNode, createContext, useContext } from "react";
 import { useHover } from "react-aria";
 import { GrNewWindow } from "react-icons/all";
 const LazyRichTextEditor = React.lazy(
-  () => import("@/wab/client/components/RichTextEditor")
+  () => import("@/wab/client/components/RichTextEditor"),
 );
 
 type NamePathz = (string | number)[];
@@ -78,12 +78,12 @@ export const ContentEntryFormContext = createContext<
 export function useContentEntryFormContext(): ContentEntryFormContextValue {
   return ensure(
     useContext(ContentEntryFormContext),
-    "ContentEntryFormContext is unset"
+    "ContentEntryFormContext is unset",
   );
 }
 
 export function ValueSwitch(
-  props: SwitchProps & { disabled?: boolean; value?: boolean }
+  props: SwitchProps & { disabled?: boolean; value?: boolean },
 ) {
   return (
     <Switch {...props} isDisabled={props.disabled} isChecked={props.value} />
@@ -136,7 +136,7 @@ export function CmsRefInput(props: any) {
             const label = identifier || rowPlaceholder || "Untitled entry";
             return { label, rowId: row.id };
           }),
-          (rowData) => rowData.label
+          (rowData) => rowData.label,
         ).map((rowData) => (
           <MenuItem
             key={rowData.rowId}
@@ -282,7 +282,7 @@ export function CmsListInput(props: any) {
   } = useContentEntryFormContext();
   const { label } = ensure(
     useContext(FormNameContext),
-    "Must have form name available"
+    "Must have form name available",
   );
   const form = Form.useFormInstance();
   const [expandedKeys, setExpandedKeys] = React.useState<string[] | string>([]);
@@ -309,7 +309,7 @@ export function CmsListInput(props: any) {
                       <Button
                         onClick={() => {
                           setExpandedKeys(
-                            items.map((item) => String(item.key))
+                            items.map((item) => String(item.key)),
                           );
                         }}
                         type="secondary"
@@ -421,7 +421,7 @@ function MaybeFormItem({
                 this entry
               </a>
               .
-            </>
+            </>,
           );
         }
         return Promise.resolve();
@@ -684,7 +684,7 @@ export function CmsRichTextInput({
         value={value ?? ""}
         onChange={ensure(
           onChange,
-          "Rich text editor requires onChange callback"
+          "Rich text editor requires onChange callback",
         )}
         readOnly={disabled}
       />

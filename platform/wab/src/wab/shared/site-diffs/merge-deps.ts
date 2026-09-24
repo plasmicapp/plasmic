@@ -9,14 +9,14 @@ export function fixProjectDependencies(
   left: Site,
   right: Site,
   merged: Site,
-  bundler: Bundler
+  bundler: Bundler,
 ) {
   const [ancestorDeps, leftDeps, rightDeps] = [ancestor, left, right].map(
-    (site) => new Map(site.projectDependencies.map((dep) => [dep.pkgId, dep]))
+    (site) => new Map(site.projectDependencies.map((dep) => [dep.pkgId, dep])),
   );
   const allDeps = [
     ...new Set(
-      [ancestorDeps, leftDeps, rightDeps].flatMap((deps) => [...deps.keys()])
+      [ancestorDeps, leftDeps, rightDeps].flatMap((deps) => [...deps.keys()]),
     ),
   ];
 
@@ -44,11 +44,11 @@ export function fixProjectDependencies(
         // Not deleted, but might have upgraded (maybe more than once!)
         const leftDep = ensure(
           leftDeps.get(pkgId),
-          `Already checked for deletion`
+          `Already checked for deletion`,
         );
         const rightDep = ensure(
           rightDeps.get(pkgId),
-          `Already checked for deletion`
+          `Already checked for deletion`,
         );
         // Get the ordered list of versions and upgrade sequentially
         const versionList = sortAsc([
@@ -64,15 +64,15 @@ export function fixProjectDependencies(
             const previousVersion = versionList[index];
             const previousDep = ensure(
               [ancestorDep, leftDep, rightDep].find(
-                (dep) => dep.version === previousVersion
+                (dep) => dep.version === previousVersion,
               ),
-              `Unexpected previous version ${previousVersion}`
+              `Unexpected previous version ${previousVersion}`,
             );
             const nextDep = ensure(
               [ancestorDep, leftDep, rightDep].find(
-                (dep) => dep.version === nextVersion
+                (dep) => dep.version === nextVersion,
               ),
-              `Unexpected previous version ${previousVersion}`
+              `Unexpected previous version ${previousVersion}`,
             );
             return [previousDep, nextDep];
           });
@@ -111,13 +111,13 @@ export function fixProjectDependencies(
       (dep) =>
         !!nextUpdateRound.find(
           ([oldDep]) =>
-            oldDep.pkgId === dep.pkgId && oldDep.version !== dep.version
-        )
+            oldDep.pkgId === dep.pkgId && oldDep.version !== dep.version,
+        ),
     );
     nextUpdateRound.forEach(([oldDep]) => {
       if (
         !merged.projectDependencies.find(
-          (dep) => oldDep.pkgId === dep.pkgId && oldDep.version === dep.version
+          (dep) => oldDep.pkgId === dep.pkgId && oldDep.version === dep.version,
         )
       ) {
         merged.projectDependencies.push(oldDep);
@@ -127,7 +127,7 @@ export function fixProjectDependencies(
     // Upgrade `oldVersion` to `newVersion`
     upgradeProjectDeps(
       merged,
-      nextUpdateRound.map(([oldDep, newDep]) => ({ oldDep, newDep }))
+      nextUpdateRound.map(([oldDep, newDep]) => ({ oldDep, newDep })),
     );
   }
 

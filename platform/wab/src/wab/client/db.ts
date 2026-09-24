@@ -121,7 +121,7 @@ export class DbCtx {
   setSite(
     site: Site,
     branch: ApiBranch | undefined,
-    projectVersion: PkgVersionInfoMeta | ProjectRevision | undefined
+    projectVersion: PkgVersionInfoMeta | ProjectRevision | undefined,
   ) {
     this._site.set(site);
     this._branchInfo.set(branch);
@@ -155,11 +155,11 @@ export class DbCtx {
    */
   maybeObserveComponents(
     components: Component[],
-    componentContext?: ComponentContext
+    componentContext?: ComponentContext,
   ) {
     return this.recorder.maybeObserveComponents(
       uniqBy(components, "uuid"),
-      componentContext
+      componentContext,
     );
   }
 
@@ -189,7 +189,7 @@ export class DbCtx {
       isExternalRef: (obj) =>
         !!maybe(
           this.bundler().addrOf(obj),
-          (addr) => addr.uuid !== this.siteInfo.id
+          (addr) => addr.uuid !== this.siteInfo.id,
         ),
       visitNodeListener: undefined,
       skipInitialObserveFields: [meta.getFieldByName("Component", "tplTree")],

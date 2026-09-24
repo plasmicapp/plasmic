@@ -67,14 +67,14 @@ describe("buildCustomCodePlasmicQuery", () => {
   const runQuery = async (
     code: string,
     staticEnv: Record<string, any>,
-    executionCtx: Partial<QueryExecutionContext>
+    executionCtx: Partial<QueryExecutionContext>,
   ) => {
     const query = buildCustomCodePlasmicQuery("test", code, () => staticEnv);
     return query.fn(
       ...query.args({
         ...emptyCtx,
         ...executionCtx,
-      })
+      }),
     );
   };
 
@@ -114,8 +114,8 @@ describe("buildCustomCodePlasmicQuery", () => {
           $props: { id: "x" },
           $q: {},
           $state: { count: 3 },
-        }
-      )
+        },
+      ),
     ).resolves.toBe("home-x-3");
   });
 
@@ -127,8 +127,8 @@ describe("buildCustomCodePlasmicQuery", () => {
           $$: { upper: (s: string) => s.toUpperCase() },
           $dataTokens_proj_name: "abc",
         },
-        {}
-      )
+        {},
+      ),
     ).resolves.toBe("ABC");
   });
 
@@ -137,7 +137,7 @@ describe("buildCustomCodePlasmicQuery", () => {
     const query = buildCustomCodePlasmicQuery(
       "test",
       "$dataTokens_proj_name",
-      () => ({ $dataTokens_proj_name: value })
+      () => ({ $dataTokens_proj_name: value }),
     );
     const [resolvedQctx] = query.args(emptyCtx);
     await expect(query.fn(resolvedQctx)).resolves.toBe("first");
@@ -148,7 +148,7 @@ describe("buildCustomCodePlasmicQuery", () => {
   it("does not memoize the compiled factory outside a reaction", () => {
     // getCustomCodeFactory only memoizes while its result is observed in a reaction.
     expect(getCustomCodeFactory("2", JSON.stringify([]))).not.toBe(
-      getCustomCodeFactory("2", JSON.stringify([]))
+      getCustomCodeFactory("2", JSON.stringify([])),
     );
   });
 
@@ -179,7 +179,7 @@ describe("buildCustomCodePlasmicQuery", () => {
     const query = buildCustomCodePlasmicQuery(
       "test",
       "$ctx.a + $props.b + $q.c.data + $state.d.e",
-      () => ({})
+      () => ({}),
     );
     expect(
       query.args({
@@ -187,7 +187,7 @@ describe("buildCustomCodePlasmicQuery", () => {
         $ctx: { a: 1, ignoredCtx: 99 },
         $props: { b: 2, ignoredProp: 99 },
         $state: { d: { e: 3 }, ignoredState: 99 },
-      })
+      }),
     ).toEqual([
       {
         $ctx: { a: 1 },
@@ -206,7 +206,7 @@ describe("buildCustomCodePlasmicQuery", () => {
         $ctx: { a: 1 },
         $props: { b: 2 },
         $state: { c: 3 },
-      })
+      }),
     ).toEqual([{ $ctx: {}, $props: {}, $q: {}, $state: {} }]);
   });
 
@@ -226,7 +226,7 @@ describe("buildCustomCodePlasmicQuery", () => {
         $props: {},
         $q: { same: innerResult },
         $state: {},
-      })
+      }),
     ).toEqual([
       { $ctx: {}, $props: {}, $q: { same: innerResult }, $state: {} },
     ]);
@@ -244,7 +244,7 @@ describe("getCustomFunctionParams", () => {
     const expr = mkCustomFunctionExpr(
       "testFunc",
       ["value"],
-      [{ name: "value", code: "$q.dep.data" }]
+      [{ name: "value", code: "$q.dep.data" }],
     );
     const $query = new StatefulQueryResult();
 
@@ -281,7 +281,7 @@ describe("getInvalidFunctionArgs", () => {
   it("reports nothing when there are no registered params", () => {
     const func = mkFunc(["id"]);
     expect(getInvalidFunctionArgs([undefined], func, undefined)).toEqual(
-      undefined
+      undefined,
     );
   });
 
@@ -292,7 +292,7 @@ describe("getInvalidFunctionArgs", () => {
     ] as unknown as CustomFunctionParam[];
 
     expect(getInvalidFunctionArgs([undefined], func, registeredParams)).toEqual(
-      { id: required("ID") }
+      { id: required("ID") },
     );
     expect(getInvalidFunctionArgs([null], func, registeredParams)).toEqual({
       id: required("ID"),
@@ -306,14 +306,14 @@ describe("getInvalidFunctionArgs", () => {
     ] as unknown as CustomFunctionParam[];
 
     expect(getInvalidFunctionArgs(["abc"], func, registeredParams)).toEqual(
-      undefined
+      undefined,
     );
     // Falsy-but-present values (empty string, 0, false) are not "missing".
     expect(getInvalidFunctionArgs([""], func, registeredParams)).toEqual(
-      undefined
+      undefined,
     );
     expect(getInvalidFunctionArgs([0], func, registeredParams)).toEqual(
-      undefined
+      undefined,
     );
   });
 
@@ -324,7 +324,7 @@ describe("getInvalidFunctionArgs", () => {
     ] as unknown as CustomFunctionParam[];
 
     expect(getInvalidFunctionArgs([undefined], func, registeredParams)).toEqual(
-      undefined
+      undefined,
     );
   });
 
@@ -333,7 +333,7 @@ describe("getInvalidFunctionArgs", () => {
     const registeredParams = ["id"] as unknown as CustomFunctionParam[];
 
     expect(getInvalidFunctionArgs([undefined], func, registeredParams)).toEqual(
-      undefined
+      undefined,
     );
   });
 
@@ -353,17 +353,17 @@ describe("getInvalidFunctionArgs", () => {
 
     // Whole object missing -> required field reported.
     expect(getInvalidFunctionArgs([undefined], func, registeredParams)).toEqual(
-      { "opts.a": required("A") }
+      { "opts.a": required("A") },
     );
 
     // Required field missing within an otherwise-set object.
     expect(
-      getInvalidFunctionArgs([{ b: "set" }], func, registeredParams)
+      getInvalidFunctionArgs([{ b: "set" }], func, registeredParams),
     ).toEqual({ "opts.a": required("A") });
 
     // Required field filled -> nothing (optional field can stay unset).
     expect(
-      getInvalidFunctionArgs([{ a: "set" }], func, registeredParams)
+      getInvalidFunctionArgs([{ a: "set" }], func, registeredParams),
     ).toEqual(undefined);
   });
 
@@ -394,7 +394,7 @@ describe("getInvalidFunctionArgs", () => {
     ] as unknown as CustomFunctionParam[];
 
     expect(
-      getInvalidFunctionArgs([undefined, undefined], func, registeredParams)
+      getInvalidFunctionArgs([undefined, undefined], func, registeredParams),
     ).toEqual({ id: required("ID"), "opts.a": required("A") });
   });
 });
@@ -416,13 +416,17 @@ describe("getInvalidFunctionArgs displayLabel", () => {
 
   it("prefers a field's registered displayName", () => {
     expect(
-      getInvalidFunctionArgs(["set", { apiKey: "set" }], func, registeredParams)
+      getInvalidFunctionArgs(
+        ["set", { apiKey: "set" }],
+        func,
+        registeredParams,
+      ),
     ).toEqual({ "opts.url": required("URL") });
   });
 
   it("humanizes a field name when there is no displayName", () => {
     expect(
-      getInvalidFunctionArgs(["set", { url: "set" }], func, registeredParams)
+      getInvalidFunctionArgs(["set", { url: "set" }], func, registeredParams),
     ).toEqual({ "opts.apiKey": required("Api key") });
   });
 
@@ -431,8 +435,8 @@ describe("getInvalidFunctionArgs displayLabel", () => {
       getInvalidFunctionArgs(
         [undefined, { url: "set", apiKey: "set" }],
         func,
-        registeredParams
-      )
+        registeredParams,
+      ),
     ).toEqual({ id: required("Identifier") });
   });
 });

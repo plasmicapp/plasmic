@@ -4,15 +4,15 @@ describe("headRegexp", () => {
   it("can inject <script> after <head>", () => {
     const replaced = "<html><head><meta/></head><body></body></html>".replace(
       headRegexp,
-      "$&<script/>"
+      "$&<script/>",
     );
     expect(replaced).toBe(
-      "<html><head><script/><meta/></head><body></body></html>"
+      "<html><head><script/><meta/></head><body></body></html>",
     );
   });
   it("matches doc with <head>", () => {
     const match = "<html><head><meta/></head><body></body></html>".match(
-      headRegexp
+      headRegexp,
     );
     expect(match?.[0]).toBe("<html><head>");
   });
@@ -23,14 +23,14 @@ describe("headRegexp", () => {
   it("matches doc with <!DOCTYPE>", () => {
     const match =
       "<!DOCTYPE html><html><head><meta/></head><body></body></html>".match(
-        headRegexp
+        headRegexp,
       );
     expect(match?.[0]).toBe("<html><head>");
   });
   it("matches doc with attribute on <head>", () => {
     const match =
       '<html lang="en"><head><meta/></head><body></body></html>'.match(
-        headRegexp
+        headRegexp,
       );
     expect(match?.[0]).toBe('<html lang="en"><head>');
   });

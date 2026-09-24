@@ -1,22 +1,22 @@
 import { logChangedNodes } from "@/wab/client/studio-ctx/StudioCtx";
 import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
+import { AnyArena } from "@/wab/shared/Arenas";
 import { assert } from "@/wab/shared/common";
+import { ComponentVariantFrame } from "@/wab/shared/component-frame";
 import {
   IChangeRecorder,
   RecordedChanges,
   mergeRecordedChanges,
 } from "@/wab/shared/core/observable-model";
 import { Selectable } from "@/wab/shared/core/selection";
-import { AnyArena } from "@/wab/shared/Arenas";
-import { ComponentVariantFrame } from "@/wab/shared/component-frame";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import { trackComponentRoot, trackComponentSite } from "@/wab/shared/core/tpls";
+import { ValNode } from "@/wab/shared/core/val-nodes";
 import { ArenaFrame, Site, TplNode } from "@/wab/shared/model/classes";
 import {
   DeletedAssetsSummary,
   undoChangesAndResolveConflicts,
 } from "@/wab/shared/server-updates-utils";
-import { SlotSelection } from "@/wab/shared/core/slots";
-import { trackComponentRoot, trackComponentSite } from "@/wab/shared/core/tpls";
-import { ValNode } from "@/wab/shared/core/val-nodes";
 import L from "lodash";
 import { observable } from "mobx";
 
@@ -48,7 +48,7 @@ export class UndoLog {
   constructor(
     private site: Site,
     private recorder: IChangeRecorder,
-    private summary: DeletedAssetsSummary
+    private summary: DeletedAssetsSummary,
   ) {}
   get _nextInsertPos() {
     return this.__nextInsertPos.get();
@@ -68,7 +68,7 @@ export class UndoLog {
         this.site,
         this.recorder,
         this.summary,
-        record.changes.changes
+        record.changes.changes,
       );
       record.changes = newChanges;
 
@@ -80,7 +80,7 @@ export class UndoLog {
         logChangedNodes(
           "Changed nodes by restore:",
           record.changes.changes,
-          false
+          false,
         );
       }
     }
@@ -109,14 +109,14 @@ export class UndoLog {
 
     function componentFramesEq(
       f1: ComponentVariantFrame | undefined,
-      f2: ComponentVariantFrame | undefined
+      f2: ComponentVariantFrame | undefined,
     ) {
       return f1 && f2 ? f1.equals(f2) : f1 === f2;
     }
 
     function componentCtxEq(
       c1: ComponentCtx | undefined,
-      c2: ComponentCtx | undefined
+      c2: ComponentCtx | undefined,
     ) {
       if (c1 && c2) {
         return (
@@ -131,7 +131,7 @@ export class UndoLog {
 
     function componentStacksEq(
       s1: ComponentVariantFrame[] | undefined,
-      s2: ComponentVariantFrame[] | undefined
+      s2: ComponentVariantFrame[] | undefined,
     ) {
       return s1 && s2
         ? L.zip(s1, s2).every(([f1, f2]) => componentFramesEq(f1, f2))
@@ -147,7 +147,7 @@ export class UndoLog {
 
     function selectablesEq(
       s1: Selectable | undefined,
-      s2: Selectable | undefined
+      s2: Selectable | undefined,
     ) {
       if (s1 && s2) {
         // Nothing fancy, the "normal" situation where something is selected in both prev and next
@@ -253,7 +253,7 @@ export class UndoLog {
     console.log("UNDO: Appending new changes", record);
     this._log[this._nextInsertPos - 1].changes = mergeRecordedChanges(
       this._log[this._nextInsertPos - 1].changes,
-      record.changes
+      record.changes,
     );
     if (record.changes.changes.length > 0) {
       const recordsToDelete = this._log.length - this._nextInsertPos;

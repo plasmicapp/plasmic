@@ -30,7 +30,7 @@ function mentionComponent(component: ComponentIdentity): string {
 
 export function makeLegacyQueryMigrationPrompt(
   component: ComponentIdentity,
-  query: LegacyQueryIdentity
+  query: LegacyQueryIdentity,
 ): string {
   return (
     `Migrate the legacy data query ${describeQuery(query)} on ` +
@@ -41,7 +41,7 @@ export function makeLegacyQueryMigrationPrompt(
 
 export function makeAllLegacyQueriesMigrationPrompt(
   component: ComponentIdentity,
-  queries: LegacyQueryIdentity[]
+  queries: LegacyQueryIdentity[],
 ): string {
   const subject =
     queries.length === 1

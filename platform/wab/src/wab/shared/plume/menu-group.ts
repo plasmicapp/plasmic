@@ -43,7 +43,7 @@ export const MenuGroupPlugin: PlumePlugin = {
         const { plasmicProps } = sub.reactWeb.useMenuGroup(
           Object.assign(comp, getCompMeta()),
           omit(allProps, internalCanvasElementProps),
-          menuGroupConfig as any
+          menuGroupConfig as any,
         );
         return sub.React.createElement(comp, {
           ...plasmicProps,
@@ -70,7 +70,7 @@ export const MenuGroupPlugin: PlumePlugin = {
   genDefaultExternalProps(ctx: SerializerBaseContext, opts) {
     const { component } = ctx;
     const params = getExternalParams(ctx).filter(
-      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name))
+      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name)),
     );
     return `
       export interface ${
@@ -82,8 +82,8 @@ export const MenuGroupPlugin: PlumePlugin = {
               `"${paramToVarName(ctx.component, param)}"?: ${serializeParamType(
                 component,
                 param,
-                ctx.projectFlags
-              )}`
+                ctx.projectFlags,
+              )}`,
           )
           .join(";\n")}
       }
@@ -105,12 +105,12 @@ export const MenuGroupPlugin: PlumePlugin = {
     return `
       import * as React from "react";
       import {${plasmicComponentName}, ${defaultPropsName}} from "${
-      ctx.exportOpts.relPathFromImplToManagedDir
-    }/${makeComponentImportPath(
-      component,
-      ctx,
-      "render"
-    )}";  // plasmic-import: ${component.uuid}/render
+        ctx.exportOpts.relPathFromImplToManagedDir
+      }/${makeComponentImportPath(
+        component,
+        ctx,
+        "render",
+      )}";  // plasmic-import: ${component.uuid}/render
     ${this.genSkeletonImports(ctx).imports}
 
     ${componentSubstitutionApi}
@@ -147,7 +147,7 @@ export const MenuGroupPlugin: PlumePlugin = {
   getSlotType(component: Component, param: Param) {
     if (param.variable.name === "children" && component.superComp) {
       const option = component.superComp.subComps.find(
-        (c) => c.plumeInfo?.type === "menu-item"
+        (c) => c.plumeInfo?.type === "menu-item",
       );
       if (option) {
         return typeFactory.renderable({

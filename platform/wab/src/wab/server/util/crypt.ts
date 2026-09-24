@@ -24,7 +24,7 @@ export function makeStableEncryptor(key: string) {
       const cipher = crypto.createCipheriv(
         encryptionAlgorithm,
         stableKey,
-        stableIv
+        stableIv,
       );
       const encrypted = Buffer.concat([
         cipher.update(String(value), "utf8"),
@@ -45,7 +45,7 @@ export function makeStableEncryptor(key: string) {
       const decipher = crypto.createDecipheriv(
         encryptionAlgorithm,
         stableKey,
-        stableIv
+        stableIv,
       );
       decipher.setAuthTag(tag);
       return decipher.update(encrypted) + decipher.final("utf8");

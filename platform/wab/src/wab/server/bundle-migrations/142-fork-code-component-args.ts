@@ -18,7 +18,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   forkAllTplCodeComponentVirtualArgs(site);
@@ -26,7 +26,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "142-fork-code-component-args"
+    "142-fork-code-component-args",
   );
   Object.assign(bundle, newBundle);
   await upgradeHostlessProject(bundle, entity, db);

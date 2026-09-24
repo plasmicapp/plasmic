@@ -34,7 +34,7 @@ export const testModels = base.extend<TestFixtures>({
       await use();
       expect(
         attempted,
-        "e2e tests must not call the copilot API; stub it or avoid submitting"
+        "e2e tests must not call the copilot API; stub it or avoid submitting",
       ).toEqual([]);
     },
     { auto: true },
@@ -50,7 +50,7 @@ export const testModels = base.extend<TestFixtures>({
 
 export function makeApiClient(
   request: APIRequestContext,
-  baseURL: string | undefined
+  baseURL: string | undefined,
 ) {
   return new ApiClient(request, baseURL || "http://localhost:3003");
 }

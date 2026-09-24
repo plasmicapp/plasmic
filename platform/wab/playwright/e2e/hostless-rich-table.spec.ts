@@ -8,8 +8,8 @@ import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 const queryData = JSON.parse(
   readFileSync(
     path.join(__dirname, "../fixtures-data/northwind-orders-query.json"),
-    "utf-8"
-  )
+    "utf-8",
+  ),
 );
 
 test.describe("hostless-rich-components", () => {
@@ -40,7 +40,7 @@ test.describe("hostless-rich-components", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -65,7 +65,7 @@ test.describe("hostless-rich-components", () => {
       .waitFor({ state: "visible" });
 
     const dataProp = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="data"]'
+      '[data-plasmic-prop="data"]',
     );
     await dataProp.click();
     await models.studio.frame
@@ -73,7 +73,7 @@ test.describe("hostless-rich-components", () => {
       .waitFor({ state: "visible" });
 
     const dynamicValueOption = models.studio.frame.locator(
-      '[data-plasmic-role="overlay"] [data-key="\'[[dynamic value]]\'"]'
+      '[data-plasmic-role="overlay"] [data-key="\'[[dynamic value]]\'"]',
     );
     await dynamicValueOption.click();
     await models.studio.rightPanel.frame
@@ -81,11 +81,11 @@ test.describe("hostless-rich-components", () => {
       .waitFor({ state: "visible" });
 
     const dataPicker = models.studio.rightPanel.frame.locator(
-      '[data-test-id="data-picker"]'
+      '[data-test-id="data-picker"]',
     );
     const dataPickerContent = await dataPicker.textContent();
     const monacoContainer = models.studio.rightPanel.frame.locator(
-      '[data-test-id="data-picker"] .react-monaco-editor-container'
+      '[data-test-id="data-picker"] .react-monaco-editor-container',
     );
 
     if (dataPickerContent && dataPickerContent.includes("Switch to Code")) {
@@ -121,14 +121,14 @@ test.describe("hostless-rich-components", () => {
           });
           element.dispatchEvent(pasteEvent);
         },
-        jsonString
+        jsonString,
       );
     }
 
     await page.waitForTimeout(1000);
 
     const saveButton = models.studio.rightPanel.frame.locator(
-      '[data-test-id="data-picker"] button:has-text("Save")'
+      '[data-test-id="data-picker"] button:has-text("Save")',
     );
     await saveButton.waitFor({ state: "visible" });
     await saveButton.click();
@@ -156,7 +156,7 @@ test.describe("hostless-rich-components", () => {
     }).toPass({ timeout: 5000, intervals: [500, 1000, 1500] });
 
     const canSelectRowsProp = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="canSelectRows"]'
+      '[data-plasmic-prop="canSelectRows"]',
     );
     await canSelectRowsProp.click();
     await models.studio.frame
@@ -164,7 +164,7 @@ test.describe("hostless-rich-components", () => {
       .waitFor({ state: "visible" });
 
     const byClickingRowOption = models.studio.frame.locator(
-      '[data-plasmic-role="overlay"] [data-key]:has-text("By clicking a row")'
+      '[data-plasmic-role="overlay"] [data-key]:has-text("By clicking a row")',
     );
     await byClickingRowOption.click();
     await models.studio.frame
@@ -233,7 +233,7 @@ test.describe("hostless-rich-components", () => {
 
       await expect(targetCell).toHaveCSS(
         "background-color",
-        "rgb(186, 224, 255)"
+        "rgb(186, 224, 255)",
       );
     }
 

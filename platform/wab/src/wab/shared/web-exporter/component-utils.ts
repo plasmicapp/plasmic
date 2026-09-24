@@ -10,7 +10,7 @@ import { Component, Site, TplComponent } from "@/wab/shared/model/classes";
  */
 export function serializePlasmicTplComponent(
   site: Site,
-  tplComponent: TplComponent
+  tplComponent: TplComponent,
 ): {
   id: string;
   "data-plasmic-component": string;
@@ -40,7 +40,7 @@ export function deserializePlasmicComponentAttrs(
   attrs: {
     "data-plasmic-component": string;
     "data-plasmic-project"?: ProjectId;
-  }
+  },
 ): Component | undefined {
   const componentName = attrs["data-plasmic-component"];
   const depProjectId = attrs["data-plasmic-project"];
@@ -48,13 +48,13 @@ export function deserializePlasmicComponentAttrs(
   let components = site.components;
   if (depProjectId) {
     const dep = site.projectDependencies.find(
-      (d) => d.projectId === depProjectId
+      (d) => d.projectId === depProjectId,
     );
     components = dep?.site?.components ?? [];
   }
 
   return components.find(
-    (c: Component) => toVarName(c.name) === toVarName(componentName)
+    (c: Component) => toVarName(c.name) === toVarName(componentName),
   );
 }
 
@@ -65,12 +65,12 @@ export function deserializePlasmicComponentAttrs(
  */
 export function getDataPlasmicProject(
   site: Site,
-  component: Component
+  component: Component,
 ): string | undefined {
   if (site.components.includes(component)) {
     return undefined;
   }
   return site.projectDependencies.find((dep) =>
-    dep.site.components.includes(component)
+    dep.site.components.includes(component),
   )?.projectId;
 }

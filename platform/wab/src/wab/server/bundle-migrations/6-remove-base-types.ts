@@ -25,19 +25,19 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     if (["Param", "Cell", "Binding"].includes(json.__type)) {
       const inst = ensure(
         bundler.objByAddr({ iid, uuid: entity.id }),
-        "must exist"
+        "must exist",
       ) as Param;
       inst.type = inst.type && cloneType(inst.type);
     } else if (["Collection", "MapType", "OpaqueType"].includes(json.__type)) {
       const inst = ensure(
         bundler.objByAddr({ iid, uuid: entity.id }),
-        "must exist"
+        "must exist",
       ) as any;
       inst.params = inst.params.map(cloneType);
     } else if (json.__type === "Optional") {
       const inst = ensure(
         bundler.objByAddr({ iid, uuid: entity.id }),
-        "must exist"
+        "must exist",
       ) as any;
       inst.param = cloneType(inst.param);
     }
@@ -47,7 +47,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(unbundled, entity.id, "6-remove-base-types");
   assert(
     !newBundle.deps.find((str) => str === base.id),
-    "Migrated bundle is still referencing basePkg!"
+    "Migrated bundle is still referencing basePkg!",
   );
   Object.assign(bundle, newBundle);
 };

@@ -189,7 +189,7 @@ describe("computeCommentStats", () =>
       new Map([
         [component1.uuid, { commentCount: 2, replyCount: 2 }],
         [component2.uuid, { commentCount: 3, replyCount: 2 }],
-      ])
+      ]),
     );
     expect(commentStatsBySubject).toEqual(
       new Map([
@@ -197,7 +197,7 @@ describe("computeCommentStats", () =>
         [xs1[2].uuid, { commentCount: 1, replyCount: 0 }],
         [xs2[3].uuid, { commentCount: 1, replyCount: 1 }],
         [xs2[4].uuid, { commentCount: 2, replyCount: 1 }],
-      ])
+      ]),
     );
     expect(commentStatsByVariant).toEqual(
       new Map([
@@ -221,6 +221,6 @@ describe("computeCommentStats", () =>
           getSubjectVariantsKey(xs2[4], [v2SingleChoiceVariants[0]]),
           { commentCount: 1, replyCount: 1 },
         ],
-      ])
+      ]),
     );
   }));

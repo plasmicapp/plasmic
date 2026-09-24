@@ -16,7 +16,7 @@ import { regex } from "regex";
  */
 export function substituteUrlParams(
   template: string,
-  params: Record<string, string>
+  params: Record<string, string>,
 ) {
   let path = template;
   for (const [key, value] of Object.entries(params)) {
@@ -47,7 +47,7 @@ export function substituteUrlParams(
 function substituteCatchallParam(
   template: string,
   marker: string,
-  value: string
+  value: string,
 ) {
   // Remove starting and ending `/` from value
   // This behavior matches @plasmicapp/host
@@ -56,7 +56,7 @@ function substituteCatchallParam(
 }
 
 export function joinDecodedSegments(
-  decodedSegments: string[] | undefined
+  decodedSegments: string[] | undefined,
 ): string {
   return (decodedSegments ?? []).map(encodeURIComponent).join("/");
 }
@@ -114,7 +114,7 @@ export function extractQueryParamMetas(pageMeta: PageMeta): QueryParamMeta[] {
       type: "Query",
       key,
       previewValue,
-    })
+    }),
   );
 }
 
@@ -132,7 +132,7 @@ const reParams = regex("g")`
  */
 export function getMatchingPagePathParams(
   pattern: string,
-  path: string
+  path: string,
 ): Record<string, string> | false {
   const reEncodedPattern = pattern
     .split("/")
@@ -141,7 +141,7 @@ export function getMatchingPagePathParams(
         .split(reParams)
         // re-encode non-param parts
         .map((part, i) => (i % 2 === 1 ? part : reEncodeURIComponent(part)))
-        .join("")
+        .join(""),
     )
     .join("/");
 
@@ -194,8 +194,8 @@ export function renderPageHrefUrl(
   expr: PageHref,
   renderExpr: (
     expr: Expr,
-    opts: { encode: boolean; catchall?: boolean }
-  ) => string
+    opts: { encode: boolean; catchall?: boolean },
+  ) => string,
 ): string | undefined {
   if (!expr.page?.pageMeta) {
     return undefined;
@@ -216,7 +216,7 @@ export function renderPageHrefUrl(
         ([key, value]) =>
           `${encodeURIComponent(key)}=${renderExpr(value, {
             encode: expr.encode,
-          })}`
+          })}`,
       )
       .join("&");
     url += `?${qs}`;
@@ -231,7 +231,7 @@ export function renderPageHrefUrl(
 
 export function encodeUrlSegmentAsCode(
   code: string,
-  opts?: { catchall?: boolean }
+  opts?: { catchall?: boolean },
 ): string {
   if (opts?.catchall) {
     return (
@@ -254,7 +254,7 @@ export function pageHrefPathToCode({
   const url = renderPageHrefUrl(expr, (value, opts) => {
     const exprCode = getCodeExpressionWithFallback(
       asCode(value, exprCtx),
-      exprCtx
+      exprCtx,
     );
     if (opts.encode) {
       return "${" + encodeUrlSegmentAsCode(exprCode, opts) + "}";
@@ -283,7 +283,7 @@ export function evalPageHrefPath({
 }: EvalPageHrefProps): TryEvalExprResult {
   const pageMeta = ensure(
     expr.page.pageMeta,
-    "PageHref is expected to contain a page"
+    "PageHref is expected to contain a page",
   );
   for (const param of extractPathParamMetas(pageMeta)) {
     if (!param.required) {

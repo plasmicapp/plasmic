@@ -69,7 +69,7 @@ type StyleTokenControlsContextValue = {
   resolver: TokenValueResolver;
   onDuplicate: (token: StyleToken) => Promise<void>;
   onSelect: (
-    token: MutableToken<StyleToken> | OverrideableToken<StyleToken>
+    token: MutableToken<StyleToken> | OverrideableToken<StyleToken>,
   ) => void;
   onDeleteOverride: (token: OverrideableToken<StyleToken>) => void;
   onAdd: (tokenType: StyleTokenType, folderName?: string) => Promise<void>;
@@ -83,7 +83,7 @@ export const StyleTokenControlsContext =
 export function useStyleTokenControls() {
   return ensure(
     React.useContext(StyleTokenControlsContext),
-    "useStyleTokenControls must be used within a StyleTokenControlsContext.Provider"
+    "useStyleTokenControls must be used within a StyleTokenControlsContext.Provider",
   );
 }
 
@@ -119,7 +119,7 @@ function mapToTokenPanelRow({
     name: item.name,
     path: item.path,
     items: item.items.map((i) =>
-      mapToTokenPanelRow({ item: i, tokenType, getTokenValue, dep, actions })
+      mapToTokenPanelRow({ item: i, tokenType, getTokenValue, dep, actions }),
     ),
     count: item.count,
     actions,
@@ -134,7 +134,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     debounce((value: string) => {
       setDebouncedQuery(value);
     }, 500),
-    [setDebouncedQuery]
+    [setDebouncedQuery],
   );
   const [expandedHeaders, setExpandedHeaders] = React.useState<
     Set<StyleTokenType>
@@ -142,7 +142,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   const matcher = new Matcher(debouncedQuery);
 
   const [justAdded, setJustAdded] = React.useState<StyleToken | undefined>(
-    undefined
+    undefined,
   );
 
   const [editToken, setEditToken] = React.useState<
@@ -150,7 +150,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   >(undefined);
 
   const [vsh, setVsh] = React.useState<VariantedStylesHelper | undefined>(
-    undefined
+    undefined,
   );
 
   const [isTargeting, setIsTargeting] = React.useState(false);
@@ -164,7 +164,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       }
       return value;
     },
-    [resolver, vsh]
+    [resolver, vsh],
   );
 
   const getRowKey = React.useCallback((row: StyleTokenPanelRow) => {
@@ -212,11 +212,11 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
         return ok();
       });
     },
-    [studioCtx, setJustAdded, setEditToken]
+    [studioCtx, setJustAdded, setEditToken],
   );
 
   const getFolderTokens = (
-    items: StyleTokenPanelRow[]
+    items: StyleTokenPanelRow[],
   ): {
     tokens: StyleToken[];
     folders: StyleTokenFolder[];
@@ -249,14 +249,14 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       const confirmation = await promptDeleteFolder(
         "token",
         getFolderWithSlash(folder.name),
-        folder.count
+        folder.count,
       );
       if (confirmation) {
         const { tokens } = getFolderTokens([folder]);
         await studioCtx.siteOps().tryDeleteTokens(tokens);
       }
     },
-    [studioCtx]
+    [studioCtx],
   );
 
   const onFolderRenamed = React.useCallback(
@@ -275,7 +275,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       const keyChanges = getFolderKeyChanges(folders, pathData);
       renameGroup(keyChanges);
     },
-    [studioCtx]
+    [studioCtx],
   );
 
   const actions: StyleTokenFolderActions = React.useMemo(
@@ -284,7 +284,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       onDeleteFolder,
       onFolderRenamed,
     }),
-    [onAddToken, onDeleteFolder, onFolderRenamed]
+    [onAddToken, onDeleteFolder, onFolderRenamed],
   );
 
   const onDuplicate = React.useCallback(
@@ -296,14 +296,14 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
         return ok();
       });
     },
-    [studioCtx, setJustAdded, setEditToken]
+    [studioCtx, setJustAdded, setEditToken],
   );
 
   const onSelect = React.useCallback(
     (token: MutableToken<StyleToken> | OverrideableToken<StyleToken>) => {
       setEditToken(token);
     },
-    [setEditToken]
+    [setEditToken],
   );
 
   const onDeleteOverride = React.useCallback(
@@ -316,10 +316,10 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
             vsh.removeVariantedValue(token);
           }
           return ok();
-        })
+        }),
       );
     },
-    [vsh]
+    [vsh],
   );
 
   const availableTargets = allGlobalVariants(studioCtx.site, {
@@ -329,7 +329,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
 
   const [screenGlobalVariants, contextGlobalVariants] = partition(
     availableTargets,
-    (v) => isScreenVariant(v)
+    (v) => isScreenVariant(v),
   );
 
   const handleGlobalVariantChange = (variantId) => {
@@ -340,15 +340,15 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       const globalVariants = [
         ensure(
           availableTargets.find((v) => v.uuid === variantId),
-          () => `Picked unknown global variant`
+          () => `Picked unknown global variant`,
         ),
       ];
       setVsh(
         new VariantedStylesHelper(
           studioCtx.site,
           globalVariants,
-          globalVariants
-        )
+          globalVariants,
+        ),
       );
       setIsTargeting(true);
     }
@@ -356,14 +356,14 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
 
   const tokensByType = groupBy(
     siteFinalStyleTokens(studioCtx.site),
-    (t) => t.type
+    (t) => t.type,
   );
 
   const tokenSectionItems = (tokenType: StyleTokenType) => {
     const makeTokensItems = (
       tokens: FinalToken<StyleToken>[],
       dep?: ProjectDependency,
-      isRegistered = false
+      isRegistered = false,
     ) => {
       tokens = naturalSort(tokens, (token) => getFolderTrimmed(token.name));
       const depPrefix = dep ? `_${dep.name}` : "";
@@ -391,7 +391,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
 
     const makeDepsItems = (deps: ProjectDependency[]): StyleTokenPanelRow[] => {
       deps = naturalSort(deps, (dep) =>
-        studioCtx.projectDependencyManager.getNiceDepName(dep)
+        studioCtx.projectDependencyManager.getNiceDepName(dep),
       );
       return deps
         .map((dep) => {
@@ -407,10 +407,10 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
               (isHostLessPackage(dep.site)
                 ? finalStyleTokensForDep(studioCtx.site, dep.site)
                 : finalStyleTokensForDep(studioCtx.site, dep.site).filter(
-                    (t) => !t.isRegistered
+                    (t) => !t.isRegistered,
                   )
               ).filter((t) => t.type === tokenType),
-              dep
+              dep,
             ),
           };
         })
@@ -421,7 +421,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
 
     const [normalTokens, registeredTokens] = partition(
       tokens,
-      (t) => !t.isRegistered
+      (t) => !t.isRegistered,
     );
 
     const items: StyleTokenPanelRow[] = [
@@ -439,18 +439,18 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
         : []),
       ...makeDepsItems(
         studioCtx.site.projectDependencies.filter(
-          (d) => !isHostLessPackage(d.site)
-        )
+          (d) => !isHostLessPackage(d.site),
+        ),
       ),
       ...makeDepsItems(
         studioCtx.site.projectDependencies.filter((d) =>
-          isHostLessPackage(d.site)
-        )
+          isHostLessPackage(d.site),
+        ),
       ),
     ];
     const totalCount = items.reduce(
       (acc, item) => (item.type !== "token" ? acc + item.count : acc + 1),
-      0
+      0,
     );
     return { items, count: totalCount };
   };
@@ -488,7 +488,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       }
       const hasDeletedVariant = selectedVariants.some(
         (selectedVariant) =>
-          !availableTargets.some((v) => v.uuid === selectedVariant.uuid)
+          !availableTargets.some((v) => v.uuid === selectedVariant.uuid),
       );
       if (hasDeletedVariant) {
         setVsh(undefined);
@@ -502,7 +502,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
         selectableAssets={selectableTokens}
         onDelete={async (selected: string[]) => {
           const selectedTokens = studioCtx.site.styleTokens.filter((t) =>
-            selected.includes(t.uuid)
+            selected.includes(t.uuid),
           );
           const result = await studioCtx
             .siteOps()
@@ -549,7 +549,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
           count,
         };
       }),
-    [tokenSectionItems]
+    [tokenSectionItems],
   );
 
   const {
@@ -613,7 +613,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
                         <Select.Option value={variant.uuid} key={variant.uuid}>
                           {variant.name}
                         </Select.Option>
-                      )
+                      ),
                     )}
                   </Select.OptionGroup>
                 )}

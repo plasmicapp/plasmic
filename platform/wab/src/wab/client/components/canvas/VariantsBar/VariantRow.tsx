@@ -22,7 +22,7 @@ function VariantRow_(
     onMouseDown,
     ...props
   }: VariantRowProps,
-  ref: React.Ref<HTMLDivElement>
+  ref: React.Ref<HTMLDivElement>,
 ) {
   return (
     <PlasmicVariantRow

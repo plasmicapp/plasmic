@@ -39,7 +39,7 @@ export type IdleCallbackAsync = (opts: {
 }) => Promise<void>;
 
 export async function requestIdleCallbackAsync(
-  callback: IdleCallbackAsync
+  callback: IdleCallbackAsync,
 ): Promise<void> {
   return new Promise((resolve) => {
     const requestId = requestIdleCallback(
@@ -47,7 +47,7 @@ export async function requestIdleCallbackAsync(
         await callback(args);
         clearIdleCallback(requestId);
         resolve();
-      })
+      }),
     );
   });
 }

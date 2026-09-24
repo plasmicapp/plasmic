@@ -3,8 +3,6 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { getContainerType } from "@/wab/client/utils/tpl-client-utils";
-import { ContainerLayoutType } from "@/wab/shared/layoututils";
-import { isKnownTplNode, TplTag } from "@/wab/shared/model/classes";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   isComponentRoot,
@@ -12,6 +10,8 @@ import {
   isTplContainer,
   isTplTextBlock,
 } from "@/wab/shared/core/tpls";
+import { ContainerLayoutType } from "@/wab/shared/layoututils";
+import { TplTag, isKnownTplNode } from "@/wab/shared/model/classes";
 import cn from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";

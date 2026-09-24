@@ -14,7 +14,7 @@ const unexpectedError =
 
 function ChangePasswordModal_(
   props: ChangePasswordModalProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const appCtx = useAppCtx();
   const [oldPassword, setOldPassword] = React.useState("");
@@ -30,7 +30,7 @@ function ChangePasswordModal_(
     try {
       const response = await appCtx.api.changePassword(
         oldPassword,
-        newPassword
+        newPassword,
       );
       if (response.status === true) {
         setDone(true);
@@ -41,12 +41,12 @@ function ChangePasswordModal_(
             break;
           case "PwnedPasswordError":
             setError(
-              "Password is a known leaked password. Please try another password."
+              "Password is a known leaked password. Please try another password.",
             );
             break;
           case "PasswordTooLongError":
             setError(
-              `Password must be at most ${MAX_PASSWORD_LENGTH} characters.`
+              `Password must be at most ${MAX_PASSWORD_LENGTH} characters.`,
             );
             break;
           case "MismatchPasswordError":

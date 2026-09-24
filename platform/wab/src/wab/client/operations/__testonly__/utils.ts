@@ -52,7 +52,7 @@ export function setupComponentWithInstance() {
       tplMgr,
       name: "Button",
       type: ComponentType.Plain,
-    })
+    }),
   );
 
   button.params.push(
@@ -84,7 +84,7 @@ export function setupComponentWithInstance() {
       name: "children",
       type: typeFactory.renderable(),
       paramType: "slot",
-    })
+    }),
   );
 
   const sizeGroup = unwrap(
@@ -93,7 +93,7 @@ export function setupComponentWithInstance() {
       tplMgr,
       name: "size",
       optionsType: VariantOptionsType.singleChoice,
-    })
+    }),
   );
   for (const name of ["small", "large"]) {
     unwrap(
@@ -102,7 +102,7 @@ export function setupComponentWithInstance() {
         tplMgr,
         variantGroup: sizeGroup,
         name,
-      })
+      }),
     );
   }
 
@@ -112,7 +112,7 @@ export function setupComponentWithInstance() {
       tplMgr,
       name: "features",
       optionsType: VariantOptionsType.multiChoice,
-    })
+    }),
   );
   for (const name of ["rounded", "shadow"]) {
     unwrap(
@@ -121,7 +121,7 @@ export function setupComponentWithInstance() {
         tplMgr,
         variantGroup: featuresGroup,
         name,
-      })
+      }),
     );
   }
 
@@ -131,7 +131,7 @@ export function setupComponentWithInstance() {
       tplMgr,
       name: "dark",
       optionsType: VariantOptionsType.standalone,
-    })
+    }),
   );
 
   const baseVariant = getBaseVariant(page);

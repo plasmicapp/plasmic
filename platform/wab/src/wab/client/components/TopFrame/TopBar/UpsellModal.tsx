@@ -10,14 +10,14 @@ import React from "react";
 export const UpsellModal = (
   props: PromptBillingArgs & {
     setShowUpsellForm: (_: undefined) => void;
-  }
+  },
 ) => {
   const showBillingModal = async () => {
     const response = await promptBilling(props);
 
     if (response?.type === "success") {
       await showUpsellConfirm(
-        APP_ROUTES.orgSettings.fill({ teamId: response.team.id })
+        APP_ROUTES.orgSettings.fill({ teamId: response.team.id }),
       );
     }
 

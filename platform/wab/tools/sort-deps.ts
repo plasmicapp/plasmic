@@ -36,7 +36,7 @@ while (ordered.length < L.size(graph)) {
       .map((node) => [added.union(crawl(node)).size, node])
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .sortBy(([a, b]) => a)
-      .value()
+      .value(),
   );
   const bestNode = L(graph)
     .keys()
@@ -51,5 +51,5 @@ console.log(
   ordered
     .filter((x) => !x.includes("/gen/"))
     .map((x) => `import "./${x}";`)
-    .join("\n")
+    .join("\n"),
 );

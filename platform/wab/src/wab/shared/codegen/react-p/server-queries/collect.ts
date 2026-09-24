@@ -42,7 +42,7 @@ import {
  * 4. Track data provider contexts used in query parameters
  */
 export function collectComponentServerQueries(
-  params: Pick<SerializerBaseContext, "site" | "component" | "exprCtx">
+  params: Pick<SerializerBaseContext, "site" | "component" | "exprCtx">,
 ): ServerQueryTree {
   const { site, component, exprCtx } = params;
   const componentMap = new Map<string, Component>();
@@ -67,11 +67,11 @@ function collectComponentNode(
   ctx: ServerQueryCollectionContext,
   component: Component,
   exprCtx: ExprCtx,
-  propsContext: Record<string, DynamicExprCode>
+  propsContext: Record<string, DynamicExprCode>,
 ): ServerComponentNode {
   // Get server queries with operations
   const queries = component.serverQueries.filter(
-    isServerQueryWithOperation
+    isServerQueryWithOperation,
   ) as ServerQueryWithOperation[];
 
   // Traverse the component's tpl tree to find children
@@ -93,7 +93,7 @@ function collectComponentNode(
 function collectTplNode(
   ctx: ServerQueryCollectionContext,
   node: TplNode,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ): ServerNode[] {
   if (isTplTag(node)) {
     return collectTplTag(ctx, node, exprCtx);
@@ -117,7 +117,7 @@ function collectTplNode(
 function collectTplTag(
   ctx: ServerQueryCollectionContext,
   node: TplTag,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ): ServerNode[] {
   const baseVs = node.vsettings.find((vs) => isBaseVariant(vs.variants));
 
@@ -143,7 +143,7 @@ function collectTplTag(
       collectionExpr,
       itemName,
       indexName,
-      childNodes
+      childNodes,
     );
   }
   return childNodes;
@@ -156,7 +156,7 @@ function collectTplTag(
 function collectTplComponent(
   ctx: ServerQueryCollectionContext,
   node: TplComponent,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ): ServerNode[] {
   const component = node.component;
   const baseVs = node.vsettings.find((vs) => isBaseVariant(vs.variants));
@@ -175,7 +175,7 @@ function collectTplComponent(
       ctx,
       component,
       exprCtx,
-      propsContext
+      propsContext,
     );
     // Merge slot children into the component node's children
     componentNode.children.push(...slotChildren);
@@ -199,7 +199,7 @@ function collectTplComponent(
       collectionExpr,
       itemName,
       indexName,
-      resultNodes
+      resultNodes,
     );
   }
   return resultNodes;
@@ -211,7 +211,7 @@ function collectTplComponent(
 function collectCodeComponent(
   node: TplComponent,
   propsContext: Record<string, DynamicExprCode>,
-  slotChildren: ServerNode[]
+  slotChildren: ServerNode[],
 ): ServerNode[] {
   const component = node.component;
 
@@ -232,7 +232,7 @@ function collectCodeComponent(
  */
 function extractPropsContext(
   node: TplComponent,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ): Record<string, DynamicExprCode> {
   const propsContext: Record<string, DynamicExprCode> = {};
 
@@ -276,7 +276,7 @@ function extractPropsContext(
 function collectSlotContents(
   ctx: ServerQueryCollectionContext,
   node: TplComponent,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ): ServerNode[] {
   const children: ServerNode[] = [];
   const slotArgs = getSlotArgs(node);
@@ -298,7 +298,7 @@ function collectSlotContents(
  */
 function wrapWithVisibility(
   visibilityExpr: DynamicExprCode,
-  children: ServerNode[]
+  children: ServerNode[],
 ): ServerNode[] {
   if (children.length === 0) {
     return [];
@@ -319,7 +319,7 @@ function wrapWithRepeated(
   collectionExpr: DynamicExprCode,
   itemName: string,
   indexName: string,
-  children: ServerNode[]
+  children: ServerNode[],
 ): ServerNode[] {
   if (children.length === 0) {
     return [];

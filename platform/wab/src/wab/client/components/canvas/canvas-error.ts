@@ -114,7 +114,7 @@ export const mkCanvasErrorBoundary = computedFn(
               const errorElement = deriveOffendingElement(this.state.error);
               if (errorElement) {
                 return `Error in ${getExportedComponentName(
-                  nodeOrComponent
+                  nodeOrComponent,
                 )} when rendering ${errorElement}:`;
               } else {
                 return `Error in ${getExportedComponentName(nodeOrComponent)}:`;
@@ -138,7 +138,7 @@ export const mkCanvasErrorBoundary = computedFn(
       }
     };
   },
-  { keepAlive: true }
+  { keepAlive: true },
 );
 
 interface CanvasErrorDisplayProps {
@@ -160,7 +160,7 @@ export function withErrorDisplayFallback<T>(
   fn: () => T,
   opts: {
     hasLoadingBoundary: boolean;
-  }
+  },
 ) {
   try {
     return fn();
@@ -216,13 +216,13 @@ const mkCanvasErrorDisplay = computedFn(
             "div",
             { className: "__wab_error-display__inner" },
             r("div", { className: "__wab_error-display__heading" }, title),
-            r("div", { className: "__wab_error-display__code" }, `${error}`)
-          )
+            r("div", { className: "__wab_error-display__code" }, `${error}`),
+          ),
         );
       }
     };
   },
-  { keepAlive: true }
+  { keepAlive: true },
 );
 
 function deriveOffendingElement(error: Error | null | undefined) {

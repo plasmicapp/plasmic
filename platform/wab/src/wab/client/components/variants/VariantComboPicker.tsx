@@ -50,7 +50,7 @@ function VariantComboPicker_({
   const onRemoveVariant = (variant: Variant) => {
     const newState = machine.removeSelectedVariants(
       { targetVariants: value, pinnedVariants: new Map() },
-      [variant]
+      [variant],
     );
     onChange(machine.selectedVariants(newState));
   };
@@ -58,7 +58,7 @@ function VariantComboPicker_({
   const handleRemoveVariant = (variant: Variant) => {
     const newState = machine.removeSelectedVariants(
       { targetVariants: value, pinnedVariants: new Map() },
-      [variant]
+      [variant],
     );
     onChange(machine.selectedVariants(newState));
   };
@@ -66,7 +66,7 @@ function VariantComboPicker_({
   const handleTargetVariant = (variant: Variant) => {
     const newState = machine.addSelectedVariants(
       { targetVariants: value, pinnedVariants: new Map() },
-      [variant]
+      [variant],
     );
     onChange(machine.selectedVariants(newState));
   };

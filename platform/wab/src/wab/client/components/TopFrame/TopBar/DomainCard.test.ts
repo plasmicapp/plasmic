@@ -7,7 +7,7 @@ describe("renderDomainErrorMessage", () => {
         status: "DomainUsedElsewhereInVercel",
         vercelErrorCode: "domain_taken",
         operation: "register",
-      })
+      }),
     ).toContain("(domain_taken)");
   });
 
@@ -16,10 +16,10 @@ describe("renderDomainErrorMessage", () => {
       renderDomainErrorMessage("example.com", {
         status: "VercelAuthError",
         operation: "register",
-      })
+      }),
     ).toBe(
       "Plasmic couldn't reach our hosting provider to register example.com. " +
-        "Please contact support."
+        "Please contact support.",
     );
   });
 
@@ -30,13 +30,13 @@ describe("renderDomainErrorMessage", () => {
       renderDomainErrorMessage("example.com", {
         status: "OtherDomainError",
         operation: "remove",
-      })
+      }),
     ).toBe("example.com couldn't be removed. Please contact support.");
     expect(
       renderDomainErrorMessage("example.com", {
         status: "VercelAuthError",
         operation: "remove",
-      })
+      }),
     ).toContain("to remove example.com");
   });
 
@@ -45,7 +45,7 @@ describe("renderDomainErrorMessage", () => {
       renderDomainErrorMessage("example.com", {
         message: "Network request failed",
         operation: "remove",
-      })
+      }),
     ).toBe("example.com couldn't be removed: Network request failed");
   });
 });

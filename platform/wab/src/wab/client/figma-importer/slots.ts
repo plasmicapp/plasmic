@@ -48,13 +48,13 @@ export function parseNodeNameToSlotMeta(rawNodeName: string):
       isSlot: true,
       slotName: "children",
       tplName: parseTplName(
-        nodeName.substring(0, nodeName.length - SLOT_CHILDREN_SHORTHAND.length)
+        nodeName.substring(0, nodeName.length - SLOT_CHILDREN_SHORTHAND.length),
       ),
     };
   } else if (SLOT_IDENTIFIER_REGEX.test(nodeName)) {
     const match = ensure(
       nodeName.match(SLOT_IDENTIFIER_REGEX),
-      `Invalid slot name: ${nodeName}`
+      `Invalid slot name: ${nodeName}`,
     );
     return {
       isSlot: true,
@@ -82,7 +82,7 @@ export function getAllSlotsInNode(
     // Whether `node` is a valid candidate or not for a slot, it's important when the root node was matched
     // to a component, that it doesn't consider itself as a slot
     includeRoot: boolean;
-  }
+  },
 ): FigmaSlotInfo {
   if (opts.includeRoot) {
     const slotMeta = parseNodeNameToSlotMeta(node.name);
@@ -110,9 +110,9 @@ export function getAllSlotsInNode(
             prev,
             getAllSlotsInNode(child, fn, {
               includeRoot: true,
-            })
+            }),
           ),
-        {} as FigmaSlotInfo
+        {} as FigmaSlotInfo,
       );
       return slotInfo;
     }

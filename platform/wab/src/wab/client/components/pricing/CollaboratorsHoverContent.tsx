@@ -25,7 +25,7 @@ export type CollaboratorsHoverContentProps =
 
 function CollaboratorsHoverContent_(
   props: CollaboratorsHoverContentProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicCollaboratorsHoverContent to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

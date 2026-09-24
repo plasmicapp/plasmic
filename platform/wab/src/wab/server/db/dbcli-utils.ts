@@ -10,7 +10,7 @@ export async function createDbConnection(dburi?: string) {
   logger().info(
     `Connecting to ${dburi} ${
       password ? `with WAB_DBPASSWORD` : `without env password`
-    }`
+    }`,
   );
   const options = Object.assign(
     {},
@@ -23,7 +23,7 @@ export async function createDbConnection(dburi?: string) {
       ? {
           password,
         }
-      : {}
+      : {},
   );
   return await createConnection(options);
 }

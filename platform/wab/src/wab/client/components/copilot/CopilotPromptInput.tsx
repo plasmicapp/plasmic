@@ -21,7 +21,7 @@ export type CopilotPromptInputProps = DefaultCopilotPromptInputProps &
 
 function CopilotPromptInput_(
   props: CopilotPromptInputProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   return <PlasmicCopilotPromptInput root={{ ref }} {...props} />;
 }

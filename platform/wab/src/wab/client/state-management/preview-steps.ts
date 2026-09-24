@@ -33,10 +33,10 @@ function wrapInteractionCode(interactionCode: string) {
 const getInteractionCode = (interaction: Interaction, exprCtx: ExprCtx) => {
   const eventCode = getRawCode(interaction.parent, exprCtx);
   const interactionCodeStart = eventCode.indexOf(
-    `// step-begin: ${interaction.uuid}`
+    `// step-begin: ${interaction.uuid}`,
   );
   const interactionCodeEnd = eventCode.indexOf(
-    `// step-end: ${interaction.uuid}`
+    `// step-end: ${interaction.uuid}`,
   );
   return eventCode.substring(interactionCodeStart, interactionCodeEnd);
 };
@@ -49,7 +49,7 @@ export function doesCodeDependsOnPreviousStepsOrEventArgs(
   opts?: {
     skipSteps?: boolean;
     skipEventArgs?: boolean;
-  }
+  },
 ) {
   const eventHandler = interaction.parent;
   const eventArgs = extractEventArgsNameFromEventHandler(eventHandler, exprCtx);
@@ -90,7 +90,7 @@ export function doesCodeDependsOnPreviousStepsOrEventArgs(
   }
   const previousInteractions = eventHandler.interactions.slice(
     0,
-    eventHandler.interactions.indexOf(interaction)
+    eventHandler.interactions.indexOf(interaction),
   );
   for (const stepName of stepsUsages) {
     if (stepName === toVarName(interaction.interactionName)) {
@@ -98,7 +98,7 @@ export function doesCodeDependsOnPreviousStepsOrEventArgs(
     }
     const step = findLast(
       previousInteractions,
-      (it) => toVarName(it.interactionName) === stepName
+      (it) => toVarName(it.interactionName) === stepName,
     );
     if (step && !studioCtx.hasCached$stepValue(step.uuid) && !opts?.skipSteps) {
       return true;
@@ -113,7 +113,7 @@ export function canRunInteraction(
   opts?: {
     skipSteps?: boolean;
     skipEventArgs?: boolean;
-  }
+  },
 ) {
   const exprCtx: ExprCtx = {
     projectFlags: viewCtx.projectFlags(),
@@ -126,14 +126,14 @@ export function canRunInteraction(
     interaction,
     exprCtx,
     viewCtx.studioCtx,
-    opts
+    opts,
   );
 }
 
 export function runInteraction(
   interaction: Interaction,
   viewCtx: ViewCtx,
-  tpl: TplComponent | TplTag
+  tpl: TplComponent | TplTag,
 ) {
   const exprCtx: ExprCtx = {
     projectFlags: viewCtx.projectFlags(),
@@ -148,11 +148,11 @@ export function runInteractionCode(
   interactionCode: string,
   interaction: Interaction,
   viewCtx: ViewCtx,
-  tpl: TplComponent | TplTag
+  tpl: TplComponent | TplTag,
 ) {
   ensure(
     isValidJavaScriptCode(interactionCode),
-    "Invalid javascript code for interaction"
+    "Invalid javascript code for interaction",
   );
 
   const exprCtx: ExprCtx = {
@@ -186,30 +186,30 @@ export function runInteractionCode(
               new Set(
                 invalidateKeys.flatMap((token) => {
                   const matchedKeys = allKeys.filter((key) =>
-                    matchesQueryCacheKey(key, token)
+                    matchesQueryCacheKey(key, token),
                   );
                   return matchedKeys.length > 0 ? matchedKeys : [token];
-                })
-              )
+                }),
+              ),
             );
             return await Promise.all(
               keysToInvalidate.map((key) =>
-                studioCtx.refreshFetchedDataFromPlasmicQuery(key)
-              )
+                studioCtx.refreshFetchedDataFromPlasmicQuery(key),
+              ),
             );
           },
           viewCtx.canvasCtx.win(),
-          viewCtx.canvasCtx.Sub.dataSources
+          viewCtx.canvasCtx.Sub.dataSources,
         )
       : undefined,
     interaction,
     findKeyForEventHandler(
       ensure(
         exprCtx.component,
-        `missing component to run interaction ${interaction.actionName} - ${interaction.interactionName}`
+        `missing component to run interaction ${interaction.actionName} - ${interaction.interactionName}`,
       ),
-      interaction.parent
-    )
+      interaction.parent,
+    ),
   );
   if (!("$steps" in dataCtx)) {
     // this will happen for the first step
@@ -220,7 +220,7 @@ export function runInteractionCode(
     return evalCodeWithEnv(
       wrapInteractionCode(interactionCode),
       dataCtx,
-      viewCtx.canvasCtx.win()
+      viewCtx.canvasCtx.win(),
     );
   } catch (err) {
     notification.error({
@@ -234,11 +234,11 @@ export function runCodeInDataPicker(
   functionExpr: FunctionExpr,
   interaction: Interaction,
   viewCtx: ViewCtx,
-  tpl: TplComponent | TplTag
+  tpl: TplComponent | TplTag,
 ) {
   const component = ensure(
     viewCtx.currentComponent(),
-    "missing a component to run interaction"
+    "missing a component to run interaction",
   );
   const exprCtx: ExprCtx = {
     projectFlags: viewCtx.projectFlags(),
@@ -251,9 +251,9 @@ export function runCodeInDataPicker(
       component,
       "customFunction",
       "customFunction",
-      functionExpr
+      functionExpr,
     ),
-    exprCtx
+    exprCtx,
   );
 
   const interactionCode = `

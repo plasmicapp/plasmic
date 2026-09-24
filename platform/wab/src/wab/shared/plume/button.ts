@@ -55,13 +55,13 @@ export const ButtonPlugin: PlumePlugin = {
           Object.assign(comp, getCompMeta()),
           omit(allProps, internalCanvasElementProps),
           buttonConfig as any,
-          ref
+          ref,
         );
         return sub.React.createElement(comp, {
           ...plasmicProps,
           ...internalProps,
         });
-      })
+      }),
     );
   },
 
@@ -78,7 +78,7 @@ export const ButtonPlugin: PlumePlugin = {
     return `
       function useBehavior<P extends pp.PlumeButtonProps>(props: P, ref: pp.ButtonRef) {
         const b = pp.useButton<P, typeof ${makePlasmicComponentName(
-          component
+          component,
         )}>(
           ${makePlasmicComponentName(component)},
           props,
@@ -93,7 +93,7 @@ export const ButtonPlugin: PlumePlugin = {
   genDefaultExternalProps(ctx: SerializerBaseContext, opts) {
     const { component } = ctx;
     const params = getExternalParams(ctx).filter(
-      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name))
+      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name)),
     );
     return `
       export interface ${
@@ -105,8 +105,8 @@ export const ButtonPlugin: PlumePlugin = {
               `"${paramToVarName(ctx.component, param)}"?: ${serializeParamType(
                 component,
                 param,
-                ctx.projectFlags
-              )}`
+                ctx.projectFlags,
+              )}`,
           )
           .join(";\n")}
       }
@@ -129,12 +129,12 @@ export const ButtonPlugin: PlumePlugin = {
     return `
       import * as React from "react";
       import {${plasmicComponentName}, ${defaultPropsName}} from "${
-      ctx.exportOpts.relPathFromImplToManagedDir
-    }/${makeComponentImportPath(
-      component,
-      ctx,
-      "render"
-    )}";  // plasmic-import: ${component.uuid}/render
+        ctx.exportOpts.relPathFromImplToManagedDir
+      }/${makeComponentImportPath(
+        component,
+        ctx,
+        "render",
+      )}";  // plasmic-import: ${component.uuid}/render
       ${this.genSkeletonImports(ctx).imports}
 
       ${componentSubstitutionApi}
@@ -169,7 +169,7 @@ export const ButtonPlugin: PlumePlugin = {
 
       import {ButtonRef, HtmlAnchorOnlyProps, HtmlButtonOnlyProps} from "${getPlumePackageName(
         ctx.exportOpts,
-        "button"
+        "button",
       )}";
       `,
       refName: "ButtonRef",

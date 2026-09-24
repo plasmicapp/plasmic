@@ -1,12 +1,20 @@
-import { ensure } from "@/wab/shared/common";
-import { getAllComponentsInTopologicalOrder } from "@/wab/shared/core/components";
-import { extractReferencedParam, isRealCodeExpr } from "@/wab/shared/core/exprs";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
 import { Bundler } from "@/wab/shared/bundler";
+import { ensure } from "@/wab/shared/common";
+import { getAllComponentsInTopologicalOrder } from "@/wab/shared/core/components";
+import {
+  extractReferencedParam,
+  isRealCodeExpr,
+} from "@/wab/shared/core/exprs";
+import {
+  cloneType,
+  flattenTpls,
+  isAttrEventHandler,
+} from "@/wab/shared/core/tpls";
 import {
   Expr,
   isKnownEventHandler,
@@ -14,14 +22,13 @@ import {
   isKnownVarRef,
 } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
-import { cloneType, flattenTpls, isAttrEventHandler } from "@/wab/shared/core/tpls";
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();
   const { site, siteOrProjectDep } = await unbundleSite(
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   const isExprValidForEventHandler = (expr: Expr | null | undefined) =>
@@ -37,7 +44,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
           if (isAttrEventHandler(attr) && isKnownVarRef(expr)) {
             const param = ensure(
               extractReferencedParam(component, expr),
-              `param not found for var ref: ${expr.variable.name}`
+              `param not found for var ref: ${expr.variable.name}`,
             );
             if (!isExprValidForEventHandler(param.defaultExpr)) {
               param.defaultExpr = null;
@@ -52,7 +59,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
             if (isKnownVarRef(arg.expr)) {
               const param = ensure(
                 extractReferencedParam(component, arg.expr),
-                `param not found for var ref: ${arg.expr.variable.name}`
+                `param not found for var ref: ${arg.expr.variable.name}`,
               );
               if (!isExprValidForEventHandler(param.defaultExpr)) {
                 param.defaultExpr = null;
@@ -70,7 +77,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "110-fix-linked-event-handlers-param-type"
+    "110-fix-linked-event-handlers-param-type",
   );
   Object.assign(bundle, newBundle);
 };

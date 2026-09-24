@@ -30,7 +30,7 @@ describe("counters blackbox codegen", () => {
 
     // Some basic sanity checks
     const counter1 = document.querySelector(
-      `[data-testid="counter1-container"]`
+      `[data-testid="counter1-container"]`,
     ) as HTMLElement;
     expect(counter1).not.toBeNull();
 

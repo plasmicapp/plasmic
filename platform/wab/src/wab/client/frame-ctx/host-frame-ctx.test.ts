@@ -51,7 +51,7 @@ function createFakeTopFrameApi() {
  * top frame does immediately upon listener registration. */
 function createHostHistory(
   fake: ReturnType<typeof createFakeTopFrameApi>,
-  initialPath = "/a"
+  initialPath = "/a",
 ): { history: HostHistory; dispose: () => Promise<void> } {
   const history = new HostHistory(fake.api);
   fake.sendLocation(initialPath, "REPLACE", "k0");
@@ -63,7 +63,7 @@ describe("HostHistory", () => {
     const fake = createFakeTopFrameApi();
     const { history } = createHostHistory(
       fake,
-      "/projects/PROJECT_ID?branch=main#h"
+      "/projects/PROJECT_ID?branch=main#h",
     );
     expect(history.location.pathname).toBe("/projects/PROJECT_ID");
     expect(history.location.search).toBe("?branch=main");
@@ -170,7 +170,7 @@ describe("HostHistory", () => {
     expect(fake.pushLocation).toHaveBeenCalledWith(
       undefined,
       undefined,
-      "#tab=dataSources"
+      "#tab=dataSources",
     );
   });
 

@@ -66,7 +66,7 @@ export class ProjectsSocket {
       expressSessionMiddleware(
         socket.request as Request,
         {} as Response,
-        next as any
+        next as any,
       );
     });
     this.io.use(spawnWrapper(socketAuthMiddleware));
@@ -86,8 +86,8 @@ export class ProjectsSocket {
           { app: appName },
           Array.from(self.roomToSockets.values()).reduce(
             (a, b) => a + b.size,
-            0
-          )
+            0,
+          ),
         );
       },
     });
@@ -100,8 +100,8 @@ export class ProjectsSocket {
           { app: appName },
           Array.from(self.sessionIdToSockets.values()).reduce(
             (a, b) => a + b.size,
-            0
-          )
+            0,
+          ),
         );
       },
     });
@@ -146,7 +146,7 @@ export class ProjectsSocket {
   private trackSocket(
     map: Map<string, Set<Socket>>,
     key: string,
-    socket: Socket
+    socket: Socket,
   ) {
     let sockets = map.get(key);
     if (!sockets) {
@@ -159,7 +159,7 @@ export class ProjectsSocket {
   private untrackSocket(
     map: Map<string, Set<Socket>>,
     key: string,
-    socket: Socket
+    socket: Socket,
   ) {
     const sockets = map.get(key);
     if (!sockets) {
@@ -176,7 +176,7 @@ export class ProjectsSocket {
     socket.data.playerId = playerId;
     const sessionId = ensure(
       socket.request["sessionID"],
-      "SessionID should not be undefined"
+      "SessionID should not be undefined",
     );
     logger().info(`Starting session ${sessionId}`);
 
@@ -203,13 +203,13 @@ export class ProjectsSocket {
 
       const user = ensure(
         socket.handshake["user"],
-        "User should not be undefined"
+        "User should not be undefined",
       );
 
       // Check the user has all permissions to all projects.
       const hasPermissions = await verifyProjectPermissions(
         user,
-        args.projectIds
+        args.projectIds,
       );
       // Check socket still connected after await.
       if (!socket.connected) {
@@ -219,14 +219,14 @@ export class ProjectsSocket {
       if (!hasPermissions) {
         socket.emit(
           "error",
-          `No read access to projects ${args.projectIds.join(", ")}`
+          `No read access to projects ${args.projectIds.join(", ")}`,
         );
         socket.disconnect(true);
         return;
       }
 
       logger().info(
-        `Subscribing user ${getSocketUserName(user)} to ${args.projectIds}`
+        `Subscribing user ${getSocketUserName(user)} to ${args.projectIds}`,
       );
       for (const projectId of args.projectIds) {
         const room = `projects/${projectId}`;
@@ -272,15 +272,15 @@ export class ProjectsSocket {
     socket.emit("initServerInfo", initServerInfo);
     logger().info(
       `Socket connected for ${getSocketUserName(
-        ensure(socket.handshake["user"], "User should not be undefined")
-      )}`
+        ensure(socket.handshake["user"], "User should not be undefined"),
+      )}`,
     );
   }
 
   private buildPlayerInfo(socket: Socket) {
     const playerId = ensure(
       socket.data.playerId,
-      "playerId should be set on connect"
+      "playerId should be set on connect",
     );
     const playerInfo = maybe(
       socket.handshake["user"]?.actor,
@@ -292,11 +292,11 @@ export class ProjectsSocket {
               userId: actor.userId,
             }
           : actor.type === "AnonUser"
-          ? {
-              playerId,
-              type: "AnonUser",
-            }
-          : undefined
+            ? {
+                playerId,
+                type: "AnonUser",
+              }
+            : undefined,
     );
     if (!playerInfo) {
       return undefined;
@@ -309,8 +309,8 @@ export class ProjectsSocket {
     const playerSessions: ServerSessionsInfo = {
       sessions: withoutNils(
         Array.from(this.roomToSockets.get(room) ?? [], (socket) =>
-          this.buildPlayerInfo(socket)
-        )
+          this.buildPlayerInfo(socket),
+        ),
       ),
     };
     this.io.in(room).emit("players", playerSessions);
@@ -332,7 +332,7 @@ async function socketAuthMiddleware(socket: Socket, next: (err?: any) => any) {
 }
 
 async function extractAuthUser(
-  socket: Socket
+  socket: Socket,
 ): Promise<SocketUser | undefined> {
   const request = socket.request as Request;
 
@@ -342,7 +342,7 @@ async function extractAuthUser(
       logger().info(
         "Socket logged in via passport",
         // @ts-ignore
-        request.session?.passport.user
+        request.session?.passport.user,
       );
       return {
         // @ts-ignore
@@ -391,12 +391,12 @@ async function withDbMgr<T>(user: SocketUser, f: (mgr: DbMgr) => Promise<T>) {
 
 async function verifyProjectPermissions(
   user: SocketUser,
-  projectIds: string[]
+  projectIds: string[],
 ) {
   return await withDbMgr(user, async (mgr) => {
     try {
       await Promise.all(
-        projectIds.map((p) => mgr.checkProjectPerms(p, "viewer", "get"))
+        projectIds.map((p) => mgr.checkProjectPerms(p, "viewer", "get")),
       );
       return true;
     } catch (err) {
@@ -429,7 +429,7 @@ async function shouldShowPlayer(user: SocketUser, projectId: string) {
         }
         return isAdminTeamEmail(
           (await mgr.getUserById(ownerId)).email,
-          DEVFLAGS
+          DEVFLAGS,
         );
       }
       return true;

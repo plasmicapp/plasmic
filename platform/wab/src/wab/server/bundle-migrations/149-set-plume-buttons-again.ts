@@ -1,7 +1,6 @@
 /**
  * Like 148, but deals with imported buttons too
  */
-import { codeLit } from "@/wab/shared/core/exprs";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
@@ -10,8 +9,9 @@ import {
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
 import { Bundler } from "@/wab/shared/bundler";
-import { Arg } from "@/wab/shared/model/classes";
+import { codeLit } from "@/wab/shared/core/exprs";
 import { isTplComponent } from "@/wab/shared/core/tpls";
+import { Arg } from "@/wab/shared/model/classes";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();
@@ -19,7 +19,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   const allTplComps = new TplMgr({ site }).filterAllNodes(isTplComponent);
@@ -31,7 +31,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
       // We only look at Plume components that were imported, as those that were
       // not imported were already taken care of in 148
       const param = tpl.component.params.find(
-        (p) => p.variable.name === "submitsForm"
+        (p) => p.variable.name === "submitsForm",
       );
       if (param) {
         const baseVs = ensureBaseVariantSetting(tpl);
@@ -43,7 +43,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
             new Arg({
               param,
               expr: codeLit(true),
-            })
+            }),
           );
         }
       }
@@ -53,7 +53,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "149-set-plume-buttons-again"
+    "149-set-plume-buttons-again",
   );
   Object.assign(bundle, newBundle);
 };

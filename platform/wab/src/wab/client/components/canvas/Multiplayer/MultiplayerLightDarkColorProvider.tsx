@@ -23,7 +23,7 @@ export type MultiplayerLightDarkColorProviderProps =
   DefaultMultiplayerLightDarkColorProviderProps;
 
 function MultiplayerLightDarkColorProvider(
-  props: MultiplayerLightDarkColorProviderProps
+  props: MultiplayerLightDarkColorProviderProps,
 ) {
   // Use PlasmicMultiplayerLightDarkColorProvider to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

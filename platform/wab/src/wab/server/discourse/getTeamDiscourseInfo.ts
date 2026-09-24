@@ -4,7 +4,7 @@ import { TeamId } from "@/wab/shared/ApiSchema";
 
 export async function getTeamDiscourseInfo(
   mgr: DbMgr,
-  teamId: TeamId
+  teamId: TeamId,
 ): Promise<TeamDiscourseInfo | undefined> {
   return mgr.getDiscourseInfoByTeamId(teamId);
 }

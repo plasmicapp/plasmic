@@ -205,7 +205,7 @@ export function mergeUiConfigs(
     return arrayReversed(vals).find((x) => x != null);
   };
   const mergeBooleanObjs = (
-    objs: (Record<string, boolean> | boolean | undefined | null)[]
+    objs: (Record<string, boolean> | boolean | undefined | null)[],
   ) => {
     let res: Record<string, boolean> | boolean | undefined = undefined;
     for (const obj of objs) {
@@ -228,7 +228,7 @@ export function mergeUiConfigs(
     return res;
   };
   const mergeshallowObjs = <T>(
-    objs: (Record<string, T> | undefined | null)[]
+    objs: (Record<string, T> | undefined | null)[],
   ) => {
     let res: Record<string, T> | undefined = undefined;
     for (const obj of objs) {
@@ -250,19 +250,19 @@ export function mergeUiConfigs(
   };
   return {
     styleSectionVisibilities: mergeBooleanObjs(
-      configs.map((c) => c.styleSectionVisibilities)
+      configs.map((c) => c.styleSectionVisibilities),
     ) as Partial<StyleSectionVisibilities>,
     canInsertBasics: mergeBooleanObjs(configs.map((c) => c.canInsertBasics)),
     canCreateBasics: mergeBooleanObjs(configs.map((c) => c.canCreateBasics)),
     canInsertBuiltinComponent: mergeBooleanObjs(
-      configs.map((c) => c.canInsertBuiltinComponent)
+      configs.map((c) => c.canInsertBuiltinComponent),
     ),
     canInsertHostless: mergeBooleanObjs(
-      configs.map((c) => c.canInsertHostless)
+      configs.map((c) => c.canInsertHostless),
     ),
     leftTabs: mergeshallowObjs(configs.map((c) => c.leftTabs)),
     hideDefaultPageTemplates: mergedFirst(
-      configs.map((c) => c.hideDefaultPageTemplates)
+      configs.map((c) => c.hideDefaultPageTemplates),
     ),
     pageTemplates: mergedFirst(configs.map((c) => c.pageTemplates)),
     insertableTemplates: mergedFirst(configs.map((c) => c.insertableTemplates)),
@@ -271,10 +271,10 @@ export function mergeUiConfigs(
     brand: merge({}, ...configs.map((c) => c.brand)),
     canPublishProject: mergedFirst(configs.map((c) => c.canPublishProject)),
     canOverrideImportedTokens: mergedFirst(
-      configs.map((c) => c.canOverrideImportedTokens)
+      configs.map((c) => c.canOverrideImportedTokens),
     ),
     canOverrideRegisteredTokens: mergedFirst(
-      configs.map((c) => c.canOverrideRegisteredTokens)
+      configs.map((c) => c.canOverrideRegisteredTokens),
     ),
   };
 }
@@ -309,7 +309,7 @@ export interface InsertPanelConfig {
 function resolveBooleanPreference<T>(
   prefs: undefined | null | boolean | T,
   resolve: (prefs: T) => boolean | undefined,
-  defaultAnswer: boolean
+  defaultAnswer: boolean,
 ) {
   if (prefs == null) {
     return defaultAnswer;
@@ -330,7 +330,7 @@ export function canEditStyleSection(
   opts: {
     isContentCreator: boolean;
     defaultContentEditorVisible: boolean | undefined;
-  }
+  },
 ) {
   const defaultAnswer = opts.isContentCreator
     ? !!opts.defaultContentEditorVisible
@@ -338,7 +338,7 @@ export function canEditStyleSection(
   return resolveBooleanPreference(
     config.styleSectionVisibilities,
     (prefs) => prefs[section],
-    defaultAnswer
+    defaultAnswer,
   );
 }
 
@@ -347,13 +347,13 @@ export function canInsertHostlessPackage(
   pkgName: string,
   opts: {
     isContentCreator: boolean;
-  }
+  },
 ) {
   const defaultAnswer = opts.isContentCreator ? false : true;
   return resolveBooleanPreference(
     config.canInsertHostless,
     (hostlessPrefs) => hostlessPrefs[pkgName ?? ""],
-    defaultAnswer
+    defaultAnswer,
   );
 }
 
@@ -362,7 +362,7 @@ export function canInsertAlias(
   alias: InsertAlias,
   opts: {
     isContentCreator: boolean;
-  }
+  },
 ): boolean {
   const defaultAnswer = opts.isContentCreator ? false : true;
   if (isComponentAlias(alias)) {
@@ -370,14 +370,14 @@ export function canInsertAlias(
     return resolveBooleanPreference(
       config.canInsertBuiltinComponent,
       (componentPrefs) => componentPrefs[alias],
-      defaultAnswer
+      defaultAnswer,
     );
   } else {
     // a basic component
     return resolveBooleanPreference(
       config.canInsertBasics,
       (basicPrefs) => basicPrefs[alias],
-      defaultAnswer
+      defaultAnswer,
     );
   }
 }
@@ -386,7 +386,7 @@ export function canCreateAlias(config: UiConfig, alias: CreateAlias): boolean {
   return resolveBooleanPreference(
     config.canCreateBasics,
     (basicPrefs) => basicPrefs[alias],
-    true
+    true,
   );
 }
 
@@ -395,7 +395,7 @@ export function getLeftTabPermission(
   tab: LeftTabUiKey,
   opts: {
     isContentCreator: boolean;
-  }
+  },
 ) {
   const defaultAnswer = opts.isContentCreator
     ? LEFT_TAB_CONTENT_CREATOR_DEFAULT[tab]
@@ -432,7 +432,7 @@ const LEFT_TAB_CONTENT_CREATOR_DEFAULT: Record<LeftTabUiKey, UiAccess> = {
 
 export function canEditProjectConfig(
   config: UiConfig,
-  projectConfig?: ProjectConfig
+  projectConfig?: ProjectConfig,
 ) {
   if (typeof config.projectConfigs === "boolean") {
     return config.projectConfigs;
@@ -448,7 +448,7 @@ export function canEditUiConfig(
   team: ApiTeam | undefined,
   resource: ApiResource,
   user: ApiUser | null,
-  perms: ApiPermission[]
+  perms: ApiPermission[],
 ) {
   if (!team || !isEnterprise(team.featureTier) || user?.isWhiteLabel) {
     return false;

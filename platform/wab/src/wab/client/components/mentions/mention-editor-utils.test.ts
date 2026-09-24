@@ -46,7 +46,7 @@ describe("parseTextToNodes", () => {
 
   it("handles several mentions in one line", () => {
     expect(
-      nodesOf("@<page:Home> and @<component:Nav>").filter(isMentionElement)
+      nodesOf("@<page:Home> and @<component:Nav>").filter(isMentionElement),
     ).toEqual([
       {
         type: "mention",

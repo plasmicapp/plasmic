@@ -70,13 +70,13 @@ export const ajax = async (
   data?: {},
   opts?: /*TWZ*/ {},
   hideDataOnError?: boolean,
-  noErrorTransform?: boolean
+  noErrorTransform?: boolean,
 ) =>
   new Promise<any>((resolve, reject) => {
     let search = "";
     if (method === "get" || method === "delete") {
       search = new URLSearchParams(
-        L.mapValues(L.omitBy(data, L.isUndefined), (v) => JSON.stringify(v))
+        L.mapValues(L.omitBy(data, L.isUndefined), (v) => JSON.stringify(v)),
       ).toString();
       if (search) {
         search = "?" + search;
@@ -131,7 +131,7 @@ export const ajax = async (
               transformed = new UnknownApiError(
                 `${method} ${apiSubpath} failed: ${
                   (transformed as Error).message
-                }`
+                }`,
               );
             }
             return transformed;
@@ -145,9 +145,9 @@ export const ajax = async (
                   data === undefined
                     ? "undefined"
                     : hideDataOnError
-                    ? "[redacted]"
-                    : truncateText(200, JSON.stringify(data))
-                }`
+                      ? "[redacted]"
+                      : truncateText(200, JSON.stringify(data))
+                }`,
               ));
         if (!noErrorTransform) {
           error.stack += `\n${callingStack}`;
@@ -177,7 +177,7 @@ export class Api extends SharedApi {
     data?: {},
     opts?: {},
     hideDataOnError?: boolean,
-    noErrorTransform?: boolean
+    noErrorTransform?: boolean,
   ) {
     return ajax(method, url, data, opts, hideDataOnError, noErrorTransform);
   }
@@ -195,7 +195,7 @@ export class Api extends SharedApi {
    * calls closeSocket. So you're expected to call this in a loop.
    */
   async listenSocket(
-    eventNames: (keyof ServerToClientEvents)[]
+    eventNames: (keyof ServerToClientEvents)[],
   ): Promise<{ eventName: string; data: unknown } | undefined> {
     if (!this.socket) {
       this.socket = connect({
@@ -230,14 +230,14 @@ export class Api extends SharedApi {
 
   async emit<K extends keyof ClientToServerEvents>(
     eventName: K,
-    data: Parameters<ClientToServerEvents[K]>[0]
+    data: Parameters<ClientToServerEvents[K]>[0],
   ) {
     // @ts-expect-error - ClientToServerEvents always has 1 param, so this is safe
     ensure(this.socket, "Unexpected nullish socket").emit(eventName, data);
   }
 
   protected async captchaToken(
-    action: string
+    action: string,
   ): Promise<{ [CAPTCHA_TOKEN_HEADER]: string } | undefined> {
     const token = await getCaptchaToken({ action });
     return token ? { [CAPTCHA_TOKEN_HEADER]: token } : undefined;
@@ -266,7 +266,7 @@ export class Api extends SharedApi {
 
   addStorageListener(
     uniqueId: string,
-    listener: ((ev: WrappedStorageEvent) => any) & ProxyMarked
+    listener: ((ev: WrappedStorageEvent) => any) & ProxyMarked,
   ) {
     const wrapped = (ev: StorageEvent): any => {
       return listener({
@@ -283,7 +283,7 @@ export class Api extends SharedApi {
   addEventListener(
     event: string,
     uniqueId: string,
-    listener: (() => any) & ProxyMarked
+    listener: (() => any) & ProxyMarked,
   ) {
     assert(["popstate"].includes(event), "Unexpected event");
     const wrapped = () => {
@@ -307,7 +307,7 @@ export class Api extends SharedApi {
       new StorageEvent("storage", {
         key,
         newValue: value,
-      })
+      }),
     );
   }
 
@@ -322,7 +322,7 @@ export class Api extends SharedApi {
   }
 
   async readNavigatorClipboard(
-    lastAction: LocalClipboardAction
+    lastAction: LocalClipboardAction,
   ): Promise<SerializableClipboardData> {
     assert(!isHostFrame(), "Should only run in the top frame");
 
@@ -341,7 +341,7 @@ export class Api extends SharedApi {
 
     assert(
       navigator.clipboard.read,
-      "Your browser does not support Clipboard API"
+      "Your browser does not support Clipboard API",
     );
     const items = await navigator.clipboard.read();
     return await serializeClipboardItems(items, lastAction);
@@ -352,7 +352,7 @@ export class Api extends SharedApi {
 
     this.addStorageItem(
       copyFromProjectKey(projectId as ProjectId),
-      JSON.stringify(+new Date())
+      JSON.stringify(+new Date()),
     );
   }
 }
@@ -425,7 +425,7 @@ export class BundlingSiteApi {
 export function filteredApi(
   projectId: string,
   apiProxy: PromisifyMethods<Api>,
-  appConfig: typeof DEVFLAGS
+  appConfig: typeof DEVFLAGS,
 ) {
   // Cached Pkg
   let maybePkg: PkgInfo | undefined = undefined;
@@ -439,23 +439,23 @@ export function filteredApi(
 
   const insertableProjectIds = L.uniq([
     ...flattenInsertableTemplates(appConfig.insertableTemplates).map(
-      (i) => i.projectId
+      (i) => i.projectId,
     ),
     ...flattenInsertableIconGroups(appConfig.insertableTemplates).map(
-      (i) => i.projectId
+      (i) => i.projectId,
     ),
     ...flattenInsertableTemplates(DEVFLAGS.insertableTemplates).map(
-      (i) => i.projectId
+      (i) => i.projectId,
     ),
     ...flattenInsertableIconGroups(DEVFLAGS.insertableTemplates).map(
-      (i) => i.projectId
+      (i) => i.projectId,
     ),
   ]);
 
   const checkprojectId = (reqProjectId: string) => {
     assert(
       reqProjectId === projectId,
-      `Unexpected projectId ${reqProjectId} (Expected ${projectId})`
+      `Unexpected projectId ${reqProjectId} (Expected ${projectId})`,
     );
   };
 
@@ -516,7 +516,7 @@ export function filteredApi(
     return (
       whitelistedLocalStorageKeys.includes(key) ||
       whitelistedLocalStorageKeyPrefixes.some((prefix) =>
-        key.startsWith(prefix)
+        key.startsWith(prefix),
       )
     );
   };
@@ -530,7 +530,7 @@ export function filteredApi(
       if (data && "projectIds" in data) {
         assert(
           (data["projectIds"] as string[]).every((id) => id === projectId),
-          "Unexpected projectId"
+          "Unexpected projectId",
         );
       }
       if (data && "projectId" in data) {
@@ -545,7 +545,7 @@ export function filteredApi(
           if (isWhitelistedStorageKey(ev.key ?? "")) {
             listener(ev);
           }
-        })
+        }),
       );
     },
     addStorageItem: (f) => (key, value) => {
@@ -566,7 +566,7 @@ export function filteredApi(
       // insertable templates (imported projects use `getPkgVersion`).
 
       const isKnownProject = [projectId, ...insertableProjectIds].includes(
-        siteId
+        siteId,
       );
       if (isKnownProject) {
         return f(siteId, opts);
@@ -578,7 +578,7 @@ export function filteredApi(
       const errorMsg = `Unexpected projectId ${siteId}`;
 
       const value = await apiProxy.getStorageItem(
-        copyFromProjectKey(siteId as ProjectId)
+        copyFromProjectKey(siteId as ProjectId),
       );
       if (!value) {
         throw new Error(errorMsg);
@@ -637,7 +637,7 @@ export function filteredApi(
       (innerGetDataSourceById) =>
       async (
         dataSourceId: string,
-        opts: Parameters<typeof apiProxy.getDataSourceById>[1]
+        opts: Parameters<typeof apiProxy.getDataSourceById>[1],
       ) => {
         return innerGetDataSourceById(dataSourceId, {
           ...(opts ?? {}),
@@ -656,7 +656,7 @@ export function filteredApi(
       (..._args: any[]) => {
         throw new Error("unauthorizedMethod " + key);
       },
-    ])
+    ]),
   ) as any as Api;
 
   // Pick the whitelisted methods
@@ -694,7 +694,7 @@ export function apiKey<
   Method extends keyof Api,
   Args extends Api[Method] extends (..._args: any[]) => any
     ? Parameters<Api[Method]>
-    : never
+    : never,
 >(method: Method, ...args: Args) {
   return invalidationKey(method, ...args);
 }

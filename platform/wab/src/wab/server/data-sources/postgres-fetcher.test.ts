@@ -79,7 +79,7 @@ describe("PostgresFetcher.getList ORDER BY", () => {
       fetcher.getList({
         resource: "users",
         sort: [{ field: "1; SELECT pg_sleep(5); --", order: "asc" }],
-      })
+      }),
     ).rejects.toThrow(DataSourceError);
     expect(queryMock).not.toHaveBeenCalled();
   });
@@ -90,7 +90,7 @@ describe("PostgresFetcher.getList ORDER BY", () => {
       fetcher.getList({
         resource: "users",
         sort: [{ field: "(SELECT 1 FROM pg_sleep(2))", order: "asc" }],
-      })
+      }),
     ).rejects.toThrow(/Invalid sort field/);
   });
 
@@ -100,7 +100,7 @@ describe("PostgresFetcher.getList ORDER BY", () => {
       fetcher.getList({
         resource: "users",
         sort: [{ field: { evil: true } as any, order: "asc" }],
-      })
+      }),
     ).rejects.toThrow(DataSourceError);
   });
 });

@@ -43,7 +43,7 @@ test.describe("routing", () => {
             }
             return false;
           },
-          { timeout }
+          { timeout },
         )
         .toBe(true);
       return found!;

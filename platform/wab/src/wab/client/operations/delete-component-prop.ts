@@ -31,7 +31,7 @@ export function deleteComponentProp(
   opts: {
     site: Site;
     component: Component;
-  }
+  },
 ): DeleteComponentPropResult {
   const { site, component } = opts;
   const propName = param.variable.name;
@@ -50,7 +50,7 @@ export function deleteComponentProp(
   }
 
   const refs = findExprsInComponent(component).filter(({ expr }) =>
-    isParamUsedInExpr(param, expr)
+    isParamUsedInExpr(param, expr),
   );
   if (refs.length > 0) {
     return err({

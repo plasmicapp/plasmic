@@ -16,7 +16,7 @@ export async function updateComponentMode(
   tpl: TplComponent,
   viewCtx: ViewCtx,
   modeParam: Param,
-  newMode: CodeComponentMode
+  newMode: CodeComponentMode,
 ) {
   const tplMgr = viewCtx.studioCtx.tplMgr();
   const baseVs = ensureBaseVariantSetting(tpl);

@@ -80,7 +80,7 @@ const getValue = (item: ChoiceValue | ChoiceObject): ChoiceValue =>
   typeof item === "object" ? item.value : item;
 
 const getValueString = (
-  item: ChoiceValue | ChoiceObject | undefined
+  item: ChoiceValue | ChoiceObject | undefined,
 ): string | undefined =>
   item !== undefined ? String(getValue(item)) : undefined;
 
@@ -114,43 +114,45 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
 
   const type = props.type ?? existingParam?.type;
   const [paramName, setParamName] = React.useState(
-    existingParam?.variable.name ?? suggestedName ?? ""
+    existingParam?.variable.name ?? suggestedName ?? "",
   );
   const [paramType, setParamType] = React.useState<ComponentParamTypeOptions>(
     (isKnownFunctionType(type)
       ? "eventHandler"
-      : (type?.name as ComponentParamTypeOptions)) ?? "text"
+      : (type?.name as ComponentParamTypeOptions)) ?? "text",
   );
 
   const paramTypeData = getComponentParamTypeOption(paramType);
   const isChoiceType = paramType === "choice" || paramType === "multiChoice";
 
   const [defaultExpr, setDefaultExpr] = React.useState<Expr | undefined>(
-    existingParam?.defaultExpr ?? suggestedDefaultExpr
+    existingParam?.defaultExpr ?? suggestedDefaultExpr,
   );
   const [previewExpr, setPreviewExpr] = React.useState<Expr | undefined>(
     existingParam && existingParam.previewExpr
       ? existingParam.previewExpr
-      : undefined
+      : undefined,
   );
   const [defaultArgs, setDefaultArgs] = React.useState<
     { name: string; type: string; key: string }[]
   >(
     existingParam && isKnownFunctionType(existingParam.type)
       ? deriveArgTypes(existingParam.type)
-      : []
+      : [],
   );
   const isLocalizationEnabled = studioCtx.site.flags.usePlasmicTranslation;
   const [isLocalizable, setIsLocalizable] = React.useState(
-    existingParam && isLocalizationEnabled ? existingParam.isLocalizable : false
+    existingParam && isLocalizationEnabled
+      ? existingParam.isLocalizable
+      : false,
   );
 
   const [choices, setChoices] = React.useState<ChoiceOptions>(
-    type && isOptionsType(type) ? (type.options as ChoiceOptions) : []
+    type && isOptionsType(type) ? (type.options as ChoiceOptions) : [],
   );
 
   const [advanced, setAdvanced] = React.useState(
-    isKnownPropParam(existingParam) ? existingParam.advanced : false
+    isKnownPropParam(existingParam) ? existingParam.advanced : false,
   );
 
   const exprStrVal = (expr: Expr | undefined): string | undefined => {
@@ -160,10 +162,10 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
   const onChangeChoices = (values: ChoiceOptions) => {
     // Update the default and preview values if the corresponding allowed value changes
     const oldItem = choices.find(
-      (item) => !values.some((v) => getValue(v) === getValue(item))
+      (item) => !values.some((v) => getValue(v) === getValue(item)),
     );
     const newItem = values.find(
-      (item) => !choices.some((c) => getValue(c) === getValue(item))
+      (item) => !choices.some((c) => getValue(c) === getValue(item)),
     );
     const oldVal = getValueString(oldItem);
     // Values are matched as text, since that is what the editor shows, but
@@ -181,7 +183,8 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
         .map((v) => (String(v) === oldVal ? newValue : v))
         .filter(
           // Remove invalid values
-          (v): v is ChoiceValue => v !== undefined && validValues.has(String(v))
+          (v): v is ChoiceValue =>
+            v !== undefined && validValues.has(String(v)),
         );
       return codeLit(remapped);
     };
@@ -205,14 +208,14 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
           "Default",
           paramTypeData,
           choices,
-          defaultExpr
+          defaultExpr,
         )) &&
       (previewExpr === undefined ||
         !validateValueForPropType(
           "Preview",
           paramTypeData,
           choices,
-          previewExpr
+          previewExpr,
         ))
     );
   }, [paramName, paramType, type, defaultExpr, previewExpr, choices]);
@@ -224,7 +227,7 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
 
     const checkOptionsUsage = (newParamName: string) => {
       const issues = lintChoicePropValues(studioCtx.site, studioCtx).filter(
-        (issue) => issue.propName === newParamName
+        (issue) => issue.propName === newParamName,
       );
       if (issues.length === 0) {
         return;
@@ -279,7 +282,7 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
             advanced,
             isLocalizable: isLocalizableVal,
           },
-          { component, tplMgr: studioCtx.tplMgr() }
+          { component, tplMgr: studioCtx.tplMgr() },
         ).map(() => existingParam);
       }
       return createComponentProp({
@@ -321,10 +324,10 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
 
   const updateDefaultArg = (
     key: string,
-    updateValues: Record<string, string>
+    updateValues: Record<string, string>,
   ) => {
     setDefaultArgs((prev) =>
-      prev.map((arg) => (arg.key === key ? { ...arg, ...updateValues } : arg))
+      prev.map((arg) => (arg.key === key ? { ...arg, ...updateValues } : arg)),
     );
   };
 
@@ -332,7 +335,7 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
     paramType === "eventHandler"
       ? undefined
       : wabTypeToPropType(
-          type ?? mkWabTypeForPropKind(paramType, { options: choices })
+          type ?? mkWabTypeForPropKind(paramType, { options: choices }),
         );
   if (getPropTypeType(propEditorType) === "dataSourceOpData") {
     propEditorType = wabTypeToPropType(typeFactory["any"]());
@@ -363,7 +366,7 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
             padding={["noLabel", "noContent", "noHorizontal"]}
             onDelete={() =>
               setDefaultArgs((prev) =>
-                prev.filter((pArg) => pArg.key !== arg.key)
+                prev.filter((pArg) => pArg.key !== arg.key),
               )
             }
           >
@@ -402,10 +405,10 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
           paramType === "eventHandler"
             ? "eventHandler"
             : paramType === "text" && isLocalizationEnabled
-            ? "localizable"
-            : isChoiceType
-            ? "choice"
-            : undefined
+              ? "localizable"
+              : isChoiceType
+                ? "choice"
+                : undefined
         }
         hideEventArgs={!!type && paramType === "eventHandler"}
         showAdvancedSection={true}
@@ -474,7 +477,7 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
                   label={paramName || "New prop"}
                   propType={ensure(
                     propEditorType,
-                    "propEditorType should only be undefined if paramType equals eventHandler"
+                    "propEditorType should only be undefined if paramType equals eventHandler",
                   )}
                   propTypeData={paramTypeData}
                   value={defaultExpr}
@@ -492,7 +495,7 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
                   label={paramName || "New prop"}
                   propType={ensure(
                     propEditorType,
-                    "propEditorType should only be undefined if paramType equals eventHandler"
+                    "propEditorType should only be undefined if paramType equals eventHandler",
                   )}
                   propTypeData={paramTypeData}
                   value={previewExpr}
@@ -555,38 +558,38 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
 }
 
 const jsonExprToExpr = (
-  val: Expr | JsonValue | undefined
+  val: Expr | JsonValue | undefined,
 ): Expr | undefined => {
   return val == null || val === ""
     ? undefined
     : isKnownExpr(val)
-    ? val
-    : codeLit(val);
+      ? val
+      : codeLit(val);
 };
 
 const selectedChoiceValues = (
-  val: Expr | JsonValue | undefined
+  val: Expr | JsonValue | undefined,
 ): ChoiceValue[] | undefined => {
   if (val == null || isKnownExpr(val)) {
     return undefined;
   }
   // The values keep the type they were written with.
   return ensureArray(val).filter(
-    (v): v is ChoiceValue => isJsonScalar(v) && v !== null
+    (v): v is ChoiceValue => isJsonScalar(v) && v !== null,
   );
 };
 
 const exprDisplayVal = (
   expr: Expr | undefined,
-  propTypeData: PropTypeData | undefined
+  propTypeData: PropTypeData | undefined,
 ): Expr | JsonValue | undefined => {
   return expr === undefined
     ? undefined
     : propTypeData?.exprTypeGuard?.(expr)
-    ? expr
-    : propTypeData?.jsonType
-    ? tryExtractJson(expr)
-    : undefined;
+      ? expr
+      : propTypeData?.jsonType
+        ? tryExtractJson(expr)
+        : undefined;
 };
 
 const AdvancedToggle: React.FC<{
@@ -685,13 +688,13 @@ const PropValueEditorWithMenu: React.FC<{
                 attr === "preview-value" ? "Preview" : "Default",
                 propTypeData,
                 undefined,
-                expr
+                expr,
               )
             ) {
               onChange(expr);
             } else {
               unexpected(
-                `PropValueEditor returned value that doesn't satisfy ${propTypeData?.value}`
+                `PropValueEditor returned value that doesn't satisfy ${propTypeData?.value}`,
               );
             }
           }}

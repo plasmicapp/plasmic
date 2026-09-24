@@ -27,7 +27,7 @@ export interface DiffsProps extends DefaultDiffsProps {
 
 function Diffs_(
   { onBack, branchLabel, ...props }: DiffsProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicDiffs to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

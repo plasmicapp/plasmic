@@ -37,7 +37,7 @@ type CollapsingOptions = {
 
 export type MaybeCollapsibleRowsRenderer = (
   rows: (MaybeCollapsibleRow | undefined | null | false)[],
-  options?: CollapsingOptions
+  options?: CollapsingOptions,
 ) => React.ReactNode[];
 
 function ChevronToggle(props: {
@@ -103,15 +103,15 @@ export function useMaybeCollapsibleRows({
   const renderMaybeCollapsibleRows = useCallback<MaybeCollapsibleRowsRenderer>(
     (
       _rows: (MaybeCollapsibleRow | undefined | null | false)[],
-      opts?: CollapsingOptions
+      opts?: CollapsingOptions,
     ) => {
       const rows = _rows.filter((x) => !!x) as MaybeCollapsibleRow[];
       const showExpansionHandle = rows.some(
-        (it) => it.content && it.collapsible
+        (it) => it.content && it.collapsible,
       );
 
       const renderableRows = rows.filter(
-        (it) => it.content && (showMore || !it.collapsible)
+        (it) => it.content && (showMore || !it.collapsible),
       );
 
       if (!showMore && renderableRows.length === 0) {
@@ -124,7 +124,7 @@ export function useMaybeCollapsibleRows({
 
       return [
         ...renderableRows.map((it, i) =>
-          React.cloneElement(it.content as ReactElement, { key: i })
+          React.cloneElement(it.content as ReactElement, { key: i }),
         ),
         showExpansionHandle && (
           <React.Fragment key="showMore">
@@ -141,7 +141,7 @@ export function useMaybeCollapsibleRows({
         ),
       ];
     },
-    [showMore, fullyCollapsibleBody, handleToggle, sticky, noBorder]
+    [showMore, fullyCollapsibleBody, handleToggle, sticky, noBorder],
   );
 
   return {
@@ -155,8 +155,10 @@ export function useMaybeCollapsibleRows({
   };
 }
 
-interface SidebarSectionProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "title" | "children"> {
+interface SidebarSectionProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "title" | "children"
+> {
   className?: string;
   title?: ReactNode;
   controls?: ReactNode;
@@ -228,7 +230,7 @@ export function SidebarSection_(
     onHeaderClick,
     ...otherProps
   }: SidebarSectionProps,
-  ref: React.Ref<SidebarSectionHandle>
+  ref: React.Ref<SidebarSectionHandle>,
 ) {
   const hasHeader = title || controls;
   const [expanded, setExpanded] = React.useState(defaultExpanded ?? true);
@@ -272,7 +274,7 @@ export function SidebarSection_(
         setExpanded(false);
       },
     }),
-    []
+    [],
   );
 
   const renderableChildren =

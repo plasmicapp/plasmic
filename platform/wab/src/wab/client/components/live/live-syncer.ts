@@ -102,7 +102,7 @@ export interface CodeModule {
 export function pushPreviewModules(
   doc: Document,
   previewCtx: PreviewCtx,
-  opts: { lazy?: boolean }
+  opts: { lazy?: boolean },
 ) {
   const { lazy } = opts;
 
@@ -113,7 +113,7 @@ export function pushPreviewModules(
     safeCallbackify(async (tasks: any[]) => {
       const { modules } = ensure(
         L.last(tasks),
-        "tasks are expected to contain at least one task"
+        "tasks are expected to contain at least one task",
       ) as any;
       return new Promise<void>((resolve) => {
         const listener = (event: MessageEvent) => {
@@ -141,7 +141,7 @@ export function pushPreviewModules(
 
         updateModules(doc, modules);
       });
-    })
+    }),
   );
 
   // We wrap the code generation in an autorun; this means any updates to
@@ -169,14 +169,14 @@ export function pushPreviewModules(
       const projectConfig = createProjectOutput(
         site,
         siteInfo.id,
-        siteInfo.name
+        siteInfo.name,
       );
       modules.push(...createProjectMods(projectConfig));
       const depsProjectConfigs = createDepsProjectOutput(site);
       modules.push(...createDepsProjectMods(depsProjectConfigs));
 
       const rootComponent = site.components.find(
-        (c) => c.uuid === previewCtx.component?.uuid
+        (c) => c.uuid === previewCtx.component?.uuid,
       );
       if (!rootComponent) {
         modules.push(...createPreview404(previewCtx.previewPath));
@@ -188,7 +188,7 @@ export function pushPreviewModules(
         studioCtx,
         rootComponent,
         projectConfig,
-        false
+        false,
       );
       modules.push(...createComponentModules(rootOutput));
 
@@ -196,11 +196,11 @@ export function pushPreviewModules(
       for (const component of referencedComponents) {
         if (isCodeComponent(component)) {
           modules.push(
-            createCodeComponentModule(component, { idFileNames: true })
+            createCodeComponentModule(component, { idFileNames: true }),
           );
           if (isCodeComponentWithHelpers(component)) {
             modules.push(
-              createCodeComponentHelperModule(component, { idFileNames: true })
+              createCodeComponentHelperModule(component, { idFileNames: true }),
             );
           }
         } else {
@@ -218,7 +218,7 @@ export function pushPreviewModules(
                 : getComponentProjectConfig(
                     studioCtx,
                     component,
-                    depsProjectConfigs
+                    depsProjectConfigs,
                   );
 
             modules.push(
@@ -227,9 +227,9 @@ export function pushPreviewModules(
                   studioCtx,
                   component,
                   componentProjectConfig,
-                  false
-                )
-              )
+                  false,
+                ),
+              ),
             );
           }
         }
@@ -250,15 +250,15 @@ export function pushPreviewModules(
           excludeEmpty: true,
           excludeInactiveScreenVariants: true,
           includeActiveScreenVariantsFromDeps: true,
-        }
+        },
       );
 
       modules.push(...processGlobalContexts(studioCtx, projectConfig));
 
       modules.push(
         ...globalVariantGroups.map((group) =>
-          createGlobalVariantGroupModule(group)
-        )
+          createGlobalVariantGroupModule(group),
+        ),
       );
 
       modules.push(createCustomFunctionsModule(site));
@@ -268,20 +268,20 @@ export function pushPreviewModules(
         getDependenciesWithReferencedCss(site, [
           rootComponent,
           ...referencedComponents,
-        ]).map((dep) => dep.projectId)
+        ]).map((dep) => dep.projectId),
       );
       modules.push(
         ...createPreviewScript(
           rootOutput,
           previewCtx,
           depsProjectConfigs.filter((cfg) =>
-            referencedDepIds.has(cfg.projectId)
+            referencedDepIds.has(cfg.projectId),
           ),
           projectConfig.globalContextBundle,
           projectConfig.hasStyleTokenOverrides
             ? projectConfig.styleTokensProviderBundle
-            : undefined
-        )
+            : undefined,
+        ),
       );
 
       spawn(renderQueue.push({ modules }));
@@ -289,7 +289,7 @@ export function pushPreviewModules(
     {
       name: "liveUpdate",
       ...(lazy ? { scheduler: (run) => requestIdleCallback(run) } : {}),
-    }
+    },
   );
 
   // if the activated variants have changed via the variants picker, we update via
@@ -307,7 +307,7 @@ export function pushPreviewModules(
     {
       name: "liveUpdateVariants",
       ...(lazy ? { scheduler: (run) => requestIdleCallback(run) } : {}),
-    }
+    },
   );
 
   return () => {
@@ -332,15 +332,15 @@ export function updatePreviewVariants(doc: Document, previewCtx: PreviewCtx) {
 
 function processGlobalContexts(
   studioCtx: StudioCtx,
-  projectConfig: ProjectConfig
+  projectConfig: ProjectConfig,
 ) {
   if (projectConfig.globalContextBundle) {
     const contexts = studioCtx.site.globalContexts.map(
-      (tpl) => tpl.component as CodeComponent
+      (tpl) => tpl.component as CodeComponent,
     );
     return createGlobalContextsModules(
       contexts,
-      projectConfig.globalContextBundle
+      projectConfig.globalContextBundle,
     );
   } else {
     return [];
@@ -407,7 +407,7 @@ export function createComponentModules(output: ComponentExportOutput) {
 
 export function createCodeComponentHelperModule(
   component: CodeComponentWithHelpers,
-  opts?: { idFileNames?: boolean }
+  opts?: { idFileNames?: boolean },
 ) {
   const importName = getCodeComponentHelperImportName(component);
   const mkImpl = (): string => {
@@ -442,13 +442,13 @@ function codeComponentNotFoundMessage(name: string) {
 
 export function createCodeComponentModule(
   component: CodeComponent,
-  opts?: { idFileNames?: boolean }
+  opts?: { idFileNames?: boolean },
 ) {
   const importName = getCodeComponentImportName(component);
   const mkImpl = (): string => {
     if (DEVFLAGS.ccStubs) {
       const slotNames = getSlotParams(component).map(
-        (param) => param.variable.name
+        (param) => param.variable.name,
       );
       return `(props: {}) => {
         const slotNames = ${JSON.stringify(slotNames)}
@@ -496,7 +496,7 @@ export function createCodeComponentModule(
 
 function createGlobalContextsModules(
   contexts: CodeComponent[],
-  globalContextsBundle: GlobalContextBundle
+  globalContextsBundle: GlobalContextBundle,
 ) {
   return [
     ...contexts.map((c) => createCodeComponentModule(c, { idFileNames: true })),
@@ -513,7 +513,7 @@ function createPreviewScript(
   previewCtx: PreviewCtx,
   depProjectConfigs: ProjectConfig[],
   globalContextsBundle?: GlobalContextBundle,
-  styleTokensProviderBundle?: StyleTokensProviderBundle
+  styleTokensProviderBundle?: StyleTokensProviderBundle,
 ) {
   const componentName = rootOutput.componentName;
   const componentPath = rootOutput.skeletonModuleFileName;
@@ -561,13 +561,13 @@ function createPreviewScript(
       vg,
       content,
       true,
-      `global.${toVarName(vg.param.variable.name)}`
+      `global.${toVarName(vg.param.variable.name)}`,
     );
   }
 
   const component = ensure(
     previewCtx.studioCtx.site.components.find((c) => c.uuid === rootOutput.id),
-    `Component being preview is expected to be in site, but there is no component with UUID ${rootOutput.id}`
+    `Component being preview is expected to be in site, but there is no component with UUID ${rootOutput.id}`,
   );
   if (isPageComponent(component)) {
     const path = JSON.stringify(component.pageMeta.path);
@@ -583,7 +583,7 @@ function createPreviewScript(
   content = wrapContentWithCurrentUserContext(
     content,
     previewCtx.studioCtx.currentAppUser,
-    previewCtx.studioCtx.currentAppUserCtx.fakeAuthToken
+    previewCtx.studioCtx.currentAppUserCtx.fakeAuthToken,
   );
 
   // Note that below, we use mobx.untracked() to read previewCtx.variants/global. That's
@@ -594,7 +594,7 @@ function createPreviewScript(
     Object.entries(untracked(() => previewCtx.variants)).map(([key, val]) => [
       toVarName(key),
       JSON.stringify(val),
-    ])
+    ]),
   );
 
   // Use prop preview values in live preview.
@@ -609,7 +609,7 @@ function createPreviewScript(
     }
     serializedInitialProps[toVarName(param.variable.name)] = getRawCode(
       param.previewExpr,
-      exprCtx
+      exprCtx,
     );
   }
 
@@ -777,7 +777,7 @@ export async function onLoadInjectSystemJS(
   frameWindow: Window,
   captureExceptions = true,
   onAnchorClick?: (href: string) => void,
-  _onInteractionError?: () => void
+  _onInteractionError?: () => void,
 ) {
   const getlibsReady = new Promise((resolve) => {
     if ((frameWindow as any).System?.refreshXModules) {
@@ -797,7 +797,7 @@ export async function onLoadInjectSystemJS(
       dataSources: (frameWindow as any).__PlasmicDataSourcesBundle,
       dataSourcesContext: (frameWindow as any)
         .__PlasmicDataSourcesContextBundle,
-    })
+    }),
   );
   (frameWindow as any).__PLASMIC__ = {
     EXECUTE_SERVER_QUERY: studioCtx.executeServerQuery,
@@ -834,34 +834,34 @@ export async function onLoadInjectSystemJS(
 
 function swallowAnchorClicks(
   doc: Document,
-  onAnchorClick?: (href: string) => void
+  onAnchorClick?: (href: string) => void,
 ) {
   // Listen in the capture phase so we catch clicks even if a child
   // component (like a button) calls stopPropagation.
   doc.body.addEventListener(
     "click",
     (e) => absorbLinkClick(e, onAnchorClick),
-    true
+    true,
   );
 }
 
 function getComponentProjectConfig(
   studioCtx: StudioCtx,
   component: Component,
-  depProjectConfigs: ProjectConfig[]
+  depProjectConfigs: ProjectConfig[],
 ): ProjectConfig {
   const dep = studioCtx.projectDependencyManager.getOwnerDep(component);
   if (!dep) {
     throw new Error(
-      `Could not find project dependency for component ${component.name}`
+      `Could not find project dependency for component ${component.name}`,
     );
   }
 
   return ensure(
     depProjectConfigs.find(
-      (projectConfig) => projectConfig.projectId === dep.projectId
+      (projectConfig) => projectConfig.projectId === dep.projectId,
     ),
-    `Dependency project config must exists for component ${component.uuid}`
+    `Dependency project config must exists for component ${component.uuid}`,
   );
 }
 
@@ -876,7 +876,7 @@ export const createProjectOutput = computedFn(
   function createProjectOutput(
     site: Site,
     projectId: ProjectId,
-    projectName: string
+    projectName: string,
   ) {
     const exportOpts: ExportOpts = {
       lang: "ts",
@@ -919,10 +919,10 @@ export const createProjectOutput = computedFn(
       0,
       "fakeProjectRevId",
       "latest",
-      exportOpts
+      exportOpts,
     );
   },
-  { name: "createProjectOutput", keepAlive: true, equals: comparer.structural }
+  { name: "createProjectOutput", keepAlive: true, equals: comparer.structural },
 );
 
 export const createComponentOutput = computedFn(
@@ -930,7 +930,7 @@ export const createComponentOutput = computedFn(
     studioCtx: StudioCtx,
     component: Component,
     projectConfig: ProjectConfig,
-    forceRootDisabled: boolean
+    forceRootDisabled: boolean,
   ) {
     const exportOpts: ExportOpts = {
       lang: "ts",
@@ -977,7 +977,7 @@ export const createComponentOutput = computedFn(
       {
         keepAssetRefs: false,
         useCssVariables: true,
-      }
+      },
     );
     const compGenHelper = new ComponentGenHelper(siteGenHelper, cssVarResolver);
     return exportReactPresentational(
@@ -988,16 +988,16 @@ export const createComponentOutput = computedFn(
       Object.fromEntries(
         studioCtx.site.imageAssets
           .filter((asset) => asset.dataUri && asset.dataUri.startsWith("http"))
-          .map((asset) => [asset.uuid, asset.dataUri as string])
+          .map((asset) => [asset.uuid, asset.dataUri as string]),
       ),
       false,
       false,
       studioCtx.siteInfo.appAuthProvider,
       exportOpts,
-      computeSerializerSiteContext(studioCtx.site)
+      computeSerializerSiteContext(studioCtx.site),
     );
   },
-  { name: "createComponentMods", keepAlive: true, equals: comparer.structural }
+  { name: "createComponentMods", keepAlive: true, equals: comparer.structural },
 );
 
 export const createIconAssetModule = computedFn(
@@ -1013,7 +1013,7 @@ export const createIconAssetModule = computedFn(
     name: "createIconAssetModule",
     keepAlive: true,
     equals: comparer.structural,
-  }
+  },
 );
 
 export const createGlobalVariantGroupModule = computedFn(
@@ -1029,7 +1029,7 @@ export const createGlobalVariantGroupModule = computedFn(
     name: "createGlobalVariantGroupModule",
     keepAlive: true,
     equals: comparer.structural,
-  }
+  },
 );
 
 export const createCustomFunctionsModule = computedFn(
@@ -1038,22 +1038,22 @@ export const createCustomFunctionsModule = computedFn(
       .map(
         ({ customFunction: fn }) =>
           `export const ${customFunctionImportAlias(
-            fn
+            fn,
           )} = ((window as any).__PlasmicFunctionsRegistry ?? []).find((r) => r.meta.name === "${
             fn.importName
           }" && r.meta.namespace == ${
             fn.namespace ? `"${fn.namespace}"` : "null"
-          })?.function;`
+          })?.function;`,
       )
       .join("\n")}
       ${allCodeLibraries(site)
         .map(
           ({ codeLibrary }) =>
             `export const ${codeLibraryImportAlias(
-              codeLibrary
+              codeLibrary,
             )} = ((window as any).__PlasmicLibraryRegistry ?? []).find((l) => l.meta.name === "${
               codeLibrary.name
-            }")?.lib;`
+            }")?.lib;`,
         )
         .join("\n")}`.trim();
     return {
@@ -1066,7 +1066,7 @@ export const createCustomFunctionsModule = computedFn(
     name: "createCustomFunctionsModule",
     keepAlive: true,
     equals: comparer.structural,
-  }
+  },
 );
 
 export function createDepsProjectOutput(site: Site): ProjectConfig[] {
@@ -1079,10 +1079,10 @@ export function createDepsProjectOutput(site: Site): ProjectConfig[] {
  * Creates project-level modules for all dependencies of the given project.
  */
 export function createDepsProjectMods(
-  depProjectConfigs: ProjectConfig[]
+  depProjectConfigs: ProjectConfig[],
 ): CodeModule[] {
   return depProjectConfigs.flatMap((depProjectConfig) =>
-    createProjectMods(depProjectConfig)
+    createProjectMods(depProjectConfig),
   );
 }
 
@@ -1121,7 +1121,7 @@ export const createProjectMods = computedFn(
     }
     return mods;
   },
-  { name: "createProjectMods", keepAlive: true, equals: comparer.structural }
+  { name: "createProjectMods", keepAlive: true, equals: comparer.structural },
 );
 
 function makeGlobalContextsImport(globalContextBundle?: GlobalContextBundle) {
@@ -1142,7 +1142,7 @@ function wrapGlobalContexts(content: string) {
 function wrapContentWithCurrentUserContext(
   content: string,
   currentUser: StudioAppUser,
-  userAuthToken?: string
+  userAuthToken?: string,
 ) {
   return `
   <p.PlasmicDataSourceContextProvider value={${jsLiteral({

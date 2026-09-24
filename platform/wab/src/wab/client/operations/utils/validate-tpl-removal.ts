@@ -29,20 +29,20 @@ type TplRemovalError = {
 export function validateTplRemoval(
   tpls: TplNode[],
   component: Component,
-  site: Site
+  site: Site,
 ): TplRemovalError | null {
   const removedImplicitStates = tpls.flatMap((tpl) =>
-    findImplicitStatesOfNodesInTree(component, tpl)
+    findImplicitStatesOfNodesInTree(component, tpl),
   );
 
   for (const state of removedImplicitStates) {
     const refs = Tpls.findExprsInTree(component.tplTree, tpls).filter(
-      ({ expr }) => isStateUsedInExpr(state, expr)
+      ({ expr }) => isStateUsedInExpr(state, expr),
     );
     if (refs.length > 0) {
       return {
         message: `It contains variable "${getStateDisplayName(
-          state
+          state,
         )}" which is referenced in the current component.`,
         referencingNode: refs.find((r) => r.node)?.node,
       };
@@ -53,7 +53,7 @@ export function validateTplRemoval(
       const components = L.uniq(usages.map((u) => u.component));
       return {
         message: `It contains variable "${getStateDisplayName(
-          state
+          state,
         )}" which is referenced in ${components
           .map((c) => getComponentDisplayName(c))
           .join(", ")}.`,

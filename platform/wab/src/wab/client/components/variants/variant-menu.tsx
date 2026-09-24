@@ -86,7 +86,7 @@ export function makeVariantMenu(opts: {
           push(
             <Menu.Item key="rename" onClick={onRename}>
               Rename
-            </Menu.Item>
+            </Menu.Item>,
           );
         });
       }
@@ -99,7 +99,7 @@ export function makeVariantMenu(opts: {
               {isCodeComponentVariant(variant)
                 ? "registered keys"
                 : "interaction selectors"}
-            </Menu.Item>
+            </Menu.Item>,
           );
         });
       }
@@ -109,7 +109,7 @@ export function makeVariantMenu(opts: {
           push(
             <Menu.Item key="clone" onClick={onClone}>
               Duplicate
-            </Menu.Item>
+            </Menu.Item>,
           );
         }
 
@@ -141,7 +141,7 @@ export function makeVariantMenu(opts: {
           genDataBindingMenu(parent, {
             onEditDynamicValue,
             onRemoveDynamicValue,
-          })
+          }),
         );
       });
     }
@@ -153,7 +153,7 @@ export function makeVariantMenu(opts: {
             {previewAnimation.type === "play"
               ? "Play animation"
               : "Stop animation"}
-          </Menu.Item>
+          </Menu.Item>,
         );
       });
     }
@@ -163,7 +163,7 @@ export function makeVariantMenu(opts: {
         push(
           <Menu.Item key="delete" onClick={onRemove}>
             Delete
-          </Menu.Item>
+          </Menu.Item>,
         );
       });
     }
@@ -178,11 +178,11 @@ function genMoveToVariantGroupMenu(
   builder: MenuBuilder,
   component: Component,
   variant: Variant,
-  onMove: (vg: VariantGroup) => void
+  onMove: (vg: VariantGroup) => void,
 ) {
   builder.genSub(`Move to`, (push) => {
     const multipleOptionVariantGroups = component.variantGroups.filter(
-      (it) => !isStandaloneVariantGroup(it)
+      (it) => !isStandaloneVariantGroup(it),
     );
 
     for (const vg of multipleOptionVariantGroups) {
@@ -190,7 +190,7 @@ function genMoveToVariantGroupMenu(
         push(
           <Menu.Item key={vg.uuid} onClick={() => onMove(vg)}>
             {vg.param.variable.name}
-          </Menu.Item>
+          </Menu.Item>,
         );
       }
     }
@@ -201,7 +201,7 @@ function genCopyToVariantMenu(
   builder: MenuBuilder,
   component: Component,
   fromVariant: Variant,
-  onCopy: (v: Variant) => void
+  onCopy: (v: Variant) => void,
 ) {
   const genMenuForVariant = (variant: Variant, push: (x: any) => void) => {
     const isFromVariant = fromVariant === variant;
@@ -220,7 +220,7 @@ function genCopyToVariantMenu(
         ) : (
           variant.name
         )}
-      </Menu.Item>
+      </Menu.Item>,
     );
   };
 
@@ -243,21 +243,21 @@ function genCopyToVariantMenu(
           component,
           ensure(
             fromVariant.forTpl,
-            'Private style variant is expected to have "forTpl"'
-          )
+            'Private style variant is expected to have "forTpl"',
+          ),
         ).forEach((v) => genMenuForVariant(v, push2));
       });
     }
 
     builder.genSection(`Component Interaction States`, (push2) => {
       allComponentStyleVariants(component).forEach((v) =>
-        genMenuForVariant(v, push2)
+        genMenuForVariant(v, push2),
       );
     });
 
     builder.genSection(`Registered Variants`, (push2) => {
       allCodeComponentVariants(component).forEach((v) =>
-        genMenuForVariant(v, push2)
+        genMenuForVariant(v, push2),
       );
     });
 
@@ -267,7 +267,7 @@ function genCopyToVariantMenu(
 
 function genSetAccessTypeMenu(
   group: ComponentVariantGroup,
-  onChangeAccessType: (accessType: StateAccessType) => void
+  onChangeAccessType: (accessType: StateAccessType) => void,
 ) {
   const curAccess = group.linkedState?.accessType;
   return (
@@ -281,7 +281,7 @@ function genSetAccessTypeMenu(
             >
               {getAccessTypeDisplayName(accessType)}
             </Menu.Item>
-          )
+          ),
       )}
     </Menu.SubMenu>
   );
@@ -295,7 +295,7 @@ function genDataBindingMenu(
   }: {
     onEditDynamicValue?: () => void;
     onRemoveDynamicValue?: () => void;
-  } = {}
+  } = {},
 ) {
   if (vg.linkedState.param.defaultExpr) {
     return (
@@ -348,7 +348,7 @@ export function makeVariantGroupMenu(opts: {
         push(
           <Menu.Item key="rename" onClick={onRename}>
             Rename
-          </Menu.Item>
+          </Menu.Item>,
         );
       }
 
@@ -358,7 +358,7 @@ export function makeVariantGroupMenu(opts: {
             Change type to{" "}
             <strong>{group.multi ? "single-choice" : "multi-choice"}</strong>{" "}
             group
-          </Menu.Item>
+          </Menu.Item>,
         );
       }
 
@@ -372,7 +372,7 @@ export function makeVariantGroupMenu(opts: {
           genDataBindingMenu(group, {
             onEditDynamicValue,
             onRemoveDynamicValue,
-          })
+          }),
         );
       }
 
@@ -381,7 +381,7 @@ export function makeVariantGroupMenu(opts: {
         push(
           <Menu.Item key="delete" onClick={onRemove}>
             <strong>Delete</strong> {VARIANT_GROUP_LOWER}
-          </Menu.Item>
+          </Menu.Item>,
         );
       }
     });
@@ -422,7 +422,7 @@ export function VariantDataPicker(props: {
                 projectFlags: studioCtx.projectFlags(),
                 component,
                 inStudio: true,
-              }
+              },
             )}
             onChange={(val) => {
               if (!val) {
@@ -431,7 +431,7 @@ export function VariantDataPicker(props: {
 
               const newExpr = createExprForDataPickerValue(
                 val,
-                new CustomCode({ code: "undefined", fallback: undefined })
+                new CustomCode({ code: "undefined", fallback: undefined }),
               );
               spawn(
                 studioCtx.change(() => {
@@ -439,7 +439,7 @@ export function VariantDataPicker(props: {
                     initialValue: newExpr,
                   });
                   return ok();
-                })
+                }),
               );
 
               setVisibleDataPicker(false);
@@ -456,7 +456,7 @@ export function VariantDataPicker(props: {
                       initialValue: null,
                     });
                     return ok();
-                  })
+                  }),
                 );
               }
 

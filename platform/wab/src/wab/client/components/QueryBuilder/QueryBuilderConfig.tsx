@@ -83,7 +83,7 @@ export function createQueryBuilderConfig(
   overrideConfig?: PartialDeep<Config>,
   opts?: {
     readonly?: boolean;
-  }
+  },
 ): Config {
   const base = mergeSane({}, QueryBuilderConfig, {
     // Add custom operators.
@@ -139,7 +139,7 @@ export function createQueryBuilderConfig(
             canRegroup: false,
           },
         }
-      : undefined
+      : undefined,
   );
 
   // RAQB ships some operators (e.g. starts_with, ends_with, proximity) with

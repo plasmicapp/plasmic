@@ -90,7 +90,7 @@ function DocsPortalHeader(props: DocsPortalHeaderProps) {
               APP_ROUTES.projectDocsCodegenType.fill({
                 projectId,
                 codegenType: newCodegenType,
-              })
+              }),
             );
             history.push({
               pathname: newPathname,

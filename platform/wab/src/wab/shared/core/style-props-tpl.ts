@@ -41,7 +41,7 @@ export function isValidStylePropForTpl(
   prop: string,
   tpl: TplNode,
   rsh: ReadonlyIRuleSetHelpersX,
-  ccRegistry: CodeComponentsRegistry
+  ccRegistry: CodeComponentsRegistry,
 ): boolean {
   if (!isValidStyleProp(prop)) {
     return false;
@@ -111,7 +111,7 @@ export function isValidStylePropForTpl(
 
   if (gridChildProps.includes(prop)) {
     return Boolean(
-      Tpls.isTplVariantable(tpl) && tpl.parent && isGridTag(tpl.parent)
+      Tpls.isTplVariantable(tpl) && tpl.parent && isGridTag(tpl.parent),
     );
   }
 
@@ -142,7 +142,7 @@ export function isValidStylePropForTpl(
       return isStyleSectionEnabled(
         ccRegistry,
         tpl,
-        PublicStyleSection.Visibility
+        PublicStyleSection.Visibility,
       );
     }
     return Tpls.isTplTag(tpl) || Tpls.isTplComponent(tpl);
@@ -180,7 +180,7 @@ export function isSizeValidForTpl(tpl: TplNode): boolean {
 
 export function isPositioningValidForTpl(
   tpl: TplNode,
-  rsh: ReadonlyIRuleSetHelpersX
+  rsh: ReadonlyIRuleSetHelpersX,
 ): boolean {
   const isTag = Tpls.isTplTag(tpl);
   const isComponent = Tpls.isTplComponent(tpl);
@@ -235,7 +235,7 @@ export function isTransformValidForTpl(tpl: TplNode): boolean {
 }
 
 export function isFlexContainerPropValidForRsh(
-  rsh: ReadonlyIRuleSetHelpersX
+  rsh: ReadonlyIRuleSetHelpersX,
 ): boolean {
   const containerType = getRshContainerType(rsh);
 
@@ -246,14 +246,14 @@ export function isFlexContainerPropValidForRsh(
 }
 
 export function isGridContainerPropValidForRsh(
-  rsh: ReadonlyIRuleSetHelpersX
+  rsh: ReadonlyIRuleSetHelpersX,
 ): boolean {
   return getRshContainerType(rsh) === ContainerLayoutType.grid;
 }
 
 export function isGapPropValidForRsh(
   prop: string,
-  rsh: ReadonlyIRuleSetHelpersX
+  rsh: ReadonlyIRuleSetHelpersX,
 ): boolean {
   const containerType = getRshContainerType(rsh);
 
@@ -275,7 +275,7 @@ export function isGapPropValidForRsh(
 
 export function isPaddingValidForTpl(
   tpl: TplTag | TplComponent,
-  ccRegistry: CodeComponentsRegistry
+  ccRegistry: CodeComponentsRegistry,
 ): boolean {
   if (Tpls.isTplComponent(tpl)) {
     if (Tpls.isTplCodeComponent(tpl)) {
@@ -297,12 +297,12 @@ export function isMarginValidForTpl(tpl: TplTag | TplComponent): boolean {
  */
 function makeReadonlyOverlayExpProxy(
   exp: ReadonlyIRuleSetHelpersX,
-  styles: Record<string, string>
+  styles: Record<string, string>,
 ): ReadonlyIRuleSetHelpersX {
   const overlay = Object.fromEntries(
     Object.entries(styles)
       .filter(([, value]) => !!value)
-      .map(([prop, value]) => [normProp(prop), value])
+      .map(([prop, value]) => [normProp(prop), value]),
   );
   return makeReadonlyExpProxy(
     exp,
@@ -310,7 +310,7 @@ function makeReadonlyOverlayExpProxy(
       has: (prop: string) => normProp(prop) in overlay || exp.has(prop),
       getRaw: (prop: string) => overlay[normProp(prop)] ?? exp.getRaw(prop),
       props: () => uniq([...Object.keys(overlay), ...exp.props()]),
-    })
+    }),
   );
 }
 
@@ -329,7 +329,7 @@ export function validateStylesForTpl(
   styles: Record<string, string>,
   tpl: TplNode,
   rsh: ReadonlyIRuleSetHelpersX,
-  ccRegistry: CodeComponentsRegistry
+  ccRegistry: CodeComponentsRegistry,
 ): { valid: Record<string, string>; invalid: Record<string, string> } {
   const mergedRsh = makeReadonlyOverlayExpProxy(rsh, styles);
 
@@ -351,7 +351,7 @@ export function validateStylesForTpl(
 function isStyleSectionEnabled(
   ccRegistry: CodeComponentsRegistry,
   tpl: TplComponent,
-  section: PublicStyleSection
+  section: PublicStyleSection,
 ): boolean {
   const styleSections = ccRegistry
     .getRegisteredCodeComponentsMap()

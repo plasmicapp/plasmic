@@ -24,7 +24,7 @@ test.describe("Auto Open", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -115,16 +115,16 @@ test.describe("Auto Open", () => {
 
       await models.studio.withinLiveMode(async (liveFrame) => {
         await expect(
-          liveFrame.getByText(selectMeta.visibleContent)
+          liveFrame.getByText(selectMeta.visibleContent),
         ).toBeVisible();
         await expect(
-          liveFrame.getByText(tooltipMeta.visibleContent)
+          liveFrame.getByText(tooltipMeta.visibleContent),
         ).toBeVisible();
         await expect(
-          liveFrame.getByText(selectMeta.hiddenContent)
+          liveFrame.getByText(selectMeta.hiddenContent),
         ).not.toBeVisible();
         await expect(
-          liveFrame.getByText(tooltipMeta.hiddenContent)
+          liveFrame.getByText(tooltipMeta.hiddenContent),
         ).not.toBeVisible();
       });
     });
@@ -172,10 +172,10 @@ test.describe("Auto Open", () => {
 
       await models.studio.withinLiveMode(async (liveFrame) => {
         await expect(
-          liveFrame.getByText(tooltipComponentMeta.visibleContent)
+          liveFrame.getByText(tooltipComponentMeta.visibleContent),
         ).toBeVisible();
         await expect(
-          liveFrame.getByText(tooltipComponentMeta.hiddenContent)
+          liveFrame.getByText(tooltipComponentMeta.hiddenContent),
         ).not.toBeVisible();
       });
     });
@@ -235,7 +235,7 @@ test.describe("Auto Open", () => {
       await assertAutoOpened(
         pageFrame,
         tooltipHiddenContent,
-        tooltipVisibleContent
+        tooltipVisibleContent,
       );
       await assertAutoOpened(pageFrame, modalHiddenContent);
       await expect(getAutoOpenBanner(models)).toBeVisible();
@@ -248,7 +248,7 @@ test.describe("Auto Open", () => {
       await assertHidden(
         pageFrame,
         tooltipHiddenContent,
-        tooltipVisibleContent
+        tooltipVisibleContent,
       );
       await assertAutoOpened(pageFrame, modalHiddenContent);
       await expect(getAutoOpenBanner(models)).toBeVisible();
@@ -257,7 +257,7 @@ test.describe("Auto Open", () => {
       await assertHidden(
         pageFrame,
         tooltipHiddenContent,
-        tooltipVisibleContent
+        tooltipVisibleContent,
       );
       await assertAutoOpened(pageFrame, modalHiddenContent);
       await expect(getAutoOpenBanner(models)).toBeVisible();
@@ -269,7 +269,7 @@ test.describe("Auto Open", () => {
       await assertHidden(
         pageFrame,
         tooltipHiddenContent,
-        tooltipVisibleContent
+        tooltipVisibleContent,
       );
       await expect(getAutoOpenBanner(models)).toBeVisible();
 
@@ -294,7 +294,7 @@ test.describe("Auto Open", () => {
       await assertHidden(
         pageFrame,
         tooltipHiddenContent,
-        tooltipVisibleContent
+        tooltipVisibleContent,
       );
       await expect(getAutoOpenBanner(models)).toBeVisible();
 
@@ -307,7 +307,7 @@ test.describe("Auto Open", () => {
       await assertHidden(
         pageFrame,
         tooltipHiddenContent,
-        tooltipVisibleContent
+        tooltipVisibleContent,
       );
       await expect(getAutoOpenBanner(models)).toBeVisible();
     });

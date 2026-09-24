@@ -48,20 +48,20 @@ import { Dictionary, flatten, fromPairs } from "lodash";
 export const getPageTemplatesGroups = (studioCtx: StudioCtx) => {
   const insertableTemplates =
     maybe(studioCtx.getCurrentUiConfig()?.pageTemplates, (x) =>
-      normalizeTemplateSpec(x, true)
+      normalizeTemplateSpec(x, true),
     ) ?? studioCtx.appCtx.appConfig.insertableTemplates;
   if (!insertableTemplates) {
     return [];
   }
   const pageTemplatesGroups = insertableTemplates.items.filter(
-    (i) => i.type === "insertable-templates-group" && i.isPageTemplatesGroup
+    (i) => i.type === "insertable-templates-group" && i.isPageTemplatesGroup,
   );
   return pageTemplatesGroups as InsertableTemplatesGroup[];
 };
 
 const getPageTemplates = (studioCtx: StudioCtx) => {
   const pageTemplates = flatten(
-    getPageTemplatesGroups(studioCtx).map((g) => g.items)
+    getPageTemplatesGroups(studioCtx).map((g) => g.items),
   ).filter((i) => i.type === "insertable-templates-item");
   return pageTemplates as InsertableTemplatesItem[];
 };
@@ -69,24 +69,24 @@ const getPageTemplates = (studioCtx: StudioCtx) => {
 const getInsertableTemplatesGroups = (studioCtx: StudioCtx) => {
   const insertableTemplates =
     maybe(studioCtx.getCurrentUiConfig()?.insertableTemplates, (x) =>
-      normalizeTemplateSpec(x, false)
+      normalizeTemplateSpec(x, false),
     ) ?? studioCtx.appCtx.appConfig.insertableTemplates;
   if (!insertableTemplates) {
     return [];
   }
   const insertableTemplatesGrups = insertableTemplates.items.filter(
-    (i) => i.type === "insertable-templates-group" && !i.isPageTemplatesGroup
+    (i) => i.type === "insertable-templates-group" && !i.isPageTemplatesGroup,
   );
   return insertableTemplatesGrups as InsertableTemplatesGroup[];
 };
 
 const getInsertableTemplates = (studioCtx: StudioCtx) => {
   const insertableTemplates = flatten(
-    getInsertableTemplatesGroups(studioCtx).map((g) => g.items)
+    getInsertableTemplatesGroups(studioCtx).map((g) => g.items),
   ).filter(
     (i) =>
       i.type === "insertable-templates-item" ||
-      i.type === "insertable-templates-component"
+      i.type === "insertable-templates-component",
   );
   return insertableTemplates as InsertableTemplatesItem[];
 };
@@ -98,14 +98,14 @@ const getAllTemplates = (studioCtx: StudioCtx) => {
 export const replaceWithPageTemplate = (
   studioCtx: StudioCtx,
   page: PageComponent,
-  templateInfo: InsertableTemplateComponentExtraInfo
+  templateInfo: InsertableTemplateComponentExtraInfo,
 ) => {
   const { tpl: toBeInserted, seenFonts } = cloneInsertableTemplate(
     studioCtx.site,
     templateInfo,
     getBaseVariant(page),
     studioCtx.projectDependencyManager.plumeSite,
-    page
+    page,
   );
   postInsertableTemplate(studioCtx, seenFonts);
 
@@ -114,7 +114,7 @@ export const replaceWithPageTemplate = (
 
 export function postInsertableTemplate(
   studioCtx: StudioCtx,
-  seenFonts: Set<string>
+  seenFonts: Set<string>,
 ) {
   // hostless dependencies may have been updated
   studioCtx.projectDependencyManager.syncDirectDeps();
@@ -137,7 +137,7 @@ export function postInsertableTemplate(
  *
  */
 export const getScreenVariantToInsertableTemplate = async (
-  studioCtx: StudioCtx
+  studioCtx: StudioCtx,
 ) => {
   const baseVariant = undefined;
   const site = studioCtx.site;
@@ -186,7 +186,7 @@ export const getScreenVariantToInsertableTemplate = async (
 
 export const getHostLessDependenciesToInsertableTemplate = async (
   studioCtx: StudioCtx,
-  sourceSite: Site
+  sourceSite: Site,
 ): Promise<{
   hostLessDependencies: Dictionary<{
     pkg: PkgInfo;
@@ -195,7 +195,7 @@ export const getHostLessDependenciesToInsertableTemplate = async (
 }> => {
   const appCtx = studioCtx.appCtx;
   const hostLessProjects = sourceSite.projectDependencies.filter(
-    (dep) => dep.site.hostLessPackageInfo
+    (dep) => dep.site.hostLessPackageInfo,
   );
   const hostLessDependencies = fromPairs(
     await Promise.all(
@@ -207,12 +207,12 @@ export const getHostLessDependenciesToInsertableTemplate = async (
           name: hostLessPkgName,
         }) => {
           const dep = studioCtx.site.projectDependencies.find(
-            (d) => d.projectId === hostLessProjectId
+            (d) => d.projectId === hostLessProjectId,
           );
           if (dep) {
             assert(
               dep.version === hostLessProjectVersion,
-              `${dep.name} has version ${dep.version}, but expected ${hostLessProjectVersion}`
+              `${dep.name} has version ${dep.version}, but expected ${hostLessProjectVersion}`,
             );
             return [
               hostLessProjectId,
@@ -229,12 +229,12 @@ export const getHostLessDependenciesToInsertableTemplate = async (
           // You can't just use the projectDependency from the sourceSite, as it needs to be unbundled by studioCtx.bundler() to be usable here
           const { pkg: latest, depPkgs } = await appCtx.api.getPkgVersion(
             hostLessPkgId,
-            hostLessProjectVersion
+            hostLessProjectVersion,
           );
           const { projectDependency } = unbundleProjectDependency(
             studioCtx.bundler(),
             latest,
-            depPkgs
+            depPkgs,
           );
 
           return [
@@ -248,9 +248,9 @@ export const getHostLessDependenciesToInsertableTemplate = async (
               projectDependency,
             },
           ];
-        }
-      )
-    )
+        },
+      ),
+    ),
   );
 
   return {
@@ -265,7 +265,7 @@ export async function buildInsertableExtraInfo(
     componentName?: string;
     componentId?: string;
   },
-  screenVariant: Variant | undefined
+  screenVariant: Variant | undefined,
 ): Promise<InsertableTemplateComponentExtraInfo | undefined> {
   const { componentName, componentId, projectId } = componentMeta;
 
@@ -289,7 +289,7 @@ export async function buildInsertableExtraInfo(
     it.site.components.find((c) => c.uuid === componentId)?.name;
 
   const template = getAllTemplates(studioCtx).find(
-    (c) => c.projectId === projectId && c.componentName === compName
+    (c) => c.projectId === projectId && c.componentName === compName,
   );
 
   return {
@@ -307,22 +307,22 @@ export async function buildInsertableExtraInfo(
 function getInsertableTemplateComponentItems(studioCtx: StudioCtx) {
   return flattenInsertableTemplatesByType(
     studioCtx.appCtx.appConfig.insertableTemplates,
-    "insertable-templates-component"
+    "insertable-templates-component",
   );
 }
 
 export function getInsertableTemplateComponentItem(
   studioCtx: StudioCtx,
-  templateName: string
+  templateName: string,
 ) {
   return getInsertableTemplateComponentItems(studioCtx).find(
-    (i) => i.templateName === templateName
+    (i) => i.templateName === templateName,
   );
 }
 
 function createCopyableElementsReferences(
   viewCtx: ViewCtx,
-  copyObj: NonNullable<ReturnType<ViewOps["copy"]>>
+  copyObj: NonNullable<ReturnType<ViewOps["copy"]>>,
 ): CopyElementsReference[] {
   function tplNodeRef(node: TplNode): CopyElementsReference {
     const activeVariants = viewCtx
@@ -355,7 +355,7 @@ function createCopyableElementsReferences(
 
 export function getCopyState(
   viewCtx: ViewCtx,
-  copyObj: NonNullable<ReturnType<ViewOps["copy"]>>
+  copyObj: NonNullable<ReturnType<ViewOps["copy"]>>,
 ): CopyState {
   const references = createCopyableElementsReferences(viewCtx, copyObj);
 
@@ -402,7 +402,7 @@ export function isCopyState(x: any): x is CopyState {
 
 async function resolveBundleRef(
   studioCtx: StudioCtx,
-  state: CopyState
+  state: CopyState,
 ): Promise<{
   bundle: Bundle;
   depPkgs: PkgVersionInfo[];
@@ -412,7 +412,7 @@ async function resolveBundleRef(
     const { pkg, depPkgs } = await studioCtx.appCtx.api.getPkgVersion(
       ref.pkgId,
       ref.version,
-      state.branchId
+      state.branchId,
     );
     return { bundle: pkg.model, depPkgs };
   }
@@ -421,7 +421,7 @@ async function resolveBundleRef(
     {
       revisionNum: ref.revisionNum,
       branchId: state.branchId as BranchId | undefined,
-    }
+    },
   );
   return {
     bundle: getBundle(rev, studioCtx.appCtx.lastBundleVersion),
@@ -431,7 +431,7 @@ async function resolveBundleRef(
 
 export async function buildCopyStateExtraInfo(
   studioCtx: StudioCtx,
-  state: CopyState
+  state: CopyState,
 ): Promise<CopyStateExtraInfo> {
   const { projectId, componentUuid, componentName, references, bundleRef } =
     state;
@@ -449,7 +449,7 @@ export async function buildCopyStateExtraInfo(
         bundler,
         projectId,
         bundle,
-        depPkgs
+        depPkgs,
       );
 
       // Be sure to track it, so that we can properly to do some fixups
@@ -457,18 +457,17 @@ export async function buildCopyStateExtraInfo(
       deepTrackComponents(originSite);
 
       return originSite;
-    })()
+    })(),
   );
 
   // Don't add spinner wrapper, as this may prompt the user to select a screen variant
-  const { screenVariant } = await getScreenVariantToInsertableTemplate(
-    studioCtx
-  );
+  const { screenVariant } =
+    await getScreenVariantToInsertableTemplate(studioCtx);
 
   // This hostless dependencies have been unbundled with the current studio
   // bundler which makes them compatible to be installed in the current site
   const { hostLessDependencies } = await studioCtx.app.withSpinner(
-    getHostLessDependenciesToInsertableTemplate(studioCtx, site)
+    getHostLessDependenciesToInsertableTemplate(studioCtx, site),
   );
 
   const resolution: {
@@ -481,7 +480,7 @@ export async function buildCopyStateExtraInfo(
 
   const component = ensure(
     site.components.find((c) => c.uuid === componentUuid),
-    `Component "${componentName}" was not found to paste content`
+    `Component "${componentName}" was not found to paste content`,
   );
 
   return {

@@ -5,13 +5,13 @@ export class AddSsoConfigWhitelabel1727857960079 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "sso_config" ADD "whitelabelConfig" jsonb`
+      `ALTER TABLE "sso_config" ADD "whitelabelConfig" jsonb`,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "sso_config" DROP COLUMN "whitelabelConfig"`
+      `ALTER TABLE "sso_config" DROP COLUMN "whitelabelConfig"`,
     );
   }
 }

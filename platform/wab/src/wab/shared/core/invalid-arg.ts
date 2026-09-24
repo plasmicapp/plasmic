@@ -23,7 +23,7 @@ export interface InvalidArgMeta extends InvalidArg {
 export function getInvalidArgErrorMessage(invalidArg: InvalidArg): string {
   return invalidArg.validationType === ValidationType.Required
     ? "Required"
-    : invalidArg.message ?? "Invalid Value";
+    : (invalidArg.message ?? "Invalid Value");
 }
 
 /**
@@ -39,9 +39,9 @@ export function mkInvalidArgKey(path: readonly (string | number)[]): string {
  * param's variable name), for `PropValueEditorContextData.invalidArgs`.
  */
 export function mkInvalidArgsRecord(
-  invalidArgs: readonly InvalidArgMeta[]
+  invalidArgs: readonly InvalidArgMeta[],
 ): Record<string, InvalidArg> {
   return Object.fromEntries(
-    invalidArgs.map((ia) => [mkInvalidArgKey([ia.param.variable.name]), ia])
+    invalidArgs.map((ia) => [mkInvalidArgKey([ia.param.variable.name]), ia]),
   );
 }

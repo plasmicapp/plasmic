@@ -69,7 +69,7 @@ interface CanvasPkgs {
   slateReact: typeof slateReact;
   localElement?: typeof Element;
   createModal: (
-    props: Pick<ModalProps, InternalModalProps>
+    props: Pick<ModalProps, InternalModalProps>,
   ) => (restProps: Omit<ModalProps, InternalModalProps>) => JSX.Element;
   createThumbnail: (
     element: HTMLElement,
@@ -79,7 +79,7 @@ interface CanvasPkgs {
       quality?: number;
       filter?: (elem: HTMLElement) => boolean;
       includeQueryParams?: boolean;
-    }
+    },
   ) => Promise<string>;
 }
 

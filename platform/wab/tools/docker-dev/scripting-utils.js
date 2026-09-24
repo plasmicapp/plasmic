@@ -15,7 +15,7 @@ function runCommand(command) {
 exports.exec = function exec(...commands) {
   return commands.reduce(
     (prev, command) => prev.then(() => runCommand(command)),
-    Promise.resolve()
+    Promise.resolve(),
   );
 };
 
@@ -27,8 +27,8 @@ exports.runDbQueries = function runDbQueries(...queries) {
     .then(() =>
       queries.reduce(
         (prev, q) => prev.then(() => client.query(q)).catch(console.error),
-        Promise.resolve()
-      )
+        Promise.resolve(),
+      ),
     )
     .then(() => client.end());
 };

@@ -51,7 +51,7 @@ export function getInvalidDomNesting(viewCtx: ViewCtx) {
     if (invalidAncestor) {
       const ancestorValNode = ensure(
         invalidAncestor.valNode,
-        "Ancestor valNode should exist"
+        "Ancestor valNode should exist",
       );
       const ancestorTpl = ancestorValNode.tpl;
       const ancestorComponent =
@@ -59,7 +59,7 @@ export function getInvalidDomNesting(viewCtx: ViewCtx) {
 
       const descendantValNode = ensure(
         domInfo.valNode,
-        "Descendant valNode should exist"
+        "Descendant valNode should exist",
       );
       const descendantTpl = descendantValNode.tpl;
       const descendantComponent =
@@ -96,7 +96,7 @@ export function getInvalidDomNesting(viewCtx: ViewCtx) {
 function makeIssueKey(
   component: Component,
   ancestorTpl: TplNode,
-  descendantTpl: TplNode
+  descendantTpl: TplNode,
 ) {
   return `${TYPE}-${component.uuid}-${ancestorTpl.uuid}-${descendantTpl.uuid}`;
 }

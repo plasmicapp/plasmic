@@ -13,7 +13,7 @@ test.describe("arena", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -77,7 +77,7 @@ test.describe("arena", () => {
       timeout: 5000,
     });
     expect(
-      await models.studio.rightPanel.fontSizeInput.getAttribute("value")
+      await models.studio.rightPanel.fontSizeInput.getAttribute("value"),
     ).toContain("30");
 
     await models.studio.rightPanel.openArtboardSettings();
@@ -99,9 +99,8 @@ test.describe("arena", () => {
       state: "visible",
       timeout: 15000,
     });
-    const fontSize = await models.studio.rightPanel.fontSizeInput.getAttribute(
-      "value"
-    );
+    const fontSize =
+      await models.studio.rightPanel.fontSizeInput.getAttribute("value");
     expect(fontSize).toContain("25");
   });
 });

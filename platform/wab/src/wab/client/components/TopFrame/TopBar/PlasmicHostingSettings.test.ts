@@ -73,6 +73,6 @@ describe("pickDomainCards", () => {
         candidateDomain: undefined,
         erroredDomain: failedDomain,
       });
-    }
+    },
   );
 });

@@ -37,11 +37,11 @@ export const CanvasTransformedBox = observer(function CanvasTransformedBox({
     relativeTo === "arena"
       ? frameToScalerRect(eltRect, viewCtx)
       : relativeTo === "frame"
-      ? eltRect
-      : unexpected();
+        ? eltRect
+        : unexpected();
   const cssProps = cssPropsForInvertTransform(
     viewCtx.studioCtx.zoom,
-    scalerRect
+    scalerRect,
   );
   const cssPropsForJqElt = {
     ...(scalerRect ? scalerRect : {}),
@@ -58,7 +58,7 @@ export const CanvasTransformedBox = observer(function CanvasTransformedBox({
           ...cssPropsForJqElt,
           ...style,
         },
-        keepDims ? ["width", "height", "transform"] : []
+        keepDims ? ["width", "height", "transform"] : [],
       )}
     >
       {children}

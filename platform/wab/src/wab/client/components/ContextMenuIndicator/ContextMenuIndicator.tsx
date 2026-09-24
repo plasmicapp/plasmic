@@ -23,8 +23,7 @@ function createContextMenuContext() {
 
 export const ContextMenuContext = createContext(createContextMenuContext());
 
-export interface ContextMenuIndicatorProps
-  extends DefaultContextMenuIndicatorProps {
+export interface ContextMenuIndicatorProps extends DefaultContextMenuIndicatorProps {
   /**
    * Tooltip shown when hovering the green dynamic value button.
    * Defaults to "Use dynamic value".
@@ -57,10 +56,10 @@ function ContextMenuIndicator_(
     className,
     ...props
   }: ContextMenuIndicatorProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const [openTooltip, setOpenTooltip] = useState<boolean | undefined>(
-    undefined
+    undefined,
   );
   const [ctx] = useState(createContextMenuContext());
   ctx.setOpenTooltip = setOpenTooltip;

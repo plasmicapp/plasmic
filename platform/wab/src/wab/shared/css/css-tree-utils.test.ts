@@ -57,10 +57,10 @@ describe("checkAllowedUnits", () => {
 
   it("should handle nested functions", () => {
     expect(checkAllowedUnits("calc(min(100px, 50px) + 10px)", ["px"])).toBe(
-      true
+      true,
     );
     expect(checkAllowedUnits("calc(min(100px, 50vw) + 10px)", ["px"])).toBe(
-      false
+      false,
     );
   });
 
@@ -104,22 +104,22 @@ describe("formatDimCssFunction", () => {
 
   it("should handle multiple operators", () => {
     expect(formatDimCssFunction("calc(100%-20px+5%)")).toBe(
-      "calc(100% - 20px + 5%)"
+      "calc(100% - 20px + 5%)",
     );
     expect(formatDimCssFunction("calc(100%*0.5+20px)")).toBe(
-      "calc(100% * 0.5 + 20px)"
+      "calc(100% * 0.5 + 20px)",
     );
     expect(formatDimCssFunction("calc(100%-20px*2/4)")).toBe(
-      "calc(100% - 20px * 2 / 4)"
+      "calc(100% - 20px * 2 / 4)",
     );
   });
 
   it("should normalize already spaced expressions", () => {
     expect(formatDimCssFunction("calc(100%  -  20px)")).toBe(
-      "calc(100% - 20px)"
+      "calc(100% - 20px)",
     );
     expect(formatDimCssFunction("calc(100%   +   20px)")).toBe(
-      "calc(100% + 20px)"
+      "calc(100% + 20px)",
     );
   });
 
@@ -130,37 +130,37 @@ describe("formatDimCssFunction", () => {
 
   it("should format min() function", () => {
     expect(formatDimCssFunction("min(100%-20px,400px)")).toBe(
-      "min(100% - 20px, 400px)"
+      "min(100% - 20px, 400px)",
     );
     expect(formatDimCssFunction("min(50vw*2,100%)")).toBe(
-      "min(50vw * 2, 100%)"
+      "min(50vw * 2, 100%)",
     );
   });
 
   it("should format max() function", () => {
     expect(formatDimCssFunction("max(100%+20px,400px)")).toBe(
-      "max(100% + 20px, 400px)"
+      "max(100% + 20px, 400px)",
     );
     expect(formatDimCssFunction("max(50vw/2,100px)")).toBe(
-      "max(50vw / 2, 100px)"
+      "max(50vw / 2, 100px)",
     );
   });
 
   it("should format clamp() function", () => {
     expect(formatDimCssFunction("clamp(10px,50%+10px,100px)")).toBe(
-      "clamp(10px, 50% + 10px, 100px)"
+      "clamp(10px, 50% + 10px, 100px)",
     );
     expect(formatDimCssFunction("clamp(10px,100%-20px,500px)")).toBe(
-      "clamp(10px, 100% - 20px, 500px)"
+      "clamp(10px, 100% - 20px, 500px)",
     );
   });
 
   it("should handle nested functions", () => {
     expect(formatDimCssFunction("calc(min(100%-20px,50px)+10px)")).toBe(
-      "calc(min(100% - 20px, 50px) + 10px)"
+      "calc(min(100% - 20px, 50px) + 10px)",
     );
     expect(formatDimCssFunction("calc(max(100px,50%)*2)")).toBe(
-      "calc(max(100px, 50%) * 2)"
+      "calc(max(100px, 50%) * 2)",
     );
   });
 
@@ -183,19 +183,19 @@ describe("formatDimCssFunction", () => {
     expect(formatDimCssFunction("rgb(255,0,0)")).toBe("rgb(255,0,0)");
     expect(formatDimCssFunction("var(--my-var)")).toBe("var(--my-var)");
     expect(formatDimCssFunction("linear-gradient(red,blue)")).toBe(
-      "linear-gradient(red,blue)"
+      "linear-gradient(red,blue)",
     );
   });
 
   it("should handle var() inside calc without breaking var names", () => {
     expect(formatDimCssFunction("calc(100%-var(--spacing))")).toBe(
-      "calc(100% - var(--spacing))"
+      "calc(100% - var(--spacing))",
     );
     expect(formatDimCssFunction("calc(var(--width)+20px)")).toBe(
-      "calc(var(--width) + 20px)"
+      "calc(var(--width) + 20px)",
     );
     expect(formatDimCssFunction("calc(100%-var(--my-value)*2)")).toBe(
-      "calc(100% - var(--my-value) * 2)"
+      "calc(100% - var(--my-value) * 2)",
     );
   });
 
@@ -207,19 +207,19 @@ describe("formatDimCssFunction", () => {
 
   it("should handle deeply nested functions", () => {
     expect(formatDimCssFunction("calc(100% - calc(50%+10px))")).toBe(
-      "calc(100% - calc(50% + 10px))"
+      "calc(100% - calc(50% + 10px))",
     );
     expect(formatDimCssFunction("calc(min(100%-20px,max(50px,30px)))")).toBe(
-      "calc(min(100% - 20px, max(50px, 30px)))"
+      "calc(min(100% - 20px, max(50px, 30px)))",
     );
   });
 
   it("should handle grouping parentheses", () => {
     expect(formatDimCssFunction("calc((100%-20px)/2)")).toBe(
-      "calc((100% - 20px) / 2)"
+      "calc((100% - 20px) / 2)",
     );
     expect(formatDimCssFunction("calc(((100%+50px)*2)/4)")).toBe(
-      "calc(((100% + 50px) * 2) / 4)"
+      "calc(((100% + 50px) * 2) / 4)",
     );
   });
 
@@ -230,10 +230,10 @@ describe("formatDimCssFunction", () => {
 
   it("should normalize excessive whitespace", () => {
     expect(formatDimCssFunction("calc(10px   +    5px)")).toBe(
-      "calc(10px + 5px)"
+      "calc(10px + 5px)",
     );
     expect(formatDimCssFunction("calc(100%     -     20px)")).toBe(
-      "calc(100% - 20px)"
+      "calc(100% - 20px)",
     );
   });
 
@@ -245,38 +245,38 @@ describe("formatDimCssFunction", () => {
 
   it("should handle all four operators in one expression", () => {
     expect(formatDimCssFunction("calc(100%/2-10px+5%*3)")).toBe(
-      "calc(100% / 2 - 10px + 5% * 3)"
+      "calc(100% / 2 - 10px + 5% * 3)",
     );
   });
 
   it("should handle expressions with closing paren followed by operator", () => {
     expect(formatDimCssFunction("calc(min(100px,50px)+20px)")).toBe(
-      "calc(min(100px, 50px) + 20px)"
+      "calc(min(100px, 50px) + 20px)",
     );
     expect(formatDimCssFunction("calc(max(10px,5px)*2)")).toBe(
-      "calc(max(10px, 5px) * 2)"
+      "calc(max(10px, 5px) * 2)",
     );
   });
 
   it("should handle multiple var() functions with operators", () => {
     expect(formatDimCssFunction("calc(var(--a)+var(--b))")).toBe(
-      "calc(var(--a) + var(--b))"
+      "calc(var(--a) + var(--b))",
     );
     expect(formatDimCssFunction("calc(var(--width)-var(--offset)*2)")).toBe(
-      "calc(var(--width) - var(--offset) * 2)"
+      "calc(var(--width) - var(--offset) * 2)",
     );
   });
 
   it("should handle complex nested expressions", () => {
     expect(
-      formatDimCssFunction("calc(100%-(min(50px,25%)+max(10px,5%)))")
+      formatDimCssFunction("calc(100%-(min(50px,25%)+max(10px,5%)))"),
     ).toBe("calc(100% - (min(50px, 25%) + max(10px, 5%)))");
   });
 
   it("should handle decimals starting with dot", () => {
     expect(formatDimCssFunction("calc(100%*.5)")).toBe("calc(100% * .5)");
     expect(formatDimCssFunction("calc(.75em+.25em)")).toBe(
-      "calc(.75em + .25em)"
+      "calc(.75em + .25em)",
     );
   });
 });

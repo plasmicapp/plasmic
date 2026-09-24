@@ -15,7 +15,7 @@ test.describe("state-management-counter", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -37,7 +37,7 @@ test.describe("state-management-counter", () => {
 
     await models.studio.leftPanel.insertNode("Text");
     const textContentLabel = models.studio.frame.locator(
-      `[data-test-id="text-content"] label`
+      `[data-test-id="text-content"] label`,
     );
     await textContentLabel.click({ button: "right" });
     await models.studio.rightPanel.useDynamicValueButton.click();
@@ -109,7 +109,7 @@ test.describe("state-management-counter", () => {
 
     await models.studio.leftPanel.insertNode("counter");
     await expect(pageFrame.locator(".__wab_rich_text").first()).toContainText(
-      "5"
+      "5",
     );
     await models.studio.rightPanel.checkNumberOfStatesInComponent(0, 0);
 
@@ -147,7 +147,7 @@ test.describe("state-management-counter", () => {
     await models.studio.leftPanel.selectTreeNode(["vertical stack", "counter"]);
 
     await expect(pageFrame.locator(".__wab_rich_text").first()).toContainText(
-      "5"
+      "5",
     );
     await models.studio.rightPanel.checkNumberOfStatesInComponent(0, 1);
 
@@ -221,15 +221,15 @@ test.describe("state-management-counter", () => {
 
     await models.studio.withinLiveMode(async (liveFrame) => {
       await expect(liveFrame.locator("#plasmic-app .__wab_text")).toContainText(
-        "5"
+        "5",
       );
       await liveFrame.getByText("Increment").click();
       await expect(liveFrame.locator("#plasmic-app .__wab_text")).toContainText(
-        "6"
+        "6",
       );
       await liveFrame.getByText("Reset").click();
       await expect(liveFrame.locator("#plasmic-app .__wab_text")).toContainText(
-        "0"
+        "0",
       );
     });
 
@@ -264,20 +264,20 @@ test.describe("state-management-counter", () => {
     await models.studio.leftPanel.selectTreeNode(["vertical stack", "counter"]);
     await models.studio.rightPanel.checkNumberOfStatesInComponent(0, 1);
     await expect(pageFrame.locator(".__wab_rich_text").first()).toContainText(
-      "5"
+      "5",
     );
 
     await models.studio.withinLiveMode(async (liveFrame) => {
       await expect(liveFrame.locator("#plasmic-app .__wab_text")).toContainText(
-        "5"
+        "5",
       );
       await liveFrame.getByText("Increment").click();
       await expect(liveFrame.locator("#plasmic-app .__wab_text")).toContainText(
-        "6"
+        "6",
       );
       await liveFrame.getByText("Reset").click();
       await expect(liveFrame.locator("#plasmic-app .__wab_text")).toContainText(
-        "6"
+        "6",
       );
     });
 

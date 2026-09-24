@@ -63,8 +63,8 @@ function basicComponentsWithServerQueries() {
         [
           { name: "param1", code: "$ctx.pagePath" },
           { name: "param2", code: "$ctx.params.slug" },
-        ]
-      )
+        ],
+      ),
     ),
     mkServerQuery("query3", null),
     mkServerQuery(
@@ -75,8 +75,8 @@ function basicComponentsWithServerQueries() {
         [
           { name: "param1", code: "$ctx.pagePath" },
           { name: "param2", code: "$ctx.params.slug" },
-        ]
-      )
+        ],
+      ),
     ),
     mkServerQuery(
       "query5",
@@ -86,8 +86,8 @@ function basicComponentsWithServerQueries() {
         [
           { name: "param3", code: "$ctx.pagePath" },
           { name: "param2", code: "$ctx.params.slug" },
-        ]
-      )
+        ],
+      ),
     ),
   ];
 
@@ -127,7 +127,7 @@ describe("Code generation of server queries", () => {
         {
           usesSearchParams:
             getPageSearchParamsUsage(component).outsideRenderTree,
-        }
+        },
       );
     }
 
@@ -163,9 +163,9 @@ describe("Code generation of server queries", () => {
           mkCustomFunctionExpr(
             "func",
             ["param"],
-            [{ name: "param", code: "$ctx.query.myquery" }]
-          )
-        )
+            [{ name: "param", code: "$ctx.query.myquery" }],
+          ),
+        ),
       );
       component.pageMeta = mkPageMeta({ path: "/advanced" });
 
@@ -174,7 +174,7 @@ describe("Code generation of server queries", () => {
         outsideRenderTree: true,
       });
       expect(serializePageCtx(component)).toContain(
-        "query: (await searchParams) ?? {},"
+        "query: (await searchParams) ?? {},",
       );
     });
 
@@ -191,7 +191,7 @@ describe("Code generation of server queries", () => {
         outsideRenderTree: true,
       });
       expect(serializePageCtx(component)).toContain(
-        "query: (await searchParams) ?? {},"
+        "query: (await searchParams) ?? {},",
       );
     });
 
@@ -202,9 +202,9 @@ describe("Code generation of server queries", () => {
           mkCustomFunctionExpr(
             "func",
             ["param"],
-            [{ name: "param", code: "$ctx.query.serverside" }]
-          )
-        )
+            [{ name: "param", code: "$ctx.query.serverside" }],
+          ),
+        ),
       );
       component.pageMeta = mkPageMeta({ path: "/advanced" });
       const baseVariant = getBaseVariant(component);
@@ -222,7 +222,7 @@ describe("Code generation of server queries", () => {
         outsideRenderTree: true,
       });
       expect(serializePageCtx(component)).toContain(
-        "query: (await searchParams) ?? {},"
+        "query: (await searchParams) ?? {},",
       );
     });
   });
@@ -233,11 +233,11 @@ describe("Code generation of server queries", () => {
         basicComponentsWithServerQueries();
 
       expect(makePlasmicServerRscComponentName(component)).toEqual(
-        "PlasmicComponentServer"
+        "PlasmicComponentServer",
       );
 
       expect(
-        makePlasmicServerRscComponentName(componentWithoutQueries)
+        makePlasmicServerRscComponentName(componentWithoutQueries),
       ).toEqual("PlasmicComponentWithoutQueriesServer");
     });
   });
@@ -248,11 +248,11 @@ describe("Code generation of server queries", () => {
         basicComponentsWithServerQueries();
 
       expect(makePlasmicClientRscComponentName(component)).toEqual(
-        "ClientComponent"
+        "ClientComponent",
       );
 
       expect(
-        makePlasmicClientRscComponentName(componentWithoutQueries)
+        makePlasmicClientRscComponentName(componentWithoutQueries),
       ).toEqual("ClientComponentWithoutQueries");
     });
   });
@@ -273,7 +273,7 @@ describe("Code generation of server queries", () => {
             forceAllProps: true,
           },
           projectFlags: DEVFLAGS,
-        } as SerializerBaseContext)
+        } as SerializerBaseContext),
       ).toEqual(`
 export type PlasmicComponent__ArgsType = {"param1"?: string;};
 type ArgPropType = keyof PlasmicComponent__ArgsType;
@@ -285,7 +285,7 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
   describe("serializeRootServerQueryTree", () => {
     function makeCtx(
       component: ReturnType<typeof mkComponent>,
-      hasServerQueries = true
+      hasServerQueries = true,
     ) {
       return {
         component,
@@ -308,9 +308,9 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
             [
               { name: "url", code: "$ctx.apiUrl" },
               { name: "limit", code: "10" },
-            ]
-          )
-        )
+            ],
+          ),
+        ),
       );
 
       const result = serializeRootServerQueryTree(makeCtx(component));
@@ -318,7 +318,7 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
       expect(result).toContain('id: "fetchData"');
       expect(result).toContain("fn: $$.fetchData");
       expect(result).toContain(
-        `  args: ({ $q, $props, $ctx, $state }) => [$ctx.apiUrl, 10],`
+        `  args: ({ $q, $props, $ctx, $state }) => [$ctx.apiUrl, 10],`,
       );
     });
 
@@ -340,14 +340,14 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
       $q: {},
       $state: {},
     }];
-  },`
+  },`,
       );
     });
 
     it("serializes a custom code server query (with await)", () => {
       const query = mkServerQuery(
         "myQuery",
-        mkCustomCodeOp(`await new Promise(r => r(3000))`)
+        mkCustomCodeOp(`await new Promise(r => r(3000))`),
       );
       const component = mkComponentWithQueries(query);
 
@@ -365,7 +365,7 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
       $q: {},
       $state: {},
     }];
-  },`
+  },`,
       );
     });
 
@@ -373,8 +373,8 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
       const component = mkComponentWithQueries(
         mkServerQuery(
           "myQuery",
-          mkCustomCodeOp("const x = 1;\nconst y = 2;\nx + y")
-        )
+          mkCustomCodeOp("const x = 1;\nconst y = 2;\nx + y"),
+        ),
       );
 
       const result = serializeRootServerQueryTree(makeCtx(component));
@@ -386,7 +386,7 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
     it("skips queries without operations", () => {
       const component = mkComponentWithQueries(
         mkServerQuery("configured", mkCustomCodeOp("1")),
-        mkServerQuery("unconfigured", null)
+        mkServerQuery("unconfigured", null),
       );
 
       const result = serializeRootServerQueryTree(makeCtx(component));
@@ -400,8 +400,8 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
         mkServerQuery("queryB", mkCustomFunctionExpr("fnB", [], [])),
         mkServerQuery(
           "combined",
-          mkCustomCodeOp("[$q.queryA, $q.queryB. $q.queryA]")
-        )
+          mkCustomCodeOp("[$q.queryA, $q.queryB. $q.queryA]"),
+        ),
       );
 
       const result = serializeRootServerQueryTree(makeCtx(component));
@@ -420,7 +420,7 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
       },
       $state: {},
     }];
-  },`
+  },`,
       );
     });
 
@@ -429,8 +429,8 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
         mkServerQuery("greeting", mkCustomCodeOp(`"Welcome to Mars"`)),
         mkServerQuery(
           "fullGreeting",
-          mkCustomCodeOp(`$q.greeting.data + ", enjoy your stay!"`)
-        )
+          mkCustomCodeOp(`$q.greeting.data + ", enjoy your stay!"`),
+        ),
       );
 
       const result = serializeRootServerQueryTree(makeCtx(component));
@@ -447,13 +447,13 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
       },
       $state: {},
     }];
-  },`
+  },`,
       );
     });
 
     it("includes self-references in $q dependencies", () => {
       const component = mkComponentWithQueries(
-        mkServerQuery("myQuery", mkCustomCodeOp("$q.myQuery"))
+        mkServerQuery("myQuery", mkCustomCodeOp("$q.myQuery")),
       );
 
       const result = serializeRootServerQueryTree(makeCtx(component));
@@ -469,13 +469,13 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
       },
       $state: {},
     }];
-  },`
+  },`,
       );
     });
 
     it("eagerly accesses $state properties referenced in custom code", () => {
       const component = mkComponentWithQueries(
-        mkServerQuery("stateDepQuery", mkCustomCodeOp(`$state.myStateVar`))
+        mkServerQuery("stateDepQuery", mkCustomCodeOp(`$state.myStateVar`)),
       );
       const result = serializeRootServerQueryTree(makeCtx(component));
       expect(result).toContain(
@@ -490,7 +490,7 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
         "myStateVar": $state["myStateVar"],
       },
     }];
-  },`
+  },`,
       );
     });
 
@@ -499,7 +499,10 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
       // works in args functions, not $q["Full Greeting"]
       const component = mkComponentWithQueries(
         mkServerQuery("Greeting", mkCustomCodeOp(`"hello"`)),
-        mkServerQuery("Full Greeting", mkCustomCodeOp(`$q.greeting.data + "!"`))
+        mkServerQuery(
+          "Full Greeting",
+          mkCustomCodeOp(`$q.greeting.data + "!"`),
+        ),
       );
 
       const result = serializeRootServerQueryTree(makeCtx(component));
@@ -519,7 +522,7 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
       },
       $state: {},
     }];
-  },`
+  },`,
       );
     });
 
@@ -560,8 +563,8 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
           mkCustomFunctionExpr(
             "fn",
             ["p1"],
-            [{ name: "p1", code: "$dataTokens_xyz789_apiKey" }]
-          )
+            [{ name: "p1", code: "$dataTokens_xyz789_apiKey" }],
+          ),
         ),
       ];
       const result = getDataTokensFromServerQueries(queries);
@@ -577,13 +580,13 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
           mkCustomFunctionExpr(
             "fn",
             ["p1"],
-            [{ name: "p1", code: "$dataTokens_proj2_tokenB" }]
-          )
+            [{ name: "p1", code: "$dataTokens_proj2_tokenB" }],
+          ),
         ),
       ];
       const result = getDataTokensFromServerQueries(queries);
       expect(result).toEqual(
-        new Set(["$dataTokens_abc123_token", "$dataTokens_proj2_tokenB"])
+        new Set(["$dataTokens_abc123_token", "$dataTokens_proj2_tokenB"]),
       );
     });
   });
@@ -600,9 +603,9 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
           mkCustomFunctionExpr(
             "fetchData",
             ["id"],
-            [{ name: "id", code: "$state.counter" }]
-          )
-        )
+            [{ name: "id", code: "$state.counter" }],
+          ),
+        ),
       );
       const { valueParam, onChangeParam } = mkParamsForState({
         name: "counter",

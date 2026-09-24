@@ -5,14 +5,14 @@ export async function sendWelcomeEmail(
   req: Request,
   email: string,
   token: string | null,
-  nextPath?: string
+  nextPath?: string,
 ) {
   let tokenLink = "";
   if (token) {
     const emailVerificationLink = generateEmailVerificationLink(
       req.config.host,
       token,
-      nextPath
+      nextPath,
     );
     tokenLink = `<p>To start using Plasmic, just click in the link below</p>
 <a href="${emailVerificationLink}">${emailVerificationLink}</a>`;

@@ -99,19 +99,19 @@ describe("substituteUrlParams", () => {
   it("works", () => {
     expect(substituteUrlParams("/hello", {})).toEqual("/hello");
     expect(substituteUrlParams("/blog/[slug]", { slug: "hello" })).toEqual(
-      "/blog/hello"
+      "/blog/hello",
     );
     expect(substituteUrlParams("/blog/[slug]", { slug: "hello/you" })).toEqual(
-      "/blog/hello%2Fyou"
+      "/blog/hello%2Fyou",
     );
     expect(
-      substituteUrlParams("/blog/[...slug]", { "...slug": "a&b" })
+      substituteUrlParams("/blog/[...slug]", { "...slug": "a&b" }),
     ).toEqual("/blog/a%26b");
     expect(
-      substituteUrlParams("/blog/[...slug]", { "...slug": "a&b/c&d" })
+      substituteUrlParams("/blog/[...slug]", { "...slug": "a&b/c&d" }),
     ).toEqual("/blog/a%26b/c%26d");
     expect(
-      substituteUrlParams("/blog/[[...slug]]", { "...slug": "a&b/c&d" })
+      substituteUrlParams("/blog/[[...slug]]", { "...slug": "a&b/c&d" }),
     ).toEqual("/blog/a%26b/c%26d");
   });
   it("handles missing params", () => {
@@ -121,7 +121,7 @@ describe("substituteUrlParams", () => {
 
     expect(substituteUrlParams("/blog/[slug]", {})).toEqual("/blog/[slug]");
     expect(substituteUrlParams("/blog/[...slug]", {})).toEqual(
-      "/blog/[...slug]"
+      "/blog/[...slug]",
     );
     expect(substituteUrlParams("/blog/[[...slug]]", {})).toEqual("/blog/");
   });
@@ -274,7 +274,7 @@ describe("evalPageHrefPath", () => {
 
   function evalPageHref(
     props: Partial<Omit<PageHref, "encode">> & { path: string },
-    canvasEnv: Record<string, any> = {}
+    canvasEnv: Record<string, any> = {},
   ): { encode: string; noEncode: string } {
     const { query, params, fragment, path } = props;
     const evalWithEncode = (encode: boolean): string => {
@@ -313,7 +313,7 @@ describe("evalPageHrefPath", () => {
       evalPageHref({
         path: "/blog/[slug]",
         params: { slug: templated("hello/you & me") },
-      })
+      }),
     ).toEqual({
       encode: "/blog/hello%2Fyou%20%26%20me",
       noEncode: "/blog/hello/you & me",
@@ -325,7 +325,7 @@ describe("evalPageHrefPath", () => {
       evalPageHref({
         path: "/blog/[...slug]",
         params: { "...slug": templated("cats & dogs/50% off") },
-      })
+      }),
     ).toEqual({
       encode: "/blog/cats%20%26%20dogs/50%25%20off",
       noEncode: "/blog/cats & dogs/50% off",
@@ -335,7 +335,7 @@ describe("evalPageHrefPath", () => {
       evalPageHref({
         path: "/blog/[...slug]",
         params: { "...slug": templated("/a//b/") },
-      })
+      }),
     ).toEqual({
       encode: "/blog//a//b/",
       noEncode: "/blog//a//b/",
@@ -345,7 +345,7 @@ describe("evalPageHrefPath", () => {
       evalPageHref({
         path: "/blog/[[...slug]]",
         params: { "...slug": templated("cats & dogs/50% off") },
-      })
+      }),
     ).toEqual({
       encode: "/blog/cats%20%26%20dogs/50%25%20off",
       noEncode: "/blog/cats & dogs/50% off",
@@ -361,7 +361,7 @@ describe("evalPageHrefPath", () => {
           q2: templated("a/b?c=d"),
           "key with spaces": templated("50% off"),
         },
-      })
+      }),
     ).toEqual({
       encode:
         "/mypage?q1=Cats%20%26%20Dogs&q2=a%2Fb%3Fc%3Dd&key%20with%20spaces=50%25%20off",
@@ -375,7 +375,7 @@ describe("evalPageHrefPath", () => {
         path: "/blog/[slug]",
         params: { slug: templated("Cats%20%26%20Dogs") },
         query: { q1: templated("Cats%20%26%20Dogs") },
-      })
+      }),
     ).toEqual({
       encode: "/blog/Cats%2520%2526%2520Dogs?q1=Cats%2520%2526%2520Dogs",
       noEncode: "/blog/Cats%20%26%20Dogs?q1=Cats%20%26%20Dogs",
@@ -397,8 +397,8 @@ describe("evalPageHrefPath", () => {
           params: { q: seq },
           query: { q: seq },
         },
-        { $state: { first: "first value", second: "second value" } }
-      )
+        { $state: { first: "first value", second: "second value" } },
+      ),
     ).toEqual({
       encode: "/search/second%20value?q=second%20value",
       noEncode: "/search/second value?q=second value",
@@ -413,8 +413,8 @@ describe("evalPageHrefPath", () => {
     expect(
       evalPageHref(
         { path: "/blog/[...slug]", params: { "...slug": seq } },
-        { $state: { first: "nope", rest: ["a/b", "c"] } }
-      )
+        { $state: { first: "nope", rest: ["a/b", "c"] } },
+      ),
     ).toEqual({
       encode: "/blog/a%2Fb/c",
       noEncode: "/blog/a/b,c",
@@ -426,7 +426,7 @@ describe("evalPageHrefPath", () => {
       evalPageHref({
         path: "/mypage",
         fragment: templated("a&b/c"),
-      })
+      }),
     ).toEqual({
       encode: "/mypage#a&b/c",
       noEncode: "/mypage#a&b/c",
@@ -440,7 +440,7 @@ describe("evalPageHrefPath", () => {
         params: { p1: templated("a b") },
         query: { q1: templated("1&2") },
         fragment: templated("frag ment"),
-      })
+      }),
     ).toEqual({
       encode: "/mypage/a%20b?q1=1%262#frag ment",
       noEncode: "/mypage/a b?q1=1&2#frag ment",
@@ -449,19 +449,19 @@ describe("evalPageHrefPath", () => {
 
   it("rejects missing or empty required path params", () => {
     expect(() => evalPageHref({ path: "/blog/[slug]" })).toThrow(
-      'Required path param "slug" is empty'
+      'Required path param "slug" is empty',
     );
     expect(() =>
       evalPageHref({
         path: "/blog/[slug]",
         params: { slug: templated("") },
-      })
+      }),
     ).toThrow('Required path param "slug" is empty');
     expect(() =>
       evalPageHref({
         path: "/blog/[...slug]",
         params: { "...slug": templated("") },
-      })
+      }),
     ).toThrow('Required path param "...slug" is empty');
 
     // Optional catchall params can be missing or empty
@@ -473,7 +473,7 @@ describe("evalPageHrefPath", () => {
       evalPageHref({
         path: "/blog/[[...slug]]",
         params: { "...slug": templated("") },
-      })
+      }),
     ).toEqual({
       encode: "/blog/",
       noEncode: "/blog/",
@@ -485,7 +485,7 @@ describe("evalPageHrefPath", () => {
         path: "/blog",
         query: { q: templated("") },
         fragment: templated(""),
-      })
+      }),
     ).toEqual({
       encode: "/blog?q=#",
       noEncode: "/blog?q=#",
@@ -499,7 +499,7 @@ describe("evalPageHrefPath", () => {
         params: { p1: templated(["$state", "test"]) },
         query: { q1: templated(["$state", "test"]) },
         fragment: templated(["$state", "test"]),
-      })
+      }),
     ).toThrow("$state is not defined");
   });
 
@@ -512,8 +512,8 @@ describe("evalPageHrefPath", () => {
           query: { q1: templated(["$state", "test"]) },
           fragment: templated(["$state", "test"]),
         },
-        { $state: { test: "my val" } }
-      )
+        { $state: { test: "my val" } },
+      ),
     ).toEqual({
       encode: "/mypage/my%20val?q1=my%20val#my val",
       noEncode: "/mypage/my val?q1=my val#my val",
@@ -528,8 +528,8 @@ describe("evalPageHrefPath", () => {
           path: "/blog/[...slug]",
           params: { "...slug": templated(["$state", "test"]) },
         },
-        { $state: { test: ["cats & dogs", "50% off", "a/b"] } }
-      )
+        { $state: { test: ["cats & dogs", "50% off", "a/b"] } },
+      ),
     ).toEqual({
       encode: "/blog/cats%20%26%20dogs/50%25%20off/a%2Fb",
       noEncode: "/blog/cats & dogs,50% off,a/b",
@@ -550,8 +550,8 @@ describe("evalPageHrefPath", () => {
             }),
           },
         },
-        { $state: { test: "intro/a b" } }
-      )
+        { $state: { test: "intro/a b" } },
+      ),
     ).toEqual({
       encode: "/blog/docs%20%26%20more/intro/a%20b",
       noEncode: "/blog/docs & more/intro/a b",
@@ -571,8 +571,8 @@ describe("evalPageHrefPath", () => {
             }),
           },
         },
-        { $state: { test: ["a", "b"] } }
-      )
+        { $state: { test: ["a", "b"] } },
+      ),
     ).toEqual({
       encode: "/blog/x-a%2Cb",
       noEncode: "/blog/x-a,b",
@@ -588,8 +588,8 @@ describe("evalPageHrefPath", () => {
           params: { slug: templated(["$state", "test"]) },
           query: { q1: templated(["$state", "test"]) },
         },
-        { $state: { test: ["a,b", "c d"] } }
-      )
+        { $state: { test: ["a,b", "c d"] } },
+      ),
     ).toEqual({
       encode: "/blog/a%2Cb%2Cc%20d?q1=a%2Cb%2Cc%20d",
       noEncode: "/blog/a,b,c d?q1=a,b,c d",

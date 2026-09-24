@@ -10,7 +10,7 @@ test.describe("Style sections", () => {
     projectId = await apiClient.setupNewProject({ name: "host-app" });
     await goToProject(page, `/projects/${projectId}`);
     await models.studio.rightPanel.configureProjectAppHost(
-      "plasmic-host-style-sections"
+      "plasmic-host-style-sections",
     );
     await waitForFrameToLoad(page);
   });
@@ -19,7 +19,7 @@ test.describe("Style sections", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -55,7 +55,7 @@ test.describe("Style sections", () => {
     await models.studio.createNewPageInOwnArena("NewPage");
 
     const sections = models.studio.rightPanel.frame.locator(
-      ".tab-content .SidebarSection__Container"
+      ".tab-content .SidebarSection__Container",
     );
     const sideBarSectionsContainer =
       models.studio.rightPanel.frame.locator(".tab-content");
@@ -64,7 +64,7 @@ test.describe("Style sections", () => {
     await models.studio.rightPanel.switchToDesignTab();
     await expect(sections).toHaveCount(1);
     await expect(sideBarSectionsContainer).not.toContainText(
-      "Not able to style code component"
+      "Not able to style code component",
     );
 
     await models.studio.extractComponentNamed("CompNoStyleSections");
@@ -72,7 +72,7 @@ test.describe("Style sections", () => {
     await models.studio.rightPanel.switchToDesignTab();
     await expect(sections).toHaveCount(1);
     await expect(sideBarSectionsContainer).not.toContainText(
-      "Not able to style code component"
+      "Not able to style code component",
     );
 
     await models.studio.extractComponentNamed("CompCompNoStyleSections");
@@ -80,20 +80,20 @@ test.describe("Style sections", () => {
     await models.studio.rightPanel.switchToDesignTab();
     await expect(sections).toHaveCount(1);
     await expect(sideBarSectionsContainer).not.toContainText(
-      "Not able to style code component"
+      "Not able to style code component",
     );
 
     await models.studio.leftPanel.insertNode("StyleSectionsNoClassName");
     await models.studio.rightPanel.switchToDesignTab();
     await expect(sections).toHaveCount(2);
     await expect(sideBarSectionsContainer).toContainText(
-      "Not able to style code component"
+      "Not able to style code component",
     );
     await expect(sideBarSectionsContainer).toContainText(
-      "Component StyleSectionsNoClassName does not support styling"
+      "Component StyleSectionsNoClassName does not support styling",
     );
     await expect(sideBarSectionsContainer).toContainText(
-      'It looks like the code component StyleSectionsNoClassName does not make use of a "className" prop'
+      'It looks like the code component StyleSectionsNoClassName does not make use of a "className" prop',
     );
 
     await models.studio.extractComponentNamed("CompStyleSectionsNoClassName");
@@ -101,51 +101,51 @@ test.describe("Style sections", () => {
     await models.studio.rightPanel.switchToDesignTab();
     await expect(sections).toHaveCount(2);
     await expect(sideBarSectionsContainer).toContainText(
-      "Not able to style code component"
+      "Not able to style code component",
     );
     await expect(sideBarSectionsContainer).toContainText(
-      "Component CompStyleSectionsNoClassName does not support styling"
+      "Component CompStyleSectionsNoClassName does not support styling",
     );
     await expect(sideBarSectionsContainer).toContainText(
-      'It looks like the root code component StyleSectionsNoClassName does not make use of a "className" prop'
+      'It looks like the root code component StyleSectionsNoClassName does not make use of a "className" prop',
     );
 
     await models.studio.extractComponentNamed(
-      "CompCompStyleSectionsNoClassName"
+      "CompCompStyleSectionsNoClassName",
     );
     await models.studio.clearNotifications();
     await models.studio.rightPanel.switchToDesignTab();
     await expect(sections).toHaveCount(2);
     await expect(sideBarSectionsContainer).toContainText(
-      "Not able to style code component"
+      "Not able to style code component",
     );
     await expect(sideBarSectionsContainer).toContainText(
-      "Component CompCompStyleSectionsNoClassName does not support styling"
+      "Component CompCompStyleSectionsNoClassName does not support styling",
     );
     await expect(sideBarSectionsContainer).toContainText(
-      'It looks like the root code component StyleSectionsNoClassName does not make use of a "className" prop'
+      'It looks like the root code component StyleSectionsNoClassName does not make use of a "className" prop',
     );
 
     await models.studio.leftPanel.insertNode("StyleSectionsWithClassName");
     await models.studio.rightPanel.switchToDesignTab();
     await expect(sideBarSectionsContainer).not.toContainText(
-      "Not able to style code component"
+      "Not able to style code component",
     );
 
     await models.studio.extractComponentNamed("CompStyleSectionsWithClassName");
     await models.studio.clearNotifications();
     await models.studio.rightPanel.switchToDesignTab();
     await expect(sideBarSectionsContainer).not.toContainText(
-      "Not able to style code component"
+      "Not able to style code component",
     );
 
     await models.studio.extractComponentNamed(
-      "CompCompStyleSectionsWithClassName"
+      "CompCompStyleSectionsWithClassName",
     );
     await models.studio.clearNotifications();
     await models.studio.rightPanel.switchToDesignTab();
     await expect(sideBarSectionsContainer).not.toContainText(
-      "Not able to style code component"
+      "Not able to style code component",
     );
 
     for (let i = 0; i < styleSections.length; i++) {
@@ -155,17 +155,17 @@ test.describe("Style sections", () => {
       const baseCount =
         styleSectionsThatAlwaysOccurInStyleableTpl.length + 1 + 1;
       const sectionsThatTranslateTo2 = [singleSection].filter((s) =>
-        styleSectionsThatTranslateTo2Sections.includes(s)
+        styleSectionsThatTranslateTo2Sections.includes(s),
       ).length;
       const otherCount = [singleSection]
         .filter((s) => !styleSectionsThatAlwaysOccurInStyleableTpl.includes(s))
         .filter(
-          (s) => !styleSectionsThatTranslateTo2Sections.includes(s)
+          (s) => !styleSectionsThatTranslateTo2Sections.includes(s),
         ).length;
 
       await models.studio.rightPanel.switchToDesignTab();
       await expect(sections).toHaveCount(
-        baseCount + otherCount + sectionsThatTranslateTo2 * 2
+        baseCount + otherCount + sectionsThatTranslateTo2 * 2,
       );
 
       await models.studio.extractComponentNamed(`CompS_${singleSection}`);
@@ -178,19 +178,19 @@ test.describe("Style sections", () => {
         .filter((s) => !styleSectionsThatNeverOccurInComp.includes(s))
         .filter((s) => !styleSectionsThatAlwaysOccurInStyleableTpl.includes(s))
         .filter(
-          (s) => !styleSectionsThatTranslateTo2Sections.includes(s)
+          (s) => !styleSectionsThatTranslateTo2Sections.includes(s),
         ).length;
 
       await models.studio.rightPanel.switchToDesignTab();
       await expect(sections).toHaveCount(
-        baseCount + otherCountComp + sectionsThatTranslateTo2Comp * 2
+        baseCount + otherCountComp + sectionsThatTranslateTo2Comp * 2,
       );
 
       await models.studio.extractComponentNamed(`CompCompS_${singleSection}`);
       await models.studio.clearNotifications();
       await models.studio.rightPanel.switchToDesignTab();
       await expect(sections).toHaveCount(
-        baseCount + otherCountComp + sectionsThatTranslateTo2Comp * 2
+        baseCount + otherCountComp + sectionsThatTranslateTo2Comp * 2,
       );
 
       for (let j = i + 1; j < styleSections.length; j += 3) {
@@ -200,23 +200,23 @@ test.describe("Style sections", () => {
 
         const dualSections = [section1, section2];
         const sectionsThatTranslateTo2Dual = dualSections.filter((s) =>
-          styleSectionsThatTranslateTo2Sections.includes(s)
+          styleSectionsThatTranslateTo2Sections.includes(s),
         ).length;
         const otherCountDual = dualSections
           .filter(
-            (s) => !styleSectionsThatAlwaysOccurInStyleableTpl.includes(s)
+            (s) => !styleSectionsThatAlwaysOccurInStyleableTpl.includes(s),
           )
           .filter(
-            (s) => !styleSectionsThatTranslateTo2Sections.includes(s)
+            (s) => !styleSectionsThatTranslateTo2Sections.includes(s),
           ).length;
 
         await models.studio.rightPanel.switchToDesignTab();
         await expect(sections).toHaveCount(
-          baseCount + otherCountDual + sectionsThatTranslateTo2Dual * 2
+          baseCount + otherCountDual + sectionsThatTranslateTo2Dual * 2,
         );
 
         await models.studio.extractComponentNamed(
-          `CompD_${section1}_${section2}`
+          `CompD_${section1}_${section2}`,
         );
         await models.studio.clearNotifications();
 
@@ -226,24 +226,24 @@ test.describe("Style sections", () => {
         const otherCountDualComp = dualSections
           .filter((s) => !styleSectionsThatNeverOccurInComp.includes(s))
           .filter(
-            (s) => !styleSectionsThatAlwaysOccurInStyleableTpl.includes(s)
+            (s) => !styleSectionsThatAlwaysOccurInStyleableTpl.includes(s),
           )
           .filter(
-            (s) => !styleSectionsThatTranslateTo2Sections.includes(s)
+            (s) => !styleSectionsThatTranslateTo2Sections.includes(s),
           ).length;
 
         await models.studio.rightPanel.switchToDesignTab();
         await expect(sections).toHaveCount(
-          baseCount + otherCountDualComp + sectionsThatTranslateTo2DualComp * 2
+          baseCount + otherCountDualComp + sectionsThatTranslateTo2DualComp * 2,
         );
 
         await models.studio.extractComponentNamed(
-          `CompCompD_${section1}_${section2}`
+          `CompCompD_${section1}_${section2}`,
         );
         await models.studio.clearNotifications();
         await models.studio.rightPanel.switchToDesignTab();
         await expect(sections).toHaveCount(
-          baseCount + otherCountDualComp + sectionsThatTranslateTo2DualComp * 2
+          baseCount + otherCountDualComp + sectionsThatTranslateTo2DualComp * 2,
         );
       }
     }
@@ -251,7 +251,7 @@ test.describe("Style sections", () => {
 
     const baseCount = styleSectionsThatAlwaysOccurInStyleableTpl.length + 1 + 1;
     const sectionsThatTranslateTo2All = styleSections.filter((s) =>
-      styleSectionsThatTranslateTo2Sections.includes(s)
+      styleSectionsThatTranslateTo2Sections.includes(s),
     ).length;
     const otherCountAll = styleSections
       .filter((s) => !styleSectionsThatAlwaysOccurInStyleableTpl.includes(s))
@@ -259,7 +259,7 @@ test.describe("Style sections", () => {
 
     await models.studio.rightPanel.switchToDesignTab();
     await expect(sections).toHaveCount(
-      baseCount + otherCountAll + sectionsThatTranslateTo2All * 2
+      baseCount + otherCountAll + sectionsThatTranslateTo2All * 2,
     );
 
     await models.studio.extractComponentNamed(`CompAll`);
@@ -275,14 +275,14 @@ test.describe("Style sections", () => {
 
     await models.studio.rightPanel.switchToDesignTab();
     await expect(sections).toHaveCount(
-      baseCount + otherCountAllComp + sectionsThatTranslateTo2AllComp * 2
+      baseCount + otherCountAllComp + sectionsThatTranslateTo2AllComp * 2,
     );
 
     await models.studio.extractComponentNamed(`CompCompAll`);
     await models.studio.clearNotifications();
     await models.studio.rightPanel.switchToDesignTab();
     await expect(sections).toHaveCount(
-      baseCount + otherCountAllComp + sectionsThatTranslateTo2AllComp * 2
+      baseCount + otherCountAllComp + sectionsThatTranslateTo2AllComp * 2,
     );
   });
 
@@ -325,7 +325,7 @@ test.describe("Style sections", () => {
       const treeNode = await models.studio.leftPanel.selectTreeNode([ccName]);
       await treeNode.hover();
       const visibilityToggle = treeNode.locator(
-        '[class*="tpltree__label__visibility"]'
+        '[class*="tpltree__label__visibility"]',
       );
 
       if (shouldHaveToggle) {
@@ -342,7 +342,7 @@ test.describe("Style sections", () => {
       ]);
       await compTreeNode.hover();
       const compVisibilityToggle = compTreeNode.locator(
-        '[class*="tpltree__label__visibility"]'
+        '[class*="tpltree__label__visibility"]',
       );
 
       if (shouldHaveToggle) {
@@ -359,7 +359,7 @@ test.describe("Style sections", () => {
       ]);
       await compCompTreeNode.hover();
       const compCompVisibilityToggle = compCompTreeNode.locator(
-        '[class*="tpltree__label__visibility"]'
+        '[class*="tpltree__label__visibility"]',
       );
 
       if (shouldHaveToggle) {

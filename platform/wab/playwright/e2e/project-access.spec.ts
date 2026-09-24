@@ -21,7 +21,7 @@ test.describe("project-access", () => {
 
     await expect(page).toHaveURL(
       new RegExp(`/login\\?continueTo=%2Fprojects%2F${projectId}`),
-      { timeout: 15_000 }
+      { timeout: 15_000 },
     );
 
     await page.context().clearCookies();
@@ -37,7 +37,7 @@ test.describe("project-access", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -59,7 +59,7 @@ test.describe("project-access", () => {
 
     await expect(page).toHaveURL(
       new RegExp(`/login\\?continueTo=%2Fprojects%2F${projectId}`),
-      { timeout: 15_000 }
+      { timeout: 15_000 },
     );
 
     await page.context().clearCookies();
@@ -77,13 +77,13 @@ test.describe("project-access", () => {
       page
         .frameLocator("iframe.studio-frame")
         .frameLocator("iframe.__wab_studio-frame")
-        .getByText("You only have read permission to this project")
+        .getByText("You only have read permission to this project"),
     ).toBeVisible({ timeout: 10000 });
 
     await apiClient.removeProjectAfterTest(
       projectId,
       "user@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 });

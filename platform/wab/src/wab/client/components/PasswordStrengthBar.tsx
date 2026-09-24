@@ -14,7 +14,7 @@ export type PasswordStrengthBarProps = DefaultPasswordStrengthBarProps;
 
 function PasswordStrengthBar_(
   props: PasswordStrengthBarProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { password } = props;
   const [passwordStrength, setPasswordStrength] = React.useState(0);
@@ -22,9 +22,9 @@ function PasswordStrengthBar_(
     debounce(
       async (newPassword) =>
         setPasswordStrength(await ratePasswordStrength(newPassword)),
-      500
+      500,
     ),
-    []
+    [],
   );
   React.useEffect(() => {
     const asyncSetPasswordStrength = async () => {

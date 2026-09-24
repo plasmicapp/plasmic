@@ -36,18 +36,18 @@ export const getBuiltinComponentRegistrations = memoize(
         meta: (sub?.dataSources?.FetcherMeta ?? FetcherMeta) as any,
       } as ComponentRegistration,
     };
-  }
+  },
 );
 
 const getBuiltinImportPaths = memoize(function getBuiltinImportPaths() {
   return Object.values(getBuiltinComponentRegistrations()).map(
-    (c) => c.meta.importPath
+    (c) => c.meta.importPath,
   );
 });
 
 const getBuiltinComponentNames = memoize(function getBuiltinComponentNames() {
   return Object.values(getBuiltinComponentRegistrations()).map(
-    (c) => c.meta.name
+    (c) => c.meta.name,
   );
 });
 

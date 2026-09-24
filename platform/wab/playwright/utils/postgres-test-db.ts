@@ -57,13 +57,13 @@ export async function createPostgresTestDatabase(): Promise<PostgresTestDatabase
     // FORCE terminates the data source pool's idle sessions
     await runAsAdmin(
       "postgres",
-      `DROP DATABASE IF EXISTS ${quoteIdentifier(name)} WITH (FORCE);`
+      `DROP DATABASE IF EXISTS ${quoteIdentifier(name)} WITH (FORCE);`,
     );
   };
 
   await runAsAdmin(
     "postgres",
-    `CREATE DATABASE ${quoteIdentifier(name)} OWNER ${quoteIdentifier(user)};`
+    `CREATE DATABASE ${quoteIdentifier(name)} OWNER ${quoteIdentifier(user)};`,
   );
   try {
     await runAsUser(name, SEED_SQL);
@@ -117,7 +117,7 @@ async function runPsql(opts: {
           PGPASSWORD: opts.password,
         },
         stdio: ["pipe", "pipe", "pipe"],
-      }
+      },
     );
     let stderr = "";
     child.stdout.resume();

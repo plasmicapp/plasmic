@@ -25,7 +25,7 @@ export const CanvasConfigButton = observer(function CanvasConfigButton_(props: {
   const _gridSpacing = parseInt(getGlobalCssVariableValue(gridSpacing), 10);
   const _hoverBoxTagHeight = parseInt(
     getGlobalCssVariableValue(hoverBoxTagHeight),
-    10
+    10,
   );
   const minZoom = Math.max(studioCtx.zoom, _hoverBoxTagHeight / _gridSpacing);
 
@@ -65,7 +65,7 @@ export const CanvasConfigButton = observer(function CanvasConfigButton_(props: {
           }
           e.stopPropagation();
           await studioCtx.changeUnsafe(() =>
-            studioCtx.setStudioFocusOnFrame({ frame: frame, autoZoom: false })
+            studioCtx.setStudioFocusOnFrame({ frame: frame, autoZoom: false }),
           );
         }}
       >

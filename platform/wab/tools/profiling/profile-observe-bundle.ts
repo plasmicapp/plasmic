@@ -39,7 +39,7 @@ async function main() {
   console.log("STARTING", `${prettyMemory(process.memoryUsage().heapUsed)}`);
 
   const bundles = measured("Parsing", () =>
-    JSON.parse(fs.readFileSync(bundleFile).toString())
+    JSON.parse(fs.readFileSync(bundleFile).toString()),
   );
 
   const bundler = new Bundler();
@@ -63,8 +63,8 @@ async function main() {
         instUtil,
         [meta.getFieldByName("ProjectDependency", "site")],
         [],
-        (obj) => !!maybe(bundler.addrOf(obj), (addr) => addr.uuid !== siteUuid)
-      )
+        (obj) => !!maybe(bundler.addrOf(obj), (addr) => addr.uuid !== siteUuid),
+      ),
   );
 }
 

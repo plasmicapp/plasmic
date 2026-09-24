@@ -14,7 +14,7 @@ export const ACTIVE_PLUME_TYPES = [
 ];
 
 export function getPlumeComponentTemplates(
-  studioCtx: StudioCtx
+  studioCtx: StudioCtx,
 ): PlumeComponent[] {
   const plumeSite = studioCtx.projectDependencyManager.plumeSite;
   if (!plumeSite) {
@@ -26,6 +26,6 @@ export function getPlumeComponentTemplates(
     .filter(
       (comp) =>
         ACTIVE_PLUME_TYPES.includes(comp.plumeInfo.type) &&
-        !comp.name.startsWith("_")
+        !comp.name.startsWith("_"),
     );
 }

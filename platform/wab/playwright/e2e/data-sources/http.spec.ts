@@ -57,17 +57,17 @@ test.describe("HTTP Data Source", () => {
       "data-source-modal-params-key",
       "name",
       page,
-      models
+      models,
     );
     await setDataPlasmicProp(
       "data-source-modal-params-value",
       USER_NAME,
       page,
-      models
+      models,
     );
 
     const saveBtn = models.studio.rightPanel.frame.locator(
-      "#data-source-modal-save-btn"
+      "#data-source-modal-save-btn",
     );
     await saveBtn.click();
 
@@ -183,10 +183,10 @@ test.describe("HTTP Data Source", () => {
 async function pickDataSource(
   dataSourceName: string,
   models: PageModels,
-  page: Page
+  page: Page,
 ) {
   const pickButton = models.studio.rightPanel.frame.locator(
-    "#data-source-modal-pick-integration-btn"
+    "#data-source-modal-pick-integration-btn",
   );
   await pickButton.click();
 
@@ -220,10 +220,10 @@ async function setDataPlasmicProp(
   prop: string,
   value: string,
   page: Page,
-  models: PageModels
+  models: PageModels,
 ) {
   const pathField = models.studio.rightPanel.frame.locator(
-    `[data-plasmic-prop="${prop}"]`
+    `[data-plasmic-prop="${prop}"]`,
   );
   await pathField.waitFor({ state: "visible", timeout: 10000 });
   await pathField.click();
@@ -233,17 +233,17 @@ async function setDataPlasmicProp(
 
 async function selectPathInDataPicker(
   models: PageModels,
-  path: string | string[]
+  path: string | string[],
 ) {
   const dataPicker = models.studio.rightPanel.frame.locator(
-    '[data-test-id="data-picker"]'
+    '[data-test-id="data-picker"]',
   );
   await dataPicker.waitFor({ state: "visible", timeout: 10000 });
 
   for (let i = 0; i < path.length; i++) {
     const item = path[i];
     const itemElement = models.studio.rightPanel.frame.locator(
-      `[data-test-id="${i}-${item}"]`
+      `[data-test-id="${i}-${item}"]`,
     );
     await itemElement.waitFor({ state: "visible", timeout: 10000 });
     await itemElement.click();
@@ -255,7 +255,7 @@ async function selectPathInDataPicker(
 async function bindTextContentToObjectPath(
   models: PageModels,
   page: Page,
-  path: string | string[]
+  path: string | string[],
 ) {
   await models.studio.rightPanel.frame
     .locator(`[data-test-id="text-content"] label`)
@@ -269,7 +269,7 @@ async function bindTextContentToObjectPath(
 async function bindTextContentToCustomCode(
   models: PageModels,
   page: Page,
-  code: string
+  code: string,
 ) {
   await models.studio.rightPanel.frame
     .locator(`[data-test-id="text-content"] label`)
@@ -278,7 +278,7 @@ async function bindTextContentToCustomCode(
   await page.waitForTimeout(500);
 
   const dataPicker = models.studio.rightPanel.frame.locator(
-    '[data-test-id="data-picker"]'
+    '[data-test-id="data-picker"]',
   );
   const dataPickerText = await dataPicker.textContent();
   if (dataPickerText && dataPickerText.includes("Switch to Code")) {
@@ -287,7 +287,7 @@ async function bindTextContentToCustomCode(
 
   await page.waitForTimeout(1000);
   const monacoEditor = models.studio.rightPanel.frame.locator(
-    '[data-test-id="data-picker"] .react-monaco-editor-container'
+    '[data-test-id="data-picker"] .react-monaco-editor-container',
   );
   await monacoEditor.click();
 
@@ -315,7 +315,7 @@ async function addInteraction(
   models: PageModels,
   page: Page,
   eventHandler: string,
-  interactions: InteractionConfig[]
+  interactions: InteractionConfig[],
 ) {
   await models.studio.rightPanel.switchToSettingsTab();
   await page.waitForTimeout(300);
@@ -399,7 +399,7 @@ async function addInteraction(
         await page.waitForTimeout(2000);
 
         const integrationBtn = models.studio.rightPanel.frame.locator(
-          '[data-plasmic-prop="data-source-modal-pick-integration-btn"]'
+          '[data-plasmic-prop="data-source-modal-pick-integration-btn"]',
         );
         await integrationBtn.click();
         await page.waitForTimeout(300);
@@ -409,7 +409,7 @@ async function addInteraction(
         await page.waitForTimeout(500);
 
         const operationBtn = models.studio.rightPanel.frame.locator(
-          '[data-plasmic-prop="data-source-modal-pick-operation-btn"]'
+          '[data-plasmic-prop="data-source-modal-pick-operation-btn"]',
         );
         await operationBtn.click();
         await page.waitForTimeout(300);
@@ -426,14 +426,14 @@ async function addInteraction(
 
           if (argConfig.inputType) {
             const inputTypeBtn = models.studio.rightPanel.frame.locator(
-              `[data-plasmic-prop="${argKey}-${argConfig.inputType}"]`
+              `[data-plasmic-prop="${argKey}-${argConfig.inputType}"]`,
             );
             await inputTypeBtn.click();
           }
 
           if (argConfig.isDynamicValue) {
             const field = models.studio.rightPanel.frame.locator(
-              `[data-plasmic-prop="${argKey}"]`
+              `[data-plasmic-prop="${argKey}"]`,
             );
             await field.click({ button: "right" });
             await typeKeys(page, [Keys.ModA, Keys.Backspace, "{{"]);
@@ -442,7 +442,7 @@ async function addInteraction(
             await page.waitForTimeout(500);
           } else {
             const field = models.studio.rightPanel.frame.locator(
-              `[data-plasmic-prop="${argKey}"]`
+              `[data-plasmic-prop="${argKey}"]`,
             );
             await field.waitFor({ state: "visible", timeout: 10000 });
             const clickPosition = argConfig.opts?.clickPosition;

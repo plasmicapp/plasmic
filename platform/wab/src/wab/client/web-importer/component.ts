@@ -48,7 +48,7 @@ export function parseComponent(
   attrs: Record<string, string>,
   rec: (node: Node) => WIElement | null,
   path: string,
-  errors: WIError[]
+  errors: WIError[],
 ): Result<WIComponent, WIError> {
   const tag = elt.tagName.toLowerCase();
 
@@ -82,7 +82,7 @@ export function parseComponent(
         reason: `data-props is not valid JSON (${
           e instanceof Error ? e.message : String(e)
         })`,
-      })
+      }),
     )();
 
     if (parsedResult.isErr()) {
@@ -93,8 +93,8 @@ export function parseComponent(
         value === null
           ? "null"
           : Array.isArray(value)
-          ? "an array"
-          : `a ${typeof value}`;
+            ? "an array"
+            : `a ${typeof value}`;
       errors.push({
         code: "invalid-data-props",
         path,
@@ -106,7 +106,7 @@ export function parseComponent(
         Object.entries(parsedResult.value).map(([key, value]) => [
           toVarName(key),
           value,
-        ])
+        ]),
       );
     }
   }

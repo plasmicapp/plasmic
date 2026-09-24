@@ -33,7 +33,7 @@ describe("VariantSettings arg variants with conflicts", () => {
      */
     const result = testMergeFromJsonBundle(
       hackyCast<ProjectFullDataResponse>(argVariantsWithConflicts),
-      { conflictPicks: ["right"] }
+      { conflictPicks: ["right"] },
     );
 
     expect(result).toMatchObject({
@@ -44,18 +44,19 @@ describe("VariantSettings arg variants with conflicts", () => {
 
     const homePageComponent = ensure(
       merged.components.find((c) => c.name === "Homepage"),
-      "Homepage component not found"
+      "Homepage component not found",
     );
 
     const testComponent2 = ensureKnownTplComponent(
       flattenTpls(homePageComponent.tplTree).find(
-        (tpl) => isTplComponent(tpl) && tpl.component.name === "TestComponent 2"
-      )
+        (tpl) =>
+          isTplComponent(tpl) && tpl.component.name === "TestComponent 2",
+      ),
     );
 
     const arg = testComponent2.vsettings[0].args[0];
     const expr = ensureKnownVariantsRef(
-      testComponent2.vsettings[0].args[0].expr
+      testComponent2.vsettings[0].args[0].expr,
     );
     expect(expr.variants).toHaveLength(1);
     expect(expr.variants[0].name).toEqual("isActive");
@@ -63,7 +64,7 @@ describe("VariantSettings arg variants with conflicts", () => {
     // Ensure all expr variants belong to component variant group
     const variantGroup = findVariantGroupForParam(
       testComponent2.component,
-      arg.param
+      arg.param,
     );
     assert(variantGroup, "Variant group should exists");
 

@@ -37,7 +37,7 @@ interface VariantSectionProps extends DefaultVariantSectionProps {
 }
 
 const VariantSection = observer(function VariantSection(
-  props: VariantSectionProps
+  props: VariantSectionProps,
 ) {
   const {
     menu,
@@ -78,7 +78,7 @@ const VariantSection = observer(function VariantSection(
           ? {
               onClick: onAddNewVariant,
               tooltip: isEmpty
-                ? emptyAddButtonTooltip ?? props.emptyAddButtonText
+                ? (emptyAddButtonTooltip ?? props.emptyAddButtonText)
                 : props.emptyAddButtonText,
               "data-test-class": "add-variant-button",
               "data-event": "variantspanel-section-add-variant-to-group",
@@ -160,7 +160,7 @@ export function makeReadOnlySection(opts: {
                           .tplMgr()
                           .copyToVariant(component, variant, toVariant);
                         return ok();
-                      })
+                      }),
                     ),
                 })
               : undefined
@@ -172,7 +172,7 @@ export function makeReadOnlySection(opts: {
             canChangeVariants || vcontroller.canToggleTargeting(variant)
               ? (target) =>
                   studioCtx.changeUnsafe(() =>
-                    vcontroller.onTargetVariant(variant, target)
+                    vcontroller.onTargetVariant(variant, target),
                   )
               : undefined
           }
@@ -180,7 +180,7 @@ export function makeReadOnlySection(opts: {
             canChangeVariants
               ? () =>
                   studioCtx.changeUnsafe(() =>
-                    vcontroller.onToggleVariant(variant)
+                    vcontroller.onToggleVariant(variant),
                   )
               : undefined
           }
@@ -190,7 +190,7 @@ export function makeReadOnlySection(opts: {
                 isCodeComponent={isTplCodeComponent(component?.tplTree)}
                 selectors={styleOrCodeComponentVariantToSelectors(
                   variant,
-                  studioCtx.site
+                  studioCtx.site,
                 )}
               />
             ) : (

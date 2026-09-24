@@ -29,7 +29,7 @@ export interface MenuIndicatorProps extends DefaultMenuIndicatorProps {
 
 function MenuIndicator_(
   props: MenuIndicatorProps,
-  ref: HTMLElementRefOf<"button">
+  ref: HTMLElementRefOf<"button">,
 ) {
   // Use PlasmicMenuIndicator to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

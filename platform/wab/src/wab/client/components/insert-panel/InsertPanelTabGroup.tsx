@@ -24,7 +24,7 @@ export type InsertPanelTabGroupProps = DefaultInsertPanelTabGroupProps;
 
 function InsertPanelTabGroup_(
   props: InsertPanelTabGroupProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicInsertPanelTabGroup to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

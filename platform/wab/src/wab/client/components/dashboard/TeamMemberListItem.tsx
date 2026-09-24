@@ -41,7 +41,7 @@ interface TeamMemberListItemProps extends DefaultTeamMemberListItemProps {
 
 function TeamMemberListItem_(
   props: TeamMemberListItemProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const {
     user,
@@ -70,7 +70,7 @@ function TeamMemberListItem_(
   const roleValue =
     !!perm &&
     ["owner", "editor", "designer", "content", "commenter", "viewer"].includes(
-      perm.accessLevel
+      perm.accessLevel,
     )
       ? perm.accessLevel
       : "none";
@@ -82,10 +82,10 @@ function TeamMemberListItem_(
       root={{ ref }}
       {...rest}
       name={matcher.boldSnippets(
-        user.type === "user" ? fullName(user) : user.email
+        user.type === "user" ? fullName(user) : user.email,
       )}
       email={matcher.boldSnippets(
-        user.type === "user" ? getUserEmail(user) : user.email
+        user.type === "user" ? getUserEmail(user) : user.email,
       )}
       lastActive={
         user.type === "user" && user.lastActive

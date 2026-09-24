@@ -21,10 +21,10 @@ describe("toJsIdentifier", () => {
     expect(toJsIdentifier("สวัสด-ี ชาว โลก")).toEqual("สวัสดีชาวโลก");
     expect(toJsIdentifier("नमस्ते  दुनिय  ा")).toEqual("नमस्तेदुनिया");
     expect(toJsIdentifier("不對  Hello    Moto   不好    ")).toEqual(
-      "不對HelloMoto不好"
+      "不對HelloMoto不好",
     );
     expect(toJsIdentifier("&^#@$*Hello &*#@  Moto   不好    ")).toEqual(
-      "helloMoto不好"
+      "helloMoto不好",
     );
     expect(toJsIdentifier("234")).toEqual("_234");
     expect(toJsIdentifier("hi234")).toEqual("hi234");
@@ -43,37 +43,37 @@ describe("toJsIdentifier", () => {
 
   it("works with camelCase: false", () => {
     expect(toJsIdentifier("Hello moto", { camelCase: false })).toEqual(
-      "Hellomoto"
+      "Hellomoto",
     );
     expect(toJsIdentifier("hello-moto", { camelCase: false })).toEqual(
-      "hellomoto"
+      "hellomoto",
     );
     expect(toJsIdentifier("HELLO_MOTO", { camelCase: false })).toEqual(
-      "HELLO_MOTO"
+      "HELLO_MOTO",
     );
   });
 
   it("works with capitalizeFirst: false", () => {
     expect(toJsIdentifier("Hello moto", { capitalizeFirst: false })).toEqual(
-      "helloMoto"
+      "helloMoto",
     );
     expect(toJsIdentifier("hello-moto", { capitalizeFirst: false })).toEqual(
-      "helloMoto"
+      "helloMoto",
     );
     expect(toJsIdentifier("HELLO_MOTO", { capitalizeFirst: false })).toEqual(
-      "helloMoto"
+      "helloMoto",
     );
   });
 
   it("works with capitalizeFirst: true", () => {
     expect(toJsIdentifier("Hello moto", { capitalizeFirst: true })).toEqual(
-      "HelloMoto"
+      "HelloMoto",
     );
     expect(toJsIdentifier("hello-moto", { capitalizeFirst: true })).toEqual(
-      "HelloMoto"
+      "HelloMoto",
     );
     expect(toJsIdentifier("HELLO_MOTO", { capitalizeFirst: true })).toEqual(
-      "HelloMoto"
+      "HelloMoto",
     );
   });
 
@@ -83,14 +83,14 @@ describe("toJsIdentifier", () => {
     testUnicode(
       "a\u0300\u0308\u0304",
       { camelCase: false },
-      "a\u0300\u0308\u0304"
+      "a\u0300\u0308\u0304",
     );
     // \u093E is a mark https://www.compart.com/en/unicode/U+093E
     testUnicode("\u092C\u093E\u0930\u0924", {}, "\u092C\u093E\u0930\u0924");
     testUnicode(
       "\u092C\u093E\u0930\u0924",
       { camelCase: false },
-      "\u092C\u093E\u0930\u0924"
+      "\u092C\u093E\u0930\u0924",
     );
   });
 
@@ -110,7 +110,7 @@ describe("toJsIdentifier", () => {
     testUnicode(
       "\u0915\u094D\u200D\u0937",
       { camelCase: false },
-      "\u0915\u094D\u0937"
+      "\u0915\u094D\u0937",
     );
   });
 
@@ -119,14 +119,14 @@ describe("toJsIdentifier", () => {
     testUnicode(
       "emoji\uD83D\uDE4B\u200D\u2642\uFE0F",
       { camelCase: false },
-      "emoji"
+      "emoji",
     );
   });
 
   function testUnicode(
     input: string,
     opts: Parameters<typeof toJsIdentifier>[1],
-    expected: string
+    expected: string,
   ) {
     const result = toJsIdentifier(input, opts);
     expect(escapeUnicode(result)).toEqual(escapeUnicode(expected));
@@ -143,7 +143,7 @@ describe("toJsIdentifier", () => {
           : c
               .split("")
               .map((a) => "\\u" + a.charCodeAt(0).toString(16).padStart(4, "0"))
-              .join("")
+              .join(""),
       )
       .join("");
   }
@@ -183,10 +183,10 @@ describe("paramToVarName", () => {
       });
       expect(paramToVarName(plainComponent, childrenParam)).toEqual("children");
       expect(paramToVarName(plainComponent, onIsDisabledChangeParam)).toEqual(
-        "onIsDisabledChange"
+        "onIsDisabledChange",
       );
       expect(paramToVarName(plainComponent, ariaLabelParam)).toEqual(
-        "ariaLabel"
+        "ariaLabel",
       );
       expect(paramToVarName(plainComponent, dataIdParam)).toEqual("dataId");
     });
@@ -199,10 +199,10 @@ describe("paramToVarName", () => {
       });
       expect(paramToVarName(plumeComponent, childrenParam)).toEqual("children");
       expect(paramToVarName(plumeComponent, onIsDisabledChangeParam)).toEqual(
-        "onIsDisabledChange"
+        "onIsDisabledChange",
       );
       expect(paramToVarName(plumeComponent, ariaLabelParam)).toEqual(
-        "aria-label"
+        "aria-label",
       );
       expect(paramToVarName(plumeComponent, dataIdParam)).toEqual("dataId");
     });
@@ -220,10 +220,10 @@ describe("paramToVarName", () => {
       expect(paramToVarName(codeComponent, childrenParam)).toEqual("children");
       // "On is disabled change" is a valid React prop name
       expect(paramToVarName(codeComponent, onIsDisabledChangeParam)).toEqual(
-        "On is disabled change"
+        "On is disabled change",
       );
       expect(paramToVarName(codeComponent, ariaLabelParam)).toEqual(
-        "aria-label"
+        "aria-label",
       );
       expect(paramToVarName(codeComponent, dataIdParam)).toEqual("data-id");
     });
@@ -236,7 +236,7 @@ describe("paramToVarName", () => {
         propEffect: "defaultVariableName",
       });
       expect(paramToVarName(codeComponent, param)).toEqual(
-        "defaultVariableName"
+        "defaultVariableName",
       );
     });
     it("uses variable name for controlled prop", () => {
@@ -248,7 +248,7 @@ describe("paramToVarName", () => {
         propEffect: "defaultVariableName",
       });
       expect(
-        paramToVarName(codeComponent, param, { useControlledProp: true })
+        paramToVarName(codeComponent, param, { useControlledProp: true }),
       ).toEqual("variableName");
     });
   });

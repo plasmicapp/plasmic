@@ -25,31 +25,31 @@ describe("makeGlobalContextPropName", () => {
   it("normalizes import names that are not valid JS identifiers", () => {
     expect(
       makeGlobalContextPropName(
-        mkCodeComponent("global-my-context", { importName: "my-context" })
-      )
+        mkCodeComponent("global-my-context", { importName: "my-context" }),
+      ),
     ).toBe("myContextProps");
     expect(
-      makeGlobalContextPropName(mkCodeComponent("global-my-context", {}))
+      makeGlobalContextPropName(mkCodeComponent("global-my-context", {})),
     ).toBe("globalMyContextProps");
     expect(
       makeGlobalContextPropName(
         mkCodeComponent("global-my-context", {
           importName: "my-context",
           defaultExport: true,
-        })
-      )
+        }),
+      ),
     ).toBe("myContextProps");
   });
 
   it("leaves valid import names alone", () => {
     expect(
       makeGlobalContextPropName(
-        mkCodeComponent("global-my-context", { importName: "MyContext" })
-      )
+        mkCodeComponent("global-my-context", { importName: "MyContext" }),
+      ),
     ).toBe("myContextProps");
     // Follows the import symbol, which falls back to the component name.
     expect(makeGlobalContextPropName(mkCodeComponent("my_context", {}))).toBe(
-      "my_contextProps"
+      "my_contextProps",
     );
   });
 
@@ -58,7 +58,7 @@ describe("makeGlobalContextPropName", () => {
       importName: "my-context",
     });
     expect(
-      makeGlobalContextPropName(comp, new Map([[comp, "MyContext2"]]))
+      makeGlobalContextPropName(comp, new Map([[comp, "MyContext2"]])),
     ).toBe("myContext2Props");
   });
 });

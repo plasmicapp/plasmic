@@ -36,7 +36,7 @@ export function HostConfig({
     (team?.parentTeamId &&
       appCtx.appConfig.branchingTeamIds.includes(team?.parentTeamId));
   const [branchName, setBranchName] = React.useState<string | MainBranchId>(
-    !showBranching ? MainBranchId : parsedLocation?.branchName || MainBranchId
+    !showBranching ? MainBranchId : parsedLocation?.branchName || MainBranchId,
   );
   const [reloadDataCounter, setReloadDataCounter] = React.useState(0);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -44,9 +44,9 @@ export function HostConfig({
   const branchData = useAsyncStrict(
     async () =>
       (await appCtx.api.listBranchesForProject(project.id)).branches.filter(
-        (branch) => branch.status === "active"
+        (branch) => branch.status === "active",
       ),
-    [appCtx, project.id, reloadDataCounter]
+    [appCtx, project.id, reloadDataCounter],
   );
 
   React.useEffect(() => {
@@ -67,7 +67,7 @@ export function HostConfig({
 
   const doUpdateUrl = async (
     branches: ApiBranch[],
-    newHostUrl: string | null
+    newHostUrl: string | null,
   ) => {
     setIsLoading(true);
     await appCtx.api.updateHostUrl(project.id, {
@@ -77,7 +77,7 @@ export function HostConfig({
           ? null
           : ensure(
               branches.find((branch) => branch.name === branchName),
-              () => `Couldn't find branch ${branchName}`
+              () => `Couldn't find branch ${branchName}`,
             ).id,
     });
     const canSkipRefresh = !!(

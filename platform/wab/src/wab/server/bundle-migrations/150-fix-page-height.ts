@@ -1,15 +1,15 @@
 /**
  * Like 148, but deals with imported buttons too
  */
-import { isPageComponent } from "@/wab/shared/core/components";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
-import { Bundler } from "@/wab/shared/bundler";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
+import { Bundler } from "@/wab/shared/bundler";
+import { isPageComponent } from "@/wab/shared/core/components";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();
@@ -17,7 +17,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   // Exclude projects made by d9fada01-9764-4ee8-8e1f-ad4b67925ef3
@@ -33,7 +33,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "150-fix-page-height"
+    "150-fix-page-height",
   );
   Object.assign(bundle, newBundle);
 };

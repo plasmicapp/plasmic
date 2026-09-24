@@ -26,7 +26,7 @@ export function isProjectPath(pathname: string) {
 }
 
 export function parseProjectLocation(
-  location: Location
+  location: Location,
 ): ProjectLocationParams | undefined {
   const searchParams = new URLSearchParams(location.search);
   let branchName = searchParams.get(SEARCH_PARAM_BRANCH) || MainBranchId;
@@ -71,11 +71,11 @@ export function parseProjectLocation(
   }
 
   const matchProjectPreview = APP_ROUTES.projectPreview.parse(
-    location.pathname
+    location.pathname,
   );
   if (matchProjectPreview) {
     const previewHashParams = new URLSearchParams(
-      trimStart(location.hash, "#")
+      trimStart(location.hash, "#"),
     );
     branchName = previewHashParams.get(SEARCH_PARAM_BRANCH) || MainBranchId;
     const previewPath = joinDecodedSegments(matchProjectPreview.previewPath);
@@ -98,7 +98,7 @@ export function parseProjectLocation(
 export function openNewTab(location: To) {
   window.open(
     typeof location === "string" ? location : createPath(location),
-    "_blank"
+    "_blank",
   );
 }
 
@@ -151,7 +151,7 @@ export function isPlasmicPath(pathname: string) {
     pathname = new URL(origin + pathname).pathname;
   }
   return Object.values(APP_ROUTES).some((route: Route) =>
-    route.parse(pathname)
+    route.parse(pathname),
   );
 }
 

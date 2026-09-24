@@ -53,10 +53,10 @@ export abstract class VariantFrame {
    */
   keepOnlyVariants(variants: Variant[]) {
     this.setTargetVariants(
-      this.getTargetVariants().filter((v) => variants.includes(v))
+      this.getTargetVariants().filter((v) => variants.includes(v)),
     );
     this.setPinnedVariants(
-      filterMapKeys(this.getPinnedVariants(), (v) => variants.includes(v))
+      filterMapKeys(this.getPinnedVariants(), (v) => variants.includes(v)),
     );
   }
 
@@ -70,15 +70,15 @@ export abstract class VariantFrame {
 
     const variants = group.variants;
     const first = variants.find(
-      (v) => curTargets.includes(v) || curPins.has(v)
+      (v) => curTargets.includes(v) || curPins.has(v),
     );
     if (first) {
       const variantsToRemove = variants.filter((v) => v !== first);
       this.setTargetVariants(
-        curTargets.filter((v) => !variantsToRemove.includes(v))
+        curTargets.filter((v) => !variantsToRemove.includes(v)),
       );
       this.setPinnedVariants(
-        filterMapKeys(curPins, (v) => !variantsToRemove.includes(v))
+        filterMapKeys(curPins, (v) => !variantsToRemove.includes(v)),
       );
     }
   }
@@ -97,7 +97,7 @@ export abstract class VariantFrame {
 
 function makePlainPins(pins: Map<Variant, boolean>) {
   return Object.fromEntries(
-    [...pins.entries()].map(([v, p]) => tuple(v.uuid, p))
+    [...pins.entries()].map(([v, p]) => tuple(v.uuid, p)),
   );
 }
 
@@ -107,7 +107,10 @@ function makePlainPins(pins: Map<Variant, boolean>) {
  * ArenaFrame.pinnedGlobalVariants.
  */
 export class GlobalVariantFrame extends VariantFrame {
-  constructor(public site: Site, private frame: ArenaFrame) {
+  constructor(
+    public site: Site,
+    private frame: ArenaFrame,
+  ) {
     super();
   }
 
@@ -119,9 +122,9 @@ export class GlobalVariantFrame extends VariantFrame {
     return new Map(
       withoutNils(
         Object.entries(this.frame.pinnedGlobalVariants).map(([v, p]) =>
-          maybe(this.getVariant(v), (variant) => tuple(variant, p))
-        )
-      )
+          maybe(this.getVariant(v), (variant) => tuple(variant, p)),
+        ),
+      ),
     );
   }
 
@@ -143,7 +146,7 @@ export class GlobalVariantFrame extends VariantFrame {
         includeDeps: "direct",
         excludeInactiveScreenVariants: true,
       }),
-      (v) => v.uuid
+      (v) => v.uuid,
     );
   });
 
@@ -168,10 +171,10 @@ export abstract class ComponentVariantFrame extends VariantFrame {
    */
   clearPrivateVariants() {
     this.setTargetVariants(
-      this.getTargetVariants().filter((v) => !isPrivateStyleVariant(v))
+      this.getTargetVariants().filter((v) => !isPrivateStyleVariant(v)),
     );
     this.setPinnedVariants(
-      filterMapKeys(this.getPinnedVariants(), (v) => !isPrivateStyleVariant(v))
+      filterMapKeys(this.getPinnedVariants(), (v) => !isPrivateStyleVariant(v)),
     );
   }
 
@@ -253,11 +256,11 @@ export class RootComponentVariantFrame extends ComponentVariantFrame {
       new Map(
         withoutNils(
           Object.entries(this.frame.pinnedVariants).map(([v, p]) =>
-            maybe(this.getVariant(v), (variant) => tuple(variant, p))
-          )
-        )
+            maybe(this.getVariant(v), (variant) => tuple(variant, p)),
+          ),
+        ),
       ),
-      this._privatePinnedVariants
+      this._privatePinnedVariants,
     );
   }
   protected _setTargetVariants(variants: Variant[]): void {
@@ -278,8 +281,8 @@ export class RootComponentVariantFrame extends ComponentVariantFrame {
       allComponentVariants(this.frame.container.component, {
         includeSuperVariants: true,
       }),
-      (v) => v.uuid
-    )
+      (v) => v.uuid,
+    ),
   );
   private getVariant(id: string): Variant | undefined {
     return this.allComponentVariants.get()[id];

@@ -10,7 +10,7 @@ describe("MenuButton", () => {
         <MenuButton
           menu={<Menu items={[{ key: "configure", label: "Configure" }]} />}
         />
-      </a>
+      </a>,
     );
     // fireEvent returns false when the event was canceled; antd's click
     // trigger no longer calls preventDefault itself.

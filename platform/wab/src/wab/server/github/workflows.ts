@@ -48,7 +48,7 @@ async function createOrUpdateFile(args: FileArgs) {
         owner,
         repo,
         path,
-      }
+      },
     );
     if ("sha" in data) {
       sha = data.sha;
@@ -88,7 +88,7 @@ export async function createOrUpdateWorkflow(args: Omit<GithubRef, "branch">) {
   const branch = await getDefaultBranch(
     args.installationId,
     args.owner,
-    args.repo
+    args.repo,
   );
 
   await createOrUpdateFile({
@@ -130,7 +130,7 @@ export async function triggerWorkflow(ref: GithubRef, data: WorkflowData) {
 }
 
 export async function tryGetLastUnfinishedWorkflowRun(
-  ref: Omit<GithubRef, "branch">
+  ref: Omit<GithubRef, "branch">,
 ): Promise<GitWorkflowJobStatus> {
   const { installationId, owner, repo } = ref;
 
@@ -144,12 +144,12 @@ export async function tryGetLastUnfinishedWorkflowRun(
       owner,
       repo,
       workflow_id: "plasmic.yml",
-    }
+    },
   );
   const unfinishedRuns = allRuns.filter((run) =>
     ["requested", "waiting", "queued", "in_progress"].includes(
-      run.status as string
-    )
+      run.status as string,
+    ),
   );
   const run = unfinishedRuns[0];
   if (!run) {
@@ -165,7 +165,7 @@ export async function tryGetLastUnfinishedWorkflowRun(
 
 export async function getGitJob(
   ref: Omit<GithubRef, "branch">,
-  run_id: number
+  run_id: number,
 ): Promise<GitWorkflowJob | undefined> {
   const { installationId, owner, repo } = ref;
 
@@ -176,7 +176,7 @@ export async function getGitJob(
       data: { jobs },
     } = await octokit.request(
       "GET /repos/{owner}/{repo}/actions/runs/{run_id}/jobs",
-      { owner, repo, run_id }
+      { owner, repo, run_id },
     );
     return jobs[0];
   } catch (err) {

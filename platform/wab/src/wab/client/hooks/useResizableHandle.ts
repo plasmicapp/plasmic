@@ -26,7 +26,7 @@ export function useResizableHandle(opts: {
 
       document.body.style.cursor = "ew-resize";
     },
-    [panelRef, resizingState]
+    [panelRef, resizingState],
   );
 
   const onDragStop = React.useCallback(
@@ -34,7 +34,7 @@ export function useResizableHandle(opts: {
       resizingState.current = null;
       document.body.style.cursor = "";
     },
-    [resizingState]
+    [resizingState],
   );
 
   const onDrag = React.useCallback(
@@ -48,15 +48,15 @@ export function useResizableHandle(opts: {
           resizingState.current.initialWidth +
             e.mouseEvent.clientX -
             resizingState.current.initialX,
-          180
+          180,
         ),
 
-        1000
+        1000,
       );
 
       onChange?.(newWidth);
     },
-    [resizingState, panelRef, onChange]
+    [resizingState, panelRef, onChange],
   );
 
   return {

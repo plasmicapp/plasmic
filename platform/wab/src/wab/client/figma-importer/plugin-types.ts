@@ -462,7 +462,8 @@ interface PublishableMixin {
 }
 
 export interface DefaultShapeMixin
-  extends BaseNodeMixin,
+  extends
+    BaseNodeMixin,
     SceneNodeMixin,
     ReactionMixin,
     BlendMixin,
@@ -471,7 +472,8 @@ export interface DefaultShapeMixin
     ExportMixin {}
 
 interface BaseFrameMixin
-  extends BaseNodeMixin,
+  extends
+    BaseNodeMixin,
     SceneNodeMixin,
     ChildrenMixin,
     ContainerMixin,
@@ -509,9 +511,7 @@ interface BaseFrameMixin
 }
 
 export interface DefaultFrameMixin
-  extends BaseFrameMixin,
-    FramePrototypingMixin,
-    ReactionMixin {}
+  extends BaseFrameMixin, FramePrototypingMixin, ReactionMixin {}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Nodes
@@ -531,7 +531,7 @@ interface DocumentNode extends BaseNodeMixin {
    * to call node.children.filter(callback) or node.findChildren(callback)
    */
   findAll(
-    callback?: (node: PageNode | SceneNode) => boolean
+    callback?: (node: PageNode | SceneNode) => boolean,
   ): Array<PageNode | SceneNode>;
 
   /**
@@ -539,7 +539,7 @@ interface DocumentNode extends BaseNodeMixin {
    * to call node.children.find(callback) or node.findChild(callback)
    */
   findOne(
-    callback: (node: PageNode | SceneNode) => boolean
+    callback: (node: PageNode | SceneNode) => boolean,
   ): PageNode | SceneNode | null;
 }
 
@@ -565,7 +565,8 @@ export interface FrameNode extends DefaultFrameMixin {
 }
 
 export interface GroupNode
-  extends BaseNodeMixin,
+  extends
+    BaseNodeMixin,
     SceneNodeMixin,
     ReactionMixin,
     ChildrenMixin,
@@ -577,15 +578,13 @@ export interface GroupNode
 }
 
 interface SliceNode
-  extends BaseNodeMixin,
-    SceneNodeMixin,
-    LayoutMixin,
-    ExportMixin {
+  extends BaseNodeMixin, SceneNodeMixin, LayoutMixin, ExportMixin {
   readonly type: "SLICE";
 }
 
 interface RectangleNode
-  extends DefaultShapeMixin,
+  extends
+    DefaultShapeMixin,
     ConstraintMixin,
     CornerMixin,
     RectangleCornerMixin {
@@ -688,9 +687,7 @@ export type ComponentPropertyEntry = [string, ComponentProperty];
 export type ComponentPropertiesEntries = Array<ComponentPropertyEntry>;
 
 interface BooleanOperationNode
-  extends DefaultShapeMixin,
-    ChildrenMixin,
-    CornerMixin {
+  extends DefaultShapeMixin, ChildrenMixin, CornerMixin {
   readonly type: "BOOLEAN_OPERATION";
   booleanOperation: "UNION" | "INTERSECT" | "SUBTRACT" | "EXCLUDE";
 

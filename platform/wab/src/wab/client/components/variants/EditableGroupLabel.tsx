@@ -15,7 +15,7 @@ interface EditableGroupLabelProps {
 
 function EditableGroupLabel_(
   { group, onEdit, defaultEditing }: EditableGroupLabelProps,
-  ref: React.Ref<EditableLabelHandles>
+  ref: React.Ref<EditableLabelHandles>,
 ) {
   return (
     <EditableLabel
@@ -31,5 +31,5 @@ function EditableGroupLabel_(
 }
 
 export const EditableGroupLabel = observer(
-  React.forwardRef(EditableGroupLabel_)
+  React.forwardRef(EditableGroupLabel_),
 );

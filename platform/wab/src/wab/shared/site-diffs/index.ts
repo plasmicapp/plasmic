@@ -178,16 +178,16 @@ export interface ExternalChangeData {
 }
 
 export function mkSemVerSiteElement(
-  node: AllowedSemVerSiteElement
+  node: AllowedSemVerSiteElement,
 ): SemVerSiteElement {
   return ensure(
     maybeMkSemVerSiteElement(node),
-    "mkSemVerSiteElement: node is not a valid SemVerSiteElement"
+    "mkSemVerSiteElement: node is not a valid SemVerSiteElement",
   );
 }
 
 export function maybeMkSemVerSiteElement(
-  node: ObjInst
+  node: ObjInst,
 ): SemVerSiteElement | undefined {
   if (isKnownComponent(node)) {
     return {
@@ -256,7 +256,9 @@ export function maybeMkSemVerSiteElement(
       const tpl = node as SemVerAllowedTplTypes;
       return {
         type: "Element" as const,
-        name: isKnownTplSlot(tpl) ? tpl.param.variable.name : tpl.name ?? null,
+        name: isKnownTplSlot(tpl)
+          ? tpl.param.variable.name
+          : (tpl.name ?? null),
       };
     })
     .when(ProjectDependency, (d) => ({
@@ -273,7 +275,7 @@ export function maybeMkSemVerSiteElement(
  * major, minor, or patch version bump wrt semantic versioning
  **/
 export function calculateSemVer(
-  changeLog: ChangeLogEntry[]
+  changeLog: ChangeLogEntry[],
 ): SemVerReleaseType {
   const types = L.map(changeLog, (e) => e.releaseType);
 
@@ -298,7 +300,7 @@ function formatParentComponent(c: Component): ParentComponent {
 
 export function extractSplitStatusDiff(
   curr: Site,
-  getPrevStatus: (name: string) => SplitStatus
+  getPrevStatus: (name: string) => SplitStatus,
 ): ChangeLogEntry[] {
   return withoutNils(
     curr.splits.map((split) => {
@@ -324,12 +326,12 @@ export function extractSplitStatusDiff(
         description: "split-status-update",
       };
       return change;
-    })
+    }),
   );
 }
 
 function stringifyVariantedValues(
-  tokenOrOverride: StyleToken | StyleTokenOverride
+  tokenOrOverride: StyleToken | StyleTokenOverride,
 ) {
   return tokenOrOverride.variantedValues
     .map((vv) => `${vv.variants.map((v) => v.uuid).join("")}${vv.value}`)
@@ -339,7 +341,7 @@ function stringifyVariantedValues(
 function fixParamNames(
   prevComponent: Component,
   currComponent: Component,
-  diffs: ChangeLogEntry[]
+  diffs: ChangeLogEntry[],
 ) {
   return diffs.map((diff) => {
     if (diff.oldValue?.type === "Param") {
@@ -347,10 +349,10 @@ function fixParamNames(
         prevComponent,
         ensure(
           prevComponent.params.find(
-            (p) => p.variable.name === diff.oldValue?.name
+            (p) => p.variable.name === diff.oldValue?.name,
           ),
-          "Param should exist in prevComponent"
-        )
+          "Param should exist in prevComponent",
+        ),
       );
     }
     if (diff.newValue?.type === "Param") {
@@ -358,10 +360,10 @@ function fixParamNames(
         currComponent,
         ensure(
           currComponent.params.find(
-            (p) => p.variable.name === diff.newValue?.name
+            (p) => p.variable.name === diff.newValue?.name,
           ),
-          "Param should exist in currComponent"
-        )
+          "Param should exist in currComponent",
+        ),
       );
     }
     return diff;
@@ -403,8 +405,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
         },
       ],
       "global",
-      namedEntityDiffSpecs
-    )
+      namedEntityDiffSpecs,
+    ),
   );
 
   // site.components[i]
@@ -416,10 +418,10 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
     const currComponent = currComponentMap[prevComponent.uuid];
 
     const prevVariantGroupParams = new Set<Param>(
-      prevComponent.variantGroups.map((vg) => vg.param)
+      prevComponent.variantGroups.map((vg) => vg.param),
     );
     const currVariantGroupParams = new Set<Param>(
-      currComponent.variantGroups.map((vg) => vg.param)
+      currComponent.variantGroups.map((vg) => vg.param),
     );
     // site.components[i].params (Slots and States)
     results.push(
@@ -432,12 +434,12 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
           prevComponent.params.filter(
             (p) =>
               !prevVariantGroupParams.has(p) &&
-              !(isKnownStateChangeHandlerParam(p) && isPrivateState(p.state))
+              !(isKnownStateChangeHandlerParam(p) && isPrivateState(p.state)),
           ),
           currComponent.params.filter(
             (p) =>
               !currVariantGroupParams.has(p) &&
-              !(isKnownStateChangeHandlerParam(p) && isPrivateState(p.state))
+              !(isKnownStateChangeHandlerParam(p) && isPrivateState(p.state)),
           ),
           (p) => p.variable.uuid,
           [
@@ -468,9 +470,9 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
             },
           ],
           formatParentComponent(currComponent),
-          namedEntityDiffSpecs
-        )
-      )
+          namedEntityDiffSpecs,
+        ),
+      ),
     );
 
     // site.components[i].variants
@@ -489,8 +491,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
           },
         ],
         formatParentComponent(currComponent),
-        namelessEntityDiffSpecs
-      )
+        namelessEntityDiffSpecs,
+      ),
     );
 
     // site.components[i].variantGroups
@@ -501,8 +503,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
         curr,
         prevComponent.variantGroups,
         currComponent.variantGroups,
-        formatParentComponent(currComponent)
-      )
+        formatParentComponent(currComponent),
+      ),
     );
 
     // site.components[i].tplTree
@@ -511,7 +513,7 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
         projectFlags,
         component: currComponent,
         inStudio: true,
-      })
+      }),
     );
   });
 
@@ -524,8 +526,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
         curr,
         prev.globalVariantGroups,
         curr.globalVariantGroups,
-        "global"
-      )
+        "global",
+      ),
     );
   }
 
@@ -548,8 +550,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
         },
       ],
       "global",
-      namedEntityDiffSpecs
-    )
+      namedEntityDiffSpecs,
+    ),
   );
 
   // site.styleTokens
@@ -575,8 +577,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
         },
       ],
       "global",
-      namedEntityDiffSpecs
-    )
+      namedEntityDiffSpecs,
+    ),
   );
 
   // site.styleTokensOverrides
@@ -598,8 +600,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
         },
       ],
       "global",
-      namedEntityDiffSpecs
-    )
+      namedEntityDiffSpecs,
+    ),
   );
 
   // site.dataTokens
@@ -621,8 +623,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
         },
       ],
       "global",
-      namedEntityDiffSpecs
-    )
+      namedEntityDiffSpecs,
+    ),
   );
 
   // site.customFunctions
@@ -640,8 +642,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
         },
       ],
       "global",
-      namedEntityDiffSpecs
-    )
+      namedEntityDiffSpecs,
+    ),
   );
 
   // site.imageAssets
@@ -663,8 +665,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
         },
       ],
       "global",
-      namedEntityDiffSpecs
-    )
+      namedEntityDiffSpecs,
+    ),
   );
 
   // site.splits
@@ -682,8 +684,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
         },
       ],
       "global",
-      namedEntityDiffSpecs
-    )
+      namedEntityDiffSpecs,
+    ),
   );
   // site.splits > status
   results.push(
@@ -693,7 +695,7 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
         return SplitStatus.New;
       }
       return prevSplit.status as SplitStatus;
-    })
+    }),
   );
 
   results.push(
@@ -710,8 +712,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
         },
       ],
       "global",
-      namedEntityDiffSpecs
-    )
+      namedEntityDiffSpecs,
+    ),
   );
   // site.arenas - ignore
   // site.themes - ignore
@@ -721,14 +723,14 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
   const modifiedComponentUuids = new Set(
     withoutNils(
       results.map((v) =>
-        v.parentComponent !== "global" ? v.parentComponent.uuid : undefined
-      )
-    )
+        v.parentComponent !== "global" ? v.parentComponent.uuid : undefined,
+      ),
+    ),
   );
 
   curr.components.forEach((currComponent) => {
     results.push(
-      ...checkIndirectTplUsage(currComponent, modifiedComponentUuids)
+      ...checkIndirectTplUsage(currComponent, modifiedComponentUuids),
     );
   });
 
@@ -762,7 +764,7 @@ function genericCheck<T extends AllowedSemVerSiteElement>(
   opts: {
     removed: DiffSpec;
     added: DiffSpec;
-  }
+  },
 ) {
   const partialResults: ChangeLogEntry[] = [];
   const visitedKeys: string[] = [];
@@ -829,14 +831,14 @@ function checkTplNodes(
   curr: Site,
   aComp: Component,
   bComp: Component,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ): ChangeLogEntry[] {
   const results: ChangeLogEntry[] = [];
   const aNodes = flattenTpls(aComp.tplTree).filter(
-    (n): n is SemVerAllowedTplTypes => isTplNamable(n) || isTplSlot(n)
+    (n): n is SemVerAllowedTplTypes => isTplNamable(n) || isTplSlot(n),
   );
   const bNodes = flattenTpls(bComp.tplTree).filter(
-    (n): n is SemVerAllowedTplTypes => isTplNamable(n) || isTplSlot(n)
+    (n): n is SemVerAllowedTplTypes => isTplNamable(n) || isTplSlot(n),
   );
   const aNodeMap = L.keyBy(aNodes, (n) => n.uuid);
   const bNodeMap = L.keyBy(bNodes, (n) => n.uuid);
@@ -871,12 +873,12 @@ function checkTplNodes(
           aName && !bNames.has(aName)
             ? "major"
             : // The new name is not in the old set of names, so we've added
-            // a new name; a minor revision
-            bName && !aNames.has(bName)
-            ? "minor"
-            : // Else, the set of names hasn't been altered by this node's renaming,
-              // so it's a patch revision
-              "patch";
+              // a new name; a minor revision
+              bName && !aNames.has(bName)
+              ? "minor"
+              : // Else, the set of names hasn't been altered by this node's renaming,
+                // so it's a patch revision
+                "patch";
         results.push({
           releaseType,
           parentComponent: formatParentComponent(bComp),
@@ -927,7 +929,7 @@ function checkTplNodes(
  */
 function checkIndirectTplUsage(
   comp: Component,
-  modifiedComponentUuids: Set<string>
+  modifiedComponentUuids: Set<string>,
 ): ChangeLogEntry[] {
   const results: ChangeLogEntry[] = [];
 
@@ -957,7 +959,7 @@ function checkVariantGroups(
   curr: Site,
   aVgs: Array<VariantGroup>,
   bVgs: Array<VariantGroup>,
-  parentComponent: "global" | ParentComponent
+  parentComponent: "global" | ParentComponent,
 ): ChangeLogEntry[] {
   const partialResults: ChangeLogEntry[] = [];
   const _aVgMap = L.keyBy(aVgs, (o) => o.uuid);
@@ -978,8 +980,8 @@ function checkVariantGroups(
         },
       ],
       parentComponent,
-      namedEntityDiffSpecs
-    )
+      namedEntityDiffSpecs,
+    ),
   );
 
   // variantGroups[i].variants
@@ -1006,8 +1008,8 @@ function checkVariantGroups(
           },
         ],
         parentComponent,
-        namedEntityDiffSpecs
-      )
+        namedEntityDiffSpecs,
+      ),
     );
   });
   return partialResults;
@@ -1044,7 +1046,8 @@ function hashVariantSetting(site: Site, vs: VariantSetting, exprCtx: ExprCtx) {
   ${vs.variants.map((v) => v.uuid).join("")}
   ${vs.args
     .map(
-      (arg) => `${arg.param.variable.uuid}=${hashExpr(site, arg.expr, exprCtx)}`
+      (arg) =>
+        `${arg.param.variable.uuid}=${hashExpr(site, arg.expr, exprCtx)}`,
     )
     .join("")}
   ${Object.entries(vs.attrs)
@@ -1083,7 +1086,7 @@ export function hashExpr(site: Site, _expr: Expr, exprCtx: ExprCtx) {
       CustomCode,
       (expr) =>
         expr.code +
-        (expr.fallback ? hashExpr(site, expr.fallback, exprCtx) : "")
+        (expr.fallback ? hashExpr(site, expr.fallback, exprCtx) : ""),
     )
     .when(RenderExpr, (expr) => expr.tpl.map((x) => x.uuid).join(""))
     .when(VarRef, (expr) => expr.variable.uuid)
@@ -1100,26 +1103,26 @@ export function hashExpr(site: Site, _expr: Expr, exprCtx: ExprCtx) {
         Object.entries(expr.query)
           .map(([key, val]) => `&${key}=${hashExpr(site, val, exprCtx)}`)
           .join("") +
-        (expr.fragment ? `#${hashExpr(site, expr.fragment, exprCtx)}` : "")
+        (expr.fragment ? `#${hashExpr(site, expr.fragment, exprCtx)}` : ""),
     )
     .when(VariantsRef, (expr) => expr.variants.map((v) => v.uuid).join(""))
     .when(
       ObjectPath,
       (expr) =>
         expr.path.join(".") +
-        (expr.fallback ? hashExpr(site, expr.fallback, exprCtx) : "")
+        (expr.fallback ? hashExpr(site, expr.fallback, exprCtx) : ""),
     )
     .when(DataSourceOpExpr, (expr) => asCode(expr, exprCtx).code)
     .when(EventHandler, (expr) => expr.interactions.map((i) => i.uuid).join(""))
     .when(CollectionExpr, (collectionExpr) =>
       collectionExpr.exprs
         .map((expr) => (expr ? hashExpr(site, expr, exprCtx) : "undefined"))
-        .join("#")
+        .join("#"),
     )
     .when(MapExpr, (mapExpr) =>
       Object.entries(mapExpr.mapExpr).map(
-        ([name, expr]) => `{${name}}:{${hashExpr(site, expr, exprCtx)}}#`
-      )
+        ([name, expr]) => `{${name}}:{${hashExpr(site, expr, exprCtx)}}#`,
+      ),
     )
     .when(FunctionArg, (functionArg) => functionArg.uuid)
     .when(FunctionExpr, (functionExpr) => asCode(functionExpr, exprCtx).code)
@@ -1127,26 +1130,26 @@ export function hashExpr(site: Site, _expr: Expr, exprCtx: ExprCtx) {
       StyleExpr,
       (expr) =>
         `${expr.uuid}-${expr.styles.map(
-          (s) => `${s.selector}-${hashRuleSet(site, s.rs)}`
-        )}`
+          (s) => `${s.selector}-${hashRuleSet(site, s.rs)}`,
+        )}`,
     )
     .when(TemplatedString, (templatedString) =>
       templatedString.text
         .map((t) => (isString(t) ? t : `{{ ${hashExpr(site, t, exprCtx)} }} `))
-        .join("")
+        .join(""),
     )
     .when(TplRef, (ref) => `ref=${ref.tpl.uuid}`)
     .when(
       QueryInvalidationExpr,
-      (queryInvalidation) => asCode(queryInvalidation, exprCtx).code
+      (queryInvalidation) => asCode(queryInvalidation, exprCtx).code,
     )
     .when(CompositeExpr, (expr) =>
       JSON.stringify({
         hostLiteral: expr.hostLiteral,
         substitutions: mapValues(expr.substitutions, (subexpr) =>
-          hashExpr(site, subexpr, exprCtx)
+          hashExpr(site, subexpr, exprCtx),
         ),
-      })
+      }),
     )
     .when(CustomFunctionExpr, (expr) => asCode(expr, exprCtx).code)
     .result();
@@ -1157,7 +1160,7 @@ function hashText(site: Site, text: RichText, exprCtx: ExprCtx) {
     if (isKnownStyleMarker(marker)) {
       return `${marker.position}${marker.length}${hashRuleSet(
         site,
-        marker.rs
+        marker.rs,
       )}`;
     } else if (isKnownNodeMarker(marker)) {
       return `${marker.tpl.uuid}${marker.position}${marker.length}`;
@@ -1181,10 +1184,10 @@ export function compareVersionNumbers(a: string, b: string) {
 }
 
 export function getExternalChangeData(
-  changeLog: ChangeLogEntry[]
+  changeLog: ChangeLogEntry[],
 ): ExternalChangeData {
   const isPageComponentChange = (
-    value: SemVerSiteElement | null
+    value: SemVerSiteElement | null,
   ): value is SemVerSiteComponent => {
     return value?.type === "Component" && value?.componentType === "page";
   };
@@ -1202,8 +1205,8 @@ export function getExternalChangeData(
               result.push(entry.oldValue.name);
             }
             return result;
-          })
-        )
+          }),
+        ),
       ),
     ],
     pagesChanged: [
@@ -1224,8 +1227,8 @@ export function getExternalChangeData(
               result.push(entry.parentComponent.path);
             }
             return result;
-          })
-        )
+          }),
+        ),
       ),
     ],
   };

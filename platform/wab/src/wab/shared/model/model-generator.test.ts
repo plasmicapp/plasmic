@@ -12,9 +12,9 @@ function trimIndent(x: string) {
     L.min(
       Array.from(matches)
         .filter(((match) => match != null) as (m) => m is RegExpMatchArray)
-        .map((match) => match[0].length - 1)
+        .map((match) => match[0].length - 1),
     ),
-    "At least one match must exist"
+    "At least one match must exist",
   );
   return lines
     .map((line) => {
@@ -36,8 +36,8 @@ Abc
   Abc
     @a Abc
   #\
-`)
-      )
+`),
+      ),
     ).toBe(
       trimIndent(
         `\
@@ -47,8 +47,8 @@ Abc
 {{{
     @a Abc
 }}} }}}\
-`
-      )
+`,
+      ),
     )));
 
 const example = `\
@@ -311,7 +311,7 @@ describe("parse", () =>
             subclasses: [],
           },
         ],
-      }
+      },
     );
     return expect(parsed).toEqual(expected);
   }));
@@ -333,7 +333,7 @@ describe("transform", () =>
             name: "b",
             type: new Type({ type: "B", params: [] }),
             annotations: [],
-          })
+          }),
         ),
       }),
       new Class({
@@ -356,7 +356,7 @@ describe("transform", () =>
               params: [new Type({ type: "D", params: [] })],
             }),
             annotations: [],
-          })
+          }),
         ),
       }),
       new Class({
@@ -417,7 +417,7 @@ describe("transform", () =>
               type: "Z",
               params: tuple(
                 new Type({ type: "A", params: [] }),
-                new Type({ type: "B", params: [] })
+                new Type({ type: "B", params: [] }),
               ),
             }),
             annotations: [],

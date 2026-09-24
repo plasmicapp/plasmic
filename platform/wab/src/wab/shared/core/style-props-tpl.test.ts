@@ -50,7 +50,7 @@ describe("isTypographyValidForTpl", () => {
     expect(isTypographyValidForTpl(mkTplTagX("div"))).toBe(true);
     expect(isTypographyValidForTpl(mkTplTagX("span"))).toBe(true);
     expect(
-      isTypographyValidForTpl(mkTplTagX("span", { type: TplTagType.Text }))
+      isTypographyValidForTpl(mkTplTagX("span", { type: TplTagType.Text })),
     ).toBe(true);
     expect(isTypographyValidForTpl(mkCodeComponentTpl())).toBe(true);
   });
@@ -69,7 +69,7 @@ describe("isSizeValidForTpl", () => {
   });
   it("is false for columns", () => {
     expect(
-      isSizeValidForTpl(mkTplTagX("div", { type: TplTagType.Column }))
+      isSizeValidForTpl(mkTplTagX("div", { type: TplTagType.Column })),
     ).toBe(false);
   });
 });
@@ -84,8 +84,8 @@ describe("isPositioningValidForTpl", () => {
     expect(
       isPositioningValidForTpl(
         mkTplTagX("div", { type: TplTagType.Column }),
-        rsh()
-      )
+        rsh(),
+      ),
     ).toBe(false);
   });
   it("is true for a component root that has a position", () => {
@@ -96,7 +96,10 @@ describe("isPositioningValidForTpl", () => {
     });
     expect(isPositioningValidForTpl(component.tplTree, rsh())).toBe(false);
     expect(
-      isPositioningValidForTpl(component.tplTree, rsh({ position: "absolute" }))
+      isPositioningValidForTpl(
+        component.tplTree,
+        rsh({ position: "absolute" }),
+      ),
     ).toBe(true);
   });
 });
@@ -119,16 +122,16 @@ describe("isOverflowValidForTpl", () => {
     expect(isOverflowValidForTpl(mkTplTagX("div"))).toBe(true);
     expect(isOverflowValidForTpl(mkTplTagX("span"))).toBe(true);
     expect(
-      isOverflowValidForTpl(mkTplTagX("div", { type: TplTagType.Column }))
+      isOverflowValidForTpl(mkTplTagX("div", { type: TplTagType.Column })),
     ).toBe(true);
     expect(isOverflowValidForTpl(mkCodeComponentTpl())).toBe(true);
   });
   it("is false for text nodes, plain components", () => {
     expect(
-      isOverflowValidForTpl(mkTplTagX("div", { type: TplTagType.Text }))
+      isOverflowValidForTpl(mkTplTagX("div", { type: TplTagType.Text })),
     ).toBe(false);
     expect(
-      isOverflowValidForTpl(mkTplTagX("span", { type: TplTagType.Text }))
+      isOverflowValidForTpl(mkTplTagX("span", { type: TplTagType.Text })),
     ).toBe(false);
     expect(isOverflowValidForTpl(mkPlainComponentTpl())).toBe(false);
   });
@@ -168,7 +171,7 @@ describe("isMarginValidForTpl", () => {
   });
   it("is false for columns", () => {
     expect(
-      isMarginValidForTpl(mkTplTagX("div", { type: TplTagType.Column }))
+      isMarginValidForTpl(mkTplTagX("div", { type: TplTagType.Column })),
     ).toBe(false);
   });
 });
@@ -183,7 +186,7 @@ describe("validateStylesForTpl", () => {
 
   it("keeps all styles valid for a regular tag", () => {
     expect(
-      validateStylesForTpl(styles, mkTplTagX("div"), rsh(), ccRegistry)
+      validateStylesForTpl(styles, mkTplTagX("div"), rsh(), ccRegistry),
     ).toEqual({
       valid: styles,
       invalid: {},
@@ -197,7 +200,7 @@ describe("validateStylesForTpl", () => {
       tplTree: mkTplTagX("div"),
     });
     expect(
-      validateStylesForTpl(styles, component.tplTree, rsh(), ccRegistry)
+      validateStylesForTpl(styles, component.tplTree, rsh(), ccRegistry),
     ).toEqual({
       valid: { color: "red", display: "flex" },
       invalid: { marginTop: "10px", marginLeft: "20px" },
@@ -210,8 +213,8 @@ describe("validateStylesForTpl", () => {
         styles,
         mkTplTagX("div", { type: TplTagType.Column }),
         rsh(),
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toEqual({
       valid: {},
       invalid: styles,
@@ -224,8 +227,8 @@ describe("validateStylesForTpl", () => {
         { color: "red", fontSize: "16px", opacity: "0.5" },
         mkIconTpl(),
         rsh(),
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toEqual({
       valid: { color: "red", opacity: "0.5" },
       invalid: { fontSize: "16px" },
@@ -243,8 +246,8 @@ describe("validateStylesForTpl", () => {
         },
         mkPlainComponentTpl(),
         rsh(),
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toEqual({
       valid: { width: "100px", marginTop: "10px" },
       invalid: { background: "red", fontSize: "16px" },
@@ -257,8 +260,8 @@ describe("validateStylesForTpl", () => {
         { display: "flex", flexDirection: "column", rowGap: "8px" },
         mkTplTagX("div"),
         rsh(),
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toEqual({
       valid: { display: "flex", flexDirection: "column", rowGap: "8px" },
       invalid: {},
@@ -278,8 +281,8 @@ describe("validateStylesForTpl", () => {
         { rowGap: "8px" },
         tpl,
         new EffectiveVariantSetting(tpl, tpl.vsettings).rsh(),
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toEqual({
       valid: { rowGap: "8px" },
       invalid: {},
@@ -301,8 +304,8 @@ describe("validateStylesForTpl", () => {
         { rowGap: "8px" },
         tpl,
         new EffectiveVariantSetting(tpl, tpl.vsettings).rsh(),
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toEqual({
       valid: { rowGap: "8px" },
       invalid: {},
@@ -315,8 +318,8 @@ describe("validateStylesForTpl", () => {
         { color: "", marginTop: "10px" },
         mkTplTagX("div"),
         rsh(),
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toEqual({
       valid: { marginTop: "10px" },
       invalid: { color: "" },
@@ -329,8 +332,8 @@ describe("validateStylesForTpl", () => {
         { flexDirection: "column" },
         mkTplTagX("div"),
         rsh(),
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toEqual({
       valid: {},
       invalid: { flexDirection: "column" },
@@ -354,7 +357,7 @@ describe("isPaddingValidForTpl", () => {
       styleSections: ["spacing"],
     });
     expect(
-      isPaddingValidForTpl(mkCodeComponentTpl("WithSpacing"), registry)
+      isPaddingValidForTpl(mkCodeComponentTpl("WithSpacing"), registry),
     ).toBe(true);
   });
   it("is false for code components with styleSections excluding spacing", () => {
@@ -362,7 +365,7 @@ describe("isPaddingValidForTpl", () => {
       styleSections: ["visibility"],
     });
     expect(
-      isPaddingValidForTpl(mkCodeComponentTpl("NoSpacing"), registry)
+      isPaddingValidForTpl(mkCodeComponentTpl("NoSpacing"), registry),
     ).toBe(false);
   });
 });
@@ -371,18 +374,18 @@ describe("isFlexContainerPropValidForRsh", () => {
   it("is true for flex containers", () => {
     expect(
       isFlexContainerPropValidForRsh(
-        rsh({ display: "flex", "flex-direction": "row" })
-      )
+        rsh({ display: "flex", "flex-direction": "row" }),
+      ),
     ).toBe(true);
     expect(
       isFlexContainerPropValidForRsh(
-        rsh({ display: "flex", "flex-direction": "column" })
-      )
+        rsh({ display: "flex", "flex-direction": "column" }),
+      ),
     ).toBe(true);
   });
   it("is false for grid, block", () => {
     expect(isFlexContainerPropValidForRsh(rsh({ display: "grid" }))).toBe(
-      false
+      false,
     );
     expect(isFlexContainerPropValidForRsh(rsh())).toBe(false);
   });
@@ -395,8 +398,8 @@ describe("isGridContainerPropValidForRsh", () => {
   it("is false for flex, block", () => {
     expect(
       isGridContainerPropValidForRsh(
-        rsh({ display: "flex", "flex-direction": "row" })
-      )
+        rsh({ display: "flex", "flex-direction": "row" }),
+      ),
     ).toBe(false);
     expect(isGridContainerPropValidForRsh(rsh())).toBe(false);
   });
@@ -407,14 +410,14 @@ describe("isGapPropValidForRsh", () => {
     expect(
       isGapPropValidForRsh(
         "column-gap",
-        rsh({ display: "flex", "flex-direction": "row" })
-      )
+        rsh({ display: "flex", "flex-direction": "row" }),
+      ),
     ).toBe(true);
     expect(
       isGapPropValidForRsh(
         "row-gap",
-        rsh({ display: "flex", "flex-direction": "column" })
-      )
+        rsh({ display: "flex", "flex-direction": "column" }),
+      ),
     ).toBe(true);
 
     const wrapRsh = rsh({
@@ -433,20 +436,20 @@ describe("isGapPropValidForRsh", () => {
     expect(
       isGapPropValidForRsh(
         "column-gap",
-        rsh({ display: "flex", "flex-direction": "column" })
-      )
+        rsh({ display: "flex", "flex-direction": "column" }),
+      ),
     ).toBe(false);
     expect(
       isGapPropValidForRsh(
         "row-gap",
-        rsh({ display: "flex", "flex-direction": "row" })
-      )
+        rsh({ display: "flex", "flex-direction": "row" }),
+      ),
     ).toBe(false);
     expect(
       isGapPropValidForRsh(
         "gap",
-        rsh({ display: "flex", "flex-direction": "row" })
-      )
+        rsh({ display: "flex", "flex-direction": "row" }),
+      ),
     ).toBe(false);
   });
   it("is true for a variant that inherits the flex state it depends on", () => {
@@ -462,13 +465,13 @@ describe("isGapPropValidForRsh", () => {
     ];
 
     expect(isGapPropValidForRsh("column-gap", RSH(tabletVs.rs, stack))).toBe(
-      false
+      false,
     );
     expect(
       isGapPropValidForRsh(
         "column-gap",
-        new EffectiveVariantSetting(stack, stack.vsettings).rsh()
-      )
+        new EffectiveVariantSetting(stack, stack.vsettings).rsh(),
+      ),
     ).toBe(true);
   });
 });
@@ -478,10 +481,10 @@ describe("isValidStylePropForTpl", () => {
     const baseVs = rsh();
     // typography
     expect(
-      isValidStylePropForTpl("color", mkTplTagX("div"), baseVs, ccRegistry)
+      isValidStylePropForTpl("color", mkTplTagX("div"), baseVs, ccRegistry),
     ).toBe(true);
     expect(
-      isValidStylePropForTpl("font-size", mkTplTagX("div"), baseVs, ccRegistry)
+      isValidStylePropForTpl("font-size", mkTplTagX("div"), baseVs, ccRegistry),
     ).toBe(true);
     // spacing
     expect(
@@ -489,26 +492,41 @@ describe("isValidStylePropForTpl", () => {
         "padding-top",
         mkTplTagX("div"),
         baseVs,
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(true);
     expect(
-      isValidStylePropForTpl("margin-top", mkTplTagX("div"), baseVs, ccRegistry)
+      isValidStylePropForTpl(
+        "margin-top",
+        mkTplTagX("div"),
+        baseVs,
+        ccRegistry,
+      ),
     ).toBe(true);
     // size
     expect(
-      isValidStylePropForTpl("width", mkTplTagX("div"), baseVs, ccRegistry)
+      isValidStylePropForTpl("width", mkTplTagX("div"), baseVs, ccRegistry),
     ).toBe(true);
     // background
     expect(
-      isValidStylePropForTpl("background", mkTplTagX("div"), baseVs, ccRegistry)
+      isValidStylePropForTpl(
+        "background",
+        mkTplTagX("div"),
+        baseVs,
+        ccRegistry,
+      ),
     ).toBe(true);
     // overflow
     expect(
-      isValidStylePropForTpl("overflow", mkTplTagX("div"), baseVs, ccRegistry)
+      isValidStylePropForTpl("overflow", mkTplTagX("div"), baseVs, ccRegistry),
     ).toBe(true);
     expect(
-      isValidStylePropForTpl("overflow-x", mkTplTagX("div"), baseVs, ccRegistry)
+      isValidStylePropForTpl(
+        "overflow-x",
+        mkTplTagX("div"),
+        baseVs,
+        ccRegistry,
+      ),
     ).toBe(true);
     // border, shadow, effects
     expect(
@@ -516,33 +534,38 @@ describe("isValidStylePropForTpl", () => {
         "border-top-left-radius",
         mkTplTagX("div"),
         baseVs,
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(true);
     expect(
       isValidStylePropForTpl(
         "border-top-left-radius",
         mkCodeComponentTpl(),
         baseVs,
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(true);
     expect(
-      isValidStylePropForTpl("box-shadow", mkTplTagX("div"), baseVs, ccRegistry)
+      isValidStylePropForTpl(
+        "box-shadow",
+        mkTplTagX("div"),
+        baseVs,
+        ccRegistry,
+      ),
     ).toBe(true);
     expect(
-      isValidStylePropForTpl("cursor", mkTplTagX("div"), baseVs, ccRegistry)
+      isValidStylePropForTpl("cursor", mkTplTagX("div"), baseVs, ccRegistry),
     ).toBe(true);
     expect(
-      isValidStylePropForTpl("filter", mkTplTagX("div"), baseVs, ccRegistry)
+      isValidStylePropForTpl("filter", mkTplTagX("div"), baseVs, ccRegistry),
     ).toBe(true);
     expect(
       isValidStylePropForTpl(
         "pointer-events",
         mkTplTagX("div"),
         baseVs,
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(true);
     // list style
     expect(
@@ -550,75 +573,80 @@ describe("isValidStylePropForTpl", () => {
         "list-style-type",
         mkTplTagX("ul"),
         baseVs,
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(true);
     // image
     expect(
-      isValidStylePropForTpl("object-fit", mkImageTpl(), baseVs, ccRegistry)
+      isValidStylePropForTpl("object-fit", mkImageTpl(), baseVs, ccRegistry),
     ).toBe(true);
     // visibility, opacity
     expect(
-      isValidStylePropForTpl("visibility", mkTplTagX("div"), baseVs, ccRegistry)
+      isValidStylePropForTpl(
+        "visibility",
+        mkTplTagX("div"),
+        baseVs,
+        ccRegistry,
+      ),
     ).toBe(true);
     expect(
-      isValidStylePropForTpl("opacity", mkTplTagX("div"), baseVs, ccRegistry)
+      isValidStylePropForTpl("opacity", mkTplTagX("div"), baseVs, ccRegistry),
     ).toBe(true);
     expect(
       isValidStylePropForTpl(
         "opacity",
         mkPlainComponentTpl(),
         baseVs,
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(true);
     expect(
       isValidStylePropForTpl(
         "visibility",
         mkPlainComponentTpl(),
         baseVs,
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(true);
     // transform
     expect(
-      isValidStylePropForTpl("transform", mkTplTagX("div"), baseVs, ccRegistry)
+      isValidStylePropForTpl("transform", mkTplTagX("div"), baseVs, ccRegistry),
     ).toBe(true);
     // layout
     expect(
-      isValidStylePropForTpl("display", mkTplTagX("div"), baseVs, ccRegistry)
+      isValidStylePropForTpl("display", mkTplTagX("div"), baseVs, ccRegistry),
     ).toBe(true);
     expect(
       isValidStylePropForTpl(
         "display",
         mkCodeComponentTpl(),
         baseVs,
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(true);
     expect(
       isValidStylePropForTpl(
         "flex-direction",
         mkTplTagX("div"),
         rsh({ display: "flex", "flex-direction": "row" }),
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(true);
     expect(
       isValidStylePropForTpl(
         "grid-template-columns",
         mkTplTagX("div"),
         rsh({ display: "grid" }),
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(true);
     expect(
       isValidStylePropForTpl(
         "column-gap",
         mkTplTagX("div"),
         rsh({ display: "flex", "flex-direction": "row" }),
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(true);
   });
 
@@ -626,22 +654,22 @@ describe("isValidStylePropForTpl", () => {
     const baseVs = rsh();
     // typography on icon (except color, which has its dedicated control)
     expect(
-      isValidStylePropForTpl("color", mkIconTpl(), baseVs, ccRegistry)
+      isValidStylePropForTpl("color", mkIconTpl(), baseVs, ccRegistry),
     ).toBe(true);
     expect(
-      isValidStylePropForTpl("font-size", mkIconTpl(), baseVs, ccRegistry)
+      isValidStylePropForTpl("font-size", mkIconTpl(), baseVs, ccRegistry),
     ).toBe(false);
     // spacing on wrong elements
     expect(
-      isValidStylePropForTpl("padding-top", mkImageTpl(), baseVs, ccRegistry)
+      isValidStylePropForTpl("padding-top", mkImageTpl(), baseVs, ccRegistry),
     ).toBe(false);
     expect(
       isValidStylePropForTpl(
         "margin-top",
         mkTplTagX("div", { type: TplTagType.Column }),
         baseVs,
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(false);
     // size on column
     expect(
@@ -649,12 +677,12 @@ describe("isValidStylePropForTpl", () => {
         "width",
         mkTplTagX("div", { type: TplTagType.Column }),
         baseVs,
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(false);
     // background on image
     expect(
-      isValidStylePropForTpl("background", mkImageTpl(), baseVs, ccRegistry)
+      isValidStylePropForTpl("background", mkImageTpl(), baseVs, ccRegistry),
     ).toBe(false);
     // overflow on text
     expect(
@@ -662,8 +690,8 @@ describe("isValidStylePropForTpl", () => {
         "overflow",
         mkTplTagX("span", { type: TplTagType.Text }),
         baseVs,
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(false);
     // border on plain component
     expect(
@@ -671,8 +699,8 @@ describe("isValidStylePropForTpl", () => {
         "border-top-left-radius",
         mkPlainComponentTpl(),
         baseVs,
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(false);
     // list style on non-list
     expect(
@@ -680,12 +708,17 @@ describe("isValidStylePropForTpl", () => {
         "list-style-type",
         mkTplTagX("div"),
         baseVs,
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(false);
     // image prop on non-image
     expect(
-      isValidStylePropForTpl("object-fit", mkTplTagX("div"), baseVs, ccRegistry)
+      isValidStylePropForTpl(
+        "object-fit",
+        mkTplTagX("div"),
+        baseVs,
+        ccRegistry,
+      ),
     ).toBe(false);
     // layout mismatch
     expect(
@@ -693,40 +726,40 @@ describe("isValidStylePropForTpl", () => {
         "display",
         mkPlainComponentTpl(),
         baseVs,
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(false);
     expect(
       isValidStylePropForTpl(
         "display",
         mkTplTagX("span", { type: TplTagType.Text }),
         baseVs,
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(false);
     expect(
       isValidStylePropForTpl(
         "flex-direction",
         mkTplTagX("div"),
         rsh({ display: "grid" }),
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(false);
     expect(
       isValidStylePropForTpl(
         "flex-direction",
         mkTplTagX("span", { type: TplTagType.Text }),
         rsh({ display: "flex" }),
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(false);
     expect(
       isValidStylePropForTpl(
         "grid-template-columns",
         mkTplTagX("div"),
         rsh({ display: "flex", "flex-direction": "row" }),
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(false);
     // invalid/shorthand CSS props
     expect(
@@ -734,16 +767,16 @@ describe("isValidStylePropForTpl", () => {
         "not-a-css-prop",
         mkTplTagX("div"),
         baseVs,
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(false);
     expect(
       isValidStylePropForTpl(
         "text-decoration",
         mkTplTagX("div"),
         baseVs,
-        ccRegistry
-      )
+        ccRegistry,
+      ),
     ).toBe(false);
   });
 
@@ -755,15 +788,15 @@ describe("isValidStylePropForTpl", () => {
     });
     const disabledTpl = mkCodeComponentTpl("AllDisabled");
     expect(
-      isValidStylePropForTpl("opacity", disabledTpl, baseVs, disabledRegistry)
+      isValidStylePropForTpl("opacity", disabledTpl, baseVs, disabledRegistry),
     ).toBe(false);
     expect(
       isValidStylePropForTpl(
         "visibility",
         disabledTpl,
         baseVs,
-        disabledRegistry
-      )
+        disabledRegistry,
+      ),
     ).toBe(false);
 
     // styleSections: ["visibility"] enables opacity and visibility
@@ -772,10 +805,10 @@ describe("isValidStylePropForTpl", () => {
     });
     const visTpl = mkCodeComponentTpl("VisOnly");
     expect(isValidStylePropForTpl("opacity", visTpl, baseVs, visRegistry)).toBe(
-      true
+      true,
     );
     expect(
-      isValidStylePropForTpl("visibility", visTpl, baseVs, visRegistry)
+      isValidStylePropForTpl("visibility", visTpl, baseVs, visRegistry),
     ).toBe(true);
 
     // styleSections: ["spacing"] does not enable opacity/visibility
@@ -784,10 +817,10 @@ describe("isValidStylePropForTpl", () => {
     });
     const spacingTpl = mkCodeComponentTpl("SpacingOnly");
     expect(
-      isValidStylePropForTpl("opacity", spacingTpl, baseVs, spacingRegistry)
+      isValidStylePropForTpl("opacity", spacingTpl, baseVs, spacingRegistry),
     ).toBe(false);
     expect(
-      isValidStylePropForTpl("visibility", spacingTpl, baseVs, spacingRegistry)
+      isValidStylePropForTpl("visibility", spacingTpl, baseVs, spacingRegistry),
     ).toBe(false);
   });
 });

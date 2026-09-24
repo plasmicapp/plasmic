@@ -34,7 +34,7 @@ export class PinoLogger implements Logger {
   private log(
     level: "info" | "error" | "warn" | "debug",
     message: string,
-    payload?: Record<string, any>
+    payload?: Record<string, any>,
   ) {
     const logEntry = {
       message,

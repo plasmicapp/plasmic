@@ -50,13 +50,13 @@ function ProjectListItem(props: ProjectListItemProps) {
   const projectAccessLevel = getAccessLevelToResource(
     { type: "project", resource: project },
     appCtx.selfInfo,
-    perms
+    perms,
   );
 
   const workspaceAccessLevel = getAccessLevelToParent(
     { type: "project", resource: project },
     appCtx.selfInfo,
-    perms
+    perms,
   );
 
   const canMove = project.workspaceId
@@ -65,7 +65,7 @@ function ProjectListItem(props: ProjectListItemProps) {
 
   const personalWorkspace = React.useMemo(
     () => appCtx.personalWorkspace,
-    [appCtx.workspaces]
+    [appCtx.workspaces],
   );
 
   return (
@@ -96,7 +96,7 @@ function ProjectListItem(props: ProjectListItemProps) {
                 ? PERSONAL_WORKSPACE
                 : matcher?.boldSnippets(
                     project.workspaceName || "",
-                    "yellow-snippet"
+                    "yellow-snippet",
                   ) || project.workspaceName,
             onClick: () => {
               history.push(
@@ -104,7 +104,7 @@ function ProjectListItem(props: ProjectListItemProps) {
                   ? APP_ROUTES.playground.fill({})
                   : APP_ROUTES.workspace.fill({
                       workspaceId: project.workspaceId || ("" as WorkspaceId),
-                    })
+                    }),
               );
             },
           },
@@ -157,7 +157,7 @@ function ProjectListItem(props: ProjectListItemProps) {
                         name:
                           matcher?.boldSnippets(
                             project.name,
-                            "yellow-snippet"
+                            "yellow-snippet",
                           ) || project.name,
                       }}
                     />
@@ -191,7 +191,7 @@ function ProjectListItem(props: ProjectListItemProps) {
                       null,
                       false,
                       "Duplicate",
-                      project.name
+                      project.name,
                     );
                     if (response === undefined) {
                       return;
@@ -206,14 +206,14 @@ function ProjectListItem(props: ProjectListItemProps) {
                                 workspaceId: response.workspace.id,
                                 name: response.name,
                               }
-                            : undefined
-                        )
+                            : undefined,
+                        ),
                       );
 
                     history.push(
                       APP_ROUTES.project.fill({
                         projectId: newProjectId,
-                      })
+                      }),
                     );
                   }}
                 >
@@ -231,7 +231,7 @@ function ProjectListItem(props: ProjectListItemProps) {
                         appCtx,
                         project.workspaceId,
                         false,
-                        "Move"
+                        "Move",
                       );
                       if (response === undefined) {
                         return;
@@ -249,7 +249,7 @@ function ProjectListItem(props: ProjectListItemProps) {
                           title: "Upgrade to move this project",
                           description:
                             "The destination workspace belongs to a team that does not have enough seats. Increase the number of seats to perform this action.",
-                        }
+                        },
                       );
                       notification.info({
                         message: `Project moved to ${

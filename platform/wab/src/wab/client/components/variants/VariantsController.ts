@@ -54,7 +54,7 @@ export interface VariantsController {
     variant: Variant,
     opts?: {
       focusFrame: boolean;
-    }
+    },
   ) => void;
   onClickVariant: (variant: Variant) => void;
   onTargetVariant: (variant: Variant, add: boolean) => void;
@@ -74,7 +74,7 @@ export interface VariantsController {
 
 export function makeVariantsController(
   studioCtx: StudioCtx,
-  viewCtx?: ViewCtx
+  viewCtx?: ViewCtx,
 ): VariantsController | undefined {
   if (studioCtx.focusedMode) {
     // In focus mode, there's guaranteed to be only one visible ViewCtx, so always use that.
@@ -137,7 +137,7 @@ export class CustomVariantsController implements VariantsController {
 
   onClearVariants() {
     const clearedScreenVariants = this.getActiveNonBaseVariants().some((v) =>
-      isScreenVariant(v)
+      isScreenVariant(v),
     );
     this.pinManager.clearAll();
     if (clearedScreenVariants) {
@@ -219,7 +219,7 @@ export class ComponentArenaVariantsController implements VariantsController {
     const focusedVc = studioCtx.focusedViewCtx();
     assert(
       !focusedVc || focusedVc.componentStackFrames().length === 1,
-      "Expected to have no focused viewCtx or a focused viewCtx with one component stack frame"
+      "Expected to have no focused viewCtx or a focused viewCtx with one component stack frame",
     );
   }
 
@@ -240,7 +240,7 @@ export class ComponentArenaVariantsController implements VariantsController {
         return (
           ensure(
             this.pinManager,
-            "Pin manager is expected to be not null"
+            "Pin manager is expected to be not null",
           ).isActive(variant) ?? false
         );
       }
@@ -278,7 +278,7 @@ export class ComponentArenaVariantsController implements VariantsController {
     variant: Variant,
     opts = {
       focusFrame: true,
-    }
+    },
   ) {
     if (isPrivateStyleVariant(variant)) {
       this.pinManager?.addSelectedVariants([variant]);
@@ -302,7 +302,7 @@ export class ComponentArenaVariantsController implements VariantsController {
     } else if (curFrame) {
       const pinManager = ensure(
         this.pinManager,
-        "Pin manager is expected to be not null"
+        "Pin manager is expected to be not null",
       );
       const cellKey = getCellKeyForFrame(this.currentArena, curFrame);
       if (cellKeyIncludesVariant(cellKey, variant)) {
@@ -319,18 +319,18 @@ export class ComponentArenaVariantsController implements VariantsController {
   onTargetVariant(variant: Variant, add: boolean) {
     assert(
       this.canToggleTargeting(variant),
-      "Cannot toggle targeting for variant"
+      "Cannot toggle targeting for variant",
     );
     ensure(
       this.pinManager,
-      "Pin manager is expected to be not null"
+      "Pin manager is expected to be not null",
     ).toggleTargeting([variant], add);
   }
 
   onToggleVariant(variant: Variant) {
     assert(isPrivateStyleVariant(variant), "Expected private style variant");
     ensure(this.pinManager, "Pin manager is expected to be not null").togglePin(
-      variant
+      variant,
     );
   }
 
@@ -353,11 +353,11 @@ export class ComponentArenaVariantsController implements VariantsController {
   onToggleTargetingOfActiveVariants() {
     const pinManager = ensure(
       this.pinManager,
-      "Pin manager is expected to be not null"
+      "Pin manager is expected to be not null",
     );
     const toggleables = ensure(
       this.pinManager,
-      "Pin manager is expected to be not null"
+      "Pin manager is expected to be not null",
     )
       .activeNonBaseVariants()
       .filter((v) => this.canToggleTargeting(v));
@@ -371,18 +371,18 @@ export class ComponentArenaVariantsController implements VariantsController {
   }
 
   private applyAndSwitch(
-    fn: (state: PinState, machine: PinStateManager) => PinState
+    fn: (state: PinState, machine: PinStateManager) => PinState,
   ) {
     const curFrame = ensure(this.currentFrame, "Current frame should be set");
     const curVc = this.studioCtx.tryGetViewCtxForFrame(curFrame);
     const machine = new PinStateManager(
       this.studioCtx.site,
       this.currentArena.component,
-      curVc ? makeCurrentVariantEvalState(curVc) : new Map()
+      curVc ? makeCurrentVariantEvalState(curVc) : new Map(),
     );
     let state = ensure(
       this.pinManager,
-      "Expected pin manager to be not null"
+      "Expected pin manager to be not null",
     ).getPinState();
     state = fn(state, machine);
     const activeVariants = machine.activeNonBaseVariants(state);
@@ -390,16 +390,16 @@ export class ComponentArenaVariantsController implements VariantsController {
       activeVariants.length === 0
         ? getComponentArenaBaseFrame(this.currentArena)
         : activeVariants.length === 1
-        ? ensureManagedFrameForVariantInComponentArena(
-            this.studioCtx.site,
-            this.currentArena,
-            activeVariants[0]
-          )
-        : ensureCustomFrameForActivatedVariants(
-            this.studioCtx.site,
-            this.currentArena,
-            new Set(activeVariants)
-          );
+          ? ensureManagedFrameForVariantInComponentArena(
+              this.studioCtx.site,
+              this.currentArena,
+              activeVariants[0],
+            )
+          : ensureCustomFrameForActivatedVariants(
+              this.studioCtx.site,
+              this.currentArena,
+              new Set(activeVariants),
+            );
     applyPinStateToFrame(state, newFrame);
     this.switchToFrame(newFrame);
     return newFrame;
@@ -417,7 +417,7 @@ export class ComponentArenaVariantsController implements VariantsController {
     const arena = this.studioCtx.currentArena;
     assert(
       isComponentArena(arena),
-      "Exepcted current arena to be a component arena"
+      "Exepcted current arena to be a component arena",
     );
     return arena;
   }
@@ -440,7 +440,7 @@ export class ComponentArenaVariantsController implements VariantsController {
     return ensureManagedFrameForVariantInComponentArena(
       this.studioCtx.site,
       this.currentArena,
-      variant
+      variant,
     );
   }
 
@@ -458,7 +458,7 @@ export class PageArenaVariantsController implements VariantsController {
     const focusedVc = studioCtx.focusedViewCtx();
     assert(
       !focusedVc || focusedVc.componentStackFrames().length === 1,
-      "Expected to have no focused viewCtx or a focused viewCtx with one component stack frame"
+      "Expected to have no focused viewCtx or a focused viewCtx with one component stack frame",
     );
   }
 
@@ -499,7 +499,7 @@ export class PageArenaVariantsController implements VariantsController {
     variant: Variant,
     opts = {
       focusFrame: true,
-    }
+    },
   ) {
     if (isPrivateStyleVariant(variant)) {
       this.pinManager?.addSelectedVariants([variant]);
@@ -527,18 +527,18 @@ export class PageArenaVariantsController implements VariantsController {
   onTargetVariant(variant: Variant, add: boolean) {
     assert(
       this.canToggleTargeting(variant),
-      "Cannot toggle targeting for variant"
+      "Cannot toggle targeting for variant",
     );
     ensure(
       this.pinManager,
-      "Pin manager is expected to be not null"
+      "Pin manager is expected to be not null",
     ).toggleTargeting([variant], add);
   }
 
   onToggleVariant(variant: Variant) {
     assert(isPrivateStyleVariant(variant), "Expected private style variant");
     ensure(this.pinManager, "Pin manager is expected to be not null").togglePin(
-      variant
+      variant,
     );
   }
 
@@ -600,18 +600,18 @@ export class PageArenaVariantsController implements VariantsController {
   }
 
   private applyAndSwitch(
-    fn: (state: PinState, machine: PinStateManager) => PinState
+    fn: (state: PinState, machine: PinStateManager) => PinState,
   ) {
     const curFrame = ensure(this.currentFrame, "Current frame should be set");
     const curVc = this.studioCtx.tryGetViewCtxForFrame(curFrame);
     const machine = new PinStateManager(
       this.studioCtx.site,
       this.currentArena.component,
-      curVc ? makeCurrentVariantEvalState(curVc) : new Map()
+      curVc ? makeCurrentVariantEvalState(curVc) : new Map(),
     );
     let state = ensure(
       this.pinManager,
-      "Expected pin manager to be not null"
+      "Expected pin manager to be not null",
     ).getPinState();
     state = fn(state, machine);
     const activeVariants = machine.activeNonBaseVariants(state);
@@ -621,7 +621,7 @@ export class PageArenaVariantsController implements VariantsController {
         : ensureCustomFrameForActivatedVariants(
             this.studioCtx.site,
             this.currentArena,
-            new Set(activeVariants)
+            new Set(activeVariants),
           );
     applyPinStateToFrame(state, newFrame);
     this.switchToFrame(newFrame);
@@ -633,9 +633,9 @@ export class PageArenaVariantsController implements VariantsController {
       ensureManagedRowForVariantInPageArena(
         this.site,
         this.currentArena,
-        variant
+        variant,
       ),
-      "Row should exist in page arena"
+      "Row should exist in page arena",
     );
   }
 
@@ -654,7 +654,7 @@ export class PageArenaVariantsController implements VariantsController {
         ? row.cols[0].frame
         : ensure(
             row.cols[this.currentColIndex].frame,
-            "Frame for current column should exist"
+            "Frame for current column should exist",
           );
 
     this.switchToFrame(frame);
@@ -672,7 +672,7 @@ export class PageArenaVariantsController implements VariantsController {
 function switchToFrame(
   studioCtx: StudioCtx,
   fromFrame: ArenaFrame | undefined,
-  toFrame: ArenaFrame | undefined
+  toFrame: ArenaFrame | undefined,
 ) {
   if (fromFrame === toFrame) {
     return;
@@ -728,7 +728,7 @@ function handleAddedVariant(pinManager: PinManager, variant: Variant) {
 function maybeResizeFrame(
   site: Site,
   frame: ArenaFrame,
-  variant: Variant | undefined
+  variant: Variant | undefined,
 ) {
   if (variant === undefined || isScreenVariant(variant)) {
     resizeFrameForScreenVariant(site, frame, variant);
@@ -737,7 +737,7 @@ function maybeResizeFrame(
 
 function cellKeyIncludesVariant(
   cellKey: ArenaFrameCell["cellKey"],
-  variant: Variant
+  variant: Variant,
 ) {
   if (isArray(cellKey) && cellKey.includes(variant)) {
     return true;

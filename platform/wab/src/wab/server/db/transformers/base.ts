@@ -19,7 +19,7 @@ export function toTypeORM<T>(transformer: Transformer<T>): ValueTransformer {
           x.useParameter,
           x.multipleParameters,
           x.getSql,
-          x.objectLiteralParameters
+          x.objectLiteralParameters,
         );
       } else {
         return transformer.serialize(x);

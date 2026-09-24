@@ -21,7 +21,7 @@ test.describe("hostless-basic-components", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -35,13 +35,13 @@ test.describe("hostless-basic-components", () => {
     await models.studio.leftPanel.insertNode("hostless-embed");
 
     const codeEditorInput = models.studio.rightPanel.frame.locator(
-      'div.code-editor-input[data-plasmic-prop="code"]'
+      'div.code-editor-input[data-plasmic-prop="code"]',
     );
     await codeEditorInput.waitFor({ state: "visible" });
     await codeEditorInput.click();
 
     const monacoContainer = models.studio.frame.locator(
-      ".react-monaco-editor-container"
+      ".react-monaco-editor-container",
     );
     await monacoContainer.waitFor({ state: "visible" });
     await monacoContainer.click();
@@ -50,7 +50,7 @@ test.describe("hostless-basic-components", () => {
     await page.keyboard.press("Delete");
 
     await page.keyboard.type(
-      `<div style="background-color: rgb(255, 0, 0)">Test embed</div>`
+      `<div style="background-color: rgb(255, 0, 0)">Test embed</div>`,
     );
 
     const saveButton = models.studio.frame

@@ -100,7 +100,7 @@ describe("extractComponent operation", () => {
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toContain(
-      "referenced in the current component"
+      "referenced in the current component",
     );
     // No component is created on failure.
     expect(site.components.map((c) => c.name)).not.toContain("Extracted");

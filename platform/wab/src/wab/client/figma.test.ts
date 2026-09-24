@@ -51,7 +51,7 @@ describe("Figma module", function () {
                 name: file instanceof File ? file?.name : file,
               },
             };
-          }
+          },
         );
         const site = createSite();
         const tplMgr = createTplMgr(site);
@@ -62,7 +62,7 @@ describe("Figma module", function () {
         const figmaData = getTestFigmaData(id);
         const uploadedImages = await uploadFigmaImages(
           figmaData,
-          appCtx as any
+          appCtx as any,
         );
         const { nodes, imagesToRename } = denormalizeFigmaData(figmaData);
         const nodeImages = await uploadNodeImages(nodes, appCtx as any);
@@ -76,7 +76,7 @@ describe("Figma module", function () {
           uploadedImages,
           nodeImages,
           imagesToRename,
-          false
+          false,
         );
         expect(!!node).toBeTruthy();
 

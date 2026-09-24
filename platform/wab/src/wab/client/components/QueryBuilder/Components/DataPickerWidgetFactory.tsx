@@ -134,7 +134,7 @@ export function DynamicValueWidget({
   exprCtx,
 }: DynamicValueWidgetProps) {
   const [popoverVisible, setPopoverVisible] = React.useState(
-    defaultOpenDataPicker ?? false
+    defaultOpenDataPicker ?? false,
   );
 
   const previewValue = summarizeExpr(value, exprCtx);

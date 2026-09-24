@@ -38,7 +38,7 @@ const DataTokenRow = observer(function _DataTokenRow(props: {
       studioCtx.change(() => {
         studioCtx.findReferencesDataToken = token.base;
         return ok();
-      })
+      }),
     );
   };
 
@@ -49,14 +49,14 @@ const DataTokenRow = observer(function _DataTokenRow(props: {
       push(
         <Menu.Item key="references" onClick={() => onFindReferences()}>
           Find all references
-        </Menu.Item>
+        </Menu.Item>,
       );
 
       if (!tokenPanelReadOnly && token.isLocal) {
         push(
           <Menu.Item key="clone" onClick={() => onDuplicate(token.base)}>
             Duplicate
-          </Menu.Item>
+          </Menu.Item>,
         );
       }
 
@@ -76,7 +76,7 @@ const DataTokenRow = observer(function _DataTokenRow(props: {
               }}
             >
               Start bulk selection
-            </Menu.Item>
+            </Menu.Item>,
           );
           push2(
             <Menu.Item
@@ -86,7 +86,7 @@ const DataTokenRow = observer(function _DataTokenRow(props: {
               }}
             >
               Delete
-            </Menu.Item>
+            </Menu.Item>,
           );
         });
       }
@@ -102,7 +102,7 @@ const DataTokenRow = observer(function _DataTokenRow(props: {
       const uuid = token.uuid;
       multiAssetsActions.onAssetSelected(
         uuid,
-        !multiAssetsActions.isAssetSelected(uuid)
+        !multiAssetsActions.isAssetSelected(uuid),
       );
     }
   }, [multiAssetsActions, token.uuid]);

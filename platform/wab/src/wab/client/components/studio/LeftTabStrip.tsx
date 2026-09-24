@@ -253,7 +253,7 @@ Help
                 title: "Import from Figma",
                 content: <FigmaModalContent />,
                 width: 640,
-              })
+              }),
             );
           },
         },
@@ -280,8 +280,8 @@ Help
             ...mainGroups.more,
             items: Object.fromEntries(
               Object.entries(mainGroups).flatMap(([_groupKey, group]) =>
-                Object.entries(group.items)
-              )
+                Object.entries(group.items),
+              ),
             ),
           },
         }
@@ -340,7 +340,7 @@ Help
     key: string,
     item: NavMenuItem,
     hasLabel: boolean,
-    onClick: (() => void) | undefined
+    onClick: (() => void) | undefined,
   ) {
     return (
       (item.cond ?? true) && (
@@ -380,54 +380,54 @@ Help
       item.type === "item"
         ? renderButton(key, item, false, undefined)
         : item.type === "group"
-        ? Object.values(item.items).some((i) => i.cond ?? true) && (
-            <Stated defaultValue={false} key={key}>
-              {(open, setOpen) => (
-                <Popover
-                  placement={"right"}
-                  overlayClassName={"sidebar-popover"}
-                  open={open}
-                  onOpenChange={(o) => setOpen(o)}
-                  content={
-                    <>
-                      <div
-                        style={{
-                          margin: 6,
-                          marginLeft: 10,
-                          color: "#999",
-                          fontWeight: 600,
-                          textTransform: "uppercase",
-                          letterSpacing: "1px",
-                          fontSize: 11,
-                        }}
-                      >
-                        {item.title}
-                      </div>
-                      {Object.entries(item.items).map(([subkey, subitem]) =>
-                        renderButton(subkey, subitem, true, () =>
-                          setOpen(false)
-                        )
-                      )}
-                    </>
-                  }
-                >
-                  <LeftTabButton
-                    icon={item.icon}
-                    data-test-tabkey={key}
-                    onClick={() =>
-                      studioCtx.changeUnsafe(() => {
-                        studioCtx.switchLeftTab(undefined);
-                      })
+          ? Object.values(item.items).some((i) => i.cond ?? true) && (
+              <Stated defaultValue={false} key={key}>
+                {(open, setOpen) => (
+                  <Popover
+                    placement={"right"}
+                    overlayClassName={"sidebar-popover"}
+                    open={open}
+                    onOpenChange={(o) => setOpen(o)}
+                    content={
+                      <>
+                        <div
+                          style={{
+                            margin: 6,
+                            marginLeft: 10,
+                            color: "#999",
+                            fontWeight: 600,
+                            textTransform: "uppercase",
+                            letterSpacing: "1px",
+                            fontSize: 11,
+                          }}
+                        >
+                          {item.title}
+                        </div>
+                        {Object.entries(item.items).map(([subkey, subitem]) =>
+                          renderButton(subkey, subitem, true, () =>
+                            setOpen(false),
+                          ),
+                        )}
+                      </>
                     }
-                    isSelected={Object.keys(item.items).some(
-                      (i) => i === studioCtx.leftTabKey
-                    )}
-                  />
-                </Popover>
-              )}
-            </Stated>
-          )
-        : unexpected()
+                  >
+                    <LeftTabButton
+                      icon={item.icon}
+                      data-test-tabkey={key}
+                      onClick={() =>
+                        studioCtx.changeUnsafe(() => {
+                          studioCtx.switchLeftTab(undefined);
+                        })
+                      }
+                      isSelected={Object.keys(item.items).some(
+                        (i) => i === studioCtx.leftTabKey,
+                      )}
+                    />
+                  </Popover>
+                )}
+              </Stated>
+            )
+          : unexpected(),
     );
   };
 
@@ -441,7 +441,7 @@ Help
               type: TutorialEventsType.AddButtonClicked,
             });
             spawn(
-              studioCtx.changeUnsafe(() => studioCtx.setShowAddDrawer(true))
+              studioCtx.changeUnsafe(() => studioCtx.setShowAddDrawer(true)),
             );
           },
         },
@@ -471,11 +471,10 @@ Help
 
 export default LeftTabStrip;
 
-interface PlayersProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+interface PlayersProps extends React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+> {
   studioCtx: StudioCtx;
 }
 

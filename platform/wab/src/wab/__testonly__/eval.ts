@@ -213,7 +213,7 @@ export const componentLib = {
           },
           baseVariant: v0,
         },
-        [mkTplTestText('"Hey {<&there>}!"')]
+        [mkTplTestText('"Hey {<&there>}!"')],
       ),
       variants: [v0],
       type: ComponentType.Plain,
@@ -232,7 +232,7 @@ export const componentLib = {
           },
           baseVariant: v0,
         },
-        [mkTplTagX("input", { attrs: { type: "text" }, baseVariant: v0 })]
+        [mkTplTagX("input", { attrs: { type: "text" }, baseVariant: v0 })],
       ),
       variants: [v0],
       type: ComponentType.Plain,
@@ -334,14 +334,14 @@ export function setupRefactorProject() {
           //
           // We just add a no-op dataCond to ensure the div satisfies a
           // base-vsetting-required invariant.
-          mkTplTagX("div", { baseVariant, dataCond: code("true") }, inner)
-        )
+          mkTplTagX("div", { baseVariant, dataCond: code("true") }, inner),
+        ),
       ),
     type: ComponentType.Plain,
   });
 
   const parts = ensureKnownTplTag(component.tplTree).children.map((child) =>
-    ensureInstance(ensureKnownTplTag(child).children[0], TplTag, TplComponent)
+    ensureInstance(ensureKnownTplTag(child).children[0], TplTag, TplComponent),
   );
   const site = createSite();
   const tplMgr = new TplMgr({ site });

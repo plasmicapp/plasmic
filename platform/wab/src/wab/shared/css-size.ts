@@ -95,7 +95,10 @@ export function tryParseMinMaxSize(text: string): MinMaxSize | undefined {
 }
 
 export class ScreenSizeSpec {
-  constructor(readonly minWidth?: number, readonly maxWidth?: number) {}
+  constructor(
+    readonly minWidth?: number,
+    readonly maxWidth?: number,
+  ) {}
 
   match(width: number) {
     if (this.minWidth !== undefined && this.maxWidth === undefined) {
@@ -157,16 +160,16 @@ export function parseScreenSpec(q: string) {
         0,
         +ensure(
           /^\(\s*min-width\s*:\s*(-?\d+\.?\d*)px\s*\)$/.exec(cond.trim()),
-          "Couldn't parse: " + cond
-        )[1]
+          "Couldn't parse: " + cond,
+        )[1],
       );
     } else if (cond.includes("max-width")) {
       maxWidth = Math.max(
         0,
         +ensure(
           /^\(\s*max-width\s*:\s*(-?\d+\.?\d*)px\s*\)$/.exec(cond.trim()),
-          "Couldn't parse: " + cond
-        )[1]
+          "Couldn't parse: " + cond,
+        )[1],
       );
     }
   }

@@ -32,7 +32,7 @@ type IconButtonProps = Omit<React.ComponentProps<"button">, "type"> & {
 
 export const IconButton = React.forwardRef(function (
   props: IconButtonProps,
-  ref: React.Ref<HTMLButtonElement>
+  ref: React.Ref<HTMLButtonElement>,
 ) {
   const {
     children,

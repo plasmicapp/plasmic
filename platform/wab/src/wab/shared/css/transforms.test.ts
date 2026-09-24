@@ -419,7 +419,7 @@ describe("Transform migration utilities", () => {
 
     cases.forEach(([input, expected]) => {
       expect(
-        _migrationOnlyUtil.normalizeSingleTransformTo3dFormat(input)
+        _migrationOnlyUtil.normalizeSingleTransformTo3dFormat(input),
       ).toEqual(expected);
     });
   });
@@ -455,7 +455,7 @@ describe("Transform migration utilities", () => {
 
     cases.forEach(([input, expected]) => {
       expect(_migrationOnlyUtil.migrateTransformsValue(input)).toEqual(
-        expected
+        expected,
       );
     });
   });
@@ -530,20 +530,20 @@ describe("has3dComponent", () => {
   describe("multiple transforms", () => {
     it("should return true if any transform has 3D component", () => {
       expect(
-        has3dComponent("translateX(10px) translateZ(5px) rotate(45deg)")
+        has3dComponent("translateX(10px) translateZ(5px) rotate(45deg)"),
       ).toBe(true);
       expect(has3dComponent("scale(2) scaleZ(0.5) skew(10deg)")).toBe(true);
       expect(
-        has3dComponent("perspective(500px) translateX(10px) rotate(45deg)")
+        has3dComponent("perspective(500px) translateX(10px) rotate(45deg)"),
       ).toBe(true);
     });
 
     it("should return false if no transform has 3D component", () => {
       expect(has3dComponent("translateX(10px) rotate(45deg) scale(2)")).toBe(
-        false
+        false,
       );
       expect(
-        has3dComponent("translate(10px, 20px) rotateZ(45deg) skew(10deg)")
+        has3dComponent("translate(10px, 20px) rotateZ(45deg) skew(10deg)"),
       ).toBe(false);
     });
   });

@@ -384,14 +384,15 @@ body.qb-dragging {
     margin-right: 8px;
   }
 
-  $rule_items: ".rule--field", ".group--field", ".rule--operator",
-    ".rule--value", ".rule--operator-options", ".rule--widget",
-    ".widget--widget", ".widget--valuesrc", ".widget--sep",
-    ".operator--options--sep", ".rule--before-widget", ".rule--after-widget";
+  $rule_items:
+    ".rule--field", ".group--field", ".rule--operator", ".rule--value",
+    ".rule--operator-options", ".rule--widget", ".widget--widget",
+    ".widget--valuesrc", ".widget--sep", ".operator--options--sep",
+    ".rule--before-widget", ".rule--after-widget";
 
-  $seps: ".widget--sep", ".operator--options--sep",
-    ".rule--func--bracket-before", ".rule--func--bracket-after",
-    ".rule--func--arg-sep";
+  $seps:
+    ".widget--sep", ".operator--options--sep", ".rule--func--bracket-before",
+    ".rule--func--bracket-after", ".rule--func--arg-sep";
 
   #{$rule_items} {
     display: inline-block;
@@ -489,7 +490,8 @@ body.qb-dragging {
 
   // FUNC **********************************************************************/
 
-  $rule_func_items: ".rule--func--wrapper", ".rule--func", ".rule--func--args",
+  $rule_func_items:
+    ".rule--func--wrapper", ".rule--func", ".rule--func--args",
     ".rule--func--arg", ".rule--func--arg-value", ".rule--func--bracket-before",
     ".rule--func--bracket-after", ".rule--func--arg-sep",
     ".rule--func--arg-label", ".rule--func--arg-label-sep";
@@ -592,7 +594,8 @@ body.qb-dragging {
   $ruleDragHandle: ".rule--drag-handler:after";
 
   $group_actions: ".group--actions", $groupDragHandle;
-  $inactive_conjs: ".group--conjunctions .ant-btn:not(.ant-btn-primary)",
+  $inactive_conjs:
+    ".group--conjunctions .ant-btn:not(.ant-btn-primary)",
     ".rule_group_ext--drag-handler";
   $active_conjs: ".group--conjunctions .ant-btn.ant-btn-primary";
   $rule_actions: ".widget--valuesrc", $ruleDragHandle, ".rule--header";

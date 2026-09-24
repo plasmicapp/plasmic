@@ -24,7 +24,7 @@ describe("makeHttpFetcher", () => {
         source: "http",
         credentials: {},
         settings: { baseUrl: ssrf!.externalGoodServer.url, commonHeaders: {} },
-      } as HttpDataSource).get({})
+      } as HttpDataSource).get({}),
     ).resolves.toMatchObject({
       data: {
         response: { result: "Hello, world!" },
@@ -40,7 +40,7 @@ describe("makeHttpFetcher", () => {
         source: "http",
         credentials: {},
         settings: { baseUrl: ssrf!.internalServer.url, commonHeaders: {} },
-      } as HttpDataSource).get({})
+      } as HttpDataSource).get({}),
     ).rejects.toThrow(DataSourceError);
     expect(ssrf!.internalServer.requestCount()).toBe(0);
   });
@@ -51,7 +51,7 @@ describe("makeHttpFetcher", () => {
         source: "http",
         credentials: {},
         settings: { baseUrl: ssrf!.externalBadServer.url, commonHeaders: {} },
-      } as HttpDataSource).get({})
+      } as HttpDataSource).get({}),
     ).rejects.toThrow(DataSourceError);
     expect(ssrf!.externalBadServer.requestCount()).toBe(1);
     expect(ssrf!.internalServer.requestCount()).toBe(0);

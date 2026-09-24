@@ -3,7 +3,10 @@ import { TplNode } from "@/wab/shared/model/classes";
 
 export class Annotation {
   public readonly id = mkUuid();
-  constructor(public name: string, public value: string) {}
+  constructor(
+    public name: string,
+    public value: string,
+  ) {}
 }
 
 export const annotationsMap = new WeakMap<TplNode, Annotation[]>();

@@ -43,13 +43,13 @@ describe("paste", () => {
         clipboard,
         studioCtx,
         cursorClientPt: undefined,
-      })
+      }),
     ).toBe(true);
     const rootChildren = Tpls.tplChildren(page.tplTree);
     expect(rootChildren).toHaveLength(1);
     const pastedTpl = rootChildren[0];
     expect(Tpls.getTplTextBlockContent(pastedTpl, pageViewCtx)).toEqual(
-      "Hello, world!"
+      "Hello, world!",
     );
     expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
   });
@@ -64,14 +64,14 @@ describe("paste", () => {
         clipboard,
         studioCtx,
         cursorClientPt: undefined,
-      })
+      }),
     ).toBe(true);
     const rootChildren = Tpls.tplChildren(page.tplTree);
     expect(rootChildren).toHaveLength(1);
     const pastedTpl = rootChildren[0];
     expect(Tpls.isTplIcon(pastedTpl)).toBe(true);
     expect(
-      ImageAssets.getOnlyAssetRef(pastedTpl as TplImageTag)?.dataUri
+      ImageAssets.getOnlyAssetRef(pastedTpl as TplImageTag)?.dataUri,
     ).toEqual(processedDataUri);
     expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
   });
@@ -94,14 +94,14 @@ describe("paste", () => {
         clipboard,
         studioCtx,
         cursorClientPt: undefined,
-      })
+      }),
     ).toBe(true);
     const rootChildren = Tpls.tplChildren(page.tplTree);
     expect(rootChildren).toHaveLength(1);
     const pastedTpl = rootChildren[0];
     expect(Tpls.isTplPicture(pastedTpl)).toBe(true);
     expect(
-      ImageAssets.getOnlyAssetRef(pastedTpl as TplImageTag)?.dataUri
+      ImageAssets.getOnlyAssetRef(pastedTpl as TplImageTag)?.dataUri,
     ).toEqual(dataUri);
     expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
   });
@@ -122,13 +122,13 @@ describe("paste", () => {
         clipboard,
         studioCtx,
         cursorClientPt: undefined,
-      })
+      }),
     ).toBe(true);
     const rootChildren = Tpls.tplChildren(page.tplTree);
     expect(rootChildren).toHaveLength(2);
     const pastedTpl = rootChildren[1];
     expect(Tpls.getTplTextBlockContent(pastedTpl, pageViewCtx)).toEqual(
-      "Copy me"
+      "Copy me",
     );
     expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
   });
@@ -149,7 +149,7 @@ describe("paste", () => {
         clipboard,
         studioCtx,
         cursorClientPt: undefined,
-      })
+      }),
     ).toBe(true);
     const rootChildren = Tpls.tplChildren(page.tplTree);
     expect(rootChildren).toHaveLength(2);
@@ -158,7 +158,7 @@ describe("paste", () => {
     const pastedTplChildren = Tpls.tplChildren(pastedTpl);
     expect(pastedTplChildren).toHaveLength(1);
     expect(
-      Tpls.getTplTextBlockContent(pastedTplChildren[0], pageViewCtx)
+      Tpls.getTplTextBlockContent(pastedTplChildren[0], pageViewCtx),
     ).toEqual("Copy me");
     expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
   });
@@ -181,7 +181,7 @@ describe("paste", () => {
         clipboard,
         studioCtx,
         cursorClientPt: undefined,
-      })
+      }),
     ).toBe(true);
     expect(Tpls.tplChildren(dstDiv)).toHaveLength(1);
     const pastedTpl = Tpls.tplChildren(dstDiv)[0];
@@ -195,7 +195,7 @@ describe("paste", () => {
         clipboard,
         studioCtx,
         cursorClientPt: undefined,
-      })
+      }),
     ).toBe(true);
     expect(Tpls.tplChildren(dstDiv)).toHaveLength(2);
     const pastedTpl2 = Tpls.tplChildren(dstDiv)[1];

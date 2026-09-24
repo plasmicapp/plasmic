@@ -29,7 +29,10 @@
   align-items: center;
   justify-content: center;
   color: $sand9;
-  transition: transform 200ms, background 200ms, color 200ms;
+  transition:
+    transform 200ms,
+    background 200ms,
+    color 200ms;
 
   & svg {
     width: 16px;

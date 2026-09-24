@@ -10,7 +10,7 @@ export function getContextDependentValue<P>(
     | undefined,
   componentPropValues: any,
   ccContextData: any,
-  extras: ControlExtras
+  extras: ControlExtras,
 ) {
   return (
     swallow(() =>
@@ -18,9 +18,9 @@ export function getContextDependentValue<P>(
         ? (contextDependentValue as (props, ctx, extras) => P)(
             componentPropValues ?? {},
             ccContextData,
-            extras
+            extras,
           )
-        : contextDependentValue
+        : contextDependentValue,
     ) ?? undefined
   );
 }

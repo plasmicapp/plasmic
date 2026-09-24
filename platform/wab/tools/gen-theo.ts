@@ -8,7 +8,7 @@ function main() {
 
   // Read the tokens from the input theo JSON file
   const tokens: TheoToken[] = JSON.parse(
-    fs.readFileSync(inputFile, "utf8")
+    fs.readFileSync(inputFile, "utf8"),
   ).props;
 
   // Generate code based on output file extension
@@ -17,13 +17,13 @@ function main() {
     output = generateOutput(
       tokens,
       toSassVarName,
-      (varName, cssValue) => `$${varName}: ${cssValue}`
+      (varName, cssValue) => `$${varName}: ${cssValue}`,
     );
   } else if (outputFile.endsWith(".ts")) {
     output = generateOutput(
       tokens,
       toTsVarName,
-      (varName, cssValue) => `export const ${varName} = "${cssValue}";`
+      (varName, cssValue) => `export const ${varName} = "${cssValue}";`,
     );
   } else {
     throw new Error(`can only output .sass and .ts, not ${outputFile}`);
@@ -37,7 +37,7 @@ function main() {
 function generateOutput(
   tokens: TheoToken[],
   toVarName: (tokenName: string) => string,
-  toCode: (varName: string, cssValue: string) => string
+  toCode: (varName: string, cssValue: string) => string,
 ): string {
   return [...Object.entries(groupBy(tokens, (token) => toVarName(token.name)))]
     .map(([varName, dupTokens]) => {
@@ -47,7 +47,7 @@ function generateOutput(
       } else {
         const dupProjects = dupTokens.map((t) => t.meta.projectId).join(",");
         const codeWithComment = dupTokens.every(
-          (t) => t.value === dupTokens[0].value
+          (t) => t.value === dupTokens[0].value,
         )
           ? code + ` // warning: duplicates in ${dupProjects}`
           : code + ` // ERROR: non-matching duplicates in ${dupProjects}`;

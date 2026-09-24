@@ -18,11 +18,11 @@ interface UseProjectsFilter {
 export function useProjectsFilter(
   unsortedProjects: ApiProject[] | undefined,
   unsortedDatabases: ApiCmsDatabase[] | undefined,
-  matchWorkspace = true
+  matchWorkspace = true,
 ): UseProjectsFilter {
   const [orderBy, setOrderBy] = useLocalStorage<string | null>(
     orderByStorageKey,
-    defaultOrderBy
+    defaultOrderBy,
   );
   const [query, setQuery] = React.useState("");
 
@@ -30,10 +30,10 @@ export function useProjectsFilter(
   const filteredProjects = unsortedProjects?.filter(
     (p) =>
       matcher.matches(p.name) ||
-      (matchWorkspace && matcher.matches(p.workspaceName || ""))
+      (matchWorkspace && matcher.matches(p.workspaceName || "")),
   );
   const filteredDatabases = unsortedDatabases?.filter((d) =>
-    matcher.matches(d.name)
+    matcher.matches(d.name),
   );
 
   const projects =

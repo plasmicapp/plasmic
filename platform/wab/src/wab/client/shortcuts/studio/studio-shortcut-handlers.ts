@@ -75,7 +75,7 @@ export function bindStudioShortcutHandlers(studioCtx: StudioCtx) {
         }
         assert(
           getArenaFrames(incomingArena).length !== 0,
-          "incomingArena should have at least one frame."
+          "incomingArena should have at least one frame.",
         );
       }
       sc.switchToArena(incomingArena);
@@ -227,17 +227,17 @@ export function bindStudioShortcutHandlers(studioCtx: StudioCtx) {
       },
       SWITCH_TO_SETTINGS_TAB: async () => {
         return studioCtx.changeUnsafe(() =>
-          studioCtx.switchRightTab(RightTabKey.settings)
+          studioCtx.switchRightTab(RightTabKey.settings),
         );
       },
       SWITCH_TO_DESIGN_TAB: async () => {
         return studioCtx.changeUnsafe(() =>
-          studioCtx.switchRightTab(RightTabKey.style)
+          studioCtx.switchRightTab(RightTabKey.style),
         );
       },
       SWITCH_TO_COMPONENT_TAB: async () => {
         return studioCtx.changeUnsafe(() =>
-          studioCtx.switchRightTab(RightTabKey.component)
+          studioCtx.switchRightTab(RightTabKey.component),
         );
       },
       SHOW_SHORTCUTS: () => {
@@ -330,6 +330,6 @@ export function bindStudioShortcutHandlers(studioCtx: StudioCtx) {
         return studioCtx.changeUnsafe(() => studioCtx.toggleDevControls());
       },
     },
-    shouldHandleStudioShortcut(studioCtx)
+    shouldHandleStudioShortcut(studioCtx),
   );
 }

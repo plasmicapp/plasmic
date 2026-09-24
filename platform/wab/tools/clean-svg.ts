@@ -17,14 +17,14 @@ for (const filepath of [
   const viewBox = /viewBox="([^"]+)"/.exec(contents)![1];
   contents = contents.replace(
     /\b(fill|stroke)="#[a-f0-9]{6}"/gi,
-    '$1="currentcolor"'
+    '$1="currentcolor"',
   );
   contents = contents.replace(/\b(fill-opacity)="[^"]*"/gi, "");
   const filename = path.basename(filepath);
   fs.writeFileSync(`./public/static/img/${dirpath}${filename}`, contents);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [match, width, height] = Array.from(
-    /<svg width="(\d+)px" height="(\d+)px"/.exec(contents)!
+    /<svg width="(\d+)px" height="(\d+)px"/.exec(contents)!,
   );
   const componentName = capitalize(camelize(filename.slice(0, -4)));
   lines.push(`\
@@ -59,5 +59,5 @@ interface SvgIconProps extends SvgProps {
 }
 
 ${lines.join("\n\n")}\
-`
+`,
 );

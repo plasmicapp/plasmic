@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -156,7 +156,9 @@
         left: 0;
         right: 0;
         height: 3px;
-        animation: growUntilFull 10s infinite, rotateColors 10s infinite;
+        animation:
+          growUntilFull 10s infinite,
+          rotateColors 10s infinite;
         animation-timing-function: ease-in-out;
       }
 
@@ -172,13 +174,17 @@
       rel="stylesheet"
       crossorigin="anonymous"
     />
-    <link id="normalizeCss" rel="stylesheet" type="text/css" crossorigin="anonymous" />
+    <link
+      id="normalizeCss"
+      rel="stylesheet"
+      type="text/css"
+      crossorigin="anonymous"
+    />
     <!-- Inject URLs based on origin -->
     <script>
       document.getElementById("shortcutIcon").href = `${origin}/favicon.ico`;
-      document.getElementById(
-        "normalizeCss"
-      ).href = `${staticOrigin}/static/css/normalize.css`;
+      document.getElementById("normalizeCss").href =
+        `${staticOrigin}/static/css/normalize.css`;
     </script>
 
     <title>Plasmic</title>

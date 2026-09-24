@@ -18,7 +18,7 @@ test.describe("data-rep", () => {
       await apiClient.removeProjectAfterTest(
         projectId,
         "user2@example.com",
-        "!53kr3tz!"
+        "!53kr3tz!",
       );
     }
   });
@@ -36,7 +36,7 @@ test.describe("data-rep", () => {
     await models.studio.rightPanel.removePropValue("Options");
 
     const variantSection = models.studio.frame.locator(
-      '[data-test-id="variants-picker-section"]'
+      '[data-test-id="variants-picker-section"]',
     );
     const isOpenVariant = variantSection
       .locator('[data-plasmic-role="labeled-item"]')
@@ -59,7 +59,7 @@ test.describe("data-rep", () => {
     await selectLabel.click();
 
     const selectExpander = selectLabel.locator(
-      '.tpltree__label__expander[data-state-isopen="false"]'
+      '.tpltree__label__expander[data-state-isopen="false"]',
     );
     if (await selectExpander.isVisible({ timeout: 1000 }).catch(() => false)) {
       await selectExpander.click();
@@ -71,7 +71,7 @@ test.describe("data-rep", () => {
     await childrenSlot.click();
 
     const slotExpander = childrenSlot.locator(
-      '.tpltree__label__expander[data-state-isopen="false"]'
+      '.tpltree__label__expander[data-state-isopen="false"]',
     );
     if (await slotExpander.isVisible({ timeout: 1000 }).catch(() => false)) {
       await slotExpander.click();
@@ -81,7 +81,7 @@ test.describe("data-rep", () => {
     await optionGroup.click();
 
     const ogExpander = optionGroup.locator(
-      '.tpltree__label__expander[data-state-isopen="false"]'
+      '.tpltree__label__expander[data-state-isopen="false"]',
     );
     if (await ogExpander.isVisible({ timeout: 1000 }).catch(() => false)) {
       await ogExpander.click();
@@ -98,14 +98,14 @@ test.describe("data-rep", () => {
 
     await models.studio.leftPanel.insertNode("Option");
     await models.studio.rightPanel.repeatOnCustomCode(
-      '[{label: "Opt 1", value: 1}, {label: "Opt 2", value: 2}, {label: "Opt 3", value: 3}]'
+      '[{label: "Opt 1", value: 1}, {label: "Opt 2", value: 2}, {label: "Opt 3", value: 3}]',
     );
 
     const titleSlot = treeLabels.filter({ hasText: 'Slot: "title"' }).first();
     await titleSlot.click();
 
     const titleExpander = titleSlot.locator(
-      '.tpltree__label__expander[data-state-isopen="false"]'
+      '.tpltree__label__expander[data-state-isopen="false"]',
     );
     if (await titleExpander.isVisible({ timeout: 1000 }).catch(() => false)) {
       await titleExpander.click();
@@ -119,7 +119,7 @@ test.describe("data-rep", () => {
     await optionLabel.click();
 
     const optionExpander = optionLabel.locator(
-      '.tpltree__label__expander[data-state-isopen="false"]'
+      '.tpltree__label__expander[data-state-isopen="false"]',
     );
     if (await optionExpander.isVisible({ timeout: 1000 }).catch(() => false)) {
       await optionExpander.click();
@@ -131,7 +131,7 @@ test.describe("data-rep", () => {
     await optionChildrenSlot.click();
 
     const optionChildExpander = optionChildrenSlot.locator(
-      '.tpltree__label__expander[data-state-isopen="false"]'
+      '.tpltree__label__expander[data-state-isopen="false"]',
     );
     if (
       await optionChildExpander.isVisible({ timeout: 1000 }).catch(() => false)
@@ -142,7 +142,7 @@ test.describe("data-rep", () => {
     const optionText = treeLabels.filter({ hasText: '"Option"' }).first();
     await optionText.click();
     await models.studio.rightPanel.bindTextContentToCustomCode(
-      "currentItem.label"
+      "currentItem.label",
     );
 
     const expectedGroups = ["Group A", "Group B"];
@@ -230,7 +230,7 @@ test.describe("data-rep", () => {
     if ((await textLabel.count()) > 0) {
       await textLabel.click();
       const expander = textLabel.locator(
-        '.tpltree__label__expander[data-state-isopen="false"]'
+        '.tpltree__label__expander[data-state-isopen="false"]',
       );
       if ((await expander.count()) > 0) {
         await expander.click({ force: true });
@@ -246,7 +246,7 @@ test.describe("data-rep", () => {
     await models.studio.rightPanel.repeatOnCustomCode('["foo", "bar", "baz"]');
 
     const elementNameInput = models.studio.frame.locator(
-      '[data-test-id="repeating-element-name"] input'
+      '[data-test-id="repeating-element-name"] input',
     );
     await elementNameInput.press("ControlOrMeta+a");
     await elementNameInput.fill("item");

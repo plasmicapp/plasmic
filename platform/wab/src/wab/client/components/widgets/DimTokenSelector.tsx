@@ -96,12 +96,12 @@ function MiddleEllipsis({
           new RegExp(
             `^(.+?)(.{${Math.min(
               Math.floor(children.length / 2),
-              tailLength
-            )}})$`
-          )
+              tailLength,
+            )}})$`,
+          ),
         )
         ?.slice(1) ?? [],
-    [children, tailLength]
+    [children, tailLength],
   );
   return (
     <div style={{ display: "flex", width: "100%" }}>
@@ -117,7 +117,7 @@ function MiddleEllipsis({
             {head}
           </span>
           <span style={{ whiteSpace: "nowrap" }}>{tail}</span>
-        </>
+        </>,
       )}
     </div>
   );
@@ -150,7 +150,7 @@ export const DimTokenSpinner = observer(
       onBlur?: () => void;
       disableSpin?: boolean;
     } & DimValueOpts,
-    ref: React.Ref<DimTokenSpinnerRef>
+    ref: React.Ref<DimTokenSpinnerRef>,
   ) {
     const {
       value,
@@ -179,7 +179,7 @@ export const DimTokenSpinner = observer(
     } = props;
 
     const extraOptions = _extraOptions.map((it) =>
-      typeof it === "string" ? { value: it } : it
+      typeof it === "string" ? { value: it } : it,
     );
 
     if (tokenType && !studioCtx) {
@@ -193,7 +193,7 @@ export const DimTokenSpinner = observer(
         tokenType,
         {
           includeDeps: "direct",
-        }
+        },
       );
 
     const { displayValue, tryOnChange, spin, values } = useDimValue(props);
@@ -202,13 +202,13 @@ export const DimTokenSpinner = observer(
       ? shorthandVals.map((v) => tryParseTokenRef(v, tokens) || v)
       : shorthandVals;
     const parsedTokens = parsedValues.filter(
-      (v): v is FinalToken<StyleToken> => typeof v !== "string"
+      (v): v is FinalToken<StyleToken> => typeof v !== "string",
     );
     const editableTokens = parsedTokens.filter(
       (v) =>
         studioCtx?.site &&
         siteFinalStyleTokens(studioCtx.site).includes(v) &&
-        !v.isRegistered
+        !v.isRegistered,
     );
 
     const hasParsedToken = parsedTokens.length > 0;
@@ -264,21 +264,21 @@ export const DimTokenSpinner = observer(
         ...allowedUnits.filter(
           (unit) =>
             unit != parsed.units &&
-            (css.typicalCssLengthUnits.has(unit) || unit === "")
+            (css.typicalCssLengthUnits.has(unit) || unit === ""),
         ),
       ].map(
         (unit) =>
           ({
             type: "convert",
             value: `${parsed.num}${unit}`,
-          } as const)
+          }) as const,
       );
     };
 
     const makeExtraOptions = (): SetValueItem[] => {
       let options = extraOptions
         .filter((op) => !op.hide)
-        .map((op) => ({ type: "value", value: op } as const));
+        .map((op) => ({ type: "value", value: op }) as const);
 
       if (!isNumberMode) {
         // If we're typing in words, then also filter this down by words
@@ -286,8 +286,8 @@ export const DimTokenSpinner = observer(
           matcher.matches(
             typeof op.value.label === "string"
               ? op.value.label
-              : op.value.cleanLabel || op.value.value
-          )
+              : op.value.cleanLabel || op.value.value,
+          ),
         );
       }
       return options.map((it) => ({
@@ -320,7 +320,7 @@ export const DimTokenSpinner = observer(
           isStyleTokenEditable(
             selectedToken,
             vsh,
-            studioCtx.getCurrentUiConfig()
+            studioCtx.getCurrentUiConfig(),
           ) && // the token is editable
           ({ type: "edit-token", token: selectedToken } as const),
 
@@ -333,11 +333,11 @@ export const DimTokenSpinner = observer(
                   matcher.matches(t.name)) &&
                 checkAllowedUnits(
                   resolver(t, vsh),
-                  allowedUnits as LengthUnit[]
-                )
+                  allowedUnits as LengthUnit[],
+                ),
             )
-            .map((token) => ({ type: "token", token } as const)),
-          (item) => item.token.name
+            .map((token) => ({ type: "token", token }) as const),
+          (item) => item.token.name,
         ),
       ]);
     };
@@ -361,7 +361,7 @@ export const DimTokenSpinner = observer(
     }));
 
     const addTokenIndex = virtualItems.findIndex(
-      (x) => x.type === "action" && x.item.type === "add-token"
+      (x) => x.type === "action" && x.item.type === "add-token",
     );
 
     const uiConfig = studioCtx?.getCurrentUiConfig() || {};
@@ -373,14 +373,14 @@ export const DimTokenSpinner = observer(
         ...filterFalsy([
           addTokenIndex > 0 && ({ type: "separator" } as const),
           { type: "header" } as const,
-        ])
+        ]),
       );
     }
 
     const getDefaultHighlightedIndex = () => {
       if (!isNumberMode && typedInputValue && typedInputValue.length > 0) {
         const index = rawItems.findIndex(
-          (item) => item.type === "value" || item.type === "token"
+          (item) => item.type === "value" || item.type === "token",
         );
 
         if (index >= 0) {
@@ -459,7 +459,7 @@ export const DimTokenSpinner = observer(
           // to map from "items" index to "virtualItems" index here.
           const highlightedItem = rawItems[changes.highlightedIndex];
           const virtualIndex = virtualItems.findIndex(
-            (item) => item.type === "action" && item.item === highlightedItem
+            (item) => item.type === "action" && item.item === highlightedItem,
           );
 
           if (virtualIndex >= 0) {
@@ -488,32 +488,32 @@ export const DimTokenSpinner = observer(
               spawn(
                 ensure(
                   studioCtx,
-                  "DimTokenSelector expects to have studioCtx if adding token"
+                  "DimTokenSelector expects to have studioCtx if adding token",
                 ).changeUnsafe(() => {
                   const startValue = css.parseCssNumericNew(inputValue)
                     ? css.autoUnit(inputValue, [...allowedUnits][0], value)
                     : tokenTypeDefaults(
                         ensure(
                           tokenType,
-                          "tokenType must not be null when adding token"
-                        )
+                          "tokenType must not be null when adding token",
+                        ),
                       );
                   const _newToken = ensure(
                     studioCtx,
-                    "DimTokenSelector expects to have studioCtx if adding token"
+                    "DimTokenSelector expects to have studioCtx if adding token",
                   )
                     .tplMgr()
                     .addStyleToken({
                       tokenType: ensure(
                         tokenType,
-                        "tokenType must not be null when adding token"
+                        "tokenType must not be null when adding token",
                       ),
                       value: startValue,
                     });
 
                   onChange(mkTokenRef(_newToken), "selected");
                   setNewToken(new MutableToken(_newToken));
-                })
+                }),
               );
             } else if (selectedItem.type === "edit-token") {
               setEditToken(selectedItem.token);
@@ -560,7 +560,7 @@ export const DimTokenSpinner = observer(
 
     const height = Math.min(
       200,
-      L.sum(L.range(virtualItems.length).map(itemSizer))
+      L.sum(L.range(virtualItems.length).map(itemSizer)),
     );
 
     const resetState = () => {
@@ -571,7 +571,7 @@ export const DimTokenSpinner = observer(
     const menuWidth = rootRef.current
       ? Math.min(
           maxDropdownWidth,
-          Math.max(rootRef.current.offsetWidth, minDropdownWidth)
+          Math.max(rootRef.current.offsetWidth, minDropdownWidth),
         )
       : 300;
 
@@ -640,7 +640,7 @@ export const DimTokenSpinner = observer(
                       isNumberMode ||
                       isDimCssFunction(inputValue) ||
                       extraOptions.some(
-                        (option) => option.value === inputValue
+                        (option) => option.value === inputValue,
                       );
                     if (isValidInput && tryOnChange(inputValue, "raw")) {
                       resetState();
@@ -695,12 +695,12 @@ export const DimTokenSpinner = observer(
                   tooltip={`${val.name} (${derefToken(
                     ensure(tokens, "tokens is expected to be not null"),
                     val,
-                    vsh
+                    vsh,
                   )})`}
                 >
                   {val.name}
                 </Chip>
-              )
+              ),
             )}
             root={{
               props: {
@@ -782,14 +782,14 @@ export const DimTokenSpinner = observer(
               )}
             </ul>
           </DropdownOverlay>,
-          document.body
+          document.body,
         )}
 
         {editToken && (
           <GeneralTokenEditModal
             studioCtx={ensure(
               studioCtx,
-              "studioCtx is expected to be not null if editing token"
+              "studioCtx is expected to be not null if editing token",
             )}
             token={editToken}
             onClose={() => {
@@ -804,7 +804,7 @@ export const DimTokenSpinner = observer(
           <GeneralTokenEditModal
             studioCtx={ensure(
               studioCtx,
-              "studioCtx is expected to be not null if adding token"
+              "studioCtx is expected to be not null if adding token",
             )}
             token={newToken}
             defaultEditingName={true}
@@ -817,7 +817,7 @@ export const DimTokenSpinner = observer(
         )}
       </>
     );
-  })
+  }),
 );
 
 interface SelectTokenItem {
@@ -883,7 +883,7 @@ interface DimTokenContextValue {
 }
 
 const DimTokenContext = React.createContext<DimTokenContextValue | undefined>(
-  undefined
+  undefined,
 );
 
 const Row = React.memo(function Row(props: {
@@ -895,7 +895,7 @@ const Row = React.memo(function Row(props: {
   const item = data[index];
   const context = ensure(
     React.useContext(DimTokenContext),
-    "DimTokenContext is expected to be not nullish"
+    "DimTokenContext is expected to be not nullish",
   );
   const {
     matcher,
@@ -910,7 +910,7 @@ const Row = React.memo(function Row(props: {
     return (
       <ListSectionHeader style={style}>
         {tokenTypeLabel(
-          ensure(tokenType, "tokenType is expected to be not null")
+          ensure(tokenType, "tokenType is expected to be not null"),
         )}{" "}
         Tokens
       </ListSectionHeader>
@@ -1064,7 +1064,7 @@ function useDimValue(opts: DimValueOpts) {
     allowedUnits[0];
 
   const extraOptions = _extraOptions.map((it) =>
-    typeof it === "string" ? { value: it } : it
+    typeof it === "string" ? { value: it } : it,
   );
 
   const values = shorthand ? css.parseCssShorthand(value) : [value];
@@ -1179,7 +1179,7 @@ function useDimValue(opts: DimValueOpts) {
       newValue = css.showCssShorthand(
         css
           .parseCssShorthand(newValue)
-          .map((val) => formatFunctionOrRoundValue(val))
+          .map((val) => formatFunctionOrRoundValue(val)),
       );
     } else {
       newValue = formatFunctionOrRoundValue(newValue);
@@ -1199,7 +1199,7 @@ function useDimValue(opts: DimValueOpts) {
     if (shorthand) {
       const newVals = css.parseCssShorthand(val);
       const autoVals = newVals.map((v, i) =>
-        css.autoUnit(v, preferredUnit, values[i])
+        css.autoUnit(v, preferredUnit, values[i]),
       );
 
       return tryChange(css.showCssShorthand(autoVals), type);
@@ -1234,11 +1234,11 @@ function useDimValue(opts: DimValueOpts) {
         showSizeCss(
           createNumericSize(
             Math.max(min, Math.min(+(num + effectiveDelta), max)),
-            effectiveUnits
-          )
+            effectiveUnits,
+          ),
         ),
 
-        "spin"
+        "spin",
       );
     }
   }

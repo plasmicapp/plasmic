@@ -25,7 +25,7 @@ function NewProjectModalBody(props: Pick<NewProjectModalProps, "workspaceId">) {
   const appCtx = useAppCtx();
   const { workspaceId } = props;
   const [currentTab, setCurrentTab] = React.useState<"website" | "app">(
-    "website"
+    "website",
   );
   return (
     <>
@@ -109,7 +109,7 @@ const NewProjectModal = observer(function NewProjectModal({
       return [];
     }
     return projectsData.projects.filter(
-      (project) => project.workspaceId === workspaceId && project.isUserStarter
+      (project) => project.workspaceId === workspaceId && project.isUserStarter,
     );
   }, [projectsData, workspaceId]);
 

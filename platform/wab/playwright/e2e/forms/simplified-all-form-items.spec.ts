@@ -26,7 +26,7 @@ test.describe("simplified-all-form-items", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -109,14 +109,14 @@ test.describe("simplified-all-form-items", () => {
 
     await models.studio.leftPanel.insertNode("Text");
     await models.studio.rightPanel.bindTextContentToCustomCode(
-      "JSON.stringify($state.form.value, Object.keys($state.form.value ?? {}).sort())"
+      "JSON.stringify($state.form.value, Object.keys($state.form.value ?? {}).sort())",
     );
 
     await expect(
       nestedFrame
         .locator("div")
         .filter({ hasText: getFormValue(expectedFormItems) })
-        .first()
+        .first(),
     ).toBeVisible({ timeout: 15000 });
 
     await models.studio.withinLiveMode(async (liveFrame) => {
@@ -134,7 +134,7 @@ test.describe("simplified-all-form-items", () => {
           selects: { select: "opt1" },
           radios: { radioGroup: "radio2" },
         },
-        liveFrame
+        liveFrame,
       );
 
       liveModeExpectedFormItems[0].value = "new text";
@@ -149,7 +149,7 @@ test.describe("simplified-all-form-items", () => {
         liveFrame
           .locator("div")
           .filter({ hasText: getFormValue(liveModeExpectedFormItems) })
-          .first()
+          .first(),
       ).toBeVisible({ timeout: 15000 });
     });
 

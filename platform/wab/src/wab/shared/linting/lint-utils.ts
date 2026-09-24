@@ -34,5 +34,5 @@ export const lintSite = maybeComputedFn(
     keepAlive: false,
     equals: lintIssuesEquals,
     name: "lintSite",
-  }
+  },
 );

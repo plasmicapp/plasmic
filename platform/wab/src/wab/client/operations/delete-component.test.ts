@@ -17,7 +17,7 @@ describe("deleteComponent", () => {
     // deleteComponent mutates the model directly, so it must run in a change.
     const runDeleteOperation = (component: Component) =>
       studioCtx.changeUnsafe(() =>
-        deleteComponent(component, studioCtx.site, studioCtx, tplMgr)
+        deleteComponent(component, studioCtx.site, studioCtx, tplMgr),
       );
     return { studioCtx, runDeleteOperation };
   }

@@ -34,7 +34,7 @@ function replaceToken(site: Site, fromToken: StyleToken, toToken: StyleToken) {
       usage.rs.values[usage.prop] = replaceAllTokenRefs(
         usage.value,
         (tokenId: string) =>
-          tokenId === fromToken.uuid ? mkTokenRef(toToken) : undefined
+          tokenId === fromToken.uuid ? mkTokenRef(toToken) : undefined,
       );
     } else if (
       usage.type === "styleToken" ||
@@ -47,15 +47,15 @@ function replaceToken(site: Site, fromToken: StyleToken, toToken: StyleToken) {
       if (token instanceof MutableToken || token instanceof OverrideableToken) {
         token.setValue(
           replaceAllTokenRefs(token.value, (tokenId: string) =>
-            tokenId === fromToken.uuid ? mkTokenRef(toToken) : undefined
-          )
+            tokenId === fromToken.uuid ? mkTokenRef(toToken) : undefined,
+          ),
         );
       }
     } else if (usage.type === "variantedValue") {
       usage.variantedValue.value = replaceAllTokenRefs(
         usage.variantedValue.value,
         (tokenId: string) =>
-          tokenId === fromToken.uuid ? mkTokenRef(toToken) : undefined
+          tokenId === fromToken.uuid ? mkTokenRef(toToken) : undefined,
       );
     } else if (usage.type === "prop") {
       ensureKnownStyleTokenRef(usage.arg.expr).token = toToken;

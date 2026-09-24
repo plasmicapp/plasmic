@@ -17,14 +17,14 @@ export async function addTextElement(studioCtx: StudioCtx) {
   }
   const tplTree = vc.arenaFrame().container.component.tplTree;
   const target = flattenTpls(tplTree).find(
-    (tpl) => !isKnownTplSlot(tpl) && tpl.name === "mainTextContainer"
+    (tpl) => !isKnownTplSlot(tpl) && tpl.name === "mainTextContainer",
   );
   await studioCtx.change(() => {
     vc.viewOps.tryInsertInsertableSpec(
       INSERTABLES_MAP[AddItemKey.text] as AddTplItem,
       InsertRelLoc.append,
       undefined,
-      target
+      target,
     );
     return ok();
   });

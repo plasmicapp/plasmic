@@ -6,7 +6,7 @@ export async function detectSyncOptions(
   owner: string,
   repo: string,
   branch: string,
-  dir: string
+  dir: string,
 ): Promise<Partial<GitSyncOptions>> {
   const app = getGithubApp();
   const octokit = await app.getInstallationOctokit(installationId);
@@ -24,7 +24,7 @@ export async function detectSyncOptions(
   const { data: packageJson } = await getFileContent("package.json");
   const encodedContent = packageJson["content"] as string;
   const packageJsonContent = JSON.parse(
-    Buffer.from(encodedContent, "base64").toString("ascii")
+    Buffer.from(encodedContent, "base64").toString("ascii"),
   );
 
   const fileExists = async (path: string) => {
@@ -60,7 +60,7 @@ export async function detectSyncOptions(
     platform: (await detectGatsby())
       ? "gatsby"
       : (await detectNextJs())
-      ? "nextjs"
-      : "react",
+        ? "nextjs"
+        : "react",
   };
 }

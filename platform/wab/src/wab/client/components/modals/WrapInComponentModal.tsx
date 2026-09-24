@@ -37,9 +37,9 @@ export async function promptWrapInComponent(props: {
       <div className="flex flex-col">
         {naturalSort(
           getAllowedWrapperComponents(studioCtx, component).map(
-            (c) => [c, getComponentDisplayName(c)] as const
+            (c) => [c, getComponentDisplayName(c)] as const,
           ),
-          ([_, displayName]) => displayName
+          ([_, displayName]) => displayName,
         ).map(([c, displayName]) => (
           <ListItem
             icon={<Icon icon={ComponentIcon} />}

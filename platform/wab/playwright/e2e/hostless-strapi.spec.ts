@@ -20,7 +20,7 @@ test.describe("hostless-strapi", () => {
       if (route.request().url().includes("restaurants-v5")) {
         const fixturePath = path.join(
           __dirname,
-          "../fixtures-data/strapi-v5-restaurants.json"
+          "../fixtures-data/strapi-v5-restaurants.json",
         );
         const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
         await route.fulfill({
@@ -31,7 +31,7 @@ test.describe("hostless-strapi", () => {
       } else {
         const fixturePath = path.join(
           __dirname,
-          "../fixtures-data/strapi-restaurants.json"
+          "../fixtures-data/strapi-restaurants.json",
         );
         const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
         await route.fulfill({
@@ -45,7 +45,7 @@ test.describe("hostless-strapi", () => {
     await page.route(/undefined/, async (route) => {
       const fixturePath = path.join(
         __dirname,
-        "../fixtures-data/strapi-error.json"
+        "../fixtures-data/strapi-error.json",
       );
       const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
       await route.fulfill({
@@ -77,7 +77,7 @@ test.describe("hostless-strapi", () => {
         const fullImagePath = path.join(
           __dirname,
           "../fixtures-data/",
-          imagePath
+          imagePath,
         );
         const imageData = fs.readFileSync(fullImagePath);
         await route.fulfill({
@@ -95,14 +95,14 @@ test.describe("hostless-strapi", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
   test.describe("can put strapi fetcher with strapi field, fetch and show data", () => {
     async function runTest(
       version: 4 | 5,
-      { apiClient, page, models }: RunTestProps
+      { apiClient, page, models }: RunTestProps,
     ) {
       projectId = await apiClient.setupProjectWithHostlessPackages({
         name: "strapi",
@@ -122,17 +122,17 @@ test.describe("hostless-strapi", () => {
 
       const canvasFrame = models.studio.frames.first().contentFrame();
       await expect(canvasFrame.locator("body")).toContainText(
-        "Please specify a collection."
+        "Please specify a collection.",
       );
 
       await models.studio.withinLiveMode(async (liveFrame) => {
         await expect(liveFrame.locator("body")).toContainText(
-          "Please specify a collection."
+          "Please specify a collection.",
         );
       });
 
       const nameInput = models.studio.rightPanel.frame.locator(
-        '[data-plasmic-prop="name"]'
+        '[data-plasmic-prop="name"]',
       );
       await nameInput.click();
 
@@ -143,12 +143,12 @@ test.describe("hostless-strapi", () => {
       await page.keyboard.press("Enter");
 
       await expect(canvasFrame.locator("body")).toContainText(
-        "StrapiField must specify a field name"
+        "StrapiField must specify a field name",
       );
 
       await models.studio.withinLiveMode(async (liveFrame) => {
         await expect(liveFrame.locator("body")).toContainText(
-          "StrapiField must specify a field name"
+          "StrapiField must specify a field name",
         );
       });
 
@@ -161,39 +161,39 @@ test.describe("hostless-strapi", () => {
       await fieldPlaceholder.click({ force: true });
 
       const pathSelector = models.studio.rightPanel.frame.locator(
-        '[data-plasmic-prop="path"]'
+        '[data-plasmic-prop="path"]',
       );
       if ((await pathSelector.count()) > 0) {
         await pathSelector.click();
 
         const nameOption = models.studio.rightPanel.frame.locator(
-          '[role="option"]:has-text("name")'
+          '[role="option"]:has-text("name")',
         );
         await nameOption.waitFor({ state: "visible" });
         await nameOption.click();
       } else {
         throw new Error(
-          "Path selector not found after selecting field component"
+          "Path selector not found after selecting field component",
         );
       }
 
       await expect(canvasFrame.locator("body")).toContainText(
-        "Café Coffee Day"
+        "Café Coffee Day",
       );
 
       await models.studio.withinLiveMode(async (liveFrame) => {
         await expect(liveFrame.locator("body")).toContainText(
-          "Café Coffee Day"
+          "Café Coffee Day",
         );
       });
 
       const pathSelectorForPhoto = models.studio.rightPanel.frame.locator(
-        '[data-plasmic-prop="path"]'
+        '[data-plasmic-prop="path"]',
       );
       await pathSelectorForPhoto.click();
 
       const photoOption = models.studio.rightPanel.frame.locator(
-        '[role="option"]:has-text("photo")'
+        '[role="option"]:has-text("photo")',
       );
       await photoOption.waitFor({ state: "visible" });
       await photoOption.click();
@@ -222,7 +222,7 @@ test.describe("hostless-strapi", () => {
   test.describe("can use context to data bind", () => {
     async function runTest(
       version: 4 | 5,
-      { apiClient, page, models }: RunTestProps
+      { apiClient, page, models }: RunTestProps,
     ) {
       projectId = await apiClient.setupProjectWithHostlessPackages({
         name: "strapi",
@@ -239,7 +239,7 @@ test.describe("hostless-strapi", () => {
       await models.studio.leftPanel.insertNode("StrapiCollection");
 
       const nameInput = models.studio.rightPanel.frame.locator(
-        '[data-plasmic-prop="name"]'
+        '[data-plasmic-prop="name"]',
       );
       await nameInput.click();
 
@@ -251,7 +251,7 @@ test.describe("hostless-strapi", () => {
 
       const canvasFrame = models.studio.frames.first().contentFrame();
       await expect(canvasFrame.locator("body")).toContainText(
-        "StrapiField must specify a field name"
+        "StrapiField must specify a field name",
       );
 
       const strapiFieldWithError = canvasFrame
@@ -270,7 +270,7 @@ test.describe("hostless-strapi", () => {
       await models.studio.renameTreeNode("Product Name");
 
       const textContentLabel = models.studio.rightPanel.frame.locator(
-        '[data-test-id="text-content"] label'
+        '[data-test-id="text-content"] label',
       );
       await textContentLabel.click({ button: "right" });
       await models.studio.frame.getByText("Use dynamic value").click();
@@ -290,7 +290,7 @@ test.describe("hostless-strapi", () => {
 
       await models.studio.leftPanel.insertNode("Image");
       const imagePicker = models.studio.rightPanel.frame.locator(
-        '[data-test-id="image-picker"]'
+        '[data-test-id="image-picker"]',
       );
       await imagePicker.click({ button: "right" });
       await models.studio.frame.getByText("Use dynamic value").click();
@@ -314,7 +314,7 @@ test.describe("hostless-strapi", () => {
 
       await models.studio.withinLiveMode(async (liveFrame) => {
         await expect(liveFrame.locator("body")).toContainText(
-          "Café Coffee Day"
+          "Café Coffee Day",
         );
       });
 

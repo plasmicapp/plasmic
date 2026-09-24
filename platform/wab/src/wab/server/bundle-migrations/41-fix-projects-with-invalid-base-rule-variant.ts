@@ -5,8 +5,8 @@ import {
 } from "@/wab/server/db/bundle-migration-utils";
 import { ensureBaseRuleVariantSetting } from "@/wab/shared/Variants";
 import { Bundler } from "@/wab/shared/bundler";
-import { TplNode } from "@/wab/shared/model/classes";
 import { flattenTpls, isTplVariantable } from "@/wab/shared/core/tpls";
+import { TplNode } from "@/wab/shared/model/classes";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();
@@ -14,7 +14,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   site.components
@@ -26,7 +26,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
             ensureBaseRuleVariantSetting(
               tpl,
               vs.variants,
-              c.tplTree as TplNode
+              c.tplTree as TplNode,
             );
           });
         }
@@ -36,7 +36,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "41-fix-projects-with-invalid-base-rule-variant"
+    "41-fix-projects-with-invalid-base-rule-variant",
   );
   Object.assign(bundle, newBundle);
 };

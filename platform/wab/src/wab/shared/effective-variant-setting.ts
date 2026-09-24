@@ -117,7 +117,7 @@ type ParentTplStyleData = (
  * @returns Record of CSS property names to their values
  */
 function getInheritableStyles(
-  rsh: ReadonlyIRuleSetHelpersX
+  rsh: ReadonlyIRuleSetHelpersX,
 ): Record<string, string> {
   const inheritableValues: Record<string, string> = {};
   for (const prop of inheritableTypographyCssProps) {
@@ -144,7 +144,7 @@ export class EffectiveVariantSetting {
     private tpl: TplNode,
     public variantSettings: VariantSetting[],
     private site?: Site,
-    activeVariants?: Variant[]
+    activeVariants?: Variant[],
   ) {
     if (isObservable(tpl)) {
       makeObservable(this, {
@@ -167,9 +167,9 @@ export class EffectiveVariantSetting {
       activeVariants = activeVariants.filter((v) => !isBaseVariant(v));
       assert(
         variantSettings.every((vs) =>
-          isAncestorCombo(activeVariants!, vs.variants)
+          isAncestorCombo(activeVariants!, vs.variants),
         ),
-        "Variants in vsetting are expected to be ancestor combo of active variants"
+        "Variants in vsetting are expected to be ancestor combo of active variants",
       );
       this.activeVariants = [...activeVariants];
     } else {
@@ -180,7 +180,7 @@ export class EffectiveVariantSetting {
 
     this.vsh = new VariantedStylesHelper(
       site,
-      this.activeVariants.filter((v) => isGlobalVariant(v))
+      this.activeVariants.filter((v) => isGlobalVariant(v)),
     );
   }
 
@@ -247,7 +247,7 @@ export class EffectiveVariantSetting {
     const expanded = opts.includeMixins ? expandRuleSets(rulesets) : rulesets;
     return makeReadonlySizeAwareExpProxy(
       createRuleSetMerger(expanded, this.tpl),
-      this.tpl
+      this.tpl,
     );
   }
 
@@ -297,7 +297,7 @@ export class EffectiveVariantSetting {
       // later vs overrides earlier vs
       values: Object.assign(
         {},
-        ...this.variantSettings.map((vs) => vs.rs.values)
+        ...this.variantSettings.map((vs) => vs.rs.values),
       ),
       mixins: L.uniq(L.flatten(reversed.map((rs) => rs.mixins))),
       animations: L.uniq(L.flatten(reversed.map((rs) => rs.animations ?? []))),
@@ -321,7 +321,7 @@ export class EffectiveVariantSetting {
       if (activeTheme) {
         if (isTypographyNode(tpl)) {
           rss.push(
-            self.vsh.getActiveVariantedRuleSet(activeTheme.defaultStyle)
+            self.vsh.getActiveVariantedRuleSet(activeTheme.defaultStyle),
           );
         }
       }
@@ -344,10 +344,10 @@ export class EffectiveVariantSetting {
         if (isTplTag(tpl)) {
           const tagStyles = L.sortBy(
             activeTheme.styles.filter((s) =>
-              tplMatchThemeStyle(s, tpl, vsettings)
+              tplMatchThemeStyle(s, tpl, vsettings),
             ),
             // Selectors with no pseudo-class first.
-            (s) => s.selector.split(":").length
+            (s) => s.selector.split(":").length,
           );
           for (const tagStyle of tagStyles) {
             rss.push(self.vsh.getActiveVariantedRuleSet(tagStyle.style));
@@ -366,7 +366,7 @@ export class EffectiveVariantSetting {
               values: rs.values,
               mixins: [],
               animations: rs.animations,
-            })
+            }),
       );
     }
 
@@ -383,7 +383,7 @@ export class EffectiveVariantSetting {
           combo: vs.variants,
           value: ensure(
             getRichTextContent(vs.text, viewCtx),
-            "Unable to get richtext content from text"
+            "Unable to get richtext content from text",
           ),
         });
       }
@@ -422,7 +422,7 @@ export class EffectiveVariantSetting {
         for (const mixin of vs.rs.mixins) {
           const mixinRsh = createExpandedRuleSetMerger(
             makeLayoutAwareRuleSet(mixin.rs, false),
-            tpl
+            tpl,
           );
           yield {
             type: "mixin",
@@ -437,7 +437,7 @@ export class EffectiveVariantSetting {
         const rsh = readonlyRSH(vs.rs, tpl);
         const derivedRsh = readonlyRSH(
           makeLayoutAwareRuleSet(vs.rs, isBaseVariant(vs.variants)),
-          tpl
+          tpl,
         );
         yield {
           type: "tpl",
@@ -496,7 +496,7 @@ export class EffectiveVariantSetting {
       while (parent && !isTplComponent(parent)) {
         const effectiveVs = getEffectiveVariantSetting(
           parent,
-          item.activeVariants
+          item.activeVariants,
         );
 
         if (isTplSlot(parent)) {
@@ -539,7 +539,7 @@ export class EffectiveVariantSetting {
         // Collect styles directly set on the TplSlot element itself. These styles apply to all content passed into this slot.
         const slotEffectiveVs = getEffectiveVariantSetting(
           parentArgSlotVs.slot,
-          parentArgSlotVs.slotVs.activeVariants
+          parentArgSlotVs.slotVs.activeVariants,
         );
         const slotRsh = slotEffectiveVs.rsh();
         const slotInheritableValues = getInheritableStyles(slotRsh);
@@ -582,7 +582,7 @@ export class EffectiveVariantSetting {
    * @returns ParentTplStyleSource or SlotSource or SlotSelectionSource if found, undefined otherwise
    */
   getInheritableTplStyleSource(
-    prop: string
+    prop: string,
   ): ParentTplStyleSource | SlotSource | undefined {
     // Only inheritable properties can come from parent Tpls
     if (!inheritableTypographyCssProps.includes(prop)) {
@@ -630,7 +630,7 @@ export class EffectiveVariantSetting {
       .reverse()
       .reduce(
         (acc, { styleValues }) => Object.assign(acc, styleValues),
-        {} as Record<string, string>
+        {} as Record<string, string>,
       );
 
     // Only return a RuleSet if we found any inherited properties
@@ -661,11 +661,11 @@ export class EffectiveVariantSetting {
               type: "theme",
               theme: ensure(
                 ensure(site, "Site is expected to be not null").activeTheme,
-                "Site should have an active theme"
+                "Site should have an active theme",
               ),
               value: ensure(
                 candidate.rsh.getRaw(prop),
-                "Prop is expected to have a value"
+                "Prop is expected to have a value",
               ),
               prop,
             } as ThemeSource;
@@ -678,11 +678,11 @@ export class EffectiveVariantSetting {
               selector: candidate.selector,
               theme: ensure(
                 ensure(site, "Site is expected to be not null").activeTheme,
-                "Site should have an active theme"
+                "Site should have an active theme",
               ),
               value: ensure(
                 candidate.rsh.getRaw(prop),
-                "Prop is expected to have a value"
+                "Prop is expected to have a value",
               ),
               prop,
             } as ThemeTagSource;
@@ -705,7 +705,7 @@ export class EffectiveVariantSetting {
               mixin: candidate.mixin,
               value: ensure(
                 candidate.rsh.getRaw(prop),
-                "Prop is expected to have a value"
+                "Prop is expected to have a value",
               ),
               prop,
             };
@@ -714,7 +714,7 @@ export class EffectiveVariantSetting {
           if (prop === "animation") {
             // Special handling for animations - look in the variant setting's animations array
             const vs = variantSettings.find((variantSetting) =>
-              arrayEqIgnoreOrder(variantSetting.variants, candidate.combo)
+              arrayEqIgnoreOrder(variantSetting.variants, candidate.combo),
             );
 
             // There are three possible cases here for animations
@@ -739,7 +739,7 @@ export class EffectiveVariantSetting {
               combo: candidate.combo,
               value: ensure(
                 candidate.rsh.getRaw(prop),
-                "Prop is expected to have a value"
+                "Prop is expected to have a value",
               ),
               prop,
             };
@@ -749,7 +749,7 @@ export class EffectiveVariantSetting {
               combo: candidate.combo,
               value: ensure(
                 candidate.derivedRsh.getRaw(prop),
-                "Prop is expected to have a value"
+                "Prop is expected to have a value",
               ),
               prop,
               isDerived: true,
@@ -790,7 +790,7 @@ export class EffectiveVariantSetting {
           };
         }
         return undefined;
-      })
+      }),
     );
     return argSource.length > 0 ? argSource : undefined;
   }
@@ -809,7 +809,7 @@ export class EffectiveVariantSetting {
           };
         }
         return undefined;
-      })
+      }),
     );
     return sources.length > 0 ? sources : undefined;
   }
@@ -831,7 +831,7 @@ export class EffectiveVariantSetting {
         } else {
           return undefined;
         }
-      })
+      }),
     );
     return sources.length > 0 ? sources : undefined;
   }
@@ -843,9 +843,9 @@ export class EffectiveVariantSetting {
     return arrayEq(
       ensure(
         L.last(this.variantSettings),
-        "variantSettings should not be empty"
+        "variantSettings should not be empty",
       ).variants,
-      variantCombo
+      variantCombo,
     );
   }
 
@@ -902,7 +902,7 @@ export class EffectiveVariantSetting {
     const tagStyles = L.sortBy(
       activeTheme.styles.filter((s) => tplMatchThemeStyle(s, tpl, vs)),
       // Selectors with no pseudo-class first.
-      (s) => s.selector.split(":").length
+      (s) => s.selector.split(":").length,
     );
 
     return tagStyles.map((s) => ({
@@ -925,14 +925,14 @@ export function getEffectiveVariantSetting(
   tpl: TplNode,
   activeVariants: VariantCombo,
   sorter?: VariantComboSorter,
-  component = $$$(tpl).tryGetOwningComponent()
+  component = $$$(tpl).tryGetOwningComponent(),
 ) {
   if (component) {
     const site = getOwnerSite(component);
     const vsettings = sortedVariantSettingStack(
       tpl.vsettings,
       activeVariants,
-      sorter ?? makeVariantComboSorter(site, component)
+      sorter ?? makeVariantComboSorter(site, component),
     );
     return new EffectiveVariantSetting(tpl, vsettings, site, activeVariants);
   } else {
@@ -948,7 +948,7 @@ export function getEffectiveVariantSetting(
  */
 export function getEffectiveVariantSettingExcept(
   tpl: TplNode,
-  variantCombo: VariantCombo
+  variantCombo: VariantCombo,
 ) {
   const component = $$$(tpl).tryGetOwningComponent();
   if (component) {
@@ -957,13 +957,13 @@ export function getEffectiveVariantSettingExcept(
     const vsettings = sortedVariantSettingStack(
       tpl.vsettings,
       variantCombo,
-      makeVariantComboSorter(site, component)
+      makeVariantComboSorter(site, component),
     );
     return new EffectiveVariantSetting(
       tpl,
       vsettings.filter((vss) => vss !== vs),
       site,
-      variantCombo
+      variantCombo,
     );
   } else {
     // This is a top-level frame root TplComponent
@@ -982,19 +982,19 @@ export function getEffectiveVariantSettingForInsertable(
   tpl: TplNode,
   activeVariants: Variant[],
   component: Component,
-  site: Site
+  site: Site,
 ): EffectiveVariantSetting {
   const vsettings = sortedVariantSettingStack(
     tpl.vsettings,
     activeVariants,
-    makeVariantComboSorter(site, component)
+    makeVariantComboSorter(site, component),
   );
   return new EffectiveVariantSetting(tpl, vsettings, site, activeVariants);
 }
 
 export function getActiveVariantsInArg(
   component: Component,
-  args: DeepReadonlyArray<Arg>
+  args: DeepReadonlyArray<Arg>,
 ) {
   return args.flatMap((arg) => {
     return isKnownVariantsRef(arg.expr) ? arg.expr.variants : [];
@@ -1018,7 +1018,7 @@ function getParentArgSlotVs(tpl: TplNode, activeVariants: Variant[]) {
     const parentTplComponent = parentSlotArg.tplComponent;
     const parentSlotArgTplSlot = getTplSlotForParam(
       parentTplComponent.component,
-      parentSlotArg.arg.param
+      parentSlotArg.arg.param,
     );
     if (parentSlotArgTplSlot) {
       // `tpl` is in a SlotSelection for `parentTplComponent`.  They both
@@ -1027,7 +1027,7 @@ function getParentArgSlotVs(tpl: TplNode, activeVariants: Variant[]) {
       // `activeVariants`.
       const parentTplComponentVs = getEffectiveVariantSetting(
         parentTplComponent,
-        activeVariants
+        activeVariants,
       );
 
       // Variants that are active for the elements inside TplComponent.component
@@ -1036,14 +1036,14 @@ function getParentArgSlotVs(tpl: TplNode, activeVariants: Variant[]) {
       const activeParentVariants = [
         ...getActiveVariantsInArg(
           parentTplComponent.component,
-          parentTplComponentVs.args
+          parentTplComponentVs.args,
         ),
         ...activeVariants.filter((v) => isGlobalVariant(v)),
       ];
 
       const parentTplSlotVs = getEffectiveVariantSetting(
         parentSlotArgTplSlot,
-        activeParentVariants
+        activeParentVariants,
       );
       return {
         tplComponent: parentTplComponent,
@@ -1062,7 +1062,7 @@ function getParentSlotVs(tpl: TplNode, activeVariants: Variant[]) {
   if (parentTplSlot) {
     const parentTplVs = getEffectiveVariantSetting(
       parentTplSlot,
-      activeVariants
+      activeVariants,
     );
     return {
       slot: parentTplSlot,
@@ -1080,11 +1080,11 @@ export function adaptEffectiveVariantSetting(
   tpl: TplNode,
   targetVs: VariantSetting,
   effectiveVs: EffectiveVariantSetting,
-  shouldFixText: boolean = true
+  shouldFixText: boolean = true,
 ) {
   assert(
     tpl.vsettings.includes(targetVs),
-    "Variant settings is detached from node"
+    "Variant settings is detached from node",
   );
 
   // Make a copy of attrs.
@@ -1104,7 +1104,7 @@ export function adaptEffectiveVariantSetting(
           param: arg.param as Param,
           expr: arg.expr,
         });
-      })
+      }),
   );
   targetVs.text = effectiveVs.text
     ? cloneRichText(effectiveVs.text)
@@ -1139,7 +1139,7 @@ export function adaptEffectiveVariantSetting(
  */
 export function getTplComponentActiveVariants(
   tpl: TplComponent,
-  variantCombo: VariantCombo
+  variantCombo: VariantCombo,
 ) {
   const effectiveVs = getEffectiveVariantSetting(tpl, variantCombo);
   return getTplComponentActiveVariantsByVs(tpl, effectiveVs);
@@ -1150,7 +1150,7 @@ export function getTplComponentActiveVariants(
  */
 export function getTplComponentActiveVariantsByVs(
   tpl: TplComponent,
-  effectiveVs: EffectiveVariantSetting
+  effectiveVs: EffectiveVariantSetting,
 ) {
   return getActiveVariantsInArg(tpl.component, effectiveVs.args);
 }

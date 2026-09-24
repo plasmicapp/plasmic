@@ -37,7 +37,7 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
         onClick={handleClick}
       />
     );
-  }
+  },
 );
 
 function isModifiedEvent(event: React.MouseEvent): boolean {

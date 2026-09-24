@@ -32,7 +32,7 @@ describe("deleteVariantGroup", () => {
       component,
       studioCtx.site,
       studioCtx,
-      tplMgr
+      tplMgr,
     );
 
     assert(result.isOk(), "expected success");
@@ -50,7 +50,7 @@ describe("deleteVariantGroup", () => {
       undefined,
       studioCtx.site,
       studioCtx,
-      tplMgr
+      tplMgr,
     );
 
     assert(result.isOk(), "expected success");
@@ -63,7 +63,7 @@ describe("deleteVariantGroup", () => {
     const root = component.tplTree as TplTag;
     const baseVs = ensureVariantSetting(root, [getBaseVariant(component)]);
     baseVs.dataCond = customCode(
-      `$state.${toVarName(group.param.variable.name)}`
+      `$state.${toVarName(group.param.variable.name)}`,
     );
 
     const result = await deleteVariantGroup(
@@ -71,13 +71,13 @@ describe("deleteVariantGroup", () => {
       component,
       studioCtx.site,
       studioCtx,
-      tplMgr
+      tplMgr,
     );
 
     assert(result.isErr(), "expected error");
     assert(
       result.error.variantGroupRefs != null,
-      "expected variant group refs"
+      "expected variant group refs",
     );
     expect(result.error.variantGroupRefs.length).toBeGreaterThan(0);
     // Group is left untouched.

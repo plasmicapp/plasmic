@@ -67,9 +67,9 @@ export class AppView extends React.Component<AppViewProps, AppViewState> {
                 <ScreenDimmer>
                   <Spin size={"large"} />
                 </ScreenDimmer>,
-                document.body
+                document.body,
               )}
-          </div>
+          </div>,
         )}
       </IconContext.Provider>
     );

@@ -33,7 +33,7 @@ export function createFolderTreeStructure<T, K>(
     pathPrefix: string;
     getName: (item: T) => string;
     mapper: (item: T | Folder<T>) => K;
-  }
+  },
 ): K[] {
   const { pathPrefix, getName, mapper } = opts;
 
@@ -64,7 +64,7 @@ function insertIntoTree<T>(
   children: (T | Folder<T>)[],
   folders: string[],
   index: number,
-  path: string
+  path: string,
 ) {
   // >= because we want to handle the case where folders is an empty array
   if (index >= folders.length - 1) {
@@ -75,7 +75,7 @@ function insertIntoTree<T>(
   const newPath = `${path}${index !== 0 ? "/" : ""}${folders[index]}`;
   let treeNode: Folder<T> | undefined = children.find(
     (currentNode): currentNode is Folder<T> =>
-      isFolder(currentNode) && currentNode.name === folders[index]
+      isFolder(currentNode) && currentNode.name === folders[index],
   );
   if (!treeNode) {
     const len = children.push({
@@ -120,7 +120,7 @@ export interface ReplacedFolderName {
  */
 export function replaceFolderName(
   path: string,
-  newName: string
+  newName: string,
 ): ReplacedFolderName {
   const oldPath = getFolderWithSlash(path);
 

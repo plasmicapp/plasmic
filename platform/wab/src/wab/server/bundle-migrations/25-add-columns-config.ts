@@ -1,22 +1,22 @@
-import { ensure, ensureInstance } from "@/wab/shared/common";
-import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { loadDepPackages } from "@/wab/server/db/DbBundleLoader";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
+import {
+  tryGetBaseVariantSetting,
+  tryGetVariantSetting,
+} from "@/wab/shared/Variants";
 import { Bundler } from "@/wab/shared/bundler";
 import {
   equalColumnDistribution,
   hasMaxWidthVariant,
 } from "@/wab/shared/columns-utils";
+import { ensure, ensureInstance } from "@/wab/shared/common";
 import {
   ColumnsConfig,
-  isKnownTplTag,
   ProjectDependency,
   Site,
+  isKnownTplTag,
 } from "@/wab/shared/model/classes";
-import {
-  tryGetBaseVariantSetting,
-  tryGetVariantSetting,
-} from "@/wab/shared/Variants";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const tplIids: string[] = [];
@@ -36,7 +36,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const siteOrProjectDep = ensureInstance(
     bundler.unbundle(bundle, entity.id),
     Site,
-    ProjectDependency
+    ProjectDependency,
   );
 
   for (const iid of tplIids) {
@@ -49,13 +49,13 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
           // automatically updates
           const baseVS = ensure(
             tryGetBaseVariantSetting(tpl),
-            "must have baseVs"
+            "must have baseVs",
           );
 
           const desktopConfig = new ColumnsConfig({
             breakUpRows: tpl.children.length > 12,
             colsSizes: equalColumnDistribution(
-              Math.min(tpl.children.length, 12)
+              Math.min(tpl.children.length, 12),
             ),
           });
           const mobileConfig = new ColumnsConfig({
@@ -64,17 +64,17 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
           });
           if (tpl.columnsSetting?.screenBreakpoint) {
             const isBaseColumn = !hasMaxWidthVariant(
-              tpl.columnsSetting.screenBreakpoint
+              tpl.columnsSetting.screenBreakpoint,
             );
             const screenVS = tryGetVariantSetting(tpl, [
               tpl.columnsSetting.screenBreakpoint,
             ]);
             if (screenVS) {
               baseVS.columnsConfig = new ColumnsConfig(
-                isBaseColumn ? mobileConfig : desktopConfig
+                isBaseColumn ? mobileConfig : desktopConfig,
               );
               screenVS.columnsConfig = new ColumnsConfig(
-                !isBaseColumn ? mobileConfig : desktopConfig
+                !isBaseColumn ? mobileConfig : desktopConfig,
               );
             } else {
               baseVS.columnsConfig = desktopConfig;
@@ -90,7 +90,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "25-add-columns-config"
+    "25-add-columns-config",
   );
   Object.assign(bundle, newBundle);
 };

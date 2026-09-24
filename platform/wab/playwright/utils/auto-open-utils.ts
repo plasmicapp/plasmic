@@ -34,14 +34,14 @@ export async function hideAutoOpen(models: PageModels) {
 
 export async function switchInteractiveMode(models: PageModels) {
   const interactiveSwitch = models.studio.frame.locator(
-    '[data-test-id="interactive-switch"]'
+    '[data-test-id="interactive-switch"]',
   );
 
   try {
     await interactiveSwitch.waitFor({ state: "attached", timeout: 10000 });
   } catch (e) {
     throw new Error(
-      "Interactive switch not found - focus mode might not be fully loaded"
+      "Interactive switch not found - focus mode might not be fully loaded",
     );
   }
 
@@ -50,7 +50,7 @@ export async function switchInteractiveMode(models: PageModels) {
     await models.studio.page.waitForTimeout(500);
   } catch (e: unknown) {
     const label = models.studio.frame.locator(
-      'label:has([data-test-id="interactive-switch"])'
+      'label:has([data-test-id="interactive-switch"])',
     );
     await label.click();
     await models.studio.page.waitForTimeout(500);
@@ -84,7 +84,7 @@ export async function setVisible(models: PageModels) {
 
 export async function setDynamicVisibility(
   models: PageModels,
-  expression: string
+  expression: string,
 ) {
   await models.studio.rightPanel.switchToDesignTab();
   await models.studio.frame
@@ -120,7 +120,7 @@ export async function toggleVisiblity(models: PageModels, nodeName: string) {
 export async function assertHidden(
   frame: FrameLocator,
   hiddenContent: string,
-  visibleContent?: string
+  visibleContent?: string,
 ) {
   if (visibleContent) {
     await expect(frame.getByText(visibleContent)).toBeVisible();
@@ -131,7 +131,7 @@ export async function assertHidden(
 export async function assertAutoOpened(
   frame: FrameLocator,
   hiddenContent: string,
-  visibleContent?: string
+  visibleContent?: string,
 ) {
   if (visibleContent) {
     await expect(frame.getByText(visibleContent)).toBeVisible({
@@ -236,7 +236,7 @@ export async function createTooltipComponent(page: Page, models: PageModels) {
   await page.waitForTimeout(1000);
 
   const expandAllButton = models.studio.leftPanel.frame.locator(
-    'button[class*="expandAllButton"]'
+    'button[class*="expandAllButton"]',
   );
   if ((await expandAllButton.count()) > 0) {
     await expandAllButton.click();
@@ -257,19 +257,19 @@ export async function createTooltipComponent(page: Page, models: PageModels) {
 
 export async function assertModalAutoOpened(
   frame: FrameLocator,
-  modalContent: string
+  modalContent: string,
 ) {
   await expect(
-    frame.locator(`:has-text("${modalContent}")`).first()
+    frame.locator(`:has-text("${modalContent}")`).first(),
   ).toBeVisible();
 }
 
 export async function assertModalHidden(
   frame: FrameLocator,
-  modalContent: string
+  modalContent: string,
 ) {
   await expect(
-    frame.locator(`:has-text("${modalContent}")`).first()
+    frame.locator(`:has-text("${modalContent}")`).first(),
   ).not.toBeVisible();
 }
 
@@ -309,7 +309,7 @@ export async function testElementAutoOpen(
   frame: FrameLocator,
   nodeName: string,
   hiddenContent: string,
-  isAutoOpenable: boolean = true
+  isAutoOpenable: boolean = true,
 ) {
   async function checkHidden() {
     await expect(frame.getByText(hiddenContent)).not.toBeVisible();
@@ -358,7 +358,7 @@ export async function checkTextAutoOpen(
   visibility: VisibilityType,
   textContents: string,
   nodeName: string,
-  hasNotRenderedParent?: boolean
+  hasNotRenderedParent?: boolean,
 ) {
   const refocusFrame = async () => {
     await models.studio.focusFrameRoot(frame);
@@ -438,7 +438,7 @@ export async function checkImageAutoOpen(
   models: PageModels,
   frame: FrameLocator,
   visibility: VisibilityType,
-  nodeName: string
+  nodeName: string,
 ) {
   const refocusFrame = async () => {
     await models.studio.focusFrameRoot(frame);
@@ -543,7 +543,7 @@ export async function testAllVisibilities({
         hasNotRenderedParent ? "notRendered" : "notVisible",
         text,
         nodeName,
-        hasNotRenderedParent
+        hasNotRenderedParent,
       );
     } else {
       await checkTextAutoOpen(
@@ -553,7 +553,7 @@ export async function testAllVisibilities({
         hasNotRenderedParent ? "notRendered" : "notVisible",
         text,
         nodeName,
-        hasNotRenderedParent
+        hasNotRenderedParent,
       );
     }
     await models.studio.leftPanel.selectTreeNode([nodeName]);
@@ -571,7 +571,7 @@ export async function testAllVisibilities({
     "notRendered",
     text,
     nodeName,
-    hasNotRenderedParent
+    hasNotRenderedParent,
   );
 
   await setVisible(models);
@@ -586,7 +586,7 @@ export async function testAllVisibilities({
     "customExpr",
     text,
     nodeName,
-    hasNotRenderedParent
+    hasNotRenderedParent,
   );
 
   if (!hasNotRenderedParent) {
@@ -614,7 +614,7 @@ export async function testAllVisibilities({
       hasNotRenderedParent || isSlot ? "notRendered" : "notVisible",
       text,
       nodeName,
-      hasNotRenderedParent
+      hasNotRenderedParent,
     );
 
     await toggleVisiblity(models, nodeName);
@@ -633,7 +633,7 @@ export async function testAllVisibilities({
 
 export async function testAllImageVisbilities(
   models: PageModels,
-  frame: FrameLocator
+  frame: FrameLocator,
 ) {
   await expect(frame.locator("img").first()).toBeAttached();
 

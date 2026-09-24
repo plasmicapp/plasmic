@@ -22,7 +22,7 @@ test.describe("text-slots", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -65,7 +65,7 @@ test.describe("text-slots", () => {
 
     await page.mouse.move(
       sourceBox!.x + sourceBox!.width / 2,
-      sourceBox!.y + sourceBox!.height / 2
+      sourceBox!.y + sourceBox!.height / 2,
     );
     await page.mouse.down();
     await page.mouse.move(
@@ -73,7 +73,7 @@ test.describe("text-slots", () => {
       targetBox!.y + targetBox!.y / 2,
       {
         steps: 20,
-      }
+      },
     );
     await page.mouse.up();
     await page.waitForTimeout(500);
@@ -174,16 +174,16 @@ test.describe("text-slots", () => {
 
       await expect(liveFrame.getByText("Hello")).toHaveCSS(
         "font-family",
-        '"Courier New"'
+        '"Courier New"',
       );
       await expect(liveFrame.getByText("Hello")).toHaveCSS("font-size", "24px");
       await expect(liveFrame.getByText("Goodbye")).toHaveCSS(
         "font-family",
-        '"Courier New"'
+        '"Courier New"',
       );
       await expect(liveFrame.getByText("Goodbye")).toHaveCSS(
         "font-size",
-        "16px"
+        "16px",
       );
     });
 
@@ -201,13 +201,13 @@ test.describe("text-slots", () => {
       await expect(frame2root.getByText("Goodbye")).toBeVisible();
       await expect(frame2root.getByText("Hello")).toHaveCSS(
         "font-size",
-        "24px"
+        "24px",
       );
 
       for (const msg of ["Hello", "Goodbye"]) {
         await expect(frame2root.getByText(msg)).toHaveCSS(
           "font-family",
-          '"Courier New"'
+          '"Courier New"',
         );
       }
 

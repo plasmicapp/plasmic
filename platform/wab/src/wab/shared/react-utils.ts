@@ -5,7 +5,7 @@ import { isValidElement } from "react";
 
 export function isReactElementOfType<P>(
   type: React.ComponentType<P>,
-  element: React.ReactNode
+  element: React.ReactNode,
 ): element is React.ReactElement<P> {
   return React.isValidElement(element) && element.type === type;
 }
@@ -17,7 +17,7 @@ export class InvalidComponentImplError extends CustomError {
 export function canComponentTakeRef(
   impl: React.ComponentType,
   react: typeof React,
-  win: typeof window | typeof globalThis
+  win: typeof window | typeof globalThis,
 ): Result<boolean, InvalidComponentImplError> {
   return safeTry<boolean, InvalidComponentImplError>(function* () {
     if (impl == null) {
@@ -52,7 +52,7 @@ export function canComponentTakeRef(
     if (typeof impl === "function") {
       return ok(
         impl.prototype instanceof react.Component ||
-          impl.prototype === react.Component
+          impl.prototype === react.Component,
       );
     }
 
@@ -73,7 +73,7 @@ export function canComponentTakeRef(
 
     if (
       [REACT_LAZY_TYPE, REACT_PROVIDER_TYPE, REACT_CONTEXT_TYPE].includes(
-        (impl as any).$$typeof
+        (impl as any).$$typeof,
       )
     ) {
       return ok(false);

@@ -19,7 +19,7 @@ export function isSameOriginUrl(url: string) {
  * Can be readily used as a query or hash string by appending ? or # before it.
  */
 export function encodeUriParams(
-  params: [key: string, value: unknown][]
+  params: [key: string, value: unknown][],
 ): string {
   // Note we purposely use encodeUriComponent instead of URLSearchParams
   // https://stackoverflow.com/questions/59889140/different-output-from-encodeuricomponent-vs-urlsearchparams

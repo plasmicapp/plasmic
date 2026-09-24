@@ -28,7 +28,7 @@ class ResendMailer implements Mailer {
       : {
           text: ensure(
             mailOptions.text,
-            "sendMail requires html or text content"
+            "sendMail requires html or text content",
           ),
         };
     const { error } = await resend.emails.send({
@@ -41,7 +41,7 @@ class ResendMailer implements Mailer {
     });
     if (error) {
       throw new Error(
-        `Failed to send email "${mailOptions.subject}": ${error.name}: ${error.message}`
+        `Failed to send email "${mailOptions.subject}": ${error.name}: ${error.message}`,
       );
     }
   }
@@ -80,7 +80,7 @@ export function createMailer(): Mailer {
         host: "email-smtp.us-west-2.amazonaws.com",
         port: 587,
         auth: getSmtpAuth(),
-      })
+      }),
     );
   } else {
     return new ConsoleMailer();

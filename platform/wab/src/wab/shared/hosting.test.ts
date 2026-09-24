@@ -8,7 +8,7 @@ describe("getSetCustomDomainFailure", () => {
     expect(
       getSetCustomDomainFailure({
         domains: { "": { status: "DomainUpdated" } },
-      })
+      }),
     ).toBeUndefined();
   });
 
@@ -18,7 +18,7 @@ describe("getSetCustomDomainFailure", () => {
     expect(
       getSetCustomDomainFailure({
         domains: { "www.example.com": { status: "VercelAuthError" } },
-      })
+      }),
     ).toEqual({
       domain: "www.example.com",
       status: "VercelAuthError",
@@ -34,7 +34,7 @@ describe("getSetCustomDomainFailure", () => {
             vercelErrorCode: "domain_taken",
           },
         },
-      })
+      }),
     ).toEqual({
       domain: "www.example.com",
       status: "DomainUsedElsewhereInVercel",
@@ -50,7 +50,7 @@ describe("getSetCustomDomainFailure", () => {
         domains: {
           "www.old.example": { status: "VercelAuthError", operation: "remove" },
         },
-      })
+      }),
     ).toEqual({
       domain: "www.old.example",
       status: "VercelAuthError",
@@ -77,8 +77,8 @@ describe("pickFailedOperation", () => {
           status: "OtherDomainError",
           operation: "remove",
         },
-        "new.example"
-      )
+        "new.example",
+      ),
     ).toBe("remove");
   });
 

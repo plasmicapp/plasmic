@@ -21,7 +21,7 @@ export function GroupHeader(props: Props) {
         label: item.label,
         key: item.key,
       };
-    }
+    },
   );
 
   return (
@@ -39,7 +39,7 @@ export function GroupHeader(props: Props) {
           }
           onValueChanged={(value) => {
             props.setNot(
-              value === _negationOptions.dontMatch.key ? true : false
+              value === _negationOptions.dontMatch.key ? true : false,
             );
           }}
           hideArrow={true}

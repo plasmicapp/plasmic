@@ -75,14 +75,14 @@ test.describe("Plexus Installation", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
   async function getFilteredComponentsInProjectPanel(
     models: PageModels,
     page: Page,
-    filterQuery: string
+    filterQuery: string,
   ) {
     const projectPanel = await ensureProjectPanelOpen(models, page);
     const input = projectPanel.locator("input");
@@ -97,7 +97,7 @@ test.describe("Plexus Installation", () => {
 
   async function ensureProjectPanelOpen(models: PageModels, page: Page) {
     const projectPanel = models.studio.frame.locator(
-      testIds.projectPanel.selector
+      testIds.projectPanel.selector,
     );
     if (!(await projectPanel.isVisible())) {
       await models.studio.projectNavButton.click({ timeout: 10000 });
@@ -105,7 +105,7 @@ test.describe("Plexus Installation", () => {
     }
 
     const expandAllButton = models.studio.frame.locator(
-      '[data-test-id="nav-dropdown-expand-all"]'
+      '[data-test-id="nav-dropdown-expand-all"]',
     );
     await expandAllButton.hover({ trial: true });
     await expandAllButton.click();
@@ -124,7 +124,7 @@ test.describe("Plexus Installation", () => {
     models: PageModels,
     page: Page,
     insertableName: string,
-    targetOffset: { x: number; y: number } = { x: 120, y: 120 }
+    targetOffset: { x: number; y: number } = { x: 120, y: 120 },
   ) {
     await models.studio.leftPanel.addButton.click();
     await page.waitForTimeout(500);
@@ -168,20 +168,20 @@ test.describe("Plexus Installation", () => {
   }
 
   async function getProjectPanelCounts(
-    projectPanel: Locator
+    projectPanel: Locator,
   ): Promise<Record<string, number>> {
     return projectPanel.evaluate((panel) => {
       const counts: Record<string, number> = {};
       panel.querySelectorAll("li").forEach((row) => {
         const labelEl = row.querySelector<HTMLElement>(
-          '[class*="labelContainer"]'
+          '[class*="labelContainer"]',
         );
         const labelText = labelEl?.textContent?.trim();
         if (!labelText) {
           return;
         }
         const countEl = row.querySelector<HTMLElement>(
-          '[class*="sizeContainer"] span'
+          '[class*="sizeContainer"] span',
         );
         const countText = countEl?.textContent?.trim();
         if (!countText) {
@@ -226,7 +226,7 @@ test.describe("Plexus Installation", () => {
 
   async function getStudioSiteState(
     models: PageModels,
-    page: Page
+    page: Page,
   ): Promise<{
     defaultComponentNames: Record<string, string>;
     projectDependencyIds: string[];
@@ -236,15 +236,15 @@ test.describe("Plexus Installation", () => {
       const win = window as any;
       const site = win?.dbg?.studioCtx?.site;
       const defaultComponentEntries = Object.entries(
-        site?.defaultComponents ?? {}
+        site?.defaultComponents ?? {},
       ).map(([key, component]) => [key, (component as any)?.name as string]);
       const projectDependencyIds = (site?.projectDependencies ?? []).map(
-        (dep: any) => dep?.projectId as string
+        (dep: any) => dep?.projectId as string,
       );
 
       return {
         defaultComponentNames: Object.fromEntries(
-          defaultComponentEntries
+          defaultComponentEntries,
         ) as Record<string, string>,
         projectDependencyIds,
       };
@@ -261,7 +261,7 @@ test.describe("Plexus Installation", () => {
   async function verifyProjectPanelState(
     models: PageModels,
     page: Page,
-    { arenaCount = 2, componentCount = 24 }
+    { arenaCount = 2, componentCount = 24 },
   ) {
     const projectPanel = await ensureProjectPanelOpen(models, page);
     await page.waitForTimeout(500);
@@ -288,7 +288,7 @@ test.describe("Plexus Installation", () => {
         const componentBefore = await getFilteredComponentsInProjectPanel(
           models,
           page,
-          startCase(item.name)
+          startCase(item.name),
         );
         await expect(componentBefore).toHaveCount(0);
 
@@ -299,7 +299,7 @@ test.describe("Plexus Installation", () => {
         const componentAfter = await getFilteredComponentsInProjectPanel(
           models,
           page,
-          startCase(item.name)
+          startCase(item.name),
         );
         await expect(componentAfter).toHaveCount(1);
 
@@ -307,7 +307,7 @@ test.describe("Plexus Installation", () => {
           const dependency = await getFilteredComponentsInProjectPanel(
             models,
             page,
-            constituent
+            constituent,
           );
           await expect(dependency).toHaveCount(1);
         }
@@ -318,7 +318,7 @@ test.describe("Plexus Installation", () => {
         PLEXUS_INSERTABLES.flatMap((item) => [
           startCase(item.name),
           ...item.dependencies,
-        ])
+        ]),
       ).size;
 
       const projectPanel = await ensureProjectPanelOpen(models, page);
@@ -350,7 +350,7 @@ test.describe("Plexus Installation", () => {
       await verifyInitialState(models, page);
 
       const comboboxItem = PLEXUS_INSERTABLES.find(
-        (item) => item.name === "combobox"
+        (item) => item.name === "combobox",
       )!;
 
       await dragInsertableToCanvas(models, page, startCase(comboboxItem.name), {
@@ -361,7 +361,7 @@ test.describe("Plexus Installation", () => {
 
       const expectedCount = 1 + comboboxItem.dependencies.length;
       const countsAfterInsert = await getProjectPanelCounts(
-        await ensureProjectPanelOpen(models, page)
+        await ensureProjectPanelOpen(models, page),
       );
       await page.keyboard.press("Escape");
       expect(countsAfterInsert.Components ?? 0).toBe(expectedCount);
@@ -369,7 +369,7 @@ test.describe("Plexus Installation", () => {
       const component = await getFilteredComponentsInProjectPanel(
         models,
         page,
-        startCase(comboboxItem.name)
+        startCase(comboboxItem.name),
       );
       await expect(component).toHaveCount(1);
 
@@ -377,7 +377,7 @@ test.describe("Plexus Installation", () => {
         const dependency = await getFilteredComponentsInProjectPanel(
           models,
           page,
-          constituent
+          constituent,
         );
         await expect(dependency).toHaveCount(1);
       }
@@ -397,13 +397,13 @@ test.describe("Plexus Installation", () => {
 
       await verifyInitialState(models, page);
       const baselineCounts = await getProjectPanelCounts(
-        await ensureProjectPanelOpen(models, page)
+        await ensureProjectPanelOpen(models, page),
       );
       await page.keyboard.press("Escape");
       const baselineComponentCount = baselineCounts.Components ?? 0;
 
       const testItem = PLEXUS_INSERTABLES.find(
-        (item) => item.name === "combobox"
+        (item) => item.name === "combobox",
       )!;
       const newComponentsLength = testItem.dependencies.length + 1;
 
@@ -412,7 +412,7 @@ test.describe("Plexus Installation", () => {
         await page.waitForTimeout(500);
         const addItem = models.studio.leftPanel.frame
           .locator(
-            `li[data-plasmic-add-item-name="${startCase(testItem.name)}"]`
+            `li[data-plasmic-add-item-name="${startCase(testItem.name)}"]`,
           )
           .first();
         await addItem.waitFor({ state: "visible" });
@@ -428,7 +428,7 @@ test.describe("Plexus Installation", () => {
       const component = await getFilteredComponentsInProjectPanel(
         models,
         page,
-        startCase(testItem.name)
+        startCase(testItem.name),
       );
       await expect(component).toHaveCount(1);
 
@@ -436,23 +436,23 @@ test.describe("Plexus Installation", () => {
         const dependency = await getFilteredComponentsInProjectPanel(
           models,
           page,
-          constituent
+          constituent,
         );
         await expect(dependency).toHaveCount(1);
       }
 
       const countsAfterFirst = await getProjectPanelCounts(
-        await ensureProjectPanelOpen(models, page)
+        await ensureProjectPanelOpen(models, page),
       );
       await page.keyboard.press("Escape");
       expect(countsAfterFirst.Components ?? 0).toBe(
-        baselineComponentCount + newComponentsLength
+        baselineComponentCount + newComponentsLength,
       );
 
       const component2Before = await getFilteredComponentsInProjectPanel(
         models,
         page,
-        `${startCase(testItem.name)}2`
+        `${startCase(testItem.name)}2`,
       );
       await expect(component2Before).toHaveCount(0);
 
@@ -461,16 +461,16 @@ test.describe("Plexus Installation", () => {
       const component2After = await getFilteredComponentsInProjectPanel(
         models,
         page,
-        `${startCase(testItem.name)}2`
+        `${startCase(testItem.name)}2`,
       );
       await expect(component2After).toHaveCount(1);
 
       const countsAfterSecond = await getProjectPanelCounts(
-        await ensureProjectPanelOpen(models, page)
+        await ensureProjectPanelOpen(models, page),
       );
       await page.keyboard.press("Escape");
       expect(countsAfterSecond.Components ?? 0).toBe(
-        baselineComponentCount + newComponentsLength * 2
+        baselineComponentCount + newComponentsLength * 2,
       );
     });
   });
@@ -490,7 +490,7 @@ test.describe("Plexus Installation", () => {
       await expect(disabledCheckbox).toBeVisible();
 
       const enabledCheckboxes = dialog.locator(
-        'input[type="checkbox"]:not([disabled])'
+        'input[type="checkbox"]:not([disabled])',
       );
       await expect(enabledCheckboxes).toHaveCount(3);
     }
@@ -518,7 +518,7 @@ test.describe("Plexus Installation", () => {
       models,
     }) => {
       const baselineCounts = await getProjectPanelCounts(
-        await ensureProjectPanelOpen(models, page)
+        await ensureProjectPanelOpen(models, page),
       );
       await page.keyboard.press("Escape");
 
@@ -531,20 +531,20 @@ test.describe("Plexus Installation", () => {
       await beginInstallation(models, page);
 
       const countsAfterInstall = await getProjectPanelCounts(
-        await ensureProjectPanelOpen(models, page)
+        await ensureProjectPanelOpen(models, page),
       );
       await page.keyboard.press("Escape");
       expect(countsAfterInstall.Components ?? 0).toBe(
-        (baselineCounts.Components ?? 0) + 24
+        (baselineCounts.Components ?? 0) + 24,
       );
       expect(countsAfterInstall.Arenas ?? 0).toBe(
-        (baselineCounts.Arenas ?? 0) + 1
+        (baselineCounts.Arenas ?? 0) + 1,
       );
     });
 
     test("can install installable (un-flattened)", async ({ page, models }) => {
       const baselineCounts = await getProjectPanelCounts(
-        await ensureProjectPanelOpen(models, page)
+        await ensureProjectPanelOpen(models, page),
       );
       await page.keyboard.press("Escape");
 
@@ -557,14 +557,14 @@ test.describe("Plexus Installation", () => {
       await beginInstallation(models, page);
 
       const countsAfterInstall = await getProjectPanelCounts(
-        await ensureProjectPanelOpen(models, page)
+        await ensureProjectPanelOpen(models, page),
       );
       await page.keyboard.press("Escape");
       expect(countsAfterInstall.Components ?? 0).toBe(
-        (baselineCounts.Components ?? 0) + 24
+        (baselineCounts.Components ?? 0) + 24,
       );
       expect(countsAfterInstall.Arenas ?? 0).toBe(
-        (baselineCounts.Arenas ?? 0) + 1
+        (baselineCounts.Arenas ?? 0) + 1,
       );
     });
 
@@ -587,7 +587,7 @@ test.describe("Plexus Installation", () => {
       });
 
       const baselineCounts = await getProjectPanelCounts(
-        await ensureProjectPanelOpen(models, page)
+        await ensureProjectPanelOpen(models, page),
       );
       await page.keyboard.press("Escape");
 
@@ -600,18 +600,18 @@ test.describe("Plexus Installation", () => {
       await beginInstallation(models, page);
 
       const countsAfterInstall = await getProjectPanelCounts(
-        await ensureProjectPanelOpen(models, page)
+        await ensureProjectPanelOpen(models, page),
       );
       await page.keyboard.press("Escape");
       expect(countsAfterInstall.Components ?? 0).toBe(24);
       expect(countsAfterInstall.Arenas ?? 0).toBe(
-        (baselineCounts.Arenas ?? 0) + 1
+        (baselineCounts.Arenas ?? 0) + 1,
       );
 
       const component = await getFilteredComponentsInProjectPanel(
         models,
         page,
-        startCase(testItem.name)
+        startCase(testItem.name),
       );
       await expect(component).toHaveCount(1);
     });
@@ -621,7 +621,7 @@ test.describe("Plexus Installation", () => {
       models,
     }) => {
       const baselineCounts = await getProjectPanelCounts(
-        await ensureProjectPanelOpen(models, page)
+        await ensureProjectPanelOpen(models, page),
       );
       await page.keyboard.press("Escape");
 
@@ -638,14 +638,14 @@ test.describe("Plexus Installation", () => {
       await beginInstallation(models, page);
 
       const countsAfterInstall = await getProjectPanelCounts(
-        await ensureProjectPanelOpen(models, page)
+        await ensureProjectPanelOpen(models, page),
       );
       await page.keyboard.press("Escape");
       expect(countsAfterInstall.Components ?? 0).toBe(
-        (baselineCounts.Components ?? 0) + 24
+        (baselineCounts.Components ?? 0) + 24,
       );
       expect(countsAfterInstall.Arenas ?? 0).toBe(
-        (baselineCounts.Arenas ?? 0) + 1
+        (baselineCounts.Arenas ?? 0) + 1,
       );
     });
   });

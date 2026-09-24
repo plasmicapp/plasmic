@@ -31,7 +31,7 @@ export const addNewStateVariableCommand: Command<
           component,
           tplMgr: studioCtx.tplMgr(),
           name: DEFAULT_STATE_VARIABLE_NAME,
-        })
+        }),
       );
       return ok(state);
     });

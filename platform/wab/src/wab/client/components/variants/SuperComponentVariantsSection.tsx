@@ -36,9 +36,9 @@ export const SuperComponentVariantsSection = observer(
               title: group.param.variable.name,
               variants: group.variants,
               key: group.uuid,
-            })
+            }),
           )}
       </div>
     );
-  }
+  },
 );

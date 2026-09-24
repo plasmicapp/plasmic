@@ -36,7 +36,7 @@ export class SlotSelection {
     assert(
       !this.tpl || val.tpl === this.tpl,
       () =>
-        `Provided ValComponent for different tpl (${val.tpl.uuid} instead of ${this.tpl?.uuid})`
+        `Provided ValComponent for different tpl (${val.tpl.uuid} instead of ${this.tpl?.uuid})`,
     );
     return new SlotSelection({
       tpl: undefined,
@@ -55,7 +55,7 @@ export class SlotSelection {
   tryGetContent(): ValNode[] | undefined {
     return ensure(
       this.val,
-      () => `Can only get contents of a val SlotSelection`
+      () => `Can only get contents of a val SlotSelection`,
     ).slotArgs.get(this.slotParam);
   }
   getTpl(): TplComponent {

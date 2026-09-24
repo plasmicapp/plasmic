@@ -57,7 +57,7 @@ export interface DirectoryConfigProps extends DefaultDirectoryConfigProps {
 
 function DirectoryConfig_(
   props: DirectoryConfigProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const appCtx = useAppCtx();
   const { goBack, onCancel, directoryId, project, ...rest } = props;
@@ -67,15 +67,15 @@ function DirectoryConfig_(
   const { accesses } = useAppAccessRules(appCtx, appId);
   const { groups, mutate: mutateGroups } = useDirectoryGroups(
     appCtx,
-    directoryId
+    directoryId,
   );
   const { directory, mutate: mutateDirectory } = useDirectory(
     appCtx,
-    directoryId
+    directoryId,
   );
   const { directories, mutate: mutateDirectories } = useTeamDirectories(
     appCtx,
-    project.teamId ?? undefined
+    project.teamId ?? undefined,
   );
   const { users, mutate: mutateUsers } = useDirectoryUsers(appCtx, directoryId);
   const [showAddUser, setShowAddUser] = React.useState(false);
@@ -89,7 +89,7 @@ function DirectoryConfig_(
         await appCtx.api.updateEndUserGroups(
           directoryId,
           user.id,
-          newGroupsIds
+          newGroupsIds,
         );
         return await appCtx.api.listDirectoryUsers(directoryId);
       },
@@ -105,7 +105,7 @@ function DirectoryConfig_(
           }
           return _user;
         }),
-      }
+      },
     );
   }
 
@@ -123,7 +123,7 @@ function DirectoryConfig_(
                     directoryId,
                     {
                       name,
-                    }
+                    },
                   );
                   return result;
                 },
@@ -132,7 +132,7 @@ function DirectoryConfig_(
                     ...directory!,
                     name,
                   },
-                }
+                },
               );
             }}
           />
@@ -157,7 +157,7 @@ function DirectoryConfig_(
           onClick: async () => {
             const groupName = uniqueName(
               groups.map((g) => g.name),
-              "My new group"
+              "My new group",
             );
 
             await mutateGroups(
@@ -175,7 +175,7 @@ function DirectoryConfig_(
                     isFake: true,
                   },
                 ],
-              }
+              },
             );
           },
         }}
@@ -203,7 +203,7 @@ function DirectoryConfig_(
                         const isUsingGroupAccess = accesses.some(
                           (a) =>
                             "directoryEndUserGroupId" in a &&
-                            a.directoryEndUserGroupId === group.id
+                            a.directoryEndUserGroupId === group.id,
                         );
 
                         if (isUsingGroupAccess) {
@@ -224,23 +224,23 @@ function DirectoryConfig_(
                             async () => {
                               await appCtx.api.deleteDirectoryGroup(
                                 directoryId,
-                                group.id
+                                group.id,
                               );
                               return await appCtx.api.listDirectoryGroups(
-                                directoryId
+                                directoryId,
                               );
                             },
                             {
                               optimisticData: groups.filter(
-                                (g) => g.id !== group.id
+                                (g) => g.id !== group.id,
                               ),
-                            }
+                            },
                           );
 
                           await mutateUsers(
                             async () => {
                               return await appCtx.api.listDirectoryUsers(
-                                directoryId
+                                directoryId,
                               );
                             },
                             {
@@ -248,11 +248,11 @@ function DirectoryConfig_(
                                 return {
                                   ...user,
                                   groups: user.groups.filter(
-                                    (g) => g.id !== group.id
+                                    (g) => g.id !== group.id,
                                   ),
                                 };
                               }),
-                            }
+                            },
                           );
                         }
                       }}
@@ -262,10 +262,10 @@ function DirectoryConfig_(
                             await appCtx.api.updateDirectoryGroup(
                               directoryId,
                               group.id,
-                              name
+                              name,
                             );
                             return await appCtx.api.listDirectoryGroups(
-                              directoryId
+                              directoryId,
                             );
                           },
                           {
@@ -278,12 +278,12 @@ function DirectoryConfig_(
                               }
                               return g;
                             }),
-                          }
+                          },
                         );
                         await mutateUsers(
                           async () => {
                             return await appCtx.api.listDirectoryUsers(
-                              directoryId
+                              directoryId,
                             );
                           },
                           {
@@ -301,7 +301,7 @@ function DirectoryConfig_(
                                 }),
                               };
                             }),
-                          }
+                          },
                         );
                       }}
                     />
@@ -324,13 +324,13 @@ function DirectoryConfig_(
                     async () => {
                       await appCtx.api.removeEndUserFromDirectory(
                         directoryId,
-                        user.id
+                        user.id,
                       );
                       return await appCtx.api.listDirectoryUsers(directoryId);
                     },
                     {
                       optimisticData: users.filter((u) => u.id !== user.id),
-                    }
+                    },
                   );
                 }}
               />
@@ -363,7 +363,7 @@ function DirectoryConfig_(
               <Menu.Item
                 onClick={async () => {
                   const isUsingGroupAccess = accesses.some(
-                    (a) => "directoryEndUserGroupId" in a
+                    (a) => "directoryEndUserGroupId" in a,
                   );
 
                   if (isUsingGroupAccess) {
@@ -385,7 +385,7 @@ function DirectoryConfig_(
                     await appCtx.api.getEndUserDirectoryApps(directoryId);
 
                   const usedInOtherApps = directoryUsage.filter(
-                    (d) => d.id !== appId
+                    (d) => d.id !== appId,
                   );
 
                   if (usedInOtherApps.length > 0) {
@@ -398,7 +398,7 @@ function DirectoryConfig_(
                   }
 
                   const substituteDirectory = directories.find(
-                    (d) => d.id !== directoryId
+                    (d) => d.id !== directoryId,
                   );
 
                   const confirmed = await confirm({
@@ -420,9 +420,9 @@ function DirectoryConfig_(
                       },
                       {
                         optimisticData: directories.filter(
-                          (d) => d.id !== directoryId
+                          (d) => d.id !== directoryId,
                         ),
-                      }
+                      },
                     );
 
                     goBack();

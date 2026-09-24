@@ -42,7 +42,7 @@ function ListRow({ data, index, style }: ListChildComponentProps) {
 function groupsContaining<G, I>(
   itemsOrGroups: ItemOrGroup<G, I>[],
   key: string,
-  enclosing: Group<G, I>[] = []
+  enclosing: Group<G, I>[] = [],
 ): Group<G, I>[] | undefined {
   for (const itemOrGroup of itemsOrGroups) {
     if (itemOrGroup.key === key) {
@@ -86,8 +86,8 @@ export function VirtualGroupedList<I, G>(props: {
     Object.fromEntries(
       items
         .filter((item): item is Group<G, I> => item.type === "group")
-        .map((item) => [item.key, item.defaultCollapsed ?? false])
-    )
+        .map((item) => [item.key, item.defaultCollapsed ?? false]),
+    ),
   );
 
   const isCollapsed = (item: Group<G, I>) => {
@@ -96,7 +96,7 @@ export function VirtualGroupedList<I, G>(props: {
 
   const flattenItems = (
     itemsOrGroups: ItemOrGroup<G, I>[],
-    group?: Group<G, I>
+    group?: Group<G, I>,
   ): Row<G, I>[] => {
     return itemsOrGroups.flatMap((itemOrGroup) => {
       if (itemOrGroup.type === "item") {
@@ -125,7 +125,7 @@ export function VirtualGroupedList<I, G>(props: {
 
   const flattenedItems = flattenItems(items);
   const flattenedSizes = flattenedItems.map((item) =>
-    item.type === "group" ? headerHeight : itemHeight
+    item.type === "group" ? headerHeight : itemHeight,
   );
 
   const totalSpace = sum(flattenedSizes);
@@ -145,7 +145,7 @@ export function VirtualGroupedList<I, G>(props: {
 
   const scrollToRow = (key: string) => {
     const index = flattenedItems.findIndex((row) =>
-      row.type === "grouped_item" ? row.item.key === key : row.key === key
+      row.type === "grouped_item" ? row.item.key === key : row.key === key,
     );
     if (index < 0 || !listRef.current) {
       return false;

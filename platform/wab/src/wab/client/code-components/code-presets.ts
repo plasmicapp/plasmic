@@ -18,7 +18,7 @@ export interface Preset {
 
 export const getComponentPresets = computedFn(function getComponentPresets(
   studioCtx: StudioCtx,
-  component: CodeComponent
+  component: CodeComponent,
 ): Preset[] {
   const meta = studioCtx.getCodeComponentMeta(component);
   const schemas = meta?.templates ?? {};
@@ -28,7 +28,7 @@ export const getComponentPresets = computedFn(function getComponentPresets(
         notification.error({
           message: "Type error while registering code templates",
           description: `Component ${getComponentDisplayName(
-            component
+            component,
           )} has template ${name} of unexpected type ${typeof template}`,
         });
         return undefined;
@@ -41,7 +41,7 @@ export const getComponentPresets = computedFn(function getComponentPresets(
       const maybeTpl = elementSchemaToTplAndLogErrors(
         studioCtx.site,
         undefined,
-        schema
+        schema,
       );
       if (maybeTpl.isErr()) {
         notification.error({
@@ -56,6 +56,6 @@ export const getComponentPresets = computedFn(function getComponentPresets(
         screenshot: template.previewImg,
         tpl,
       };
-    })
+    }),
   );
 });

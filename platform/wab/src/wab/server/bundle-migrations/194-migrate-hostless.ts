@@ -1,5 +1,3 @@
-import { ensure } from "@/wab/shared/common";
-import { clone } from "@/wab/shared/core/exprs";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
@@ -9,8 +7,10 @@ import {
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
 import { Bundler } from "@/wab/shared/bundler";
-import { isKnownDataSourceOpExpr } from "@/wab/shared/model/classes";
+import { ensure } from "@/wab/shared/common";
+import { clone } from "@/wab/shared/core/exprs";
 import { flattenTpls, isTplCodeComponent } from "@/wab/shared/core/tpls";
+import { isKnownDataSourceOpExpr } from "@/wab/shared/model/classes";
 import { formComponentName } from "@plasmicpkgs/antd5";
 
 // migrates antd5 hostless, plasmic-rich-components
@@ -24,7 +24,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   const tplMgr = new TplMgr({ site });
@@ -38,15 +38,15 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
       }
       const dataParam = ensure(
         tpl.component.params.find((p) => p.variable.name === "data"),
-        "forms should have a data param"
+        "forms should have a data param",
       );
       const dataFormItemsParam = ensure(
         tpl.component.params.find((p) => p.variable.name === "dataFormItems"),
-        "forms should have a data form items param"
+        "forms should have a data form items param",
       );
       const baseVs = ensureBaseVariantSetting(tpl);
       const schemaModeArg = baseVs.args.find(
-        (arg) => arg.param.variable.name === "data"
+        (arg) => arg.param.variable.name === "data",
       );
       if (!schemaModeArg || !isKnownDataSourceOpExpr(schemaModeArg.expr)) {
         // it's not a schema form
@@ -54,10 +54,10 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
       }
       for (const vs of tpl.vsettings) {
         const formItemsArg = baseVs.args.find(
-          (arg) => arg.param.variable.name === "formItems"
+          (arg) => arg.param.variable.name === "formItems",
         );
         const dataFormItemsArg = baseVs.args.find(
-          (arg) => arg.param.variable.name === "dataFormItems"
+          (arg) => arg.param.variable.name === "dataFormItems",
         );
         if (!formItemsArg || !!dataFormItemsArg) {
           continue;
@@ -67,7 +67,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
           tpl,
           vs,
           dataFormItemsParam.variable,
-          clone(formItemsArg.expr)
+          clone(formItemsArg.expr),
         );
       }
     }
@@ -76,7 +76,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "194-migrate-hostless"
+    "194-migrate-hostless",
   );
   Object.assign(bundle, newBundle);
 };

@@ -63,8 +63,8 @@ function HostUrlInput({
         !draftUrl
           ? undefined
           : draftUrl.endsWith("/plasmic-host")
-          ? "standard"
-          : "nonStandard"
+            ? "standard"
+            : "nonStandard"
       }
       urlInput={{
         props: {

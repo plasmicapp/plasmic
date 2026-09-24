@@ -27,14 +27,14 @@ export function deleteComponent(
   component: Component,
   site: Site,
   studioCtx: StudioCtx,
-  tplMgr: TplMgr
+  tplMgr: TplMgr,
 ): DeleteComponentResult {
   // A sub-component only exists in service of its super-component and is deleted
   // alongside it; it cannot be deleted on its own.
   if (component.superComp && !isCodeComponent(component)) {
     return err({
       message: `Cannot delete "${getComponentDisplayName(
-        component
+        component,
       )}" because it is a sub-component.`,
     });
   }
@@ -42,7 +42,7 @@ export function deleteComponent(
   if (site.pageWrapper === component) {
     return err({
       message: `Cannot delete "${getComponentDisplayName(
-        component
+        component,
       )}" because it is set as the default page wrapper.`,
     });
   }
@@ -51,9 +51,9 @@ export function deleteComponent(
   if (referencers.length > 0) {
     return err({
       message: `Cannot delete "${getComponentDisplayName(
-        component
+        component,
       )}" because it is still used by ${uniq(
-        referencers.map(getComponentDisplayName)
+        referencers.map(getComponentDisplayName),
       ).join(", ")}.`,
     });
   }
@@ -74,6 +74,6 @@ export function deleteComponent(
   return ok(
     `Deleted component "${getComponentDisplayName(component)}" (uuid: ${
       component.uuid
-    }).`
+    }).`,
   );
 }

@@ -4,7 +4,7 @@ import { Animation } from "@/wab/shared/model/classes";
 import L from "lodash";
 
 export function getAnimationsFromDefinedIndicatorType(
-  definedIndicator: DefinedIndicatorType
+  definedIndicator: DefinedIndicatorType,
 ): Animation[] {
   switch (definedIndicator.source) {
     case "none":
@@ -14,7 +14,7 @@ export function getAnimationsFromDefinedIndicatorType(
       const targetSource = definedIndicator.targetSource;
       assert(
         targetSource.type === "style",
-        "Expected targetSource to be style"
+        "Expected targetSource to be style",
       );
       return targetSource.animations ?? [];
     }
@@ -27,7 +27,7 @@ export function getAnimationsFromDefinedIndicatorType(
 
     default:
       throw new Error(
-        `Unsupported defined indicator source for animation: ${definedIndicator.source}`
+        `Unsupported defined indicator source for animation: ${definedIndicator.source}`,
       );
   }
 }

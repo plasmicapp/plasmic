@@ -62,7 +62,7 @@ describe("isValidJsIdentifier", () => {
 
     // complex emoji with zero-width joiner and variation selector
     expect(isValidJsIdentifier("emoji\uD83D\uDE4B\u200D\u2642\uFE0F")).toBe(
-      false
+      false,
     );
   });
 });

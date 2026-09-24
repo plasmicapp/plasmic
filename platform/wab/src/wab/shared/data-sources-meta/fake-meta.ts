@@ -128,7 +128,7 @@ const makeFields = (schemaData: DataSourceSchema, tableId?: string) => {
           type: field.type,
           label: field.label ?? capitalizeFirst(field.id),
         },
-      ])
+      ]),
   );
 };
 
@@ -212,7 +212,7 @@ const PRIMARY_KEY_TYPE: JsonSchemaArgMeta = {
             type: field.type,
             label: field.label ?? capitalizeFirst(field.id),
           },
-        ])
+        ]),
     );
   },
   hidden: (schema, tableIdentifier) => !schema || !tableIdentifier,

@@ -12,7 +12,7 @@ describe("deleteComponentProp", () => {
     const findParam = (name: string): Param =>
       ensure(
         fixture.button.params.find((p) => p.variable.name === name),
-        `param "${name}" must exist`
+        `param "${name}" must exist`,
       );
     return {
       ...fixture,
@@ -45,7 +45,7 @@ describe("deleteComponentProp", () => {
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toEqual(
-      'Cannot delete prop "label": it is referenced in component "Button".'
+      'Cannot delete prop "label": it is referenced in component "Button".',
     );
     expect(button.params).toContain(param);
   });
@@ -62,15 +62,15 @@ describe("deleteComponentProp", () => {
     assert(created.isOk(), "state setup failed");
 
     expect(
-      deleteComponentProp(created.value.param, opts)._unsafeUnwrapErr().message
+      deleteComponentProp(created.value.param, opts)._unsafeUnwrapErr().message,
     ).toEqual(
-      'Prop "search" is linked to a state; manage it through state operations.'
+      'Prop "search" is linked to a state; manage it through state operations.',
     );
     expect(
       deleteComponentProp(created.value.onChangeParam, opts)._unsafeUnwrapErr()
-        .message
+        .message,
     ).toEqual(
-      'Prop "On search change" is linked to a state; manage it through state operations.'
+      'Prop "On search change" is linked to a state; manage it through state operations.',
     );
     expect(button.params).toContain(created.value.param);
   });
@@ -80,14 +80,14 @@ describe("deleteComponentProp", () => {
 
     expect(
       deleteComponentProp(findParam("children"), opts)._unsafeUnwrapErr()
-        .message
+        .message,
     ).toEqual(
-      'Param "children" is a slot; slots are managed through the element tree.'
+      'Param "children" is a slot; slots are managed through the element tree.',
     );
     expect(
-      deleteComponentProp(sizeGroup.param, opts)._unsafeUnwrapErr().message
+      deleteComponentProp(sizeGroup.param, opts)._unsafeUnwrapErr().message,
     ).toEqual(
-      'Param "size" backs a variant group; manage it through variant group operations.'
+      'Param "size" backs a variant group; manage it through variant group operations.',
     );
   });
 });

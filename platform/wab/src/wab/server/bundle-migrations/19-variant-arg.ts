@@ -1,20 +1,20 @@
-import { assert, ensure, ensureInstance } from "@/wab/shared/common";
 import { DeepReadonly } from "@/wab/commons/types";
-import { findVariantGroupForParam } from "@/wab/shared/core/components";
-import { tryExtractJson } from "@/wab/shared/core/exprs";
-import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { loadDepPackages } from "@/wab/server/db/DbBundleLoader";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { Bundler } from "@/wab/shared/bundler";
+import { assert, ensure, ensureInstance } from "@/wab/shared/common";
+import { findVariantGroupForParam } from "@/wab/shared/core/components";
+import { tryExtractJson } from "@/wab/shared/core/exprs";
 import {
   Arg,
   Component,
-  isKnownTplComponent,
   ProjectDependency,
   Site,
   Variant,
   VariantGroup,
   VariantsRef,
+  isKnownTplComponent,
 } from "@/wab/shared/model/classes";
 import { isArray } from "lodash";
 
@@ -33,7 +33,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const siteOrProjectDep = ensureInstance(
     bundler.unbundle(bundle, entity.id),
     Site,
-    ProjectDependency
+    ProjectDependency,
   );
 
   for (const iid of tplIids) {
@@ -45,7 +45,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
           const r = ensureInstance(
             rawTryGetVariantGroupValueFromArg(tpl.component, arg),
             GoodArg,
-            NotVariantGroupParam
+            NotVariantGroupParam,
           );
           if (r instanceof GoodArg) {
             arg.expr = new VariantsRef({ variants: r.variants });
@@ -58,7 +58,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "17-duplicated-rules"
+    "17-duplicated-rules",
   );
   Object.assign(bundle, newBundle);
 };
@@ -67,7 +67,10 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
 class NotVariantGroupParam {}
 
 class CardinalityError {
-  constructor(readonly vg: VariantGroup, readonly val: any) {}
+  constructor(
+    readonly vg: VariantGroup,
+    readonly val: any,
+  ) {}
 }
 
 class BadVariantRef {
@@ -75,7 +78,7 @@ class BadVariantRef {
     readonly vg: VariantGroup,
     readonly invalidUuids: string[],
     readonly variants: Variant[],
-    readonly val: any
+    readonly val: any,
   ) {}
 }
 
@@ -83,7 +86,7 @@ class GoodArg {
   constructor(
     readonly vg: VariantGroup,
     readonly variants: Variant[],
-    readonly val: any
+    readonly val: any,
   ) {}
 }
 
@@ -129,7 +132,7 @@ function tryParseVariantGroupArg(arg: DeepReadonly<Arg>, vg: VariantGroup) {
 // variant group.
 function rawTryGetVariantGroupValueFromArg(
   component: Component,
-  arg: Arg
+  arg: Arg,
 ): NotVariantGroupParam | BadVariantRef | GoodArg | CardinalityError {
   const vg = findVariantGroupForParam(component, arg.param);
   if (!vg) {

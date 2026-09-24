@@ -68,20 +68,20 @@ describe("bestValForTpl", () => {
       frameNum,
       valState,
       ensureInstance(initialVal, ValNode),
-      tplRoot
+      tplRoot,
     );
     const sq = SQ(selectedVal, valState);
     if (expectedLabels) {
       if (sq.get() instanceof SlotSelection) {
         expect(sq.parent().fullstack().labelsPath() + " (slot)").toEqual(
-          expectedLabels
+          expectedLabels,
         );
       } else {
         expect(sq.fullstack().labelsPath()).toEqual(expectedLabels);
       }
     } else {
       expect(sq.fullstack().indexPath()).toEqual(
-        ensure(expectedIndexes, () => `Shouldn't be null`)
+        ensure(expectedIndexes, () => `Shouldn't be null`),
       );
     }
   }

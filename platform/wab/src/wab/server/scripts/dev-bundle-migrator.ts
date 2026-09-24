@@ -121,7 +121,7 @@ async function migrate() {
       !path.includes("/stale-bundle.json"),
       () =>
         `The stale bundle should not be migrated here. Please use
-          \`pnpm db:upgrade-stale-bundle\``
+          \`pnpm db:upgrade-stale-bundle\``,
     );
     logger().info(`Migrating ${path}`);
     // await execa.command(sh.quote`git checkout ${path}`, {
@@ -147,13 +147,13 @@ export async function migrateInMemory(bundleJson: string) {
     const projectData: ProjectFullDataResponse = maybeBundles;
     bundles = Object.fromEntries<Bundle>([
       ...projectData.pkgVersions.map(
-        (pkgVersion) => [pkgVersion.id, pkgVersion.data] as const
+        (pkgVersion) => [pkgVersion.id, pkgVersion.data] as const,
       ),
       ...projectData.revisions.map((rev) => [rev.branchId, rev.data] as const),
     ]);
   } else {
     bundles = Object.fromEntries<Bundle>(
-      Array.isArray(maybeBundles) ? maybeBundles : [["id", maybeBundles]]
+      Array.isArray(maybeBundles) ? maybeBundles : [["id", maybeBundles]],
     );
   }
 
@@ -172,7 +172,7 @@ export async function migrateInMemory(bundleJson: string) {
       model: string,
       tags: string[],
       description: string,
-      revisionNum: number
+      revisionNum: number,
     ) => {
       const newId = uuid.v4();
       const unbundled = JSON.parse(model);
@@ -183,7 +183,7 @@ export async function migrateInMemory(bundleJson: string) {
       const pkgBundles = Object.entries(bundles)
         .filter(([id, b]) => b.map[b.root].pkgId === pkgId)
         .sort(([aid, a], [bid, b]) =>
-          semver.gt(a.map[a.root].version, b.map[b.root].version) ? -1 : +1
+          semver.gt(a.map[a.root].version, b.map[b.root].version) ? -1 : +1,
         );
       return pkgBundles.map(([id, b]) => bundleAsDbEntity(id, b) as PkgVersion);
     },
@@ -206,7 +206,7 @@ export async function migrateInMemory(bundleJson: string) {
       logger().info(
         `\tMigrating ${bundleId} to ${migration.name}, with deps ${bundle.deps
           .map((d) => `${d}@${bundles[d].version}`)
-          .join(", ")}`
+          .join(", ")}`,
       );
 
       // Make sure all dependencies are migrated first. We have to do this, and
@@ -260,7 +260,7 @@ export async function migrateInMemory(bundleJson: string) {
         .filter(
           (b) =>
             bundleRoot(b).__type === "ProjectDependency" &&
-            bundleRoot(b).pkgId === pkgId
+            bundleRoot(b).pkgId === pkgId,
         )
         .map((b) => bundleRoot(b).version);
       if (existingVersions.some((v) => semver.gt(v, root.version))) {
@@ -278,13 +278,13 @@ export async function migrateInMemory(bundleJson: string) {
       logger().info(
         `\tTesting bundle ${bundleId}@${bundle.version}, with deps ${bundle.deps
           .map((b) => `${b}@${bundles[b].version}`)
-          .join("; ")}`
+          .join("; ")}`,
       );
       const { site } = await unbundleSite(
         new Bundler(),
         bundle,
         db,
-        bundleAsDbEntity(bundleId, bundle)
+        bundleAsDbEntity(bundleId, bundle),
       );
       assertSiteInvariants(site);
     }
@@ -324,17 +324,17 @@ export async function migrateInMemory(bundleJson: string) {
             ],
           }
         : Array.isArray(maybeBundles)
-        ? flattenDeps(
-            Object.fromEntries(
-              Object.entries(bundles).map(([bid, b]) => [bid, b.deps])
-            )
-          ).map((bid) => [bid, bundles[bid]])
-        : maybeOne([...Object.entries(bundles)])![1]
+          ? flattenDeps(
+              Object.fromEntries(
+                Object.entries(bundles).map(([bid, b]) => [bid, b.deps]),
+              ),
+            ).map((bid) => [bid, bundles[bid]])
+          : maybeOne([...Object.entries(bundles)])![1],
     ),
     {
       parser: "json",
       trailingComma: "none",
-    }
+    },
   );
 }
 

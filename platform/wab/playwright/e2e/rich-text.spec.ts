@@ -14,7 +14,7 @@ test.describe("rich-text", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -57,10 +57,10 @@ test.describe("rich-text", () => {
       const innerHTML = await textElement.innerHTML();
       const default_span_class = `plasmic_default__all plasmic_default__span plasmic_default__span__${projectId.slice(
         0,
-        5
+        5,
       )}`;
       expect(innerHTML).toBe(
-        `<span class="${default_span_class}" style="font-style: italic;">The </span><span class="${default_span_class}" style="font-style: italic; font-weight: 700;">Blue Moon</span> was there.\n\n...or <span class="${default_span_class}" style="text-decoration-line: underline;">so we thought!</span>`
+        `<span class="${default_span_class}" style="font-style: italic;">The </span><span class="${default_span_class}" style="font-style: italic; font-weight: 700;">Blue Moon</span> was there.\n\n...or <span class="${default_span_class}" style="text-decoration-line: underline;">so we thought!</span>`,
       );
     });
 
@@ -74,7 +74,7 @@ test.describe("rich-text", () => {
     page.on("pageerror", (error) => pageErrors.push(error.message));
     const baseVariantErrors = () =>
       pageErrors.filter((message) =>
-        message.includes("Cannot add base vs to tpl that already has base vs")
+        message.includes("Cannot add base vs to tpl that already has base vs"),
       );
 
     await models.studio.leftPanel.addNewFrame();
@@ -176,7 +176,7 @@ test.describe("rich-text", () => {
     // should end the editing session and save the text.
     await editText("Hello world");
     const rightPaneTabBar = models.studio.frame.locator(
-      ".canvas-editor__right-pane .hilite-tabs"
+      ".canvas-editor__right-pane .hilite-tabs",
     );
     const tabBarBox = await rightPaneTabBar.boundingBox();
     await rightPaneTabBar.click({

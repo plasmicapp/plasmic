@@ -85,7 +85,7 @@ const plumeTypeToInputType = {
 const getSlotDirectChildren = (tpl: TplComponent, slotName: string) => {
   const slotArg = ensure(
     $$$(tpl).getSlotArg(slotName),
-    `${tpl.component.name} should have a label slot`
+    `${tpl.component.name} should have a label slot`,
   );
   return isKnownRenderExpr(slotArg.expr) ? slotArg.expr.tpl : [];
 };
@@ -93,7 +93,7 @@ const getSlotDirectChildren = (tpl: TplComponent, slotName: string) => {
 const getFirstTextInSlot = (
   tpl: TplComponent,
   slotName: string,
-  viewCtx: ViewCtx
+  viewCtx: ViewCtx,
 ) => {
   for (const child of getSlotDirectChildren(tpl, slotName)) {
     const maybeText = findFirstTextBlockInBaseVariant(child, viewCtx);
@@ -151,7 +151,7 @@ const getSelectOptionsInTpl = (tpl: TplComponent, viewCtx: ViewCtx) => {
       const label = getFirstTextInSlot(
         child,
         tpl.component.plumeInfo ? "title" : "label",
-        viewCtx
+        viewCtx,
       );
       options.push({
         type: "option-group",
@@ -221,7 +221,7 @@ function extractFormItemsFromAdvancedMode(tpl: TplComponent, viewCtx: ViewCtx) {
         const useChildrenArg = getTplComponentArgByParamName(
           currTpl,
           "useChildren",
-          currTplBaseVs
+          currTplBaseVs,
         );
         let options: Expr | undefined | null;
         if (
@@ -231,16 +231,16 @@ function extractFormItemsFromAdvancedMode(tpl: TplComponent, viewCtx: ViewCtx) {
         ) {
           // we need to check the children slot
           options = serCompositeExprMaybe(
-            getSelectOptionsInTpl(currTpl, viewCtx)
+            getSelectOptionsInTpl(currTpl, viewCtx),
           );
         } else {
           const optionParam = currTpl.component.params.find(
-            (p) => p.variable.name === "options"
+            (p) => p.variable.name === "options",
           );
           const optionsArg = getTplComponentArgByParamName(
             currTpl,
             "options",
-            currTplBaseVs
+            currTplBaseVs,
           );
           options = optionsArg?.expr ?? optionParam?.defaultExpr;
         }
@@ -252,7 +252,7 @@ function extractFormItemsFromAdvancedMode(tpl: TplComponent, viewCtx: ViewCtx) {
         const useChildrenArg = getTplComponentArgByParamName(
           currTpl,
           "useChildren",
-          currTplBaseVs
+          currTplBaseVs,
         );
         let options: Expr | undefined | null;
         if (
@@ -264,22 +264,22 @@ function extractFormItemsFromAdvancedMode(tpl: TplComponent, viewCtx: ViewCtx) {
           options = serCompositeExprMaybe(getRadiosInTpl(currTpl, viewCtx));
         } else {
           const optionParam = currTpl.component.params.find(
-            (p) => p.variable.name === "options"
+            (p) => p.variable.name === "options",
           );
           const optionsArg = getTplComponentArgByParamName(
             currTpl,
             "options",
-            currTplBaseVs
+            currTplBaseVs,
           );
           options = optionsArg?.expr ?? optionParam?.defaultExpr;
         }
         const optionTypeParam = currTpl.component.params.find(
-          (p) => p.variable.name === "optionType"
+          (p) => p.variable.name === "optionType",
         );
         const optionTypeArg = getTplComponentArgByParamName(
           currTpl,
           "optionType",
-          currTplBaseVs
+          currTplBaseVs,
         );
         return {
           inputType,
@@ -310,22 +310,22 @@ function extractFormItemsFromAdvancedMode(tpl: TplComponent, viewCtx: ViewCtx) {
         const useSlot = getTplComponentArgByParamName(
           currTpl,
           "children",
-          currTplBaseVs
+          currTplBaseVs,
         );
         let options: Expr | undefined | null;
         if (useSlot) {
           // we need to check the children slot
           options = serCompositeExprMaybe(
-            getSelectOptionsInTpl(currTpl, viewCtx)
+            getSelectOptionsInTpl(currTpl, viewCtx),
           );
         } else {
           const optionParam = currTpl.component.params.find(
-            (p) => p.variable.name === "options"
+            (p) => p.variable.name === "options",
           );
           const optionsArg = getTplComponentArgByParamName(
             currTpl,
             "options",
-            currTplBaseVs
+            currTplBaseVs,
           );
           options = optionsArg?.expr ?? optionParam?.defaultExpr;
         }
@@ -361,7 +361,7 @@ const extractFormItemsFromSchemaForm = (
   tpl: TplCodeComponent,
   viewCtx: ViewCtx,
   baseVs: VariantSetting,
-  data: NormalizedData | undefined
+  data: NormalizedData | undefined,
 ) => {
   if (!data || !data?.schema) {
     return [];
@@ -373,17 +373,17 @@ const extractFormItemsFromSchemaForm = (
   ];
   assert(
     propType,
-    `form component should have a "${DATA_FORMS_ITEM_PROP}" prop type`
+    `form component should have a "${DATA_FORMS_ITEM_PROP}" prop type`,
   );
   assert(
     isPlainObjectPropType(propType) && propType.type === "array",
-    `"${DATA_FORMS_ITEM_PROP}" prop type should be an array`
+    `"${DATA_FORMS_ITEM_PROP}" prop type should be an array`,
   );
 
   const { componentPropValues } = viewCtx.getComponentEvalContext(tpl);
   const env = viewCtx.getCanvasEnvForTpl(tpl);
   const dataFormsItemsArg = baseVs.args.find(
-    (arg) => arg.param.variable.name === DATA_FORMS_ITEM_PROP
+    (arg) => arg.param.variable.name === DATA_FORMS_ITEM_PROP,
   );
   const exprCtx: ExprCtx = {
     projectFlags: viewCtx.projectFlags(),
@@ -394,14 +394,14 @@ const extractFormItemsFromSchemaForm = (
   const fields = deriveFormFieldConfigs(
     componentPropValues.dataFormItems ?? [],
     data.schema,
-    row
+    row,
   )?.mergedFields;
   return mergeUserMinimalValueWithCompositeExpr(
     fields,
     dataFormsItemsArg?.expr,
     exprCtx,
     env ?? {},
-    propType.unstable__keyFunc
+    propType.unstable__keyFunc,
   );
 };
 
@@ -409,7 +409,7 @@ export function updateFormComponentMode(
   tpl: TplCodeComponent,
   viewCtx: ViewCtx,
   newMode: CodeComponentMode,
-  schemaData: NormalizedData | undefined
+  schemaData: NormalizedData | undefined,
 ) {
   const baseVs = ensureBaseVariantSetting(tpl);
   const baseVariant = getBaseVariant(viewCtx.currentComponent());
@@ -417,42 +417,42 @@ export function updateFormComponentMode(
     tpl,
     slotParam: ensure(
       tpl.component.params.find((p) => p.variable.name === "submitSlot"),
-      `forms component should have a "submitSlot" slot`
+      `forms component should have a "submitSlot" slot`,
     ),
   });
   const childrenSlot = new SlotSelection({
     tpl,
     slotParam: ensure(
       tpl.component.params.find((p) => p.variable.name === "children"),
-      `forms component should have a "children" slot`
+      `forms component should have a "children" slot`,
     ),
   });
   const allComponents = [
     ...walkDependencyTree(viewCtx.site, "all").flatMap(
-      (dep) => dep.site.components
+      (dep) => dep.site.components,
     ),
     ...viewCtx.site.components,
   ];
 
   const formItemsParam = ensure(
     tpl.component.params.find((p) => p.variable.name === "formItems"),
-    `forms should have a "formItems" param`
+    `forms should have a "formItems" param`,
   );
   const formItemsArg = getTplComponentArgByParamName(tpl, "formItems", baseVs);
 
   const isSchemaForm = isKnownDataSourceOpExpr(
-    baseVs.args.find((arg) => arg.param.variable.name === "data")?.expr
+    baseVs.args.find((arg) => arg.param.variable.name === "data")?.expr,
   );
 
   const extractFormItemsFromArg = (
     itemArg: Arg | undefined,
-    itemParam: Param
+    itemParam: Param,
   ) => {
     return itemArg
       ? deserCompositeExprMaybe(itemArg.expr)
       : itemParam.defaultExpr
-      ? tryExtractJson(itemParam.defaultExpr)
-      : undefined;
+        ? tryExtractJson(itemParam.defaultExpr)
+        : undefined;
   };
   const formItems: FormItemProps[] = isSchemaForm
     ? extractFormItemsFromSchemaForm(tpl, viewCtx, baseVs, schemaData)
@@ -467,7 +467,7 @@ export function updateFormComponentMode(
         tpl: submitSlot,
         forceDelete: true,
         skipCommentsConfirmation: true,
-      })
+      }),
     );
 
     if (firstButton) {
@@ -477,9 +477,9 @@ export function updateFormComponentMode(
         createDefaultSubmitButton(
           viewCtx.tplMgr(),
           viewCtx.currentComponent(),
-          allComponents
+          allComponents,
         ),
-        submitSlot
+        submitSlot,
       );
     }
 
@@ -489,7 +489,7 @@ export function updateFormComponentMode(
       .setArg(
         tpl,
         getParamVariable(tpl, "formItems"),
-        serCompositeExprMaybe(newFormItems)
+        serCompositeExprMaybe(newFormItems),
       );
 
     //delete chilren
@@ -498,7 +498,7 @@ export function updateFormComponentMode(
         tpl: childrenSlot,
         forceDelete: true,
         skipCommentsConfirmation: true,
-      })
+      }),
     );
     viewCtx.setStudioFocusByTpl(tpl);
   } else if (newMode === "advanced") {
@@ -508,7 +508,7 @@ export function updateFormComponentMode(
         tpl: childrenSlot,
         forceDelete: true,
         skipCommentsConfirmation: true,
-      })
+      }),
     );
     if (formItems && Array.isArray(formItems)) {
       for (const formItem of formItems) {
@@ -519,7 +519,7 @@ export function updateFormComponentMode(
         ) as InputType | undefined;
         const labelRenderExpr = createLabelRenderExprFromFormItem(
           formItem,
-          baseVariant
+          baseVariant,
         );
         const elementSchema = inputTypeToElementSchema(formItem);
         if (!elementSchema) {
@@ -530,8 +530,8 @@ export function updateFormComponentMode(
             viewCtx.site,
             viewCtx.currentComponent(),
             elementSchema,
-            { codeComponentsOnly: true }
-          )
+            { codeComponentsOnly: true },
+          ),
         ).tpl as TplComponent;
 
         if (
@@ -544,7 +544,7 @@ export function updateFormComponentMode(
             .setArg(
               inputTpl,
               getParamVariable(inputTpl, "options"),
-              cloneExpr(formItem.options)
+              cloneExpr(formItem.options),
             );
         }
         if (InputType.RadioGroup === inputType && formItem.optionType) {
@@ -553,13 +553,13 @@ export function updateFormComponentMode(
             .setArg(
               inputTpl,
               getParamVariable(inputTpl, "optionType"),
-              cloneExpr(formItem.optionType)
+              cloneExpr(formItem.optionType),
             );
         }
 
         const formItemComponent = ensure(
           allComponents.find((c) => c.name === formItemComponentName),
-          `project should have a "${formItemComponentName}" component`
+          `project should have a "${formItemComponentName}" component`,
         );
         const tplFormItem = mkTplComponent(
           formItemComponent,
@@ -577,22 +577,22 @@ export function updateFormComponentMode(
                       "key",
                       "fieldId",
                       "showTime",
-                    ].includes(name)
+                    ].includes(name),
                 )
                 .map(([name, value]) => [
                   name,
                   isKnownExpr(value as any)
                     ? cloneExpr(value as Expr)
                     : codeLit(value as any),
-                ])
+                ]),
             ),
             ...(labelRenderExpr && inputType !== InputType.Checkbox
               ? { label: labelRenderExpr }
               : inputType === InputType.Checkbox
-              ? { noLabel: codeLit(true) }
-              : {}),
+                ? { noLabel: codeLit(true) }
+                : {}),
           },
-          inputTpl
+          inputTpl,
         );
         viewCtx.viewOps.insertAsChild(tplFormItem, tpl);
         if (InputType.Checkbox === inputType) {
@@ -600,9 +600,9 @@ export function updateFormComponentMode(
             tpl: inputTpl,
             slotParam: ensure(
               inputTpl.component.params.find(
-                (p) => p.variable.name === "children"
+                (p) => p.variable.name === "children",
               ),
-              `"${inputTpl.component.name}" should have a "children" slot`
+              `"${inputTpl.component.name}" should have a "children" slot`,
             ),
           });
           spawn(
@@ -610,7 +610,7 @@ export function updateFormComponentMode(
               tpl: checkboxChildrenSlot,
               forceDelete: true,
               skipCommentsConfirmation: true,
-            })
+            }),
           );
           viewCtx.viewOps.insertAsChild(labelRenderExpr.tpl[0], inputTpl);
         }
@@ -619,7 +619,7 @@ export function updateFormComponentMode(
     const submitSlotArg = getTplComponentArgByParamName(
       tpl,
       "submitSlot",
-      baseVs
+      baseVs,
     );
     const submitButton = getSingleTplComponentFromArg(submitSlotArg);
     if (submitButton) {
@@ -629,9 +629,9 @@ export function updateFormComponentMode(
         createDefaultSubmitButton(
           viewCtx.tplMgr(),
           viewCtx.currentComponent(),
-          allComponents
+          allComponents,
         ),
-        submitSlot
+        submitSlot,
       );
     }
     spawn(
@@ -639,7 +639,7 @@ export function updateFormComponentMode(
         tpl: submitSlot,
         forceDelete: true,
         skipCommentsConfirmation: true,
-      })
+      }),
     );
     unsetTplComponentArg(tpl, getParamVariable(tpl, "formItems"));
     unsetTplComponentArg(tpl, getParamVariable(tpl, "dataFormItems"));

@@ -54,7 +54,7 @@ export interface DomainCardProps extends DefaultDomainCardProps {
  */
 export function renderDomainErrorMessage(
   domain: string,
-  { status, vercelErrorCode, message, operation }: DomainCardError
+  { status, vercelErrorCode, message, operation }: DomainCardError,
 ) {
   const suffix = vercelErrorCode ? ` (${vercelErrorCode})` : "";
   const done = operation === "remove" ? "removed" : "registered";
@@ -84,7 +84,7 @@ function DomainCard_(
     onRemoved,
     ...rest
   }: DomainCardProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const appCtx = useAppCtx();
   const api = appCtx.api;
@@ -92,7 +92,7 @@ function DomainCard_(
 
   const [removing, setRemoving] = useState(false);
   const [removeError, setRemoveError] = useState<DomainCardError | undefined>(
-    undefined
+    undefined,
   );
   const subdomain = domain && tldts.parse(domain).subdomain; // if domain is a subdomain
 
@@ -121,7 +121,7 @@ function DomainCard_(
           : 5000,
       dedupingInterval: 1500,
       onSuccess: (_data, key) => setFreshKey(key),
-    }
+    },
   );
   // Avoid serving a stale SWR cache result. isCorrectlyConfigured can be shown
   // right away, but we shouldn't flash a stale error.
@@ -144,8 +144,8 @@ function DomainCard_(
   const errorMessage = removeError
     ? renderDomainErrorMessage(domain, removeError)
     : setError && !staleSetError
-    ? renderDomainErrorMessage(domain, setError)
-    : undefined;
+      ? renderDomainErrorMessage(domain, setError)
+      : undefined;
 
   return (
     <PlasmicDomainCard
@@ -159,19 +159,19 @@ function DomainCard_(
         errorMessage
           ? { children: errorMessage }
           : configCheckFailed
-          ? {
-              // Stays in the cname/apex variant so the DNS instructions keep
-              // matching the record type, only the feedback note changes.
-              children: `We couldn't check the configuration of ${domain} right now. If the site is live, it will keep working.`,
-            }
-          : undefined
+            ? {
+                // Stays in the cname/apex variant so the DNS instructions keep
+                // matching the record type, only the feedback note changes.
+                children: `We couldn't check the configuration of ${domain} right now. If the site is live, it will keep working.`,
+              }
+            : undefined
       }
       name={
         recordType === "apex"
           ? "@"
           : recordType == "cname" && subdomain
-          ? subdomain
-          : "www"
+            ? subdomain
+            : "www"
       }
       label={
         isSecondary
@@ -212,7 +212,7 @@ function DomainCard_(
                 try {
                   const response = await api.setCustomDomainForProject(
                     undefined,
-                    projectId
+                    projectId,
                   );
                   await mutate(apiKey("getDomainsForProject", projectId));
                   const failure = getSetCustomDomainFailure(response);

@@ -8,7 +8,7 @@ import { ok } from "neverthrow";
 
 export async function pasteText(
   text: string,
-  { studioCtx, cursorClientPt, insertRelLoc }: PasteArgs
+  { studioCtx, cursorClientPt, insertRelLoc }: PasteArgs,
 ): Promise<PasteResult> {
   const viewCtx = ensureViewCtxOrThrowUserError(studioCtx);
   return unwrap(
@@ -19,12 +19,12 @@ export async function pasteText(
         node,
         cursorClientPt,
         undefined,
-        insertRelLoc
+        insertRelLoc,
       );
       return ok({
         handled: true,
         success: pasteSuccess,
       });
-    })
+    }),
   );
 }

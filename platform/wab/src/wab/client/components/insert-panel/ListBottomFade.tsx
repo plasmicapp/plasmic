@@ -24,7 +24,7 @@ export type ListBottomFadeProps = DefaultListBottomFadeProps;
 
 function ListBottomFade_(
   props: ListBottomFadeProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicListBottomFade to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

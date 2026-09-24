@@ -26,7 +26,7 @@ export function mkCustomCodeOp(codeStr: string) {
 export function mkCustomFunctionExpr(
   name: string,
   params: string[] = [],
-  args: Array<{ name: string; code: string }> = []
+  args: Array<{ name: string; code: string }> = [],
 ) {
   return new CustomFunctionExpr({
     func: new CustomFunction({
@@ -45,7 +45,7 @@ export function mkCustomFunctionExpr(
           uuid: mkShortId(),
           argType: typeFactory.arg(arg.name, typeFactory.text()),
           expr: customCode(arg.code),
-        })
+        }),
     ),
   });
 }

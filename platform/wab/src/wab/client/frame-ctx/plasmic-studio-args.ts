@@ -38,7 +38,7 @@ const keyStudioHash = "studioHash";
  * See wab/create-react-app-new/packages/react-scripts/config/studio.js
  */
 export function buildPlasmicStudioArgsHash(
-  appConfigOverrides: Partial<DevFlagsType>
+  appConfigOverrides: Partial<DevFlagsType>,
 ): string {
   ensureIsTopFrame();
 
@@ -50,8 +50,8 @@ export function buildPlasmicStudioArgsHash(
     keyAppConfigOverrides,
     encodeUriParams(
       Object.entries(appConfigOverrides).filter(
-        ([_, value]) => typeof value !== "object"
-      )
+        ([_, value]) => typeof value !== "object",
+      ),
     ),
   ]);
   params.push([keyStudioHash, ENV.COMMITHASH]);
@@ -65,7 +65,7 @@ export function getPlasmicStudioArgs(): PlasmicStudioArgs {
   const params = new URLSearchParams(hash.replace(/^#/, "?"));
   const origin = ensure(
     params.get(keyOrigin),
-    "Missing origin hash param in host frame"
+    "Missing origin hash param in host frame",
   );
   const staticBaseUrl = params.get(keyStaticBaseUrl) || origin;
   const isProd = params.get(keyIsProd) === "true";

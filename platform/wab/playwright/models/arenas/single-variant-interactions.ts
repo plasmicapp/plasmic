@@ -8,7 +8,7 @@ export class SingleVariantInteractionsArena extends BaseModel {
     readonly setToRedButton: Locator,
     readonly setToGreenButton: Locator,
     readonly setToBlueButton: Locator,
-    readonly clearVariantButton: Locator
+    readonly clearVariantButton: Locator,
   ) {
     super(page);
   }
@@ -33,7 +33,7 @@ export class SingleVariantInteractionsArena extends BaseModel {
       setToRedButton,
       setToGreenButton,
       setToBlueButton,
-      clearVariantButton
+      clearVariantButton,
     );
     return instance;
   }

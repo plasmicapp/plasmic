@@ -101,7 +101,7 @@ export class ReadableClipboard {
  */
 export async function serializeClipboardItems(
   items: ClipboardItem[],
-  lastAction: LocalClipboardAction
+  lastAction: LocalClipboardAction,
 ): Promise<SerializableClipboardData> {
   const map: SerializableClipboardData = {};
   for (const item of items) {

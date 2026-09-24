@@ -33,7 +33,7 @@ export function scalerToFrameRect(rect: Rect, vc: ViewCtx, round = true): Rect {
   return clientToFrameRect(
     vc.viewportCtx.scalerToClient(Box.fromRect(rect)).rect(),
     vc,
-    round
+    round,
   );
 }
 

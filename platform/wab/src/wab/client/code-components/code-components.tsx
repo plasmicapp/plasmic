@@ -80,7 +80,7 @@ import React from "react";
 
 function onCreateCodeComponent(
   name: string,
-  meta: CodeComponentMeta<any> | GlobalContextMeta<any>
+  meta: CodeComponentMeta<any> | GlobalContextMeta<any>,
 ) {
   // Segment track
   trackEvent("Create code component", {
@@ -97,7 +97,7 @@ export const ccClientCallbackFns: CodeComponentSyncCallbackFns = {
     fixMissingCodeComponents(
       ensureInstance(ctx, StudioCtx),
       missingComponents,
-      missingContexts
+      missingContexts,
     ),
   onInvalidReactVersion: (ctx, hostLessPackageInfo) =>
     fixInvalidReactVersion(ensureInstance(ctx, StudioCtx), hostLessPackageInfo),
@@ -253,18 +253,18 @@ export const ccClientCallbackFns: CodeComponentSyncCallbackFns = {
 
 export async function syncCodeComponentsAndHandleErrors(
   studioCtx: StudioCtx,
-  opts?: { force?: boolean }
+  opts?: { force?: boolean },
 ) {
   const maybeError = await syncCodeComponents(
     studioCtx,
     ccClientCallbackFns,
-    opts
+    opts,
   );
 
   if (!maybeError.isErr()) {
     appendCodeComponentMetaToModel(
       studioCtx.site,
-      studioCtx.getCodeComponentsAndContextsRegistration()
+      studioCtx.getCodeComponentsAndContextsRegistration(),
     );
   }
 
@@ -347,7 +347,7 @@ export async function syncCodeComponentsAndHandleErrors(
       return new Promise((_resolve) => {
         // Never resolve since Studio can have components in invalid states
       });
-    })
+    }),
   );
 }
 
@@ -357,28 +357,28 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
       isHostLessPackage(studioCtx.site)) &&
     isAdminTeamEmail(
       studioCtx.appCtx.selfInfo?.email,
-      studioCtx.appCtx.appConfig
+      studioCtx.appCtx.appConfig,
     )
   ) {
     const pkg = await promptHostLessPackageInfo(
       studioCtx.site.hostLessPackageInfo
         ? { ...studioCtx.site.hostLessPackageInfo }
-        : undefined
+        : undefined,
     );
 
     if (pkg) {
       // Get the original list of components
       const existingComps = [
         ...studioCtx.site.components.filter(
-          (c) => isCodeComponent(c) && !isBuiltinCodeComponent(c)
+          (c) => isCodeComponent(c) && !isBuiltinCodeComponent(c),
         ),
       ];
       const existingGlobalContexts = [...studioCtx.site.globalContexts];
       const existingStyleTokens = studioCtx.site.styleTokens.filter(
-        (s) => s.isRegistered
+        (s) => s.isRegistered,
       );
       const existingDataTokens = studioCtx.site.dataTokens.filter(
-        (s) => s.isRegistered
+        (s) => s.isRegistered,
       );
 
       const existingFunctions = [...studioCtx.site.customFunctions];
@@ -426,7 +426,7 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
       // First, install the deps
       for (const [_depName, depModule] of await getSortedHostLessPkgs(
         pkg.deps,
-        getVersionForCanvasPackages(window.parent)
+        getVersionForCanvasPackages(window.parent),
       )) {
         scriptExec(window.parent, depModule);
       }
@@ -437,15 +437,15 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
       // are not from this pkg
       const depComps = new Set(
         studioCtx.site.components.filter(
-          (c) => isCodeComponent(c) || isDefaultComponent(studioCtx.site, c)
-        )
+          (c) => isCodeComponent(c) || isDefaultComponent(studioCtx.site, c),
+        ),
       );
 
       const depStyleTokens = new Set(
-        studioCtx.site.styleTokens.filter((s) => s.isRegistered)
+        studioCtx.site.styleTokens.filter((s) => s.isRegistered),
       );
       const depDataTokens = new Set(
-        studioCtx.site.dataTokens.filter((s) => s.isRegistered)
+        studioCtx.site.dataTokens.filter((s) => s.isRegistered),
       );
 
       const depFunctions = new Set(studioCtx.site.customFunctions);
@@ -457,14 +457,14 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
         window.parent,
         await getHostLessPkg(
           pkg.name,
-          getVersionForCanvasPackages(window.parent)
-        )
+          getVersionForCanvasPackages(window.parent),
+        ),
       );
       studioCtx.codeComponentsRegistry.clear();
       await syncCodeComponentsAndHandleErrors(studioCtx, { force: true });
       assert(
         studioCtx.site.components.some(isCodeComponent),
-        "No code components found"
+        "No code components found",
       );
 
       // Filter the components that don't come from the deps, and get their
@@ -474,32 +474,32 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
           .filter(
             (c) =>
               (isCodeComponent(c) || isDefaultComponent(studioCtx.site, c)) &&
-              !depComps.has(c)
+              !depComps.has(c),
           )
-          .map((c) => c.name)
+          .map((c) => c.name),
       );
 
       const nonDepStyleTokenNames = new Set(
         studioCtx.site.styleTokens
           .filter((s) => s.isRegistered && !depStyleTokens.has(s))
-          .map((c) => c.name)
+          .map((c) => c.name),
       );
       const nonDepDataTokenNames = new Set(
         studioCtx.site.dataTokens
           .filter((s) => s.isRegistered && !depDataTokens.has(s))
-          .map((c) => c.name)
+          .map((c) => c.name),
       );
 
       const nonDepFunctions = new Set(
         studioCtx.site.customFunctions
           .filter((f) => !depFunctions.has(f))
-          .map((f) => customFunctionId(f))
+          .map((f) => customFunctionId(f)),
       );
 
       const nonDepLibs = new Set(
         studioCtx.site.codeLibraries
           .filter((l) => !depLibs.has(l))
-          .map((l) => l.name)
+          .map((l) => l.name),
       );
 
       // Now we clear the site again to match the components with the existing
@@ -525,20 +525,20 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
           studioCtx.site.components = studioCtx.site.components.filter(
             (c) =>
               (isCodeComponent(c) || isDefaultComponent(studioCtx.site, c)) &&
-              nonDepCompNames.has(c.name)
+              nonDepCompNames.has(c.name),
           );
           studioCtx.site.styleTokens = studioCtx.site.styleTokens.filter(
-            (s) => s.isRegistered && nonDepStyleTokenNames.has(s.name)
+            (s) => s.isRegistered && nonDepStyleTokenNames.has(s.name),
           );
           studioCtx.site.dataTokens = studioCtx.site.dataTokens.filter(
-            (s) => s.isRegistered && nonDepDataTokenNames.has(s.name)
+            (s) => s.isRegistered && nonDepDataTokenNames.has(s.name),
           );
           studioCtx.site.customFunctions =
             studioCtx.site.customFunctions.filter((f) =>
-              nonDepFunctions.has(customFunctionId(f))
+              nonDepFunctions.has(customFunctionId(f)),
             );
           studioCtx.site.codeLibraries = studioCtx.site.codeLibraries.filter(
-            (l) => nonDepLibs.has(l.name)
+            (l) => nonDepLibs.has(l.name),
           );
           assignReadonly(studioCtx.site, {
             hostLessPackageInfo: new HostLessPackageInfo({
@@ -555,16 +555,16 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
             .forEach((c) => (c.codeComponentMeta.isHostLess = true));
           studioCtx.site.components.forEach((c) => deletedComponents.delete(c));
           removeWhere(studioCtx.site.globalContexts, (tpl) =>
-            deletedComponents.has(tpl.component)
+            deletedComponents.has(tpl.component),
           );
           return ok();
         },
-        { noUndoRecord: true }
+        { noUndoRecord: true },
       );
 
       const deletedComps = xDifference(
         existingComps,
-        studioCtx.site.components
+        studioCtx.site.components,
       );
 
       if (deletedComps.size > 0) {
@@ -576,7 +576,7 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
         if (!proceed) {
           const latestVersion = ensure(
             (await studioCtx.getProjectReleases())[0],
-            "No latest version found"
+            "No latest version found",
           );
           await studioCtx.revertTo(latestVersion);
           return;
@@ -594,7 +594,7 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
 export function elementSchemaToTplAndLogErrors(
   site: Site,
   component: CodeComponent | undefined,
-  rootSchema: PlasmicElement
+  rootSchema: PlasmicElement,
 ) {
   return safeTry<
     TplNode,
@@ -609,7 +609,7 @@ export function elementSchemaToTplAndLogErrors(
       rootSchema,
       {
         codeComponentsOnly: true,
-      }
+      },
     );
 
     warnings.forEach((err) => {
@@ -628,7 +628,7 @@ export function elementSchemaToTplAndLogErrors(
 
 export function isTplCodeComponentStyleable(
   ccRegistry: CodeComponentsRegistry,
-  tpl: TplCodeComponent
+  tpl: TplCodeComponent,
 ) {
   const meta = ccRegistry
     .getRegisteredCodeComponentsMap()
@@ -643,7 +643,7 @@ export function isTplCodeComponentStyleable(
 export function getControlModePropType(viewCtx, component: Component) {
   const propTypes = getComponentPropTypes(viewCtx, component);
   const maybeModeProp = Object.entries(propTypes).find(
-    ([_name, propType]) => getPropTypeType(propType) === "controlMode"
+    ([_name, propType]) => getPropTypeType(propType) === "controlMode",
   );
   return maybeModeProp
     ? { propName: maybeModeProp[0], propType: maybeModeProp[1] }

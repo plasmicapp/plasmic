@@ -29,15 +29,15 @@ class FakeConnection extends Connection {
    * All database operations must be executed using provided entity manager.
    */
   transaction<T>(
-    runInTransaction: (entityManager: EntityManager) => Promise<T>
+    runInTransaction: (entityManager: EntityManager) => Promise<T>,
   ): Promise<T>;
   transaction<T>(
     isolationLevel: IsolationLevel,
-    runInTransaction: (entityManager: EntityManager) => Promise<T>
+    runInTransaction: (entityManager: EntityManager) => Promise<T>,
   ): Promise<T>;
   async transaction<T>(
     arg1: IsolationLevel | ((entityManager: EntityManager) => Promise<T>),
-    arg2?: (entityManager: EntityManager) => Promise<T>
+    arg2?: (entityManager: EntityManager) => Promise<T>,
   ): Promise<T> {
     const runInTransaction =
       arg2 ?? (arg1 as (entityManager: EntityManager) => Promise<T>);
@@ -75,7 +75,7 @@ describe("startTransaction with fake DB", () => {
       startTransaction(req, async () => {
         expect(req.txMgr).toBeDefined();
         return commitTransaction({ data: "success" });
-      })
+      }),
     ).resolves.toEqual({
       type: "commit",
       commit: {
@@ -91,7 +91,7 @@ describe("startTransaction with fake DB", () => {
       startTransaction(req, async () => {
         expect(req.txMgr).toBeDefined();
         return rollbackTransaction({ error: "failure" });
-      })
+      }),
     ).resolves.toEqual({
       type: "rollback",
       rollback: {
@@ -107,7 +107,7 @@ describe("startTransaction with fake DB", () => {
       startTransaction(req, async () => {
         expect(req.txMgr).toBeDefined();
         throw "oops";
-      })
+      }),
     ).rejects.toEqual("oops");
     expect(req.txMgr).toBeUndefined();
     expect(connection.txEnds).toEqual(["rollback"]);
@@ -124,7 +124,7 @@ describe("startTransaction with fake DB", () => {
             const innerTxMgr = req.txMgr;
             expect(innerTxMgr).toBe(outerTxMgr);
             return commitTransaction({ data: "inner" });
-          })
+          }),
         ).resolves.toEqual({
           type: "commit",
           commit: {
@@ -134,7 +134,7 @@ describe("startTransaction with fake DB", () => {
         expect(connection.txEnds).toEqual([]);
 
         return commitTransaction({ data: "outer" });
-      })
+      }),
     ).resolves.toEqual({
       type: "commit",
       commit: {
@@ -156,7 +156,7 @@ describe("startTransaction with fake DB", () => {
             const innerTxMgr = req.txMgr;
             expect(innerTxMgr).toBe(outerTxMgr);
             return rollbackTransaction({ data: "inner" });
-          })
+          }),
         ).resolves.toEqual({
           type: "rollback",
           rollback: {
@@ -166,7 +166,7 @@ describe("startTransaction with fake DB", () => {
         expect(connection.txEnds).toEqual([]);
 
         return commitTransaction({ data: "outer" });
-      })
+      }),
     ).rejects.toEqual({
       type: "commit",
       commit: {
@@ -188,12 +188,12 @@ describe("startTransaction with fake DB", () => {
             const innerTxMgr = req.txMgr;
             expect(innerTxMgr).toBe(outerTxMgr);
             throw "oops";
-          })
+          }),
         ).rejects.toEqual("oops");
         expect(connection.txEnds).toEqual([]);
 
         return commitTransaction({ data: "outer" });
-      })
+      }),
     ).rejects.toEqual({
       type: "commit",
       commit: {
@@ -255,7 +255,7 @@ describe("startTransaction with real DB", () => {
         const valueInTx = await getRowValue(txMgr, "row");
         expect(valueInTx).toEqual("foo");
         return commitTransaction("success");
-      })
+      }),
     ).resolves.toEqual({
       type: "commit",
       commit: "success",
@@ -271,7 +271,7 @@ describe("startTransaction with real DB", () => {
         const valueInTx = await getRowValue(txMgr, "row");
         expect(valueInTx).toEqual("foo");
         return rollbackTransaction("failure");
-      })
+      }),
     ).resolves.toEqual({
       type: "rollback",
       rollback: "failure",
@@ -288,7 +288,7 @@ describe("startTransaction with real DB", () => {
         const valueInTx = await getRowValue(txMgr, "row");
         expect(valueInTx).toEqual("foo");
         throw error;
-      })
+      }),
     ).rejects.toEqual(error);
     const valueAfterCommit = await getRowValue(req.noTxMgr, "row");
     expect(valueAfterCommit).toBeUndefined();
@@ -300,7 +300,7 @@ describe("startTransaction with real DB", () => {
       startTransaction(req, async () => {
         await insertRow(dbMgr.getEntMgr(), "row", "foo");
         return rollbackTransaction("failure");
-      })
+      }),
     ).resolves.toEqual({
       type: "rollback",
       rollback: "failure",

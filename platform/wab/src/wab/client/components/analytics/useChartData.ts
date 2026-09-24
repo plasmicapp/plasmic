@@ -3,8 +3,8 @@ import {
   useProjectAnalyticsMeta,
 } from "@/wab/client/components/analytics/analytics-contexts";
 import {
-  getAnalyticsQueryTypeFromEvent,
   TimeRange,
+  getAnalyticsQueryTypeFromEvent,
 } from "@/wab/client/components/analytics/utils";
 import {
   ApiAnalyticsConversionRateResult,
@@ -54,7 +54,7 @@ export function useChartData(props: ChartFilters) {
       arr:
         | ApiAnalyticsImpressionResult[]
         | ApiAnalyticsConversionResult[]
-        | ApiAnalyticsConversionRateResult[]
+        | ApiAnalyticsConversionRateResult[],
     ) {
       return !arr.some((elem) => {
         return elem.impressions > 0 || elem.conversions > 0 || elem.renders > 0;

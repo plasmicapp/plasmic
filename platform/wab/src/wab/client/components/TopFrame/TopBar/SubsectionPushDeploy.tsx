@@ -1,12 +1,12 @@
 import { AppCtx } from "@/wab/client/app-ctx";
+import { VisibleEnableBlock } from "@/wab/client/components/TopFrame/TopBar/PublishFlowDialog";
+import { PublishState } from "@/wab/client/components/TopFrame/TopBar/PublishFlowDialogWrapper";
+import { TopBarModal } from "@/wab/client/components/TopFrame/TopBar/TopBarModal";
 import { GithubConnect } from "@/wab/client/components/auth/GithubConnect";
 import GithubIntegration, {
   filterPlasmicPullRequests,
 } from "@/wab/client/components/github/GithubIntegration";
 import { confirm, reactConfirm } from "@/wab/client/components/quick-modals";
-import { VisibleEnableBlock } from "@/wab/client/components/TopFrame/TopBar/PublishFlowDialog";
-import { PublishState } from "@/wab/client/components/TopFrame/TopBar/PublishFlowDialogWrapper";
-import { TopBarModal } from "@/wab/client/components/TopFrame/TopBar/TopBarModal";
 import Button from "@/wab/client/components/widgets/Button";
 import GitJobStep from "@/wab/client/components/widgets/GitJobStep";
 import Select from "@/wab/client/components/widgets/Select";
@@ -15,13 +15,13 @@ import {
   DefaultSubsectionPushDeployProps,
   PlasmicSubsectionPushDeploy,
 } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicSubsectionPushDeploy";
-import { ensure, spawn } from "@/wab/shared/common";
 import {
   ApiProject,
   ApiProjectRepository,
   GitActionParams,
   GitWorkflowJobStep,
 } from "@/wab/shared/ApiSchema";
+import { ensure, spawn } from "@/wab/shared/common";
 import * as React from "react";
 
 export type SetupPushDeploy = {
@@ -47,7 +47,7 @@ export type StatusPushDeploy = {
 };
 
 export function mkPushDeployPublishState(
-  status: StatusPushDeploy | undefined
+  status: StatusPushDeploy | undefined,
 ): PublishState {
   if (!status?.enabled) {
     return undefined;
@@ -68,8 +68,7 @@ export function mkPushDeployPublishState(
 }
 
 interface SubsectionPushDeployProps
-  extends DefaultSubsectionPushDeployProps,
-    VisibleEnableBlock {
+  extends DefaultSubsectionPushDeployProps, VisibleEnableBlock {
   appCtx: AppCtx;
   project: ApiProject;
   setup: SetupPushDeploy;
@@ -118,9 +117,9 @@ function SubsectionPushDeploy(props: SubsectionPushDeployProps) {
       await appCtx.api.deleteProjectRepository(
         ensure(
           projectRepository.value?.id,
-          "Project repository id should exist to delete it"
+          "Project repository id should exist to delete it",
         ),
-        project.id
+        project.id,
       );
       await updateProjectRepository();
     }
@@ -164,10 +163,10 @@ function SubsectionPushDeploy(props: SubsectionPushDeployProps) {
           projectRepository.loading
             ? "loading"
             : projectRepository.error
-            ? "error"
-            : projectRepository.value
-            ? "connected"
-            : undefined
+              ? "error"
+              : projectRepository.value
+                ? "connected"
+                : undefined
         }
         retryButton={{
           onClick: () => {
@@ -224,8 +223,8 @@ function SubsectionPushDeploy(props: SubsectionPushDeployProps) {
           (projectRepository.value?.branches || []).length === 0
             ? "newRepo"
             : projectRepository.value?.scheme === "loader"
-            ? "existingLoader"
-            : undefined
+              ? "existingLoader"
+              : undefined
         }
         pushAs={{
           "aria-label": "Push as",
@@ -256,7 +255,7 @@ function SubsectionPushDeploy(props: SubsectionPushDeployProps) {
           ].concat(
             filterPlasmicPullRequests(
               projectRepository.value?.branches,
-              branch
+              branch,
             ).map((name) => (
               <Select.Option
                 value={`${name}`}
@@ -265,7 +264,7 @@ function SubsectionPushDeploy(props: SubsectionPushDeployProps) {
               >
                 an update to <strong>{name}</strong>
               </Select.Option>
-            ))
+            )),
           ),
         }}
         title={{
@@ -301,10 +300,10 @@ function SubsectionPushDeploy(props: SubsectionPushDeployProps) {
                     step.conclusion === "failure"
                       ? "failed"
                       : step.conclusion === "success"
-                      ? "finished"
-                      : step.status === "in_progress"
-                      ? "started"
-                      : "unstarted"
+                        ? "finished"
+                        : step.status === "in_progress"
+                          ? "started"
+                          : "unstarted"
                   }
                   description={step.name}
                 />
@@ -316,7 +315,7 @@ function SubsectionPushDeploy(props: SubsectionPushDeployProps) {
         githubPagesDelayNotice={{
           wrap: (node) => {
             return status?.steps.some((step) =>
-              step.name.includes("GitHub Pages")
+              step.name.includes("GitHub Pages"),
             )
               ? node
               : null;

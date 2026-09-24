@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class ProjectCommenterToViewerAccessLevel1740038660432
-  implements MigrationInterface
-{
+export class ProjectCommenterToViewerAccessLevel1740038660432 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
             UPDATE "permission"

@@ -14,7 +14,7 @@ interface UpsellCreditCardProps extends DefaultUpsellCreditCardProps {
 
 function UpsellCreditCard_(
   props: UpsellCreditCardProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { disabled, onSubmit, ...rest } = props;
   return (

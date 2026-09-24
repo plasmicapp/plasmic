@@ -77,7 +77,7 @@ export const ComponentRow = observer(function ComponentRow(props: {
         component,
         readOnly,
         isPlainComponent,
-        importedFrom
+        importedFrom,
       );
     }
 
@@ -90,7 +90,7 @@ export const ComponentRow = observer(function ComponentRow(props: {
 
   const defaultComponentKind = getDefaultComponentKind(
     studioCtx.site,
-    component
+    component,
   );
   const icon = (() => {
     const commentsStats = commentsCtx
@@ -152,7 +152,7 @@ export const ComponentRow = observer(function ComponentRow(props: {
                     studioCtx.change(() => {
                       studioCtx.switchToComponentArena(component);
                       return ok();
-                    })
+                    }),
                   );
                 }
               : undefined
@@ -188,7 +188,7 @@ function buildPlasmicComponentMenuItems(
   component: Component,
   readOnly: boolean,
   isPlainComponent: boolean,
-  importedFrom?: string
+  importedFrom?: string,
 ) {
   const onDuplicate = readOnly
     ? undefined
@@ -201,12 +201,12 @@ function buildPlasmicComponentMenuItems(
           key="open-dedicated-arena"
           onClick={() =>
             studioCtx.changeUnsafe(() =>
-              studioCtx.switchToComponentArena(component)
+              studioCtx.switchToComponentArena(component),
             )
           }
         >
           <strong data-test-id="edit-component">Edit</strong> component
-        </Menu.Item>
+        </Menu.Item>,
       );
       if (isMixedArena(arena)) {
         push(
@@ -214,12 +214,12 @@ function buildPlasmicComponentMenuItems(
             key="open"
             onClick={() =>
               studioCtx.changeUnsafe(() =>
-                studioCtx.siteOps().createNewFrameForMixedArena(component)
+                studioCtx.siteOps().createNewFrameForMixedArena(component),
               )
             }
           >
             <strong>Edit</strong> in new {FRAME_CAP}
-          </Menu.Item>
+          </Menu.Item>,
         );
       }
     }
@@ -237,12 +237,12 @@ function buildPlasmicComponentMenuItems(
                 branchRevision: undefined,
                 arenaType: "component",
                 arenaUuidOrNameOrPath: component.uuid,
-              })
+              }),
             );
           }}
         >
           <strong>Open</strong> component in new tab
-        </Menu.Item>
+        </Menu.Item>,
       );
     }
   });
@@ -262,13 +262,13 @@ function buildPlasmicComponentMenuItems(
 
             if (name) {
               await studioCtx.changeUnsafe(() =>
-                studioCtx.siteOps().tryRenameComponent(component, name)
+                studioCtx.siteOps().tryRenameComponent(component, name),
               );
             }
           }}
         >
           <strong>Rename</strong> component
-        </Menu.Item>
+        </Menu.Item>,
       );
     }
 
@@ -276,7 +276,7 @@ function buildPlasmicComponentMenuItems(
       push(
         <Menu.Item key="duplicate" onClick={() => onDuplicate()}>
           <strong>Duplicate</strong> component
-        </Menu.Item>
+        </Menu.Item>,
       );
     }
 
@@ -290,12 +290,12 @@ function buildPlasmicComponentMenuItems(
               () => {
                 studioCtx.siteOps().convertComponentToPage(component);
                 return ok();
-              }
+              },
             )
           }
         >
           <strong>Convert</strong> to page
-        </Menu.Item>
+        </Menu.Item>,
       );
     }
   });
@@ -313,18 +313,18 @@ function buildPlasmicComponentMenuItems(
               component.name,
               studioCtx.commentsCtx
                 .computedData()
-                .commentStatsByComponent.get(component.uuid)?.commentCount
+                .commentStatsByComponent.get(component.uuid)?.commentCount,
             );
             if (!confirmation) {
               return;
             }
             await studioCtx.changeUnsafe(() =>
-              studioCtx.siteOps().tryRemoveComponent(component)
+              studioCtx.siteOps().tryRemoveComponent(component),
             );
           }}
         >
           <strong>Delete</strong> component
-        </Menu.Item>
+        </Menu.Item>,
       );
     }
   });
@@ -333,7 +333,7 @@ function buildPlasmicComponentMenuItems(
 function buildCodeComponentMenuItems(
   builder: MenuBuilder,
   studioCtx: StudioCtx,
-  component: CodeComponent
+  component: CodeComponent,
 ) {
   builder.genSection(undefined, (push) => {
     push(
@@ -354,24 +354,24 @@ function buildCodeComponentMenuItems(
           const diffsOrError = compareComponentPropsWithMeta(
             studioCtx.site,
             component,
-            meta
+            meta,
           );
           diffsOrError.match(
             (diffs) => {
               if (
                 [diffs.addedProps, diffs.removedProps, diffs.updatedProps].some(
-                  (i) => i.length > 0
+                  (i) => i.length > 0,
                 )
               ) {
                 spawn(
                   showModalToRefreshCodeComponentProps([
                     { ...diffs, component },
-                  ])
+                  ]),
                 );
               } else {
                 notification.info({
                   message: `${getComponentDisplayName(
-                    component
+                    component,
                   )} is up to date`,
                 });
               }
@@ -381,12 +381,12 @@ function buildCodeComponentMenuItems(
                 message: err.message,
               });
               reportError(err);
-            }
+            },
           );
         }}
       >
         <strong>Refresh</strong> registered props
-      </Menu.Item>
+      </Menu.Item>,
     );
   });
 
@@ -405,12 +405,12 @@ function buildCodeComponentMenuItems(
             <>
               Delete code component {getComponentDisplayName(component)} (
               <code>{component.codeComponentMeta.importPath}</code>)
-            </>
+            </>,
           )
         }
       >
         <strong>Delete</strong> component
-      </Menu.Item>
+      </Menu.Item>,
     );
   });
 }
@@ -418,20 +418,20 @@ function buildCodeComponentMenuItems(
 function buildCommonComponentMenuItems(
   builder: MenuBuilder,
   studioCtx: StudioCtx,
-  component: Component
+  component: Component,
 ) {
   const onFindReferences = () => {
     spawn(
       studioCtx.changeUnsafe(
-        () => (studioCtx.findReferencesComponent = component)
-      )
+        () => (studioCtx.findReferencesComponent = component),
+      ),
     );
   };
   builder.genSection(undefined, (push) => {
     push(
       <Menu.Item key="references" onClick={onFindReferences}>
         <strong>Find</strong> all references
-      </Menu.Item>
+      </Menu.Item>,
     );
     genComponentSwapMenuItem(builder, studioCtx, component);
   });
@@ -456,16 +456,16 @@ function buildCommonComponentMenuItems(
                   .siteOps()
                   .promoteComponentToDefaultKind(studioCtx, component, kind);
                 return ok();
-              })
+              }),
             );
           }
         }}
       >
         Set as <strong>default component category</strong>
-      </Menu.Item>
+      </Menu.Item>,
     );
     const matchingDefaultComponent = Object.entries(
-      studioCtx.site.defaultComponents
+      studioCtx.site.defaultComponents,
     ).find(([_, _component]) => _component === component);
     if (matchingDefaultComponent) {
       const [kind] = matchingDefaultComponent;
@@ -483,7 +483,7 @@ function buildCommonComponentMenuItems(
           <strong>
             default component category {defaultComponentKinds[kind]}
           </strong>
-        </Menu.Item>
+        </Menu.Item>,
       );
     }
     push(
@@ -499,7 +499,7 @@ function buildCommonComponentMenuItems(
       >
         {studioCtx.site.pageWrapper === component ? "Unset" : "Set"} as{" "}
         <strong>default page wrapper</strong>
-      </Menu.Item>
+      </Menu.Item>,
     );
   });
 }
@@ -507,7 +507,7 @@ function buildCommonComponentMenuItems(
 function genComponentSwapMenuItem(
   builder: MenuBuilder,
   studioCtx: StudioCtx,
-  component: Component
+  component: Component,
 ) {
   const doSwap = (toComp: Component) => {
     spawn(studioCtx.siteOps().swapComponents(component, toComp));
@@ -515,7 +515,7 @@ function genComponentSwapMenuItem(
   const pushComps = (
     comps: Component[],
     push: (x: React.ReactElement) => void,
-    includeCodeComponents: boolean
+    includeCodeComponents: boolean,
   ) => {
     for (const comp of comps) {
       if (
@@ -529,7 +529,7 @@ function genComponentSwapMenuItem(
         push(
           <Menu.Item key={comp.uuid} onClick={() => doSwap(comp)}>
             {getComponentDisplayName(comp)}
-          </Menu.Item>
+          </Menu.Item>,
         );
       }
     }
@@ -545,6 +545,6 @@ function genComponentSwapMenuItem(
           pushComps(dep.site.components, _push, false);
         });
       }
-    }
+    },
   );
 }

@@ -16,12 +16,12 @@ import moment from "moment";
 
 const ReactFlowPromise = import("@xyflow/react");
 const lazyReactFlowComponent = (
-  component: "ReactFlow" | "Controls" | "MiniMap" | "Background"
+  component: "ReactFlow" | "Controls" | "MiniMap" | "Background",
 ) =>
   React.lazy(() =>
     ReactFlowPromise.then((module) => ({
       default: module[component],
-    }))
+    })),
   );
 
 const LazyReactFlow = lazyReactFlowComponent("ReactFlow");
@@ -69,23 +69,23 @@ function PkgVersionDetails(props: {
   const { nonAuthCtx, metadata, pkgVersionId } = props;
   const currentPkgVersion = ensure(
     metadata.pkgVersions.find((pkgVersion) => pkgVersion.id === pkgVersionId),
-    `pkgVersion ${pkgVersionId} not found`
+    `pkgVersion ${pkgVersionId} not found`,
   );
 
   const createdAt = moment(currentPkgVersion.createdAt);
   const author = metadata.users.find(
-    (user) => user.id === currentPkgVersion.createdById
+    (user) => user.id === currentPkgVersion.createdById,
   );
 
   const parents = metadata.commitGraph.parents[pkgVersionId];
 
   async function downloadDataBasedOnPkgVersions(
-    pkgVersionsToDownload: PkgVersionInfoMeta[]
+    pkgVersionsToDownload: PkgVersionInfoMeta[],
   ) {
     assert(pkgVersionsToDownload.length > 0, "expected at least one parent");
 
     const hasMainVersion = pkgVersionsToDownload.some(
-      (pkgVersion) => !pkgVersion.branchId
+      (pkgVersion) => !pkgVersion.branchId,
     );
 
     if (!hasMainVersion) {
@@ -95,11 +95,11 @@ function PkgVersionDetails(props: {
           metadata.pkgVersions.filter(
             (pkgVersion) =>
               timeFromDate(pkgVersion.createdAt) <
-              timeFromDate(pkgVersionsToDownload[0].createdAt)
+              timeFromDate(pkgVersionsToDownload[0].createdAt),
           ),
-          (pkgVersion) => timeFromDate(pkgVersion.createdAt)
+          (pkgVersion) => timeFromDate(pkgVersion.createdAt),
         ),
-        "No main version found"
+        "No main version found",
       );
 
       pkgVersionsToDownload.push(oldestMainVersionBeforeParent);
@@ -111,8 +111,8 @@ function PkgVersionDetails(props: {
         metadata.projectId,
         pkgVersionsToDownload.map(
           (pkgVersion) =>
-            `${pkgVersion.branchId ?? MainBranchId}@${pkgVersion.id}`
-        )
+            `${pkgVersion.branchId ?? MainBranchId}@${pkgVersion.id}`,
+        ),
       );
     } catch (e) {
       notification.error({ message: `${e}` });
@@ -121,7 +121,7 @@ function PkgVersionDetails(props: {
 
   async function downloadDataPriorToMerge() {
     const parentPkgVersions = parents.map((parent) =>
-      metadata.pkgVersions.find((pkgVersion) => pkgVersion.id === parent)
+      metadata.pkgVersions.find((pkgVersion) => pkgVersion.id === parent),
     );
     await downloadDataBasedOnPkgVersions(parentPkgVersions);
   }
@@ -138,7 +138,7 @@ function PkgVersionDetails(props: {
         </Descriptions.Item>
         <Descriptions.Item label="Created At">
           {`${createdAt.format(
-            "YYYY-MM-DD HH:mm:ss"
+            "YYYY-MM-DD HH:mm:ss",
           )} (${createdAt.fromNow()})`}
         </Descriptions.Item>
         <Descriptions.Item label="Created By">
@@ -201,7 +201,7 @@ export function AdminBranchingInspector() {
 
     const latestBranchUpdate = (branch: ApiBranch) => {
       const branchPkgVersions = pkgVersions.filter(
-        (pkgVersion) => pkgVersion.branchId === branch.id
+        (pkgVersion) => pkgVersion.branchId === branch.id,
       );
       return branchPkgVersions.reduce((acc, pkgVersion) => {
         const createdAtTime = timeFromDate(pkgVersion.createdAt);
@@ -218,16 +218,19 @@ export function AdminBranchingInspector() {
         .filter((a) => latestBranchUpdate(a) > timeFromDate(a.createdAt))
         // More recent branches will appear closer to the 0th lane
         .sort((a, b) => latestBranchUpdate(b) - latestBranchUpdate(a))
-        .reduce((acc, branch, idx) => {
-          // We can improve this by considering the interval of time in which the branch was updated
-          // and position multiple branches in the same lane if their updates are far apart.
-          acc[branch.id] = idx + 1;
-          return acc;
-        }, {} as Record<string, number>),
+        .reduce(
+          (acc, branch, idx) => {
+            // We can improve this by considering the interval of time in which the branch was updated
+            // and position multiple branches in the same lane if their updates are far apart.
+            acc[branch.id] = idx + 1;
+            return acc;
+          },
+          {} as Record<string, number>,
+        ),
     };
 
     const allCreatedTimesDecrescent = uniq(
-      pkgVersions.map((pkgVersion) => timeFromDate(pkgVersion.createdAt))
+      pkgVersions.map((pkgVersion) => timeFromDate(pkgVersion.createdAt)),
     ).sort((a, b) => b - a);
 
     const nodes = pkgVersions.map((pkgVersion) => {
@@ -288,9 +291,8 @@ export function AdminBranchingInspector() {
       />
       <Button
         onClick={async () => {
-          const metadata = await nonAuthCtx.api.getProjectBranchesMetadata(
-            projectId
-          );
+          const metadata =
+            await nonAuthCtx.api.getProjectBranchesMetadata(projectId);
           setSelectedPkgVersionId(null);
           setProjectMetadata({
             projectId,

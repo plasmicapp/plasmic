@@ -7,10 +7,9 @@ import { z } from "zod";
 export type AiOutputFormat = "json" | "xml";
 
 export type CopilotToolMeta<
-  TInput extends
-    | JSONSchema7
-    | z.ZodObject<z.ZodRawShape> = z.ZodObject<z.ZodRawShape>,
-  TOutput extends JSONSchema7 | z.ZodTypeAny = z.ZodTypeAny
+  TInput extends JSONSchema7 | z.ZodObject<z.ZodRawShape> =
+    z.ZodObject<z.ZodRawShape>,
+  TOutput extends JSONSchema7 | z.ZodTypeAny = z.ZodTypeAny,
 > = {
   /** Unique name, used as both tool ID and AI tool name */
   toolName: string;
@@ -26,7 +25,7 @@ export type CopilotToolMeta<
 
 export type CopilotTool<
   TInput extends z.ZodObject<z.ZodRawShape> = z.ZodObject<z.ZodRawShape>,
-  TOutput extends z.ZodTypeAny = z.ZodTypeAny
+  TOutput extends z.ZodTypeAny = z.ZodTypeAny,
 > = CopilotToolMeta<TInput, TOutput> & {
   /**
    * Execute the tool, returning the serialized output in the agent's preferred format.
@@ -36,7 +35,7 @@ export type CopilotTool<
   execute: (
     studioCtx: StudioCtx,
     input: z.input<TInput>,
-    opts?: { prettify?: boolean }
+    opts?: { prettify?: boolean },
   ) => Promise<string>;
 };
 
@@ -49,13 +48,13 @@ export type CopilotTool<
  */
 export function defineCopilotTool<
   TInput extends z.ZodObject<z.ZodRawShape>,
-  TOutput extends z.ZodTypeAny
+  TOutput extends z.ZodTypeAny,
 >(
   meta: CopilotToolMeta<TInput, TOutput>,
   execute: (
     studioCtx: StudioCtx,
-    input: z.infer<TInput>
-  ) => Promise<z.infer<TOutput>>
+    input: z.infer<TInput>,
+  ) => Promise<z.infer<TOutput>>,
 ): CopilotTool<TInput, TOutput> {
   return {
     ...meta,
@@ -63,7 +62,7 @@ export function defineCopilotTool<
       const prettify = opts?.prettify ?? false;
       const parsedInput = meta.inputSchema.parse(input);
       const output = meta.outputSchema.parse(
-        await execute(studioCtx, parsedInput)
+        await execute(studioCtx, parsedInput),
       );
       return studioCtx.preferredAiOutputFormat() === "xml"
         ? jsonToXml(output, prettify)
@@ -77,7 +76,7 @@ export function defineCopilotTool<
  * input (AI tool params) and output (introspectable result shape).
  */
 export function mapCopilotToolsToJsonSchema(
-  tools: Record<string, CopilotToolMeta>
+  tools: Record<string, CopilotToolMeta>,
 ): Record<string, CopilotToolMeta<JSONSchema7, JSONSchema7>> {
   return Object.fromEntries(
     Object.entries(tools).map(([name, tool]) => [
@@ -99,6 +98,6 @@ export function mapCopilotToolsToJsonSchema(
         outputSchema: zodSchema(tool.outputSchema, { useReferences: true })
           .jsonSchema as JSONSchema7,
       },
-    ])
+    ]),
   );
 }

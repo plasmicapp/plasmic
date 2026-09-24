@@ -17,7 +17,7 @@ export const MatchedRouteContext = React.createContext<
  * If a route is provided, it must prefix-match the location instead.
  */
 export function useMatchedRoute<PathParams extends {}>(
-  route?: Route<PathParams>
+  route?: Route<PathParams>,
 ): MatchedRoute<PathParams> | undefined {
   const matchedRoute = React.useContext(MatchedRouteContext);
   return React.useMemo(() => {

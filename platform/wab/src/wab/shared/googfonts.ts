@@ -48,7 +48,7 @@ let _googFontsMap: Record<string, GoogFontMeta>;
 function getGoogFontsMap() {
   if (!_googFontsMap) {
     _googFontsMap = Object.fromEntries(
-      getGoogFontsMeta().items.map((font) => tuple(font["family"], font))
+      getGoogFontsMeta().items.map((font) => tuple(font["family"], font)),
     );
   }
   return _googFontsMap;
@@ -61,7 +61,7 @@ export function getGoogFontMeta(family: string): GoogFontMeta | undefined {
 export function makeGoogleFontApiUrl(
   fontFamily: string,
   variants?: GoogFontVariant[],
-  subsets?: string[]
+  subsets?: string[],
 ) {
   const gf = ensure(getGoogFontMeta(fontFamily), "fonts");
   // Install google font. Currently, we install all the variants and subsets

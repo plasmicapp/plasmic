@@ -3,7 +3,7 @@ import { BundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { pseudoSelectors } from "@/wab/shared/core/styles";
 
 const presetDisplayNamesToCssSelectors = new Map(
-  pseudoSelectors.map((opt) => [opt.displayName, opt.cssSelector])
+  pseudoSelectors.map((opt) => [opt.displayName, opt.cssSelector]),
 );
 
 export const migrate: BundledMigrationFn = async (bundle) => {
@@ -17,7 +17,7 @@ export const migrate: BundledMigrationFn = async (bundle) => {
     const newSelectors = inst["selectors"].map(
       (maybeDisplayName) =>
         presetDisplayNamesToCssSelectors.get(maybeDisplayName) ??
-        maybeDisplayName
+        maybeDisplayName,
     );
     inst["selectors"] = newSelectors;
   }

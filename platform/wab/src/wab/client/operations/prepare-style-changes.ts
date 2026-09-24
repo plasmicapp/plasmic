@@ -64,7 +64,7 @@ export const normalizedStyleKeys = memoize((prop: string): string[] => {
 export function styleKeysForValue(
   prop: string,
   value: string,
-  context: Record<string, string>
+  context: Record<string, string>,
 ): string[] {
   const { safe, unsafe } = processUnsanitizedStyles({
     ...context,
@@ -113,7 +113,7 @@ export interface StyleChanges {
 /** null removes a property; empty strings are ignored and reported. */
 export function prepareStyleChanges(
   styles: Record<string, string | null>,
-  opts: StyleChangesOpts = {}
+  opts: StyleChangesOpts = {},
 ): StyleChanges {
   const { layoutContext = {} } = opts;
   const messages: string[] = [];
@@ -130,7 +130,7 @@ export function prepareStyleChanges(
     const value = rawValue.trim();
     if (!value) {
       messages.push(
-        `Ignored empty value for "${prop}"; use null to remove a property.`
+        `Ignored empty value for "${prop}"; use null to remove a property.`,
       );
     } else if (isRawTypographyProp(prop)) {
       // Same syntax check as the importer, but keep the raw value: the
@@ -139,7 +139,7 @@ export function prepareStyleChanges(
         () => {
           set[prop] = value;
         },
-        (error) => messages.push(...formatWIErrors([error]))
+        (error) => messages.push(...formatWIErrors([error])),
       );
     } else {
       toSanitize[prop] = value;
@@ -167,8 +167,8 @@ export function prepareStyleChanges(
     if (sanitized.ignored.length > 0) {
       messages.push(
         `Ignored properties that cannot be set here: ${quoteProps(
-          sanitized.ignored.map(normProp)
-        )}.`
+          sanitized.ignored.map(normProp),
+        )}.`,
       );
     }
 
@@ -190,7 +190,7 @@ export function prepareStyleChanges(
 
 export function notSetMessage(props: string[]): string {
   return `Ignored removal of properties that are not set: ${quoteProps(
-    props
+    props,
   )}.`;
 }
 
@@ -209,8 +209,8 @@ export function unsafeStylesMessages(unsafe: Record<string, string>): string[] {
   if (unrecognized.length > 0) {
     messages.push(
       `Ignored properties that are not recognized CSS styles: ${quoteProps(
-        unrecognized
-      )}.`
+        unrecognized,
+      )}.`,
     );
   }
   if (unknown.length > 0) {
@@ -222,7 +222,7 @@ export function unsafeStylesMessages(unsafe: Record<string, string>): string[] {
 /** Installs a written font-family into the canvas, like the Typography section. */
 export function useWrittenFont(
   studioCtx: StudioCtx,
-  written: Record<string, string>
+  written: Record<string, string>,
 ) {
   const fontFamily = written["font-family"];
   if (fontFamily) {

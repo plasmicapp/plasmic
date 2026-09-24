@@ -69,7 +69,7 @@ export async function deleteResourcesWithUsages<R extends DeletableResource>(
   studioCtx: StudioCtx,
   resourcesWithUsage: ResourceWithUsage<R>[],
   onDelete: (resource: R) => void,
-  opts: DeleteResourcesOpts & { deleteLabel: string }
+  opts: DeleteResourcesOpts & { deleteLabel: string },
 ): Promise<DeleteResourcesResult<R>> {
   const messages: string[] = [];
   const errors: string[] = [];
@@ -80,7 +80,7 @@ export async function deleteResourcesWithUsages<R extends DeletableResource>(
 
   // Filter resources with usages for confirmation dialog
   const resourcesWithUsages = resourcesWithUsage.filter(
-    ({ usageCount }) => usageCount > 0
+    ({ usageCount }) => usageCount > 0,
   );
 
   // Handle "error-if-referenced" mode
@@ -101,7 +101,7 @@ export async function deleteResourcesWithUsages<R extends DeletableResource>(
       errors.push(
         `Cannot delete "${getDeletableResourceLabel(resource)}" (uuid: ${
           resource.uuid
-        }): still referenced in ${locations}.`
+        }): still referenced in ${locations}.`,
       );
     }
     return err({ errors });
@@ -114,7 +114,7 @@ export async function deleteResourcesWithUsages<R extends DeletableResource>(
       resourcesWithUsages.map(({ resource, usageSummary }) => ({
         element: resource,
         summary: usageSummary,
-      }))
+      })),
     );
     if (!confirmed) {
       errors.push(`Deletion of ${deleteLabel} was cancelled.`);
@@ -128,7 +128,7 @@ export async function deleteResourcesWithUsages<R extends DeletableResource>(
       resourcesWithUsage.flatMap(({ usageSummary }) => [
         ...(usageSummary.components ?? []),
         ...(usageSummary.frames ?? []).map((f) => f.container.component),
-      ])
+      ]),
     );
     const affectedComponents = Array.from(affectedComponentsSet);
 
@@ -139,12 +139,12 @@ export async function deleteResourcesWithUsages<R extends DeletableResource>(
           onDelete(resource);
           messages.push(
             `Deleted ${deleteLabel} "${getDeletableResourceLabel(
-              resource
-            )}" (uuid: ${resource.uuid}).`
+              resource,
+            )}" (uuid: ${resource.uuid}).`,
           );
         }
         return ok();
-      }
+      },
     );
   }
 

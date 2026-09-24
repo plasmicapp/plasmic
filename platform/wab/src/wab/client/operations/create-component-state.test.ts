@@ -14,7 +14,7 @@ import * as Tpls from "@/wab/shared/core/tpls";
 describe("createComponentState", () => {
   function setupWithComponent() {
     const { site, tplMgr } = setupComponentWithTplTree(
-      Tpls.mkTplTagX("div", {})
+      Tpls.mkTplTagX("div", {}),
     );
     const created = createComponent({
       tplMgr,
@@ -161,7 +161,7 @@ describe("createComponentState", () => {
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toEqual(
-      "Initial value for read-and-write state cannot contain references to dynamic values that are available only in the current component context."
+      "Initial value for read-and-write state cannot contain references to dynamic values that are available only in the current component context.",
     );
     expect(component.states).toHaveLength(0);
   });

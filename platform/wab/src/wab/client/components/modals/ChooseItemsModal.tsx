@@ -33,7 +33,7 @@ export async function promptChooseItems<T>(props: {
         onSubmit={onSubmit}
         onCancel={onCancel}
       />
-    )
+    ),
   );
 }
 

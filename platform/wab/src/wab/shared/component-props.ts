@@ -16,7 +16,7 @@ import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 
 export function getComponentPropTypes(
   viewCtx: ViewCtx,
-  component: Component
+  component: Component,
 ): Record<string, StudioPropType<any>> {
   if (isCodeComponent(component)) {
     return viewCtx.getCodeComponentMeta(component)?.props ?? {};
@@ -32,7 +32,7 @@ export function getComponentPropTypes(
 
 function getContextComponentPropTypes(
   studioCtx: StudioCtx,
-  component: Component
+  component: Component,
 ): Record<string, StudioPropType<any>> {
   if (isCodeComponent(component)) {
     return (
@@ -50,7 +50,7 @@ export const inferPropTypeFromParam = (
   studioCtx: StudioCtx,
   viewCtx: ViewCtx | undefined,
   tpl: TplComponent,
-  param: Param
+  param: Param,
 ): StudioPropType<any> => {
   let propType = wabTypeToPropType(param.type);
   // code components can have more advanced prop types.
@@ -62,7 +62,7 @@ export const inferPropTypeFromParam = (
         : propType;
     } else {
       const maybeLinkedProp = getLinkedCodeProps(tpl.component).get(
-        param.variable.name
+        param.variable.name,
       );
       if (maybeLinkedProp) {
         const [innerTpl, linkedProp] = maybeLinkedProp;

@@ -18,7 +18,7 @@ export const CodePreviewPanel = observer(function CodePreviewPanel(props: {
     studioCtx.site,
     studioCtx.siteInfo.name,
     studioCtx.siteInfo.id,
-    vc.component
+    vc.component,
   );
 
   const loader = async () => {

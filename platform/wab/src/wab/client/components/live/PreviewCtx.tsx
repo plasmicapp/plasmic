@@ -143,7 +143,10 @@ export class PreviewCtx {
   isLive = false;
   popup: Window | undefined = undefined;
 
-  constructor(public hostFrameCtx: HostFrameCtx, public studioCtx: StudioCtx) {
+  constructor(
+    public hostFrameCtx: HostFrameCtx,
+    public studioCtx: StudioCtx,
+  ) {
     makeObservable(this, {
       previewData: observable,
       isLive: observable,
@@ -161,7 +164,7 @@ export class PreviewCtx {
       spawn(this.parseRoute());
     };
     const disposeHistoryListener = hostFrameCtx.history.listen(({ location }) =>
-      historyListener(location)
+      historyListener(location),
     );
     this.disposals.push(disposeHistoryListener);
 
@@ -184,7 +187,7 @@ export class PreviewCtx {
 
           const pinManager = new FramePinManager(
             viewCtx.site,
-            viewCtx.arenaFrame()
+            viewCtx.arenaFrame(),
           );
 
           // For async reactions, make sure to reference all observables before the first await.
@@ -207,8 +210,8 @@ export class PreviewCtx {
               const { viewCtx, activeVariants } = res;
               spawn(this.pushComponent(viewCtx.component, activeVariants));
             }
-          })()
-      )
+          })(),
+      ),
     );
 
     const match = parseProjectLocation(this.studioCtx.appCtx.history.location);
@@ -262,7 +265,7 @@ export class PreviewCtx {
 
     history.push(
       this.previousLocation ||
-        APP_ROUTES.project.fill({ projectId: this.studioCtx.siteInfo.id })
+        APP_ROUTES.project.fill({ projectId: this.studioCtx.siteInfo.id }),
     );
   }
 
@@ -301,7 +304,7 @@ export class PreviewCtx {
           source: "plasmic-studio",
           type: "getLocation",
         },
-        "*"
+        "*",
       );
 
       return promise;
@@ -367,7 +370,7 @@ export class PreviewCtx {
         this.studioCtx,
         componentPath.component,
         variants,
-        global
+        global,
       );
     }
 
@@ -427,7 +430,7 @@ export class PreviewCtx {
 
   /** Update the preview viewport. */
   async pushViewport(
-    previewData: Partial<Pick<PreviewInputData, "width" | "height">>
+    previewData: Partial<Pick<PreviewInputData, "width" | "height">>,
   ) {
     return this.pushRoute(previewData);
   }
@@ -438,7 +441,7 @@ export class PreviewCtx {
    * Used for automatic resizing operations.
    */
   async replaceViewport(
-    previewData: Partial<Pick<PreviewInputData, "width" | "height">>
+    previewData: Partial<Pick<PreviewInputData, "width" | "height">>,
   ) {
     return this.pushRoute(previewData, true);
   }
@@ -453,7 +456,7 @@ export class PreviewCtx {
       allVariants,
       branchName,
     }: Partial<PreviewInputData>,
-    replace = false
+    replace = false,
   ) {
     if (!this.previewData) {
       await this.parseRoute();
@@ -475,7 +478,7 @@ export class PreviewCtx {
 
   private async pushRouteToHistoryOrPopup(
     location: Partial<Location>,
-    replace = false
+    replace = false,
   ): Promise<void> {
     if (this.popup) {
       this.popup.postMessage(
@@ -484,7 +487,7 @@ export class PreviewCtx {
           type: replace ? "replaceHistory" : "pushHistory",
           url: (location.pathname ?? "") + location.search + location.hash,
         },
-        "*"
+        "*",
       );
     } else {
       if (replace) {
@@ -500,7 +503,7 @@ export class PreviewCtx {
       this.studioCtx,
       this.component,
       this.variants,
-      this.global
+      this.global,
     );
   }
 }
@@ -509,11 +512,11 @@ function getAllVariants(
   studioCtx: StudioCtx,
   component: Component | undefined,
   variants: Record<string, string | string[]>,
-  global: Record<string, string | string[]>
+  global: Record<string, string | string[]>,
 ) {
   const componentVariants = component
     ? allComponentVariants(component).filter((v) =>
-        isVariantActive(v, variants)
+        isVariantActive(v, variants),
       )
     : [];
 
@@ -533,15 +536,15 @@ export function mkVariantsRecord(variants: VariantCombo) {
         toVarName(vg.param.variable.name),
         vars.length === 1
           ? toVarName(vars[0].name)
-          : vars.map((v) => toVarName(v.name))
+          : vars.map((v) => toVarName(v.name)),
       );
-    })
+    }),
   );
 }
 
 function isVariantActive(
   variant: Variant,
-  active: Record<string, string | string[]>
+  active: Record<string, string | string[]>,
 ): boolean {
   const key = toVarName(variant.parent?.param.variable.name || variant.name);
   return (
@@ -552,7 +555,7 @@ function isVariantActive(
 
 function mkPreviewPathname<PathParams extends {}>(
   route: Route<PathParams>,
-  params: { [K in keyof PathParams]: string }
+  params: { [K in keyof PathParams]: string },
 ) {
   // We do not use Route.fill because the preview path's inner slashes must
   // stay un-encoded, and path-to-regexp would percent-encode them.
@@ -572,7 +575,7 @@ export function isLiveMode(pathname: string) {
 
 function mkPreviewRoute(
   projectId: ProjectId,
-  previewData: PreviewInputData
+  previewData: PreviewInputData,
 ): Partial<Location> {
   const { full, componentPath, pageQuery } = previewData;
 
@@ -584,11 +587,11 @@ function mkPreviewRoute(
         typeof componentPath === "string"
           ? componentPath
           : mkPreviewPath(componentPath.component, componentPath.pageParams),
-    }
+    },
   );
   const search = mkPreviewSearch(
     pageQuery,
-    typeof componentPath === "string" ? undefined : componentPath.component
+    typeof componentPath === "string" ? undefined : componentPath.component,
   );
   const hash = mkPreviewHash(previewData);
 
@@ -605,7 +608,7 @@ function mkPreviewRoute(
  */
 function mkPreviewPath(
   component: Component,
-  pageParams?: Record<string, string>
+  pageParams?: Record<string, string>,
 ) {
   let path = component.pageMeta?.path || component.uuid;
   if (component.pageMeta) {
@@ -620,10 +623,10 @@ function mkPreviewPath(
  */
 function mkPreviewSearch(
   pageQuery: Record<string, string> | undefined,
-  component: Component | undefined
+  component: Component | undefined,
 ) {
   const search = new URLSearchParams(
-    pageQuery || component?.pageMeta?.query || {}
+    pageQuery || component?.pageMeta?.query || {},
   ).toString();
   return search ? `?${search}` : "";
 }
@@ -646,10 +649,10 @@ function mkPreviewHash({
     hashParams.set("height", `${height}`);
   }
   const variants = mkVariantsRecord(
-    allVariants.filter((v) => !isGlobalVariant(v))
+    allVariants.filter((v) => !isGlobalVariant(v)),
   );
   const global = mkVariantsRecord(
-    allVariants.filter((v) => isGlobalVariant(v))
+    allVariants.filter((v) => isGlobalVariant(v)),
   );
   if (Object.keys(variants).length > 0) {
     hashParams.set("variants", JSON.stringify(variants));
@@ -667,7 +670,7 @@ function mkPreviewHash({
 
 export async function getUrlsForLiveMode(
   studioCtx: StudioCtx,
-  full: boolean
+  full: boolean,
 ): Promise<Partial<Location>> {
   const viewCtx = await studioCtx.getPreviewInitialViewCtx();
   const arenaFrame = viewCtx.arenaFrame();
@@ -675,10 +678,10 @@ export async function getUrlsForLiveMode(
   const pinManager = new ClientPinManager(
     viewCtx.componentStackFrames()[0],
     viewCtx.globalFrame,
-    new Map()
+    new Map(),
   );
   const variants = allComponentNonStyleVariants(component).filter((v) =>
-    pinManager.isActive(v)
+    pinManager.isActive(v),
   );
   const global = allGlobalVariants(viewCtx.site, {
     includeDeps: "all",
@@ -706,14 +709,14 @@ function mkUrl(href: string) {
 
 export function getComponentByPath(
   studioCtx: StudioCtx,
-  componentPath: string
+  componentPath: string,
 ) {
   const matchComponents = studioCtx.site.components
     .filter(
       (c) =>
         c.uuid === componentPath ||
         (c.pageMeta &&
-          getMatchingPagePathParams(c.pageMeta.path, componentPath))
+          getMatchingPagePathParams(c.pageMeta.path, componentPath)),
     )
     // If we have two pages with paths like `/products/foo` and
     // `/products/[slug]`, we want to resolve to `/products/foo` to the first
@@ -725,13 +728,13 @@ export function getComponentByPath(
         ...Object.keys(
           (c.pageMeta &&
             getMatchingPagePathParams(c.pageMeta.path, componentPath)) ||
-            {}
+            {},
         ),
       ].length,
     }))
     .sort(
       ({ paramCount: paramCount1 }, { paramCount: paramCount2 }) =>
-        paramCount1 - paramCount2
+        paramCount1 - paramCount2,
     );
 
   if (matchComponents.length === 0) {
@@ -759,7 +762,7 @@ export function getComponentByPath(
   if (component?.pageMeta) {
     pageParams = getMatchingPagePathParams(
       component.pageMeta.path,
-      componentPath
+      componentPath,
     );
   }
   return {
@@ -778,7 +781,7 @@ function queryStringToRecord(query: string): Record<string, string> {
 }
 
 const PreviewCtxContext = React.createContext<PreviewCtx | undefined>(
-  undefined
+  undefined,
 );
 export const providesPreviewCtx = withProvider(PreviewCtxContext.Provider);
 export const usePreviewCtx = () =>

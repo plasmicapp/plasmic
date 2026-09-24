@@ -6,12 +6,12 @@ import {
   Hr,
   Img,
   Link,
-  type LinkProps,
   Markdown,
-  type MarkdownProps,
   Row,
   Section,
   Text,
+  type LinkProps,
+  type MarkdownProps,
 } from "@react-email/components";
 import React from "react";
 
@@ -52,7 +52,7 @@ export const EmailLink = (
     type: "text" | "image";
     text?: string;
     image?: React.ReactNode;
-  }
+  },
 ) => {
   const children = props.type === "image" ? props.image : props.text;
   // eslint-disable-next-line react/forbid-elements

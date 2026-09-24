@@ -30,8 +30,10 @@ export type NewPageInfo =
       projectId: string;
     };
 
-interface NewPageModalProps
-  extends Omit<DefaultNewComponentModalProps, "children"> {
+interface NewPageModalProps extends Omit<
+  DefaultNewComponentModalProps,
+  "children"
+> {
   onSubmit: (info: NewPageInfo) => void;
   onCancel: () => void;
   studioCtx: StudioCtx;
@@ -136,7 +138,7 @@ function NewPageModal(props: NewPageModalProps) {
         >
           {(
             group.items.filter(
-              (c) => c.type === "insertable-templates-item"
+              (c) => c.type === "insertable-templates-item",
             ) as InsertableTemplatesItem[]
           ).map((comp) => {
             return (
@@ -166,11 +168,11 @@ function NewPageModal(props: NewPageModalProps) {
                       icon={EyeIcon}
                       onClick={async () => {
                         await studioCtx.projectDependencyManager.fetchInsertableTemplate(
-                          comp.projectId
+                          comp.projectId,
                         );
                         const template =
                           studioCtx.projectDependencyManager.getInsertableTemplate(
-                            comp
+                            comp,
                           );
                         if (!template) {
                           return;
@@ -179,7 +181,7 @@ function NewPageModal(props: NewPageModalProps) {
                           .replace(":projectId", comp.projectId)
                           .replace(
                             "{/*previewPath}",
-                            `/${template.component.uuid}`
+                            `/${template.component.uuid}`,
                           );
                         window.open(route, "_blank");
                       }}

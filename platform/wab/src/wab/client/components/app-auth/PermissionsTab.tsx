@@ -54,7 +54,7 @@ const GENERAL_ACCESS_TOOLTIP = (
 
 function PermissionsTab_(
   props: PermissionsTabProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { directoryId, project, appCtx, ...rest } = props;
 
@@ -63,7 +63,7 @@ function PermissionsTab_(
   const { roles, loading: loadingRoles } = useAppRoles(appCtx, project.id);
   const { accesses, mutate: mutateAccesses } = useAppAccessRules(
     appCtx,
-    project.id
+    project.id,
   );
   const { groups } = useDirectoryGroups(appCtx, directoryId);
 
@@ -73,24 +73,24 @@ function PermissionsTab_(
     useAppAuthConfig(appCtx, project.id);
 
   const accessesByEmail = accesses.filter(
-    (u): u is ApiAppEndUserAccessRule & { email: string } => "email" in u
+    (u): u is ApiAppEndUserAccessRule & { email: string } => "email" in u,
   );
   const accessesByExternalId = accesses.filter(
     (u): u is ApiAppEndUserAccessRule & { externalId: string } =>
-      "externalId" in u
+      "externalId" in u,
   );
 
   const accessesByGroup = accesses.filter(
     (u): u is ApiAppEndUserAccessRule & { directoryEndUserGroupId: string } =>
-      "directoryEndUserGroupId" in u
+      "directoryEndUserGroupId" in u,
   );
   const accessesByDomain = accesses.filter(
-    (u): u is ApiAppEndUserAccessRule & { domain: string } => "domain" in u
+    (u): u is ApiAppEndUserAccessRule & { domain: string } => "domain" in u,
   );
 
   async function changeAccessRole(
     access: ApiAppEndUserAccessRule,
-    newRoleId: string | undefined | null
+    newRoleId: string | undefined | null,
   ) {
     if (newRoleId) {
       await mutateAccesses(
@@ -108,7 +108,7 @@ function PermissionsTab_(
             }
             return u;
           }),
-        }
+        },
       );
 
       await mutateHostAppAuthData();
@@ -118,7 +118,7 @@ function PermissionsTab_(
   async function inviteElements(
     unfilteredEmails: string[],
     unfilteredDomains: string[],
-    unfilteredGroupIds: string[]
+    unfilteredGroupIds: string[],
   ) {
     const emails: string[] = [];
     unfilteredEmails.forEach((email) => {
@@ -211,7 +211,7 @@ function PermissionsTab_(
             isFake: true,
           })),
         ],
-      }
+      },
     );
 
     trackEvent(APP_AUTH_TRACKING_EVENT, {
@@ -244,7 +244,7 @@ function PermissionsTab_(
         return parsedEmail ? [parsedEmail.normalized] : [];
       }),
       invites.flatMap((invite) => (isDomainEntry(invite) ? [invite] : [])),
-      withoutNils(invites.map((invite) => tryGetGroupId(invite)))
+      withoutNils(invites.map((invite) => tryGetGroupId(invite))),
     );
   }
 
@@ -256,7 +256,7 @@ function PermissionsTab_(
       },
       {
         optimisticData: accesses.filter((u) => u.id !== access.id),
-      }
+      },
     );
 
     if ("email" in access) {
@@ -303,7 +303,7 @@ function PermissionsTab_(
         value: search,
       },
     ]).filter(({ value }) => !invites.includes(value)),
-    ({ value }) => value
+    ({ value }) => value,
   );
 
   const [submitting, setSubmitting] = useState(false);
@@ -320,7 +320,7 @@ function PermissionsTab_(
     useGetDomainsForProject(project.id);
 
   const { data: releases, isLoading: loadingReleases } = useGetProjectReleases(
-    project.id
+    project.id,
   );
 
   if (loadingRoles || loadingDomains || loadingReleases) {
@@ -330,7 +330,7 @@ function PermissionsTab_(
   const prodUrl = prodUrlForProject(
     DEVFLAGS,
     project,
-    domainsResult?.domains ?? []
+    domainsResult?.domains ?? [],
   );
   const hasVersions = (releases ?? []).length > 0;
   const published = !!prodUrl && hasVersions;
@@ -479,7 +479,7 @@ function PermissionsTab_(
             }),
             ...accessesByGroup.map((access) => {
               const group = groups.find(
-                (g) => g.id === access.directoryEndUserGroupId
+                (g) => g.id === access.directoryEndUserGroupId,
               );
 
               if (!group) {
@@ -574,7 +574,7 @@ function PermissionsTab_(
                       ...appAuthConfig,
                       registeredRoleId: newRegisteredRoleId,
                     },
-                  }
+                  },
                 );
               }}
             />,

@@ -69,8 +69,8 @@ export async function initRootCanvasPkgs() {
     await withTimeout(
       getCanvasPkgs(),
       "Couldn't get canvasPkgs.",
-      3 * 60 * 1000
-    )
+      3 * 60 * 1000,
+    ),
   );
   rootSub = {
     ...rootSub,

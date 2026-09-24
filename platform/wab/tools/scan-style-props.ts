@@ -23,8 +23,8 @@ async function main() {
               tuple(
                 v.name,
                 dbRow instanceof ProjectRevision ? dbRow.projectId : dbRow.id,
-                v.values
-              )
+                v.values,
+              ),
             );
           }
         }
@@ -34,21 +34,21 @@ async function main() {
   const stylePropToProjectIds = multimap(
     _.uniqBy(
       pairs.map(([a, b]) => tuple(a, b)),
-      JSON.stringify
-    )
+      JSON.stringify,
+    ),
   );
   const stylePropToValues = multimap(
     _.uniqBy(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       pairs.map(([a, b, c]) => tuple(a, c)),
-      JSON.stringify
-    )
+      JSON.stringify,
+    ),
   );
   console.log("== Invalid props ==");
   for (const [styleProp, projectIds] of stylePropToProjectIds.entries()) {
     if (!isValidStyleProp(styleProp)) {
       console.log(
-        `- ${styleProp}: ${stylePropToValues.get(styleProp)}\n${projectIds}`
+        `- ${styleProp}: ${stylePropToValues.get(styleProp)}\n${projectIds}`,
       );
     }
   }
@@ -57,7 +57,7 @@ async function main() {
     [...stylePropToProjectIds.entries()]
       .map(([styleProp, projectIds]) => `${styleProp}: ${projectIds.length}`)
       .sort()
-      .join("\n")
+      .join("\n"),
   );
 }
 

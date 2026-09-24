@@ -1,5 +1,5 @@
 export async function maybeStartGoogleCloudProfiler(
-  logContext?: string
+  logContext?: string,
 ): Promise<void> {
   const service = process.env.GCLOUD_PROFILER_SERVICE;
   if (!service) {
@@ -18,7 +18,7 @@ export async function maybeStartGoogleCloudProfiler(
     process.stderr.write(
       `Failed to start Google Cloud Profiler${
         logContext ? ` in ${logContext}` : ""
-      }: ${error?.stack ?? error}\n`
+      }: ${error?.stack ?? error}\n`,
     );
   }
 }

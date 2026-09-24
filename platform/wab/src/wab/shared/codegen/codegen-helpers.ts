@@ -44,7 +44,10 @@ import uniqBy from "lodash/uniqBy";
 
 export class SiteGenHelper {
   private cache: Map<string, DeepMap<any>> = new Map();
-  constructor(public site: Site, public isStudio: boolean) {}
+  constructor(
+    public site: Site,
+    public isStudio: boolean,
+  ) {}
 
   getComponentDefaultSize = deepMapMemoized(
     this.cache,
@@ -57,14 +60,14 @@ export class SiteGenHelper {
         component,
         variantComboKey(activeVariants),
       ],
-    }
+    },
   );
 
   makeTokenResolver = deepMapMemoized(
     this.cache,
     () =>
       makeTokenResolverForTokens(this.site, this.allStyleTokensAndOverrides()),
-    { funcKey: "makeTokenResolver" }
+    { funcKey: "makeTokenResolver" },
   );
   makeTokenValueResolver = deepMapMemoized(
     this.cache,
@@ -74,7 +77,7 @@ export class SiteGenHelper {
         resolveToken(token, vsh).value;
       return resolver;
     },
-    { funcKey: "makeTokenValueResolver" }
+    { funcKey: "makeTokenValueResolver" },
   );
   makeTokenRefResolver = deepMapMemoized(
     this.cache,
@@ -87,17 +90,17 @@ export class SiteGenHelper {
       };
       return resolver;
     },
-    { funcKey: "makeTokenRefResolver" }
+    { funcKey: "makeTokenRefResolver" },
   );
   allStyleTokensAndOverrides = deepMapMemoized(
     this.cache,
     () => siteFinalStyleTokensAllDeps(this.site),
-    { funcKey: "allStyleTokensAndOverrides" }
+    { funcKey: "allStyleTokensAndOverrides" },
   );
   allStyleTokensAndOverridesDict = deepMapMemoized(
     this.cache,
     () => keyBy(this.allStyleTokensAndOverrides(), (t) => t.uuid),
-    { funcKey: "allStyleTokensAndOverridesDict" }
+    { funcKey: "allStyleTokensAndOverridesDict" },
   );
   contextGlobalVariantsWithVariantedTokens = deepMapMemoized(
     this.cache,
@@ -108,21 +111,21 @@ export class SiteGenHelper {
           .flatMap((value) => value.variants)
           .filter(
             (variant) =>
-              variant.parent && !isMediaQueryVariantGroup(variant.parent)
+              variant.parent && !isMediaQueryVariantGroup(variant.parent),
           ),
-        "uuid"
+        "uuid",
       ),
-    { funcKey: "contextGlobalVariantsWithVariantedTokens" }
+    { funcKey: "contextGlobalVariantsWithVariantedTokens" },
   );
   allMixins = deepMapMemoized(
     this.cache,
     () => allMixins(this.site, { includeDeps: "all" }),
-    { funcKey: "allMixins" }
+    { funcKey: "allMixins" },
   );
   allImageAssets = deepMapMemoized(
     this.cache,
     () => allImageAssets(this.site, { includeDeps: "all" }),
-    { funcKey: "allImageAssets" }
+    { funcKey: "allImageAssets" },
   );
   componentToReferenced = deepMapMemoized(this.cache, componentToReferenced, {
     funcKey: "componentToReferenced",
@@ -132,7 +135,7 @@ export class SiteGenHelper {
     shouldWrapSlotContentInDataCtxReader,
     {
       funcKey: "shouldWrapSlotContentInDataCtxReader",
-    }
+    },
   );
   objToDepMap = deepMapMemoized(this.cache, () => buildObjToDepMap(this.site), {
     funcKey: "objToDepmap",
@@ -143,7 +146,7 @@ export class ComponentGenHelper {
   private cache: Map<string, DeepMap<any>> = new Map();
   constructor(
     public siteHelper: SiteGenHelper,
-    public resolver: CssVarResolver | undefined
+    public resolver: CssVarResolver | undefined,
   ) {}
 
   get site() {
@@ -161,7 +164,7 @@ export class ComponentGenHelper {
     },
     {
       funcKey: "variantComboSorter",
-    }
+    },
   );
   getExpr = deepMapMemoized(
     this.cache,
@@ -173,7 +176,7 @@ export class ComponentGenHelper {
         return createExpandedRuleSetMerger(rs, tpl);
       }
     },
-    { funcKey: "getExpr" }
+    { funcKey: "getExpr" },
   );
   getEffectiveVariantSetting = deepMapMemoized(
     this.cache,
@@ -183,7 +186,7 @@ export class ComponentGenHelper {
         tpl,
         activeVariants,
         this.variantComboSorter(component),
-        component
+        component,
       );
     },
     {
@@ -192,12 +195,12 @@ export class ComponentGenHelper {
         tpl,
         variantComboKey(activeVariants),
       ],
-    }
+    },
   );
   owningComponent = deepMapMemoized(
     this.cache,
     (tpl: TplNode) => $$$(tpl).owningComponent(),
-    { funcKey: "owningComponent" }
+    { funcKey: "owningComponent" },
   );
   getEffectiveExpr = deepMapMemoized(
     this.cache,
@@ -207,7 +210,7 @@ export class ComponentGenHelper {
     {
       funcKey: "getEffectiveExpr",
       argKeys: ([tpl, combo]) => [tpl, variantComboKey(combo)],
-    }
+    },
   );
   getEffectiveExprWithTheme = deepMapMemoized(
     this.cache,
@@ -217,7 +220,7 @@ export class ComponentGenHelper {
     {
       funcKey: "getEffectiveExprWithTheme",
       argKeys: ([tpl, combo]) => [tpl, variantComboKey(combo)],
-    }
+    },
   );
   makeLayoutAwareRuleSet = deepMapMemoized(this.cache, makeLayoutAwareRuleSet, {
     funcKey: "makeLayoutAwareRuleSet",
@@ -227,14 +230,14 @@ export class ComponentGenHelper {
     function layoutParent(tpl: TplNode, throughSlot: boolean) {
       return $$$(tpl).layoutParent({ throughSlot }).maybeOneTpl();
     },
-    { funcKey: "layoutParent" }
+    { funcKey: "layoutParent" },
   );
   deepLayoutParent = deepMapMemoized(
     this.cache,
     function layoutParent(tpl: TplNode) {
       return $$$(tpl).layoutParent({ throughSlot: true }).maybeOneTpl();
     },
-    { funcKey: "deepLayoutParent" }
+    { funcKey: "deepLayoutParent" },
   );
   isTextArgNodeOfSlot = deepMapMemoized(this.cache, isTextArgNodeOfSlot, {
     funcKey: "isTextArgNodeOfSlot",
@@ -246,11 +249,11 @@ export class ComponentGenHelper {
       const sorter = this.variantComboSorter(component);
       return sortedVariantSettings(node.vsettings, sorter);
     },
-    { funcKey: "getSortedVSettings" }
+    { funcKey: "getSortedVSettings" },
   );
   flattenComponent = deepMapMemoized(
     this.cache,
     (component: Component) => flattenTpls(component.tplTree),
-    { funcKey: "flattenComponent" }
+    { funcKey: "flattenComponent" },
   );
 }

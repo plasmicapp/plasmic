@@ -16,7 +16,7 @@ describe("sendShareEmail", () => {
       "project",
       "My Website",
       "https://studio.plasmic.app/projects/123",
-      true
+      true,
     );
     expect(mailer.sendMail).toHaveBeenCalledWith({
       from: config.mailFrom,
@@ -43,7 +43,7 @@ https://studio.plasmic.app/projects/123`,
       "team",
       "My Company",
       "https://studio.plasmic.app/orgs/123",
-      false
+      false,
     );
     expect(mailer.sendMail).toHaveBeenCalledWith({
       from: config.mailFrom,
@@ -75,7 +75,7 @@ https://www.plasmic.app`,
       "project",
       "My Website",
       "https://studio.plasmic.app/projects/123",
-      true
+      true,
     );
     expect(mailer.sendMail).toHaveBeenCalledWith({
       from: config.mailFrom,

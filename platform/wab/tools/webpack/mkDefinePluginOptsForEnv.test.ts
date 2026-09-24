@@ -35,7 +35,7 @@ describe("mkDefinePluginOptsForEnv", () => {
         SENTRY_ORG_ID: OPTIONAL_VAR,
         SENTRY_PROJECT_ID: OPTIONAL_VAR,
         STRIPE_PUBLISHABLE_KEY: OPTIONAL_VAR,
-      })
+      }),
     ).toEqual({
       "process.env.NODE_ENV": '"development"',
       "process.env.COMMITHASH": '"123456"',
@@ -63,7 +63,7 @@ describe("mkDefinePluginOptsForEnv", () => {
         SENTRY_ORG_ID: OPTIONAL_VAR,
         SENTRY_PROJECT_ID: OPTIONAL_VAR,
         STRIPE_PUBLISHABLE_KEY: OPTIONAL_VAR,
-      })
+      }),
     ).toThrow("production build");
   });
   it("works in production with all optional vars", () => {
@@ -87,7 +87,7 @@ describe("mkDefinePluginOptsForEnv", () => {
         SENTRY_ORG_ID: OPTIONAL_VAR,
         SENTRY_PROJECT_ID: OPTIONAL_VAR,
         STRIPE_PUBLISHABLE_KEY: OPTIONAL_VAR,
-      })
+      }),
     ).toEqual({
       "process.env.NODE_ENV": '"production"',
       "process.env.COMMITHASH": '"123456"',
@@ -114,7 +114,7 @@ describe("mkDefinePluginOptsForEnv", () => {
         SENTRY_ORG_ID: OPTIONAL_VAR,
         SENTRY_PROJECT_ID: OPTIONAL_VAR,
         STRIPE_PUBLISHABLE_KEY: OPTIONAL_VAR,
-      })
+      }),
     ).toThrow("found");
   });
   it("throws if required process.env value is missing", () => {
@@ -130,7 +130,7 @@ describe("mkDefinePluginOptsForEnv", () => {
         SENTRY_ORG_ID: OPTIONAL_VAR,
         SENTRY_PROJECT_ID: OPTIONAL_VAR,
         STRIPE_PUBLISHABLE_KEY: OPTIONAL_VAR,
-      })
+      }),
     ).toThrow("missing");
   });
 });

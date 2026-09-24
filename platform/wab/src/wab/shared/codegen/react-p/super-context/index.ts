@@ -16,9 +16,9 @@ export function serializePlasmicSuperContext(ctx: SerializerBaseContext) {
     return "";
   }
   return `const ${makePlasmicSuperContextName(
-    component
+    component,
   )} = React.createContext<undefined|{variants: ${makeVariantsArgTypeName(
-    component
+    component,
   )}, args: ${makeArgsTypeName(component)}}>(undefined);`;
 }
 
@@ -29,11 +29,11 @@ export function makeSuperCompImports(component: Component, opts: ExportOpts) {
     .map(
       (superComp) => `
     import SUPER__${makePlasmicComponentName(superComp)} from "./${
-        opts.idFileNames
-          ? makeComponentRenderIdFileName(superComp)
-          : makePlasmicComponentName(superComp)
-      }";  // plasmic-import: ${superComp.uuid}/render
-  `
+      opts.idFileNames
+        ? makeComponentRenderIdFileName(superComp)
+        : makePlasmicComponentName(superComp)
+    }";  // plasmic-import: ${superComp.uuid}/render
+  `,
     )
     .join("\n");
 }

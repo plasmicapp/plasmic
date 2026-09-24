@@ -32,7 +32,7 @@ interface TeamMemberListProps extends DefaultTeamMemberListProps {
 
 function TeamMemberList_(
   props: TeamMemberListProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const {
     members,
@@ -57,7 +57,7 @@ function TeamMemberList_(
     .filter(
       (m) =>
         (m.type === "user" && matcher.matches(fullName(m))) ||
-        matcher.matches(m.email)
+        matcher.matches(m.email),
     )
     .filter((m) => {
       if (filterSelect === "all") {
@@ -70,20 +70,20 @@ function TeamMemberList_(
       return perms.some(
         (p) =>
           (p.user?.email || p?.email) === m.email &&
-          p.accessLevel === filterSelect
+          p.accessLevel === filterSelect,
       );
     });
   // The following lines perform 2 stable sorts so the members are sorted by
   // access level rank -> name (or email, if it's a member with no user).
   displayedMembers = sortBy(displayedMembers, (m) =>
-    m.type === "user" ? fullName(m) : m.email
+    m.type === "user" ? fullName(m) : m.email,
   );
   displayedMembers = sortBy(
     displayedMembers,
     (m) =>
       -accessLevelRank(
-        perms.find((p) => p.user?.email === m.email)?.accessLevel ?? "blocked"
-      )
+        perms.find((p) => p.user?.email === m.email)?.accessLevel ?? "blocked",
+      ),
   );
   return (
     <>
@@ -123,7 +123,7 @@ function TeamMemberList_(
             user={user}
             matcher={matcher}
             perm={perms.find(
-              (p) => p.user?.email === user.email || p.email === user.email
+              (p) => p.user?.email === user.email || p.email === user.email,
             )}
             tier={tier}
             changeRole={onChangeRole}

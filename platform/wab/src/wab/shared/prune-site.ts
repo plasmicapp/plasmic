@@ -1,9 +1,9 @@
-import { mergeSets, removeWhere } from "@/wab/shared/common";
 import { isVariantSettingEmpty } from "@/wab/shared/Variants";
 import {
   extractUsedIconAssetsForComponents,
   extractUsedPictureAssetsForComponents,
 } from "@/wab/shared/codegen/image-assets";
+import { mergeSets, removeWhere } from "@/wab/shared/common";
 import { Site } from "@/wab/shared/model/classes";
 
 export function pruneUnusedImageAssets(site: Site) {
@@ -11,7 +11,7 @@ export function pruneUnusedImageAssets(site: Site) {
   const pictures = extractUsedPictureAssetsForComponents(
     site,
     site.components,
-    { includeRuleSets: true, expandMixins: true }
+    { includeRuleSets: true, expandMixins: true },
   );
 
   const assets = mergeSets(icons, pictures);

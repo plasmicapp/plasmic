@@ -1,9 +1,9 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import { TopFrameApi } from "@/wab/client/frame-ctx/top-frame-api";
-import { mkIdMap } from "@/wab/shared/collections";
-import { ensure, filterMapTruthy } from "@/wab/shared/common";
 import { withProvider } from "@/wab/commons/components/ContextUtil";
 import { ApiPermission, ApiProject, ApiUser } from "@/wab/shared/ApiSchema";
+import { mkIdMap } from "@/wab/shared/collections";
+import { ensure, filterMapTruthy } from "@/wab/shared/common";
 import * as React from "react";
 import useSWR from "swr";
 
@@ -19,7 +19,7 @@ export function useDataSource(sourceId: string | undefined) {
     () => (sourceId ? `/data-sources/${sourceId}` : null),
     async () => {
       return await api.getDataSourceById(sourceId!);
-    }
+    },
   );
 }
 
@@ -38,7 +38,7 @@ export function useAllProjectsData() {
     },
     {
       revalidateOnMount: true,
-    }
+    },
   );
 }
 

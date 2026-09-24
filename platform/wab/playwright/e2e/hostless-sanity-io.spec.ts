@@ -11,7 +11,7 @@ test.describe("hostless-sanity-io", () => {
     await page.route(/\/production\?query=\*{_type}$/, async (route) => {
       const fixturePath = path.join(
         __dirname,
-        "../fixtures-data/sanity-io-all.json"
+        "../fixtures-data/sanity-io-all.json",
       );
       const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
       await route.fulfill({
@@ -24,7 +24,7 @@ test.describe("hostless-sanity-io", () => {
     await page.route(/screening/, async (route) => {
       const fixturePath = path.join(
         __dirname,
-        "../fixtures-data/sanity-io-screening.json"
+        "../fixtures-data/sanity-io-screening.json",
       );
       const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
       await route.fulfill({
@@ -37,7 +37,7 @@ test.describe("hostless-sanity-io", () => {
     await page.route(/movie/, async (route) => {
       const fixturePath = path.join(
         __dirname,
-        "../fixtures-data/sanity-io-movies.json"
+        "../fixtures-data/sanity-io-movies.json",
       );
       const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
       await route.fulfill({
@@ -68,7 +68,7 @@ test.describe("hostless-sanity-io", () => {
       await page.route(imageUrls[i], async (route) => {
         const imagePath = path.join(
           __dirname,
-          `../fixtures-data/images/sanity-io/${i + 1}.jpeg`
+          `../fixtures-data/images/sanity-io/${i + 1}.jpeg`,
         );
         const imageData = fs.readFileSync(imagePath);
         await route.fulfill({
@@ -84,7 +84,7 @@ test.describe("hostless-sanity-io", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -109,17 +109,17 @@ test.describe("hostless-sanity-io", () => {
 
     const canvasFrame = models.studio.frames.first().contentFrame();
     await expect(canvasFrame.locator("body")).toContainText(
-      "Please specify a valid GROQ query or select a Document type."
+      "Please specify a valid GROQ query or select a Document type.",
     );
 
     await models.studio.withinLiveMode(async (liveFrame) => {
       await expect(liveFrame.locator("body")).toContainText(
-        "Please specify a valid GROQ query or select a Document type."
+        "Please specify a valid GROQ query or select a Document type.",
       );
     });
 
     const docTypeButton = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="docType"]'
+      '[data-plasmic-prop="docType"]',
     );
     await docTypeButton.click();
     await models.studio.rightPanel.frame
@@ -130,17 +130,17 @@ test.describe("hostless-sanity-io", () => {
       .click();
 
     await expect(canvasFrame.locator("body")).toContainText(
-      "Please specify a valid path or select a field."
+      "Please specify a valid path or select a field.",
     );
 
     await models.studio.withinLiveMode(async (liveFrame) => {
       await expect(liveFrame.locator("body")).toContainText(
-        "Please specify a valid path or select a field."
+        "Please specify a valid path or select a field.",
       );
     });
 
     const docTypePropRow = models.studio.rightPanel.frame.locator(
-      '[data-test-id^="prop-editor-row-"]:has-text("Document type")'
+      '[data-test-id^="prop-editor-row-"]:has-text("Document type")',
     );
     await docTypePropRow.click({ button: "right" });
     await models.studio.rightPanel.frame
@@ -148,7 +148,7 @@ test.describe("hostless-sanity-io", () => {
       .click();
 
     const groqInput = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="groq"]'
+      '[data-plasmic-prop="groq"]',
     );
     await groqInput.click();
     await page.keyboard.type("*[_type == 'movie']");
@@ -162,7 +162,7 @@ test.describe("hostless-sanity-io", () => {
     await fieldPlaceholder.click({ force: true });
 
     const fieldSelector = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="field"]'
+      '[data-plasmic-prop="field"]',
     );
     await fieldSelector.click();
     await models.studio.rightPanel.frame
@@ -179,7 +179,7 @@ test.describe("hostless-sanity-io", () => {
     });
 
     const pathInput = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="path"]'
+      '[data-plasmic-prop="path"]',
     );
     await pathInput.click();
     await page.keyboard.press("ControlOrMeta+a");

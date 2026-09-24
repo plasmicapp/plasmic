@@ -27,11 +27,11 @@ describe("devflags", () => {
       });
       expect(
         devflags.defaultContentCreatorConfig.styleSectionVisibilities
-          ?.visibility
+          ?.visibility,
       ).toBe(true);
       expect(
         devflags.defaultContentCreatorConfig.styleSectionVisibilities
-          ?.typography
+          ?.typography,
       ).toBe(false);
 
       applyDevFlagOverridesToTarget(devflags, {
@@ -43,11 +43,11 @@ describe("devflags", () => {
       });
       expect(
         devflags.defaultContentCreatorConfig.styleSectionVisibilities
-          ?.visibility
+          ?.visibility,
       ).toBe(true);
       expect(
         devflags.defaultContentCreatorConfig.styleSectionVisibilities
-          ?.typography
+          ?.typography,
       ).toBe(true);
     });
   });
@@ -63,11 +63,11 @@ describe("devflags", () => {
       });
       expect(
         devflags1.defaultContentCreatorConfig.styleSectionVisibilities
-          ?.visibility
+          ?.visibility,
       ).toBe(true);
       expect(
         devflags1.defaultContentCreatorConfig.styleSectionVisibilities
-          ?.typography
+          ?.typography,
       ).toBe(false);
 
       const devflags2 = applyDevFlagOverridesToDefaults({
@@ -79,11 +79,11 @@ describe("devflags", () => {
       });
       expect(
         devflags2.defaultContentCreatorConfig.styleSectionVisibilities
-          ?.visibility
+          ?.visibility,
       ).toBe(false);
       expect(
         devflags2.defaultContentCreatorConfig.styleSectionVisibilities
-          ?.typography
+          ?.typography,
       ).toBe(true);
     });
   });
@@ -92,11 +92,11 @@ describe("devflags", () => {
     it("merges from default devflags", () => {
       expect(
         DEVFLAGS.defaultContentCreatorConfig.styleSectionVisibilities
-          ?.visibility
+          ?.visibility,
       ).toBe(false);
       expect(
         DEVFLAGS.defaultContentCreatorConfig.styleSectionVisibilities
-          ?.typography
+          ?.typography,
       ).toBe(false);
 
       applyDevFlagOverrides({
@@ -108,11 +108,11 @@ describe("devflags", () => {
       });
       expect(
         DEVFLAGS.defaultContentCreatorConfig.styleSectionVisibilities
-          ?.visibility
+          ?.visibility,
       ).toBe(true);
       expect(
         DEVFLAGS.defaultContentCreatorConfig.styleSectionVisibilities
-          ?.typography
+          ?.typography,
       ).toBe(false);
 
       applyDevFlagOverrides({
@@ -124,11 +124,11 @@ describe("devflags", () => {
       });
       expect(
         DEVFLAGS.defaultContentCreatorConfig.styleSectionVisibilities
-          ?.visibility
+          ?.visibility,
       ).toBe(false);
       expect(
         DEVFLAGS.defaultContentCreatorConfig.styleSectionVisibilities
-          ?.typography
+          ?.typography,
       ).toBe(true);
     });
   });

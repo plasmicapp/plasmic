@@ -68,8 +68,8 @@ function AddItemCard(props: AddDrawerItemProps) {
         item.previewImageUrl
           ? "image"
           : item.previewVideoUrl
-          ? "video"
-          : undefined
+            ? "video"
+            : undefined
       }
       previewImageUrl={item.previewImageUrl}
       previewVideoUrl={item.previewVideoUrl}
@@ -170,7 +170,7 @@ const InsertActions = observer(function InsertActions(props: {
 
   const insert = async (
     e: React.MouseEvent,
-    loc: InsertRelLoc
+    loc: InsertRelLoc,
   ): Promise<void> => {
     const extraInfo = item.asyncExtraInfo
       ? await item.asyncExtraInfo(studioCtx)

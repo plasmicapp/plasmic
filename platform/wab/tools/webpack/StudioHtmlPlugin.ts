@@ -44,12 +44,12 @@ export class StudioHtmlPlugin implements RspackPluginInstance {
                     window.isProd = params.get("isProd") === "true";
                   }
                 } catch(e) {}
-              </script>`
+              </script>`,
           );
 
           root.querySelector("head").insertAdjacentHTML(
             "afterbegin",
-            `<script id="ReactDevToolsScript" crossorigin="anonymous"></script>` // Replaced in studio.js
+            `<script id="ReactDevToolsScript" crossorigin="anonymous"></script>`, // Replaced in studio.js
           );
 
           // Allow our instrumentation to run when the host URL uses HTTP
@@ -57,7 +57,7 @@ export class StudioHtmlPlugin implements RspackPluginInstance {
             .querySelector("head")
             .insertAdjacentHTML(
               "afterbegin",
-              `<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">`
+              `<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">`,
             );
 
           // Add our own <base> to direct all requests to the main origin.
@@ -70,7 +70,7 @@ export class StudioHtmlPlugin implements RspackPluginInstance {
                   ).searchParams;
                   document.getElementById("newBase").href = params.get("origin")
                 } catch(e) {}
-              </script>`
+              </script>`,
           );
           root.querySelector("base").remove();
           root
@@ -85,7 +85,7 @@ export class StudioHtmlPlugin implements RspackPluginInstance {
             .querySelector("body")
             .insertAdjacentHTML(
               "afterbegin",
-              '<div id="plasmic-studio-tag"></div>'
+              '<div id="plasmic-studio-tag"></div>',
             );
 
           // Set crossorigin tag to global handlers to catch errors from Studio
@@ -100,7 +100,7 @@ export class StudioHtmlPlugin implements RspackPluginInstance {
           };
           const template = fs.readFileSync(
             require.resolve("../../public/studio.js.template"),
-            "utf8"
+            "utf8",
           );
           const js = `
 const __plasmicData = ${JSON.stringify(injectedData)};
@@ -123,7 +123,7 @@ ${template}
 
           // Tell webpack to move on.
           cb(null, data);
-        }
+        },
       );
     });
   }

@@ -85,7 +85,7 @@ function _TopBar({ preview }: TopBarProps) {
                   onClick={() => topFrameApi.setShowProjectNameModal(true)}
                 >
                   Rename project
-                </Menu.Item>
+                </Menu.Item>,
               );
             }
 
@@ -96,7 +96,7 @@ function _TopBar({ preview }: TopBarProps) {
                   onClick={() => topFrameApi.setShowCloneProjectModal(true)}
                 >
                   Duplicate project
-                </Menu.Item>
+                </Menu.Item>,
               );
             }
           });
@@ -112,7 +112,7 @@ function _TopBar({ preview }: TopBarProps) {
                   }}
                 >
                   Configure custom app host
-                </Menu.Item>
+                </Menu.Item>,
               );
               // Only show auth config if the app already uses it
               const showAuth =
@@ -126,7 +126,7 @@ function _TopBar({ preview }: TopBarProps) {
                     }}
                   >
                     Configure app authentication
-                  </Menu.Item>
+                  </Menu.Item>,
                 );
               }
 
@@ -142,13 +142,13 @@ function _TopBar({ preview }: TopBarProps) {
                       ? "Disable"
                       : "Enable"}{" "}
                     localization framework integration
-                  </Menu.Item>
+                  </Menu.Item>,
                 );
               }
 
               if (
                 appCtx.appConfig.secretApiTokenTeams?.includes(
-                  studioCtx.siteInfo.teamId ?? ""
+                  studioCtx.siteInfo.teamId ?? "",
                 )
               ) {
                 push2(
@@ -159,7 +159,7 @@ function _TopBar({ preview }: TopBarProps) {
                     }}
                   >
                     Regenerate secret project API token
-                  </Menu.Item>
+                  </Menu.Item>,
                 );
               }
 
@@ -172,14 +172,14 @@ function _TopBar({ preview }: TopBarProps) {
                     }}
                   >
                     Configure Studio UI for project
-                  </Menu.Item>
+                  </Menu.Item>,
                 );
               }
             });
 
             const isAdmin = isAdminTeamEmail(
               appCtx.selfInfo?.email,
-              appCtx.appConfig
+              appCtx.appConfig,
             );
             if (isAdmin || appCtx.appConfig.debug) {
               builder.genSection("Debug", (push2) => {
@@ -192,7 +192,7 @@ function _TopBar({ preview }: TopBarProps) {
                           studioCtx.change(() => {
                             studioCtx.tplMgr().cleanRedundantOverrides();
                             return ok();
-                          })
+                          }),
                         );
                         notification.info({
                           message: `Redundant overrides have been cleaned. You can run this again every time you want to clean them.`,
@@ -200,7 +200,7 @@ function _TopBar({ preview }: TopBarProps) {
                       }}
                     >
                       Remove redundant overrides
-                    </Menu.Item>
+                    </Menu.Item>,
                   );
                   push3(
                     <Menu.Item
@@ -209,18 +209,18 @@ function _TopBar({ preview }: TopBarProps) {
                         spawn(
                           studioCtx.change(() => {
                             const pruned = pruneUnusedImageAssets(
-                              studioCtx.site
+                              studioCtx.site,
                             );
                             notification.success({
                               message: `Pruned ${pruned.size} assets`,
                             });
                             return ok();
-                          })
+                          }),
                         );
                       }}
                     >
                       Remove unused image assets
-                    </Menu.Item>
+                    </Menu.Item>,
                   );
                   push3(
                     <Menu.Item
@@ -238,18 +238,18 @@ function _TopBar({ preview }: TopBarProps) {
 
                             notification.success({
                               message: `Fixed ${Object.keys(
-                                result.total
+                                result.total,
                               )} invisible elements in ${
                                 Object.keys(result.changesByComponent).length
                               }`,
                             });
                             return ok();
-                          })
+                          }),
                         );
                       }}
                     >
                       Lint and fix invisible elements
-                    </Menu.Item>
+                    </Menu.Item>,
                   );
                 });
                 if (isAdmin) {
@@ -259,8 +259,8 @@ function _TopBar({ preview }: TopBarProps) {
                       onClick={() => {
                         spawn(
                           topFrameApi.toggleAdminMode(
-                            !appCtx.selfInfo?.adminModeDisabled
-                          )
+                            !appCtx.selfInfo?.adminModeDisabled,
+                          ),
                         );
                       }}
                     >
@@ -270,7 +270,7 @@ function _TopBar({ preview }: TopBarProps) {
                           : "Disable"}
                       </strong>{" "}
                       admin mode
-                    </Menu.Item>
+                    </Menu.Item>,
                   );
 
                   push2(
@@ -300,7 +300,7 @@ function _TopBar({ preview }: TopBarProps) {
                           </Menu.Item>
                         );
                       })}
-                    </Menu.SubMenu>
+                    </Menu.SubMenu>,
                   );
 
                   builder.genSub("Site-splitting utils", (push3) => {
@@ -314,7 +314,7 @@ function _TopBar({ preview }: TopBarProps) {
                         }
                       >
                         Convert page hrefs to local pages
-                      </Menu.Item>
+                      </Menu.Item>,
                     );
                   });
                 }
@@ -337,13 +337,13 @@ function _TopBar({ preview }: TopBarProps) {
     appCtx.appConfig.brands?.[""];
 
   const previewPages = previewCtx.studioCtx.site.components.filter((c) =>
-    isPageComponent(c)
+    isPageComponent(c),
   );
   const previewComponents = previewCtx.studioCtx.site.components.filter(
-    (c) => isReusableComponent(c) && !isCodeComponent(c)
+    (c) => isReusableComponent(c) && !isCodeComponent(c),
   );
   const previewArtboards = previewCtx.studioCtx.site.components.filter((c) =>
-    isFrameComponent(c)
+    isFrameComponent(c),
   );
 
   return (
@@ -500,7 +500,7 @@ function _TopBar({ preview }: TopBarProps) {
                               {
                                 ensure(
                                   c.pageMeta,
-                                  "Page component is expected to have page meta"
+                                  "Page component is expected to have page meta",
                                 ).path
                               }
                               )
@@ -520,7 +520,7 @@ function _TopBar({ preview }: TopBarProps) {
                               />
                               {c.name}
                             </Select.Option>
-                          )
+                          ),
                         )}
                       </Select.OptionGroup>
                     )}
@@ -539,9 +539,9 @@ function _TopBar({ preview }: TopBarProps) {
                 onChange: (uuid) => {
                   const component = ensure(
                     previewCtx.studioCtx.site.components.find(
-                      (c) => c.uuid == uuid
+                      (c) => c.uuid == uuid,
                     ),
-                    "Could not find component with selected UUID"
+                    "Could not find component with selected UUID",
                   );
                   void previewCtx.pushComponent(component);
                 },

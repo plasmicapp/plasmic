@@ -1,4 +1,5 @@
 import styles from "@/wab/client/components/studio/Shortcuts.module.scss";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import {
   FREE_CONTAINER_ICON,
   HORIZ_STACK_ICON,
@@ -27,7 +28,6 @@ import {
   FaArrowUp,
   FaRegHandRock,
 } from "react-icons/fa";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 
 export const ShortcutsModal = observer(
   ({ children }: { children: React.ReactNode }) => {
@@ -63,7 +63,7 @@ export const ShortcutsModal = observer(
         </Modal>
       </>
     );
-  }
+  },
 );
 
 interface ShortcutSection {
@@ -86,13 +86,15 @@ function ShortcutSection(props: {
     ? props.section.chunks.map((chunk) => ({
         ...chunk,
         shortcuts: chunk.shortcuts.filter((shortcut) =>
-          shortcut.description.toLowerCase().includes(searchQuery.toLowerCase())
+          shortcut.description
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()),
         ),
       }))
     : [...props.section.chunks];
 
   const isSectionShowing = filteredChunks.some(
-    (chunk) => chunk.shortcuts.length > 0
+    (chunk) => chunk.shortcuts.length > 0,
   );
 
   if (!isSectionShowing) {
@@ -268,7 +270,7 @@ const SHORTCUT_SECTIONS: ShortcutSection[] = [
           {
             combos: "alt+click",
             description: "Create and wrap around the target node",
-          }
+          },
         ),
       },
     ],
@@ -320,7 +322,7 @@ const SHORTCUT_SECTIONS: ShortcutSection[] = [
           {
             combos: "ctrl+alt+click",
             description: "Go to component",
-          }
+          },
         ),
       },
       {
@@ -333,7 +335,7 @@ const SHORTCUT_SECTIONS: ShortcutSection[] = [
           {
             combos: "shift+drag",
             description: "Resize from proportionally",
-          }
+          },
         ),
       },
     ],
@@ -401,7 +403,7 @@ const SHORTCUT_SECTIONS: ShortcutSection[] = [
           {
             combos: "mod+shift+.",
             description: "Wrap in <sup> tag",
-          }
+          },
         ),
       },
     ],

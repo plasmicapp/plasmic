@@ -35,7 +35,8 @@ function makeFormsTreeShakable(component: Component, site: Site) {
   const fakeTpls: TplNode[] = [];
   const formTpls = filterTpls(
     component.tplTree,
-    (tpl) => isTplCodeComponent(tpl) && tpl.component.name === formComponentName
+    (tpl) =>
+      isTplCodeComponent(tpl) && tpl.component.name === formComponentName,
   ) as TplCodeComponent[];
 
   if (formTpls.length === 0) {
@@ -46,25 +47,25 @@ function makeFormsTreeShakable(component: Component, site: Site) {
     const baseVs = ensureBaseVariantSetting(tpl);
     const param = ensure(
       tpl.component.params.find((p) => p.variable.name === "mode"),
-      "component should have a mode param"
+      "component should have a mode param",
     );
     const modeExpr = getTplComponentArg(tpl, baseVs, param.variable)?.expr;
     const mode = modeExpr
       ? tryExtractJson(modeExpr)
       : param.defaultExpr
-      ? tryExtractJson(param.defaultExpr)
-      : undefined;
+        ? tryExtractJson(param.defaultExpr)
+        : undefined;
     const isSimplifiedMode = mode === "simplified";
     const isSchemaForm = isKnownDataSourceOpExpr(
-      baseVs.args.find((arg) => arg.param.variable.name === "data")?.expr
+      baseVs.args.find((arg) => arg.param.variable.name === "data")?.expr,
     );
     return {
       tpl,
       mode: !isSimplifiedMode
         ? ("advanced" as const)
         : isSchemaForm
-        ? ("schema" as const)
-        : ("simplified" as const),
+          ? ("schema" as const)
+          : ("simplified" as const),
     };
   });
 
@@ -90,19 +91,19 @@ function makeFormsTreeShakable(component: Component, site: Site) {
       tpl,
       baseVs,
       getParamVariable(tpl, "formItems"),
-      codeLit(undefined)
+      codeLit(undefined),
     );
     tplMgr.setArg(
       tpl,
       baseVs,
       getParamVariable(tpl, "mode"),
-      codeLit(undefined)
+      codeLit(undefined),
     );
     tplMgr.setArg(
       tpl,
       baseVs,
       getParamVariable(tpl, "submitSlot"),
-      codeLit(undefined)
+      codeLit(undefined),
     );
   }
 
@@ -112,7 +113,7 @@ function makeFormsTreeShakable(component: Component, site: Site) {
 export function optimizeGeneratedCodeForHostlessPackages(
   component: Component,
   site: Site,
-  isLivePreview: boolean
+  isLivePreview: boolean,
 ): Pick<
   SerializerBaseContext,
   "fakeTpls" | "replacedHostlessComponentImportPath"
@@ -133,14 +134,14 @@ export function optimizeGeneratedCodeForHostlessPackages(
   if (fakeTplsForForms) {
     const formComponent = ensure(
       allComponents(site, { includeDeps: "direct" }).find(
-        (c) => c.name === formComponentName
+        (c) => c.name === formComponentName,
       ),
-      "form component was not found, but the component was tree-shaken."
+      "form component was not found, but the component was tree-shaken.",
     );
     fakeTpls.push(...fakeTplsForForms);
     replacedHostlessComponentImportPath.set(
       formComponent,
-      OPTIMIZED_FORM_IMPORT.path
+      OPTIMIZED_FORM_IMPORT.path,
     );
   }
 

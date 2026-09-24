@@ -18,7 +18,7 @@ import { createRoot } from "react-dom/client";
 
 export async function getPreInsertionProps(
   studioCtx: StudioCtx,
-  component: Component
+  component: Component,
 ): Promise<Record<string, Expr> | undefined> {
   return new Promise((resolve) => {
     const handleModalClose = (data: Record<string, Expr> | undefined) => {
@@ -37,7 +37,7 @@ export async function getPreInsertionProps(
           studioCtx={studioCtx}
           component={component}
         />
-      </AntdConfigProvider>
+      </AntdConfigProvider>,
     );
   });
 }
@@ -55,7 +55,7 @@ export const PreInsertionModal = (props: PreInsertionModalProps) => {
 
   const meta = React.useMemo(
     () => studioCtx.getCodeComponentMeta(component),
-    [component]
+    [component],
   );
 
   const onClose = React.useCallback(
@@ -63,7 +63,7 @@ export const PreInsertionModal = (props: PreInsertionModalProps) => {
       setIsOpen(false);
       props.onClose(data);
     },
-    [setIsOpen, props.onClose]
+    [setIsOpen, props.onClose],
   );
 
   return (
@@ -81,7 +81,7 @@ export const PreInsertionModal = (props: PreInsertionModalProps) => {
               Object.entries(args).map(([arg, expr]) => [
                 arg,
                 tryExtractJson(expr),
-              ])
+              ]),
             );
             // TODO: we don't allow dynamic values in the pre-insertion stage
             if (
@@ -118,7 +118,7 @@ export const PreInsertionModal = (props: PreInsertionModalProps) => {
               />
             );
           })}
-        </div>
+        </div>,
       )}
     </Modal>
   );

@@ -44,7 +44,7 @@ describe("asCode", () => {
     });
     const result = getCodeExpressionWithFallback(
       asCode(templatedString, exprCtxFixture),
-      exprCtxFixture
+      exprCtxFixture,
     );
     expect(eval(result)).toEqual("evalValue");
   });
@@ -56,7 +56,7 @@ describe("asCode", () => {
     });
     const result = getCodeExpressionWithFallback(
       asCode(templatedString, exprCtxFixture),
-      exprCtxFixture
+      exprCtxFixture,
     );
     expect(eval(result)).toEqual("evalValue");
   });
@@ -68,7 +68,7 @@ describe("asCode", () => {
     });
     const result = getCodeExpressionWithFallback(
       asCode(templatedString, exprCtxFixture),
-      exprCtxFixture
+      exprCtxFixture,
     );
     expect(eval(result)).toEqual("evalValue");
   });
@@ -80,7 +80,7 @@ describe("asCode", () => {
     });
     const result = getCodeExpressionWithFallback(
       asCode(templatedString, exprCtxFixture),
-      exprCtxFixture
+      exprCtxFixture,
     );
     expect(eval(result)).toEqual("evalValue");
   });
@@ -100,7 +100,7 @@ describe("asCode", () => {
     });
     const result = getCodeExpressionWithFallback(
       asCode(templatedString, exprCtxFixture),
-      exprCtxFixture
+      exprCtxFixture,
     );
     expect(eval(result)).toEqual("evalValue, evalValue, evalValue");
   });
@@ -114,7 +114,7 @@ describe("asCode", () => {
           '["fields"][2]["value"]': code("42"),
         },
       }),
-      exprCtxFixture
+      exprCtxFixture,
     ).code;
     const currentEval = eval(currentCode);
     expect(currentEval).toEqual({
@@ -129,7 +129,7 @@ describe("asCode", () => {
           "fields.2.value": code("42"),
         },
       }),
-      exprCtxFixture
+      exprCtxFixture,
     ).code;
     const legacyEval = eval(legacyCode);
     expect(legacyCode).toEqual(currentCode);
@@ -140,7 +140,7 @@ describe("asCode", () => {
     const expr = mkCustomFunctionExpr(
       "testFunc",
       ["presentArg", "missing1", "missing2"],
-      [{ name: "presentArg", code: "1 + 1" }]
+      [{ name: "presentArg", code: "1 + 1" }],
     );
 
     const { code: generatedCode } = asCode(expr, exprCtxFixture);
@@ -153,7 +153,7 @@ describe("asCode", () => {
   it("serializes a custom-function server query invalidation to its function id", () => {
     const query = mkServerQuery(
       "My Query",
-      mkCustomFunctionExpr("refreshFn", [], [])
+      mkCustomFunctionExpr("refreshFn", [], []),
     );
     const expr = new QueryInvalidationExpr({
       invalidationQueries: [new QueryRef({ ref: query })],
@@ -366,7 +366,7 @@ describe("convertHrefExprToCodeExpr", () => {
   const owner = null as unknown as Component;
 
   const makePageHref = (
-    props: Partial<PageHref> & { path: string }
+    props: Partial<PageHref> & { path: string },
   ): PageHref => {
     const { query, params, fragment, path, encode } = props;
     return {
@@ -392,7 +392,7 @@ describe("convertHrefExprToCodeExpr", () => {
     const result = convertHrefExprToCodeExpr(
       site,
       owner,
-      makePageHref({ path: "/mypage" })
+      makePageHref({ path: "/mypage" }),
     );
     expect(result?.code).toEqual('"/mypage"');
   });
@@ -405,7 +405,7 @@ describe("convertHrefExprToCodeExpr", () => {
         path: "/blog/[slug]",
         params: { slug: stateVal(["$state", "slug"]) },
         encode: true,
-      })
+      }),
     );
     expect(evalCode(result, { slug: "a/b" })).toEqual("/blog/a%2Fb");
   });
@@ -418,11 +418,11 @@ describe("convertHrefExprToCodeExpr", () => {
         path: "/blog/[...slug]",
         params: { "...slug": stateVal(["$state", "slug"]) },
         encode: true,
-      })
+      }),
     );
     expect(evalCode(result, { slug: "a b/c" })).toEqual("/blog/a%20b/c");
     expect(evalCode(result, { slug: ["a b", "c/d"] })).toEqual(
-      "/blog/a%20b/c%2Fd"
+      "/blog/a%20b/c%2Fd",
     );
   });
 
@@ -434,7 +434,7 @@ describe("convertHrefExprToCodeExpr", () => {
         path: "/blog/[slug]",
         params: { slug: stateVal(["$state", "slug"]) },
         encode: false,
-      })
+      }),
     );
     expect(evalCode(result, { slug: "a/b" })).toEqual("/blog/a/b");
   });
@@ -448,10 +448,10 @@ describe("convertHrefExprToCodeExpr", () => {
         query: { q: stateVal(["$state", "q"]) },
         fragment: stateVal(["$state", "frag"]),
         encode: true,
-      })
+      }),
     );
     expect(evalCode(result, { q: "1 2", frag: "frag" })).toEqual(
-      "/mypage?q=1%202#frag"
+      "/mypage?q=1%202#frag",
     );
   });
 });

@@ -36,7 +36,7 @@ export interface FontVariant {
 export function extractUsedFontsFromComponents(
   site: Site,
   components: Component[],
-  tokenResolver: TokenRefResolver = makeTokenRefResolver(site)
+  tokenResolver: TokenRefResolver = makeTokenRefResolver(site),
 ) {
   // Basically, for any piece of text, its style is influenced by the default
   // theme style, as well as any ancestor slots.  Ideally, we would look at
@@ -75,7 +75,7 @@ export function extractUsedFontsFromComponents(
       const cur = usage[fontFamily];
       if (
         !cur.variants.some(
-          (v) => v.italic === variant.italic && v.weight === variant.weight
+          (v) => v.italic === variant.italic && v.weight === variant.weight,
         )
       ) {
         cur.variants.push(variant);
@@ -146,20 +146,20 @@ export function makeGoogleFontUrl(usages: FontUsage[]) {
 
 function makeGoogleFontFamilyQuery(
   fontFamily: string,
-  variants: FontVariant[]
+  variants: FontVariant[],
 ) {
   const fontSpec = getFontSpec(fontFamily);
   assert(
     fontSpec.fontType === "google-font",
-    `${fontFamily} is not a Google Font`
+    `${fontFamily} is not a Google Font`,
   );
   // Try to find the closest FontVariants based on spec
   const validVariants = variants.map((v) =>
-    getValidGoogleFontVariant(v, fontSpec)
+    getValidGoogleFontVariant(v, fontSpec),
   );
   // Google Fonts will give an error if you ask for duplicate variants
   const uniqueValidVariants = L.uniqBy(validVariants, (v) =>
-    makeGoogleFontVariant(v)
+    makeGoogleFontVariant(v),
   );
   const variantStrings = uniqueValidVariants
     .map((v) => makeGoogleFontVariant(v))
@@ -168,14 +168,14 @@ function makeGoogleFontFamilyQuery(
   // importing CSS URLs without quotes delimiters (in particular, breaks
   // fonts with spaces on Gatsby). That's why we replace "%20" with "+".
   const queryVal = encodeURIComponent(
-    `${fontFamily}:ital,wght@${variantStrings.join(";")}`
+    `${fontFamily}:ital,wght@${variantStrings.join(";")}`,
   ).replace(/%20/g, "+");
   return `family=${queryVal}`;
 }
 
 function getValidGoogleFontVariant(
   variant: FontVariant,
-  spec: GoogleFontInstallSpec
+  spec: GoogleFontInstallSpec,
 ): FontVariant {
   // It is possible for the variant to not exist for this font-family
   // We sort and select the closest one we are aware of
@@ -189,7 +189,7 @@ function getValidGoogleFontVariant(
   const sortedVariants = L.sortBy(diffVariants, ["diffItalic", "diffWeight"]);
   const selectedVariant = ensure(
     sortedVariants[0],
-    `Must be at least one variant`
+    `Must be at least one variant`,
   );
   return selectedVariant;
 }

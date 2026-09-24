@@ -27,7 +27,7 @@ export function hasLinkedSelectable(x: JQuery, viewCtx: ViewCtx) {
     const key = Object.keys(elt).find(
       (k) =>
         k.startsWith("__reactInternalInstance$") ||
-        k.startsWith("__reactFiber$")
+        k.startsWith("__reactFiber$"),
     );
     if (!key) {
       return false;
@@ -73,7 +73,7 @@ export function closestTaggedNonTextDomElt(
     dir?: "up" | "down";
     excludeNonSelectable?: boolean;
     excludeSelf?: boolean;
-  }
+  },
 ): JQuery | null {
   opts = opts || {};
   const dir = opts.dir || "up";
@@ -119,7 +119,7 @@ export function closestNonText(x: JQuery<any>, viewCtx: ViewCtx) {
   }
   if (!hasLinkedSelectable(x, viewCtx)) {
     throw new NonValNodeError(
-      "not a DOM element generated from a TplNode/ValNode"
+      "not a DOM element generated from a TplNode/ValNode",
     );
   }
   return x;
@@ -137,7 +137,7 @@ export function closestTag(x: JQuery<any>) {
 
 export function absorbLinkClick(
   e: JQuery.UIEventBase | Event,
-  onAnchorClick?: (href: string) => void
+  onAnchorClick?: (href: string) => void,
 ) {
   let cur = e.target as HTMLElement | null;
   while (cur) {
@@ -166,7 +166,7 @@ export function studioMode(studioCtx: StudioCtx) {
 
 export function showCanvasPageNavigationNotification(
   studioCtx: StudioCtx,
-  href: string
+  href: string,
 ) {
   const maybeFound = href ? getComponentByPath(studioCtx, href) : null;
   notification.info({
@@ -192,11 +192,11 @@ export function showCanvasPageNavigationNotification(
                   // TODO also handle query params
                   if (maybeFound.component.pageMeta) {
                     const pageComponent = hackyCast<PageComponent>(
-                      maybeFound.component
+                      maybeFound.component,
                     );
                     const paramValues = getMatchingPagePathParams(
                       pageComponent.pageMeta.path,
-                      href
+                      href,
                     );
                     if (paramValues) {
                       pageComponent.pageMeta.params = paramValues;
@@ -232,7 +232,7 @@ export function showCanvasPageNavigationNotification(
 }
 
 export function showCanvasAuthNotification(
-  mode: "preview mode" | "interactive mode"
+  mode: "preview mode" | "interactive mode",
 ) {
   notification.info({
     message: `Login and logout not supported in ${mode}`,
@@ -249,7 +249,7 @@ export function showCanvasAuthNotification(
 export function trapInteractionError(
   studioCtx: StudioCtx,
   loc: InteractionLoc | InteractionArgLoc,
-  error: Error
+  error: Error,
 ) {
   const previewCtx = studioCtx.previewCtx;
   const found = studioCtx.tplMgr().findInteractionByUuid(loc.interactionUuid);
@@ -293,7 +293,7 @@ export function trapInteractionError(
       switch (loc.type) {
         case "InteractionArgLoc": {
           const propLabel = maybePropTypeToDisplayName(
-            ACTIONS_META[interaction.actionName].parameters[loc.argName]
+            ACTIONS_META[interaction.actionName].parameters[loc.argName],
           );
           return (
             <>

@@ -24,7 +24,7 @@ export type PricingButtonProps = DefaultPricingButtonProps;
 
 function PricingButton_(
   props: PricingButtonProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicPricingButton to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

@@ -20,14 +20,13 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultCollapsableSectionProps altogether and have
 // total control over the props for your component.
-export interface CollapsableSectionProps
-  extends DefaultCollapsableSectionProps {
+export interface CollapsableSectionProps extends DefaultCollapsableSectionProps {
   tooltip?: React.ReactNode | (() => React.ReactNode);
 }
 
 function CollapsableSection_(
   props: CollapsableSectionProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicCollapsableSection to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

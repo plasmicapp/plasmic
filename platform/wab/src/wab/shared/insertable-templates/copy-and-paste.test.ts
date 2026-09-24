@@ -28,20 +28,20 @@ describe("cloneCopyState", () => {
     const source = await getBundleSite(copyAndPasteBundle[0][1] as Bundle);
     const homepage = ensure(
       source.components.find((c) => c.name === "Homepage"),
-      "Homepage not found"
+      "Homepage not found",
     );
 
     const tplOption0 = ensure(
       flattenTpls(homepage.tplTree).find(
-        (tpl) => isTplNamable(tpl) && tpl.name === "option0"
+        (tpl) => isTplNamable(tpl) && tpl.name === "option0",
       ),
-      "option0 not found"
+      "option0 not found",
     );
     const tplOption1 = ensure(
       flattenTpls(homepage.tplTree).find(
-        (tpl) => isTplNamable(tpl) && tpl.name === "option1"
+        (tpl) => isTplNamable(tpl) && tpl.name === "option1",
       ),
-      "option1 not found"
+      "option1 not found",
     );
 
     const refOptions: CopyElementsReference[] = [tplOption0, tplOption1].map(
@@ -49,7 +49,7 @@ describe("cloneCopyState", () => {
         type: "tpl-node",
         uuid: tplOption0.uuid,
         activeVariantsUuids: [],
-      })
+      }),
     );
 
     const target = createSite();
@@ -78,7 +78,7 @@ describe("cloneCopyState", () => {
         baseVariant,
         undefined,
         component,
-        () => null
+        () => null,
       );
 
       expect([...seenFonts]).toEqual(["Arial", "Inter"]);
@@ -109,9 +109,9 @@ describe("cloneCopyState", () => {
       "StatefulComponent",
     ]);
     expect(
-      target.styleTokens.map((token) => `${token.name}|${token.value}`).sort()
+      target.styleTokens.map((token) => `${token.name}|${token.value}`).sort(),
     ).toEqual(
-      source.styleTokens.map((token) => `${token.name}|${token.value}`).sort()
+      source.styleTokens.map((token) => `${token.name}|${token.value}`).sort(),
     );
     expect(target.imageAssets.length).toEqual(source.imageAssets.length);
   });
@@ -133,14 +133,14 @@ describe("cloneCopyState", () => {
     for (const source of sources) {
       const homepage = ensure(
         source.components.find((c) => c.name === "Homepage"),
-        "Homepage component not found"
+        "Homepage component not found",
       );
 
       const toCopy = ensure(
         flattenTpls(homepage.tplTree).find(
-          (tpl) => isTplNamable(tpl) && tpl.name === "option0"
+          (tpl) => isTplNamable(tpl) && tpl.name === "option0",
         ),
-        "option0 tpl should exist"
+        "option0 tpl should exist",
       );
 
       cloneCopyState(
@@ -166,7 +166,7 @@ describe("cloneCopyState", () => {
         baseVariant,
         undefined,
         component,
-        () => null
+        () => null,
       );
     }
 

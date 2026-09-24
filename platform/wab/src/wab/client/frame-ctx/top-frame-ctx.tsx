@@ -82,12 +82,12 @@ export function TopFrameCtxProvider({
       const hostFrameEndpoint = Comlink.windowEndpoint(hostFrame as Window);
 
       console.log(
-        "[TopFrame] Received PLASMIC_HOST_REGISTER message, exposing API to HostFrame"
+        "[TopFrame] Received PLASMIC_HOST_REGISTER message, exposing API to HostFrame",
       );
       const api = filteredApi(
         projectId,
         bindMethods(appCtx.api),
-        appCtx.appConfig
+        appCtx.appConfig,
       );
       const topFrameCtxApi: TopFrameFullApi = {
         exposeHostFrameApi: (hostFrameApi: Comlink.Remote<HostFrameApi>) => {
@@ -103,7 +103,7 @@ export function TopFrameCtxProvider({
         // Override some methods to hide Comlink implementation details.
         registerLocationListener(locationListener): () => void {
           return Comlink.proxy(
-            topFrameApi.registerLocationListener(locationListener)
+            topFrameApi.registerLocationListener(locationListener),
           );
         },
       } as TopFrameFullApi;
@@ -112,12 +112,12 @@ export function TopFrameCtxProvider({
         addEventListener(
           type: string,
           _listener: EventListenerOrEventListenerObject,
-          options?: {}
+          options?: {},
         ) {
           if (type === "message") {
             assert(
               comlinkState === undefined,
-              () => "Unexpected registering multiple message event listeners"
+              () => "Unexpected registering multiple message event listeners",
             );
             comlinkState = {
               hostFrameEndpoint: hostFrameEndpoint,
@@ -139,7 +139,7 @@ export function TopFrameCtxProvider({
       if (comlinkState) {
         comlinkState.hostFrameEndpoint.removeEventListener(
           "message",
-          comlinkState.listener
+          comlinkState.listener,
         );
       }
     };

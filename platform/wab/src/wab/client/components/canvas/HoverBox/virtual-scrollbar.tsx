@@ -37,7 +37,7 @@ export function VirtualScrollBar(props: {
       className={classNames(
         `HoverBox__ScrollBar`,
         `HoverBox__ScrollBar--${axis}`,
-        className
+        className,
       )}
       onMouseDown={(e) => e.preventDefault()}
       onMouseUp={(e) => e.preventDefault()}
@@ -57,7 +57,7 @@ export function VirtualScrollBar(props: {
               studioCtx.zoom;
             const newStart = Math.min(
               Math.max(0, element[contentStartProp] + delta),
-              maxStart
+              maxStart,
             );
             if (thumbRef.current) {
               thumbRef.current.style[thumbPositionProp] = `${
@@ -71,7 +71,7 @@ export function VirtualScrollBar(props: {
         <div
           className={classNames(
             `HoverBox__ScrollBar__Thumb HoverBox__ScrollBar__Thumb--${axis}`,
-            barClassName
+            barClassName,
           )}
           style={{
             [thumbPositionProp]: `${

@@ -42,7 +42,7 @@ const InsertPanelWrapper = observer(function InsertPanelWrapper_() {
   const { overlayProps: triggeredOverlayProps } = useOverlayTrigger(
     { type: "dialog" },
     state,
-    triggerRef
+    triggerRef,
   );
 
   const { overlayProps: overlayPositionProps } = useOverlayPosition({
@@ -77,7 +77,7 @@ const InsertPanelWrapper = observer(function InsertPanelWrapper_() {
         >
           <InsertPanel onClose={state.close} />
         </div>,
-        document.body
+        document.body,
       )}
     </>
   );

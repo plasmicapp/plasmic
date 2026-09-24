@@ -14,8 +14,7 @@ import { Tooltip } from "antd";
 import * as React from "react";
 
 export interface StarterGroupProps
-  extends DefaultStarterGroupProps,
-    StarterSectionConfig {
+  extends DefaultStarterGroupProps, StarterSectionConfig {
   projects: StarterProjectConfig[];
   workspaceId?: WorkspaceId;
 }
@@ -24,7 +23,7 @@ function StarterGroup(props: StarterGroupProps) {
   const appCtx = useAppCtx();
   const showPlasmicOnlyProjects = isAdminTeamEmail(
     appCtx.selfInfo?.email,
-    appCtx.appConfig
+    appCtx.appConfig,
   );
 
   const projects = props.projects

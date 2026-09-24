@@ -66,7 +66,7 @@ export default function GraphiqlWithExplorer({
 }: GraphiqlWithExplorerProps) {
   const fetcher = useMemo(
     () => createFetcher({ url, headers }),
-    ["url", "headers", "method"]
+    ["url", "headers", "method"],
   );
   const explorer = explorerPlugin({
     showAttribution: false,

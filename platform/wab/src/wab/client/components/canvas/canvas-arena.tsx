@@ -32,9 +32,9 @@ export const CanvasArenaShell = observer(function CanvasArenaShell(props: {
         status === "visible"
           ? "canvas-editor__frames"
           : status === "background"
-          ? "canvas-editor__frames canvas-editor__frames--background"
-          : "display-none",
-        isDevMode ? undefined : "invisible"
+            ? "canvas-editor__frames canvas-editor__frames--background"
+            : "display-none",
+        isDevMode ? undefined : "invisible",
       )}
     >
       {status !== "dead" && (

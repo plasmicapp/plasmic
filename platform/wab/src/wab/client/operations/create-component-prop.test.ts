@@ -15,7 +15,7 @@ import { mkWabTypeForPropKind } from "@/wab/shared/model/prop-type-config";
 describe("createComponentProp", () => {
   function setupWithComponent() {
     const { site, tplMgr } = setupComponentWithTplTree(
-      Tpls.mkTplTagX("div", {})
+      Tpls.mkTplTagX("div", {}),
     );
     const created = createComponent({
       tplMgr,
@@ -240,7 +240,7 @@ describe("createComponentProp", () => {
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toEqual(
-      "Choices should not contain duplicates."
+      "Choices should not contain duplicates.",
     );
   });
 
@@ -257,10 +257,10 @@ describe("createComponentProp", () => {
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toEqual(
-      'Default value "not a number" is not valid for a "num" prop.'
+      'Default value "not a number" is not valid for a "num" prop.',
     );
     expect(
-      component.params.find((p) => p.variable.name === "count")
+      component.params.find((p) => p.variable.name === "count"),
     ).toBeUndefined();
   });
 
@@ -277,7 +277,7 @@ describe("createComponentProp", () => {
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toEqual(
-      'Preview value false is not valid for a "num" prop.'
+      'Preview value false is not valid for a "num" prop.',
     );
   });
 
@@ -294,7 +294,7 @@ describe("createComponentProp", () => {
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toEqual(
-      'Default values are not supported for "Function" props.'
+      'Default values are not supported for "Function" props.',
     );
   });
 
@@ -313,7 +313,7 @@ describe("createComponentProp", () => {
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toEqual(
-      'Default value "danger" is not among the allowed options for this "choice" prop.'
+      'Default value "danger" is not among the allowed options for this "choice" prop.',
     );
   });
 
@@ -330,7 +330,7 @@ describe("createComponentProp", () => {
 
     assert(result.isErr(), "expected error result");
     expect(result.error.message).toEqual(
-      'Default value "a" is not valid for a "multiChoice" prop.'
+      'Default value "a" is not valid for a "multiChoice" prop.',
     );
   });
 

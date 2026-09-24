@@ -63,7 +63,7 @@ function _ViewAsButton(props: ViewAsButtonProps) {
   const isEditor = isUserProjectEditor(
     appCtx.selfInfo,
     studioCtx.siteInfo,
-    studioCtx.siteInfo.perms
+    studioCtx.siteInfo.perms,
   );
 
   const [search, setSearch] = useState("");
@@ -144,8 +144,8 @@ function _ViewAsButton(props: ViewAsButtonProps) {
                 appUsers.appUsers
                   .filter((u) =>
                     (u.email ?? u.externalId ?? "").includes(
-                      search.trim().toLowerCase()
-                    )
+                      search.trim().toLowerCase(),
+                    ),
                   )
                   .slice(0, maxListedUsers)
                   .map((user) => {
@@ -163,7 +163,7 @@ function _ViewAsButton(props: ViewAsButtonProps) {
                   }),
                 () => (
                   <Menu.Item disabled>User not found</Menu.Item>
-                )
+                ),
               )}
             </Menu.ItemGroup>
           )}
@@ -204,7 +204,7 @@ export function AdvancedAppAuthMenuItems() {
   const appId = studioCtx.siteInfo.id;
   const { roles } = useAppRoles(appCtx, appId);
   const dataSourceModal = useDataSourceOpExprBottomModal(
-    "current-user-properties"
+    "current-user-properties",
   );
   const {
     config: appCurrentUserOpConfig,
@@ -257,7 +257,7 @@ export function AdvancedAppAuthMenuItems() {
               dataSourceModal.open({
                 title: `Configure user properties ${DATA_SOURCE_OPERATION_LOWER}`,
                 value: getDataSourceOpExprFromBundle(
-                  appCurrentUserOpConfig.userPropsBundledOp
+                  appCurrentUserOpConfig.userPropsBundledOp,
                 ),
                 onSave: (newExpr) => {
                   spawn(handleSave(newExpr));
@@ -306,7 +306,7 @@ export function AdvancedAppAuthMenuItems() {
                     userPropsBundledOp: null,
                     userPropsDataSourceId: null,
                   },
-                }
+                },
               );
             }}
           >
@@ -320,10 +320,10 @@ export function AdvancedAppAuthMenuItems() {
 
 function getBundledFromDataSourceOpExpr(
   expr: DataSourceOpExpr,
-  appCtx: AppCtx
+  appCtx: AppCtx,
 ) {
   return JSON.stringify(
-    appCtx.bundler.bundle(expr, "currentUserOpExpr", appCtx.lastBundleVersion)
+    appCtx.bundler.bundle(expr, "currentUserOpExpr", appCtx.lastBundleVersion),
   );
 }
 

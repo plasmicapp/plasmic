@@ -1,15 +1,15 @@
-import { ensure } from "@/wab/shared/common";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { ProjectRevision } from "@/wab/server/entities/Entities";
 import { Bundler } from "@/wab/shared/bundler";
-import { isKnownTplTag, TplTag } from "@/wab/shared/model/classes";
+import { ensure } from "@/wab/shared/common";
 import { createDefaultTheme } from "@/wab/shared/core/sites";
 import { cloneMixin, cloneThemeStyle } from "@/wab/shared/core/styles";
 import { flattenTpls } from "@/wab/shared/core/tpls";
+import { TplTag, isKnownTplTag } from "@/wab/shared/model/classes";
 
 const ids = new Set([
   // Projects in "Starter projects" workspace and their pkgs.
@@ -69,14 +69,14 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   const usedTags = new Set(
     site.components
       .flatMap((c) => flattenTpls(c.tplTree))
       .filter((t) => isKnownTplTag(t))
-      .map((t) => (t as TplTag).tag)
+      .map((t) => (t as TplTag).tag),
   );
 
   for (const themeStyle of defaultTagStyles) {
@@ -88,7 +88,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
 
     const activeTheme = ensure(site.activeTheme, "already created it");
     const existing = activeTheme.styles.find(
-      (s) => s.selector === themeStyle.selector
+      (s) => s.selector === themeStyle.selector,
     );
     if (existing) {
       existing.style = cloneMixin(themeStyle.style);
@@ -100,7 +100,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "32-update-default-tag-styles"
+    "32-update-default-tag-styles",
   );
   Object.assign(bundle, newBundle);
 };

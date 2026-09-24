@@ -45,7 +45,7 @@ export async function openJwt(req: Request, res: Response, next: NextFunction) {
   }
   if (!url.startsWith("/")) {
     throw new BadRequestError(
-      `Can only redirect to relative urls, starts with "/"`
+      `Can only redirect to relative urls, starts with "/"`,
     );
   }
 
@@ -57,7 +57,7 @@ export async function openJwt(req: Request, res: Response, next: NextFunction) {
   const redirectConfig = team.whiteLabelInfo?.openRedirect;
   if (!redirectConfig) {
     throw new UnauthorizedError(
-      `Not authorized to open Plasmic pages as users`
+      `Not authorized to open Plasmic pages as users`,
     );
   }
 
@@ -79,7 +79,7 @@ export async function openJwt(req: Request, res: Response, next: NextFunction) {
 
   const user = await superMgr.getUserByWhiteLabelId(
     team.id,
-    payload.externalUserId
+    payload.externalUserId,
   );
   await new Promise<void>((resolve) => {
     doLogin(req, user, (err2) => {
@@ -115,11 +115,11 @@ export async function createWhiteLabelUser(req: Request, res: Response) {
 
   const existingUser = await mgr.tryGetUserByWhiteLabelId(
     team.id,
-    info.externalId
+    info.externalId,
   );
   if (existingUser) {
     throw new BadRequestError(
-      `User with external ID ${info.externalId} already exists`
+      `User with external ID ${info.externalId} already exists`,
     );
   }
 
@@ -140,7 +140,7 @@ export async function getWhiteLabelUser(req: Request, res: Response) {
 
   const user = await mgr.getUserByWhiteLabelId(
     team.id,
-    req.params.externalUserId
+    req.params.externalUserId,
   );
   res.json(toWhiteLabelUser(user));
 }
@@ -150,7 +150,7 @@ export async function deleteWhiteLabelUser(req: Request, res: Response) {
   const team = ensure(req.apiTeam, "Always defined for whiteLabelMgr");
   const user = await mgr.getUserByWhiteLabelId(
     team.id,
-    req.params.externalUserId
+    req.params.externalUserId,
   );
   logger().info("DELETING USER", user);
   await mgr.deleteUser(user, false);

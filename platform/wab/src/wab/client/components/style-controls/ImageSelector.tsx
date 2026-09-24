@@ -50,12 +50,12 @@ export const ImageAssetPreviewAndPicker = observer(
       asset && asset.dataUri
         ? asset.dataUri
         : L.isString(value)
-        ? value
-        : undefined;
+          ? value
+          : undefined;
     const isIcon = type === ImageAssetType.Icon;
 
     const [pickingImage, setPickingImage] = React.useState(
-      !forFallback && (uri === placeholderImgUrl(isIcon) || !uri)
+      !forFallback && (uri === placeholderImgUrl(isIcon) || !uri),
     );
     const [showAssetPopup, setShowAssetPopup] = React.useState(false);
 
@@ -141,7 +141,7 @@ export const ImageAssetPreviewAndPicker = observer(
         )}
       </div>
     );
-  }
+  },
 );
 
 type ImgInfoProps = {
@@ -162,7 +162,7 @@ function useImageSize(url: string) {
   React.useEffect(() => {
     const img = new Image();
     promiseRef.current = makeCancelable(
-      new Promise((resolve) => (img.onload = resolve))
+      new Promise((resolve) => (img.onload = resolve)),
     );
     img.src = url;
     promiseRef.current.promise
@@ -275,7 +275,7 @@ export const ImageAssetOrUrlPicker = observer(
       const { imageResult, opts } = await studioCtx.app.withSpinner(
         (async () => {
           return await maybeUploadImage(studioCtx.appCtx, image, type, file);
-        })()
+        })(),
       );
       if (!imageResult || !opts) {
         return;
@@ -299,7 +299,7 @@ export const ImageAssetOrUrlPicker = observer(
 
       const urlInputHandle = ensure(
         urlInputRef.current,
-        "Unexpected undefined urlInputRef"
+        "Unexpected undefined urlInputRef",
       );
       const urlInputValue = urlInputHandle.value();
       if (!isValidUrl(urlInputValue)) {
@@ -390,8 +390,8 @@ export const ImageAssetOrUrlPicker = observer(
                   props.onPicked(
                     ensure(
                       selectableAssets.find((x) => x.uuid === val),
-                      "Unexpected undefined asset selected"
-                    )
+                      "Unexpected undefined asset selected",
+                    ),
                   )
                 }
                 showSearch
@@ -414,7 +414,7 @@ export const ImageAssetOrUrlPicker = observer(
                         className="mr-ch"
                         uri={ensure(
                           asset.dataUri,
-                          "Unexpected undefinde dataUri in asset"
+                          "Unexpected undefinde dataUri in asset",
                         )}
                         style={{ width: 28, height: 28 }}
                       />
@@ -467,7 +467,7 @@ export const ImageAssetOrUrlPicker = observer(
         </div>
       </div>
     );
-  }
+  },
 );
 
 export function ImageUploader(props: {
@@ -519,7 +519,7 @@ export function ImagePaster(props: {
       event.stopPropagation();
       setProcessing(true);
       const image = await ReadableClipboard.fromDataTransfer(
-        event.clipboardData
+        event.clipboardData,
       ).getImage(appCtx);
       if (image) {
         props.onPasted(image);

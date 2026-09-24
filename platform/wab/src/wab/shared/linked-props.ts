@@ -22,7 +22,7 @@ export function isLinkCompatible(innerType: Type, outerType: Type): boolean {
       strictZip(innerType.params, outerType.params).every(
         // Not using typesEqual because it is more strict
         // For example, it checks if the function arg names are equal
-        ([a, b]) => a.type.name === b.type.name
+        ([a, b]) => a.type.name === b.type.name,
       )
     );
   }
@@ -31,10 +31,10 @@ export function isLinkCompatible(innerType: Type, outerType: Type): boolean {
     // option types (multi/single choice) must share the exact same options
     if (isOptionsType(innerType) && isOptionsType(outerType)) {
       const innerValues = normalizeToChoiceObjects(innerType.options).map(
-        (o) => o.value
+        (o) => o.value,
       );
       const outerValues = normalizeToChoiceObjects(outerType.options).map(
-        (o) => o.value
+        (o) => o.value,
       );
       return xor(innerValues, outerValues).length === 0;
     }
@@ -46,7 +46,7 @@ export function isLinkCompatible(innerType: Type, outerType: Type): boolean {
     innerType.name === "text" &&
     isChoiceType(outerType) &&
     normalizeToChoiceObjects(outerType.options).every(
-      (o) => typeof o.value === "string"
+      (o) => typeof o.value === "string",
     )
   );
 }

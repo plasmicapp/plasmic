@@ -21,7 +21,7 @@ import { VariantComboSorter } from "@/wab/shared/variant-sort";
 
 export type VariantComboChecker = (
   variantCombo: VariantCombo,
-  ignoreScreenVariant?: boolean
+  ignoreScreenVariant?: boolean,
 ) => string;
 
 export interface SerializerSiteContext {

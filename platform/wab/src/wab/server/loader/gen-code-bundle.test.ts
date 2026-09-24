@@ -23,7 +23,7 @@ const s3 = vi.hoisted(() => {
   const putObject = vi.fn(
     ({ Key, Body }: { Key: string; Body: string }) =>
       async () =>
-        void objects.set(Key, Body)
+        void objects.set(Key, Body),
   );
   const GetObjectCommand = vi.fn(function (input: { Key: string }) {
     return { run: getObject(input) };
@@ -150,7 +150,7 @@ describe("genPublishedLoaderCodeBundle", () => {
     s3.putObject.mockImplementation(
       ({ Key, Body }) =>
         async () =>
-          void s3.objects.set(Key, Body)
+          void s3.objects.set(Key, Body),
     );
     s3.GetObjectCommand.mockImplementation(function (input) {
       return { run: s3.getObject(input) };
@@ -172,7 +172,7 @@ describe("genPublishedLoaderCodeBundle", () => {
       exec: vi.fn(async (method: string) =>
         method === "codegen"
           ? { output: {}, componentDeps: {}, componentRefs: [] }
-          : { modules: [], bundleKey: null }
+          : { modules: [], bundleKey: null },
       ),
     } as unknown as PlasmicWorkerPool;
   });
@@ -196,7 +196,7 @@ describe("genPublishedLoaderCodeBundle", () => {
     const firstResult = await genPublishedLoaderCodeBundle(
       dbMgr,
       pool,
-      CALL_OPTS
+      CALL_OPTS,
     );
     for (const mock of [
       resolveProjectDeps,
@@ -247,7 +247,7 @@ describe("genPublishedLoaderCodeBundle", () => {
     expect(s3GetKeys()[0]).not.toEqual(firstProbe);
     expect(pool.exec).toHaveBeenCalledWith("loader-assets", expect.anything());
     expect(
-      [...s3.objects.keys()].filter((key) => key.startsWith("bundle/"))
+      [...s3.objects.keys()].filter((key) => key.startsWith("bundle/")),
     ).toHaveLength(2);
   });
 });
@@ -266,7 +266,7 @@ describe("makeBundleBucketPath/extractBundleKeyProjectIds", () => {
       exportOpts: LOADER_CODEGEN_OPTS_DEFAULTS,
     });
     expect(bundleKey).toEqual(
-      "bundle/cb=23/loaderVersion=7/ps=p1@10.0.0,p2@1.2.3/platform=react/browserOnly=true/opts=22a86211efc9ac67440fb332014652a6010e993f48c3068b936afe2128f03e3c"
+      "bundle/cb=23/loaderVersion=7/ps=p1@10.0.0,p2@1.2.3/platform=react/browserOnly=true/opts=22a86211efc9ac67440fb332014652a6010e993f48c3068b936afe2128f03e3c",
     );
     expect(extractBundleKeyProjectIds(bundleKey)).toEqual(["p1", "p2"]);
   });

@@ -244,9 +244,9 @@ if (args.email) {
           return;
         }
         logger().info(
-          `Email sent to ${args.email}. Email ID: ${info.messageId}`
+          `Email sent to ${args.email}. Email ID: ${info.messageId}`,
         );
-      }
+      },
     );
   }
 }
@@ -259,7 +259,7 @@ if (args.email) {
  */
 export async function writeHtmlToFile(
   htmlContent: string,
-  filePath: string = "out/output.html"
+  filePath: string = "out/output.html",
 ): Promise<void> {
   // Ensure the output directory exists
   const dir = path.dirname(filePath);

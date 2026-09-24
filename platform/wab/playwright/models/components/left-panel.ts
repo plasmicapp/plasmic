@@ -17,11 +17,11 @@ export class LeftPanel extends BaseModel {
     .frameLocator("iframe");
 
   readonly addContainer: Locator = this.frame.locator(
-    '[data-test-id="add-drawer"]'
+    '[data-test-id="add-drawer"]',
   );
 
   readonly addButton: Locator = this.frame.locator(
-    `[data-test-id="add-button"]`
+    `[data-test-id="add-button"]`,
   );
 
   readonly addSearchInput: Locator = this.addContainer.locator("input");
@@ -29,62 +29,62 @@ export class LeftPanel extends BaseModel {
   readonly leftPane = this.frame.locator(".canvas-editor__left-pane");
 
   readonly componentNameSubmit: Locator = this.frame.locator(
-    '[data-test-id="prompt-submit"]'
+    '[data-test-id="prompt-submit"]',
   );
   readonly breakpointPresetButton: Locator = this.frame.locator(
-    "text=Start with a preset"
+    "text=Start with a preset",
   );
   readonly breakpointDesktopCategory: Locator =
     this.frame.locator("text=Desktop first");
   readonly breakpointDesktopMobile: Locator = this.frame.locator(
-    "text=Desktop, Mobile"
+    "text=Desktop, Mobile",
   );
   readonly breakpointWidthInput: Locator = this.frame.locator(
-    "input[placeholder='Max width']"
+    "input[placeholder='Max width']",
   );
   readonly assetsTabButton: Locator = this.frame.locator(
-    '[data-test-tabkey="assets"]'
+    '[data-test-tabkey="assets"]',
   );
   readonly componentsTabButton: Locator = this.frame.locator(
-    '[data-test-tabkey="components"]'
+    '[data-test-tabkey="components"]',
   );
   readonly dataTokensTabButton: Locator = this.frame.locator(
-    '[data-test-tabkey="dataTokens"]'
+    '[data-test-tabkey="dataTokens"]',
   );
 
   readonly newDataTokenButton: Locator = this.frame.locator(
-    '[data-test-id="new-data-token-button"]'
+    '[data-test-id="new-data-token-button"]',
   );
   readonly dataTokensPanelContent: Locator = this.frame.locator(
-    '[data-test-id="data-tokens-panel-content"]'
+    '[data-test-id="data-tokens-panel-content"]',
   );
 
   readonly sidebarModal: Locator = this.frame.locator('[id="sidebar-modal"]');
   readonly closeSidebarModalButton: Locator = this.frame.locator(
-    '[data-test-id="close-sidebar-modal"]'
+    '[data-test-id="close-sidebar-modal"]',
   );
 
   readonly editComponentButton: Locator =
     this.frame.getByText("Edit component");
   readonly treeTabButton: Locator = this.frame.locator(
-    'button[data-test-tabkey="outline"]'
+    'button[data-test-tabkey="outline"]',
   );
   readonly versionsTabButton: Locator = this.frame.locator(
-    'button[data-test-tabkey="versions"]'
+    'button[data-test-tabkey="versions"]',
   );
   readonly moreTabButton: Locator = this.frame.locator(
-    'button[data-test-tabkey="more"]'
+    'button[data-test-tabkey="more"]',
   );
   readonly treeRoot: Locator = this.frame.locator(".tpltree__root");
   readonly treeLabels: Locator = this.frame.locator(".tpltree__label");
   readonly treeNodeExpander: Locator = this.frame.locator(
-    '.tpltree__label__expander[data-state-isopen="false"]'
+    '.tpltree__label__expander[data-state-isopen="false"]',
   );
   readonly focusedTreeNode: Locator = this.frame.locator(
-    ".tpltree__label--focused"
+    ".tpltree__label--focused",
   );
   readonly leftPanelIndicator: Locator = this.frame.locator(
-    '[data-test-class="left-panel-indicator"] > div'
+    '[data-test-class="left-panel-indicator"] > div',
   );
 
   constructor(page: Page) {
@@ -99,7 +99,7 @@ export class LeftPanel extends BaseModel {
        * follow-up UI keep the drawer open, so callers must opt out.
        */
       expectDrawerToClose?: boolean;
-    } = {}
+    } = {},
   ) {
     const addMenuOpen = await this.addContainer.isVisible();
     if (!addMenuOpen) {
@@ -341,7 +341,7 @@ export class LeftPanel extends BaseModel {
 
       if (i < names.length - 1) {
         const expander = label.locator(
-          '.tpltree__label__expander[data-state-isopen="false"]'
+          '.tpltree__label__expander[data-state-isopen="false"]',
         );
         if (await expander.isVisible()) {
           await expander.click();

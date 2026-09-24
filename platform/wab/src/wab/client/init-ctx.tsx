@@ -27,7 +27,7 @@ import * as React from "react";
 export async function loadSiteDbCtx(
   appCtx: AppCtx,
   onRefreshUi: () => void,
-  siteId: ProjectId
+  siteId: ProjectId,
 ) {
   const baseApi = appCtx.api;
   const { bundler } = appCtx;
@@ -64,7 +64,7 @@ export async function loadSiteDbCtx(
       } else if (appCtx.selfInfo.waitingEmailVerification) {
         // User is not verified
         await appCtx.history.replace(
-          getEmaiLVerificationRouteWithContinuation()
+          getEmaiLVerificationRouteWithContinuation(),
         );
         return asyncNever();
       }
@@ -84,7 +84,7 @@ export async function loadSiteDbCtx(
     bundler,
     siteInfo.id,
     bundle,
-    depPkgs
+    depPkgs,
   );
   appCtx.appConfig = getProjectFlags(site, appCtx.appConfig);
   spawn(checkDepPkgHosts(appCtx, siteInfo, depPkgVersions));
@@ -126,16 +126,16 @@ export async function loadSiteDbCtx(
 export async function checkDepPkgHosts(
   appCtx: AppCtx,
   siteInfo: SiteInfo,
-  deps: ProjectDependency[]
+  deps: ProjectDependency[],
 ) {
   const pkgMetas = await Promise.all(
-    deps.map((dep) => appCtx.api.getPkgVersionMeta(dep.pkgId, dep.version))
+    deps.map((dep) => appCtx.api.getPkgVersionMeta(dep.pkgId, dep.version)),
   );
   for (const pkgVersion of pkgMetas) {
     if (
       pkgVersion.pkg.hostUrl &&
       ![siteInfo.hostUrl, appCtx.appConfig.defaultHostUrl].includes(
-        pkgVersion.pkg.hostUrl
+        pkgVersion.pkg.hostUrl,
       )
     ) {
       notification.warning({

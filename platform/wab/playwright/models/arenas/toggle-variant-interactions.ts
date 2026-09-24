@@ -7,7 +7,7 @@ export class ToggleVariantInteractionsArena extends BaseModel {
     readonly contentFrame: FrameLocator,
     readonly toggleButton: Locator,
     readonly activateVariantButton: Locator,
-    readonly deactivateVariantButton: Locator
+    readonly deactivateVariantButton: Locator,
   ) {
     super(page);
   }
@@ -28,14 +28,14 @@ export class ToggleVariantInteractionsArena extends BaseModel {
     });
     const deactivateVariantButton = contentFrame.getByText(
       "deactivate variant",
-      { exact: true }
+      { exact: true },
     );
     const instance = new ToggleVariantInteractionsArena(
       page,
       contentFrame,
       toggleButton,
       activateVariantButton,
-      deactivateVariantButton
+      deactivateVariantButton,
     );
     return instance;
   }

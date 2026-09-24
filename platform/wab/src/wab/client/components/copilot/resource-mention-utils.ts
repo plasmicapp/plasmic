@@ -118,7 +118,7 @@ export function mkMentionableResources({
 }
 
 function mkComponentMentionableResources(
-  component: Component
+  component: Component,
 ): MentionableResource[] {
   const baseVariant = getBaseVariant(component);
   const resources: MentionableResource[] = [];
@@ -133,7 +133,7 @@ function mkComponentMentionableResources(
         name: tpl.name,
         tplType: getTplType(
           tpl,
-          getEffectiveVariantSetting(tpl, [baseVariant])
+          getEffectiveVariantSetting(tpl, [baseVariant]),
         ),
         // For an instance, show which component it is an instance of.
         detail: isTplComponent(tpl) ? tpl.component.name : undefined,
@@ -157,7 +157,7 @@ function mkComponentMentionableResources(
 const mkSiteMentionableResources = maybeComputedFn(
   function mkSiteMentionableResources(
     site: Site,
-    fromProject?: string
+    fromProject?: string,
   ): ReadonlyArray<MentionableResource> {
     const isImported = fromProject !== undefined;
     const resources: MentionableResource[] = [];
@@ -166,7 +166,7 @@ const mkSiteMentionableResources = maybeComputedFn(
     // name in a prompt.
     const [pages, components] = partition<Component>(
       site.components.filter(isPlasmicComponent),
-      isPageComponent
+      isPageComponent,
     );
     for (const comp of naturalSortByName(components)) {
       resources.push({
@@ -197,13 +197,13 @@ const mkSiteMentionableResources = maybeComputedFn(
 
     // Of the screen variant groups, only the project's active one is mentionable (stored as `site.activeScreenVariantGroup`)
     const globalVariantGroups = site.globalVariantGroups.filter(
-      (group) => !isScreenVariantGroup(group)
+      (group) => !isScreenVariantGroup(group),
     );
     if (!isImported && site.activeScreenVariantGroup) {
       globalVariantGroups.push(site.activeScreenVariantGroup);
     }
     for (const variant of naturalSortByName(
-      globalVariantGroups.flatMap((group) => group.variants)
+      globalVariantGroups.flatMap((group) => group.variants),
     )) {
       resources.push({
         kind: "globalVariant",
@@ -224,7 +224,7 @@ const mkSiteMentionableResources = maybeComputedFn(
     }
 
     return resources;
-  }
+  },
 );
 
 /**
@@ -232,7 +232,7 @@ const mkSiteMentionableResources = maybeComputedFn(
  */
 function mkCanvasSelectionResources(
   currentComponent: Component | undefined,
-  selectedTpls: TplNode[]
+  selectedTpls: TplNode[],
 ): MentionableResources["selection"] {
   if (!currentComponent || !isPlasmicComponent(currentComponent)) {
     return undefined;
@@ -265,7 +265,7 @@ function mkCanvasSelectionResources(
  */
 export function getResourceMatchScore(
   resource: MentionableResource,
-  query: string
+  query: string,
 ): number | undefined {
   return matchScore(
     [
@@ -274,7 +274,7 @@ export function getResourceMatchScore(
       resource.kind,
       resource.fromProject,
     ].filter(isNonNil),
-    query
+    query,
   );
 }
 
@@ -322,7 +322,7 @@ function mentionUuid(resource: MentionableResource): string {
  */
 export function mkMentionRaw(resource: MentionableResource): string {
   return `${resource.kind}:${mentionUuid(resource)}|${escapeMentionLabel(
-    resource.name
+    resource.name,
   )}`;
 }
 
@@ -373,7 +373,7 @@ export function findMissingMentions(text: string, site: Site): string[] {
 export function getMentionUiId(
   kind: MentionableResourceKind,
   uuid: string,
-  site: Site
+  site: Site,
 ): UiId | undefined {
   switch (kind) {
     case "component":
@@ -381,25 +381,25 @@ export function getMentionUiId(
       return tryGetModelUiId(
         allComponents(site, { includeDeps: "direct" }),
         uuid,
-        MENTION_KIND_TYPE_TAG_MAP[kind]
+        MENTION_KIND_TYPE_TAG_MAP[kind],
       );
     case "token":
       return tryGetModelUiId(
         siteStyleTokensDirectDeps(site),
         uuid,
-        MENTION_KIND_TYPE_TAG_MAP[kind]
+        MENTION_KIND_TYPE_TAG_MAP[kind],
       );
     case "animation":
       return tryGetModelUiId(
         allAnimationSequences(site, { includeDeps: "direct" }),
         uuid,
-        MENTION_KIND_TYPE_TAG_MAP[kind]
+        MENTION_KIND_TYPE_TAG_MAP[kind],
       );
     case "globalVariant":
       return tryGetModelUiId(
         allGlobalVariants(site, { includeDeps: "direct" }),
         uuid,
-        MENTION_KIND_TYPE_TAG_MAP[kind]
+        MENTION_KIND_TYPE_TAG_MAP[kind],
       );
     case "componentVariant": {
       const [componentUuid, variantUuid] = uuid.split("/");
@@ -408,7 +408,7 @@ export function getMentionUiId(
         ? tryGetModelUiId(
             allComponentVariants(component),
             variantUuid,
-            MENTION_KIND_TYPE_TAG_MAP[kind]
+            MENTION_KIND_TYPE_TAG_MAP[kind],
           )
         : undefined;
     }
@@ -430,7 +430,7 @@ export function getMentionUiId(
 function tryGetModelUiId(
   candidates: readonly { uuid: string }[],
   uuid: string,
-  typeTag: ModelTypeTag
+  typeTag: ModelTypeTag,
 ): UiId | undefined {
   return candidates.some((c) => c.uuid === uuid)
     ? mkModelUiId({ typeTag, uuid })

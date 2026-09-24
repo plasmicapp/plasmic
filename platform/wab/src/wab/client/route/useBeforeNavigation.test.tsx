@@ -62,7 +62,7 @@ describe("useBeforeNavigation", () => {
     const { unmount } = render(
       <HistoryProvider history={history}>
         <Prompter enabled={true} />
-      </HistoryProvider>
+      </HistoryProvider>,
     );
     unmount();
     act(() => history.push("/b"));

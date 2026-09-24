@@ -15,11 +15,11 @@ import { isArray, isBoolean, isNumber, isPlainObject, isString } from "lodash";
 export function validateStateInitialValue(
   variableType: StateVariableType,
   value: unknown,
-  group?: VariantGroup
+  group?: VariantGroup,
 ): string | undefined {
   const typeError = () =>
     `Initial value ${JSON.stringify(
-      value
+      value,
     )} is not valid for a "${variableType}" state.`;
   switch (variableType) {
     case "text":
@@ -41,9 +41,9 @@ export function validateStateInitialValue(
       return validateVariantGroupInitialValue(
         ensure(
           group,
-          "a variant group is required to validate a variant-typed state"
+          "a variant group is required to validate a variant-typed state",
         ),
-        value
+        value,
       );
     default:
       unexpected(`unexpected variable type: ${variableType}`);
@@ -52,7 +52,7 @@ export function validateStateInitialValue(
 
 function validateVariantGroupInitialValue(
   group: VariantGroup,
-  value: unknown
+  value: unknown,
 ): string | undefined {
   const { unknownValues } = resolveVariantGroupValue(group, value);
   if (unknownValues.length === 0) {
@@ -76,7 +76,7 @@ function validateVariantGroupInitialValue(
  */
 export function validateStateAccessType(
   accessType: StateAccessType,
-  initialValueExpr: Expr | null | undefined
+  initialValueExpr: Expr | null | undefined,
 ): string | undefined {
   return accessType === "writable" &&
     initialValueExpr &&

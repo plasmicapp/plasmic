@@ -84,7 +84,7 @@ function renderTypeSpecificSubform(
   localized: boolean,
   fieldPath: any[],
   locales: string[],
-  typeMeta: CmsTypeMeta
+  typeMeta: CmsTypeMeta,
 ): React.ReactElement {
   return (
     <>
@@ -135,7 +135,7 @@ function renderModelFieldForm(
   fullFieldsPath: any[],
   handles: any,
   locales: string[],
-  isNested: boolean
+  isNested: boolean,
 ) {
   function moveBy(delta: number) {
     const fields = form.getFieldValue(fullFieldsPath);
@@ -178,7 +178,7 @@ function renderModelFieldForm(
               "": undefined,
               ...(!isNested
                 ? Object.fromEntries(
-                    locales.map((locale) => tuple(locale, undefined))
+                    locales.map((locale) => tuple(locale, undefined)),
                   )
                 : {}),
             };
@@ -226,7 +226,7 @@ function renderModelFieldForm(
               </Form.Item>
             )}
             {NESTED_TYPES.includes(
-              getFieldValue([...fullFieldPath, "type"])
+              getFieldValue([...fullFieldPath, "type"]),
             ) && (
               <Form.Item
                 label={"Nested fields"}
@@ -342,7 +342,7 @@ function renderModelFieldForm(
               getFieldValue([...fullFieldPath, "localized"]) && !isNested,
               fieldPath,
               locales,
-              getFieldValue([...fullFieldPath])
+              getFieldValue([...fullFieldPath]),
             )}
           </React.Fragment>
         )}
@@ -390,7 +390,7 @@ export type CmsModelDetailsProps = DefaultCmsModelDetailsProps;
 
 export function CmsModelDetails_(
   props: CmsModelDetailsProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const api = useApi();
   const match = useMatchedRoute(APP_ROUTES.cmsModelSchema)!;
@@ -475,7 +475,7 @@ export function CmsModelDetails_(
         }}
         onValuesChange={(changedValues, allValues) => {
           setFormValidationErrorMessage(
-            computeFormValidationErrorMessage() ?? undefined
+            computeFormValidationErrorMessage() ?? undefined,
           );
           setHasChanged(hasChanges());
         }}
@@ -536,7 +536,7 @@ export function CmsModelDetails_(
                       await api.deleteCmsTable(tableId);
                       await mutateTable(databaseId, tableId);
                       history.push(
-                        APP_ROUTES.cmsSchemaRoot.fill({ databaseId })
+                        APP_ROUTES.cmsSchemaRoot.fill({ databaseId }),
                       );
                     }
                   }}
@@ -670,7 +670,7 @@ function ModelFields({
                         fullFieldsPath,
                         handles,
                         database.extraData.locales,
-                        isNested
+                        isNested,
                       )
                     }
                   </Form.Item>
@@ -689,7 +689,7 @@ function ModelFields({
                           .getFieldValue(fullFieldsPath)
                           .map((field) => field.identifier),
                         `newField`,
-                        { separator: "" }
+                        { separator: "" },
                       ),
                       name: "",
                       localized: false,
@@ -699,7 +699,7 @@ function ModelFields({
                       unique: false,
                       type: CmsMetaType.TEXT,
                       defaultValueByLocale: {},
-                    })
+                    }),
                   );
                 }}
               >
@@ -801,13 +801,13 @@ function ModelSettingsModal(props: {
                 validator: (_, value, callback) => {
                   const pathParams = extractParamsFromPagePath(value);
                   const invalidParams = pathParams.filter(
-                    (p) => !table.schema.fields.find((f) => f.identifier === p)
+                    (p) => !table.schema.fields.find((f) => f.identifier === p),
                   );
                   if (invalidParams.length > 0) {
                     callback(
                       `URL references fields that don't exist on this model: ${invalidParams.join(
-                        ", "
-                      )}`
+                        ", ",
+                      )}`,
                     );
                   } else {
                     callback();

@@ -185,7 +185,11 @@ describe("Figma importer slot handling", () => {
       const { studioCtx, node, component } =
         createFigmaTestData(getCodeComponentMeta);
       expect(
-        fromFigmaComponentToTplProps(studioCtx, component, node as InstanceNode)
+        fromFigmaComponentToTplProps(
+          studioCtx,
+          component,
+          node as InstanceNode,
+        ),
       ).toEqual([
         ["errorMessage", "ERROR_MESSAGE_1"],
         ["filledValue", "FILLED_VALUE_2"],
@@ -210,7 +214,11 @@ describe("Figma importer slot handling", () => {
       const { studioCtx, node, component } =
         createFigmaTestData(getCodeComponentMeta);
       expect(
-        fromFigmaComponentToTplProps(studioCtx, component, node as InstanceNode)
+        fromFigmaComponentToTplProps(
+          studioCtx,
+          component,
+          node as InstanceNode,
+        ),
       ).toEqual([
         ["errorMessage", "ERROR_MESSAGE_1"],
         ["filledValue", "FILLED_VALUE_2"],
@@ -287,8 +295,8 @@ describe("Figma importer slot handling", () => {
           fromFigmaComponentToTplProps(
             studioCtx,
             component,
-            node as InstanceNode
-          )
+            node as InstanceNode,
+          ),
         ).toEqual([["swapChilds", false]]);
         expect(getCodeComponentMeta).toHaveBeenCalledWith(component);
       });
@@ -305,8 +313,8 @@ describe("Figma importer slot handling", () => {
           fromFigmaComponentToTplProps(
             studioCtx,
             component,
-            node as InstanceNode
-          )
+            node as InstanceNode,
+          ),
         ).toEqual([]);
         expect(getCodeComponentMeta).toHaveBeenCalledWith(component);
       });
@@ -323,8 +331,8 @@ describe("Figma importer slot handling", () => {
           fromFigmaComponentToTplProps(
             studioCtx,
             component,
-            node as InstanceNode
-          )
+            node as InstanceNode,
+          ),
         ).toEqual([["isDisabled", true]]);
         expect(getCodeComponentMeta).toHaveBeenCalledWith(component);
       });

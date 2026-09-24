@@ -10,7 +10,7 @@ type SwitchProps = DefaultSwitchProps;
 function Switch_(props: SwitchProps, ref: SwitchRef) {
   const { plasmicProps, state } = PlasmicSwitch.useBehavior<SwitchProps>(
     props,
-    ref
+    ref,
   );
   return <PlasmicSwitch {...plasmicProps} />;
 }

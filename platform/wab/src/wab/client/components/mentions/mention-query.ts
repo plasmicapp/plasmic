@@ -8,7 +8,7 @@
  */
 export function getMentionStartIndex(
   value: string,
-  caretIndex: number
+  caretIndex: number,
 ): number {
   for (let i = caretIndex - 1; i >= 0; i--) {
     const ch = value[i];
@@ -30,7 +30,7 @@ export function getMentionStartIndex(
  */
 export function findMentionText(
   value: string,
-  caretIndex: number
+  caretIndex: number,
 ): string | undefined {
   const start = getMentionStartIndex(value, caretIndex);
   if (start < 0) {
@@ -43,7 +43,7 @@ export function findMentionText(
 /** Score how well `searchableStrings` match `query` (higher is better, undefined is no match) */
 export function matchScore(
   searchableStrings: string[],
-  query: string
+  query: string,
 ): number | undefined {
   if (query === "") {
     return 0;

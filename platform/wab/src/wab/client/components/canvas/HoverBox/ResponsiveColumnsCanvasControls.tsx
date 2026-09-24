@@ -5,10 +5,10 @@ import { getElementBounds } from "@/wab/client/dom-utils";
 import { reportError } from "@/wab/client/ErrorNotifications";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
-import { ensure, NullOrUndefinedValueError } from "@/wab/shared/common";
 import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
-import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
+import { ensure, NullOrUndefinedValueError } from "@/wab/shared/common";
 import { isTplColumns, TplColumnsTag } from "@/wab/shared/core/tpls";
+import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -36,8 +36,8 @@ export const ResponsiveColumnsCanvasControls = observer(
     if (!columnsConfig) {
       reportError(
         new NullOrUndefinedValueError(
-          "[rc] - columnsConfig expected to be truthy"
-        )
+          "[rc] - columnsConfig expected to be truthy",
+        ),
       );
       return null;
     }
@@ -61,7 +61,7 @@ export const ResponsiveColumnsCanvasControls = observer(
       studioCtx.site,
       viewCtx.currentComponent(),
       effectiveVs.getColumnsConfigSource(),
-      viewCtx.variantTplMgr().getTargetIndicatorComboForNode(tpl)
+      viewCtx.variantTplMgr().getTargetIndicatorComboForNode(tpl),
     );
 
     const { isDisabled } = shouldBeDisabled({
@@ -97,5 +97,5 @@ export const ResponsiveColumnsCanvasControls = observer(
         />
       </div>
     );
-  }
+  },
 );

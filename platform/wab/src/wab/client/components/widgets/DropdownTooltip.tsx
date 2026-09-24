@@ -1,8 +1,9 @@
 import { Dropdown, Tooltip } from "antd";
 import * as React from "react";
 
-export interface DropdownTooltipProps
-  extends React.ComponentProps<typeof Dropdown> {
+export interface DropdownTooltipProps extends React.ComponentProps<
+  typeof Dropdown
+> {
   title?: React.ReactNode;
 }
 

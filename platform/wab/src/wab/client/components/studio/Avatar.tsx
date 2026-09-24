@@ -52,7 +52,7 @@ export function RawAvatar({
           Avatar__Small: size === "small",
           Avatar__Highlight: highlight,
         },
-        className
+        className,
       )}
       style={{
         background: showInitials
@@ -102,7 +102,7 @@ export function Avatar({
       initials={getInitials(
         user.firstName || "",
         user.lastName || "",
-        getUserEmail(user)
+        getUserEmail(user),
       )}
       imgUrl={nullToUndefined(user.avatarUrl)}
       size={size}

@@ -6,22 +6,22 @@ import {
   only,
   switchType,
 } from "@/wab/shared/common";
-import { ValState } from "@/wab/shared/eval/val-state";
-import { isKnownTplSlot, TplNode } from "@/wab/shared/model/classes";
 import {
+  SlotSelection,
   makeSlotSelectionFullKey,
   makeSlotSelectionKey,
-  SlotSelection,
 } from "@/wab/shared/core/slots";
 import { getTagOrComponentName } from "@/wab/shared/core/tpls";
 import {
-  getValChildren,
-  slotHasDefaultContent,
   ValComponent,
   ValNode,
   ValSlot,
   ValTag,
+  getValChildren,
+  slotHasDefaultContent,
 } from "@/wab/shared/core/val-nodes";
+import { ValState } from "@/wab/shared/eval/val-state";
+import { TplNode, isKnownTplSlot } from "@/wab/shared/model/classes";
 import L from "lodash";
 
 export type Selectable = ValNode | SlotSelection;
@@ -59,12 +59,12 @@ export class SelQuery {
   constructor(
     private readonly selection: Selectable[],
     private readonly valState: ValState,
-    private readonly isFullstack: boolean
+    private readonly isFullstack: boolean,
   ) {
     // Ensure that it's a val SlotSelection if it is a SlotSelection.
     assert(
       selection.every((s) => !(s instanceof SlotSelection) || s.val),
-      () => `Not expecting a tpl slot selection`
+      () => `Not expecting a tpl slot selection`,
     );
   }
 
@@ -85,9 +85,9 @@ export class SelQuery {
         .when(SlotSelection, (sel) => sel.val)
         .when(
           ValNode,
-          (val) => this.valState.val2slot(val) || this.valState.valParent(val)
+          (val) => this.valState.val2slot(val) || this.valState.valParent(val),
         )
-        .result()
+        .result(),
     );
   }
 
@@ -120,7 +120,7 @@ export class SelQuery {
           }
           return parent;
         })
-        .result()
+        .result(),
     );
   }
 
@@ -129,7 +129,7 @@ export class SelQuery {
       switchType(this.get())
         .when(SlotSelection, (sel) => sel.tryGetContent())
         .when(ValNode, (val) => getValChildren(val))
-        .result()
+        .result(),
     );
   }
   childrenLocal() {
@@ -153,8 +153,8 @@ export class SelQuery {
       .when(ValComponent, (val: /*TWZ*/ ValComponent) => {
         return this.wrap(
           [...val.slotArgs.keys()].map(
-            (slotParam) => new SlotSelection({ val, slotParam })
-          )
+            (slotParam) => new SlotSelection({ val, slotParam }),
+          ),
         );
       })
       .elseUnsafe(() => this.childrenFullstack());
@@ -173,10 +173,10 @@ export class SelQuery {
       this.selection.map((n) =>
         switchType(n)
           .when([ValSlot, SlotSelection], (sel) =>
-            this.wrap(sel).children().layoutContent().toArray()
+            this.wrap(sel).children().layoutContent().toArray(),
           )
-          .elseUnsafe(() => this.toArrayOfValNodes())
-      )
+          .elseUnsafe(() => this.toArrayOfValNodes()),
+      ),
     );
     return this.wrap(nodes);
   }
@@ -191,7 +191,7 @@ export class SelQuery {
   }
 
   private descendantsGenericDfs(
-    childrenFn: (sq: SelQuery) => SelQuery
+    childrenFn: (sq: SelQuery) => SelQuery,
   ): SelQuery {
     const self = this;
     function* rec(sel: Selectable): IterableIterator<Selectable> {
@@ -212,7 +212,7 @@ export class SelQuery {
   }
   descendantsDfsFullstack(): SelQuery {
     return this.descendantsGenericDfs((sq: /*TWZ*/ SelQuery) =>
-      sq.childrenFullstack()
+      sq.childrenFullstack(),
     );
   }
   firstChild() {
@@ -289,7 +289,7 @@ export class SelQuery {
       .when(ValNode, (sel) => sel === other)
       .when(
         SlotSelection,
-        (sel) => other instanceof SlotSelection && sel.equals(other)
+        (sel) => other instanceof SlotSelection && sel.equals(other),
       )
       .result();
   }
@@ -308,8 +308,8 @@ export class SelQuery {
             switchType(child)
               .when(ValNode, (val) => getLabel(val.tpl) === part.label)
               .when(SlotSelection, () => part.label === "(slot)")
-              .result()
-          )[part.num]
+              .result(),
+          )[part.num],
       );
     }
     return current;
@@ -350,14 +350,14 @@ export class SelQuery {
             switchType(sel)
               .when(
                 ValNode,
-                (val) => child instanceof ValNode && val.tpl === child.tpl
+                (val) => child instanceof ValNode && val.tpl === child.tpl,
               )
               .when(
                 SlotSelection,
                 (slotSel) =>
-                  child instanceof SlotSelection && slotSel.tpl === child.tpl
+                  child instanceof SlotSelection && slotSel.tpl === child.tpl,
               )
-              .result()
+              .result(),
           )
           .findIndex((child) => selQuery.is(child));
         const label = switchType(sel)
@@ -379,10 +379,10 @@ export class SelQuery {
         .when(ValNode, (val) => this.valState.valOwners(val))
         .when(SlotSelection, (sel) =>
           this.valState.valOwners(
-            ensure(sel.val, () => `Not expecting a tpl slot selection`)
-          )
+            ensure(sel.val, () => `Not expecting a tpl slot selection`),
+          ),
         )
-        .result()
+        .result(),
     );
   }
 
@@ -412,10 +412,10 @@ export class SelQuery {
     return this.wrap(
       switchType(children[0])
         .when(SlotSelection, () =>
-          L.flatMap(children, (child) => this.wrap(child).children().toArray())
+          L.flatMap(children, (child) => this.wrap(child).children().toArray()),
         )
         .when(ValNode, () => children)
-        .result()
+        .result(),
     );
   }
 }
@@ -423,12 +423,12 @@ export class SelQuery {
 export function SQ(
   selection: undefined | Selectable | Selectable[],
   valState: ValState,
-  isFullstack = false
+  isFullstack = false,
 ) {
   return new SelQuery(
     selection ? ensureArray(selection) : [],
     valState,
-    isFullstack
+    isFullstack,
   );
 }
 
@@ -448,7 +448,7 @@ export function getUnlockedAncestor(sel: Selectable, valState: ValState) {
 export function getFocusTrappingAncestor(
   sel: Selectable,
   valState: ValState,
-  curFocused: Selectable | undefined | null
+  curFocused: Selectable | undefined | null,
 ) {
   let candidate = sel;
 
@@ -483,7 +483,7 @@ export function getFocusTrappingAncestor(
       // ancestor ValComponent instead
       candidate = ensure(
         ancestor.val,
-        "Must be a Val SlotSelection from ValState"
+        "Must be a Val SlotSelection from ValState",
       );
     } else if (
       ancestor instanceof ValComponent &&

@@ -34,7 +34,7 @@ export function TutorialHighlightEffect({
   }, []);
   if (!targetContainerEl) {
     throw new Error(
-      `targetContainer element with selector '${targetContainer}' not found`
+      `targetContainer element with selector '${targetContainer}' not found`,
     );
   }
 

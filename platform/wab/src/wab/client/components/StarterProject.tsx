@@ -56,7 +56,7 @@ function StarterProject(props: StarterProjectProps) {
   const isChecked =
     props.type &&
     getExtraData(
-      ensure(appCtx.selfInfo, "Must be logged in")
+      ensure(appCtx.selfInfo, "Must be logged in"),
     ).starterProgress.includes(props.tag);
 
   function renderAuthor() {
@@ -107,7 +107,7 @@ function StarterProject(props: StarterProjectProps) {
             onClick={(e) => {
               window.open(
                 "https://plasmic.app/templates/" + props.tag,
-                "_blank"
+                "_blank",
               );
               e.stopPropagation();
             }}
@@ -146,7 +146,7 @@ function StarterProject(props: StarterProjectProps) {
                   history.push(
                     APP_ROUTES.project.fill({
                       projectId: project.id,
-                    })
+                    }),
                   );
                 });
             }
@@ -157,16 +157,16 @@ function StarterProject(props: StarterProjectProps) {
                   ensure(appCtx.selfInfo, "Must be logged in"),
                   {
                     starterProgress: (orig) => L.union(orig, [props.tag]),
-                  }
-                )
+                  },
+                ),
               );
             }
 
             const cloneName = props.cloneWithoutName
               ? undefined
               : typeof props.name === "string"
-              ? props.name
-              : undefined;
+                ? props.name
+                : undefined;
 
             if (props.href) {
               window.open(props.href);
@@ -175,7 +175,7 @@ function StarterProject(props: StarterProjectProps) {
                 appCtx.api.cloneProject(props.projectId, {
                   name: cloneName,
                   workspaceId: props.workspaceId,
-                })
+                }),
               );
 
               // Perform a full page load so that we aren't using stale JS.
@@ -187,8 +187,8 @@ function StarterProject(props: StarterProjectProps) {
                 appCtx.api.clonePublishedTemplate(
                   props.baseProjectId,
                   cloneName,
-                  props.workspaceId
-                )
+                  props.workspaceId,
+                ),
               );
 
               // Perform a full page load so that we aren't using stale JS.

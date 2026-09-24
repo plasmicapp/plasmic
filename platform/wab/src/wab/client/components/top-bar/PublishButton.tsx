@@ -22,7 +22,7 @@ interface PublishButtonProps extends DefaultPublishButtonProps {
 }
 
 export const PublishButton = observer(function PublishButton(
-  props: PublishButtonProps
+  props: PublishButtonProps,
 ) {
   const studioCtx = useStudioCtx();
   const appCtx = useAppCtx();
@@ -41,11 +41,11 @@ export const PublishButton = observer(function PublishButton(
           ? await appCtx.api.getProjectRevWithoutData(
               studioCtx.siteInfo.id,
               latestPublishedVersion.revisionId,
-              latestPublishedVersion.branchId ?? undefined
+              latestPublishedVersion.branchId ?? undefined,
             )
           : { rev: null };
         setLatestPublishedRevNum(latestPublishedRev?.revision);
-      })()
+      })(),
     );
   }, [appCtx, latestPublishedVersion]);
 
@@ -122,7 +122,7 @@ export const PublishButton = observer(function PublishButton(
                         >
                           <strong>Save</strong> a checkpoint
                         </Menu.Item>
-                      )
+                      ),
                     )}
                   </Menu>
                 ),

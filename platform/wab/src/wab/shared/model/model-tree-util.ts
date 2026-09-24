@@ -18,7 +18,7 @@ export function assertSameInstType(inst: ObjInst, ...others: ObjInst[]) {
     assert(
       cls === instUtil.getInstClass(other),
       () =>
-        `Types mismatch: ${cls.name}  and ${instUtil.getInstClassName(other)}`
+        `Types mismatch: ${cls.name}  and ${instUtil.getInstClassName(other)}`,
     );
   });
 }
@@ -29,7 +29,7 @@ export function areSameInstType(inst: any, ...others: any[]) {
   }
   const cls = instUtil.getInstClass(inst);
   return others.every(
-    (other) => other && cls === instUtil.tryGetInstClass(other)
+    (other) => other && cls === instUtil.tryGetInstClass(other),
   );
 }
 
@@ -67,7 +67,7 @@ export function cowalkModelTrees(
   aCtx: NodeCtx,
   bCtx: NodeCtx,
   bundler: Bundler,
-  updates = new Map<ObjInst, ObjInst>()
+  updates = new Map<ObjInst, ObjInst>(),
 ): Map<ObjInst, ObjInst> {
   const { node: origInst, path: origPath } = aCtx;
   const { node: updatedInst, path: updatedPath } = bCtx;
@@ -91,15 +91,15 @@ export function cowalkModelTrees(
       } else if (Array.isArray(origVal)) {
         assert(
           Array.isArray(updatedVal),
-          () => `Expected field values to be equivalent`
+          () => `Expected field values to be equivalent`,
         );
         return origVal.forEach((v, i) =>
-          rec(nextCtx(_aCtx, `${i}`), nextCtx(_bCtx, `${i}`))
+          rec(nextCtx(_aCtx, `${i}`), nextCtx(_bCtx, `${i}`)),
         );
       } else if (isLiteralObject(origVal)) {
         assert(
           isLiteralObject(updatedVal),
-          () => `Expected field values to be equivalent`
+          () => `Expected field values to be equivalent`,
         );
         const keys = [...Object.keys(origVal)];
         return keys.forEach((k) => rec(nextCtx(_aCtx, k), nextCtx(_bCtx, k)));
@@ -146,7 +146,7 @@ export type NodeFieldCtx = Omit<NodeCtx, "node"> & { node: any };
 export function nextCtx(
   ctx: NodeFieldCtx,
   field: string,
-  key?: string
+  key?: string,
 ): NodeFieldCtx {
   return {
     site: ctx.site,
@@ -177,7 +177,7 @@ export function toJson(inst: ObjInst, bundler: Bundler) {
             } else if (isLiteralObject(origVal)) {
               const keys = [...Object.keys(origVal)];
               return Object.fromEntries(
-                keys.map((k) => tuple(k, rec(nextCtx(_ctx, k))))
+                keys.map((k) => tuple(k, rec(nextCtx(_ctx, k)))),
               );
             } else if (instUtil.isObjInst(origVal)) {
               const origAddr = bundler.addrOfUnsafe(origVal);
@@ -194,9 +194,9 @@ export function toJson(inst: ObjInst, bundler: Bundler) {
           };
           return tuple(
             field.name,
-            rec(nextCtx(createNodeCtx(inst as any), field.name))
+            rec(nextCtx(createNodeCtx(inst as any), field.name)),
           );
-        })
+        }),
     ),
   };
 }

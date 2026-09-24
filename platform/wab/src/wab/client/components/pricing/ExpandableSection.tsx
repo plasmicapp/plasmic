@@ -24,7 +24,7 @@ export type ExpandableSectionProps = DefaultExpandableSectionProps;
 
 function ExpandableSection_(
   props: ExpandableSectionProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicExpandableSection to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

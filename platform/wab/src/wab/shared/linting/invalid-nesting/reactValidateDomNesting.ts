@@ -151,7 +151,7 @@ const impliedEndTags = [
 export function updatedAncestorInfo<InfoType>(
   oldInfo: AncestorInfo<InfoType>,
   info: InfoType,
-  tag: string
+  tag: string,
 ) {
   const newInfo = { ...oldInfo, tag };
 
@@ -203,7 +203,7 @@ export function updatedAncestorInfo<InfoType>(
 
 export function getInvalidAncestor<InfoType>(
   childTag: string,
-  ancestorInfo: AncestorInfo<InfoType>
+  ancestorInfo: AncestorInfo<InfoType>,
 ) {
   if (ancestorInfo.tag && !isTagValidWithParent(childTag, ancestorInfo.tag)) {
     return ancestorInfo.current;
@@ -335,7 +335,7 @@ export function isTagValidWithParent(tag: string, parentTag: string): boolean {
 
 export function findInvalidAncestorForTag<InfoType>(
   tag: string,
-  ancestorInfo: AncestorInfo<InfoType>
+  ancestorInfo: AncestorInfo<InfoType>,
 ): InfoType | null | undefined {
   switch (tag) {
     case "address":

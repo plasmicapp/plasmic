@@ -131,7 +131,7 @@ describe("Figma importer slot handling", () => {
       expect(
         getAllSlotsInNode(node, fn, {
           includeRoot: true,
-        })
+        }),
       ).toEqual({
         children: [
           {
@@ -145,7 +145,7 @@ describe("Figma importer slot handling", () => {
       expect(
         getAllSlotsInNode(node, fn, {
           includeRoot: false,
-        })
+        }),
       ).toMatchObject({
         children: [
           {

@@ -2,7 +2,7 @@ import { isTruthy } from "@/wab/shared/common";
 
 export function naturalSort<T>(
   items: readonly T[],
-  sortBy: (item: T) => string
+  sortBy: (item: T) => string,
 ): T[] {
   return items
     .map((item) => ({
@@ -37,7 +37,7 @@ export function naturalSort<T>(
 }
 
 export function naturalSortByName<T extends { name: string }>(
-  items: readonly T[]
+  items: readonly T[],
 ) {
   return naturalSort(items, (item) => item.name);
 }

@@ -44,7 +44,7 @@ export function getVisibilityChoicesForTpl(viewCtx: ViewCtx, tpl: TplNode) {
 
 export function canSetDisplayNone(
   ccRegistry: CodeComponentsRegistry,
-  tpl: TplNode
+  tpl: TplNode,
 ) {
   return (
     !isTplSlot(tpl) &&
@@ -54,7 +54,7 @@ export function canSetDisplayNone(
 
 export function getSlotSelectionDisplayName(
   sel: SlotSelection,
-  viewCtx?: ViewCtx
+  viewCtx?: ViewCtx,
 ) {
   const component = sel.getTpl().component;
   const param = sel.slotParam;
@@ -76,11 +76,11 @@ export function getSlotSelectionDisplayName(
 export function summarizeFocusObj(
   obj: FocusObj,
   viewCtx?: ViewCtx,
-  vs?: EffectiveVariantSetting
+  vs?: EffectiveVariantSetting,
 ): string {
   return switchType(obj)
     .when(SlotSelection, (vp: /*TWZ*/ SlotSelection) =>
-      getSlotSelectionDisplayName(vp, viewCtx)
+      getSlotSelectionDisplayName(vp, viewCtx),
     )
     .when(ValNode, (val) => {
       if (!vs && isTplVariantable(val.tpl)) {
@@ -116,6 +116,6 @@ export function getContainerType(tplNode?: TplNode | null, viewCtx?: ViewCtx) {
 
 export function isFlexContainer(tplNode?: TplNode | null, viewCtx?: ViewCtx) {
   return [ContainerLayoutType.flexRow, ContainerLayoutType.flexColumn].includes(
-    getContainerType(tplNode, viewCtx) as any
+    getContainerType(tplNode, viewCtx) as any,
   );
 }

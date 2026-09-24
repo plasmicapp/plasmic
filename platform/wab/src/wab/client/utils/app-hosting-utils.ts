@@ -1,12 +1,12 @@
 import { reportError } from "@/wab/client/ErrorNotifications";
-import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
 import { ApiBranch, ApiProject } from "@/wab/shared/ApiSchema";
+import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
 
 export function getHostUrl(
   project: ApiProject,
   branch: ApiBranch | undefined,
   appConfig: DevFlagsType,
-  fixHostOrigin: boolean = false
+  fixHostOrigin: boolean = false,
 ) {
   if (appConfig.ccStubs) {
     return appConfig.defaultHostUrl;
@@ -29,8 +29,8 @@ export function getHostUrl(
       // Log if it's an "unexpected" redirect
       reportError(
         new Error(
-          `hostUrl has different origin than location.origin: ${url.origin} / ${location.origin}`
-        )
+          `hostUrl has different origin than location.origin: ${url.origin} / ${location.origin}`,
+        ),
       );
     }
     return urlString.replace(url.origin, location.origin);

@@ -1,6 +1,6 @@
-import { ensureType } from "@/wab/shared/common";
 import { userDbMgr } from "@/wab/server/routes/util";
 import { TrustedHostsListResponse } from "@/wab/shared/ApiSchema";
+import { ensureType } from "@/wab/shared/common";
 import { Request, Response } from "express-serve-static-core";
 import { pick } from "lodash";
 
@@ -10,7 +10,7 @@ export async function getTrustedHostsForSelf(req: Request, res: Response) {
   res.json(
     ensureType<TrustedHostsListResponse>({
       trustedHosts: hosts.map((host) => pick(host, "id", "hostUrl")),
-    })
+    }),
   );
 }
 

@@ -13,7 +13,7 @@ test.describe("variants", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -53,7 +53,7 @@ test.describe("variants", () => {
     await models.studio.rightPanel.doneButton.click();
 
     const variantsSection = models.studio.frame.locator(
-      '[data-test-class="variants-section"]'
+      '[data-test-class="variants-section"]',
     );
     await expect(variantsSection.getByText("Hover")).toBeVisible();
 
@@ -67,7 +67,7 @@ test.describe("variants", () => {
 
     await models.studio.rightPanel.switchToComponentDataTab();
     const interactionVariantsHeader = models.studio.frame.getByText(
-      "Interaction Variants"
+      "Interaction Variants",
     );
     await interactionVariantsHeader.click();
     await models.studio.frame
@@ -113,7 +113,7 @@ test.describe("variants", () => {
       .click();
     await expect(frame.locator("span").first()).toHaveCSS(
       "font-family",
-      '"Courier New"'
+      '"Courier New"',
     );
     await expect(frame.locator("span").first()).toHaveCSS("font-size", "36px");
 
@@ -202,16 +202,16 @@ test.describe("variants", () => {
     await models.studio.withinLiveMode(async (liveFrame) => {
       await expect(liveFrame.locator("input")).toHaveAttribute(
         "placeholder",
-        "Some placeholder"
+        "Some placeholder",
       );
 
       await expect(liveFrame.locator(".__wab_text").first()).toHaveCSS(
         "font-family",
-        '"Courier New"'
+        '"Courier New"',
       );
       await expect(liveFrame.locator(".__wab_text").first()).toHaveCSS(
         "font-size",
-        "36px"
+        "36px",
       );
     });
 
@@ -252,7 +252,7 @@ test.describe("variants", () => {
       .click();
 
     await expect(
-      frame.locator("span").filter({ hasText: "hello" }).first()
+      frame.locator("span").filter({ hasText: "hello" }).first(),
     ).toBeVisible();
 
     await page.keyboard.press("ControlOrMeta+z");
@@ -271,7 +271,7 @@ test.describe("variants", () => {
       .locator('[data-test-class="variant-row"]', { hasText: "Primary" })
       .click();
     await expect(
-      frame.locator("span").filter({ hasText: "hello" })
+      frame.locator("span").filter({ hasText: "hello" }),
     ).not.toBeVisible();
 
     await models.studio.rightPanel.frame

@@ -28,16 +28,16 @@ const flattenTypes = (type: Type): string[] => [
 const getDeepInstanceTypes = memoize(
   (type: Type) =>
     uniq(
-      flattenTypes(type).filter((t) => !builtinTypes.has(t))
+      flattenTypes(type).filter((t) => !builtinTypes.has(t)),
     ) as ClassNames[],
-  (t) => JSON.stringify(t)
+  (t) => JSON.stringify(t),
 );
 
 const getSubClasses = memoize((_cls: ClassNames): ClassNames[] => {
   function* genSubClasses(cls: ClassNames): Generator<ClassNames> {
     yield cls;
     for (const subClass of instUtil.meta.getStrictSubclasses(
-      instUtil.meta.clsByName[cls]
+      instUtil.meta.clsByName[cls],
     )) {
       yield* genSubClasses(subClass.name as ClassNames);
     }
@@ -109,8 +109,8 @@ function dfs(cls: ClassNames, path: PartialPath) {
       .slice(0, path.length - 1)
       .filter(([cls2, field]) =>
         getDeepInstanceTypes(
-          instUtil.meta.getFieldByName(cls2, field).type
-        ).some((t) => getSubClasses(t).includes(cls))
+          instUtil.meta.getFieldByName(cls2, field).type,
+        ).some((t) => getSubClasses(t).includes(cls)),
       ).length > 1
   ) {
     // We also don't allow paths that "could" have visited the same instance
@@ -133,11 +133,11 @@ function dfs(cls: ClassNames, path: PartialPath) {
   instUtil.meta.clsByName[cls].fields.forEach((f) => {
     if (isWeakRefField(f)) {
       getDeepInstanceTypes(f.type).forEach((instance) =>
-        checkPath([...path, [cls, f.name] as any, instance])
+        checkPath([...path, [cls, f.name] as any, instance]),
       );
     } else {
       getDeepInstanceTypes(f.type).forEach((instance) =>
-        dfs(instance, [...path, [cls, f.name] as any])
+        dfs(instance, [...path, [cls, f.name] as any]),
       );
     }
   });
@@ -157,7 +157,7 @@ function main() {
       console.error(path);
     });
     console.error(
-      `Found ${badPaths.length} unhandled paths ending at WeakRefs`
+      `Found ${badPaths.length} unhandled paths ending at WeakRefs`,
     );
     process.exit(1);
   }

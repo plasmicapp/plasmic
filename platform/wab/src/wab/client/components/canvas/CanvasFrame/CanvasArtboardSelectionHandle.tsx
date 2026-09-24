@@ -23,7 +23,7 @@ export const CanvasArtboardSelectionHandle = observer(
     const studioCtx = useStudioCtx();
     const stopClickPropagation = React.useCallback(
       (e?: React.MouseEvent<HTMLElement>) => e?.stopPropagation(),
-      []
+      [],
     );
     const hoverBoxObj = studioCtx.hoverBoxControlledObj;
     const isFocused = hoverBoxObj === frame;
@@ -31,7 +31,7 @@ export const CanvasArtboardSelectionHandle = observer(
       !isFocused && studioCtx.focusedViewCtx()?.arenaFrame() === frame;
     const _gridSpacing = parseInt(getGlobalCssVariableValue(gridSpacing));
     const _hoverBoxTagHeight = parseInt(
-      getGlobalCssVariableValue(hoverBoxTagHeight)
+      getGlobalCssVariableValue(hoverBoxTagHeight),
     );
 
     const minZoom = isFocused ? 0 : _hoverBoxTagHeight / _gridSpacing;
@@ -65,5 +65,5 @@ export const CanvasArtboardSelectionHandle = observer(
         <Icon icon={PlasmicIcon__Frame} />
       </div>
     );
-  }
+  },
 );

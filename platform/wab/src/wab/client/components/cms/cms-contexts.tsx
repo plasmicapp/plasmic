@@ -1,27 +1,27 @@
 import { useApi } from "@/wab/client/contexts/AppContexts";
-import { spawn } from "@/wab/shared/common";
 import {
   ApiCmseRow,
   CmsDatabaseId,
+  CmsMetaType,
   CmsRowId,
   CmsRowRevisionId,
   CmsTableId,
-  CmsMetaType,
 } from "@/wab/shared/ApiSchema";
+import { spawn } from "@/wab/shared/common";
 import useSWR, { useSWRConfig } from "swr";
 
 export function useCmsDatabase(databaseId: CmsDatabaseId | undefined) {
   const api = useApi();
   const { data: database } = useSWR(
     databaseId ? `/cmse/databases/${databaseId}` : undefined,
-    async () => api.getCmsDatabase(databaseId!, true)
+    async () => api.getCmsDatabase(databaseId!, true),
   );
   return database;
 }
 
 export function useCmsTableMaybe(
   databaseId: CmsDatabaseId,
-  tableId?: CmsTableId
+  tableId?: CmsTableId,
 ) {
   const db = useCmsDatabase(databaseId);
   if (!db || !tableId) {
@@ -44,13 +44,13 @@ export function useCmsRows(databaseId: CmsDatabaseId, tableId?: CmsTableId) {
         return [];
       }
       const firstTextField = table.schema.fields.find((field, _) =>
-        [CmsMetaType.TEXT, CmsMetaType.LONG_TEXT].includes(field.type)
+        [CmsMetaType.TEXT, CmsMetaType.LONG_TEXT].includes(field.type),
       )?.identifier;
       return await api.listCmsRows(
         table.id,
-        firstTextField ? [firstTextField] : []
+        firstTextField ? [firstTextField] : [],
       );
-    }
+    },
   );
   return { rows, error };
 }
@@ -69,21 +69,21 @@ export function useCmsRowHistory(rowId: CmsRowId) {
     `/cmse/rows/${rowId}/revisions`,
     async () => {
       return await api.listCmsRowRevisions(rowId);
-    }
+    },
   );
   return revisions;
 }
 
 export function useCmsRowRevision(
   rowId: CmsRowId,
-  revisionId: CmsRowRevisionId
+  revisionId: CmsRowRevisionId,
 ) {
   const api = useApi();
   const { data: revision } = useSWR(
     `/cmse/row-revisions/${revisionId}`,
     async () => {
       return await api.getCmsRowRevision(revisionId);
-    }
+    },
   );
   return revision;
 }

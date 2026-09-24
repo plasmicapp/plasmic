@@ -11,8 +11,8 @@ import * as Tpls from "@/wab/shared/core/tpls";
 import { isTplNamable, isTplSlot } from "@/wab/shared/core/tpls";
 import {
   ArenaFrame,
-  isKnownArenaFrame,
   TplSlot,
+  isKnownArenaFrame,
 } from "@/wab/shared/model/classes";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
@@ -70,8 +70,8 @@ export const EditableNodeLabel = observer(function EditableNodeLabel_(props: {
                       isTplSlot(nameable)
                         ? nameable.param.variable.name
                         : isKnownArenaFrame(nameable)
-                        ? nameable.container.component.name
-                        : nameable.name || ""
+                          ? nameable.container.component.name
+                          : nameable.name || ""
                     }
                     wrapperProps={{
                       style: {
@@ -101,7 +101,7 @@ export const EditableNodeLabel = observer(function EditableNodeLabel_(props: {
                               .renameNode(nameable, name);
                           }
                           onDone();
-                        })
+                        }),
                       );
                     }}
                   />

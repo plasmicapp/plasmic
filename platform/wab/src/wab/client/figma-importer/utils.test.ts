@@ -5,16 +5,16 @@ describe("Figma importer utils", () => {
     it("should convert common fractions properly", () => {
       expect(rgbToString({ r: 0, g: 0, b: 0 })).toBe("rgba(0, 0, 0, 1)");
       expect(rgbToString({ r: 0.5, g: 0.5, b: 0.5 })).toBe(
-        "rgba(128, 128, 128, 1)"
+        "rgba(128, 128, 128, 1)",
       );
       expect(rgbToString({ r: 0.9999, g: 0.9999, b: 0.9999 })).toBe(
-        "rgba(255, 255, 255, 1)"
+        "rgba(255, 255, 255, 1)",
       );
       expect(rgbToString({ r: 0.499, g: 0.499, b: 0.499 })).toBe(
-        "rgba(127, 127, 127, 1)"
+        "rgba(127, 127, 127, 1)",
       );
       expect(rgbToString({ r: 0.501, g: 0.501, b: 0.501 })).toBe(
-        "rgba(128, 128, 128, 1)"
+        "rgba(128, 128, 128, 1)",
       );
     });
 
@@ -34,7 +34,7 @@ describe("Figma importer utils", () => {
             r: percentFixed3,
             g: percentFixed3Minus1,
             b: percentFixed3Plus1,
-          })
+          }),
         ).toEqual(`rgba(${i}, ${i}, ${i}, 1)`);
       }
     });

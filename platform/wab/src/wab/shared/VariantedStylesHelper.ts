@@ -30,7 +30,7 @@ export class VariantedStylesHelper {
   constructor(
     private site?: Site,
     private activeGlobalVariants?: Variant[],
-    private targetGlobalVariants?: Variant[]
+    private targetGlobalVariants?: Variant[],
   ) {}
 
   key = () =>
@@ -57,10 +57,10 @@ export class VariantedStylesHelper {
       isAncestorCombo(
         ensure(
           this.activeGlobalVariants,
-          "Active global variants must be specified"
+          "Active global variants must be specified",
         ),
-        variantedValue.variants
-      )
+        variantedValue.variants,
+      ),
     );
     // If no varianted style is active
     if (
@@ -98,10 +98,10 @@ export class VariantedStylesHelper {
     }
 
     const sorter = makeGlobalVariantComboSorter(
-      ensure(this.site, "site must exist to sort variants")
+      ensure(this.site, "site must exist to sort variants"),
     );
     return activeVariantedValues.sort((a, b) =>
-      sorter(a.variants) < sorter(b.variants) ? -1 : 1
+      sorter(a.variants) < sorter(b.variants) ? -1 : 1,
     );
   }
 
@@ -114,7 +114,7 @@ export class VariantedStylesHelper {
   }
 
   private getVariantedStyleWithHighestPriority(
-    style: FinalToken<StyleToken> | Mixin
+    style: FinalToken<StyleToken> | Mixin,
   ) {
     const sortedActiveVariantedValues = this.sortedActiveVariantedStyles(style);
     return sortedActiveVariantedValues.length > 0
@@ -140,7 +140,7 @@ export class VariantedStylesHelper {
   isStyleInherited(token: FinalToken<StyleToken> | Mixin) {
     return !arrayEqIgnoreOrder(
       this.getVariantedStyleWithHighestPriority(token)?.variants ?? [],
-      this.activeGlobalVariants ?? []
+      this.activeGlobalVariants ?? [],
     );
   }
 
@@ -160,7 +160,7 @@ export class VariantedStylesHelper {
   updateToken(token: FinalToken<StyleToken>, value: string): void {
     assert(
       !(token instanceof ImmutableToken),
-      `cannot update token "${token.name}" from transitive dep`
+      `cannot update token "${token.name}" from transitive dep`,
     );
 
     if (this.isTargetBaseVariant()) {
@@ -170,7 +170,7 @@ export class VariantedStylesHelper {
         this.canUpdateToken(),
         `cannot update token "${token.name}" with target global variants "${
           this.targetGlobalVariants?.map((v) => v.name).join(",") ?? "base"
-        }"`
+        }"`,
       );
 
       token.setVariantedValue(ensureArray(this.targetGlobalVariants), value);
@@ -180,7 +180,7 @@ export class VariantedStylesHelper {
   removeVariantedValue(token: FinalToken<StyleToken>): void {
     assert(
       !(token instanceof ImmutableToken),
-      `cannot update token "${token.name}" from transitive dep`
+      `cannot update token "${token.name}" from transitive dep`,
     );
     token.removeVariantedValue(ensureArray(this.targetGlobalVariants));
   }
@@ -188,10 +188,10 @@ export class VariantedStylesHelper {
   updateMixinRule(
     mixin: Mixin,
     prop: string,
-    value: string | undefined | null
+    value: string | undefined | null,
   ) {
     const variantedRs = mixin.variantedRs.find((vRs) =>
-      arrayEqIgnoreOrder(vRs.variants, ensureArray(this.targetGlobalVariants))
+      arrayEqIgnoreOrder(vRs.variants, ensureArray(this.targetGlobalVariants)),
     );
     const activeRuleSet = this.isTargetBaseVariant()
       ? mixin.rs
@@ -207,14 +207,14 @@ export class VariantedStylesHelper {
           new VariantedRuleSet({
             variants: ensure(
               this.targetGlobalVariants,
-              "Must be targeting variants"
+              "Must be targeting variants",
             ),
             rs: new RuleSet({
               values: {},
               mixins: mixin.rs.mixins,
               animations: null,
             }),
-          })
+          }),
         );
       }
       const rs = activeRuleSet ?? last(mixin.variantedRs).rs;
@@ -228,7 +228,7 @@ export class VariantedStylesHelper {
     }
 
     const sortedActiveVariantedRs = this.sortedActiveVariantedStyles(
-      mixin
+      mixin,
     ) as VariantedRuleSet[];
     const rs = cloneRuleSet(mixin.rs) as RuleSet;
     const rsh = new RuleSetHelpers(rs, "");

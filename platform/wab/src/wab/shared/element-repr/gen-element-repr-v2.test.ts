@@ -25,7 +25,7 @@ describe("gen-element-types", () => {
     const tpl = mkTplComponent(
       rootComponent,
       ensureBaseVariant(rootComponent),
-      { input: codeLit(42) }
+      { input: codeLit(42) },
     );
     expect(tplToPlasmicElements(tpl)).toEqual(
       ensureType<PlasmicElement>({
@@ -34,7 +34,7 @@ describe("gen-element-types", () => {
         props: {
           input: 42,
         },
-      })
+      }),
     );
   });
   it("handles components and slots", () => {
@@ -46,7 +46,7 @@ describe("gen-element-types", () => {
         children: new RenderExpr({
           tpl: [mkTplTagX("div"), mkTplTagX("div")],
         }),
-      }
+      },
     );
     expect(tplToPlasmicElements(tpl)).toEqual(
       ensureType<PlasmicElement>({
@@ -64,7 +64,7 @@ describe("gen-element-types", () => {
             },
           ],
         },
-      })
+      }),
     );
   });
   it("handles rich text", () => {
@@ -91,7 +91,7 @@ describe("gen-element-types", () => {
           tpl: mkTplInlinedText(
             "Heading",
             [ensureBaseVariant(someOwnerComponent)],
-            "h1"
+            "h1",
           ),
         }),
       ],
@@ -120,7 +120,7 @@ describe("gen-element-types", () => {
             },
           },
         ],
-      })
+      }),
     );
   });
   it("treats all boxes as just a list, ignoring layout and styles", () => {
@@ -138,7 +138,7 @@ describe("gen-element-types", () => {
             children: [],
           },
         ],
-      })
+      }),
     );
   });
 });

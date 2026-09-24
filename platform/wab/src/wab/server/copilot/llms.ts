@@ -36,11 +36,14 @@ const verbose = false;
 const hash = (x: string) => createHash("sha256").update(x).digest("hex");
 
 export class OpenAIWrapper {
-  constructor(private openai: OpenAI, private cache: SimpleCache) {}
+  constructor(
+    private openai: OpenAI,
+    private cache: SimpleCache,
+  ) {}
 
   createChatCompletion = async (
     createChatCompletionRequest: CreateChatCompletionRequest,
-    options?: CreateChatCompletionRequestOptions
+    options?: CreateChatCompletionRequestOptions,
   ) => {
     if (verbose) {
       logger().debug(showCompletionRequest(createChatCompletionRequest));
@@ -50,7 +53,7 @@ export class OpenAIWrapper {
         "OpenAI.createChatCompletion",
         createChatCompletionRequest,
         options,
-      ])
+      ]),
     );
     const value = await this.cache.get(key);
     if (value) {
@@ -58,7 +61,7 @@ export class OpenAIWrapper {
     }
     const result = await this.openai.chat.completions.create(
       createChatCompletionRequest,
-      options
+      options,
     );
 
     const value1 = stringify(result);
@@ -93,7 +96,7 @@ export class AnthropicWrapper {
 
   createChatCompletion = async (
     createChatCompletionRequest: CreateChatCompletionRequest,
-    options?: CreateChatCompletionRequestOptions
+    options?: CreateChatCompletionRequestOptions,
   ) => {
     if (verbose) {
       logger().info(showCompletionRequest(createChatCompletionRequest));
@@ -103,7 +106,7 @@ export class AnthropicWrapper {
         "Anthropic.createChatCompletion",
         createChatCompletionRequest,
         options,
-      ])
+      ]),
     );
     const value = await this.cache.get(key);
     if (value) {
@@ -114,7 +117,7 @@ export class AnthropicWrapper {
       createChatCompletionRequest.messages
         .map(
           (message) =>
-            `${openAIToAnthropicRole(message.role)}: ${message.content}`
+            `${openAIToAnthropicRole(message.role)}: ${message.content}`,
         )
         .join("\n\n") + "\n\nAssistant:";
     const data = {
@@ -135,7 +138,7 @@ export class AnthropicWrapper {
             "content-type": "application/json",
             "x-api-key": anthropicApiKey,
           },
-        }
+        },
       );
       const result = {
         id: `chatcmpl-${mkShortId()}`,
@@ -157,7 +160,7 @@ export class AnthropicWrapper {
             ...(response.data.stop_reason
               ? {
                   finish_reason: anthropicToOpenAIStopReason(
-                    response.data.stop_reason
+                    response.data.stop_reason,
                   ),
                 }
               : {}),
@@ -191,8 +194,8 @@ export const createOpenAIClient = (_?: DbMgr) =>
             }
           : {}),
         region: "us-west-2",
-      })
-    )
+      }),
+    ),
   );
 
 export const createAnthropicClient = (_?: DbMgr) =>
@@ -207,6 +210,6 @@ export const createAnthropicClient = (_?: DbMgr) =>
             }
           : {}),
         region: "us-west-2",
-      })
-    )
+      }),
+    ),
   );

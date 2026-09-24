@@ -1,6 +1,6 @@
 export default function importAndRetry<T>(
   doImport: () => Promise<T>,
-  attemptsLeft = 3
+  attemptsLeft = 3,
 ): Promise<T> {
   return new Promise((resolve, reject) => {
     doImport()

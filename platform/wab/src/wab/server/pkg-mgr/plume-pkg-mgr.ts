@@ -33,18 +33,18 @@ async function checkPlumeVersion() {
   const depVersion = bundle[1].map[bundle[1].root].version;
   if (depVersion !== REAL_PLUME_VERSION) {
     throw new Error(
-      `${sysname}-master-pkg.json has version ${depVersion}, but REAL_PLUME_VERSION is ${REAL_PLUME_VERSION}; did you forget to update ${sysname}-master-pkg.json or REAL_PLUME_VERSION?`
+      `${sysname}-master-pkg.json has version ${depVersion}, but REAL_PLUME_VERSION is ${REAL_PLUME_VERSION}; did you forget to update ${sysname}-master-pkg.json or REAL_PLUME_VERSION?`,
     );
   }
 
   // TODO: replace with prod URL once supported on prod
   const resp = await fetch(
-    `https://studio.plasmic.app/api/v1/plume-pkg/versions`
+    `https://studio.plasmic.app/api/v1/plume-pkg/versions`,
   );
   const data = await resp.json();
   if (!data.versions.includes(REAL_PLUME_VERSION)) {
     throw new Error(
-      `REAL_PLUME_VERSION is not one of the published ${sysname} pkg versions!`
+      `REAL_PLUME_VERSION is not one of the published ${sysname} pkg versions!`,
     );
   }
 }
@@ -55,7 +55,7 @@ export async function main() {
     .command<{ sysname: string }>(
       "update",
       "Updates the plume pkg locally",
-      (argv) => updatePlumePkg()
+      (argv) => updatePlumePkg(),
     )
     .command(
       "check",
@@ -67,7 +67,7 @@ export async function main() {
           logger().error("Error checking plume version", err);
           process.exit(1);
         }
-      }
+      },
     )
     .demandCommand()
     .help("h")

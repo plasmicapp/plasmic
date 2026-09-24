@@ -37,12 +37,15 @@ const { Command } = require("commander");
 
 export async function withDbModels(
   db: DbMgr,
-  action: (bundle: Bundle, dbRow: PkgVersion | ProjectRevision) => Promise<void>
+  action: (
+    bundle: Bundle,
+    dbRow: PkgVersion | ProjectRevision,
+  ) => Promise<void>,
 ) {
   for (const pkgVersionId of await db.listAllPkgVersionIds()) {
     const pkgVersion = await db.getPkgVersionById(pkgVersionId.id);
     logger().info(
-      `Checking PkgVersion ${pkgVersion.pkgId}/${pkgVersion.id} (${pkgVersion.version})`
+      `Checking PkgVersion ${pkgVersion.pkgId}/${pkgVersion.id} (${pkgVersion.version})`,
     );
     let bundle: Bundle;
     try {
@@ -50,7 +53,7 @@ export async function withDbModels(
     } catch (e) {
       logger().error(
         `Error migrating PkgVersion ${pkgVersion.pkgId}/${pkgVersion.id}`,
-        e
+        e,
       );
       continue;
     }
@@ -61,7 +64,7 @@ export async function withDbModels(
     try {
       const rev = await db.getLatestProjectRev(project.id);
       logger().info(
-        `Checking ProjectRevision ${project.id}/${rev.id} (${rev.revision})`
+        `Checking ProjectRevision ${project.id}/${rev.id} (${rev.revision})`,
       );
       let bundle: Bundle;
       try {
@@ -69,7 +72,7 @@ export async function withDbModels(
       } catch (e) {
         logger().info(
           `Error migrating ProjectRevision ${project.id}/${rev.id}`,
-          e
+          e,
         );
         continue;
       }
@@ -77,7 +80,7 @@ export async function withDbModels(
     } catch (e) {
       if (e instanceof NotFoundError) {
         logger().error(
-          `Project ${project.name} (${project.id}) has no revision. Skipping...`
+          `Project ${project.name} (${project.id}) has no revision. Skipping...`,
         );
         continue;
       }
@@ -89,7 +92,7 @@ export async function withDbModels(
 function assertObservabeModelInvariants(
   site: Site,
   bundler: Bundler,
-  rootUuid: string
+  rootUuid: string,
 ) {
   // Observable model also checks several invariants.
   // We should call it after `assertSiteInvariants`, otherwise the
@@ -136,7 +139,7 @@ export async function main() {
       try {
         if (isEmptyBundle(bundle)) {
           logger().info(
-            `Found empty bundle for entity ${dbRow.constructor.name} ${dbRow.id}. Skipping...`
+            `Found empty bundle for entity ${dbRow.constructor.name} ${dbRow.id}. Skipping...`,
           );
           return;
         }
@@ -148,7 +151,7 @@ export async function main() {
           const pkg = pkgIdToPkg[dbRow.pkgId];
           if (!pkg || !pkg.projectId) {
             logger().info(
-              `No need to unbundle PkgVersion ${dbRow.pkgId}/${dbRow.id}`
+              `No need to unbundle PkgVersion ${dbRow.pkgId}/${dbRow.id}`,
             );
             return;
           }
@@ -159,7 +162,7 @@ export async function main() {
         // Next, unbundle all other dependent bundles in order
         const pkgVersionIdToBundle = await getOrderedDepBundleIds(
           bundle,
-          getPkgVersionBundleFromId
+          getPkgVersionBundleFromId,
         );
         for (const [depId, depBundle] of pkgVersionIdToBundle) {
           taggedUnbundle(bundler, depBundle, depId);
@@ -170,14 +173,14 @@ export async function main() {
         let rootUuid: string;
         if (dbRow instanceof PkgVersion) {
           const projectDep = ensureKnownProjectDependency(
-            bundler.unbundleAndRecomputeParents(bundle, dbRow.id)
+            bundler.unbundleAndRecomputeParents(bundle, dbRow.id),
           );
           site = projectDep.site;
           rootUuid = dbRow.id;
           (projectDep as any).__bundleId = rootUuid;
         } else {
           site = ensureKnownSite(
-            bundler.unbundleAndRecomputeParents(bundle, dbRow.projectId)
+            bundler.unbundleAndRecomputeParents(bundle, dbRow.projectId),
           );
           rootUuid = dbRow.projectId;
           (site as any).__bundleId = rootUuid;
@@ -192,7 +195,7 @@ export async function main() {
         ];
         if (
           (bundle as Bundle).deps.some(
-            (depId) => !expectedDepIds.includes(depId)
+            (depId) => !expectedDepIds.includes(depId),
           )
         ) {
           throw new InvariantError(`Unexpected Bundle dependencies`, {
@@ -225,7 +228,7 @@ export async function main() {
         failedSummary.push(failedRow);
         logger().error(`FAILED to assert site invariants for ${failedRow}:`, e);
       }
-    }
+    },
   );
 
   if (failedSummary.length) {
@@ -243,9 +246,9 @@ if (require.main === module) {
     main().catch((error) => {
       logger().info(
         "Found an error while running assert site invariants.",
-        error
+        error,
       );
       process.exit(1);
-    })
+    }),
   );
 }

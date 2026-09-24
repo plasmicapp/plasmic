@@ -163,7 +163,7 @@ const USER_CHANGE_MAX_WAIT = 1000 * 60 * 45; // 45 minutes
 const useTourStepTargetVisibility = (
   isTourRunning: boolean,
   target?: string,
-  onVisibilityChange?: (isVisible: boolean) => void
+  onVisibilityChange?: (isVisible: boolean) => void,
 ) => {
   const [isTargetVisible, setIsTargetVisible] = React.useState(false);
 
@@ -237,13 +237,13 @@ export const StudioTutorialTours = observer(function _StudioTutorialTours() {
         trackCurrentStepTourEvent("paused");
       }
     },
-    [tourState.run]
+    [tourState.run],
   );
 
   const { isTargetVisible } = useTourStepTargetVisibility(
     tourState.run,
     currentStep?.target,
-    clearFlagsOnVisibilityChange
+    clearFlagsOnVisibilityChange,
   );
 
   const closeTour = () => {
@@ -259,7 +259,7 @@ export const StudioTutorialTours = observer(function _StudioTutorialTours() {
   const markTourAsSeen = async () => {
     await api.addStorageItem(
       tourSeenForProjectKey(studioCtx.siteInfo.id),
-      true
+      true,
     );
   };
 
@@ -370,7 +370,7 @@ export const StudioTutorialTours = observer(function _StudioTutorialTours() {
         spawn(advanceToNextStep());
       }
     },
-    [tourState.tour, tourState.run, tourState.stepIndex]
+    [tourState.tour, tourState.run, tourState.stepIndex],
   );
 
   React.useEffect(() => {
@@ -419,7 +419,7 @@ export const StudioTutorialTours = observer(function _StudioTutorialTours() {
         }
 
         const hasSeenTour = await api.getStorageItem(
-          tourSeenForProjectKey(projectId)
+          tourSeenForProjectKey(projectId),
         );
 
         if (!hasSeenTour && isMounted()) {
@@ -440,7 +440,7 @@ export const StudioTutorialTours = observer(function _StudioTutorialTours() {
             triggers: [],
           });
         }
-      })()
+      })(),
     );
   }, [studioCtx, isMounted]);
 
@@ -575,12 +575,12 @@ export function TopFrameTours(props: {
   const currentStep = currentTutorial?.[tourState.stepIndex];
   const { isTargetVisible } = useTourStepTargetVisibility(
     tourState.run,
-    currentStep?.target
+    currentStep?.target,
   );
 
   const domain = React.useMemo(
     () => generateCustomDomain(appCtx, tourState.tour),
-    [appCtx, tourState.tour]
+    [appCtx, tourState.tour],
   );
 
   function trackCurrentStepTourEvent(status: TourStepMeta["status"]) {
@@ -663,7 +663,7 @@ export function TopFrameTours(props: {
         spawn(advanceToNextStep());
       }
     },
-    [tourState.tour, tourState.run, tourState.stepIndex]
+    [tourState.tour, tourState.run, tourState.stepIndex],
   );
 
   if (!tourState.run || !currentTutorial || !isTargetVisible) {

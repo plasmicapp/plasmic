@@ -29,7 +29,7 @@ function CmsLeftTabs_(props: CmsLeftTabsProps, ref: HTMLElementRefOf<"div">) {
 
   const team = ensure(
     appCtx.workspaces.find((w) => w.id === database.workspaceId),
-    "Expected existing workspace"
+    "Expected existing workspace",
   ).team;
 
   const shouldHideSettingsButton =
@@ -37,8 +37,9 @@ function CmsLeftTabs_(props: CmsLeftTabsProps, ref: HTMLElementRefOf<"div">) {
       appCtx.perms.find(
         (p) =>
           (p.workspaceId === database.workspaceId || p.teamId === team.id) &&
-          p.userId === ensure(appCtx.selfInfo, "Unexpected nullish selfInfo").id
-      )?.accessLevel || "blocked"
+          p.userId ===
+            ensure(appCtx.selfInfo, "Unexpected nullish selfInfo").id,
+      )?.accessLevel || "blocked",
     ) < accessLevelRank("editor");
   return (
     <PlasmicCmsLeftTabs

@@ -75,8 +75,8 @@ describe("Variants", () => {
             name: "",
             codeComponentName: "name",
             codeComponentVariantKeys: ["HoveReffect"],
-          }) as CodeComponentVariant
-        )
+          }) as CodeComponentVariant,
+        ),
       ).toBe(true);
       expect(
         isMaybeInteractiveCodeComponentVariant(
@@ -84,8 +84,8 @@ describe("Variants", () => {
             name: "",
             codeComponentName: "name",
             codeComponentVariantKeys: ["pressEd"],
-          }) as CodeComponentVariant
-        )
+          }) as CodeComponentVariant,
+        ),
       ).toBe(true);
       expect(
         isMaybeInteractiveCodeComponentVariant(
@@ -93,8 +93,8 @@ describe("Variants", () => {
             name: "",
             codeComponentName: "name",
             codeComponentVariantKeys: ["12345", "focused"],
-          }) as CodeComponentVariant
-        )
+          }) as CodeComponentVariant,
+        ),
       ).toBe(true);
       expect(
         isMaybeInteractiveCodeComponentVariant(
@@ -102,8 +102,8 @@ describe("Variants", () => {
             name: "",
             codeComponentName: "name",
             codeComponentVariantKeys: ["wertrty", "focus-visible"],
-          }) as CodeComponentVariant
-        )
+          }) as CodeComponentVariant,
+        ),
       ).toBe(true);
       expect(
         isMaybeInteractiveCodeComponentVariant(
@@ -111,8 +111,8 @@ describe("Variants", () => {
             name: "",
             codeComponentName: "name",
             codeComponentVariantKeys: ["sdfghxcvb", "place-left"],
-          }) as CodeComponentVariant
-        )
+          }) as CodeComponentVariant,
+        ),
       ).toBe(false);
       expect(
         isMaybeInteractiveCodeComponentVariant(
@@ -120,8 +120,8 @@ describe("Variants", () => {
             name: "",
             codeComponentName: "name",
             codeComponentVariantKeys: ["yuioijhgf", "indeterminate"],
-          }) as CodeComponentVariant
-        )
+          }) as CodeComponentVariant,
+        ),
       ).toBe(false);
       expect(
         isMaybeInteractiveCodeComponentVariant(
@@ -129,8 +129,8 @@ describe("Variants", () => {
             name: "",
             codeComponentName: "name",
             codeComponentVariantKeys: ["jhgvfcvbn", "selected"],
-          }) as CodeComponentVariant
-        )
+          }) as CodeComponentVariant,
+        ),
       ).toBe(false);
       expect(
         isMaybeInteractiveCodeComponentVariant(
@@ -142,8 +142,8 @@ describe("Variants", () => {
               "sdghjsdg",
               "dshgjsdhgs",
             ],
-          }) as CodeComponentVariant
-        )
+          }) as CodeComponentVariant,
+        ),
       ).toBe(false);
       expect(
         isMaybeInteractiveCodeComponentVariant(
@@ -151,8 +151,8 @@ describe("Variants", () => {
             name: "",
             codeComponentName: "name",
             codeComponentVariantKeys: [],
-          }) as CodeComponentVariant
-        )
+          }) as CodeComponentVariant,
+        ),
       ).toBe(false);
     });
   });
@@ -179,25 +179,25 @@ describe("Variants", () => {
       ]);
 
       expect(
-        ensureValidCombo(component, [selectorVariant, baseVariant])
+        ensureValidCombo(component, [selectorVariant, baseVariant]),
       ).toMatchObject([
         expect.objectContaining({ uuid: selectorVariant.uuid }),
       ]);
 
       expect(
-        ensureValidCombo(component, [singleGroup.variants[0]])
+        ensureValidCombo(component, [singleGroup.variants[0]]),
       ).toMatchObject([
         expect.objectContaining({ uuid: singleGroup.variants[0].uuid }),
       ]);
 
       expect(
-        ensureValidCombo(component, [singleGroup.variants[0], baseVariant])
+        ensureValidCombo(component, [singleGroup.variants[0], baseVariant]),
       ).toMatchObject([
         expect.objectContaining({ uuid: singleGroup.variants[0].uuid }),
       ]);
 
       expect(
-        ensureValidCombo(component, [multiGroup.variants[0]])
+        ensureValidCombo(component, [multiGroup.variants[0]]),
       ).toMatchObject([
         expect.objectContaining({ uuid: multiGroup.variants[0].uuid }),
       ]);
@@ -206,7 +206,7 @@ describe("Variants", () => {
         ensureValidCombo(component, [
           singleGroup.variants[0],
           singleGroup.variants[1],
-        ])
+        ]),
       ).toMatchObject([
         expect.objectContaining({ uuid: singleGroup.variants[0].uuid }),
       ]);
@@ -215,7 +215,7 @@ describe("Variants", () => {
         ensureValidCombo(component, [
           multiGroup.variants[0],
           multiGroup.variants[1],
-        ])
+        ]),
       ).toMatchObject([
         expect.objectContaining({ uuid: multiGroup.variants[0].uuid }),
         expect.objectContaining({ uuid: multiGroup.variants[1].uuid }),
@@ -225,7 +225,7 @@ describe("Variants", () => {
         ensureValidCombo(component, [
           multiGroup.variants[0],
           multiGroup.variants[0],
-        ])
+        ]),
       ).toMatchObject([
         expect.objectContaining({ uuid: multiGroup.variants[0].uuid }),
       ]);
@@ -238,7 +238,7 @@ describe("Variants", () => {
           selectorVariant,
           singleGroup.variants[1],
           multiGroup.variants[1],
-        ])
+        ]),
       ).toMatchObject([
         expect.objectContaining({ uuid: singleGroup.variants[0].uuid }),
         expect.objectContaining({ uuid: multiGroup.variants[0].uuid }),
@@ -306,24 +306,24 @@ describe("Variants", () => {
         expect(
           isParamCompatibleWithVariantGroup(
             linkPropParam(typeFactory.bool()),
-            standaloneGroup
-          )
+            standaloneGroup,
+          ),
         ).toBe(true);
       });
       it("rejects a choice param", () => {
         expect(
           isParamCompatibleWithVariantGroup(
             linkPropParam(typeFactory.choice(["Locked"])),
-            standaloneGroup
-          )
+            standaloneGroup,
+          ),
         ).toBe(false);
       });
       it("rejects a text param", () => {
         expect(
           isParamCompatibleWithVariantGroup(
             linkPropParam(typeFactory.text()),
-            standaloneGroup
-          )
+            standaloneGroup,
+          ),
         ).toBe(false);
       });
     });
@@ -333,32 +333,32 @@ describe("Variants", () => {
         expect(
           isParamCompatibleWithVariantGroup(
             linkPropParam(typeFactory.choice(["primary", "secondary"])),
-            singleGroup
-          )
+            singleGroup,
+          ),
         ).toBe(true);
       });
       it("rejects a multiChoice param (single/multi mismatch)", () => {
         expect(
           isParamCompatibleWithVariantGroup(
             linkPropParam(typeFactory.multiChoice(["primary", "secondary"])),
-            singleGroup
-          )
+            singleGroup,
+          ),
         ).toBe(false);
       });
       it("rejects a choice param with different options", () => {
         expect(
           isParamCompatibleWithVariantGroup(
             linkPropParam(typeFactory.choice(["primary", "tertiary"])),
-            singleGroup
-          )
+            singleGroup,
+          ),
         ).toBe(false);
       });
       it("rejects a bool param", () => {
         expect(
           isParamCompatibleWithVariantGroup(
             linkPropParam(typeFactory.bool()),
-            singleGroup
-          )
+            singleGroup,
+          ),
         ).toBe(false);
       });
     });
@@ -368,16 +368,16 @@ describe("Variants", () => {
         expect(
           isParamCompatibleWithVariantGroup(
             linkPropParam(typeFactory.multiChoice(["primary", "secondary"])),
-            multiGroup
-          )
+            multiGroup,
+          ),
         ).toBe(true);
       });
       it("rejects a choice param (single/multi mismatch)", () => {
         expect(
           isParamCompatibleWithVariantGroup(
             linkPropParam(typeFactory.choice(["primary", "secondary"])),
-            multiGroup
-          )
+            multiGroup,
+          ),
         ).toBe(false);
       });
     });
@@ -411,7 +411,7 @@ describe("resolveVariantGroupValue", () => {
       size.variants[0],
     ]);
     expect(resolveVariantGroupValue(size, ["small", "large"]).variants).toEqual(
-      size.variants
+      size.variants,
     );
     expect(resolveVariantGroupValue(size, null).variants).toEqual([]);
 

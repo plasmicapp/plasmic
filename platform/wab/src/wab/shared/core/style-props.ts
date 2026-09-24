@@ -326,7 +326,7 @@ export function isValidStyleProp(prop: string): boolean {
   return (
     FAKE_CSS_PROPS.includes(prop) ||
     ["-webkit-mask-image", "-webkit-mask-size", "-webkit-mask-repeat"].includes(
-      prop
+      prop,
     ) ||
     tryGetCssInitial(prop, undefined) !== undefined
   );

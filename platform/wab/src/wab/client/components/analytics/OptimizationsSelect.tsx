@@ -8,8 +8,7 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
-export interface OptimizationsSelectProps
-  extends DefaultOptimizationsSelectProps {
+export interface OptimizationsSelectProps extends DefaultOptimizationsSelectProps {
   options?: Array<{ label: string; value?: string }>;
   selected?: string;
   onChange: (_?: string) => void;
@@ -17,7 +16,7 @@ export interface OptimizationsSelectProps
 
 function OptimizationsSelect_(
   props: OptimizationsSelectProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { options, selected, onChange, ...rest } = props;
 

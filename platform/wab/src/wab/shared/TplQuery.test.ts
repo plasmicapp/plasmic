@@ -73,7 +73,7 @@ describe("TplQuery", function () {
       initChildren: TplTag[];
       operation: (container: TplTag) => void;
       slotName?: string;
-    }
+    },
   ) {
     const a = tpls.mkTplTagX("div");
     const b = tpls.mkTplTagX("div");
@@ -88,10 +88,12 @@ describe("TplQuery", function () {
     });
     operation(container);
     expect(
-      uids(ensureKnownRenderExpr($$$(container).getSlotArg(slotName)!.expr).tpl)
+      uids(
+        ensureKnownRenderExpr($$$(container).getSlotArg(slotName)!.expr).tpl,
+      ),
     ).toEqual(uids([a, b, c]));
     return expect(uids([a, b, c].map((x) => x.parent))).toEqual(
-      uids([container, container, container])
+      uids([container, container, container]),
     );
   };
   beforeEach(function () {
@@ -101,7 +103,7 @@ describe("TplQuery", function () {
         (preWrapped = tpls.mkTplTag("div", mkTplTestText("pre"))),
         (oneWrapped = tpls.mkTplTag("div", mkTplTestText("one"))),
         (postWrapped = tpls.mkTplTag("div", mkTplTestText("post"))),
-      ])
+      ]),
     );
     wrapper = tpls.mkTplTag("div");
     deep1 = tpls.mkTplTagX("div", {}, [
@@ -131,7 +133,7 @@ describe("TplQuery", function () {
       expect($uids($$$(oneWrapped).wrap(wrapper))).toEqual(uids([oneWrapped]));
       checkTplIntegrity(container);
       expect(uids(container.children)).toEqual(
-        uids([preWrapped, wrapper, postWrapped])
+        uids([preWrapped, wrapper, postWrapped]),
       );
       expect(uids(wrapper.children)).toEqual(uids([oneWrapped]));
       expect(uids([oneWrapped.parent])).toEqual(uids([wrapper]));
@@ -158,13 +160,13 @@ describe("TplQuery", function () {
       });
       $$$(oneWrapped).wrap(wrapper);
       expect(uids(container.children)).toEqual(
-        uids([preWrapped, wrapper, postWrapped])
+        uids([preWrapped, wrapper, postWrapped]),
       );
       expect(uids([wrapper.parent])).toEqual(uids([container]));
       expect(
         uids(
-          ensureKnownRenderExpr($$$(wrapper).getSlotArg("children")!.expr).tpl
-        )
+          ensureKnownRenderExpr($$$(wrapper).getSlotArg("children")!.expr).tpl,
+        ),
       ).toEqual(uids([oneWrapped]));
       expect(uids([oneWrapped.parent])).toEqual(uids([wrapper]));
     });
@@ -202,13 +204,13 @@ describe("TplQuery", function () {
             children: new RenderExpr({
               tpl: tuple(
                 (h1 = tpls.mkTplTagX("h1")),
-                (h2 = tpls.mkTplTagX("h2"))
+                (h2 = tpls.mkTplTagX("h2")),
               ),
             }),
             someSlot: new RenderExpr({
               tpl: tuple(
                 (h3 = tpls.mkTplTagX("h3")),
-                (h4 = tpls.mkTplTagX("h4"))
+                (h4 = tpls.mkTplTagX("h4")),
               ),
             }),
             anotherSlot: new RenderExpr({
@@ -223,8 +225,8 @@ describe("TplQuery", function () {
         expect(
           uids(
             ensureKnownRenderExpr($$$(container).getSlotArg("children")!.expr)
-              .tpl
-          )
+              .tpl,
+          ),
         ).toEqual(uids(tuple(h1, wrapper)));
         expect(uids([wrapper.parent])).toEqual(uids([container]));
         expect(uids(wrapper.children)).toEqual(uids([h2]));
@@ -235,8 +237,8 @@ describe("TplQuery", function () {
         expect(
           uids(
             ensureKnownRenderExpr($$$(container).getSlotArg("someSlot")!.expr)
-              .tpl
-          )
+              .tpl,
+          ),
         ).toEqual(uids(tuple(h3, wrapper)));
         expect(uids([wrapper.parent])).toEqual(uids([container]));
         expect(uids(wrapper.children)).toEqual(uids([h4]));
@@ -247,7 +249,7 @@ describe("TplQuery", function () {
   describe("wrapInner", () =>
     it("should work", function () {
       expect($uids($$$(container).wrapInner(wrapper))).toEqual(
-        uids([container])
+        uids([container]),
       );
       expect(uids(container.children)).toEqual(uids([wrapper]));
       expect(uids(wrapper.children)).toEqual(uids(allWrapped));
@@ -259,21 +261,21 @@ describe("TplQuery", function () {
       expect($uids($$$(oneWrapped))).toEqual($uids($$$([oneWrapped]))));
     return it("should dedupe", () =>
       expect($uids($$$(allWrapped.concat(allWrapped)))).toEqual(
-        uids(allWrapped)
+        uids(allWrapped),
       ));
   });
   describe("add", function () {
     it("should auto-wrap individual elements", () =>
       expect($uids($$$(preWrapped).add(postWrapped))).toEqual(
-        uids(tuple(preWrapped, postWrapped))
+        uids(tuple(preWrapped, postWrapped)),
       ));
     it("should take arrays", () =>
       expect(
-        $uids($$$(preWrapped).add(tuple(oneWrapped, postWrapped)))
+        $uids($$$(preWrapped).add(tuple(oneWrapped, postWrapped))),
       ).toEqual(uids([preWrapped, oneWrapped, postWrapped])));
     return it("should take TplQuery objects", () =>
       expect($uids($$$(preWrapped).add($$$(postWrapped)))).toEqual(
-        uids(tuple(preWrapped, postWrapped))
+        uids(tuple(preWrapped, postWrapped)),
       ));
   });
   describe("parents", function () {
@@ -281,7 +283,7 @@ describe("TplQuery", function () {
       expect($uids($$$(deep4).parents())).toEqual(uids([deep3, deep2, deep1])));
     return it("should return ancestors for all selected", () =>
       expect($uids($$$([deep4, deep3, oneWrapped]).parents())).toEqual(
-        uids([deep3, deep2, deep1, container])
+        uids([deep3, deep2, deep1, container]),
       ));
   });
   describe("closest", () =>
@@ -349,8 +351,8 @@ describe("TplQuery", function () {
           new Arg({
             param: componentWithSlots.params[0],
             expr: new RenderExpr({ tpl: [] }),
-          })
-        )
+          }),
+        ),
       );
     }));
   describe("ungroup", () => {
@@ -441,13 +443,13 @@ describe("TplQuery", function () {
     it("works", () => {
       $$$(preWrapped).moveForward();
       expect(uids(container.children)).toEqual(
-        uids([oneWrapped, preWrapped, postWrapped])
+        uids([oneWrapped, preWrapped, postWrapped]),
       );
     });
     it("clamps to ends", () => {
       $$$(postWrapped).moveForward();
       expect(uids(container.children)).toEqual(
-        uids([preWrapped, oneWrapped, postWrapped])
+        uids([preWrapped, oneWrapped, postWrapped]),
       );
     });
   });
@@ -455,7 +457,7 @@ describe("TplQuery", function () {
     it("works", () => {
       $$$(preWrapped).moveEnd();
       expect(uids(container.children)).toEqual(
-        uids([oneWrapped, postWrapped, preWrapped])
+        uids([oneWrapped, postWrapped, preWrapped]),
       );
     });
   });
@@ -479,7 +481,7 @@ describe("TplQuery", function () {
                   },
                 };
               },
-              { deepRemove: true }
+              { deepRemove: true },
             ),
         };
       }));
@@ -523,7 +525,7 @@ describe("TplQuery", function () {
           component: aComp,
           baseVariant: getBaseVariant(dComp),
         }),
-      ])
+      ]),
     );
     // Now close the loop by trying to make B depend on C.
     const attachment = mkTplTagX("div", {}, [
@@ -556,8 +558,8 @@ describe("TplQuery", function () {
             return { newChildren: [], updateArg: () => {} };
           }
         },
-        { deepRemove: true }
-      )
+        { deepRemove: true },
+      ),
     ).toThrow();
   });
 });

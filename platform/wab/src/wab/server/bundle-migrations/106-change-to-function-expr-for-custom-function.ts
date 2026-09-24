@@ -4,6 +4,7 @@ import {
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
 import { Bundler } from "@/wab/shared/bundler";
+import { flattenTpls, isAttrEventHandler } from "@/wab/shared/core/tpls";
 import {
   CustomCode,
   EventHandler,
@@ -12,7 +13,6 @@ import {
   isKnownEventHandler,
   isKnownFunctionType,
 } from "@/wab/shared/model/classes";
-import { flattenTpls, isAttrEventHandler } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();
@@ -20,14 +20,14 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   const updateCustomFunctionActionToFunctionExpr = (expr: EventHandler) => {
     for (const interaction of expr.interactions) {
       if (interaction.actionName === "customFunction") {
         const customFunctionArg = interaction.args.find(
-          (arg) => arg.name === "customFunction"
+          (arg) => arg.name === "customFunction",
         );
         if (customFunctionArg && isKnownCustomCode(customFunctionArg.expr)) {
           customFunctionArg.expr = new FunctionExpr({
@@ -65,7 +65,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "106-change-to-function-expr-for-custom-function"
+    "106-change-to-function-expr-for-custom-function",
   );
   Object.assign(bundle, newBundle);
 };

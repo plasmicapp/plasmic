@@ -45,7 +45,7 @@ describe("createComponent", () => {
     expect(result.value.pageMeta.path).toEqual("/pricing-page");
     expect(result.value.pageMeta.roleId).toEqual(site.defaultPageRoleId);
     expect(site.pageArenas.some((a) => a.component === result.value)).toEqual(
-      true
+      true,
     );
   });
 
@@ -166,12 +166,12 @@ describe("createComponent", () => {
     expect(component.variantGroups.length).toEqual(2);
 
     const colorGroup = component.variantGroups.find(
-      (g) => g.param.variable.name === "color"
+      (g) => g.param.variable.name === "color",
     );
     expect(colorGroup).toBeDefined();
 
     const toggleGroup = component.variantGroups.find(
-      (g) => g.param.variable.name === "isRounded"
+      (g) => g.param.variable.name === "isRounded",
     );
     expect(toggleGroup).toBeDefined();
     // toggle (standalone) groups have exactly one implicit variant

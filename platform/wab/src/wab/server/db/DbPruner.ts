@@ -74,8 +74,8 @@ export async function main() {
           `
           SELECT COUNT(*)
           FROM to_delete`,
-          opts.limit
-        )
+          opts.limit,
+        ),
       )
     )[0];
 
@@ -112,7 +112,7 @@ export async function main() {
     )[0];
 
     logger().info(
-      `(${projectCount} projects, ${branchCount} branches, ${versionCount} published versions)`
+      `(${projectCount} projects, ${branchCount} branches, ${versionCount} published versions)`,
     );
 
     // ### End of logging ###
@@ -141,7 +141,7 @@ export async function main() {
         })
       )
         .filter((x) => !!x.id && !!x.revision)
-        .map((x) => [`${x.projectId} ${x.branchId}`, x.revision!])
+        .map((x) => [`${x.projectId} ${x.branchId}`, x.revision!]),
     );
 
     const assertProjectRevIdExists = async (id: string) => {
@@ -177,12 +177,12 @@ export async function main() {
                 DELETE FROM project_revision AS pr
                 USING to_delete
                 WHERE pr.id=to_delete.id`,
-                limit
-              )
+                limit,
+              ),
           )
         )
           .map((plan) => plan["QUERY PLAN"])
-          .join("\n")
+          .join("\n"),
       );
       deleted += limit;
       logger().info(`Deleted ${deleted} of ${toDelete}...`);
@@ -199,7 +199,7 @@ export async function main() {
         })
       )
         .filter((x) => !!x.id && !!x.revision)
-        .map((x) => [`${x.projectId} ${x.branchId}`, x.revision!])
+        .map((x) => [`${x.projectId} ${x.branchId}`, x.revision!]),
     );
     for (const [key, rev] of prevProject2LatestRevNum.entries()) {
       const [projectId, branchId] = key.split(" ");
@@ -207,12 +207,12 @@ export async function main() {
         ensure(
           newProject2LatestRevNum.get(key),
           () =>
-            `No revision found for project ${projectId} (branch ${branchId})`
+            `No revision found for project ${projectId} (branch ${branchId})`,
         ) >= rev,
         () =>
           `Latest revision for project ${projectId} (branch ${branchId}) is ${newProject2LatestRevNum.get(
-            key
-          )} which is smaller than the previous revision ${rev}`
+            key,
+          )} which is smaller than the previous revision ${rev}`,
       );
     }
 

@@ -22,7 +22,7 @@ export function RedirectAsync({ to }: { to: () => Promise<string> }) {
           return;
         }
         redirect(history, resolvedTo);
-      }, handleError)
+      }, handleError),
     );
     return () => {
       cleanup = true;

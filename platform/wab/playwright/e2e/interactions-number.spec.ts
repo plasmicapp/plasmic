@@ -19,7 +19,7 @@ test.describe("state-management-numbers-interactions", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -85,46 +85,46 @@ test.describe("state-management-numbers-interactions", () => {
 
     await models.studio.withinLiveMode(async (liveFrame) => {
       await expect(
-        liveFrame.locator("#plasmic-app div").filter({ hasText: "0" }).first()
+        liveFrame.locator("#plasmic-app div").filter({ hasText: "0" }).first(),
       ).toBeVisible();
       await expect(
         liveFrame
           .locator("#plasmic-app div")
           .filter({ hasText: JSON.stringify({ numberVar: 0 }) })
-          .first()
+          .first(),
       ).toBeVisible();
 
       await liveFrame.getByRole("button", { name: "Set to" }).click();
       await expect(
-        liveFrame.locator("#plasmic-app div").filter({ hasText: "10" }).first()
+        liveFrame.locator("#plasmic-app div").filter({ hasText: "10" }).first(),
       ).toBeVisible();
       await expect(
         liveFrame
           .locator("#plasmic-app div")
           .filter({ hasText: JSON.stringify({ numberVar: 10 }) })
-          .first()
+          .first(),
       ).toBeVisible();
 
       await liveFrame.getByRole("button", { name: "Increment" }).click();
       await expect(
-        liveFrame.locator("#plasmic-app div").filter({ hasText: "11" }).first()
+        liveFrame.locator("#plasmic-app div").filter({ hasText: "11" }).first(),
       ).toBeVisible();
       await expect(
         liveFrame
           .locator("#plasmic-app div")
           .filter({ hasText: JSON.stringify({ numberVar: 11 }) })
-          .first()
+          .first(),
       ).toBeVisible();
 
       await liveFrame.getByRole("button", { name: "Decrement" }).click();
       await expect(
-        liveFrame.locator("#plasmic-app div").filter({ hasText: "10" }).first()
+        liveFrame.locator("#plasmic-app div").filter({ hasText: "10" }).first(),
       ).toBeVisible();
       await expect(
         liveFrame
           .locator("#plasmic-app div")
           .filter({ hasText: JSON.stringify({ numberVar: 10 }) })
-          .first()
+          .first(),
       ).toBeVisible();
 
       await liveFrame.getByRole("button", { name: "Clear" }).click();
@@ -132,7 +132,7 @@ test.describe("state-management-numbers-interactions", () => {
         liveFrame
           .locator("#plasmic-app div")
           .filter({ hasText: JSON.stringify({}) })
-          .first()
+          .first(),
       ).toBeVisible();
     });
   });

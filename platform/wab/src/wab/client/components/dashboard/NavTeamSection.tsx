@@ -11,7 +11,7 @@ interface NavTeamSectionProps extends DefaultNavTeamSectionProps {
 
 function NavTeamSection_(
   { freeTrial, ...props }: NavTeamSectionProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   return (
     <PlasmicNavTeamSection

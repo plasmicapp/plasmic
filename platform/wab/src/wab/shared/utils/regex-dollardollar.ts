@@ -29,7 +29,7 @@ const p$$PropertyAccesses = regex("g")`
  */
 export function parse$$PropertyAccesses(code: string): string[] {
   return [...code.matchAll(p$$PropertyAccesses)].map((m) =>
-    m!.groups!.result.replace(/\s/g, "")
+    m!.groups!.result.replace(/\s/g, ""),
   );
 }
 

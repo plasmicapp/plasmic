@@ -30,7 +30,7 @@ export const mkSlateString = computedFn(
   (
     react: typeof React,
     slateDom: typeof SlateDom,
-    slateReact: typeof SlateReact
+    slateReact: typeof SlateReact,
   ) =>
     function SlateString(props: {
       isLast: boolean;
@@ -96,7 +96,7 @@ export const mkSlateString = computedFn(
     },
   {
     keepAlive: true,
-  }
+  },
 );
 
 /**
@@ -145,7 +145,7 @@ export const mkTextString = computedFn(
     },
   {
     keepAlive: true,
-  }
+  },
 );
 
 const mkMemoizedText = computedFn(
@@ -162,11 +162,11 @@ const mkMemoizedText = computedFn(
           ref: ref,
           children: props.children,
         });
-      })
+      }),
     ),
   {
     keepAlive: true,
-  }
+  },
 );
 
 /**
@@ -220,5 +220,5 @@ const mkZeroWidthString = computedFn(
     },
   {
     keepAlive: true,
-  }
+  },
 );

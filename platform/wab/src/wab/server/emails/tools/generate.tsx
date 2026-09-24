@@ -26,7 +26,7 @@ export async function generateEmailHtml(templateName: "Comments", props: any) {
       >
         <Template {...props} />
       </Body>
-    </Html>
+    </Html>,
   );
   return removeClassesFromEmailHtml(html);
 }

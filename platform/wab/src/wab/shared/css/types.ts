@@ -217,7 +217,7 @@ export function isPercentage(value: string): value is Percentage {
 }
 
 export function isLengthOrPercentage(
-  value: string
+  value: string,
 ): value is LengthOrPercentage {
   return isLength(value) || isPercentage(value);
 }
@@ -226,7 +226,7 @@ export const DIM_CSS_FUNCTIONS = ["calc", "min", "max", "clamp"] as const;
 
 const DIM_CSS_FUNCTIONS_REG = new RegExp(
   `^(${DIM_CSS_FUNCTIONS.join("|")})\\(`,
-  "i"
+  "i",
 );
 
 export function isDimCssFunction(value: string): value is DimCssFunction {

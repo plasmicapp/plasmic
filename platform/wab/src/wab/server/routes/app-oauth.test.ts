@@ -4,21 +4,21 @@ describe("parseRedirectURI", () => {
   it("should validate redirectUri", () => {
     // redirectUri not a string
     expect(
-      parseRedirectURI(["https://tests.plasmic.run/"], "", [], [])
+      parseRedirectURI(["https://tests.plasmic.run/"], "", [], []),
     ).toMatchObject({
       valid: false,
     });
 
     // Invalid protocol
     expect(
-      parseRedirectURI("ftp://tests.plasmic.run/", "", [], [])
+      parseRedirectURI("ftp://tests.plasmic.run/", "", [], []),
     ).toMatchObject({
       valid: false,
     });
 
     // redirectUri not registered
     expect(
-      parseRedirectURI("https://tests.plasmic.run/", "", [], [])
+      parseRedirectURI("https://tests.plasmic.run/", "", [], []),
     ).toMatchObject({
       valid: false,
     });
@@ -29,8 +29,8 @@ describe("parseRedirectURI", () => {
         "https://tests.plasmic.run/",
         "",
         ["https://tests.plasmic.run/"],
-        ["dummy.domain"]
-      )
+        ["dummy.domain"],
+      ),
     ).toMatchObject({
       valid: true,
       redirectUri: "https://tests.plasmic.run/",
@@ -42,8 +42,8 @@ describe("parseRedirectURI", () => {
         "https://tests.plasmic.run/",
         "",
         [],
-        ["dummy.domain", "tests.plasmic.run"]
-      )
+        ["dummy.domain", "tests.plasmic.run"],
+      ),
     ).toMatchObject({
       valid: true,
       redirectUri: "https://tests.plasmic.run/",
@@ -56,8 +56,8 @@ describe("parseRedirectURI", () => {
         "https://tests.plasmic.run/",
         `"{"continueTo": "/subpage"}"`,
         [],
-        ["tests.plasmic.run"]
-      )
+        ["tests.plasmic.run"],
+      ),
     ).toMatchObject({
       valid: true,
       redirectUri: "https://tests.plasmic.run/",
@@ -65,7 +65,7 @@ describe("parseRedirectURI", () => {
 
     // No redirect uri, no domains set
     expect(
-      parseRedirectURI(undefined, "", ["https://tests.plasmic.run"], [])
+      parseRedirectURI(undefined, "", ["https://tests.plasmic.run"], []),
     ).toMatchObject({
       valid: false,
     });
@@ -76,8 +76,8 @@ describe("parseRedirectURI", () => {
         undefined,
         "",
         ["https://tests.plasmic.run"],
-        ["domains.plasmic.run", "dummy.domain"]
-      )
+        ["domains.plasmic.run", "dummy.domain"],
+      ),
     ).toMatchObject({
       valid: true,
       redirectUri: "https://domains.plasmic.run/",
@@ -89,8 +89,8 @@ describe("parseRedirectURI", () => {
         undefined,
         `{"continueTo":"/subpage"}`,
         ["https://tests.plasmic.run"],
-        ["domains.plasmic.run", "dummy.domain"]
-      )
+        ["domains.plasmic.run", "dummy.domain"],
+      ),
     ).toMatchObject({
       valid: true,
       redirectUri: "https://domains.plasmic.run/subpage",
@@ -102,8 +102,8 @@ describe("parseRedirectURI", () => {
         undefined,
         `{"continueTo": "https://test.plasmic.run/subpage"}`,
         ["https://tests.plasmic.run"],
-        ["domains.plasmic.run", "dummy.domain"]
-      )
+        ["domains.plasmic.run", "dummy.domain"],
+      ),
     ).toMatchObject({
       valid: true,
       redirectUri: "https://domains.plasmic.run/",
@@ -115,8 +115,8 @@ describe("parseRedirectURI", () => {
         undefined,
         `{"continueTo": "https://domains.plasmic.run/subpage"}`,
         ["https://tests.plasmic.run"],
-        ["domains.plasmic.run", "dummy.domain"]
-      )
+        ["domains.plasmic.run", "dummy.domain"],
+      ),
     ).toMatchObject({
       valid: true,
       redirectUri: "https://domains.plasmic.run/subpage",
@@ -128,8 +128,8 @@ describe("parseRedirectURI", () => {
         undefined,
         "",
         ["https://tests.plasmic.run"],
-        ["localhost:3000", "dummy.domain"]
-      )
+        ["localhost:3000", "dummy.domain"],
+      ),
     ).toMatchObject({
       valid: true,
       redirectUri: "http://localhost:3000/",
@@ -140,8 +140,8 @@ describe("parseRedirectURI", () => {
         undefined,
         `{"continueTo":"/subpage"}`,
         ["https://tests.plasmic.run"],
-        ["localhost:3000", "dummy.domain"]
-      )
+        ["localhost:3000", "dummy.domain"],
+      ),
     ).toMatchObject({
       valid: true,
       redirectUri: "http://localhost:3000/subpage",
@@ -153,8 +153,8 @@ describe("parseRedirectURI", () => {
         `{"continueTo":"/subpage"}`,
         ["https://tests.plasmic.run"],
         [],
-        "dummy.domain"
-      )
+        "dummy.domain",
+      ),
     ).toMatchObject({
       valid: false,
     });
@@ -165,8 +165,8 @@ describe("parseRedirectURI", () => {
         `{"continueTo":"/subpage"}`,
         ["https://tests.plasmic.run"],
         ["localhost:3000", "dummy.domain"],
-        "dummy.domain"
-      )
+        "dummy.domain",
+      ),
     ).toMatchObject({
       valid: true,
       redirectUri: "https://dummy.domain/subpage",

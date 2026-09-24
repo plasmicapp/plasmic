@@ -168,7 +168,7 @@ class _XDraggable extends React.Component<XDraggableProps, XDraggableState> {
   private createData(
     mouseEvent: MouseEvent,
     draggableData: DraggableData,
-    xdata = ensure(this.state.lastEvent, "expected a lastEvent").data
+    xdata = ensure(this.state.lastEvent, "expected a lastEvent").data,
   ): XDraggableEvent {
     return {
       mouseEvent,

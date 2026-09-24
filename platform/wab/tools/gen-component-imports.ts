@@ -27,9 +27,9 @@ function* genAntdImports() {
 }
 writeFileSync(
   "sub/src/component-imports/StrapAuto.ts",
-  [...genStrapImports()].join("\n")
+  [...genStrapImports()].join("\n"),
 );
 writeFileSync(
   "sub/src/component-imports/AntdAuto.ts",
-  [...genAntdImports()].join("\n")
+  [...genAntdImports()].join("\n"),
 );

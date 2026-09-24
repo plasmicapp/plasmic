@@ -5,7 +5,7 @@ import { escape } from "lodash";
 export function generateEmailVerificationLink(
   host: string,
   token: string,
-  nextPath?: string
+  nextPath?: string,
 ) {
   return `${host}/email-verification?token=${encodeURIComponent(token)}${
     nextPath ? `&continueTo=${encodeURIComponent(nextPath)}` : ""
@@ -14,7 +14,7 @@ export function generateEmailVerificationLink(
 
 const PLASMIC_EMAIL_VERIFICATION_HTML = (
   appName: string,
-  emailVerificationLink: string
+  emailVerificationLink: string,
 ) => {
   const escapedAppName = escape(appName);
   return `<p><strong>Verify your email address</strong></p>
@@ -31,7 +31,7 @@ export async function sendEmailVerificationToUser(
   email: string,
   token: string,
   nextPath?: string,
-  appName?: string
+  appName?: string,
 ) {
   // If the user is signing up for an app, we will perform the email verification
   // in the app authorization page instead of the general email verification page.

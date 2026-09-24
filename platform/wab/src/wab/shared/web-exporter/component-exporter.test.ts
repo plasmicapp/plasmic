@@ -79,7 +79,7 @@ describe("Component Serialization", () => {
     const result = buildComponentResource(component, { site });
     // Base tree keeps the tpl's own id and base attr.
     expect(result.baseVariantTplTree).toContain(
-      `<button id="${tpl.uuid}" title="Base">`
+      `<button id="${tpl.uuid}" title="Base">`,
     );
     // The hover variant's attr override is captured; the reserved `id` attr is
     // not applied (so the tpl's id is never overwritten).
@@ -107,13 +107,13 @@ describe("Component Serialization", () => {
     setTplVisibility(
       tpl,
       [getBaseVariant(component)],
-      TplVisibility.DisplayNone
+      TplVisibility.DisplayNone,
     );
     setTplVisibility(tpl, [hover], TplVisibility.Visible);
 
     const result = buildComponentResource(component, { site });
     expect(result.baseVariantTplTree).toContain(
-      `data-visibility="displayNone"`
+      `data-visibility="displayNone"`,
     );
     expect(result.variantSettings).toMatchObject([
       { elements: [{ attrs: { "data-visibility": "visible" } }] },
@@ -155,7 +155,7 @@ describe("Component Serialization", () => {
 
     const output = tplToHtml(tpl, site);
     expect(output).toEqual(
-      `<p id="${tpl.uuid}">See our <a id="${link.uuid}" href="/pricing">pricing</a> for <span style="font-weight: 700">bold</span> details</p>`
+      `<p id="${tpl.uuid}">See our <a id="${link.uuid}" href="/pricing">pricing</a> for <span style="font-weight: 700">bold</span> details</p>`,
     );
   });
 
@@ -171,7 +171,7 @@ describe("Component Serialization", () => {
       const vs = ensureVariantSetting(tpl, [getBaseVariant(component)]);
       vs.text = new ExprText({
         expr: interpolatedStringToTemplatedString(
-          "Posts in {{ $ctx.params.category }}"
+          "Posts in {{ $ctx.params.category }}",
         ),
         html: false,
       });
@@ -304,7 +304,7 @@ describe("Component Serialization", () => {
           type: typeFactory.color(),
           paramType: "prop",
           defaultExpr: new StyleTokenRef({ token }),
-        })
+        }),
       );
 
       const resource = buildComponentResource(component, { site });
@@ -415,10 +415,10 @@ describe("Component Serialization", () => {
       // the model sees how `$q.*` / `$queries.*` are configured before usages.
       const keys = Object.keys(result);
       expect(keys.indexOf("dataQueries")).toBeGreaterThan(
-        keys.indexOf("variants")
+        keys.indexOf("variants"),
       );
       expect(keys.indexOf("legacyDataQueries")).toBeLessThan(
-        keys.indexOf("baseVariantTplTree")
+        keys.indexOf("baseVariantTplTree"),
       );
 
       const xml = jsonToXml(result, true);

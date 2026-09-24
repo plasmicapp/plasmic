@@ -16,7 +16,7 @@ import type { SetRequired } from "type-fest";
 export function makeProjectModuleBundle(
   site: Site,
   projectId: ProjectId,
-  exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">
+  exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">,
 ): ProjectModuleBundle {
   const globalVariantGroups = new Set(
     uniqBy(
@@ -25,8 +25,8 @@ export function makeProjectModuleBundle(
         excludeEmpty: true,
         excludeInactiveScreenVariants: true,
       }),
-      (vg) => vg.param.variable.name
-    )
+      (vg) => vg.param.variable.name,
+    ),
   );
 
   const globalVariantImports =
@@ -35,7 +35,7 @@ export function makeProjectModuleBundle(
       : `
           ${[...globalVariantGroups]
             .map((vg) =>
-              makeGlobalVariantGroupImportTemplate(vg, ".", exportOpts)
+              makeGlobalVariantGroupImportTemplate(vg, ".", exportOpts),
             )
             .join("\n")}
         `;
@@ -43,8 +43,8 @@ export function makeProjectModuleBundle(
   const module = `${makePlasmicModulePrelude(projectId)}
   
     import { ${makeCreateUseGlobalVariantsName()} } from "${getReactWebPackageName(
-    exportOpts
-  )}";
+      exportOpts,
+    )}";
     ${globalVariantImports}
   
     ${serializeUseGlobalVariants(globalVariantGroups)}

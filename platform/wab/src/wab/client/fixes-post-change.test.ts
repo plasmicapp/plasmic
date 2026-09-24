@@ -30,7 +30,7 @@ describe("Fixes post change", () => {
         // Change directly on the component
         component.name = "NewButton";
         return ok();
-      }
+      },
     );
 
     expect(component.updatedAt).toBeGreaterThan(componentUpdatedAt);
@@ -43,7 +43,7 @@ describe("Fixes post change", () => {
         // Directly change the tplTree
         component.tplTree = tpls[0];
         return ok();
-      }
+      },
     );
 
     expect(component.updatedAt).toBeGreaterThan(componentUpdatedAt);
@@ -56,7 +56,7 @@ describe("Fixes post change", () => {
         // Change the tpl tree by accessing the children only should still update the component
         tpls[0].children = [tpls[1]];
         return ok();
-      }
+      },
     );
 
     expect(component.updatedAt).toBeGreaterThan(componentUpdatedAt);
@@ -94,7 +94,7 @@ describe("Fixes post change", () => {
     const parentHoverVariant = tplMgr.createPrivateStyleVariant(
       component,
       gridTpl,
-      [":hover"]
+      [":hover"],
     );
 
     // Add a variant setting for hover on the parent
@@ -109,13 +109,13 @@ describe("Fixes post change", () => {
       () => {
         component.tplTree = gridTpl;
         return ok();
-      }
+      },
     );
 
     // After the fixup runs, verify the child does NOT have any variant settings
     // with the parent's private hover variant
     const childHasParentHoverVariant = child.vsettings.some((vs) =>
-      vs.variants.some((v) => isPrivateStyleVariant(v) && v.forTpl !== child)
+      vs.variants.some((v) => isPrivateStyleVariant(v) && v.forTpl !== child),
     );
 
     expect(childHasParentHoverVariant).toBe(false);
@@ -142,7 +142,7 @@ describe("Fixes post change", () => {
     const gridTpl = mkTplTagX("div", { baseVariant });
     const parentBaseRsh = RSH(
       ensureVariantSetting(gridTpl, [baseVariant]).rs,
-      gridTpl
+      gridTpl,
     );
     parentBaseRsh.set("display", "grid");
     parentBaseRsh.set("grid-template-columns", "repeat(2, minmax(0, 1fr))");
@@ -152,7 +152,7 @@ describe("Fixes post change", () => {
     const child = mkTplTagX("div", { baseVariant });
     const childBaseRsh = RSH(
       ensureVariantSetting(child, [baseVariant]).rs,
-      child
+      child,
     );
     childBaseRsh.set("position", "absolute");
     childBaseRsh.set("left", "32.1%");
@@ -161,7 +161,7 @@ describe("Fixes post change", () => {
     childBaseRsh.set("bottom", "auto");
     const childMobileRsh = RSH(
       ensureVariantSetting(child, [baseVariant, mobileVariant]).rs,
-      child
+      child,
     );
     childMobileRsh.set("left", "8px");
     $$$(gridTpl).append(child);
@@ -170,7 +170,7 @@ describe("Fixes post change", () => {
     const sibling = mkTplTagX("div", { baseVariant });
     const siblingBaseRsh = RSH(
       ensureVariantSetting(sibling, [baseVariant]).rs,
-      sibling
+      sibling,
     );
     siblingBaseRsh.set("left", "10px");
     $$$(gridTpl).append(sibling);
@@ -180,7 +180,7 @@ describe("Fixes post change", () => {
       () => {
         component.tplTree = gridTpl;
         return ok();
-      }
+      },
     );
 
     // Now change the parent grid to 1 column, in the mobile variant only
@@ -189,10 +189,10 @@ describe("Fixes post change", () => {
       () => {
         RSH(
           ensureVariantSetting(gridTpl, [baseVariant, mobileVariant]).rs,
-          gridTpl
+          gridTpl,
         ).set("grid-template-columns", "repeat(1, minmax(0, 1fr))");
         return ok();
-      }
+      },
     );
 
     // The child's coordinates must be intact, in base and in mobile, even
@@ -206,7 +206,7 @@ describe("Fixes post change", () => {
     // introducing a variant override
     expect(siblingBaseRsh.get("left")).toBe("auto");
     expect(
-      sibling.vsettings.some((vs) => vs.variants.includes(mobileVariant))
+      sibling.vsettings.some((vs) => vs.variants.includes(mobileVariant)),
     ).toBe(false);
   });
 });

@@ -25,8 +25,8 @@ function VariantPinButton(props: VariantPinButtonProps) {
           tooltip: isSelected
             ? undefined
             : isVisible
-            ? `Turn off ${VARIANT_OPTION_LOWER}`
-            : `View ${VARIANT_OPTION_LOWER}`,
+              ? `Turn off ${VARIANT_OPTION_LOWER}`
+              : `View ${VARIANT_OPTION_LOWER}`,
           "data-test-class": `variant-pin-button-${
             isVisible ? "deactivate" : "activate"
           }`,

@@ -26,7 +26,7 @@ describe("Box", () => {
             left: 1,
             bottom: 100,
           })
-          .rect()
+          .rect(),
       ).toMatchObject({
         top: 0,
         left: 1,
@@ -60,7 +60,7 @@ describe("Box", () => {
   describe("intersection", () => {
     it("works", () => {
       expect(new Box(0, 0, 1, 1).intersection(new Box(1, 0, 1, 1))).toBe(
-        undefined
+        undefined,
       );
     });
   });
@@ -75,7 +75,7 @@ describe("mergeSpans", () => {
         [7, 12],
         [15, 18],
         [14, 15],
-      ])
+      ]),
     ).toEqual([
       [0, 12],
       [14, 18],
@@ -94,7 +94,7 @@ describe("findSpaceForRectSweepRight", () => {
         { top: 5, left: 21, width: 1, height: 1 },
         // Doesn't intersect
         { top: 10, left: 10, width: 1, height: 1 },
-      ])
+      ]),
     ).toEqual({ top: 0, left: 10 });
   });
 });

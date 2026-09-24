@@ -13,15 +13,15 @@ export function unbundleSite(
   bundler: FastBundler,
   projectId: string,
   bundle: Bundle,
-  depPkgInfos: PkgVersionInfo[]
+  depPkgInfos: PkgVersionInfo[],
 ) {
   const depPkgs = depPkgInfos.map(
-    (info) => taggedUnbundle(bundler, info.model, info.id) as ProjectDependency
+    (info) => taggedUnbundle(bundler, info.model, info.id) as ProjectDependency,
   );
   const siteOrDep = ensureInstance(
     taggedUnbundle(bundler, bundle, projectId, { updateDynamicBundle: true }),
     Site,
-    ProjectDependency
+    ProjectDependency,
   );
   return {
     site: isKnownSite(siteOrDep) ? siteOrDep : siteOrDep.site,
@@ -32,13 +32,13 @@ export function unbundleSite(
 export function unbundleProjectDependency(
   bundler: FastBundler,
   pkgInfo: PkgVersionInfo,
-  depPkgInfos: PkgVersionInfo[]
+  depPkgInfos: PkgVersionInfo[],
 ) {
   const depPkgs = depPkgInfos.map(
-    (info) => taggedUnbundle(bundler, info.model, info.id) as ProjectDependency
+    (info) => taggedUnbundle(bundler, info.model, info.id) as ProjectDependency,
   );
   const projectDependency = ensureKnownProjectDependency(
-    taggedUnbundle(bundler, pkgInfo.model, pkgInfo.id)
+    taggedUnbundle(bundler, pkgInfo.model, pkgInfo.id),
   );
   return { projectDependency, depPkgs };
 }
@@ -46,10 +46,10 @@ export function unbundleProjectDependency(
 export function unbundleProjectDependencyRevision(
   bundler: FastBundler,
   data: Bundle,
-  depPkgInfos: PkgVersionInfo[]
+  depPkgInfos: PkgVersionInfo[],
 ) {
   const depPkgs = depPkgInfos.map(
-    (info) => taggedUnbundle(bundler, info.model, info.id) as ProjectDependency
+    (info) => taggedUnbundle(bundler, info.model, info.id) as ProjectDependency,
   );
   const site = ensureKnownSite(taggedUnbundle(bundler, data, ""));
   return { site, depPkgs };
@@ -63,7 +63,7 @@ export function taggedUnbundle(
   bundler: FastBundler,
   bundle: Bundle,
   id: string,
-  opts?: { updateDynamicBundle: boolean }
+  opts?: { updateDynamicBundle: boolean },
 ) {
   const unbundled = opts?.updateDynamicBundle
     ? bundler.unbundleAndRecomputeParents(bundle, id)

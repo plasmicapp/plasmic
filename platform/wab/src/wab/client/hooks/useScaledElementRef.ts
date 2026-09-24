@@ -6,7 +6,7 @@ import { RefObject, useCallback, useMemo } from "react";
 
 export function useZoomStyledRef<T extends HTMLElement>(
   fn: (zoom: number) => Partial<CSSStyleDeclaration>,
-  ref?: RefObject<T>
+  ref?: RefObject<T>,
 ) {
   const studioCtx = useStudioCtx();
   const id = useMemo(() => Math.random().toString(36).substr(2), []);
@@ -21,7 +21,7 @@ export function useZoomStyledRef<T extends HTMLElement>(
       },
       {
         name: `zoomStyledRef_${id}`,
-      }
+      },
     );
     return () => dispose();
   }, [fn, studioCtx, studioCtx.focusedViewCtx()?.arenaFrame()]);
@@ -45,10 +45,10 @@ export function useScaledElementRef<T extends HTMLElement>({
         : {
             transform: `scale(${Math.min(
               1 / minZoom,
-              1 / zoom
+              1 / zoom,
             )}) ${extraTransformation}`,
           },
-    [minZoom, extraTransformation]
+    [minZoom, extraTransformation],
   );
   return useZoomStyledRef<T>(callback);
 }

@@ -1,23 +1,23 @@
-import { ensureInstance } from "@/wab/shared/common";
 import * as migration15 from "@/wab/server/bundle-migrations/15-remove-override";
-import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { loadDepPackages } from "@/wab/server/db/DbBundleLoader";
 import { DbMgr } from "@/wab/server/db/DbMgr";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
+import { TplMgr } from "@/wab/shared/TplMgr";
 import { Bundler } from "@/wab/shared/bundler";
 import { UnsafeBundle } from "@/wab/shared/bundles";
+import { ensureInstance } from "@/wab/shared/common";
 import {
-  ensureKnownVariant,
-  isKnownSite,
   ProjectDependency,
   Site,
+  ensureKnownVariant,
+  isKnownSite,
 } from "@/wab/shared/model/classes";
-import { TplMgr } from "@/wab/shared/TplMgr";
 
 export async function migrate(
   bundle: UnsafeBundle,
   db: DbMgr,
-  entity: PkgVersion | ProjectRevision
+  entity: PkgVersion | ProjectRevision,
 ) {
   const tplByUuid = new Map<string, { __ref: string }>();
   for (const [iid, inst] of Object.entries(bundle.map)) {
@@ -58,7 +58,7 @@ export async function migrate(
     const siteOrProjectDep = ensureInstance(
       unbundle(bundle, entity.id),
       Site,
-      ProjectDependency
+      ProjectDependency,
     );
     const site = isKnownSite(siteOrProjectDep)
       ? siteOrProjectDep
@@ -66,21 +66,21 @@ export async function migrate(
     const tplMgr = new TplMgr({ site });
     variantsToDelete.forEach((iid) => {
       const variant = ensureKnownVariant(
-        bundler.objByAddr({ uuid: entity.id, iid })
+        bundler.objByAddr({ uuid: entity.id, iid }),
       );
       tplMgr.tryRemoveVariant(
         variant,
         site.components.find(
           (c) =>
             c.variants.includes(variant) ||
-            !!c.variantGroups.find((group) => group.variants.includes(variant))
-        )
+            !!c.variantGroups.find((group) => group.variants.includes(variant)),
+        ),
       );
     });
     const newBundle = bundler.bundle(
       siteOrProjectDep,
       entity.id,
-      "14-update-forTpl"
+      "14-update-forTpl",
     );
     Object.assign(bundle, newBundle);
   }

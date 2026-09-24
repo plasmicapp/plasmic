@@ -64,7 +64,7 @@ export class CommentsCtx {
   private disposals: (() => void)[] = [];
 
   private readonly _openedThread = observable.box<OpenedThread | undefined>(
-    undefined
+    undefined,
   );
   private readonly _openedNewThread = observable.box<
     OpenedNewThread | undefined
@@ -90,8 +90,8 @@ export class CommentsCtx {
         async () => {
           await this.fetchComments();
         },
-        { name: "CommentsCtx.fetchComments" }
-      )
+        { name: "CommentsCtx.fetchComments" },
+      ),
     );
   }
 
@@ -117,11 +117,11 @@ export class CommentsCtx {
     const allThreads = getCommentThreadsWithModelMetadata(
       this.studioCtx,
       this.bundler(),
-      response.threads
+      response.threads,
     );
     const [resolvedThreads, unresolvedThreads] = partition(
       allThreads,
-      (thread) => thread.resolved
+      (thread) => thread.resolved,
     );
     const commentStats = computeCommentStats(unresolvedThreads);
     return {
@@ -134,7 +134,7 @@ export class CommentsCtx {
       usersMap: mkIdMap(response.users),
       reactionsByCommentId: xGroupBy(
         sortBy(response.reactions, (r) => +new Date(r.createdAt)),
-        (r) => r.commentId
+        (r) => r.commentId,
       ),
     };
   });
@@ -147,11 +147,11 @@ export class CommentsCtx {
     (viewCtx: ViewCtx) => {
       return xGroupBy(
         this.computedData().unresolvedThreads.filter((commentThread) =>
-          isCommentForFrame(viewCtx, commentThread)
+          isCommentForFrame(viewCtx, commentThread),
         ),
-        (commentThread) => commentThread.subjectInfo?.subject.uuid
+        (commentThread) => commentThread.subjectInfo?.subject.uuid,
       );
-    }
+    },
   );
 
   openedThread() {
@@ -213,7 +213,7 @@ export class CommentsCtx {
             return true;
           }
           return false;
-        })
+        }),
       );
     }
 
@@ -390,7 +390,7 @@ export class CommentsCtx {
 
   private addComment(
     threadId: CommentThreadId,
-    commentData: ThreadCommentData
+    commentData: ThreadCommentData,
   ): ApiComment {
     const user = ensure(this.studioCtx.appCtx.selfInfo, "must have selfInfo");
     const commonFields = makeCommonFields(user.id);
@@ -427,7 +427,7 @@ export class CommentsCtx {
         comments: thread.comments.map((comment) =>
           comment.id === commentId
             ? { ...comment, body, updatedAt: new Date().toISOString() }
-            : comment
+            : comment,
         ),
       }));
       this._commentsResponse.set({
@@ -450,7 +450,7 @@ export class CommentsCtx {
                 deletedAt: new Date().toISOString(),
                 deletedById: this.studioCtx.appCtx.selfInfo?.id!,
               }
-            : comment
+            : comment,
         ),
       }));
       this._commentsResponse.set({
@@ -463,7 +463,7 @@ export class CommentsCtx {
   private addReaction(
     id: CommentReactionId,
     commentId: CommentId,
-    data: CommentReactionData
+    data: CommentReactionData,
   ): ApiCommentReaction {
     const user = ensure(this.studioCtx.appCtx.selfInfo, "must have selfInfo");
     const commonFields = makeCommonFields(user.id);
@@ -496,7 +496,7 @@ export class CommentsCtx {
   private addThreadHistory(
     id: ThreadHistoryId,
     threadId: CommentThreadId,
-    resolved: boolean
+    resolved: boolean,
   ): ApiCommentThreadHistory {
     const user = ensure(this.studioCtx.appCtx.selfInfo, "must have selfInfo");
     const commonFields = makeCommonFields(user.id);
@@ -518,7 +518,7 @@ export class CommentsCtx {
               ],
               resolved,
             }
-          : thread
+          : thread,
       );
       this._commentsResponse.set({
         ...commentResponse,
@@ -541,12 +541,12 @@ export class CommentsCtx {
           });
           spawn(this.fetchComments());
         }
-      })()
+      })(),
     );
   }
 
   postRootComment(
-    commentData: Omit<RootCommentData, "commentThreadId" | "commentId">
+    commentData: Omit<RootCommentData, "commentThreadId" | "commentId">,
   ): ApiCommentThread {
     const api = this.studioCtx.appCtx.api;
     const optimisticRootCommentData = {
@@ -558,15 +558,15 @@ export class CommentsCtx {
       api.postRootComment(
         this.projectId(),
         this.branchId(),
-        optimisticRootCommentData
-      )
+        optimisticRootCommentData,
+      ),
     );
     return this.createThread(optimisticRootCommentData);
   }
 
   postThreadComment(
     threadId: CommentThreadId,
-    commentData: Omit<ThreadCommentData, "id">
+    commentData: Omit<ThreadCommentData, "id">,
   ) {
     const api = this.studioCtx.appCtx.api;
     const optimisticThreadCommentData = {
@@ -578,8 +578,8 @@ export class CommentsCtx {
         this.projectId(),
         this.branchId(),
         threadId,
-        optimisticThreadCommentData
-      )
+        optimisticThreadCommentData,
+      ),
     );
     return this.addComment(threadId, optimisticThreadCommentData);
   }
@@ -591,7 +591,7 @@ export class CommentsCtx {
       api.editThread(this.projectId(), this.branchId(), threadId, {
         id,
         resolved,
-      })
+      }),
     );
     return this.addThreadHistory(id, threadId, resolved);
   }
@@ -601,7 +601,7 @@ export class CommentsCtx {
     this.spawnHandlingErrors(
       api.editComment(this.projectId(), this.branchId(), commentId, {
         body,
-      })
+      }),
     );
     this.editCommentBody(commentId, body);
   }
@@ -609,14 +609,14 @@ export class CommentsCtx {
   deleteComment(commentId: CommentId) {
     const api = this.studioCtx.appCtx.api;
     this.spawnHandlingErrors(
-      api.deleteComment(this.projectId(), this.branchId(), commentId)
+      api.deleteComment(this.projectId(), this.branchId(), commentId),
     );
     this.deleteThreadComment(commentId);
   }
 
   addReactionToComment(
     commentId: CommentId,
-    data: Omit<CommentReactionData, "id">
+    data: Omit<CommentReactionData, "id">,
   ): ApiCommentReaction {
     const api = this.studioCtx.appCtx.api;
     const id = mkUuid<CommentReactionId>();
@@ -626,8 +626,8 @@ export class CommentsCtx {
         this.projectId(),
         this.branchId(),
         commentId,
-        data
-      )
+        data,
+      ),
     );
     return this.addReaction(id, commentId, data);
   }
@@ -638,8 +638,8 @@ export class CommentsCtx {
       api.removeReactionFromComment(
         this.projectId(),
         this.branchId(),
-        reactionId
-      )
+        reactionId,
+      ),
     );
     this.removeReaction(reactionId);
   }

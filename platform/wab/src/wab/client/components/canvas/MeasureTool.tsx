@@ -3,7 +3,7 @@ import { hasLayoutBox } from "@/wab/client/dom";
 import { StudioCtx, withStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewComponentBase } from "@/wab/client/studio-ctx/view-ctx";
 import { ensure, maybe } from "@/wab/shared/common";
-import { Box, horizontalSides, Pt, Side } from "@/wab/shared/geom";
+import { Box, Pt, Side, horizontalSides } from "@/wab/shared/geom";
 import { Observer } from "mobx-react";
 import * as React from "react";
 import { memo } from "react";
@@ -74,7 +74,7 @@ function _MeasureToolView({
 export const MeasureToolView = memo(_MeasureToolView);
 
 function sides(
-  fn: (side: Side) => MeasureToolViewProps[]
+  fn: (side: Side) => MeasureToolViewProps[],
 ): MeasureToolViewProps[] {
   const result: MeasureToolViewProps[] = [];
   return result.concat(fn("left"), fn("right"), fn("top"), fn("bottom"));
@@ -101,7 +101,7 @@ class _MeasureTool extends ViewComponentBase<MeasureToolProps, {}> {
     const frameBox = vc.studioCtx.getArenaFrameScalerRect(vc.arenaFrame());
     const boxInScaler = boxInFrame.moveBy(
       frameBox?.left ?? 0,
-      frameBox?.top ?? 0
+      frameBox?.top ?? 0,
     );
     return boxInScaler;
   }
@@ -236,18 +236,18 @@ class _MeasureTool extends ViewComponentBase<MeasureToolProps, {}> {
               ? $target.toZeroBox()
               : maybe(
                   vc.getViewOps().getFinalFocusable($target).focusedDom,
-                  (dom) => this.makeBox(dom)
+                  (dom) => this.makeBox(dom),
                 );
 
           const viewProps = !dst
             ? []
             : src.containsBox(dst)
-            ? this.drawContains(src, dst)
-            : dst.containsBox(src)
-            ? this.drawContains(dst, src)
-            : src.overlapsBox(dst)
-            ? this.drawOverlapping(src, dst)
-            : this.drawNonoverlapping(src, dst);
+              ? this.drawContains(src, dst)
+              : dst.containsBox(src)
+                ? this.drawContains(dst, src)
+                : src.overlapsBox(dst)
+                  ? this.drawOverlapping(src, dst)
+                  : this.drawNonoverlapping(src, dst);
 
           return <MeasureToolView viewProps={viewProps} zoom={sc.zoom} />;
         }}

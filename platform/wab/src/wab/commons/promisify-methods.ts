@@ -8,8 +8,8 @@ export type PromisifyMethods<T extends object> = OmitByValue<
     ) => Promise<infer ReturnType>
       ? (...args: Parameters) => Promise<ReturnType>
       : T[K] extends (...args: infer Parameters) => infer ReturnType
-      ? (...args: Parameters) => Promise<ReturnType>
-      : never;
+        ? (...args: Parameters) => Promise<ReturnType>
+        : never;
   },
   never
 >;

@@ -28,7 +28,7 @@ async function main() {
     const jsxified = content
       .replace("<svg", '<svg className="custom-svg-icon"')
       .replace(/\b(clip-path|clip-rule|fill-rule|stroke-width)\b/g, (text) =>
-        L.camelCase(text)
+        L.camelCase(text),
       );
     fs.writeFileSync(
       `src/wab/client/components/icons/${componentName}.tsx`,
@@ -46,7 +46,7 @@ export function ${componentName}(props: SvgProps) {
   const className = "custom-svg-icon " + props.className || "";
   return <Icon {...props} className={className} />;
 }
-      `.trim() + "\n"
+      `.trim() + "\n",
     );
   }
 }

@@ -35,7 +35,7 @@ const LAST_CREATED_SORT: SortConfig = {
   sortFn: (rows) =>
     [...rows].sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     ),
 };
 
@@ -45,7 +45,7 @@ const FIRST_CREATED_SORT: SortConfig = {
   sortFn: (rows) =>
     [...rows].sort(
       (a, b) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     ),
 };
 
@@ -55,7 +55,7 @@ const LAST_UPDATED_SORT: SortConfig = {
   sortFn: (rows) =>
     [...rows].sort(
       (a, b) =>
-        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
     ),
 };
 
@@ -65,7 +65,7 @@ const FIRST_UPDATED_SORT: SortConfig = {
   sortFn: (rows) =>
     [...rows].sort(
       (a, b) =>
-        new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
+        new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime(),
     ),
 };
 
@@ -96,7 +96,7 @@ export interface CmsEntriesListProps extends DefaultCmsEntriesListProps {
 
 function CmsEntriesList_(
   props: CmsEntriesListProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { rows, ...rest } = props;
   const api = useApi();
@@ -106,7 +106,7 @@ function CmsEntriesList_(
       databaseId: CmsDatabaseId;
       tableId: CmsTableId;
     }>(),
-    "CmsEntriesList must be rendered within a matched route"
+    "CmsEntriesList must be rendered within a matched route",
   );
   const { databaseId, tableId } = match.pathParams;
   const table = useCmsTable(databaseId, tableId);
@@ -124,7 +124,7 @@ function CmsEntriesList_(
     const normQuery = debouncedQuery.toLowerCase();
     const filtered = hasQuery
       ? rows?.filter((row) =>
-          fastStringify(Object.values(row)).toLowerCase().includes(normQuery)
+          fastStringify(Object.values(row)).toLowerCase().includes(normQuery),
         )
       : rows;
 
@@ -135,7 +135,7 @@ function CmsEntriesList_(
     debounce((q: string) => {
       setDebouncedQuery(q);
     }, 300),
-    [setDebouncedQuery]
+    [setDebouncedQuery],
   );
 
   if (!rows || !table) {
@@ -196,7 +196,7 @@ function CmsEntriesList_(
               databaseId,
               tableId,
               rowId: row.id,
-            })
+            }),
           );
         },
       }}

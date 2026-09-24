@@ -76,7 +76,7 @@ const WebhooksItem = observer(function WebhooksItem(props: WebhooksItemProps) {
         headerKey=""
         headerValue=""
         onChange={onChangeHeader}
-      />
+      />,
     );
   }
 

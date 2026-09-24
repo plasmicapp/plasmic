@@ -30,7 +30,7 @@ function findInServerNode(node: ServerNode, visitor: (n: ServerNode) => void) {
 }
 
 export function findAllServerQueries(
-  node: ServerNode
+  node: ServerNode,
 ): ServerQueryWithOperation[] {
   const queries: ServerQueryWithOperation[] = [];
 
@@ -50,7 +50,7 @@ export function hasServerQueries(tree: ServerQueryTree): boolean {
 }
 
 export function findAllRepeatedContexts(
-  node: ServerNode
+  node: ServerNode,
 ): ServerRepeatedContextNode[] {
   const contexts: ServerRepeatedContextNode[] = [];
 
@@ -69,7 +69,7 @@ function findTestComponent(site: Site): Component {
 }
 
 function findAllVisibilityNodes(
-  node: ServerNode
+  node: ServerNode,
 ): ServerVisibilityContextNode[] {
   const result: ServerVisibilityContextNode[] = [];
   const stack = [node];
@@ -170,7 +170,7 @@ describe("Component server queries", () => {
       }
       // TestPage's visibility node is in the page's direct children
       const pageVisibilityNode = tree.rootNode.children.find(
-        (c) => c.type === "visibility"
+        (c) => c.type === "visibility",
       );
       expect(pageVisibilityNode).toBeDefined();
     });
@@ -213,7 +213,7 @@ describe("Component server queries", () => {
 
   describe("end-to-end: collect → serialize (JS code check)", () => {
     const advancedSite = generateSiteFromBundle(
-      _advancedBundle as [string, Bundle][]
+      _advancedBundle as [string, Bundle][],
     );
 
     it("should serialize with fn as direct JS reference and args as function", () => {
@@ -235,7 +235,7 @@ describe("Component server queries", () => {
       expect(serializedCode).toContain('type: "repeated"');
       // collectionExpr should be a function
       expect(serializedCode).toContain(
-        "collectionExpr: ({ $q, $props, $ctx, $state"
+        "collectionExpr: ({ $q, $props, $ctx, $state",
       );
       // Children of repeated nodes should destructure item vars
       expect(serializedCode).toContain("{ currentItem, currentIndex }");
@@ -246,7 +246,7 @@ describe("Component server queries", () => {
 
   describe("code component subtreePrefetchingConfig", () => {
     function mkSiteWithCodeComponentInstance(
-      subtreePrefetchingConfig?: boolean
+      subtreePrefetchingConfig?: boolean,
     ) {
       const site = createSite();
       const codeComponent = mkCodeComponent(
@@ -258,7 +258,7 @@ describe("Component server queries", () => {
             ? { subtreePrefetchingConfig }
             : {}),
         } as any,
-        {}
+        {},
       );
       const page = mkComponent({
         name: "TestPage",
@@ -279,7 +279,7 @@ describe("Component server queries", () => {
         exprCtx,
       });
       const node = tree.rootNode.children.find(
-        (c) => c.type === "codeComponent"
+        (c) => c.type === "codeComponent",
       );
       expect(node).toBeDefined();
       return node;
@@ -289,7 +289,7 @@ describe("Component server queries", () => {
       const { site, page, codeComponent } =
         mkSiteWithCodeComponentInstance(false);
       expect(codeComponent.codeComponentMeta?.subtreePrefetchingConfig).toBe(
-        false
+        false,
       );
 
       const node = collectCodeComponentNode(site, page);
@@ -299,7 +299,7 @@ describe("Component server queries", () => {
     it("defaults subtreePrefetchingConfig to true when unset in the registration", () => {
       const { site, page, codeComponent } = mkSiteWithCodeComponentInstance();
       expect(
-        codeComponent.codeComponentMeta?.subtreePrefetchingConfig
+        codeComponent.codeComponentMeta?.subtreePrefetchingConfig,
       ).toBeNull();
 
       const node = collectCodeComponentNode(site, page);

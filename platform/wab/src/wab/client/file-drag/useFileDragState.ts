@@ -14,7 +14,7 @@ export function useFileDragState(el: Element | null): FileDragState {
     el !== null && fileDragMonitor.isDraggingFilesOver(el)
       ? "draggingOver"
       : fileDragMonitor.isDraggingFiles()
-      ? "dragging"
-      : false
+        ? "dragging"
+        : false,
   );
 }

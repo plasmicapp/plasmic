@@ -74,7 +74,7 @@ describe("ViewportCtx", () => {
     expect(dom.updateCanvasPadding).toHaveBeenCalledWith(new Pt(950, 475));
 
     ctx.setClipperBox(
-      Box.fromRect({ left: 10, top: 20, width: 200, height: 800 })
+      Box.fromRect({ left: 10, top: 20, width: 200, height: 800 }),
     );
     expect(ctx.canvasPadding()).toEqual(new Pt(190, 760));
     expect(dom.updateCanvasPadding).toHaveBeenCalledWith(new Pt(190, 760));
@@ -242,7 +242,7 @@ describe("ViewportCtx", () => {
       Box.fromRect({ left: 0, top: 0, width: 400, height: 300 }),
       {
         minPadding: 50,
-      }
+      },
     );
     expect(ctx.scale()).toEqual(1);
     expect(dom.updateArenaSize).toHaveBeenCalledWith(new Pt(400, 300));
@@ -267,31 +267,31 @@ describe("ViewportCtx", () => {
     ctx.scaleAtMidPt(0.5);
     ctx.setScroll(new Pt(0, 0));
     expect(ctx.visibleScalerBox()).toEqual(
-      Box.fromRect({ left: -2000, top: -1000, width: 2000, height: 1000 })
+      Box.fromRect({ left: -2000, top: -1000, width: 2000, height: 1000 }),
     );
     ctx.setScroll(new Pt(1000, 500));
     expect(ctx.visibleScalerBox()).toEqual(
-      Box.fromRect({ left: 0, top: 0, width: 2000, height: 1000 })
+      Box.fromRect({ left: 0, top: 0, width: 2000, height: 1000 }),
     );
 
     ctx.scaleAtMidPt(1);
     ctx.setScroll(new Pt(0, 0));
     expect(ctx.visibleScalerBox()).toEqual(
-      Box.fromRect({ left: -1000, top: -500, width: 1000, height: 500 })
+      Box.fromRect({ left: -1000, top: -500, width: 1000, height: 500 }),
     );
     ctx.setScroll(new Pt(1000, 500));
     expect(ctx.visibleScalerBox()).toEqual(
-      Box.fromRect({ left: 0, top: 0, width: 1000, height: 500 })
+      Box.fromRect({ left: 0, top: 0, width: 1000, height: 500 }),
     );
 
     ctx.scaleAtMidPt(2);
     ctx.setScroll(new Pt(0, 0));
     expect(ctx.visibleScalerBox()).toEqual(
-      Box.fromRect({ left: -500, top: -250, width: 500, height: 250 })
+      Box.fromRect({ left: -500, top: -250, width: 500, height: 250 }),
     );
     ctx.setScroll(new Pt(1000, 500));
     expect(ctx.visibleScalerBox()).toEqual(
-      Box.fromRect({ left: 0, top: 0, width: 500, height: 250 })
+      Box.fromRect({ left: 0, top: 0, width: 500, height: 250 }),
     );
   });
   test("client/scaler conversions", () => {

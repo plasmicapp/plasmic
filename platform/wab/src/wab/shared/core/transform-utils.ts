@@ -168,7 +168,7 @@ function combineRotations(rotX: string, rotY: string, rotZ: string): string {
   const angleDeg = toDeg(angle);
 
   return `rotate3d(${ax.toFixed(6)}, ${ay.toFixed(6)}, ${az.toFixed(
-    6
+    6,
   )}, ${angleDeg.toFixed(4)}deg)`;
 }
 
@@ -199,7 +199,7 @@ function normalizeSingleTransformTo3dFormat(group: string): string {
       axesByType[base as TransformType][axis] = value;
       matchedAny = true;
       return _m;
-    }
+    },
   );
 
   if (!matchedAny) {
@@ -213,10 +213,10 @@ function normalizeSingleTransformTo3dFormat(group: string): string {
   const type: TransformType = touched("rotate")
     ? "rotate"
     : touched("translate")
-    ? "translate"
-    : touched("scale")
-    ? "scale"
-    : "skew";
+      ? "translate"
+      : touched("scale")
+        ? "scale"
+        : "skew";
 
   const t = axesByType[type];
 

@@ -31,7 +31,7 @@ describe("tests codegen for components starting with an underscore", () => {
     render(React.createElement(Card));
 
     const defaultCard = document.querySelector(
-      `[data-testid="default-id"]`
+      `[data-testid="default-id"]`,
     ) as HTMLElement;
     expect(getByText(defaultCard, "Default Card")).toBeDefined();
 
@@ -41,7 +41,7 @@ describe("tests codegen for components starting with an underscore", () => {
     render(React.createElement(PageWithCard));
 
     const card1 = document.querySelector(
-      `[data-testid="card-1"]`
+      `[data-testid="card-1"]`,
     ) as HTMLElement;
 
     expect(getByText(card1, "Card 1")).toBeDefined();

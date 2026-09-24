@@ -15,7 +15,7 @@ test.describe("dynamic-pages", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -64,13 +64,13 @@ test.describe("dynamic-pages", () => {
       await models.studio.leftPanel.insertNode("hostless-plasmic-head");
       await models.studio.bindPropToDynamicValue(
         '[data-test-id="prop-editor-row-title"] label',
-        ["Page URL path params", "name"]
+        ["Page URL path params", "name"],
       );
 
       await models.studio.withinLiveMode(async (liveFrame) => {
         // Dynamic value on a sub-node appends a dynamic pill to existing static text
         await expect(
-          liveFrame.locator("#plasmic-app .__wab_text").first()
+          liveFrame.locator("#plasmic-app .__wab_text").first(),
         ).toContainText("Hello XXXWorld!");
       });
     });
@@ -80,7 +80,7 @@ test.describe("dynamic-pages", () => {
       await models.studio.leftPanel.insertText();
       await indexFrame.locator(".__wab_editor").dblclick({ force: true });
       const indexContentEditable = indexFrame.locator(
-        '[contenteditable="true"]'
+        '[contenteditable="true"]',
       );
       await indexContentEditable.fill("");
       await indexContentEditable.fill("Say hello to NAME");
@@ -92,7 +92,7 @@ test.describe("dynamic-pages", () => {
       await models.studio.focusFrameRoot(indexFrame);
       await models.studio.leftPanel.selectTreeNode(['"Say hello to [child]"']);
       await models.studio.rightPanel.repeatOnCustomCode(
-        '["foo", "bar", "baz"]'
+        '["foo", "bar", "baz"]',
       );
 
       await models.studio.leftPanel.selectTreeNode([
@@ -115,7 +115,7 @@ test.describe("dynamic-pages", () => {
       await models.studio.waitForSave();
       await models.studio.bindPropToDynamicValue(
         '[data-test-id="prop-editor-row-name"] label',
-        ["currentItem"]
+        ["currentItem"],
       );
       await models.studio.waitForSave();
 
@@ -139,7 +139,7 @@ test.describe("dynamic-pages", () => {
         await links.first().click();
         await page.waitForTimeout(1000);
         await expect(
-          liveFrame.locator("#plasmic-app .__wab_text").first()
+          liveFrame.locator("#plasmic-app .__wab_text").first(),
         ).toContainText("Hello XXXWorldfoo!");
         await expect(page).toHaveURL(/\/preview\/hello\/Worldfoo\/a\/b/);
       });
@@ -164,7 +164,7 @@ test.describe("dynamic-pages", () => {
 
       await models.studio.withinLiveMode(async (liveFrame) => {
         await expect(
-          liveFrame.locator("#plasmic-app .__wab_text").first()
+          liveFrame.locator("#plasmic-app .__wab_text").first(),
         ).toContainText(`Hello XXX${name}!`);
       });
 
@@ -186,13 +186,13 @@ test.describe("dynamic-pages", () => {
       await models.studio.waitForSave();
 
       const hrefPreview = models.studio.frame.locator(
-        '[data-test-id="prop-editor-row-href-preview"]'
+        '[data-test-id="prop-editor-row-href-preview"]',
       );
       await expect(hrefPreview).toContainText(expectedEncodedPath);
 
       // Toggle "Encode?" off, then back on
       const encodeToggle = models.studio.frame.locator(
-        '[data-test-id="page-href-encode"] [data-plasmic-prop="encode"]'
+        '[data-test-id="page-href-encode"] [data-plasmic-prop="encode"]',
       );
       await encodeToggle.click();
       await expect(hrefPreview).toContainText(excepetdRawPath);
@@ -209,10 +209,10 @@ test.describe("dynamic-pages", () => {
         await link.click();
         await page.waitForTimeout(1000);
         await expect(
-          liveFrame.locator("#plasmic-app .__wab_text").first()
+          liveFrame.locator("#plasmic-app .__wab_text").first(),
         ).toContainText(`Hello XXX${name}!`);
         await expect(page).toHaveURL(
-          new RegExp(`/preview${expectedEncodedPath}`)
+          new RegExp(`/preview${expectedEncodedPath}`),
         );
       });
     });

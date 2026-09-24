@@ -11,7 +11,7 @@ import { VariantSetting } from "@/wab/shared/model/classes";
 export function serializeDataConds(
   variantSettings: VariantSetting[],
   variantComboChecker: VariantComboChecker,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ) {
   const condVariants = variantSettings.filter((v) => !!v.dataCond);
 
@@ -27,8 +27,8 @@ export function serializeDataConds(
       (vs) =>
         getRawCode(
           ensure(vs.dataCond, "condVariants all have dataCond"),
-          exprCtx
-        ) === "true"
+          exprCtx,
+        ) === "true",
     )
   ) {
     return "";
@@ -43,11 +43,11 @@ export function serializeDataConds(
     condVariants.map((vs) =>
       tuple(
         getRawCode(ensure(vs.dataCond, "unexpected nullish dataCond"), exprCtx),
-        vs.variants
-      )
+        vs.variants,
+      ),
     ),
     variantComboChecker,
-    "true"
+    "true",
   ).value;
   return `${condStr}`;
 }

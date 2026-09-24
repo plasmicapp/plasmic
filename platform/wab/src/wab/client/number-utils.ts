@@ -1,6 +1,6 @@
 export function nudgeIntoRange(
   n: number,
-  { min, max }: { min: number; max: number }
+  { min, max }: { min: number; max: number },
 ) {
   return Math.min(max, Math.max(min, n));
 }

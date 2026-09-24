@@ -69,12 +69,12 @@ export function pinStateToPlasmicPinState(pinState?: VariantPinState) {
   return pinState.startsWith("selected")
     ? "selected"
     : pinState === "pinned-true"
-    ? "pinnedTrue"
-    : pinState === "pinned-false"
-    ? "pinnedFalse"
-    : pinState === "evaluated-true"
-    ? "evaluatedTrue"
-    : undefined;
+      ? "pinnedTrue"
+      : pinState === "pinned-false"
+        ? "pinnedFalse"
+        : pinState === "evaluated-true"
+          ? "evaluatedTrue"
+          : undefined;
 }
 
 const VariantRow = observer(function VariantRow(props: VariantRowProps) {
@@ -118,7 +118,7 @@ const VariantRow = observer(function VariantRow(props: VariantRowProps) {
     isTplVariantable(tpl) &&
     maybe(
       tryGetVariantSetting(tpl, Array.isArray(variant) ? variant : [variant]),
-      (vs) => (isVariantSettingEmpty(vs) ? undefined : vs)
+      (vs) => (isVariantSettingEmpty(vs) ? undefined : vs),
     );
 
   const hasAnimations = !!addAnimationLayer;
@@ -130,10 +130,10 @@ const VariantRow = observer(function VariantRow(props: VariantRowProps) {
         (isBase
           ? "baseVariant"
           : isStandalone
-          ? "toggle"
-          : isSplitVariant
-          ? "splitVariant"
-          : undefined)
+            ? "toggle"
+            : isSplitVariant
+              ? "splitVariant"
+              : undefined)
       }
       pinState={pinStateToPlasmicPinState(pinState)}
       variantPinButton={{
@@ -227,9 +227,9 @@ const VariantRow = observer(function VariantRow(props: VariantRowProps) {
                     isTplVariantable(tpl)
                       ? getEffectiveVariantSetting(
                           tpl,
-                          indicatedVs?.variants
+                          indicatedVs?.variants,
                         ).rsh()
-                      : undefined
+                      : undefined,
                   )}"`}
                 </VariantSettingPopoverTitle>
               ),

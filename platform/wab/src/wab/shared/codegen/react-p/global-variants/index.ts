@@ -56,7 +56,7 @@ export function makeGlobalVariantComboChecker(_site: Site) {
 
 export function serializeGlobalVariantValues(
   groups: Set<VariantGroup>,
-  projectModuleBundle: ProjectModuleBundle | undefined
+  projectModuleBundle: ProjectModuleBundle | undefined,
 ) {
   if (groups.size === 0) {
     return "";
@@ -112,14 +112,14 @@ export function serializeUseGlobalVariants(groups: Set<VariantGroup>) {
 export function getUsedGlobalVariantGroups(
   siteGenHelper: SiteGenHelper,
   component: Component,
-  projectFlags: DevFlagsType
+  projectFlags: DevFlagsType,
 ) {
   return getReferencedVariantGroups([
     ...extractUsedGlobalVariantsForComponents(
       siteGenHelper.site,
       [component],
       projectFlags.usePlasmicImg,
-      siteGenHelper.allStyleTokensAndOverridesDict()
+      siteGenHelper.allStyleTokensAndOverridesDict(),
     ),
     // These global variants are not necessarily used by the component, but they contribute to varianted values of style tokens, which may be used within the component's slots, so we still include them.
     ...siteGenHelper.contextGlobalVariantsWithVariantedTokens(),
@@ -133,13 +133,13 @@ export function getUsedGlobalVariantGroups(
  * All codegen'd React components in the given site must read from these global variants' context to apply token CSS changes (even though they may not use the tokens directly).
  */
 export function getContextGlobalVariantsWithVariantedTokens(
-  allTokens: ReadonlyArray<FinalToken<StyleToken>>
+  allTokens: ReadonlyArray<FinalToken<StyleToken>>,
 ) {
   return uniqBy(
     allTokens
       .map((t) => t.variantedValues.flatMap((v) => v.variants))
       .flat()
       .filter((v) => v.parent && !isMediaQueryVariantGroup(v.parent)),
-    (v) => v.uuid
+    (v) => v.uuid,
   );
 }

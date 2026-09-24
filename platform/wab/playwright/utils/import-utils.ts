@@ -4,7 +4,7 @@ import { StudioModel } from "../models/studio-model";
 export async function importProject(
   page: Page,
   studio: StudioModel,
-  projectId: string
+  projectId: string,
 ) {
   const isImportedPanelVisible = await studio.leftPanel.frame
     .getByText("Imported projects")
@@ -49,13 +49,13 @@ export async function updateAllImports(page: Page, studio: StudioModel) {
   await studio.leftPanel.switchToImportsTab();
 
   const checkButton = studio.frame.locator(
-    '[data-test-id="check-for-updates-btn"]'
+    '[data-test-id="check-for-updates-btn"]',
   );
   await checkButton.waitFor({ state: "visible", timeout: 5000 });
   await checkButton.click();
 
   const updateButtons = studio.frame.locator(
-    `.SidebarSectionListItem button svg`
+    `.SidebarSectionListItem button svg`,
   );
 
   const hasUpdates = await updateButtons
@@ -139,7 +139,7 @@ export async function removeAllDependencies(page: Page, studio: StudioModel) {
 
     if (!clickSucceeded) {
       throw new Error(
-        "Failed to right-click on dependency item after 3 attempts"
+        "Failed to right-click on dependency item after 3 attempts",
       );
     }
 
@@ -161,7 +161,7 @@ export async function removeAllDependencies(page: Page, studio: StudioModel) {
     const newCount = await listItems.count();
     if (newCount >= itemsRemaining) {
       throw new Error(
-        `Failed to remove dependency item. Count before: ${itemsRemaining}, after: ${newCount}`
+        `Failed to remove dependency item. Count before: ${itemsRemaining}, after: ${newCount}`,
       );
     }
     itemsRemaining = newCount;

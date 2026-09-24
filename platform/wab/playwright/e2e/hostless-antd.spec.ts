@@ -20,7 +20,7 @@ test.describe("hostless-antd", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -32,7 +32,7 @@ test.describe("hostless-antd", () => {
       await models.studio.leftPanel.insertNode("AntdInput");
       await models.studio.leftPanel.insertNode("Text");
       const disablePane1 = models.studio.frame.locator(
-        ".canvas-editor__disable-right-pane"
+        ".canvas-editor__disable-right-pane",
       );
       const count1 = await disablePane1.count();
       if (count1 > 0) {
@@ -50,7 +50,7 @@ test.describe("hostless-antd", () => {
       await models.studio.leftPanel.insertNode("AntdCheckbox");
       await models.studio.leftPanel.insertNode("Text");
       const disablePane2 = models.studio.frame.locator(
-        ".canvas-editor__disable-right-pane"
+        ".canvas-editor__disable-right-pane",
       );
       const count2 = await disablePane2.count();
       if (count2 > 0) {
@@ -64,7 +64,7 @@ test.describe("hostless-antd", () => {
       });
       await models.studio.useDynamicValueButton.click();
       await models.studio.rightPanel.insertMonacoCode(
-        '$state.antdCheckbox.value ? "Checkbox checked!" : "Checkbox not checked"'
+        '$state.antdCheckbox.value ? "Checkbox checked!" : "Checkbox not checked"',
       );
 
       await models.studio.withinLiveMode(async (liveFrame) => {
@@ -74,7 +74,7 @@ test.describe("hostless-antd", () => {
         await liveFrame.locator(".ant-input").fill("hello input!");
         await expect(liveFrame.locator(".ant-input")).toHaveAttribute(
           "value",
-          "hello input!"
+          "hello input!",
         );
         await expect(liveFrame.getByText("hello input!")).toBeVisible();
 

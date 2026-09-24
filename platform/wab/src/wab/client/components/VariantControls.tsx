@@ -67,7 +67,7 @@ const VariantLabel_: ForwardRefRenderFunction<
     programmaticallyTriggered,
     useGroupNameForSplits,
   }: VariantLabelProps,
-  ref: React.Ref<EditableLabelHandles>
+  ref: React.Ref<EditableLabelHandles>,
 ) => {
   const studioCtx = useStudioCtx();
   const viewCtx = studioCtx.focusedViewCtx()!;
@@ -88,7 +88,7 @@ const VariantLabel_: ForwardRefRenderFunction<
       studioCtx.changeUnsafe(() => {
         studioCtx.siteOps().tryRenameVariant(variant, newName);
         onRenamed?.(newName);
-      })
+      }),
     );
   };
 
@@ -108,7 +108,7 @@ const VariantLabel_: ForwardRefRenderFunction<
         {
           [S.variantLabelInput__recording]: isRecording,
         },
-        inputBoxClassName
+        inputBoxClassName,
       )}
       inputBoxPlaceholder={`${VARIANT_CAP} name`}
     >
@@ -182,7 +182,7 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
           .siteOps()
           .removeStyleOrCodeComponentVariantIfDuplicateOrEmpty(
             component,
-            variant
+            variant,
           );
       });
     }
@@ -195,12 +195,12 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
     () => () => {
       spawn(maybeSubmitRef.current({ force: true }));
     },
-    []
+    [],
   );
 
   useEffect(() => {
     setChosenSelectors(
-      styleOrCodeComponentVariantToSelectors(variant, studioCtx.site)
+      styleOrCodeComponentVariantToSelectors(variant, studioCtx.site),
     );
   }, [toVariantKey(variant)]);
 
@@ -243,7 +243,7 @@ export const StyleVariantEditor = observer(function StyleVariantEditor_({
 });
 
 export const StyleOrCodeComponentVariantLabel = observer(
-  forwardRef(StyleOrCodeComponentVariantLabel_)
+  forwardRef(StyleOrCodeComponentVariantLabel_),
 );
 function StyleOrCodeComponentVariantLabel_(
   props: {
@@ -255,7 +255,7 @@ function StyleOrCodeComponentVariantLabel_(
     forRoot?: boolean;
     component: Component;
   },
-  ref: React.Ref<EditableLabelHandles>
+  ref: React.Ref<EditableLabelHandles>,
 ) {
   const studioCtx = useStudioCtx();
   const { defaultEditing, variant, forTag, forRoot, component } = props;
@@ -266,7 +266,7 @@ function StyleOrCodeComponentVariantLabel_(
 
   useEffect(() => {
     setChosenSelectors(
-      styleOrCodeComponentVariantToSelectors(variant, studioCtx.site)
+      styleOrCodeComponentVariantToSelectors(variant, studioCtx.site),
     );
   }, [toVariantKey(variant)]);
 
@@ -307,10 +307,10 @@ function StyleOrCodeComponentVariantLabel_(
                       .siteOps()
                       .removeStyleOrCodeComponentVariantIfDuplicateOrEmpty(
                         component,
-                        variant
+                        variant,
                       );
                     return ok();
-                  })
+                  }),
                 );
 
                 props.onBlur && props.onBlur();

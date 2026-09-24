@@ -1,5 +1,5 @@
 import { ensure, tuple } from "@/wab/shared/common";
-import { isKnownType, Param } from "@/wab/shared/model/classes";
+import { Param, isKnownType } from "@/wab/shared/model/classes";
 import L from "lodash";
 // import { componentMetasStr as ReactMetasStr } from "./component-metas/react-meta-gen";
 import {
@@ -35,10 +35,10 @@ function adjust(props: PropMeta[]): PropMeta[] {
     prop.name === "defaultChecked"
       ? propNames.has("checked")
       : prop.name === "defaultValue"
-      ? propNames.has("value")
-      : prop.name === "onChange"
-      ? propNames.has("value") || propNames.has("checked")
-      : true
+        ? propNames.has("value")
+        : prop.name === "onChange"
+          ? propNames.has("value") || propNames.has("checked")
+          : true,
   );
 }
 
@@ -49,9 +49,9 @@ function mkMapForPkg(metas: ComponentMeta[]) {
         ({ component, props }) =>
           tuple(
             component,
-            L.sortBy(adjust(props), (prop) => prop.name.toLowerCase())
-          ) as [string, PropMeta[]]
-      )
+            L.sortBy(adjust(props), (prop) => prop.name.toLowerCase()),
+          ) as [string, PropMeta[]],
+      ),
     ),
   };
 }
@@ -60,7 +60,7 @@ let reactMetas: { components: Map<string, PropMeta[]> } | undefined = undefined;
 export function getReactMetas() {
   if (!reactMetas) {
     const uncompressedReactMeta = uncompressReactMeta(
-      JSON.parse(compressedReactMetaString)
+      JSON.parse(compressedReactMetaString),
     );
 
     // Ensures that the uncompressed data is the same as the original one
@@ -152,13 +152,13 @@ export class MetaSvc {
         tag,
         ensure(
           getReactMetas().components.get(tag),
-          `react metas not found for tag ${tag}`
-        )
+          `react metas not found for tag ${tag}`,
+        ),
       );
     }
     return ensure(
       this.tagNameToParams[tag],
-      `params not generated for tag ${tag}`
+      `params not generated for tag ${tag}`,
     );
   }
 
@@ -166,14 +166,14 @@ export class MetaSvc {
     if (!L.has(this.tagNameToEventHandlers, tag)) {
       this.tagNameToEventHandlers[tag] = ensure(
         getReactMetas().components.get(tag),
-        `react metas not found for tag ${tag}`
+        `react metas not found for tag ${tag}`,
       )
         .filter((propMeta) => propMeta.name.startsWith("on"))
         .map((propMeta) => propMeta.name);
     }
     return ensure(
       this.tagNameToEventHandlers[tag],
-      `handler functions not generated for tag ${tag}`
+      `handler functions not generated for tag ${tag}`,
     );
   }
 
@@ -196,7 +196,7 @@ export class MetaSvc {
   isMajorComponentProp(tag: string, prop: string) {
     const propMetas = ensure(
       getReactMetas().components.get(tag),
-      `react metas not found for tag ${tag}`
+      `react metas not found for tag ${tag}`,
     );
     return (
       majorProps.has(prop) ||
@@ -207,7 +207,7 @@ export class MetaSvc {
           (propMeta) =>
             propMeta.name === prop &&
             (!propMeta.origin ||
-              (L.isString(propMeta.origin) && !isBaseOrigin(propMeta.origin)))
+              (L.isString(propMeta.origin) && !isBaseOrigin(propMeta.origin))),
         ))
     );
   }
@@ -223,12 +223,12 @@ function uncompressReactMeta(compressedReactMeta: CompressedReactMeta) {
   Object.entries(tag2keys).forEach(([tag, keys]) => {
     const props: any[] = [];
     keys.forEach((key) =>
-      props.push(ensure(key2prop[key], `prop not found for key ${key}`))
+      props.push(ensure(key2prop[key], `prop not found for key ${key}`)),
     );
     largeCliques.forEach((clique) => {
       if (clique.tags.includes(tag)) {
         clique.keys.forEach((key) =>
-          props.push(ensure(key2prop[key], `prop not found for key ${key}`))
+          props.push(ensure(key2prop[key], `prop not found for key ${key}`)),
         );
       }
     });
@@ -238,7 +238,7 @@ function uncompressReactMeta(compressedReactMeta: CompressedReactMeta) {
     res.push({
       component: tag,
       props: props.sort((prop1, prop2) =>
-        lexicographicalComp(prop1.name, prop2.name)
+        lexicographicalComp(prop1.name, prop2.name),
       ),
     });
   });

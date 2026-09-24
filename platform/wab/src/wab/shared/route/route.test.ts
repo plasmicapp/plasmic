@@ -9,7 +9,7 @@ describe("Route", () => {
   test("fill adds query", () => {
     expect(abOpt.fill({ a: "foo" }, "q=qux")).toEqual("/foo?q=qux");
     expect(abOpt.fill({ a: "foo" }, { p: "poo", q: "qux" })).toEqual(
-      "/foo?p=poo&q=qux"
+      "/foo?p=poo&q=qux",
     );
   });
 
@@ -50,7 +50,7 @@ describe("Route", () => {
 
   function expectToNotParse<PathParams extends {}>(
     r: Route<PathParams>,
-    path: string
+    path: string,
   ) {
     expect(r.parse(path, false)).toBeNull();
     expect(r.parse(path, true)).toBeNull();
@@ -64,7 +64,7 @@ describe("Route", () => {
     r: Route<PathParams>,
     path: string,
     params: PathParams,
-    matchLevel: typeof prefix | typeof exact | typeof roundTrip
+    matchLevel: typeof prefix | typeof exact | typeof roundTrip,
   ) {
     expect(r.parse(path, false)).toEqual(params);
 

@@ -31,7 +31,7 @@ async function runAppServer(config: Config) {
       addInternalIntegrationsRoutes(app_);
     },
     undefined,
-    { skipSession: true }
+    { skipSession: true },
   );
   return runExpressApp(app);
 }

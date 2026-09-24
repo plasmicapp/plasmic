@@ -3,7 +3,7 @@ import type { FullCodeEditorProps } from "@/wab/client/components/coding/FullCod
 import * as React from "react";
 
 const _LazyFullCodeEditor = React.lazy(
-  () => import("@/wab/client/components/coding/FullCodeEditor")
+  () => import("@/wab/client/components/coding/FullCodeEditor"),
 );
 
 const LazyFullCodeEditor = React.forwardRef(
@@ -11,7 +11,7 @@ const LazyFullCodeEditor = React.forwardRef(
     <React.Suspense fallback={<div />}>
       <_LazyFullCodeEditor ref={ref} {...props} />
     </React.Suspense>
-  )
+  ),
 );
 
 export default LazyFullCodeEditor;

@@ -19,7 +19,7 @@ test.describe("state-management-conditional-actions", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -66,7 +66,7 @@ test.describe("state-management-conditional-actions", () => {
           await expect(
             liveFrame
               .locator("#plasmic-app div")
-              .getByText(`action${i + 1}: ${expected[i]}`)
+              .getByText(`action${i + 1}: ${expected[i]}`),
           ).toBeVisible();
         }
       };

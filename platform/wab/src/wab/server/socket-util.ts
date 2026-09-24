@@ -52,7 +52,7 @@ export async function emitUserToken(
   req: Request,
   email: string,
   initToken: string,
-  authToken: string
+  authToken: string,
 ) {
   const socketHost = getSocketHost();
 

@@ -122,7 +122,7 @@ class SpacingControl_ extends StyleComponent<
 
   private changeSelectionSingle = (
     side: /*TWZ*/ string,
-    { mode }: /*TWZ*/ { mode: string }
+    { mode }: /*TWZ*/ { mode: string },
   ) => {
     const oldSel = this.state.selection;
     // Toggle selection state
@@ -179,7 +179,7 @@ class SpacingControl_ extends StyleComponent<
 
   private selectedStyleProps() {
     return this.selectedSides().map(
-      (side) => `${this.props.spacingStyleProp}-${side}`
+      (side) => `${this.props.spacingStyleProp}-${side}`,
     );
   }
 
@@ -255,19 +255,21 @@ class SpacingControl_ extends StyleComponent<
             if (popoverContainer) {
               yield* Array.from(
                 popoverContainer.querySelectorAll(
-                  "polyline.spacing-control__handle"
-                )
+                  "polyline.spacing-control__handle",
+                ),
               );
             }
             if (container) {
               yield* Array.from(
-                container.querySelectorAll(`[data-plasmic-role="labeled-item"]`)
+                container.querySelectorAll(
+                  `[data-plasmic-role="labeled-item"]`,
+                ),
               );
             }
             yield* Array.from(
               document.querySelectorAll(
-                INTERACT_OUTSIDE_EXCEPTION_SELECTORS.join(",")
-              )
+                INTERACT_OUTSIDE_EXCEPTION_SELECTORS.join(","),
+              ),
             );
           }
           return Array.from(gen());
@@ -358,19 +360,19 @@ class SpacingControl_ extends StyleComponent<
                         }
                       })();
                       let numericSize = this.exp().get(
-                        `${spacingStyleProp}-${side}`
+                        `${spacingStyleProp}-${side}`,
                       );
                       if (numericSize === "auto") {
                         numericSize = getCssInitial(
                           `${spacingStyleProp}-${side}`,
-                          "div"
+                          "div",
                         );
                       }
                       const maybeTokenValue = lazyDerefTokenRefsWithDeps(
                         numericSize,
                         this.studioCtx().site,
                         "Spacing",
-                        vsh
+                        vsh,
                       );
                       const isDraggingDisabled =
                         !isDraggableSize(maybeTokenValue);
@@ -378,7 +380,7 @@ class SpacingControl_ extends StyleComponent<
                         <Tooltip
                           open={false}
                           title={getLabelForStyleName(
-                            `${spacingStyleProp}-${side}`
+                            `${spacingStyleProp}-${side}`,
                           )}
                           key={`${spacingStyleProp} ${side}`}
                         >
@@ -398,14 +400,14 @@ class SpacingControl_ extends StyleComponent<
                                       justDragged: false,
                                     }));
                                     setInitDim(
-                                      parseNumericSize(maybeTokenValue)
+                                      parseNumericSize(maybeTokenValue),
                                     );
                                   }}
                                   onDrag={(e) => {
                                     this.change(() => {
                                       const { num, unit } = ensure(
                                         initDim,
-                                        "onDrag listener expects a initDim"
+                                        "onDrag listener expects a initDim",
                                       );
                                       if (!this.state.justDragged) {
                                         this.setState({
@@ -418,9 +420,9 @@ class SpacingControl_ extends StyleComponent<
                                             num +
                                               xFactor * e.data.deltaX +
                                               yFactor * e.data.deltaY,
-                                            unit
-                                          )
-                                        )
+                                            unit,
+                                          ),
+                                        ),
                                       );
                                     });
                                   }}
@@ -449,8 +451,8 @@ class SpacingControl_ extends StyleComponent<
                                       side === "top"
                                         ? this.topPart
                                         : side === "left"
-                                        ? this.leftPart
-                                        : undefined
+                                          ? this.leftPart
+                                          : undefined
                                     }
                                     transform={`translate(${left},${top})`}
                                     points={points}
@@ -458,7 +460,7 @@ class SpacingControl_ extends StyleComponent<
                                     onContextMenu={(ev) =>
                                       this.showStyleContextMenu(
                                         ev,
-                                        `${spacingStyleProp}-${side}`
+                                        `${spacingStyleProp}-${side}`,
                                       )
                                     }
                                   />
@@ -482,8 +484,8 @@ class SpacingControl_ extends StyleComponent<
                             ? { height: this.state.yThickness }
                             : undefined
                           : this.state.xThickness
-                          ? { width: this.state.xThickness }
-                          : undefined
+                            ? { width: this.state.xThickness }
+                            : undefined
                       }
                     >
                       <div className={"spacing-control__num"}>

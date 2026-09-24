@@ -4,7 +4,7 @@ import { composePaginateRest } from "@octokit/plugin-paginate-rest";
 
 export async function fetchGithubBranches(
   installationId: number,
-  repository: string
+  repository: string,
 ) {
   const [owner, repo] = repository.split("/");
   const branches: string[] = [];
@@ -14,7 +14,7 @@ export async function fetchGithubBranches(
     app,
     installationId,
     owner,
-    repo
+    repo,
   )) {
     branches.push(branch.name);
   }
@@ -26,7 +26,7 @@ function branchesIterator(
   app: App,
   installationId: number,
   owner: string,
-  repo: string
+  repo: string,
 ) {
   return {
     async *[Symbol.asyncIterator]() {
@@ -34,7 +34,7 @@ function branchesIterator(
       const iterator = composePaginateRest.iterator(
         octokit,
         "GET /repos/{owner}/{repo}/branches",
-        { owner, repo }
+        { owner, repo },
       );
 
       for await (const { data: branches } of iterator) {
@@ -49,7 +49,7 @@ function branchesIterator(
 export async function getDefaultBranch(
   installationId: number,
   owner: string,
-  repo: string
+  repo: string,
 ) {
   const app = getGithubApp();
   const octokit = await app.getInstallationOctokit(installationId);

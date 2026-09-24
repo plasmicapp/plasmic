@@ -67,7 +67,7 @@ export function makeWabSlotClassName(opts: Pick<ExportOpts, "targetEnv">) {
 }
 
 export function makeWabSlotStringWrapperClassName(
-  opts: Pick<ExportOpts, "targetEnv">
+  opts: Pick<ExportOpts, "targetEnv">,
 ) {
   return opts.targetEnv === "loader"
     ? `${shortPlasmicPrefix}sw`
@@ -85,7 +85,7 @@ export function makeWabHtmlTextClassName(opts: Pick<ExportOpts, "targetEnv">) {
 }
 
 export function makeDefaultStyleClassNameBase(
-  opts: Pick<ExportOpts, "targetEnv">
+  opts: Pick<ExportOpts, "targetEnv">,
 ) {
   return opts.targetEnv === "loader"
     ? `${shortPlasmicPrefix}d`
@@ -93,7 +93,7 @@ export function makeDefaultStyleClassNameBase(
 }
 
 export function makeDefaultStyleCompWrapperClassName(
-  opts: Pick<ExportOpts, "targetEnv">
+  opts: Pick<ExportOpts, "targetEnv">,
 ) {
   return `${makeDefaultStyleClassNameBase(opts)}${
     opts.targetEnv === "loader" ? "c" : "__component_wrapper"
@@ -101,7 +101,7 @@ export function makeDefaultStyleCompWrapperClassName(
 }
 
 export function makeDefaultInlineClassName(
-  opts: Pick<ExportOpts, "targetEnv">
+  opts: Pick<ExportOpts, "targetEnv">,
 ) {
   return `${makeDefaultStyleClassNameBase(opts)}${
     opts.targetEnv === "loader" ? "n" : "__inline"
@@ -121,7 +121,7 @@ export function makeDefaultInlineClassName(
  */
 export function makeRootResetClassName(
   siteUidString: string,
-  opts: SetRequired<Partial<ExportOpts>, "targetEnv">
+  opts: SetRequired<Partial<ExportOpts>, "targetEnv">,
 ) {
   if (opts.targetEnv === "loader") {
     return `${shortPlasmicPrefix}r-${siteUidString.slice(0, 5)}`;
@@ -145,7 +145,7 @@ export function makeRootResetClassName(
  * ```
  */
 export function makePlasmicDefaultStylesClassName(
-  opts: Pick<ExportOpts, "targetEnv">
+  opts: Pick<ExportOpts, "targetEnv">,
 ) {
   return opts.targetEnv === "loader"
     ? `${shortPlasmicPrefix}dss`
@@ -170,7 +170,7 @@ export function makePlasmicDefaultStylesClassName(
  */
 export function makePlasmicTokensClassName(
   projectId: ProjectId,
-  opts: SetRequired<Partial<ExportOpts>, "targetEnv">
+  opts: SetRequired<Partial<ExportOpts>, "targetEnv">,
 ) {
   if (opts.targetEnv === "loader") {
     return `${shortPlasmicPrefix}tns-${makeShortProjectId(projectId)}`;
@@ -192,7 +192,7 @@ export function makePlasmicTokensClassName(
  */
 export function makePlasmicTokensOverrideClassName(
   projectId: ProjectId,
-  opts: SetRequired<Partial<ExportOpts>, "targetEnv">
+  opts: SetRequired<Partial<ExportOpts>, "targetEnv">,
 ) {
   if (opts.targetEnv === "loader") {
     return `${shortPlasmicPrefix}otns-${makeShortProjectId(projectId)}`;
@@ -219,7 +219,7 @@ export function makePlasmicTokensOverrideClassName(
  * ```
  */
 export function makePlasmicMixinsClassName(
-  opts: Pick<ExportOpts, "targetEnv">
+  opts: Pick<ExportOpts, "targetEnv">,
 ) {
   return opts.targetEnv === "loader"
     ? `${shortPlasmicPrefix}mns`
@@ -242,7 +242,7 @@ export function makeStylesImports(
   component: Component,
   projectConfig: ProjectConfig,
   opts: ExportOpts,
-  scheme: CodegenScheme = "blackbox"
+  scheme: CodegenScheme = "blackbox",
 ) {
   const useCssModules = opts.stylesOpts.scheme === "css-modules";
   // Next.js Pages Router rejects first-party non-module CSS imports outside
@@ -257,8 +257,8 @@ export function makeStylesImports(
     const importName = !useCssModules
       ? ""
       : opts.platform === "gatsby"
-      ? `* as ${name} from`
-      : `${name} from`;
+        ? `* as ${name} from`
+        : `${name} from`;
     const ext = useCssModules ? ".module.css" : ".css";
     return `import ${importName} "./${stripExtension(path, true)}${ext}"`;
   };
@@ -275,7 +275,7 @@ export function makeStylesImports(
       useCssModules || skipProjectCssImport
         ? ""
         : `${projectCssImport(
-            makeDefaultStyleCssFileName(opts)
+            makeDefaultStyleCssFileName(opts),
           )}; // plasmic-import: global/${defaultStyleCssImportName}`
     }
     ${
@@ -284,10 +284,10 @@ export function makeStylesImports(
             .map(
               (dep) =>
                 `${projectCssImport(
-                  makeProjectCssFileName(dep.projectId as ProjectId, opts)
+                  makeProjectCssFileName(dep.projectId as ProjectId, opts),
                 )} // plasmic-import: ${
                   dep.projectId
-                }/${projectStyleCssImportName}`
+                }/${projectStyleCssImportName}`,
             )
             .join("\n")
         : ""
@@ -304,8 +304,8 @@ export function makeStylesImports(
       opts.idFileNames
         ? makeComponentCssIdFileName(component)
         : scheme === "blackbox"
-        ? makePlasmicComponentName(component)
-        : getExportedComponentName(component)
+          ? makePlasmicComponentName(component)
+          : getExportedComponentName(component),
     )} // plasmic-import: ${component.uuid}/css
   `;
 }
@@ -426,7 +426,7 @@ const NEXT_RSC_RESERVED_PAGE_NAMES = new Set([
  * with Next.js App Router reserved names (e.g. `page.tsx`, `layout.tsx`).
  */
 export function pagePathConflictsWithAppRouter(
-  pagePath: string | undefined
+  pagePath: string | undefined,
 ): boolean {
   if (!pagePath) {
     return false;
@@ -462,7 +462,7 @@ export interface PageSearchParamsUsage {
  * Detects if the page (including referenced components) reads `$ctx.query`.
  */
 export function getPageSearchParamsUsage(
-  component: Component
+  component: Component,
 ): PageSearchParamsUsage {
   const usage = { inRenderTree: false, outsideRenderTree: false };
   if (!isPageComponent(component)) {
@@ -470,7 +470,7 @@ export function getPageSearchParamsUsage(
   }
   for (const comp of componentToDeepReferenced(component)) {
     const renderExprs = new Set(
-      findExprsInTree(comp.tplTree).map((ref) => ref.expr)
+      findExprsInTree(comp.tplTree).map((ref) => ref.expr),
     );
     for (const { expr } of findExprsInComponent(comp)) {
       if (exprReferencesSearchParams(expr)) {
@@ -494,7 +494,7 @@ export function isDynamicPagePath(pagePath: string | undefined): boolean {
 
 export function getSkeletonModuleFileName(
   component: Component,
-  opts: ExportOpts
+  opts: ExportOpts,
 ): string {
   if (opts.idFileNames) {
     return `${makeComponentSkeletonIdFileName(component)}.tsx`;
@@ -517,7 +517,7 @@ export function getSkeletonModuleFileName(
 // GlobalContextsProviderProps and in loader's globalContextsProps.
 export function makeGlobalContextPropName(
   comp: Component,
-  aliases?: Map<Component, string>
+  aliases?: Map<Component, string>,
 ) {
   const componentName =
     aliases?.get(comp) ??
@@ -548,7 +548,7 @@ export function makeStyleTokensProviderImports(
   imports: {
     styleTokensProvider?: boolean;
     useStyleTokens?: boolean;
-  }
+  },
 ) {
   const importNames: string[] = [];
   if (imports.styleTokensProvider) {
@@ -565,24 +565,24 @@ export function makeStyleTokensProviderImports(
     importNames,
     source.fileName,
     source.id,
-    "styleTokensProvider"
+    "styleTokensProvider",
   );
 }
 
 export function makeProjectModuleImports(
-  projectModuleBundle: ProjectModuleBundle
+  projectModuleBundle: ProjectModuleBundle,
 ) {
   return makeTaggedPlasmicImport(
     makeUseGlobalVariantsName(),
     projectModuleBundle.fileName,
     projectModuleBundle.id,
-    "projectModule"
+    "projectModule",
   );
 }
 
 export function makeGlobalGroupImports(
   globalGroups: VariantGroup[],
-  opts: { idFileNames?: boolean } = {}
+  opts: { idFileNames?: boolean } = {},
 ) {
   return (
     globalGroups
@@ -594,7 +594,7 @@ export function makeGlobalGroupImports(
           : makeGlobalVariantGroupFileName(vg);
 
         return `import {${makeGlobalVariantGroupContextProviderName(
-          vg
+          vg,
         )}} from "./${stripExtension(groupFileName)}"; // plasmic-import: ${
           vg.uuid
         }/globalVariant`;
@@ -607,7 +607,7 @@ export function wrapGlobalProvider(
   vg: VariantGroup,
   content: string,
   curlyBrackets: boolean,
-  activeVariants: Variant[]
+  activeVariants: Variant[],
 ): string {
   if (vg.type === VariantGroupType.GlobalScreen) {
     // We don't need to wrap ScreenVariantProvider anymore
@@ -618,8 +618,8 @@ export function wrapGlobalProvider(
       activeVariants.length === 0
         ? "undefined"
         : vg.multi
-        ? jsLiteral(activeVariants.map((v) => toVarName(v.name)))
-        : jsLiteral(toVarName(activeVariants[0].name));
+          ? jsLiteral(activeVariants.map((v) => toVarName(v.name)))
+          : jsLiteral(toVarName(activeVariants[0].name));
     return `
       <${contextProviderName} value={${value}}>
         ${curlyBrackets ? "{" : ""}
@@ -634,7 +634,7 @@ export function wrapGlobalProviderWithCustomValue(
   vg: VariantGroup,
   content: string,
   curlyBrackets: boolean,
-  value: string
+  value: string,
 ): string {
   if (vg.type === VariantGroupType.GlobalScreen) {
     // We don't need to wrap ScreenVariantProvider anymore
@@ -710,18 +710,18 @@ export function makePlasmicModulePrelude(projectId: string) {
 // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-pascal-case.md
 export function makeNodeComponentName(component: Component, nodeName: string) {
   return `Plasmic${getExportedComponentName(component)}${L.upperFirst(
-    nodeName
+    nodeName,
   )}`;
 }
 
 export function getImportedComponentName(
   aliases: Map<Component | ImageAsset, string>,
-  component: Component
+  component: Component,
 ) {
   if (aliases.has(component)) {
     return ensure(
       aliases.get(component),
-      "Aliases are expected to contain component (that was checked one line above)"
+      "Aliases are expected to contain component (that was checked one line above)",
     );
   }
   if (isCodeComponent(component)) {
@@ -732,7 +732,7 @@ export function getImportedComponentName(
 
 export function getImportedCodeComponentHelperName(
   aliases: Map<Component | ImageAsset, string>,
-  c: CodeComponentWithHelpers
+  c: CodeComponentWithHelpers,
 ) {
   return `${getImportedComponentName(aliases, c)}_Helpers`;
 }
@@ -758,7 +758,7 @@ export function makeComponentSkeletonIdFileName(component: Component) {
 }
 
 export function makeCodeComponentHelperSkeletonIdFileName(
-  component: Component
+  component: Component,
 ) {
   return `compHelper__${component.uuid}`;
 }
@@ -809,7 +809,7 @@ export function makeUseStyleTokensName() {
 
 export function makeProjectModuleFileName(
   projectId: ProjectId,
-  opts: Pick<ExportOpts, "targetEnv">
+  opts: Pick<ExportOpts, "targetEnv">,
 ) {
   return opts.targetEnv === "loader" || opts.targetEnv === "preview"
     ? `project__${makeShortProjectId(projectId)}.tsx`
@@ -818,7 +818,7 @@ export function makeProjectModuleFileName(
 
 export function makeStyleTokensProviderFileName(
   projectId: ProjectId,
-  opts: Pick<ExportOpts, "targetEnv">
+  opts: Pick<ExportOpts, "targetEnv">,
 ) {
   return opts.targetEnv === "loader" || opts.targetEnv === "preview"
     ? `styleTokensProvider__${makeShortProjectId(projectId)}.tsx`
@@ -827,7 +827,7 @@ export function makeStyleTokensProviderFileName(
 
 export function makeDataTokensFileName(
   projectId: ProjectId,
-  opts: Pick<ExportOpts, "targetEnv">
+  opts: Pick<ExportOpts, "targetEnv">,
 ) {
   return opts.targetEnv === "loader" || opts.targetEnv === "preview"
     ? `dataTokens__${makeShortProjectId(projectId)}.ts`
@@ -844,7 +844,7 @@ export function makeCssProjectIdFileName(projectId: ProjectId) {
 
 export function makeCssFileName(
   baseName: string,
-  exportOpts?: Partial<ExportOpts>
+  exportOpts?: Partial<ExportOpts>,
 ) {
   const useCssModules = exportOpts?.stylesOpts?.scheme === "css-modules";
   return `${baseName}${useCssModules ? ".module.css" : ".css"}`;
@@ -857,7 +857,7 @@ export function makeCssFileName(
 // remain locally scoped under pure-mode css-modules.
 export function makeProjectCssFileName(
   projectId: ProjectId,
-  exportOpts: Partial<ExportOpts>
+  exportOpts: Partial<ExportOpts>,
 ) {
   const baseName = exportOpts.idFileNames
     ? makeCssProjectIdFileName(projectId)
@@ -954,7 +954,7 @@ export function makeTaggedPlasmicImport(
   imports: string | string[],
   source: string,
   id: string,
-  type: PlasmicImportType
+  type: PlasmicImportType,
 ) {
   if (Array.isArray(imports)) {
     imports = imports.join(", ");
@@ -979,7 +979,7 @@ export function makeTaggedPlasmicDefaultImport(
   imports: string,
   source: string,
   id: string,
-  type: PlasmicImportType
+  type: PlasmicImportType,
 ) {
   if (
     !source.startsWith(".") &&
@@ -1005,7 +1005,7 @@ export function makeTaggedPlasmicDefaultImport(
 export function makeCssTaggedPlasmicImport(
   source: string,
   id: string,
-  type: PlasmicImportType
+  type: PlasmicImportType,
 ) {
   if (!source.startsWith(".") && source.endsWith(".css")) {
     source = `./${source}`;

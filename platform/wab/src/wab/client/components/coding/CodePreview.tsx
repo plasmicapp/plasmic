@@ -78,7 +78,7 @@ export const CodePreview = function _CodePreview(props: {
     debounce((err: Partial<Error> | undefined) => {
       setError(err);
     }, 500),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -132,7 +132,7 @@ export function renderInspector(
     expandLevel?: number;
     expandPaths?: string[];
     nodeRenderer?: InspectorNodeRenderer;
-  }
+  },
 ) {
   return (
     <ObjectInspector
@@ -145,7 +145,7 @@ export function renderInspector(
         TREENODE_FONT_SIZE: `${BASE_FONT_SIZE}px`,
       }}
       data={L.isError(val) ? formatError(val) : val}
-      expandLevel={opts?.expandPaths ? undefined : opts?.expandLevel ?? 1}
+      expandLevel={opts?.expandPaths ? undefined : (opts?.expandLevel ?? 1)}
       expandPaths={opts?.expandPaths}
       nodeRenderer={opts?.nodeRenderer}
     />

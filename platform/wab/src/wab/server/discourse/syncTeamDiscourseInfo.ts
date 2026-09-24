@@ -32,7 +32,7 @@ export async function syncTeamDiscourseInfo(
   mgr: DbMgr,
   teamId: TeamId,
   slug: string,
-  name: string
+  name: string,
 ) {
   const team = await mgr.getTeamById(teamId);
   const featureTierConfig = team.featureTier
@@ -40,7 +40,7 @@ export async function syncTeamDiscourseInfo(
     : undefined;
   if (!featureTierConfig) {
     throw new PreconditionFailedError(
-      `Team ${teamId} has invalid feature tier ${team.featureTier?.name}.`
+      `Team ${teamId} has invalid feature tier ${team.featureTier?.name}.`,
     );
   }
 
@@ -113,7 +113,7 @@ async function upsertDiscourseCategory(ctx: Ctx) {
       {
         [SUPPORT_GROUP_NAME]: PermissionType.CREATE,
         [slug]: PermissionType.SEE, // don't allow creating posts in parent category
-      }
+      },
     );
 
   const categoryData: CategoryMutation & { name: string } = {
@@ -140,7 +140,7 @@ async function upsertDiscourseCategory(ctx: Ctx) {
     const category = (
       await systemDiscourseClient.categoryUpdate(
         existingInfo.categoryId,
-        categoryData
+        categoryData,
       )
     ).category;
     return {
@@ -160,12 +160,12 @@ async function upsertDiscourseCategory(ctx: Ctx) {
 async function updateDiscourseCategoryWelcomePost(
   { systemDiscourseClient, teamId, slug, name }: Ctx,
   category: Category,
-  parentCategory: Category
+  parentCategory: Category,
 ) {
   const welcomeTopicId = Number(category.topic_url.split("/").pop());
   const welcomeTopic = await systemDiscourseClient.topicGet(welcomeTopicId);
   const welcomePostId = welcomeTopic.post_stream.posts.find(
-    (p) => p.post_number === 1
+    (p) => p.post_number === 1,
   )?.id;
   if (!welcomePostId) {
     throw new Error(`Couldn't find welcome post in topic ${welcomeTopicId}`);
@@ -192,7 +192,7 @@ async function updateDiscourseCategoryWelcomePost(
 
 async function ensureSupportGroupTrackingCategory(
   { systemDiscourseClient }: Ctx,
-  category: Category
+  category: Category,
 ) {
   const group = (await systemDiscourseClient.groupGet(SUPPORT_GROUP_NAME))
     .group;

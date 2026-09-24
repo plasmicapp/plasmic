@@ -72,26 +72,26 @@ export const FloatingWindow = React.forwardRef(function FloatingWindow(
     /** Hides the window, for a modal whose mask stops at a frame below this one. */
     hiddenByModal?: boolean;
   },
-  outerRef: React.ForwardedRef<HTMLDivElement>
+  outerRef: React.ForwardedRef<HTMLDivElement>,
 ) {
   const windowRef = React.useRef<HTMLDivElement>(null);
   const ref = React.useMemo(
     () => mergeRefs(windowRef, outerRef),
-    [windowRef, outerRef]
+    [windowRef, outerRef],
   );
 
   const loadedState = React.useMemo(
     () => loadWindowState(storageKey),
-    [storageKey]
+    [storageKey],
   );
   const [offset, setOffset] = React.useState<Pt>(
-    loadedState?.offset ?? Pt.zero()
+    loadedState?.offset ?? Pt.zero(),
   );
   const [width, setWidth] = React.useState<number | undefined>(
-    loadedState?.width ?? initialWidth
+    loadedState?.width ?? initialWidth,
   );
   const [height, setHeight] = React.useState<number | undefined>(
-    loadedState?.height ?? initialHeight
+    loadedState?.height ?? initialHeight,
   );
 
   // Ensure the initial/loaded window state is within bounds.
@@ -126,7 +126,7 @@ export const FloatingWindow = React.forwardRef(function FloatingWindow(
       0,
       0,
       getHandleBox(windowEl, handleSelector),
-      win
+      win,
     );
     setOffset(offset.plus(clampedDelta));
   }, [focusedMode, handleSelector]);
@@ -172,7 +172,7 @@ export const FloatingWindow = React.forwardRef(function FloatingWindow(
 
   const handleResizePointerDown = (
     e: React.PointerEvent<HTMLDivElement>,
-    dir: ResizeDirection
+    dir: ResizeDirection,
   ) => {
     const windowEl = windowRef.current;
     if (!windowEl || hiddenByModal) {
@@ -194,28 +194,28 @@ export const FloatingWindow = React.forwardRef(function FloatingWindow(
             right: L.clamp(
               startWindowBox.right() + dx,
               Math.min(startWindowBox.left() + minWidth, maxRight),
-              maxRight
+              maxRight,
             ),
           }),
           ...(dir.includes("w") && {
             left: L.clamp(
               startWindowBox.left() + dx,
               minLeft,
-              Math.max(minLeft, startWindowBox.right() - minWidth)
+              Math.max(minLeft, startWindowBox.right() - minWidth),
             ),
           }),
           ...(dir.includes("s") && {
             bottom: L.clamp(
               startWindowBox.bottom() + dy,
               Math.min(startWindowBox.top() + minHeight, maxBottom),
-              maxBottom
+              maxBottom,
             ),
           }),
           ...(dir.includes("n") && {
             top: L.clamp(
               startWindowBox.top() + dy,
               minTop,
-              Math.max(minTop, startWindowBox.bottom() - minHeight)
+              Math.max(minTop, startWindowBox.bottom() - minHeight),
             ),
           }),
         });
@@ -228,8 +228,8 @@ export const FloatingWindow = React.forwardRef(function FloatingWindow(
         setOffset(
           startOffset.moveBy(
             newBox.right() - startWindowBox.right(),
-            newBox.top() - startWindowBox.top()
-          )
+            newBox.top() - startWindowBox.top(),
+          ),
         );
       },
       onEnd: storeLastState,
@@ -276,7 +276,7 @@ export const FloatingWindow = React.forwardRef(function FloatingWindow(
 
 function storeWindowState(
   storageKey: LocalStorageKey | undefined,
-  state: WindowState
+  state: WindowState,
 ): void {
   if (!storageKey) {
     return;
@@ -289,7 +289,7 @@ function storeWindowState(
         y: state.offset.y,
         width: state.width,
         height: state.height,
-      })
+      }),
     );
   } catch (error) {
     console.warn(error);
@@ -297,7 +297,7 @@ function storeWindowState(
 }
 
 function loadWindowState(
-  storageKey: LocalStorageKey | undefined
+  storageKey: LocalStorageKey | undefined,
 ): WindowState | undefined {
   if (!storageKey) {
     return undefined;
@@ -367,7 +367,9 @@ function computeMinDimensions(windowEl: HTMLElement) {
 /** Get bounding box of handle (falls back to window). */
 function getHandleBox(windowEl: HTMLElement, handleSelector: string): Box {
   return Box.fromRectSides(
-    (windowEl.querySelector(handleSelector) ?? windowEl).getBoundingClientRect()
+    (
+      windowEl.querySelector(handleSelector) ?? windowEl
+    ).getBoundingClientRect(),
   );
 }
 
@@ -390,7 +392,7 @@ function startPointerDrag(
   callbacks: {
     onMove?: (deltaX: number, deltaY: number, ev: PointerEvent) => void;
     onEnd?: (ev: PointerEvent) => void;
-  }
+  },
 ): void {
   if (downEvent.button !== 0 || !downEvent.isPrimary) {
     return;
@@ -416,7 +418,7 @@ function startPointerDrag(
     callbacks.onMove?.(
       moveEvent.clientX - startX,
       moveEvent.clientY - startY,
-      moveEvent
+      moveEvent,
     );
   };
 

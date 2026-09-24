@@ -31,8 +31,8 @@ function eventKeyName(key: EventHandlerKeyType): string | undefined {
   return isEventHandlerKeyForAttr(key)
     ? key.attr
     : isEventHandlerKeyForParam(key)
-    ? key.param.variable.name
-    : undefined;
+      ? key.param.variable.name
+      : undefined;
 }
 
 /**
@@ -84,7 +84,7 @@ export function createInteraction(opts: {
     eventHandler,
     action.actionName,
     opts.name,
-    interactionArgsResult.value
+    interactionArgsResult.value,
   );
   eventHandler.interactions.push(interaction);
   if (!existing) {

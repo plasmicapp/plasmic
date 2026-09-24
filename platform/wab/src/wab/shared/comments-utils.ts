@@ -31,13 +31,13 @@ export const MENTION_EMAIL_REGEX = regex("g")`
 
 export function extractMentionedEmails(body: string) {
   return [...body.matchAll(MENTION_EMAIL_REGEX)].map(
-    ([_whole, email]) => email
+    ([_whole, email]) => email,
   );
 }
 
 export function hasUserParticipatedInThread(
   userId: UserId,
-  threadComments: ApiComment[]
+  threadComments: ApiComment[],
 ): boolean {
   return threadComments.some((tc) => tc.createdById === userId);
 }

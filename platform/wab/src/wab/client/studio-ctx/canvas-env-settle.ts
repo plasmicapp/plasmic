@@ -66,7 +66,7 @@ function collectPendingQueryPromises(env: CanvasEnv): Promise<unknown>[] {
 export async function waitForCanvasEnvSettled(
   viewCtx: ViewCtx,
   tpl: TplNode,
-  opts: SettleOpts = {}
+  opts: SettleOpts = {},
 ): Promise<CanvasEnv | undefined> {
   const timeoutMs = opts.timeoutMs ?? DEFAULT_SETTLE_TIMEOUT_MS;
   const deadline = performance.now() + timeoutMs;

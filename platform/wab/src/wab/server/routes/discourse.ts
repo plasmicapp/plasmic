@@ -27,11 +27,11 @@ export async function discourseConnect(req: Request, res: Response) {
   const { sso: requestPayloadRaw, sig: requestSig } = req.query;
   const requestPayloadEncoded = ensureString(requestPayloadRaw);
   const requestPayload = new Buffer(requestPayloadEncoded, "base64").toString(
-    "ascii"
+    "ascii",
   );
   const nonce = ensure(
     new URLSearchParams(requestPayload).get("nonce"),
-    "URL must have nonce"
+    "URL must have nonce",
   );
 
   function hmac(data: string) {
@@ -57,7 +57,7 @@ export async function discourseConnect(req: Request, res: Response) {
     .filter(
       (p) =>
         accessLevelRank(p.accessLevel) >=
-        accessLevelRank(MIN_ACCESS_LEVEL_FOR_SUPPORT)
+        accessLevelRank(MIN_ACCESS_LEVEL_FOR_SUPPORT),
     )
     .map((p) => p.teamId)
     .filter(notNil);
@@ -65,7 +65,7 @@ export async function discourseConnect(req: Request, res: Response) {
   const groupsCommaDelimited = discourseInfo.map((info) => info.slug).join(",");
 
   logger().info(
-    `Signing in user ${user.id} with email ${user.email} with groups ${groupsCommaDelimited}`
+    `Signing in user ${user.id} with email ${user.email} with groups ${groupsCommaDelimited}`,
   );
   const responsePayload = omitNils({
     nonce,
@@ -73,14 +73,14 @@ export async function discourseConnect(req: Request, res: Response) {
     external_id: user.id,
     username: L.kebabCase(`${user.firstName} ${user.lastName}`).replace(
       "-",
-      "_"
+      "_",
     ),
     name: `${user.firstName} ${user.lastName}`,
     avatar_url: user.avatarUrl,
     add_groups: groupsCommaDelimited,
   });
   const responsePayloadEncoded = new Buffer(
-    new URLSearchParams(responsePayload).toString()
+    new URLSearchParams(responsePayload).toString(),
   ).toString("base64");
   const responseSig = hmac(responsePayloadEncoded);
 

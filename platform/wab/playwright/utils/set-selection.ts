@@ -3,14 +3,14 @@ import { Locator } from "@playwright/test";
 export async function setSelection(
   locator: Locator,
   pattern: string | RegExp,
-  flags?: string
+  flags?: string,
 ): Promise<void> {
   await locator.evaluate(
     (element, { searchPattern, searchFlags }) => {
       element.focus();
       const textNode = element.childNodes[0];
       const match = textNode.textContent?.match(
-        new RegExp(searchPattern, searchFlags)
+        new RegExp(searchPattern, searchFlags),
       );
       if (match) {
         const range = document.createRange();
@@ -23,6 +23,6 @@ export async function setSelection(
         selection?.addRange(range);
       }
     },
-    { searchPattern: pattern, searchFlags: flags }
+    { searchPattern: pattern, searchFlags: flags },
   );
 }

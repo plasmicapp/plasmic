@@ -1,11 +1,11 @@
 import { PLAYER_COLORS } from "@/wab/client/components/studio/GlobalCssVariables";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { asyncOneAtATime, ensure, xDifference } from "@/wab/shared/common";
 import {
   ApiUser,
   PlayerViewInfo,
   ServerPlayerInfo,
 } from "@/wab/shared/ApiSchema";
+import { asyncOneAtATime, ensure, xDifference } from "@/wab/shared/common";
 import { isEqual } from "lodash";
 import { observable, runInAction } from "mobx";
 
@@ -53,7 +53,7 @@ export class MultiplayerCtx {
 
   private readonly playerIdToData = observable.map<number, PlayerData>(
     undefined,
-    { deep: true }
+    { deep: true },
   );
 
   getAllPlayerIds() {
@@ -73,7 +73,7 @@ export class MultiplayerCtx {
     const userById = new Map(
       [...this.playerIdToData.values()]
         .filter(isNormalPlayerData)
-        .map((player) => [player.user.id, player.user])
+        .map((player) => [player.user.id, player.user]),
     );
     const dataToFetch = sessions
       .filter(
@@ -81,7 +81,7 @@ export class MultiplayerCtx {
           player.playerId !== this.selfId &&
           !this.playerIdToData.has(player.playerId) &&
           player.type === "NormalUser" &&
-          !userById.has(player.userId)
+          !userById.has(player.userId),
       )
       .map((player) => player.userId!);
     if (dataToFetch.length > 0) {
@@ -93,7 +93,7 @@ export class MultiplayerCtx {
       // Remove disconnected players
       xDifference(
         this.playerIdToData.keys(),
-        sessions.map(({ playerId }) => playerId)
+        sessions.map(({ playerId }) => playerId),
       ).forEach((id) => this.playerIdToData.delete(id));
 
       sessions.forEach((player) => {
@@ -116,7 +116,7 @@ export class MultiplayerCtx {
                 type: "NormalUser",
                 user: ensure(
                   userById.get(player.userId),
-                  "Should have fetched all missing data"
+                  "Should have fetched all missing data",
                 ),
                 ...commonData,
               });
@@ -126,7 +126,7 @@ export class MultiplayerCtx {
             const playerData = ensure(
               this.playerIdToData.get(player.playerId),
               `Expected ${player.playerId} to exist since \`existing\` is truthy: ` +
-                existing
+                existing,
             );
             // Update ViewInfo, trying to avoid unnecessary rerenders
             if (playerData.viewInfo && player.viewInfo) {
@@ -134,7 +134,7 @@ export class MultiplayerCtx {
               if (
                 !isEqual(
                   playerData.viewInfo.selectionInfo,
-                  player.viewInfo.selectionInfo
+                  player.viewInfo.selectionInfo,
                 )
               ) {
                 playerData.viewInfo.selectionInfo =
@@ -144,7 +144,7 @@ export class MultiplayerCtx {
               if (
                 !isEqual(
                   playerData.viewInfo.cursorInfo,
-                  player.viewInfo.cursorInfo
+                  player.viewInfo.cursorInfo,
                 )
               ) {
                 playerData.viewInfo.cursorInfo = player.viewInfo.cursorInfo;
@@ -157,7 +157,7 @@ export class MultiplayerCtx {
               if (
                 !isEqual(
                   playerData.viewInfo.arenaInfo,
-                  player.viewInfo.arenaInfo
+                  player.viewInfo.arenaInfo,
                 )
               ) {
                 playerData.viewInfo.arenaInfo = player.viewInfo.arenaInfo;
@@ -166,7 +166,7 @@ export class MultiplayerCtx {
               if (
                 !isEqual(
                   playerData.viewInfo.positionInfo,
-                  player.viewInfo.positionInfo
+                  player.viewInfo.positionInfo,
                 )
               ) {
                 playerData.viewInfo.positionInfo = player.viewInfo.positionInfo;

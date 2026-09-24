@@ -19,7 +19,7 @@ export interface ParsedThemeSelector {
 }
 
 export function parseThemeSelector(
-  raw: string
+  raw: string,
 ): ParsedThemeSelector | { error: string } {
   const selector = raw.trim();
   if (selector === BASE_THEMABLE_TAG) {
@@ -36,7 +36,7 @@ export function parseThemeSelector(
   if (!(THEMABLE_TAGS as readonly string[]).includes(tag)) {
     return {
       error: `Tag "${tag}" is not themable. Use "" for base typography, or one of: ${THEMABLE_TAGS.join(
-        ", "
+        ", ",
       )}.`,
     };
   }
@@ -93,7 +93,7 @@ const THEME_DISALLOWED_TAG_PROPS = new Set([
  */
 export function isThemeStylePropAllowed(
   tag: ThemableTag,
-  prop: string
+  prop: string,
 ): boolean {
   if (tag === BASE_THEMABLE_TAG) {
     return typographyCssProps.includes(prop);

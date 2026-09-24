@@ -7,7 +7,7 @@ type IReactComponent<P = any> =
   | React.ForwardRefExoticComponent<P>;
 
 export function observer<T extends IReactComponent<P>, P = any>(
-  baseComponent: T
+  baseComponent: T,
 ) {
   const wrappedComponent = (props: P, ref?: React.Ref<T>) => {
     dependOnGlobalObservable();

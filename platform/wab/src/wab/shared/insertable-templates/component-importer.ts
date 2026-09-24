@@ -41,14 +41,14 @@ interface OriginInfo {
 
 export type ComponentImporter = (
   comp: Component,
-  opts?: CloneOpts
+  opts?: CloneOpts,
 ) => Component;
 
 export function importComponentsInTree(
   targetSite: Site,
   tplTree: TplNode,
   ownerComponent: Component,
-  importer: ComponentImporter
+  importer: ComponentImporter,
 ) {
   for (const tpl of flattenTpls(tplTree)) {
     if (isTplComponent(tpl)) {
@@ -69,12 +69,12 @@ export function mkInsertableComponentImporter(
   site: Site,
   info: OriginInfo,
   plumeSite: Site | undefined,
-  resolveTreeTokens: (tplTree: TplNode) => void
+  resolveTreeTokens: (tplTree: TplNode) => void,
 ): ComponentImporter {
   const oldToNewComponent = new Map<Component, Component>();
   const { tplAssetFixer, getNewImageAsset } = makeImageAssetFixer(
     site,
-    siteToAllImageAssetsDict(info.site)
+    siteToAllImageAssetsDict(info.site),
   );
   const tplMgr = new TplMgr({ site });
 
@@ -93,11 +93,11 @@ export function mkInsertableComponentImporter(
         resolveTokens: resolveTreeTokens,
         tplAnimationsFixer,
         tplAssetFixer,
-      }
+      },
     );
 
     importComponentsInTree(site, comp.tplTree, comp, (c) =>
-      getNewComponent(c, opts)
+      getNewComponent(c, opts),
     );
 
     // Recursively fixup subcomps
@@ -115,7 +115,7 @@ export function mkInsertableComponentImporter(
       // We need to check for builtin code components as they need to point to the same
       // instance present in the site
       const existing = site.components.find(
-        (c) => isHostLessCodeComponent(c) && c.name === comp.name
+        (c) => isHostLessCodeComponent(c) && c.name === comp.name,
       );
       if (existing) {
         oldToNewComponent.set(comp, existing);
@@ -143,29 +143,31 @@ export function mkInsertableComponentImporter(
     const existing = opts?.skipDuplicateCheck
       ? undefined
       : isPlumeComponent(comp)
-      ? site.components.find((c) => c.plumeInfo?.type === comp.plumeInfo?.type)
-      : site.components.find(
-          (c) =>
-            // We can match by name if the there is one in templateInfo, or by (projectId, componentId)
-            // we could also just match by componentId it should be hard to collide, but let's be safe
-            //
-            // It's important to note that components coming from dependencies sites will also be added
-            // with the template projectId
-            //
-            // We also check if the component is a valid replacement based in the params/variants
-            (c.templateInfo?.name &&
-              c.templateInfo?.name === comp.templateInfo?.name) ||
-            (c.templateInfo?.componentId === comp.uuid &&
-              c.templateInfo?.projectId === info.projectId) ||
-            c.uuid === comp.uuid
-        );
+        ? site.components.find(
+            (c) => c.plumeInfo?.type === comp.plumeInfo?.type,
+          )
+        : site.components.find(
+            (c) =>
+              // We can match by name if the there is one in templateInfo, or by (projectId, componentId)
+              // we could also just match by componentId it should be hard to collide, but let's be safe
+              //
+              // It's important to note that components coming from dependencies sites will also be added
+              // with the template projectId
+              //
+              // We also check if the component is a valid replacement based in the params/variants
+              (c.templateInfo?.name &&
+                c.templateInfo?.name === comp.templateInfo?.name) ||
+              (c.templateInfo?.componentId === comp.uuid &&
+                c.templateInfo?.projectId === info.projectId) ||
+              c.uuid === comp.uuid,
+          );
     if (existing) {
       oldToNewComponent.set(comp, existing);
       return existing;
     }
 
     const isDirectSourceComponent = info.site.components.find(
-      (c) => c.uuid === comp.uuid
+      (c) => c.uuid === comp.uuid,
     );
 
     if (!isDirectSourceComponent) {
@@ -185,14 +187,14 @@ export function mkInsertableComponentImporter(
 
       const missingDependency = ensure(
         walkDependencyTree(info.site, "all").find((dep) =>
-          dep.site.components.some((c) => c.uuid === comp.uuid)
+          dep.site.components.some((c) => c.uuid === comp.uuid),
         ),
-        "Cannot find dependency for component"
+        "Cannot find dependency for component",
       );
 
       // If the dependency is not present, we won't be able to link it
       throw new Error(
-        `Cannot clone imported component ${comp.name} from "${missingDependency.name}".\n Please import the project ["${missingDependency.name}"](https://studio.plasmic.app/projects/${missingDependency.projectId}) first.`
+        `Cannot clone imported component ${comp.name} from "${missingDependency.name}".\n Please import the project ["${missingDependency.name}"](https://studio.plasmic.app/projects/${missingDependency.projectId}) first.`,
       );
     }
 
@@ -201,7 +203,7 @@ export function mkInsertableComponentImporter(
         info.site,
         comp.uuid,
         comp.name,
-        true
+        true,
       );
 
       oldToNewComponent.set(comp, plumeComp);

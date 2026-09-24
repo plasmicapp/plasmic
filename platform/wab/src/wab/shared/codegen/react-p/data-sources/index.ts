@@ -7,7 +7,7 @@ import { ComponentDataQuery } from "@/wab/shared/model/classes";
 
 export function serializeComponentLevelQuery(
   query: ComponentDataQuery,
-  ctx: SerializerBaseContext
+  ctx: SerializerBaseContext,
 ) {
   if (!query.op) {
     return "";
@@ -21,7 +21,7 @@ export function serializeComponentLevelQuery(
   return `usePlasmicDataOp(
     (() => { return ${getRawCode(
       removeFallbackFromDataSourceOp(query.op),
-      ctx.exprCtx
+      ctx.exprCtx,
     )};
     })
   )`;

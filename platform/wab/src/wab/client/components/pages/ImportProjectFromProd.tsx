@@ -1,8 +1,11 @@
 import { NonAuthCtx } from "@/wab/client/app-ctx";
-import { ensureArray, spawn } from "@/wab/shared/common";
-import { DevFlagsType, InsertableTemplatesSelectable } from "@/wab/shared/devflags";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { getBundle } from "@/wab/shared/bundles";
+import { ensureArray, spawn } from "@/wab/shared/common";
+import {
+  DevFlagsType,
+  InsertableTemplatesSelectable,
+} from "@/wab/shared/devflags";
 import L from "lodash";
 import React from "react";
 
@@ -21,12 +24,12 @@ export function ImportProjectsFromProd({
     spawn(
       (async () => {
         const extractProjectIdsFromInsertableTemplates = (
-          insertableTemplates: InsertableTemplatesSelectable[]
+          insertableTemplates: InsertableTemplatesSelectable[],
         ) =>
           insertableTemplates.flatMap((templateItem) =>
             "items" in templateItem
               ? extractProjectIdsFromInsertableTemplates(templateItem.items)
-              : [templateItem.projectId]
+              : [templateItem.projectId],
           );
         const devflagsStringified = await nonAuthCtx.api.getDevFlagOverrides();
         console.log("exporting projects", "devflags str", devflagsStringified);
@@ -35,16 +38,16 @@ export function ImportProjectsFromProd({
           console.log("exporting projects", "devflags", devflags);
           const projectIds = L.uniq([
             ...(devflags.hostLessComponents?.flatMap((hostLessComponent) =>
-              ensureArray(hostLessComponent.projectId)
+              ensureArray(hostLessComponent.projectId),
             ) ?? []),
             ...(devflags.starterSections?.flatMap((starter) =>
               starter.projects.flatMap((starterProject) => [
                 starterProject.baseProjectId,
                 starterProject.projectId,
-              ])
+              ]),
             ) ?? []),
             ...extractProjectIdsFromInsertableTemplates(
-              ensureArray(devflags.insertableTemplates ?? [])
+              ensureArray(devflags.insertableTemplates ?? []),
             ),
           ]).filter(isNonNil);
           console.log("exporting projects", "projects", projectIds);
@@ -55,9 +58,8 @@ export function ImportProjectsFromProd({
             bundle: string;
           }> = [];
           for (const projectId of projectIds) {
-            const { depPkgs, project, rev } = await nonAuthCtx.api.getSiteInfo(
-              projectId
-            );
+            const { depPkgs, project, rev } =
+              await nonAuthCtx.api.getSiteInfo(projectId);
             projectsInfo.push({
               projectId: project.id,
               name: project.name,
@@ -75,10 +77,10 @@ export function ImportProjectsFromProd({
               devflags,
               projectsInfo,
             }),
-            "*"
+            "*",
           );
         }
-      })()
+      })(),
     );
 
     const listener = (event: MessageEvent) => {

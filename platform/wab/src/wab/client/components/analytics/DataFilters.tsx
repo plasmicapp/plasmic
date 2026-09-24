@@ -100,7 +100,7 @@ function DataFilters_(props: DataFiltersProps, ref: HTMLElementRefOf<"div">) {
         }}
         eventFilter={{
           options: ANALYTICS_EVENTS.filter((_event) =>
-            projectId ? true : _event.value.includes("impressions")
+            projectId ? true : _event.value.includes("impressions"),
           ),
           selected: event,
           onChange: (x) => setEvent(x ?? "impressions"),

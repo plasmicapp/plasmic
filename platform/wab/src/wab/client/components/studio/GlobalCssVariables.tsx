@@ -31,7 +31,7 @@ function useSelectionControlsColor() {
       cssVariables.selectionControlsColor,
       currentTargeting === "baseVariant"
         ? BASE_VARIANT_COLOR
-        : NON_BASE_VARIANT_COLOR
+        : NON_BASE_VARIANT_COLOR,
     );
   }, [currentTargeting]);
 }

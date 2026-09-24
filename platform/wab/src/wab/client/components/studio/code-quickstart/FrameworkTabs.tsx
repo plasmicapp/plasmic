@@ -24,7 +24,7 @@ type FrameworkTabsProps = DefaultFrameworkTabsProps;
 
 function FrameworkTabs_(
   props: FrameworkTabsProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicFrameworkTabs to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

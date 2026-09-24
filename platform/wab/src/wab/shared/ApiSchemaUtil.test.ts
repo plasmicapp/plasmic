@@ -8,7 +8,7 @@ import {
 function mkUser(
   firstName: string | null,
   lastName: string | null,
-  email: string = "email@domain.com"
+  email: string = "email@domain.com",
 ): ApiUser {
   return {
     email,

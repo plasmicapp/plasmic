@@ -40,7 +40,7 @@ export function _FreestyleBox() {
       mouseEvent,
       new Pt(e.data.deltaX, e.data.deltaY),
       new Pt(e.data.initX, e.data.initY).toUnitBox().rect(),
-      "bottom-right"
+      "bottom-right",
     );
   }
 
@@ -62,7 +62,7 @@ export function _FreestyleBox() {
       .rect();
     const invertTransformStyle = cssPropsForInvertTransform(
       studioCtx.zoom,
-      drawnScalerRect
+      drawnScalerRect,
     );
     return {
       ...drawnScalerRect,
@@ -88,7 +88,7 @@ export function _FreestyleBox() {
             const newTargeter = new NodeTargeter(targetViewCtx);
             setTargeter(newTargeter);
           },
-          { event: e.mouseEvent }
+          { event: e.mouseEvent },
         )
       }
       onDrag={async (e) =>
@@ -100,15 +100,15 @@ export function _FreestyleBox() {
             const clientRect = getClientRect(e);
             const [ins, adoptees] = ensure(
               targeter,
-              "targeter should exist"
+              "targeter should exist",
             ).getAbsInsertionAndAdoptees(
               clientRect,
               e.mouseEvent.ctrlKey || e.mouseEvent.metaKey,
-              ensureString(freestyleState.spec.key) === "text"
+              ensureString(freestyleState.spec.key) === "text",
             );
             targeter.vc.setHighlightedAdoptees(adoptees);
           },
-          { event: e.mouseEvent }
+          { event: e.mouseEvent },
         )
       }
       onStop={async (e) =>
@@ -126,12 +126,12 @@ export function _FreestyleBox() {
                 targeter.vc,
                 ensure(targeter, "targeter should exist"),
                 getClientRect(e),
-                e.mouseEvent
+                e.mouseEvent,
               );
             }
             setTargeter(undefined);
           },
-          { event: e.mouseEvent }
+          { event: e.mouseEvent },
         )
       }
       render={(e) => (
@@ -141,7 +141,7 @@ export function _FreestyleBox() {
             const targetVc = findTargetVc(event);
             const spec = ensure(
               studioCtx.freestyleState(),
-              "freestyle state not found in studio ctx"
+              "freestyle state not found in studio ctx",
             ).spec;
             await studioCtx.changeUnsafe(
               () => {
@@ -159,7 +159,7 @@ export function _FreestyleBox() {
                   insertDefaultFreestyle(targetVc, event);
                 }
               },
-              { event }
+              { event },
             );
           }}
         >
@@ -179,18 +179,18 @@ function insertFreestyleAsDrawn(
   viewCtx: ViewCtx,
   targeter: NodeTargeter,
   clientRect: Rect,
-  e: React.MouseEvent
+  e: React.MouseEvent,
 ) {
   const studioCtx = viewCtx.studioCtx;
   const freestyleState = ensure(
     studioCtx.freestyleState(),
-    "freestyle state not found in studio ctx"
+    "freestyle state not found in studio ctx",
   );
   const forceFree = e.ctrlKey || e.metaKey;
   const [ins, adoptees] = targeter.getAbsInsertionAndAdoptees(
     clientRect,
     forceFree,
-    freestyleState.spec.key === "text"
+    freestyleState.spec.key === "text",
   );
   targeter.clear();
   viewCtx.setHighlightedAdoptees([]);
@@ -216,7 +216,7 @@ function insertDefaultFreestyle(viewCtx: ViewCtx, e: React.MouseEvent) {
   const studioCtx = viewCtx.studioCtx;
   const freestyleState = ensure(
     studioCtx.freestyleState(),
-    "freestyle state not found in studio ctx"
+    "freestyle state not found in studio ctx",
   );
   const targeter = new NodeTargeter(viewCtx);
   const clientPt = new Pt(e.clientX, e.clientY);
@@ -251,7 +251,7 @@ function insertFreestyleAsWrapper(viewCtx: ViewCtx, e: React.MouseEvent): void {
   const studioCtx = viewCtx.studioCtx;
   const freestyleState = ensure(
     studioCtx.freestyleState(),
-    "freestyle state not found in studio ctx"
+    "freestyle state not found in studio ctx",
   );
 
   // We need to figure out which element we actually clicked on (and thus intend to wrap)
@@ -264,7 +264,7 @@ function insertFreestyleAsWrapper(viewCtx: ViewCtx, e: React.MouseEvent): void {
   if (targetElt) {
     const viewOps = viewCtx.viewOps;
     const { focusedTpl: tplToWrap } = viewOps.getFinalFocusable(
-      $(targetElt as HTMLElement)
+      $(targetElt as HTMLElement),
     );
     if (tplToWrap && (isTplTagOrComponent(tplToWrap) || isTplSlot(tplToWrap))) {
       const newNode = freestyleState.spec.factory(viewOps.viewCtx(), undefined);

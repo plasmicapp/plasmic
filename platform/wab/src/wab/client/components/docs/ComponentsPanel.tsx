@@ -17,7 +17,7 @@ import * as React from "react";
 type ComponentsPanelProps = DefaultComponentsPanelProps;
 
 const ComponentsPanel = observer(function ComponentsPanel(
-  props: ComponentsPanelProps
+  props: ComponentsPanelProps,
 ) {
   const docsCtx = useDocsPortalCtx();
   const [query, setQuery] = React.useState("");
@@ -27,7 +27,7 @@ const ComponentsPanel = observer(function ComponentsPanel(
       !isFrameComponent(c) &&
       !isCodeComponent(c) &&
       !isSubComponent(c) &&
-      matcher.matches(c.name)
+      matcher.matches(c.name),
   );
 
   return (

@@ -25,7 +25,7 @@ export const resetStateValueCommand: Command<
     const viewCtx = studioCtx.focusedViewCtx();
     const component = viewCtx?.component;
     const regularStateVariables = component?.states.filter(
-      (state) => state.variableType !== "variant" && !state.tplNode
+      (state) => state.variableType !== "variant" && !state.tplNode,
     );
 
     if (!(viewCtx && component && regularStateVariables?.length)) {

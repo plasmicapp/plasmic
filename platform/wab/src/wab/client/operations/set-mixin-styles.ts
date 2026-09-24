@@ -32,7 +32,7 @@ import { Result, err, ok } from "neverthrow";
 export function setMixinStyles(
   rs: RuleSet,
   styles: Record<string, string | null>,
-  studioCtx?: StudioCtx
+  studioCtx?: StudioCtx,
 ): string[] {
   return writeStyleChanges(rs, prepareStyleChanges(styles), studioCtx);
 }
@@ -40,7 +40,7 @@ export function setMixinStyles(
 function writeStyleChanges(
   rs: RuleSet,
   changes: StyleChanges,
-  studioCtx?: StudioCtx
+  studioCtx?: StudioCtx,
 ): string[] {
   // The tag only affects reading CSS initial values, which this never does.
   const rsh = new RuleSetHelpers(rs, "div");
@@ -89,7 +89,7 @@ export function setMixinVariantedStyles(opts: {
   }
 
   const existing = mixin.variantedRs.find((vRs) =>
-    arrayEqIgnoreOrder(vRs.variants, variants)
+    arrayEqIgnoreOrder(vRs.variants, variants),
   );
 
   if (styles === null) {
@@ -115,7 +115,7 @@ export function setMixinVariantedStyles(opts: {
     if (
       value?.trim() &&
       !styleKeysForValue(prop, value.trim(), layoutContext).every(
-        (key) => key in mixin.rs.values
+        (key) => key in mixin.rs.values,
       )
     ) {
       missingBase.push(prop);
@@ -126,8 +126,8 @@ export function setMixinVariantedStyles(opts: {
   if (missingBase.length > 0) {
     messages.push(
       `Skipped for the targeted variants: ${quoteProps(
-        missingBase
-      )}. A property needs a base value before it can be overridden per variant; set it without variantUuids first.`
+        missingBase,
+      )}. A property needs a base value before it can be overridden per variant; set it without variantUuids first.`,
     );
   }
 
@@ -140,8 +140,8 @@ export function setMixinVariantedStyles(opts: {
     ...writeStyleChanges(
       variantedRs.rs,
       prepareStyleChanges(applicable, { layoutContext }),
-      studioCtx
-    )
+      studioCtx,
+    ),
   );
   if (Object.keys(variantedRs.rs.values).length === 0) {
     arrayRemove(mixin.variantedRs, variantedRs);

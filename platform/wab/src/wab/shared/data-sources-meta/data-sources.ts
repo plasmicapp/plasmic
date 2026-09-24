@@ -77,7 +77,7 @@ export interface DataSourceMeta {
       filters: {
         value: Record<string, any>;
         bindings: Record<string, TemplatedString | CustomCode | ObjectPath>;
-      }
+      },
     ) => DataSourceOpExpr;
     update?: (
       sourceId: string,
@@ -89,7 +89,7 @@ export interface DataSourceMeta {
       updateValue: {
         value: Record<string, any> | string;
         bindings: Record<string, TemplatedString | CustomCode | ObjectPath>;
-      }
+      },
     ) => DataSourceOpExpr;
     create?: (
       sourceId: string,
@@ -97,7 +97,7 @@ export interface DataSourceMeta {
       updateValue: {
         value: Record<string, any> | string;
         bindings: Record<string, TemplatedString | CustomCode | ObjectPath>;
-      }
+      },
     ) => DataSourceOpExpr;
   };
 }
@@ -193,7 +193,7 @@ export interface ArgMetaBase {
 export interface TableArgMeta extends ArgMetaBase {
   type: "table";
   options: (
-    schemaData: DataSourceSchema
+    schemaData: DataSourceSchema,
   ) => (LabeledValue | LabeledValueGroup)[];
 }
 
@@ -239,7 +239,7 @@ export interface JsonSchemaArgMeta extends ArgMetaBase {
   fields: (
     schema: DataSourceSchema,
     tableIdentifier?: string,
-    draft?: DataSourceOpDraftValue
+    draft?: DataSourceOpDraftValue,
   ) => Fields;
   partial?: boolean;
   requiredFields?:
@@ -247,7 +247,7 @@ export interface JsonSchemaArgMeta extends ArgMetaBase {
     | ((
         schema: DataSourceSchema,
         tableIdentifier?: string,
-        draft?: DataSourceOpDraftValue
+        draft?: DataSourceOpDraftValue,
       ) => string[]);
   hideInputToggle?: boolean;
   showAsIndentedRow?: boolean;
@@ -258,7 +258,7 @@ export interface JsonSchemaArrayArgMeta extends ArgMetaBase {
   fields: (
     schema: DataSourceSchema,
     tableIdentifier?: string,
-    draft?: DataSourceOpDraftValue
+    draft?: DataSourceOpDraftValue,
   ) => Fields;
   partial?: boolean;
   requiredFields?:
@@ -266,7 +266,7 @@ export interface JsonSchemaArrayArgMeta extends ArgMetaBase {
     | ((
         schema: DataSourceSchema,
         tableIdentifier?: string,
-        draft?: DataSourceOpDraftValue
+        draft?: DataSourceOpDraftValue,
       ) => string[]);
 }
 
@@ -338,14 +338,14 @@ export function cloneDataSourceTemplate({
         Object.entries(bindings).map(([bindingName, bindingExpr]) => [
           bindingName,
           clone(bindingExpr),
-        ])
+        ]),
       ),
   });
 }
 
 export function dataSourceTemplateToString(
   template: DataSourceTemplate,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ) {
   if (isKnownTemplatedString(template.value)) {
     return exprToDataSourceString(template.value, exprCtx);
@@ -356,14 +356,14 @@ export function dataSourceTemplateToString(
     Object.entries(template.bindings).forEach(([key, value]) => {
       stringValue = stringValue.replace(
         new RegExp(`${key.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1")}`, "g"),
-        exprToDataSourceString(value, exprCtx)
+        exprToDataSourceString(value, exprCtx),
       );
       stringValue = stringValue.replace(
         new RegExp(
           `${encodeURI(key).replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1")}`,
-          "g"
+          "g",
         ),
-        exprToDataSourceString(value, exprCtx)
+        exprToDataSourceString(value, exprCtx),
       );
     });
   }
@@ -378,7 +378,7 @@ export function exprToDataSourceString(expr: Expr, exprCtx: ExprCtx) {
             ? t
             : `{{ ${stripParensAndMaybeConvertToIife(asCode(t, exprCtx).code, {
                 addParens: true,
-              })} }}`
+              })} }}`,
         )
         .join("")
     : `{{ ${stripParensAndMaybeConvertToIife(asCode(expr, exprCtx).code, {
@@ -424,7 +424,7 @@ export const PAGINATION_TYPE: ArgMeta = {
 
 export function coerceArgStringToType(
   value: string,
-  argMeta: ArgMeta | SettingFieldMeta
+  argMeta: ArgMeta | SettingFieldMeta,
 ) {
   if (isJsonType(argMeta.type)) {
     if (!value) {
@@ -456,7 +456,7 @@ export function coerceArgStringToType(
 
 export function coerceArgValueToString(
   value: any,
-  argMeta: ArgMeta | SettingFieldMeta
+  argMeta: ArgMeta | SettingFieldMeta,
 ) {
   if (isJsonType(argMeta.type)) {
     return JSON.stringify(value ?? null);
@@ -504,7 +504,7 @@ export type StandardQueries = DataSourceMeta["standardQueries"] extends infer T
 
 export const MAKE_DEFAULT_STANDARD_QUERIES: {
   [k in keyof Required<StandardQueries>]: (
-    opName: string
+    opName: string,
   ) => StandardQueries[k];
 } = {
   getSchema: (opName) => (sourceId, tableId) =>
@@ -545,7 +545,7 @@ export const MAKE_DEFAULT_STANDARD_QUERIES: {
             bindings: filters.bindings,
           }),
         },
-        (template) => cloneDataSourceTemplate(template)
+        (template) => cloneDataSourceTemplate(template),
       ),
       roleId: undefined,
       cacheKey: new TemplatedString({
@@ -598,7 +598,7 @@ export const MAKE_DEFAULT_STANDARD_QUERIES: {
             value: JSON.stringify(updateValue.value),
           }),
         },
-        (template) => cloneDataSourceTemplate(template)
+        (template) => cloneDataSourceTemplate(template),
       ),
       roleId: undefined,
       cacheKey: undefined,
@@ -627,7 +627,7 @@ export const MAKE_DEFAULT_STANDARD_QUERIES: {
             value: JSON.stringify(updateValue.value),
           }),
         },
-        (template) => cloneDataSourceTemplate(template)
+        (template) => cloneDataSourceTemplate(template),
       ),
       roleId: undefined,
       cacheKey: undefined,
@@ -645,7 +645,7 @@ function mkFilterQuery(
   filters: {
     value: Record<string, any>;
     bindings: Record<string, TemplatedString | CustomCode | ObjectPath>;
-  }
+  },
 ) {
   // building filter query
   const rules = Object.entries(filters.value).map(([field, value]) => {
@@ -682,24 +682,24 @@ function mkFilterQuery(
           type: field.type,
           label: field.label ?? field.id,
         },
-      ])
+      ]),
     ),
   };
 }
 
 export function ensureDataSourceStandardQuery<T extends keyof StandardQueries>(
   sourceMeta: DataSourceMeta,
-  op: T
+  op: T,
 ) {
   return ensure(
     sourceMeta.standardQueries?.[op],
-    `Source "${sourceMeta.label}" doesn't have standard query "${op}"`
+    `Source "${sourceMeta.label}" doesn't have standard query "${op}"`,
   ) as NonNullable<StandardQueries[T]>;
 }
 
 export function dataSourceHasRequiredStandardQueries(
   sourceMeta: DataSourceMeta,
-  queryNames: (keyof StandardQueries)[]
+  queryNames: (keyof StandardQueries)[],
 ) {
   if (!sourceMeta?.standardQueries) {
     return false;
@@ -722,7 +722,7 @@ export type LookupSpec = {
 export type LookupSpecDraft = Partial<LookupSpec>;
 
 export function ensureLookupSpecFromDraft(
-  draft: Partial<LookupSpec> | undefined
+  draft: Partial<LookupSpec> | undefined,
 ): LookupSpec {
   assert(draft && draft.sourceType && draft.sourceId && draft.tableId, "");
   return draft as LookupSpec;
@@ -733,7 +733,7 @@ export function ensureLookupSpecFromDraft(
  * Currently, this function only works properly with the queries created by studioQueries
  */
 export function extractFiltersFromDefaultDataSourceQueries(
-  dataOp: DataSourceOpExpr
+  dataOp: DataSourceOpExpr,
 ) {
   const pattern = z.object({
     tree: z.object({
@@ -751,19 +751,19 @@ export function extractFiltersFromDefaultDataSourceQueries(
             valueSrc: z.tuple([z.literal("value")]),
             valueType: z.tuple([z.string()]),
           }),
-        })
+        }),
       ),
     }),
     fields: z.record(
       z.object({
         type: z.string(),
         label: z.string(),
-      })
+      }),
     ),
   });
   const parseResult = dataOp.templates.filters
     ? pattern.safeParse(
-        JSON.parse(ensureString(dataOp.templates.filters.value))
+        JSON.parse(ensureString(dataOp.templates.filters.value)),
       )
     : undefined;
   return parseResult && parseResult.success
@@ -771,7 +771,7 @@ export function extractFiltersFromDefaultDataSourceQueries(
         parseResult.data.tree.children1.map((child) => [
           child.properties.field,
           child.properties.value[0],
-        ])
+        ]),
       )
     : undefined;
 }
@@ -786,7 +786,7 @@ export type RawPagination = {
  * We coerce these into something well-defined for pagination consumers.
  */
 export function fillPagination(
-  pagination: RawPagination | undefined
+  pagination: RawPagination | undefined,
 ): Pagination | undefined {
   return typeof pagination?.pageSize === "number"
     ? {

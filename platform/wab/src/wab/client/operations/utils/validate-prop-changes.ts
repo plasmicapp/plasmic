@@ -35,7 +35,7 @@ export function validatePropName(name: string): string | undefined {
 
 /** Validates choice/multiChoice options: values must be unique. */
 export function validatePropOptions(
-  options: ChoiceOptions
+  options: ChoiceOptions,
 ): string | undefined {
   const values = options.map(getChoiceValue);
   if (new Set(values).size !== values.length) {
@@ -61,7 +61,7 @@ export function validateValueForPropType(
   field: "Default" | "Preview",
   propTypeData: PropTypeData | undefined,
   options: ChoiceOptions | undefined,
-  expr: Expr
+  expr: Expr,
 ): string | undefined {
   if (!propTypeData) {
     return undefined;
@@ -79,7 +79,7 @@ export function validateValueForPropType(
   }
 
   const invalidMessage = `${field} value ${JSON.stringify(
-    value
+    value,
   )} is not valid for a "${propTypeData.value}" prop.`;
 
   const matchesJsonType = () => {
@@ -112,7 +112,7 @@ export function validateValueForPropType(
     }
     if (options && options.length > 0 && !valueInOptions(options, value)) {
       return `${field} value ${JSON.stringify(
-        value
+        value,
       )} is not among the allowed options for this "${
         propTypeData.value
       }" prop.`;
@@ -131,7 +131,7 @@ export function validateValueForPropType(
  */
 export function getExcludedParamKindMessage(
   component: Component,
-  param: Param
+  param: Param,
 ): string | undefined {
   const propName = param.variable.name;
   if (isCodeComponent(component)) {
@@ -146,7 +146,7 @@ export function getExcludedParamKindMessage(
     return `Param "${propName}" is a state value param; manage it through state operations.`;
   }
   const stateOnChangeParam = component.states.find(
-    (state) => state.onChangeParam === param
+    (state) => state.onChangeParam === param,
   );
   if (stateOnChangeParam && stateOnChangeParam.accessType === "private") {
     return `Param "${propName}" is a state change handler; it is derived from its state.`;

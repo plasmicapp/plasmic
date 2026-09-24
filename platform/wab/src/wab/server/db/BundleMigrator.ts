@@ -36,12 +36,12 @@ import path from "path";
 export const BUNDLE_MIGRATION_PATH = path.join(
   __dirname,
   "..",
-  "bundle-migrations"
+  "bundle-migrations",
 );
 
 export type BundledMigrationFn = (
   bundle: UnsafeBundle,
-  entity: PkgVersion | ProjectRevision
+  entity: PkgVersion | ProjectRevision,
 ) => Promise<void>;
 
 export interface MigrationDbMgr {
@@ -51,7 +51,7 @@ export interface MigrationDbMgr {
     dataSourceIds: DataSourceId[],
     opts?: {
       skipPermissionCheck?: boolean;
-    }
+    },
   ) => Promise<void>;
   tryGetDevFlagOverrides: () => Promise<DevFlagOverrides | undefined>;
   extendProjectIdAndTokens: (pkgVersionId: string) => Promise<void>;
@@ -62,7 +62,7 @@ export interface MigrationDbMgr {
     model: string,
     tags: string[],
     description: string,
-    revisionNum: number
+    revisionNum: number,
   ) => Promise<PkgVersion>;
   listPkgVersions: (pkgId: string, opts: any) => Promise<PkgVersion[]>;
 }
@@ -70,7 +70,7 @@ export interface MigrationDbMgr {
 export type UnbundledMigrationFn = (
   bundle: UnsafeBundle,
   db: MigrationDbMgr,
-  entity: PkgVersion | ProjectRevision
+  entity: PkgVersion | ProjectRevision,
 ) => Promise<void>;
 
 type Migration =
@@ -104,7 +104,7 @@ export async function getAllMigrations() {
         migrate: mod.migrate,
         type: mod.MIGRATION_TYPE,
       };
-    })
+    }),
   );
   return bundleMigrations;
 }
@@ -123,7 +123,7 @@ export async function getMigrationsToExecute(version: string) {
   const migrations = await getAllMigrations();
   const versionIndex = migrations.findIndex(({ name }) => name === version);
   const lastVersionIndex = migrations.findIndex(
-    ({ name }) => name === lastBundleVersion
+    ({ name }) => name === lastBundleVersion,
   );
   assert(
     versionIndex !== -1 && lastVersionIndex !== -1,
@@ -132,12 +132,12 @@ export async function getMigrationsToExecute(version: string) {
       latestVersion: lastBundleVersion,
       currentVersionIndex: versionIndex,
       latestVersionIndex: lastVersionIndex,
-    })}`
+    })}`,
   );
   const todos = migrations.slice(versionIndex + 1, lastVersionIndex + 1);
   const [bundled, unbundled] = partition(
     todos,
-    (todo) => todo.type === "bundled"
+    (todo) => todo.type === "bundled",
   );
   /*
 
@@ -158,7 +158,7 @@ export async function getMigrationsToExecute(version: string) {
 const TEN_MB = 10 * 1024 * 1024;
 
 export async function getMigratedBundle(
-  entity: PkgVersion | ProjectRevision
+  entity: PkgVersion | ProjectRevision,
 ): Promise<Bundle> {
   return await withSpan("getMigratedBundle", async () => {
     const serializedSize = getSerializedBundleSize(entity);
@@ -167,7 +167,7 @@ export async function getMigratedBundle(
         `Get migrated bundle ${entity.constructor.name} ${entity.id} ${(
           serializedSize /
           (1024 * 1024)
-        ).toFixed(2)} MB`
+        ).toFixed(2)} MB`,
       );
     }
 
@@ -182,7 +182,7 @@ export async function getMigratedBundle(
 
     if (isEmptyBundle(bundle)) {
       logger().info(
-        `Detected empty bundle in ${entity.constructor.name} ${entity.id}. Will update to latest version and skip migrations.`
+        `Detected empty bundle in ${entity.constructor.name} ${entity.id}. Will update to latest version and skip migrations.`,
       );
       bundle.version = lastBundleVersion;
     }
@@ -203,7 +203,7 @@ export async function getMigratedBundle(
       if (migrationSorter.compare(currentVersion, lastBundleVersion) == 1) {
         // Bundle version is higher than the current version. Rollback the bundle!
         logger().info(
-          `Bundle in ${entity.constructor.name} ${entity.id} has version ${currentVersion} which is ahead of the last version ${lastBundleVersion}!`
+          `Bundle in ${entity.constructor.name} ${entity.id} has version ${currentVersion} which is ahead of the last version ${lastBundleVersion}!`,
         );
       }
 
@@ -211,14 +211,14 @@ export async function getMigratedBundle(
 
       // Sequencially apply migrations
       logger().info(
-        `Migrating bundle in ${entity.constructor.name} ${entity.id} from version ${currentVersion} to ${lastBundleVersion}.`
+        `Migrating bundle in ${entity.constructor.name} ${entity.id} from version ${currentVersion} to ${lastBundleVersion}.`,
       );
 
       for (const migration of migrations) {
         await db.saveBundleBackupForEntity(
           migration.name,
           entity,
-          JSON.stringify(bundle)
+          JSON.stringify(bundle),
         );
 
         if (migration.type === "bundled") {
@@ -232,12 +232,12 @@ export async function getMigratedBundle(
       if (DEVFLAGS.autoUpgradeHostless) {
         if (await bundleHasStaleHostlessDeps(bundle, db)) {
           logger().info(
-            `Upgrading hostless dependencies in ${entity.constructor.name} ${entity.id}`
+            `Upgrading hostless dependencies in ${entity.constructor.name} ${entity.id}`,
           );
           await db.saveBundleBackupForEntity(
             `hostless-auto-upgrade-${mkShortId()}`,
             entity,
-            JSON.stringify(bundle)
+            JSON.stringify(bundle),
           );
           await upgradeHostlessProject(bundle, entity, db);
         }
@@ -259,7 +259,7 @@ export async function getMigratedBundle(
           () =>
             `The root of a PkgVersion bundle must be ProjectDependency, but got ${
               bundle.map[bundle.root].__type
-            }`
+            }`,
         );
         await db.updatePkgVersion(
           entity.pkgId,
@@ -267,7 +267,7 @@ export async function getMigratedBundle(
           entity.branchId,
           {
             model: JSON.stringify(bundle),
-          }
+          },
         );
       } else {
         assert(
@@ -276,7 +276,7 @@ export async function getMigratedBundle(
           () =>
             `The root of a ProjectRevision bundle must be Site, but got ${
               bundle.map[bundle.root].__type
-            }`
+            }`,
         );
         await db.updateProjectRev({
           projectId: entity.projectId,

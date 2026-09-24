@@ -59,7 +59,7 @@ describe("deleteResourcesWithUsages", () => {
       studioCtx,
       [{ resource: variant, usageSummary: {}, usageCount: 0 }],
       onDelete,
-      { behaviour: "confirm-if-referenced", deleteLabel: "variant" }
+      { behaviour: "confirm-if-referenced", deleteLabel: "variant" },
     );
 
     expect(mockedConfirm).not.toHaveBeenCalled();
@@ -84,7 +84,7 @@ describe("deleteResourcesWithUsages", () => {
         },
       ],
       onDelete,
-      { behaviour: "error-if-referenced", deleteLabel: "variant" }
+      { behaviour: "error-if-referenced", deleteLabel: "variant" },
     );
 
     expect(onDelete).not.toHaveBeenCalled();
@@ -109,7 +109,7 @@ describe("deleteResourcesWithUsages", () => {
         },
       ],
       onDelete,
-      { behaviour: "confirm-if-referenced", deleteLabel: "variant" }
+      { behaviour: "confirm-if-referenced", deleteLabel: "variant" },
     );
 
     expect(mockedConfirm).toHaveBeenCalledTimes(1);
@@ -134,7 +134,7 @@ describe("deleteResourcesWithUsages", () => {
         },
       ],
       onDelete,
-      { behaviour: "confirm-if-referenced", deleteLabel: "variant" }
+      { behaviour: "confirm-if-referenced", deleteLabel: "variant" },
     );
 
     expect(mockedConfirm).toHaveBeenCalledTimes(1);
@@ -159,7 +159,7 @@ describe("deleteResourcesWithUsages", () => {
         },
       ],
       onDelete,
-      { behaviour: "delete-if-referenced", deleteLabel: "variant" }
+      { behaviour: "delete-if-referenced", deleteLabel: "variant" },
     );
 
     expect(mockedConfirm).not.toHaveBeenCalled();
@@ -184,7 +184,7 @@ describe("deleteResourcesWithUsages", () => {
         },
       ],
       onDelete,
-      { deleteLabel: "variant" }
+      { deleteLabel: "variant" },
     );
 
     expect(mockedConfirm).toHaveBeenCalledTimes(1);
@@ -204,7 +204,7 @@ describe("deleteResourcesWithUsages", () => {
         { resource: large, usageSummary: {}, usageCount: 0 },
       ],
       onDelete,
-      { behaviour: "delete-if-referenced", deleteLabel: "variant" }
+      { behaviour: "delete-if-referenced", deleteLabel: "variant" },
     );
 
     expect(onDelete).toHaveBeenCalledTimes(2);

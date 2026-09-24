@@ -61,7 +61,7 @@ export type ServerQueryFetchWrapper = (
 ) => Promise<any>;
 
 export function getEnvForPlasmicQueries(
-  env: Record<string, any>
+  env: Record<string, any>,
 ): Record<string, any> {
   return pickBy(
     env,
@@ -74,7 +74,7 @@ export function getEnvForPlasmicQueries(
       key === "$$" ||
       key === "$steps" ||
       // depending on whether the env is at display or evaluation stage, we may receive either stored or displayable data tokens
-      key.startsWith("$dataTokens_")
+      key.startsWith("$dataTokens_"),
   );
 }
 
@@ -90,7 +90,7 @@ export function getEnvForPlasmicQueries(
 export function buildCustomCodePlasmicQuery(
   queryId: string,
   code: string,
-  getRawEnv: () => Record<string, any>
+  getRawEnv: () => Record<string, any>,
 ): PlasmicQuery<(executionCtx: QueryExecutionContext) => Promise<unknown>> {
   // Static env is passed in as a function to prevent re-creating the query
   // when dynamic context ($ctx, $props, $q, $state) changes.
@@ -109,7 +109,7 @@ export function buildCustomCodePlasmicQuery(
  * keyed by its own SWR `id` so the cache entry tracks the same identity.
  */
 export function wrapPlasmicQueryFetch<
-  Q extends PlasmicQuery<(...args: any[]) => Promise<unknown>>
+  Q extends PlasmicQuery<(...args: any[]) => Promise<unknown>>,
 >(node: Q, wrapFetch: ServerQueryFetchWrapper): Q {
   const innerFn = node.fn;
   const id = node.id;
@@ -125,25 +125,25 @@ export function wrapPlasmicQueryFetch<
 // is being edited at a time.
 const getCustomCodeFactory = computedFn(function getCustomCodeFactory(
   code: string,
-  staticKeysJson: string
+  staticKeysJson: string,
 ): Function {
   return new Function(
     ...(JSON.parse(staticKeysJson) as string[]),
     `return async ({ $ctx, $props, $q, $state } = {}) => {
       return (${convertToFunction(stripParens(code))})();
-    }`
+    }`,
   );
 });
 
 function buildCustomCodeFn(
   code: string,
-  getRawEnv: () => Record<string, any>
+  getRawEnv: () => Record<string, any>,
 ): (executionCtx: QueryExecutionContext) => Promise<unknown> {
   return (executionCtx: QueryExecutionContext): Promise<unknown> => {
     const staticEnv = pickBy(
       getRawEnv(),
       (_value, key) =>
-        key === "$$" || key === "$dataTokens" || key.startsWith("$dataTokens_")
+        key === "$$" || key === "$dataTokens" || key.startsWith("$dataTokens_"),
     );
     const staticKeys = Object.keys(staticEnv);
     const staticValues = Object.values(staticEnv);
@@ -176,7 +176,7 @@ function buildCustomCodeFn(
 
 function buildCustomCodeArgs(
   code: string,
-  getRawEnv: () => Record<string, any>
+  getRawEnv: () => Record<string, any>,
 ): (executionCtx: QueryExecutionContext) => [QueryExecutionContext] {
   const { usedDollarVarKeys } = parseCodeExpression(stripParens(code));
   const depCtxNames = Array.from(usedDollarVarKeys.$ctx);
@@ -185,7 +185,7 @@ function buildCustomCodeArgs(
   // There is an equivalent codegen version of this logic in serialize-tree.
   const depStateTopLevelNames = [
     ...new Set(
-      Array.from(usedDollarVarKeys.$state).map((k) => k.split(".")[0])
+      Array.from(usedDollarVarKeys.$state).map((k) => k.split(".")[0]),
     ),
   ];
   return (executionCtx) => {
@@ -210,7 +210,7 @@ export function getCustomFunctionParams(
   expr: CustomFunctionExpr,
   env: Record<string, any> | undefined,
   exprCtx: ExprCtx,
-  currGlobalThis?: typeof globalThis
+  currGlobalThis?: typeof globalThis,
 ) {
   const { func, args } = expr;
   const argsMap = groupBy(args, (arg) => arg.argType.argName);
@@ -224,7 +224,7 @@ export function getCustomFunctionParams(
         const result = tryEvalExpr(
           getRawCode(clonedExpr, exprCtx),
           env ?? {},
-          currGlobalThis
+          currGlobalThis,
         );
         if (result.err) {
           // Surface the error to indicate prop eval error instead of downstream error
@@ -232,7 +232,7 @@ export function getCustomFunctionParams(
           throw new Error(
             `Failed to evaluate query parameter "${param.argName}": ${
               (result.err as Error).message ?? String(result.err)
-            }`
+            }`,
           );
         }
         return result.val;
@@ -245,10 +245,10 @@ export function getCustomFunctionParams(
 export function getInvalidFunctionArgs(
   args: unknown[],
   func: CustomFunction,
-  registeredParams: readonly CustomFunctionParam[] | undefined
+  registeredParams: readonly CustomFunctionParam[] | undefined,
 ): Record<string, InvalidArg> | undefined {
   const argByName = new Map<string, unknown>(
-    func.params.map((param, i) => [param.argName, args[i]])
+    func.params.map((param, i) => [param.argName, args[i]]),
   );
   const invalidArgs: Record<string, InvalidArg> = {};
   for (const param of normalizeCustomFunctionParams(registeredParams)) {
@@ -257,7 +257,7 @@ export function getInvalidFunctionArgs(
     if (isFlattenedObjectPropType(param)) {
       const flattenedFields = param.fields ?? {};
       for (const [fieldName, fieldPropType] of Object.entries(
-        flattenedFields
+        flattenedFields,
       )) {
         if (
           maybePropTypeToRequired(fieldPropType) &&
@@ -284,7 +284,7 @@ export function getInvalidFunctionArgs(
 
 export function getOldToNewCustomFunctions(
   oldDep: ProjectDependency,
-  newDep?: ProjectDependency
+  newDep?: ProjectDependency,
 ) {
   const oldToNewFunctions = new Map<
     CustomFunction,
@@ -294,7 +294,7 @@ export function getOldToNewCustomFunctions(
   const newFuncsById = Object.fromEntries(
     newDep
       ? newDep.site.customFunctions.map((f) => [customFunctionId(f), f])
-      : []
+      : [],
   );
 
   for (const oldFunc of oldDep.site.customFunctions) {
@@ -308,7 +308,7 @@ export function getOldToNewCustomFunctions(
 
 export function fixCustomFunctionExpr(
   oldToNewFunctions: Map<CustomFunction, CustomFunction | undefined>,
-  expr: CustomFunctionExpr | undefined | null
+  expr: CustomFunctionExpr | undefined | null,
 ) {
   // Empty function, we can't do anything
   if (!expr?.func) {
@@ -325,14 +325,14 @@ export function fixCustomFunctionExpr(
       expr.args = withoutNils(
         expr.args.map((arg) => {
           const newArgType = newFunc.params.find(
-            (param) => param.argName === arg.argType.argName
+            (param) => param.argName === arg.argType.argName,
           );
           if (!newArgType) {
             return null;
           }
           arg.argType = newArgType;
           return arg;
-        })
+        }),
       );
     }
   }
@@ -341,7 +341,7 @@ export function fixCustomFunctionExpr(
 
 export function fixCustomFunctionsInTpl(
   oldToNewFunctions: Map<CustomFunction, CustomFunction | undefined>,
-  tpl: TplNode
+  tpl: TplNode,
 ) {
   for (const { expr } of findExprsInNode(tpl)) {
     if (isKnownEventHandler(expr)) {
@@ -350,7 +350,7 @@ export function fixCustomFunctionsInTpl(
           if (isKnownCustomFunctionExpr(arg.expr)) {
             const fixedExpr = fixCustomFunctionExpr(
               oldToNewFunctions,
-              arg.expr
+              arg.expr,
             );
             if (fixedExpr) {
               arg.expr = fixedExpr;
@@ -378,7 +378,7 @@ export interface UnwrappedQueryResult {
 }
 
 export function unwrapStatefulQueryResult(
-  result: PlasmicQueryResult
+  result: PlasmicQueryResult,
 ): UnwrappedQueryResult {
   const r = safeExecResult(() => result.data);
   return {

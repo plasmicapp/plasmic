@@ -80,7 +80,7 @@ export type PublishState = undefined | "publishing" | "success" | "failure";
 function mkPublishState(
   saveVersion: StatusSaveVersion | undefined,
   pushDeploy: StatusPushDeploy | undefined,
-  webhooks: StatusWebhooks | undefined
+  webhooks: StatusWebhooks | undefined,
 ): PublishState {
   const states = [
     mkSaveVersionPublishState(saveVersion),
@@ -105,7 +105,7 @@ function shouldShowPublishWizard(project: ApiProject, appCtx: AppCtx): boolean {
 
   const starterProjects = L.flatMap(
     appCtx.appConfig.starterSections,
-    (section) => section.projects
+    (section) => section.projects,
   ).filter((p) => p.publishWizard);
   return starterProjects.map((p) => p.projectId).includes(starterId);
 }
@@ -182,7 +182,7 @@ export const PublishFlowDialogWrapper = observer(
         !activatedBranch && appCtx.appConfig.enablePlasmicHosting
           ? appCtx.api.getDomainsForProject(projectId)
           : undefined,
-      { revalidateOnMount: true }
+      { revalidateOnMount: true },
     );
     const domains = domainsResult?.domains ?? [];
     // Push and deploy (GitHub integration)
@@ -206,9 +206,8 @@ export const PublishFlowDialogWrapper = observer(
         if (activatedBranch) {
           return null;
         }
-        const { projectRepositories } = await appCtx.api.getProjectRepositories(
-          projectId
-        );
+        const { projectRepositories } =
+          await appCtx.api.getProjectRepositories(projectId);
         return projectRepositories[0] ?? null;
       }, [projectId]);
     React.useEffect(() => {
@@ -250,7 +249,7 @@ export const PublishFlowDialogWrapper = observer(
       if (!statusPushDeploy?.workflowRunId) {
         const run = await appCtx.api.getGitLatestWorkflowRun(
           statusPushDeploy.projectRepositoryId,
-          projectId
+          projectId,
         );
         if (run.state === "running") {
           statusPushDeploy.setWorkflowRunId(run.workflowRunId);
@@ -266,7 +265,7 @@ export const PublishFlowDialogWrapper = observer(
       const { job } = await appCtx.api.getGitWorkflowJob(
         statusPushDeploy.projectRepositoryId,
         project.id,
-        statusPushDeploy.workflowRunId
+        statusPushDeploy.workflowRunId,
       );
       if (job) {
         statusPushDeploy.setWorkflowJobUrl(job.html_url ?? undefined);
@@ -296,7 +295,7 @@ export const PublishFlowDialogWrapper = observer(
     const [webhooks, setWebhooks] = React.useState<ToggleWebhook[]>([]);
     const updateWebhooks = (newWebhooks: ApiProjectWebhook[]) => {
       const disabledIDs = new Set(
-        webhooks.filter((w) => !w.enable).map((w) => w.id)
+        webhooks.filter((w) => !w.enable).map((w) => w.id),
       );
       const ww = newWebhooks.map((w) => {
         return { ...w, enable: !(w.id in disabledIDs) } as ToggleWebhook;
@@ -444,7 +443,7 @@ export const PublishFlowDialogWrapper = observer(
             const publishResult = await hostFrameApi.publishVersion(
               versionTags,
               versionDescription,
-              activatedBranch?.id
+              activatedBranch?.id,
             );
             _statusSaveVersion.result = publishResult;
             setVersionTags([] as string[]);
@@ -462,11 +461,11 @@ export const PublishFlowDialogWrapper = observer(
                   const { status } =
                     await appCtx.api.getPkgVersionPublishStatus(
                       project.id,
-                      versionId
+                      versionId,
                     );
                   return status === "ready";
                 },
-                { timeout: 5000 }
+                { timeout: 5000 },
               );
             }
 
@@ -481,9 +480,8 @@ export const PublishFlowDialogWrapper = observer(
               ..._statusPlasmicHosting,
               revalidateResult: "started",
             });
-            const response = await appCtx.api.revalidatePlasmicHosting(
-              projectId
-            );
+            const response =
+              await appCtx.api.revalidatePlasmicHosting(projectId);
             setStatusPlasmicHosting({
               ..._statusPlasmicHosting,
               revalidateResult: "finished",
@@ -515,7 +513,7 @@ export const PublishFlowDialogWrapper = observer(
                     run.workflowJobUrl ?? undefined;
                   setStatusPushDeploy({ ..._statusPushDeploy });
                 }
-              })()
+              })(),
             );
           }
 
@@ -525,15 +523,15 @@ export const PublishFlowDialogWrapper = observer(
                 for (const w of _statusWebhooks.enabledWebhooks) {
                   const event = await appCtx.api.triggerProjectWebhook(
                     projectId,
-                    w
+                    w,
                   );
                   w.event = event;
                   setStatusWebhooks({ ..._statusWebhooks });
                 }
-              })()
+              })(),
             );
           }
-        })()
+        })(),
       );
     };
 
@@ -545,7 +543,7 @@ export const PublishFlowDialogWrapper = observer(
 
     React.useEffect(() => {
       setPublishState(
-        mkPublishState(statusSaveVersion, statusPushDeploy, statusWebhooks)
+        mkPublishState(statusSaveVersion, statusPushDeploy, statusWebhooks),
       );
     }, [statusSaveVersion, statusPushDeploy, statusWebhooks]);
 
@@ -605,7 +603,7 @@ export const PublishFlowDialogWrapper = observer(
         )}
       </>
     );
-  }
+  },
 );
 
 export default PublishFlowDialogWrapper;

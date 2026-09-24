@@ -5,7 +5,7 @@ const memoizeOne = ((m: any) => m.default || m)(require("memoize-one"));
 export function insertArray<T>(
   array: ReadonlyArray<T>,
   item: T,
-  index?: number
+  index?: number,
 ) {
   if (index === undefined) {
     return array.concat([item]);
@@ -49,14 +49,14 @@ export function deepMerged<T>(obj1: T, obj2: DeepMergeable<T>): T {
     const newVals = Object.fromEntries(
       Object.entries(obj2).map(([key, val]) => {
         return [key, deepMerged(obj1[key], val)];
-      })
+      }),
     ) as Partial<T>;
     return merged(obj1, newVals);
   } else if (_.isPlainObject(obj2)) {
     return Object.fromEntries(
       Object.entries(obj2).map(([key, val]) =>
-        tuple(key, deepMerged(undefined, val as any))
-      )
+        tuple(key, deepMerged(undefined, val as any)),
+      ),
     ) as unknown as T;
   } else {
     return obj2 as any;

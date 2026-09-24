@@ -53,7 +53,7 @@ export function tplToPlasmicElements(tpl: TplNode): PlasmicElement | undefined {
     return ensureType<PlasmicElement>({
       type: "box",
       children: withoutNils(
-        tpl.children.map((child) => tplToPlasmicElements(child))
+        tpl.children.map((child) => tplToPlasmicElements(child)),
       ),
     });
   }
@@ -67,11 +67,11 @@ export function tplToPlasmicElements(tpl: TplNode): PlasmicElement | undefined {
             arg.param.variable.name,
             isKnownRenderExpr(arg.expr)
               ? withoutNils(
-                  arg.expr.tpl.map((child) => tplToPlasmicElements(child))
+                  arg.expr.tpl.map((child) => tplToPlasmicElements(child)),
                 )
-              : (tryExtractJson(arg.expr) as PlasmicElement | PlasmicElement[])
-          )
-        )
+              : (tryExtractJson(arg.expr) as PlasmicElement | PlasmicElement[]),
+          ),
+        ),
       ),
     };
   }
@@ -93,7 +93,7 @@ export function tplToPlasmicElements(tpl: TplNode): PlasmicElement | undefined {
                         position: sm.position,
                         length: sm.length,
                         styles: rulesetToStyles(sm.rs),
-                      })
+                      }),
                     )
                     .when(NodeMarker, (nm) => {
                       const elt = tplToPlasmicElements(nm.tpl);
@@ -107,8 +107,8 @@ export function tplToPlasmicElements(tpl: TplNode): PlasmicElement | undefined {
                         value: elt,
                       });
                     })
-                    .result()
-                )
+                    .result(),
+                ),
               ),
             }),
       };

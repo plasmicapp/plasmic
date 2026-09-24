@@ -58,18 +58,18 @@ function bottomOf(scroller: HTMLElement) {
 /** Waits for the scroller to settle at the bottom. */
 async function expectAtBottom(scroller: HTMLElement) {
   await waitFor(() =>
-    expect(scroller.scrollTop).toBeCloseTo(bottomOf(scroller), 0)
+    expect(scroller.scrollTop).toBeCloseTo(bottomOf(scroller), 0),
   );
 }
 
 async function expectFollowing(
   canvas: ReturnType<typeof within>,
-  following: boolean
+  following: boolean,
 ) {
   await waitFor(() =>
     expect(canvas.getByRole("status")).toHaveTextContent(
-      following ? /^Following$/ : /^Not following$/
-    )
+      following ? /^Following$/ : /^Not following$/,
+    ),
   );
 }
 

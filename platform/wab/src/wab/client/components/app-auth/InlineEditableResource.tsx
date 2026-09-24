@@ -15,7 +15,7 @@ interface InlineEditableResourceProps {
 }
 
 export default function InlineEditableResource(
-  props: InlineEditableResourceProps
+  props: InlineEditableResourceProps,
 ) {
   const { visibleValue, value, isFake, onChange } = props;
   return (

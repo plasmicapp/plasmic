@@ -19,7 +19,7 @@ export function Modal({ modalRender, ...props }: ModalProps) {
         return wrappedNode;
       }
     },
-    [modalRender]
+    [modalRender],
   );
   return <AntdModal modalRender={wrappedModalRender} {...props} />;
 }

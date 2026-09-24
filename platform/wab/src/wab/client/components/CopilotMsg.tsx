@@ -6,20 +6,19 @@ import {
   PlasmicCopilotMsg__OverridesType,
 } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotMsg";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { assert, maybe, spawn } from "@/wab/shared/common";
 import { CopilotInteractionId } from "@/wab/shared/ApiSchema";
+import { assert, maybe, spawn } from "@/wab/shared/common";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
 export interface CopilotMsgProps
-  extends DefaultCopilotMsgProps,
-    PlasmicCopilotMsg__OverridesType {
+  extends DefaultCopilotMsgProps, PlasmicCopilotMsg__OverridesType {
   copilotInteractionId?: CopilotInteractionId;
 }
 
 function CopilotMsg_(
   { copilotInteractionId, ...props }: CopilotMsgProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const studioCtx = useStudioCtx();
   const savedFeedback =
@@ -95,7 +94,7 @@ function CopilotMsg_(
           if (feedbackStatus === "submit") {
             assert(
               likeDislikeState != null,
-              () => `Should have pressed like or dislike`
+              () => `Should have pressed like or dislike`,
             );
             assert(copilotInteractionId != null, () => `No interaction ID`);
             setFeedbackStatus("submitting");
@@ -104,9 +103,9 @@ function CopilotMsg_(
                 .submitCopilotFeedback(
                   copilotInteractionId,
                   likeDislikeState === "like",
-                  feedbackDescription || null
+                  feedbackDescription || null,
                 )
-                .then(() => setFeedbackStatus("submitted"))
+                .then(() => setFeedbackStatus("submitted")),
             );
           }
         },

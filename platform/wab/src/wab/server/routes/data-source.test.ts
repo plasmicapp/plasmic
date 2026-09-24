@@ -22,7 +22,7 @@ describe("mkApiDataSource hasPrivateConfig", () => {
     const api = mkApiDataSource(
       mkHttpDataSource({
         settings: { commonHeaders: { "Content-Type": "application/json" } },
-      })
+      }),
     );
 
     expect(api.hasPrivateConfig).toBe(false);
@@ -37,7 +37,7 @@ describe("mkApiDataSource hasPrivateConfig", () => {
             Authorization: "Bearer hunter2",
           },
         },
-      })
+      }),
     );
 
     expect(api.hasPrivateConfig).toBe(true);
@@ -55,15 +55,15 @@ describe("mkApiDataSource hasPrivateConfig", () => {
               "Content-Type": "application/x-www-form-urlencoded",
             },
           },
-        })
-      ).hasPrivateConfig
+        }),
+      ).hasPrivateConfig,
     ).toBe(true);
     expect(
       mkApiDataSource(
         mkHttpDataSource({
           settings: { commonHeaders: { Accept: "application/xml" } },
-        })
-      ).hasPrivateConfig
+        }),
+      ).hasPrivateConfig,
     ).toBe(true);
   });
 
@@ -71,7 +71,7 @@ describe("mkApiDataSource hasPrivateConfig", () => {
     const api = mkApiDataSource(
       mkHttpDataSource({
         credentials: { commonHeaders: { "X-Api-Key": "hunter2" } },
-      })
+      }),
     );
 
     expect(api.hasPrivateConfig).toBe(true);
@@ -84,7 +84,7 @@ describe("mkApiDataSource hasPrivateConfig", () => {
         credentials: {
           commonHeaders: { "Content-Type": "application/json" },
         },
-      })
+      }),
     );
 
     expect(api.hasPrivateConfig).toBe(true);
@@ -95,7 +95,7 @@ describe("mkApiDataSource hasPrivateConfig", () => {
       mkHttpDataSource({
         credentials: { commonHeaders: {} },
         settings: { commonHeaders: undefined },
-      })
+      }),
     );
 
     expect(api.hasPrivateConfig).toBe(false);
@@ -113,7 +113,7 @@ describe("mkApiDataSource settings for non-editors", () => {
           },
         },
       }),
-      true
+      true,
     );
 
     expect(api.settings).toEqual({
@@ -127,7 +127,7 @@ describe("mkApiDataSource settings for non-editors", () => {
       mkHttpDataSource({
         settings: { commonHeaders: { Authorization: "Bearer hunter2" } },
       }),
-      true
+      true,
     );
 
     expect(api.settings).toEqual({ baseUrl: "https://api.example.com" });

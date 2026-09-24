@@ -11,7 +11,7 @@ export type ServerQueryWithOperation = ComponentServerQuery & {
 };
 
 export function isServerQueryWithOperation(
-  query: ComponentServerQuery
+  query: ComponentServerQuery,
 ): query is ServerQueryWithOperation {
   return !!query.op;
 }

@@ -26,7 +26,7 @@ describe("renderRichTextChildren", () => {
     const children = renderRichTextChildren(
       new RawText({ text: "a\u2028b", markers: [] }),
       descriptorTarget,
-      opts
+      opts,
     );
     expect(children).toEqual([{ kind: "text", text: "a\nb" }]);
   });
@@ -44,7 +44,7 @@ describe("renderRichTextChildren", () => {
         ],
       }),
       descriptorTarget,
-      opts
+      opts,
     );
     expect(children).toEqual([
       { kind: "text", text: "hello " },
@@ -65,7 +65,7 @@ describe("renderRichTextChildren", () => {
         ],
       }),
       descriptorTarget,
-      opts
+      opts,
     );
     expect(children).toEqual([
       { kind: "text", text: "hello " },
@@ -86,7 +86,7 @@ describe("renderRichTextChildren", () => {
         ],
       }),
       descriptorTarget,
-      opts
+      opts,
     );
     expect(children).toEqual([{ kind: "text", text: "hello" }]);
   });
@@ -103,7 +103,7 @@ describe("renderRichTextChildren", () => {
           markers: [new NodeMarker({ position: 0, length: 1, tpl: child })],
         }),
         descriptorTarget,
-        opts
+        opts,
       );
       // normalizeMarkers (without isInline) inserts an empty leading text
       // before a tpl marker at position 0.
@@ -119,7 +119,7 @@ describe("renderRichTextChildren", () => {
     const children = renderRichTextChildren(
       new RawText({ text: "<x>\ny", markers: [] }),
       descriptorTarget,
-      { ...opts, whitespaceNormal: true }
+      { ...opts, whitespaceNormal: true },
     );
     expect(children).toHaveLength(1);
     expect(children[0]).toEqual({

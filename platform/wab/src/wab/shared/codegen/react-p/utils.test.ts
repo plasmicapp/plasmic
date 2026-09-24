@@ -17,21 +17,21 @@ describe("serializedKeyValue", () => {
     const serialized = serializedKeyValue("ok123", "456");
     expect(serialized).toEqual(`ok123={456}`);
     expect(compile("tsx", `const x = <div ${serialized} />;`)).toEqual(
-      `const x = /* @__PURE__ */ React.createElement("div", { ok123: 456 });\n`
+      `const x = /* @__PURE__ */ React.createElement("div", { ok123: 456 });\n`,
     );
   });
   it("compiles key with hyphen", () => {
     const serialized = serializedKeyValue("aria-label", `"My Label" as const`);
     expect(serialized).toEqual(`aria-label={"My Label" as const}`);
     expect(compile("tsx", `const x = <div ${serialized} />;`)).toEqual(
-      `const x = /* @__PURE__ */ React.createElement("div", { "aria-label": "My Label" });\n`
+      `const x = /* @__PURE__ */ React.createElement("div", { "aria-label": "My Label" });\n`,
     );
   });
   it("compiles key with plain characters", () => {
     const serialized = serializedKeyValue("onChange", "handler");
     expect(serialized).toEqual(`onChange={handler}`);
     expect(compile("tsx", `const x = <div ${serialized} />;`)).toEqual(
-      `const x = /* @__PURE__ */ React.createElement("div", { onChange: handler });\n`
+      `const x = /* @__PURE__ */ React.createElement("div", { onChange: handler });\n`,
     );
   });
   it("compiles key with Cyrillic character", () => {
@@ -39,7 +39,7 @@ describe("serializedKeyValue", () => {
     const serialized = serializedKeyValue("onСhange", "handler");
     expect(serialized).toEqual(`{...{"on\\u0421hange": handler}}`);
     expect(compile("tsx", `const x = <div ${serialized} />;`)).toEqual(
-      `const x = /* @__PURE__ */ React.createElement("div", { ...{ "on\\u0421hange": handler } });\n`
+      `const x = /* @__PURE__ */ React.createElement("div", { ...{ "on\\u0421hange": handler } });\n`,
     );
   });
 });
@@ -49,31 +49,31 @@ describe("serializedKeyValueForObject", () => {
     const serialized = serializedKeyValueForObject("123", "456");
     expect(serialized).toEqual(`"123": 456`);
     expect(compile("ts", `const x = { ${serialized} };`)).toEqual(
-      `const x = { "123": 456 };\n`
+      `const x = { "123": 456 };\n`,
     );
   });
   it("compiles key with digit", () => {
     const serialized = serializedKeyValueForObject("ok123", "456");
     expect(serialized).toEqual(`ok123: 456`);
     expect(compile("ts", `const x = { ${serialized} };`)).toEqual(
-      `const x = { ok123: 456 };\n`
+      `const x = { ok123: 456 };\n`,
     );
   });
   it("compiles key with hyphen", () => {
     const serialized = serializedKeyValueForObject(
       "aria-label",
-      `"My Label" as const`
+      `"My Label" as const`,
     );
     expect(serialized).toEqual(`"aria-label": "My Label" as const`);
     expect(compile("ts", `const x = { ${serialized} };`)).toEqual(
-      `const x = { "aria-label": "My Label" };\n`
+      `const x = { "aria-label": "My Label" };\n`,
     );
   });
   it("compiles key with plain characters", () => {
     const serialized = serializedKeyValueForObject("onChange", "handler");
     expect(serialized).toEqual(`onChange: handler`);
     expect(compile("ts", `const x = { ${serialized} };`)).toEqual(
-      `const x = { onChange: handler };\n`
+      `const x = { onChange: handler };\n`,
     );
   });
   it("compiles key with Cyrillic character", () => {
@@ -81,7 +81,7 @@ describe("serializedKeyValueForObject", () => {
     const serialized = serializedKeyValueForObject("onСhange", "handler");
     expect(serialized).toEqual(`"on\\u0421hange": handler`);
     expect(compile("ts", `const x = { ${serialized} };`)).toEqual(
-      `const x = { "on\\u0421hange": handler };\n`
+      `const x = { "on\\u0421hange": handler };\n`,
     );
   });
 });

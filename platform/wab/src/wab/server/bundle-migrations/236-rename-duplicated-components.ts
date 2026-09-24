@@ -15,7 +15,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   const duplicatedComponents = new Map<string, Component[]>();
@@ -40,7 +40,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     components.sort(
       (a, b) =>
         extractComponentUsages(site, b).components.length -
-        extractComponentUsages(site, a).components.length
+        extractComponentUsages(site, a).components.length,
     );
     components.forEach((component, index) => {
       if (index === 0) {
@@ -53,7 +53,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "236-rename-duplicated-components"
+    "236-rename-duplicated-components",
   );
   Object.assign(bundle, newBundle);
 };

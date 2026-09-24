@@ -8,7 +8,7 @@ describe("sendEmailVerificationToUser", () => {
       req,
       "newuser@example.com",
       "OneTimeUseToken",
-      "/"
+      "/",
     );
     expect(mailer.sendMail).toHaveBeenCalledWith({
       from: config.mailFrom,

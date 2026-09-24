@@ -10,7 +10,7 @@ type NavWorkspaceButtonProps = DefaultNavWorkspaceButtonProps;
 
 function NavWorkspaceButton_(
   props: NavWorkspaceButtonProps,
-  ref: HTMLElementRefOf<"a">
+  ref: HTMLElementRefOf<"a">,
 ) {
   return (
     <PlasmicNavWorkspaceButton root={{ as: PublicLink, ref }} {...props} />

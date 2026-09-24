@@ -18,29 +18,29 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { uniqBy } from "lodash";
 import * as React from "react";
 
-interface WorkspacePageProps
-  extends Omit<DefaultWorkspacePageProps, "children" | "title"> {
+interface WorkspacePageProps extends Omit<
+  DefaultWorkspacePageProps,
+  "children" | "title"
+> {
   workspaceId: WorkspaceId;
 }
 
 function WorkspacePage_(
   props: WorkspacePageProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const appCtx = useAppCtx();
   const { workspaceId, ...rest } = props;
 
   const [asyncData, fetchAsyncData] = useAsyncFnStrict(async () => {
-    const { workspace, perms: workspacePerms } = await appCtx.api.getWorkspace(
-      workspaceId
-    );
+    const { workspace, perms: workspacePerms } =
+      await appCtx.api.getWorkspace(workspaceId);
     const { projects, perms: projectsPerms } = await appCtx.api.getProjects({
       query: "byWorkspace",
       workspaceId,
     });
-    const databases = await appCtx.api.listCmsDatabasesForWorkspace(
-      workspaceId
-    );
+    const databases =
+      await appCtx.api.listCmsDatabasesForWorkspace(workspaceId);
     const perms = uniqBy([...workspacePerms, ...projectsPerms], (p) => p.id);
     return { workspace, projects, databases, perms };
   }, [workspaceId]);
@@ -54,7 +54,7 @@ function WorkspacePage_(
   } = useProjectsFilter(
     asyncData.value?.projects,
     asyncData.value?.databases,
-    false
+    false,
   );
 
   if (asyncData.error) {

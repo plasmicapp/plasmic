@@ -23,7 +23,7 @@ describe("fetchUntrusted", () => {
       fetchUntrusted({
         method: "GET",
         url: ssrf!.externalGoodServer.url,
-      })
+      }),
     ).resolves.toMatchObject({
       status: 200,
       data: ssrf!.expectedGoodContent,
@@ -33,14 +33,14 @@ describe("fetchUntrusted", () => {
 
   it("does not fetch an internal IP", async () => {
     await expect(
-      fetchUntrusted({ method: "GET", url: ssrf!.internalServer.url })
+      fetchUntrusted({ method: "GET", url: ssrf!.internalServer.url }),
     ).rejects.toThrow(UnsafeUrlError);
     expect(ssrf!.internalServer.requestCount()).toBe(0);
   });
 
   it("does not fetch an internal IP via external redirect", async () => {
     await expect(
-      fetchUntrusted({ method: "GET", url: ssrf!.externalBadServer.url })
+      fetchUntrusted({ method: "GET", url: ssrf!.externalBadServer.url }),
     ).rejects.toThrow(UnsafeUrlError);
     expect(ssrf!.externalBadServer.requestCount()).toBe(1);
     expect(ssrf!.internalServer.requestCount()).toBe(0);
@@ -56,7 +56,7 @@ describe("fetchUntrusted - e2e test with external redirect service", () => {
 
   function redirectTo(redirectService: string, targetUrl: string) {
     return `${redirectService}/redirect-to?url=${encodeURIComponent(
-      targetUrl
+      targetUrl,
     )}&status_code=302`;
   }
 
@@ -103,7 +103,7 @@ describe("fetchUntrusted - e2e test with external redirect service", () => {
       // Craft URL with 2 redirect hops (external -> external -> internal)
       const url = redirectTo(
         redirectService,
-        redirectTo(redirectService, internalServer!.url)
+        redirectTo(redirectService, internalServer!.url),
       );
 
       try {

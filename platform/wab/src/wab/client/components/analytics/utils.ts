@@ -90,7 +90,7 @@ export function getYAxisLabel(event: string, period: string) {
 export function getFormattedRange(
   from: Dayjs,
   to: Dayjs,
-  period: "day" | "month"
+  period: "day" | "month",
 ) {
   // format data to include all hours/days in the range
   const FORMAT = {

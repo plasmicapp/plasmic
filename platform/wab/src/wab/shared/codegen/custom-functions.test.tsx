@@ -32,20 +32,20 @@ describe("tests codegen for custom functions", () => {
       path.join(dir.name, "importPath__math.sum.js"),
       `
 export const sum = (a, b) => a + b;
-      `
+      `,
     );
     fs.writeFileSync(
       path.join(dir.name, "importPath__math.subtract.js"),
       `
 const subtract = (a, b) => a - b;
 export default subtract;
-      `
+      `,
     );
     fs.writeFileSync(
       path.join(dir.name, "importPath__greeting.js"),
       `
 export const greeting = (fromName) => \`Hello from \${fromName}!\`;
-      `
+      `,
     );
 
     const { importFromProject } = await codegen(dir.name, site);
@@ -60,12 +60,12 @@ export const greeting = (fromName) => \`Hello from \${fromName}!\`;
     // text contents for simplicity! The contents and the attr receive the same
     // text in the project.
     const textElt1 = document.querySelector(
-      `[title="The result is: 10"]`
+      `[title="The result is: 10"]`,
     ) as HTMLElement;
     expect(textElt1).not.toBeNil();
 
     const textElt2 = document.querySelector(
-      `[title="Hello from Plasmic!"]`
+      `[title="Hello from Plasmic!"]`,
     ) as HTMLElement;
     expect(textElt2).not.toBeNil();
   }, 300000);

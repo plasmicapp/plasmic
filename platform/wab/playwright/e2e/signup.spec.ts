@@ -9,7 +9,7 @@ test.describe("Signup flow", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -61,14 +61,13 @@ test.describe("Signup flow", () => {
       .getByText("Sorry, something went wrong with that link")
       .waitFor({ timeout: 10000 });
 
-    const token = await apiClient.getUserEmailVerificationToken(
-      randomUserEmail
-    );
+    const token =
+      await apiClient.getUserEmailVerificationToken(randomUserEmail);
 
     await page.goto(
       `/email-verification?token=${encodeURIComponent(
-        token
-      )}&continueTo=${encodeURIComponent(`/projects/${projectId}`)}`
+        token,
+      )}&continueTo=${encodeURIComponent(`/projects/${projectId}`)}`,
     );
 
     await page

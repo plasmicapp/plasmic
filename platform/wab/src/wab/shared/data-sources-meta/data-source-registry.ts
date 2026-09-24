@@ -59,7 +59,7 @@ export type DataSourceType = keyof typeof DATA_SOURCE_METAS;
 export function getDataSourceMeta(type: string): DataSourceMeta {
   return ensure(
     tryGetDataSourceMeta(type),
-    () => `Unexpected ${DATA_SOURCE_LOWER} type ${type}`
+    () => `Unexpected ${DATA_SOURCE_LOWER} type ${type}`,
   );
 }
 
@@ -70,7 +70,7 @@ export function tryGetDataSourceMeta(type: string): DataSourceMeta | undefined {
 
 export function getAllPublicDataSourceMetas() {
   return getAllDataSourceMetas().filter(
-    (meta) => !DEVFLAGS.hiddenDataSources.includes(meta.id)
+    (meta) => !DEVFLAGS.hiddenDataSources.includes(meta.id),
   );
 }
 
@@ -91,6 +91,6 @@ export const DATA_SOURCE_QUERY_BUILDER_CONFIG = {
 export function getDataSourceQueryBuilderConfig(type: string): Config {
   return ensure(
     DATA_SOURCE_QUERY_BUILDER_CONFIG[type],
-    () => `Unexpected ${DATA_SOURCE_LOWER} type ${type}`
+    () => `Unexpected ${DATA_SOURCE_LOWER} type ${type}`,
   );
 }

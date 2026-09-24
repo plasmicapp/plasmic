@@ -13,7 +13,7 @@ describe("parseQueryParams", () => {
           filter: '{"name":"example"}',
           version: "null",
         },
-      })
+      }),
     ).toEqual({
       projectId: "project-id",
       includeDeleted: false,
@@ -28,19 +28,19 @@ describe("parseQueryParams", () => {
     "rejects malformed JSON as a bad request: %s",
     (value) => {
       expect(() =>
-        parseQueryParams({ query: { access_token: value } })
+        parseQueryParams({ query: { access_token: value } }),
       ).toThrow(
-        new BadRequestError("Query parameter access_token must be valid JSON")
+        new BadRequestError("Query parameter access_token must be valid JSON"),
       );
-    }
+    },
   );
 
   it.each([{ value: ["1", "2"] }, { value: { nested: "true" } }])(
     "rejects query values that are not strings: %j",
     ({ value }) => {
       expect(() => parseQueryParams({ query: { ids: value } })).toThrow(
-        new BadRequestError("Query parameter ids must be a JSON string")
+        new BadRequestError("Query parameter ids must be a JSON string"),
       );
-    }
+    },
   );
 });

@@ -24,7 +24,7 @@ export type MessagePartLabelProps = DefaultMessagePartLabelProps;
 
 function MessagePartLabel_(
   props: MessagePartLabelProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicMessagePartLabel to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

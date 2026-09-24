@@ -17,15 +17,15 @@ describe("cssPegParser", function () {
   const bgParse = (x) => parse(x, { rule: "backgroundImage" });
   it("should parse image backgrounds", () =>
     expect(bgParse('url("http://aoeu")')).toEqual(
-      new ImageBackground({ url: "http://aoeu" })
+      new ImageBackground({ url: "http://aoeu" }),
     ));
   it("should parse variable refs", () => {
     expect(bgParse("var(--image-hello)")).toEqual(
-      new ImageBackground({ url: "var(--image-hello)" })
+      new ImageBackground({ url: "var(--image-hello)" }),
     );
 
     expect(bgParse("var(--token-abc)")).toEqual(
-      new ColorFill({ color: "var(--token-abc)" })
+      new ColorFill({ color: "var(--token-abc)" }),
     );
   });
   it("should parse linear gradients", function () {
@@ -35,44 +35,44 @@ describe("cssPegParser", function () {
         angle: 90,
         stops: tuple(
           new Stop("black", new Dim("50", "%")),
-          new Stop("#fff", new Dim("70", "%"))
+          new Stop("#fff", new Dim("70", "%")),
         ),
-      })
+      }),
     );
     expect(bgParse("linear-gradient(30deg, #fff 50%)")).toEqual(
       new LinearGradient({
         repeating: false,
         angle: 30,
         stops: [new Stop("#fff", new Dim("50", "%"))],
-      })
+      }),
     );
     expect(
-      bgParse("repeating-linear-gradient(90deg, black 50%, #fff 70%)")
+      bgParse("repeating-linear-gradient(90deg, black 50%, #fff 70%)"),
     ).toEqual(
       new LinearGradient({
         repeating: true,
         angle: 90,
         stops: tuple(
           new Stop("black", new Dim("50", "%")),
-          new Stop("#fff", new Dim("70", "%"))
+          new Stop("#fff", new Dim("70", "%")),
         ),
-      })
+      }),
     );
     expect(bgParse("linear-gradient(10deg, rgb(0,0,0) 50%)")).toEqual(
       new LinearGradient({
         repeating: false,
         angle: 10,
         stops: [new Stop("rgb(0,0,0)", new Dim("50", "%"))],
-      })
+      }),
     );
     return expect(
-      bgParse("repeating-linear-gradient(90deg, rgba(255, 255, 255, .1) 50%)")
+      bgParse("repeating-linear-gradient(90deg, rgba(255, 255, 255, .1) 50%)"),
     ).toEqual(
       new LinearGradient({
         repeating: true,
         angle: 90,
         stops: [new Stop("rgba(255,255,255,.1)", new Dim("50", "%"))],
-      })
+      }),
     );
   });
   it("should render back to original CSS string", () => {
@@ -104,14 +104,14 @@ describe("cssPegParser", function () {
   it("should parse background shorthand correctly", () => {
     const layer: BackgroundLayer = parse(
       `url("img_tree.png") right top no-repeat`,
-      { rule: "backgroundLayer" }
+      { rule: "backgroundLayer" },
     );
     expect(removeNils(layer)).toEqual(
       new BackgroundLayer({
         image: new ImageBackground({ url: "img_tree.png" }),
         position: "right top",
         repeat: "no-repeat",
-      })
+      }),
     );
     expect(layer.showCss()).toBe(`url("img_tree.png") right top no-repeat`);
   });
@@ -124,21 +124,21 @@ describe("cssPegParser", function () {
         image: new ImageBackground({ url: "img_tree.png" }),
         repeat: "repeat-y",
         attachment: "fixed",
-      })
+      }),
     );
     expect(layer.showCss()).toBe(`url("img_tree.png") repeat-y fixed`);
   });
   it("should parse background shorthand correctly", () => {
     const layer: BackgroundLayer = parse(`none`, { rule: "backgroundLayer" });
     expect(removeNils(layer)).toEqual(
-      new BackgroundLayer({ image: new NoneBackground() })
+      new BackgroundLayer({ image: new NoneBackground() }),
     );
     expect(layer.showCss()).toBe(`none`);
   });
   it("should parse background shorthand correctly", () => {
     const layer: BackgroundLayer = parse(
       `linear-gradient(rgb(0,0,0), rgb(0,0,0)) 0% 0% padding-box border-box`,
-      { rule: "backgroundLayer" }
+      { rule: "backgroundLayer" },
     );
     expect(removeNils(layer)).toEqual(
       new BackgroundLayer({
@@ -146,7 +146,7 @@ describe("cssPegParser", function () {
         position: "0% 0%",
         origin: "padding-box",
         clip: "border-box",
-      })
+      }),
     );
     expect(layer.showCss()).toBe(`linear-gradient(rgb(0,0,0), rgb(0,0,0))`);
     layer.preferBackgroundColorOverColorFill = true;
@@ -155,7 +155,7 @@ describe("cssPegParser", function () {
   it("should parse background shorthand correctly", () => {
     const layer: BackgroundLayer = parse(
       `url("img_tree.png") 10% 15px / 100px 20% repeat padding-box border-box local`,
-      { rule: "backgroundLayer" }
+      { rule: "backgroundLayer" },
     );
     expect(removeNils(layer)).toEqual(
       new BackgroundLayer({
@@ -166,16 +166,16 @@ describe("cssPegParser", function () {
         origin: "padding-box",
         clip: "border-box",
         attachment: "local",
-      })
+      }),
     );
     expect(layer.showCss()).toBe(
-      `url("img_tree.png") 10% 15px / 100px 20% repeat padding-box border-box local`
+      `url("img_tree.png") 10% 15px / 100px 20% repeat padding-box border-box local`,
     );
   });
   it("should parse background shorthand correctly", () => {
     const layer: BackgroundLayer = parse(
       `url("img_tree.png") center center / 100px 20% repeat padding-box text local`,
-      { rule: "backgroundLayer" }
+      { rule: "backgroundLayer" },
     );
     expect(removeNils(layer)).toEqual(
       new BackgroundLayer({
@@ -186,16 +186,16 @@ describe("cssPegParser", function () {
         origin: "padding-box",
         clip: "text",
         attachment: "local",
-      })
+      }),
     );
     expect(layer.showCss()).toBe(
-      `url("img_tree.png") center center / 100px 20% repeat padding-box ${bgClipTextTag} local`
+      `url("img_tree.png") center center / 100px 20% repeat padding-box ${bgClipTextTag} local`,
     );
   });
   it("should parse background shorthand correctly", () => {
     const layer: BackgroundLayer = parse(
       `url("img_tree.png") top 10% left 20% / 100px 20% repeat-x border-box ${bgClipTextTag} scroll`,
-      { rule: "backgroundLayer" }
+      { rule: "backgroundLayer" },
     );
     expect(removeNils(layer)).toEqual(
       new BackgroundLayer({
@@ -206,10 +206,10 @@ describe("cssPegParser", function () {
         origin: "border-box",
         clip: bgClipTextTag,
         attachment: "scroll",
-      })
+      }),
     );
     expect(layer.showCss()).toBe(
-      `url("img_tree.png") top 10% left 20% / 100px 20% repeat-x border-box ${bgClipTextTag} scroll`
+      `url("img_tree.png") top 10% left 20% / 100px 20% repeat-x border-box ${bgClipTextTag} scroll`,
     );
   });
   it("should parse position token correctly", () =>
@@ -218,14 +218,14 @@ describe("cssPegParser", function () {
         `url("img_tree.png") top 50% left var(--token-OHjHiOT7v) / 100px 20%`,
         {
           rule: "backgroundLayer",
-        }
-      )
+        },
+      ),
     ).toEqual(
       new BackgroundLayer({
         image: new ImageBackground({ url: "img_tree.png" }),
         position: "top 50% left var(--token-OHjHiOT7v)",
         size: "100px 20%",
-      })
+      }),
     ));
 
   it("parses and renders box-shadow", () => {
@@ -239,13 +239,13 @@ describe("cssPegParser", function () {
     expect(
       parseCss(`hello, yes, "no, maybe", 'I dunno, can you', what`, {
         startRule: "commaSepValues",
-      })
+      }),
     ).toEqual(["hello", "yes", `"no, maybe"`, `'I dunno, can you'`, "what"]);
     expect(
       parseCss(
         "radial-gradient(ellipse 50% 50% at 50% 50%, rgba(39, 46, 48, 1) 0%, rgba(14, 14, 14, 1) 100%), radial-gradient(ellipse 50% 50% at 50% 50%, rgba(39, 46, 48, 1) 0%, rgba(14, 14, 14, 1) 100%)",
-        { startRule: "commaSepValues" }
-      )
+        { startRule: "commaSepValues" },
+      ),
     ).toEqual([
       "radial-gradient(ellipse 50% 50% at 50% 50%, rgba(39, 46, 48, 1) 0%, rgba(14, 14, 14, 1) 100%)",
       "radial-gradient(ellipse 50% 50% at 50% 50%, rgba(39, 46, 48, 1) 0%, rgba(14, 14, 14, 1) 100%)",
@@ -253,12 +253,12 @@ describe("cssPegParser", function () {
     expect(
       parseCss(`url("what is, linear(gradient, okay), whatevs"), yup`, {
         startRule: "commaSepValues",
-      })
+      }),
     ).toEqual([`url("what is, linear(gradient, okay), whatevs")`, "yup"]);
     expect(
       parseCss(`yes, (where do we (go, and), nobody (knows, and) so), on`, {
         startRule: "commaSepValues",
-      })
+      }),
     ).toEqual(["yes", "(where do we (go, and), nobody (knows, and) so)", "on"]);
   });
 });

@@ -17,7 +17,7 @@ export async function createBranchFromBase(
   mgr: DbMgr,
   projectId: ProjectId,
   branchName: string,
-  base: "new" | "latest" = "latest"
+  base: "new" | "latest" = "latest",
 ) {
   const maybePublishProjectForBranching = async () => {
     if (base === "latest") {
@@ -30,7 +30,7 @@ export async function createBranchFromBase(
       mgr,
       bundler,
       latestRev,
-      `rev-${projectId}`
+      `rev-${projectId}`,
     );
     const pkgVersion = latestPkg
       ? await mgr.getPkgVersion(latestPkg.id)
@@ -52,7 +52,7 @@ export async function createBranchFromBase(
       pkgVersion && latestPkgSite
         ? semver.inc(
             pkgVersion.version,
-            calculateSemVer(compareSites(latestRevSite, latestPkgSite))
+            calculateSemVer(compareSites(latestRevSite, latestPkgSite)),
           )
         : INITIAL_VERSION_NUMBER;
     if (!version) {
@@ -62,7 +62,7 @@ export async function createBranchFromBase(
       projectId,
       version,
       [],
-      "Auto-generated publish for branching"
+      "Auto-generated publish for branching",
     );
   };
 

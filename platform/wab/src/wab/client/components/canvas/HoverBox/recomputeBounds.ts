@@ -10,7 +10,7 @@ export function recomputeBounds($node: JQuery): Box {
     nodes
       .filter(hasLayoutBox)
       .map((node: HTMLElement) => $(node))
-      .map(getElementBounds)
+      .map(getElementBounds),
   );
   // Round the offset, which is how Chrome render by default.
   const nodesOffsetFromInnerDocument = Pt.fromOffset({
@@ -26,6 +26,6 @@ export function recomputeBounds($node: JQuery): Box {
     nodesOffsetFromInnerDocument.top,
     nodesOffsetFromInnerDocument.left,
     width,
-    height
+    height,
   );
 }

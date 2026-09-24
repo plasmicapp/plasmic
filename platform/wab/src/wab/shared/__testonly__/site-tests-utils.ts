@@ -14,7 +14,7 @@ import {
  * Generates a site object from bundle data of a project with dependencies.
  */
 export function generateSiteFromBundle(
-  bundleWithDeps: [string, Bundle][]
+  bundleWithDeps: [string, Bundle][],
 ): Site {
   let site: Site | undefined;
   const bundler = new Bundler();
@@ -74,7 +74,7 @@ const emptyVariants = {
 export const createVariantTplMgr = (
   site: Site,
   tplMgr: TplMgr,
-  component?: Component
+  component?: Component,
 ) => {
   return new VariantTplMgr(
     [
@@ -89,6 +89,6 @@ export const createVariantTplMgr = (
     ],
     site,
     tplMgr,
-    emptyVariants
+    emptyVariants,
   );
 };

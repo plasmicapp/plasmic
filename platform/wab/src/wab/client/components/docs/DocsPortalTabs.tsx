@@ -27,14 +27,14 @@ function DocsPortalTabs(props: DocsPortalTabsProps) {
           key === "intro"
             ? APP_ROUTES.projectDocs.fill({ projectId })
             : key === "components"
-            ? APP_ROUTES.projectDocsComponents.fill({
-                projectId: projectId,
-                codegenType,
-              })
-            : APP_ROUTES.projectDocsIcons.fill({
-                projectId: projectId,
-                codegenType,
-              });
+              ? APP_ROUTES.projectDocsComponents.fill({
+                  projectId: projectId,
+                  codegenType,
+                })
+              : APP_ROUTES.projectDocsIcons.fill({
+                  projectId: projectId,
+                  codegenType,
+                });
         if (shouldHide) {
           return null;
         }

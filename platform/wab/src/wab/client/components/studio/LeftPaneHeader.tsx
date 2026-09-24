@@ -45,8 +45,8 @@ function LeftPaneHeader(props: LeftPaneHeaderProps) {
         props.isExpanded == undefined
           ? undefined
           : props.isExpanded
-          ? "expanded"
-          : "collapsed"
+            ? "expanded"
+            : "collapsed"
       }
       expandButton={{
         onClick: props.onExpandClick,

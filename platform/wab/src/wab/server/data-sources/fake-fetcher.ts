@@ -64,7 +64,7 @@ function filterRow(row: Record<string, any>, filters?: Filters): boolean {
         const columnValue = JSON.stringify(row[fieldName]);
         return evalExprInSandbox(
           `${value1} ${operator} ${columnValue} && ${columnValue} ${operator} ${value2}`,
-          {}
+          {},
         );
       } else {
         const fieldName = logic[operator][0]["var"];
@@ -95,9 +95,9 @@ export class FakeFetcher {
               type: field.type,
               readOnly: false,
               primaryKey: field.primaryKey,
-            })
+            }),
           ),
-        })
+        }),
       ),
     };
   }
@@ -117,7 +117,7 @@ export class FakeFetcher {
   private processResult(
     resource: string,
     result: Omit<SingleRowResult, "schema"> | Omit<ManyRowsResult, "schema">,
-    opts?: { paginate?: RawPagination }
+    opts?: { paginate?: RawPagination },
   ): SingleRowResult | ManyRowsResult {
     if (opts?.paginate) {
       (result as ManyRowsResult).paginate = fillPagination(opts.paginate);
@@ -185,17 +185,17 @@ export class FakeFetcher {
     const primaryKeys = tableSchema.fields.filter((field) => field.primaryKey);
     if (primaryKeys.length === 0) {
       throw new DataSourceError(
-        `Invalid Table. "${opts.resource}" doesn't have any primary key`
+        `Invalid Table. "${opts.resource}" doesn't have any primary key`,
       );
     }
     const missingPrimaryKeys = primaryKeys.filter(
-      (primaryKey) => keys?.[primaryKey.id] == null
+      (primaryKey) => keys?.[primaryKey.id] == null,
     );
     if (missingPrimaryKeys.length > 0 || !keys) {
       throw new DataSourceError(
         `Missing the following primary keys: ${missingPrimaryKeys
           .map((primaryKey) => primaryKey.label ?? primaryKey.id)
-          .join(",")}`
+          .join(",")}`,
       );
     }
     let rowCount = 0;
@@ -249,7 +249,7 @@ export class FakeFetcher {
     }
     const rowCount = this.database[resource].length;
     this.database[resource] = this.database[resource].filter(
-      (row) => !filterRow(row, conditions)
+      (row) => !filterRow(row, conditions),
     );
     return rowCount - this.database[resource].length;
   }

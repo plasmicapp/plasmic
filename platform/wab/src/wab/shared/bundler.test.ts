@@ -52,7 +52,7 @@ describe("bundler", () => {
     const componentBundle = b.bundle(
       component,
       componentUuid,
-      "1-some-version"
+      "1-some-version",
     );
     const instanceUuid = mkUuid();
     const instanceBundle = b.bundle(instance, instanceUuid, "1-some-version");
@@ -64,10 +64,10 @@ describe("bundler", () => {
     const component2 = b.unbundle(componentBundle, componentUuid);
     expect(component2).toBe(component);
     expect(b.bundle(component, componentUuid, "1-some-version")).toEqual(
-      componentBundle
+      componentBundle,
     );
     expect(b.bundle(instance, instanceUuid, "1-some-version")).toEqual(
-      instanceBundle
+      instanceBundle,
     );
     expect(instance.component).toBe(component);
 
@@ -77,11 +77,11 @@ describe("bundler", () => {
     expect(b2._uid2addr).toBeEmpty();
 
     const component3 = ensureKnownComponent(
-      b2.unbundle(jsonClone(componentBundle), componentUuid)
+      b2.unbundle(jsonClone(componentBundle), componentUuid),
     );
     expect(component3).not.toBe(component);
     const instance3 = ensureKnownTplComponent(
-      b2.unbundle(jsonClone(instanceBundle), instanceUuid)
+      b2.unbundle(jsonClone(instanceBundle), instanceUuid),
     );
     expect(instance3).not.toBe(instance);
     const cmp = new Comparator();
@@ -95,7 +95,7 @@ describe("bundler", () => {
         name: "className2",
         type: typeFactory.text(),
         paramType: "prop",
-      })
+      }),
     );
   });
 });
@@ -129,7 +129,7 @@ describe("bundler performance", () => {
       console.log(
         `[bundler performance n=${n}] ` +
           `Unbundle: ${unbundleTime.toFixed(3)}ms, ` +
-          `Bundle: ${bundleTime.toFixed(3)}ms`
+          `Bundle: ${bundleTime.toFixed(3)}ms`,
       );
     });
   });

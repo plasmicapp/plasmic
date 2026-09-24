@@ -60,7 +60,7 @@ export function ContentEditorConfigModal(props: {
               ...values,
               pageTemplates: safeParse(values.pageTemplates),
               insertableTemplates: safeParse(values.insertableTemplates),
-            })
+            }),
           );
         }}
         initialValues={{
@@ -126,7 +126,7 @@ export function ContentEditorConfigModal(props: {
                     label: pkg.name,
                   })),
                 ],
-                (p) => p.value
+                (p) => p.value,
               ).sort((a, b) => a.label.localeCompare(b.label))}
             />
           </Form.Item>
@@ -150,7 +150,7 @@ export function ContentEditorConfigModal(props: {
             <PreferencesControl
               label={"Show left tabs?"}
               prefKeys={LEFT_TAB_UI_KEYS.filter(
-                (x) => !HIDDEN_LEFT_TAB_KEYS.includes(x)
+                (x) => !HIDDEN_LEFT_TAB_KEYS.includes(x),
               )
                 .map((t) => ({ value: t, label: leftTabKeyToLabel(t) }))
                 .sort((a, b) => a.label.localeCompare(b.label))}
@@ -167,7 +167,7 @@ export function ContentEditorConfigModal(props: {
                 ([label, value]) => ({
                   value,
                   label: publicStyleSectionToLabel(value, label),
-                })
+                }),
               )}
             />
           </Form.Item>
@@ -350,7 +350,7 @@ function BooleanControl(props: {
       value={value === true ? "true" : value === false ? "false" : "default"}
       onChange={(newValue) =>
         onChange?.(
-          newValue === "true" ? true : newValue === "false" ? false : null
+          newValue === "true" ? true : newValue === "false" ? false : null,
         )
       }
     >
@@ -387,20 +387,20 @@ function BooleanPreferencesControl<T extends string>(props: {
             value == null
               ? "default"
               : value === true
-              ? "yes"
-              : value === false
-              ? "no"
-              : "whitelist"
+                ? "yes"
+                : value === false
+                  ? "no"
+                  : "whitelist"
           }
           onChange={(newValue) =>
             onChange?.(
               newValue === "default"
                 ? null
                 : newValue === "yes"
-                ? true
-                : newValue === "no"
-                ? false
-                : ({} as Record<T, boolean>)
+                  ? true
+                  : newValue === "no"
+                    ? false
+                    : ({} as Record<T, boolean>),
             )
           }
         >
@@ -440,8 +440,8 @@ function PreferenceSelect<OptionType>(props: {
       (op as any) === true
         ? "Allowed"
         : (op as any) === false
-        ? "Disallowed"
-        : `${op}`);
+          ? "Disallowed"
+          : `${op}`);
   return (
     <Select
       className={sty.select}
@@ -489,7 +489,9 @@ function PreferencesControl<T extends string, OptionType>(props: {
           value={value == null ? "default" : "customize"}
           onChange={(newValue) =>
             onChange?.(
-              newValue === "default" ? undefined : ({} as Record<T, OptionType>)
+              newValue === "default"
+                ? undefined
+                : ({} as Record<T, OptionType>),
             )
           }
         >
@@ -553,7 +555,7 @@ function PreferenceMapControl<T extends string, OptionType>(props: {
                           (value ? omit(value, prefKeyString) : {}) as Record<
                             T,
                             OptionType
-                          >
+                          >,
                         );
                       } else {
                         onChange?.({ ...value, [prefKeyString]: op } as Record<
@@ -620,7 +622,7 @@ function leftTabKeyToLabel(key: LeftTabUiKey) {
 
 function publicStyleSectionToLabel(
   section: PublicStyleSection,
-  defaultLabel: string
+  defaultLabel: string,
 ) {
   switch (section) {
     case PublicStyleSection.Mixins:

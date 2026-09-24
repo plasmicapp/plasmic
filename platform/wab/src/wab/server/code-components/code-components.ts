@@ -53,29 +53,29 @@ const ccServerCallbackFns: CodeComponentSyncCallbackFns = {
     ok(
       assert(
         [...missingComponents, ...missingContexts].filter(
-          (c) => !isBuiltinCodeComponent(c)
+          (c) => !isBuiltinCodeComponent(c),
         ).length === 0,
         () =>
           "Hostless package removed components " +
           [...missingComponents, ...missingContexts]
             .map((c) => c.name)
-            .join(", ")
-      )
+            .join(", "),
+      ),
     ),
   onInvalidReactVersion: async (_ctx, hostLessPkgInfo) =>
     // Not using `err` because it should be a fatal error anyways
     ok(
       assert(
         false,
-        `${hostLessPkgInfo.name} requires a React version >= ${hostLessPkgInfo.minimumReactVersion}. Current version is ${React.version}`
-      )
+        `${hostLessPkgInfo.name} requires a React version >= ${hostLessPkgInfo.minimumReactVersion}. Current version is ${React.version}`,
+      ),
     ),
   onInvalidComponentImportNames: (components) =>
     assert(
       false,
       () =>
         "Hostless package registered components with invalid importNames: " +
-        components.join(", ")
+        components.join(", "),
     ),
   onStaleProps: async (ctx) => {
     const changes = ctx.site.components
@@ -87,7 +87,7 @@ const ccServerCallbackFns: CodeComponentSyncCallbackFns = {
           ctx.codeComponentsRegistry
             .getRegisteredComponentsAndContextsMap()
             .get(c.name),
-          "Missing code component " + c.name
+          "Missing code component " + c.name,
         );
         const maybeError = compareComponentPropsWithMeta(ctx.site, c, meta);
         if (maybeError.isErr()) {
@@ -100,7 +100,7 @@ const ccServerCallbackFns: CodeComponentSyncCallbackFns = {
         };
       })
       .filter(({ addedProps, updatedProps, removedProps }) =>
-        [addedProps, updatedProps, removedProps].some((i) => i.length > 0)
+        [addedProps, updatedProps, removedProps].some((i) => i.length > 0),
       );
     changes.forEach(({ addedProps, updatedProps, component }) => {
       const affectedSlots = [
@@ -118,12 +118,12 @@ const ccServerCallbackFns: CodeComponentSyncCallbackFns = {
       false,
       () =>
         "Hostless packages shouldn't use default components, however: " +
-        message
+        message,
     ),
   onSchemaToTplWarnings: (warnings) =>
     assert(
       false,
-      warnings.map((w) => `${w.message} - ${w.description}`).join("\n")
+      warnings.map((w) => `${w.message} - ${w.description}`).join("\n"),
     ),
   onSchemaToTplError: (err) => {
     throw err;
@@ -131,13 +131,13 @@ const ccServerCallbackFns: CodeComponentSyncCallbackFns = {
   onElementStyleWarnings: (warnings) =>
     assert(
       false,
-      warnings.map((w) => `${w.message} - ${w.description}`).join("\n")
+      warnings.map((w) => `${w.message} - ${w.description}`).join("\n"),
     ),
   onInvalidJsonForDefaultValue: (message) => assert(false, message),
 };
 
 export async function createSiteForHostlessProject(
-  hostLessPackageInfo: HostLessPackageInfo
+  hostLessPackageInfo: HostLessPackageInfo,
 ) {
   const site = createSite({
     hostLessPackageInfo: new HostLessPackageInfo(hostLessPackageInfo),
@@ -168,7 +168,7 @@ export async function createSiteForHostlessProject(
     registeredContexts.forEach((cc) => ((cc.meta as any).__isContext = true));
 
     const registeredTokens = (globalThis.__PlasmicTokenRegistry ?? []).filter(
-      (x) => !depTokens.includes(x)
+      (x) => !depTokens.includes(x),
     );
 
     const registeredFunctions = (
@@ -192,7 +192,7 @@ export async function createSiteForHostlessProject(
     site.globalContexts.push(
       ...site.components
         .filter(isContextCodeComponent)
-        .map((component) => mkTplComponent(component, site.globalVariant))
+        .map((component) => mkTplComponent(component, site.globalVariant)),
     );
 
     // add props and default value to slots
@@ -246,7 +246,7 @@ export async function createSiteForHostlessProject(
 export async function updateHostlessPackage(
   site: Site,
   projectName: string,
-  plumeSite: Site
+  plumeSite: Site,
 ) {
   await withFreshRegistries(async () => {
     const existingComponents = site.components
@@ -254,7 +254,7 @@ export async function updateHostlessPackage(
       .map((c) => c.uuid);
     const existingLibraries = site.codeLibraries.map((c) => c.name);
     const existingCustomFunctions = site.customFunctions.map((f) =>
-      customFunctionId(f)
+      customFunctionId(f),
     );
     const existingParamsByComponent = Object.fromEntries(
       site.components.map(
@@ -269,13 +269,13 @@ export async function updateHostlessPackage(
                 .filter((p) => !isSlot(p))
                 .map((p) => p.variable.name),
             },
-          ] as const
-      )
+          ] as const,
+      ),
     );
 
     const pkgInfo = ensure(
       site.hostLessPackageInfo,
-      () => "Expected hostless package"
+      () => "Expected hostless package",
     );
     logger().info(`UPDATING ${pkgInfo.name}`);
 
@@ -288,7 +288,7 @@ export async function updateHostlessPackage(
       [
         ...globalThis.__PlasmicComponentRegistry,
         ...globalThis.__PlasmicContextRegistry,
-      ].map(({ meta }: ComponentRegistration) => meta.name)
+      ].map(({ meta }: ComponentRegistration) => meta.name),
     );
 
     logger().info(`Loading main package ${pkgInfo.name}`);
@@ -297,7 +297,7 @@ export async function updateHostlessPackage(
     logger().info(
       `Registry has: ${globalThis.__PlasmicComponentRegistry
         .map(({ meta }) => meta.name)
-        .join(",")}`
+        .join(",")}`,
     );
 
     const tplMgr = new TplMgr({ site });
@@ -310,7 +310,7 @@ export async function updateHostlessPackage(
         observeComponents: (_) => true,
         codeComponentsRegistry: new CodeComponentsRegistry(
           globalThis,
-          getBuiltinComponentRegistrations()
+          getBuiltinComponentRegistrations(),
         ),
         getPlumeSite: () => plumeSite,
         getRootSubReact: () => React,
@@ -318,7 +318,7 @@ export async function updateHostlessPackage(
         tplMgr: () => tplMgr,
       },
       ccServerCallbackFns,
-      { force: true }
+      { force: true },
     );
     if (result.isErr()) {
       throw result.error;
@@ -326,14 +326,14 @@ export async function updateHostlessPackage(
 
     // Delete global contexts from imported packages
     const toDeleteComponents = site.components.filter(
-      (c) => importedComponentNames.has(c.name) || isBuiltinCodeComponent(c)
+      (c) => importedComponentNames.has(c.name) || isBuiltinCodeComponent(c),
     );
     tplMgr.removeComponentGroup(toDeleteComponents);
     toDeleteComponents.forEach((c) => {
       if (site.globalContexts.some((tpl) => tpl.component === c)) {
         arrayRemove(
           site.globalContexts,
-          site.globalContexts.find((tpl) => tpl.component === c)
+          site.globalContexts.find((tpl) => tpl.component === c),
         );
       }
     });
@@ -356,7 +356,7 @@ export async function updateHostlessPackage(
       site.components.some((c) => isHostLessCodeComponent(c)) ||
         site.codeLibraries.length > 0 ||
         site.customFunctions.length > 0,
-      () => "No hostless component in site"
+      () => "No hostless component in site",
     );
 
     // Assert all existing components have been preserved
@@ -367,13 +367,13 @@ export async function updateHostlessPackage(
       slots.forEach((slot) => {
         assert(
           component.params.some((p) => isSlot(p) && p.variable.name === slot),
-          () => `Deleted slot ${slot} of component ${component.name}`
+          () => `Deleted slot ${slot} of component ${component.name}`,
         );
       });
       nonSlots.forEach((param) => {
         assert(
           component.params.some((p) => !isSlot(p) && p.variable.name === param),
-          () => `Deleted param ${param} of component ${component.name}`
+          () => `Deleted param ${param} of component ${component.name}`,
         );
       });
     });
@@ -381,7 +381,7 @@ export async function updateHostlessPackage(
     // Assert all custom functions and code libraries have been preserved
     const newLibraries = new Set(site.codeLibraries.map((c) => c.name));
     const newCustomFunctions = new Set(
-      site.customFunctions.map((f) => customFunctionId(f))
+      site.customFunctions.map((f) => customFunctionId(f)),
     );
     existingLibraries.forEach((lib) => {
       /*assert(
@@ -416,23 +416,23 @@ async function withFreshRegistries(func: () => Promise<void>) {
   }
   assert(
     globalThis.__PlasmicComponentRegistry.length === 0,
-    () => "__PlasmicComponentRegistry is not empty"
+    () => "__PlasmicComponentRegistry is not empty",
   );
   assert(
     globalThis.__PlasmicContextRegistry.length === 0,
-    () => "__PlasmicContextRegistry is not empty"
+    () => "__PlasmicContextRegistry is not empty",
   );
   assert(
     globalThis.__PlasmicTokenRegistry.length === 0,
-    () => "__PlasmicTokenRegistry is not empty"
+    () => "__PlasmicTokenRegistry is not empty",
   );
   assert(
     globalThis.__PlasmicFunctionsRegistry.length === 0,
-    () => "__PlasmicFunctionsRegistry is not empty"
+    () => "__PlasmicFunctionsRegistry is not empty",
   );
   assert(
     globalThis.__PlasmicLibraryRegistry.length === 0,
-    () => "__PlasmicLibraryRegistry is not empty"
+    () => "__PlasmicLibraryRegistry is not empty",
   );
 
   try {
@@ -451,8 +451,8 @@ function loadServerPackage(pkg: string) {
   const pkgPath = path.resolve(
     path.join(
       __dirname,
-      `../../../../../canvas-packages/build-server/${pkg}.js`
-    )
+      `../../../../../canvas-packages/build-server/${pkg}.js`,
+    ),
   );
   logger().info(`Loading ${pkg} from ${pkgPath}`);
 
@@ -460,7 +460,7 @@ function loadServerPackage(pkg: string) {
   const pkgModule = require(pkgPath);
   if (!pkgModule.register) {
     throw new Error(
-      `Package ${pkg} does not have a register function exported`
+      `Package ${pkg} does not have a register function exported`,
     );
   }
   pkgModule.register();

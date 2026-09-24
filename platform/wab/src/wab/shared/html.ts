@@ -142,7 +142,7 @@ export function isTagInline(tag: string): tag is TextInlineTag {
 }
 
 export function isTagListContainer(
-  tag: string
+  tag: string,
 ): tag is (typeof listContainerTags)[number] {
   return isOneOf(tag, listContainerTags);
 }
@@ -161,7 +161,7 @@ export type ThemableTag =
   | (typeof THEMABLE_TAGS)[number];
 
 export function isTagThemable(
-  tag: string
+  tag: string,
 ): tag is (typeof THEMABLE_TAGS)[number] {
   return isOneOf(tag, THEMABLE_TAGS);
 }
@@ -177,7 +177,7 @@ export function tagDisplayLabel(tag: string) {
 const asciiWhitespaceCharPattern = pattern`[\t\n\f\r\x20]`;
 const asciiWhitespaceRegex = regex("g")`${asciiWhitespaceCharPattern}+`;
 const edgeAsciiWhitespaceRegex = regex(
-  "g"
+  "g",
 )`^${asciiWhitespaceCharPattern}+|${asciiWhitespaceCharPattern}+$`;
 const trailingAsciiWhitespaceRegex = regex`${asciiWhitespaceCharPattern}+$`;
 
@@ -227,7 +227,7 @@ function mkInlineContent(
  * the browser's rules instead. Non-breaking spaces are kept, they are visible characters.
  */
 export function normalizeHtmlWhitespace<T extends InlineContent>(
-  parts: (string | T)[]
+  parts: (string | T)[],
 ): (string | T)[] {
   collapseTextParts(parts);
   collapseBoundarySpaces(parts, true);
@@ -254,7 +254,7 @@ function collapseTextParts(parts: (string | InlineContent)[]) {
  */
 function collapseBoundarySpaces(
   parts: (string | InlineContent)[],
-  endsWithSpace: boolean
+  endsWithSpace: boolean,
 ): boolean {
   for (let i = 0; i < parts.length; i++) {
     const part = parts[i];

@@ -23,7 +23,7 @@ export async function workerBuildAssets(
     loaderVersion: number;
     browserOnly: boolean;
   },
-  traceCarrier?: TraceCarrier
+  traceCarrier?: TraceCarrier,
 ) {
   const ctx = traceCarrier
     ? propagation.extract(context.active(), traceCarrier)
@@ -54,7 +54,7 @@ export async function workerBuildAssets(
                     mode: opts.mode,
                     loaderVersion: opts.loaderVersion,
                     browserOnly: opts.browserOnly,
-                  }
+                  },
                 );
                 resolve(result);
                 cleanup();
@@ -64,7 +64,7 @@ export async function workerBuildAssets(
                 reject(err2);
               }
             }
-          })
+          }),
         );
       });
     });

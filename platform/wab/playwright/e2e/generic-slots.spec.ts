@@ -14,7 +14,7 @@ test.describe("generic-slots", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -70,17 +70,17 @@ test.describe("generic-slots", () => {
     await models.studio.leftPanel.insertNode("Text");
 
     await expect(
-      artboardFrame.locator("body").getByText("so rough")
+      artboardFrame.locator("body").getByText("so rough"),
     ).toBeVisible();
     await expect(
-      artboardFrame.locator("body").getByText("Enter some text")
+      artboardFrame.locator("body").getByText("Enter some text"),
     ).toBeVisible();
     await undoAndRedo(page);
     await expect(
-      artboardFrame.locator("body").getByText("so rough")
+      artboardFrame.locator("body").getByText("so rough"),
     ).toBeVisible();
     await expect(
-      artboardFrame.locator("body").getByText("Enter some text")
+      artboardFrame.locator("body").getByText("Enter some text"),
     ).toBeVisible();
     await models.studio.withinLiveMode(async (liveFrame) => {
       await expect(liveFrame.locator("body")).toBeVisible();

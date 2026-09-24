@@ -96,9 +96,9 @@ function _MixinPreview(props: {
         .map(([r, val]) =>
           tuple(
             L.camelCase(r),
-            isTokenRef(val) ? tokenRefResolver(val, vsh) : val
-          )
-        )
+            isTokenRef(val) ? tokenRefResolver(val, vsh) : val,
+          ),
+        ),
     ) as React.CSSProperties;
 
   // The theme's base default style is applied to a wrapper, not the previewed
@@ -117,7 +117,7 @@ function _MixinPreview(props: {
       <div
         className={cn(
           "style__assets__typography__preview",
-          !isList && "pointer"
+          !isList && "pointer",
         )}
       >
         <div style={baseStyle}>
@@ -125,7 +125,9 @@ function _MixinPreview(props: {
             React.createElement(
               tag,
               { style },
-              defaultPreviewList(resolveStyle(themeTagStyleValues(theme, "li")))
+              defaultPreviewList(
+                resolveStyle(themeTagStyleValues(theme, "li")),
+              ),
             )
           ) : (
             <EditableLabel
@@ -201,7 +203,7 @@ export const MixinPopup = observer(function MixinPopup(props: MixinPopupProps) {
               defaultValue={mixin.name}
               onValueChange={(name) =>
                 studioCtx.changeUnsafe(() =>
-                  studioCtx.tplMgr().renameMixin(mixin, name)
+                  studioCtx.tplMgr().renameMixin(mixin, name),
                 )
               }
               placeholder={`(unnamed ${MIXIN_LOWER})`}
@@ -250,7 +252,7 @@ export const MixinFormContent = observer(function MixinFormContent(props: {
   const vsh = new VariantedStylesHelper(
     studioCtx.site,
     targetGlobalVariants,
-    targetGlobalVariants
+    targetGlobalVariants,
   );
 
   const rsh =
@@ -263,7 +265,7 @@ export const MixinFormContent = observer(function MixinFormContent(props: {
     rsh,
     studioCtx,
     /*unremovableProps=*/ [],
-    themeTag
+    themeTag,
   );
 
   const styleComponent = mkStyleComponent({ expsProvider });
@@ -342,7 +344,7 @@ export const MixinFormContent = observer(function MixinFormContent(props: {
       {(!s || s.transform) && (
         <TransformPanelSection expsProvider={expsProvider} />
       )}
-    </>
+    </>,
   );
 });
 
@@ -357,11 +359,11 @@ function _MixinsPanel() {
   const matcher = new Matcher(query);
 
   const [editMixin, setEditMixin] = React.useState<Mixin | undefined>(
-    undefined
+    undefined,
   );
 
   const [justAdded, setJustAdded] = React.useState<Mixin | undefined>(
-    undefined
+    undefined,
   );
 
   const [findReferenceMixin, setFindReferenceMixin] = React.useState<
@@ -372,7 +374,7 @@ function _MixinsPanel() {
     const transitiveDeps = extractTransitiveDepsFromMixins(sc.site, [mixin]);
 
     const badTransitiveDeps = transitiveDeps.filter((dep) =>
-      sc.projectDependencyManager.getDependencyData(dep.pkgId)
+      sc.projectDependencyManager.getDependencyData(dep.pkgId),
     );
 
     if (badTransitiveDeps.length > 0) {
@@ -393,7 +395,7 @@ function _MixinsPanel() {
             To clone this mixin, you will also need to import these projects.
             Are you sure you want to continue?
           </>,
-          transitiveDeps
+          transitiveDeps,
         ))
     ) {
       return;
@@ -428,7 +430,7 @@ function _MixinsPanel() {
 
   const makeMixinsItems = (mixins: Mixin[]) => {
     mixins = mixins.filter(
-      (mixin) => matcher.matches(mixin.name) || justAdded === mixin
+      (mixin) => matcher.matches(mixin.name) || justAdded === mixin,
     );
     mixins = naturalSort(mixins, (mixin) => mixin.name);
     return mixins.map((mixin) => ({
@@ -440,10 +442,10 @@ function _MixinsPanel() {
 
   const makeDepsItems = (deps: ProjectDependency[]) => {
     deps = deps.filter(
-      (dep) => filterDeps.length === 0 || filterDeps.includes(dep)
+      (dep) => filterDeps.length === 0 || filterDeps.includes(dep),
     );
     deps = naturalSort(deps, (dep) =>
-      sc.projectDependencyManager.getNiceDepName(dep)
+      sc.projectDependencyManager.getNiceDepName(dep),
     );
     return deps.map((dep) => ({
       type: "group" as const,
@@ -457,10 +459,10 @@ function _MixinsPanel() {
   const items: ItemOrGroup<ProjectDependency, Mixin>[] = [
     ...(filterDeps.length === 0 ? [...makeMixinsItems(sc.site.mixins)] : []),
     ...makeDepsItems(
-      sc.site.projectDependencies.filter((d) => !isHostLessPackage(d.site))
+      sc.site.projectDependencies.filter((d) => !isHostLessPackage(d.site)),
     ),
     ...makeDepsItems(
-      sc.site.projectDependencies.filter((d) => isHostLessPackage(d.site))
+      sc.site.projectDependencies.filter((d) => isHostLessPackage(d.site)),
     ),
   ];
 
@@ -511,7 +513,7 @@ function _MixinsPanel() {
               itemHeight={32}
               renderGroupHeader={(dep) =>
                 `Imported from "${sc.projectDependencyManager.getNiceDepName(
-                  dep
+                  dep,
                 )}"`
               }
               headerHeight={50}
@@ -574,13 +576,13 @@ const MixinRow = observer(function MixinRow(props: {
       push(
         <Menu.Item key="references" onClick={() => props.onFindReferences()}>
           Find all references
-        </Menu.Item>
+        </Menu.Item>,
       );
       if (props.onDuplicate) {
         push(
           <Menu.Item key="clone" onClick={() => props.onDuplicate!()}>
             Duplicate
-          </Menu.Item>
+          </Menu.Item>,
         );
       }
 
@@ -591,12 +593,12 @@ const MixinRow = observer(function MixinRow(props: {
             onClick={() =>
               ensure(
                 props.onDelete,
-                `props.onDelete must exist for this menu item to exist`
+                `props.onDelete must exist for this menu item to exist`,
               )()
             }
           >
             Delete
-          </Menu.Item>
+          </Menu.Item>,
         );
       }
     });
@@ -669,7 +671,7 @@ function defaultPreviewList(liStyle: React.CSSProperties) {
 
 function themeTagStyleValues(
   theme: Theme | null | undefined,
-  tag: TagName
+  tag: TagName,
 ): Record<string, string> | undefined {
   return theme?.styles.find((s) => s.selector === tag)?.style.rs.values;
 }
@@ -682,7 +684,7 @@ function themeTagStyleValues(
  */
 function computeElementValues(
   sc: StudioCtx,
-  mixin: Mixin
+  mixin: Mixin,
 ): Record<string, string> {
   const theme = sc.site.activeTheme;
   if (!mixin.forTheme || !theme) {
@@ -714,7 +716,7 @@ const PREVIEW_RESET_CSS = getTagsWithCssOverrides()
   .map(
     (tag) =>
       `.style__assets__typography__preview ${tag} { ${makeDefaultStylesRuleBodyFor(
-        tag
-      )} }`
+        tag,
+      )} }`,
   )
   .join("\n");

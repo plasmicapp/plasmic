@@ -23,7 +23,7 @@ const createField = (
   identifier: string,
   type: any,
   fields?: CmsFieldMeta[],
-  override?: Partial<CmsFieldMeta>
+  override?: Partial<CmsFieldMeta>,
 ): CmsFieldMeta => {
   return {
     identifier,
@@ -157,7 +157,7 @@ describe("traverseSchemaFields", () => {
     const processFieldCallback = (field: CmsFieldMeta) => {
       if (field.identifier === "parentField" && field.type === "object") {
         field.fields = field.fields.filter(
-          (childField) => childField.identifier !== "childField1"
+          (childField) => childField.identifier !== "childField1",
         );
       }
     };
@@ -210,8 +210,8 @@ describe("makeSqlCondition", () => {
         {
           textField: "foo",
         },
-        { useDraft: true }
-      )
+        { useDraft: true },
+      ),
     ).toEqual({
       condition:
         "((CASE WHEN r.draftData IS NOT NULL THEN r.draftData ELSE r.data END)->''->>'textField')::text = :val0",
@@ -228,8 +228,8 @@ describe("makeSqlCondition", () => {
         {
           _id: "123456",
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition: "r.id = :val0",
       params: {
@@ -250,8 +250,8 @@ describe("makeSqlCondition", () => {
             { _updatedAt: { $le: "2025-12-31T23:59:59Z" } },
           ],
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition:
         "(r.createdAt > :val0) AND (r.createdAt < :val1) AND (r.updatedAt >= :val2) AND (r.updatedAt <= :val3)",
@@ -271,8 +271,8 @@ describe("makeSqlCondition", () => {
         {
           "objectField.enumField": "enumValue",
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition: "(r.data->''->'objectField'->>'enumField')::text = :val0",
       params: {
@@ -288,8 +288,8 @@ describe("makeSqlCondition", () => {
         {
           textField: "foo",
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition: "(r.data->''->>'textField')::text = :val0",
       params: {
@@ -302,8 +302,8 @@ describe("makeSqlCondition", () => {
         {
           datetimeField: "2025-01-01T00:00:00Z",
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition: "(r.data->''->>'datetimeField')::timestamp = :val0",
       params: {
@@ -316,8 +316,8 @@ describe("makeSqlCondition", () => {
         {
           numberField: 42,
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition: "(r.data->''->>'numberField')::numeric = :val0",
       params: {
@@ -330,8 +330,8 @@ describe("makeSqlCondition", () => {
         {
           booleanField: true,
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition: "(r.data->''->>'booleanField')::boolean = :val0",
       params: {
@@ -347,8 +347,8 @@ describe("makeSqlCondition", () => {
         {
           booleanField: false,
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition:
         "((r.data->''->>'booleanField')::boolean = :val0 OR (r.data->''->>'booleanField')::boolean IS NULL)",
@@ -365,8 +365,8 @@ describe("makeSqlCondition", () => {
         {
           datetimeField: { $gt: "2025-01-01T00:00:00Z" },
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition: "(r.data->''->>'datetimeField')::timestamp > :val0",
       params: {
@@ -382,8 +382,8 @@ describe("makeSqlCondition", () => {
         {
           numberField: { $ge: 42 },
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition: "(r.data->''->>'numberField')::numeric >= :val0",
       params: {
@@ -399,8 +399,8 @@ describe("makeSqlCondition", () => {
         {
           numberField: { $lt: 42 },
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition: "(r.data->''->>'numberField')::numeric < :val0",
       params: {
@@ -416,8 +416,8 @@ describe("makeSqlCondition", () => {
         {
           datetimeField: { $le: "2025-01-01T00:00:00Z" },
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition: "(r.data->''->>'datetimeField')::timestamp <= :val0",
       params: {
@@ -433,8 +433,8 @@ describe("makeSqlCondition", () => {
         {
           textField: { $in: ["value1", "value2", "value3"] },
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition: "(r.data->''->>'textField')::text IN (:...val0)",
       params: {
@@ -450,8 +450,8 @@ describe("makeSqlCondition", () => {
         {
           textField: { $in: [] },
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition: "FALSE",
       params: {},
@@ -465,8 +465,8 @@ describe("makeSqlCondition", () => {
         {
           textField: { $regex: "^test" },
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition: "(r.data->''->>'textField')::text ~* :val0",
       params: {
@@ -483,8 +483,8 @@ describe("makeSqlCondition", () => {
           textField: "foo",
           numberField: 42,
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition:
         "((r.data->''->>'textField')::text = :val0) AND ((r.data->''->>'numberField')::numeric = :val1)",
@@ -502,8 +502,8 @@ describe("makeSqlCondition", () => {
         {
           $and: [{ textField: "foo" }, { numberField: 42 }],
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition:
         "((r.data->''->>'textField')::text = :val0) AND ((r.data->''->>'numberField')::numeric = :val1)",
@@ -521,8 +521,8 @@ describe("makeSqlCondition", () => {
         {
           $or: [{ textField: "foo" }, { numberField: 42 }],
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition:
         "((r.data->''->>'textField')::text = :val0) OR ((r.data->''->>'numberField')::numeric = :val1)",
@@ -542,8 +542,8 @@ describe("makeSqlCondition", () => {
             textField: "foo",
           },
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition: "NOT ((r.data->''->>'textField')::text = :val0)",
       params: {
@@ -581,8 +581,8 @@ describe("makeSqlCondition", () => {
             }, // 4
           ],
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toEqual({
       condition:
         "((r.data->''->>'booleanField')::boolean = :val0) " + // 1
@@ -611,10 +611,10 @@ describe("makeSqlCondition", () => {
         {
           unknownField: "value",
         },
-        { useDraft: false }
-      )
+        { useDraft: false },
+      ),
     ).toThrow(
-      new BadRequestError('Unknown field or logical operator "unknownField"')
+      new BadRequestError('Unknown field or logical operator "unknownField"'),
     );
   });
 });
@@ -644,7 +644,7 @@ describe("makeSelectionTree", () => {
   });
   const hFriendsMetadataRelationshipField = createField(
     "relationship",
-    CmsMetaType.TEXT
+    CmsMetaType.TEXT,
   );
   const hFriendsMetadataSharedAnimalRefField = createField(
     "sharedAnimal",
@@ -652,7 +652,7 @@ describe("makeSelectionTree", () => {
     [],
     {
       tableId: "animal-table-id" as CmsTableId,
-    }
+    },
   );
   const hFriendsMetadataField = createField("metadata", CmsMetaType.OBJECT, [
     hFriendsMetadataRelationshipField,
@@ -786,7 +786,7 @@ describe("makeSelectionTree", () => {
       "friends>metadata>sharedAnimal",
       animalTable,
       hFriendsField,
-      ["metadata", "sharedAnimal"]
+      ["metadata", "sharedAnimal"],
     );
     expectLeaf(result, "friends>metadata>sharedAnimal.name", aNameField);
   });
@@ -812,24 +812,26 @@ describe("makeSelectionTree", () => {
     await expect(
       makeSelectionTree(tableCache, humanTable, [
         "bestFriend.bestFriend.bestFriend.bestFriend.name",
-      ])
+      ]),
     ).toReject();
     await expect(
       makeSelectionTree(tableCache, humanTable, [
         "friends.ref.friends.ref.friends.ref.friends.ref.name",
-      ])
+      ]),
     ).toReject();
   });
 
   it("errors on invalid field name", async () => {
     await expect(
-      makeSelectionTree(tableCache, humanTable, ["fakeFieldName"])
+      makeSelectionTree(tableCache, humanTable, ["fakeFieldName"]),
     ).toReject();
   });
 
   it("errors on invalid field name in nested field", async () => {
     await expect(
-      makeSelectionTree(tableCache, humanTable, ["friends.fakeNestedFieldName"])
+      makeSelectionTree(tableCache, humanTable, [
+        "friends.fakeNestedFieldName",
+      ]),
     ).toReject();
   });
 });
@@ -837,7 +839,7 @@ describe("makeSelectionTree", () => {
 function expectLeaf(
   root: RootSelection,
   fieldPath: string,
-  field: CmsFieldMeta
+  field: CmsFieldMeta,
 ): void {
   const leaf = getSelection(root, fieldPath);
   expect(leaf).toEqual({ type: "leaf", field });
@@ -848,7 +850,7 @@ function expectRef(
   fieldPath: string,
   table: CmsTable,
   field: CmsFieldMeta,
-  nestedFieldPath: string[] = []
+  nestedFieldPath: string[] = [],
 ): void {
   const ref = getSelection(root, fieldPath);
   expect(ref).toEqual({
@@ -866,7 +868,7 @@ function expectRef(
  */
 function getSelection(
   root: RootSelection,
-  fieldPath: string
+  fieldPath: string,
 ): LeafSelection | RefSelection {
   let cur: RootSelection | LeafSelection | RefSelection = root;
   for (const field of fieldPath.split(".")) {

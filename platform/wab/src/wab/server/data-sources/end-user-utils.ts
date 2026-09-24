@@ -10,7 +10,7 @@ import { Bundle } from "@/wab/shared/bundles";
 export async function getMigratedUserPropsOpBundle(
   mgr: DbMgr,
   projectId: string,
-  opBundleStr: string
+  opBundleStr: string,
 ) {
   const bundle = JSON.parse(opBundleStr) as Bundle;
   const currentBundleVersion = bundle.version;
@@ -36,7 +36,7 @@ export async function getMigratedUserPropsOpBundle(
     {
       userPropsBundledOp: JSON.stringify(bundle),
     },
-    true
+    true,
   );
 
   return bundle;

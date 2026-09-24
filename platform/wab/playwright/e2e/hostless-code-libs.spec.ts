@@ -27,7 +27,7 @@ test.describe("hostless-code-libs", () => {
             ],
           }),
         });
-      }
+      },
     );
   });
 
@@ -36,7 +36,7 @@ test.describe("hostless-code-libs", () => {
       await apiClient.removeProjectAfterTest(
         projectId,
         "user2@example.com",
-        "!53kr3tz!"
+        "!53kr3tz!",
       );
     }
   });
@@ -53,7 +53,7 @@ test.describe("hostless-code-libs", () => {
     await waitForFrameToLoad(page);
 
     const interactiveSwitch = models.studio.frame.locator(
-      '[data-test-id="interactive-switch"]'
+      '[data-test-id="interactive-switch"]',
     );
     await interactiveSwitch.click({ force: true });
 
@@ -78,57 +78,57 @@ test.describe("hostless-code-libs", () => {
     const checkContents = async (content: FrameLocator) => {
       await expect(content.locator("body")).toContainText(
         'Axios response: "Animals"',
-        { timeout: 20000 }
+        { timeout: 20000 },
       );
       await expect(content.locator("body")).toContainText(
-        'Copy to clipboard type: "function"'
+        'Copy to clipboard type: "function"',
       );
       await expect(content.locator("body")).toContainText(
-        "date-fns result: 48 hours"
+        "date-fns result: 48 hours",
       );
       await expect(content.locator("body")).toContainText(
-        "day.js number of days in August: 31"
+        "day.js number of days in August: 31",
       );
       await expect(content.locator("body")).toContainText(
-        'Faker name: "Maddison", PT-BR name: "Maria Eduarda"'
+        'Faker name: "Maddison", PT-BR name: "Maria Eduarda"',
       );
       await expect(content.locator("body")).toContainText(
-        'fast-stringify: {"foo":"[ref=.]","bar":{"bar":"[ref=.bar]","foo":"[ref=.]"}}'
+        'fast-stringify: {"foo":"[ref=.]","bar":{"bar":"[ref=.bar]","foo":"[ref=.]"}}',
       );
       await expect(content.locator("body")).toContainText(
-        'Immer - state before: "done === false"; state after: "done === true"'
+        'Immer - state before: "done === false"; state after: "done === true"',
       );
       await expect(content.locator("body")).toContainText(
-        "jquery: red box width: 50"
+        "jquery: red box width: 50",
       );
       await expect(content.locator("body")).toContainText(
-        "lodash partition: [[1,3],[2,4]]"
+        "lodash partition: [[1,3],[2,4]]",
       );
       await expect(content.locator("body")).toContainText(
-        "marked: <p>This text is <em><strong>really important</strong></em></p>"
+        "marked: <p>This text is <em><strong>really important</strong></em></p>",
       );
       await expect(content.locator("body")).toContainText(
-        "MD5 hash: cd946e1909bfe736ec8921983eb9115f"
+        "MD5 hash: cd946e1909bfe736ec8921983eb9115f",
       );
       await expect(content.locator("body")).toContainText(
-        "nanoid with single-character alphabet for stable results: 000000"
+        "nanoid with single-character alphabet for stable results: 000000",
       );
       await expect(content.locator("body")).toContainText(
-        "papaparse: 5 rows, 4 cols"
+        "papaparse: 5 rows, 4 cols",
       );
       await expect(content.locator("body")).toContainText(
-        'pluralize "house": "houses"'
+        'pluralize "house": "houses"',
       );
       await expect(content.locator("body")).toContainText("random: 65");
       await expect(content.locator("body")).toContainText("semver: 3.3.0");
       await expect(content.locator("body")).toContainText(
-        "tinycolor2: rgb(255, 0, 0)"
+        "tinycolor2: rgb(255, 0, 0)",
       );
       await expect(content.locator("body")).toContainText(
-        "uuid NIL: 00000000-0000-0000-0000-000000000000, validate: true"
+        "uuid NIL: 00000000-0000-0000-0000-000000000000, validate: true",
       );
       await expect(content.locator("body")).toContainText(
-        'zod parse valid: {"username":"Test"}, safeParse with invalid data success: false'
+        'zod parse valid: {"username":"Test"}, safeParse with invalid data success: false',
       );
     };
 

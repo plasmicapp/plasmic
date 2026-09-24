@@ -13,7 +13,7 @@ test.describe("plasmic-hosting-domains", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -37,7 +37,7 @@ test.describe("plasmic-hosting-domains", () => {
     // registration fails. The card must say what failed rather than claim the
     // domain is live or misconfigured.
     await expect(
-      page.getByText(`${randomDomain} couldn't be registered`)
+      page.getByText(`${randomDomain} couldn't be registered`),
     ).toBeVisible();
     await expect(models.studio.correctlyConfiguredText).not.toBeVisible();
 
@@ -48,12 +48,12 @@ test.describe("plasmic-hosting-domains", () => {
 
     // Trying again with another domain reports that domain's failure.
     const randomDomain2 = `hostingtest${Math.round(
-      Math.random() * 99
+      Math.random() * 99,
     )}.plasmiq.app`;
     await models.studio.inputCustomDomain(randomDomain2);
 
     await expect(
-      page.getByText(`${randomDomain2} couldn't be registered`)
+      page.getByText(`${randomDomain2} couldn't be registered`),
     ).toBeVisible();
     await models.studio.dismissDomainCard();
     await expect(models.studio.domainCard).not.toBeAttached();

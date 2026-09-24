@@ -40,17 +40,17 @@ describe("getCodeComponentsUsedByExport", () => {
     const unrelatedCodeComponent = mkCodeComponent("Invalid component name");
     const selectedComponent = mkComponentUsing(
       "SelectedComponent",
-      selectedCodeComponent
+      selectedCodeComponent,
     );
     const unrelatedComponent = mkComponentUsing(
       "UnrelatedComponent",
-      unrelatedCodeComponent
+      unrelatedCodeComponent,
     );
     site.components.push(
       selectedComponent,
       unrelatedComponent,
       selectedCodeComponent,
-      unrelatedCodeComponent
+      unrelatedCodeComponent,
     );
 
     const components = getSiteComponentsToExport(site, {

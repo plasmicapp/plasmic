@@ -99,7 +99,7 @@ export function mkApiTeam(team: Team): ApiTeam {
       featureTier: team.featureTier || team.parentTeam?.featureTier || null,
       uiConfig: mergeUiConfigs(team.parentTeam?.uiConfig, team.uiConfig),
       onTrial: isTeamOnFreeTrial(team),
-    }
+    },
   );
 }
 
@@ -232,7 +232,7 @@ export async function changeResourcePermissions(req: Request, res: Response) {
       uncheckedCast<GrantRevokeRequest>(req.body);
     if (grants.length > MAX_GRANTS_PER_REQUEST) {
       throw new BadRequestError(
-        `Cannot grant access to more than ${MAX_GRANTS_PER_REQUEST} recipients at a time.`
+        `Cannot grant access to more than ${MAX_GRANTS_PER_REQUEST} recipients at a time.`,
       );
     }
     const host = req.config.host;
@@ -247,7 +247,7 @@ export async function changeResourcePermissions(req: Request, res: Response) {
     // Grants
     const handleGrant = async (
       type: ResourceType,
-      getId: (r: Grant) => ResourceId | undefined
+      getId: (r: Grant) => ResourceId | undefined,
     ) => {
       const grantsById = xGroupBy(grants, getId);
       for (const [id, toGrant] of grantsById) {
@@ -262,15 +262,15 @@ export async function changeResourcePermissions(req: Request, res: Response) {
           taggedResourceId.type === "project"
             ? await mgr.getProjectById(taggedResourceId.id)
             : taggedResourceId.type === "workspace"
-            ? await mgr.getWorkspaceById(taggedResourceId.id)
-            : await mgr.getTeamById(taggedResourceId.id);
+              ? await mgr.getWorkspaceById(taggedResourceId.id)
+              : await mgr.getTeamById(taggedResourceId.id);
         resourcesById[taggedResourceId.id] = resource;
         const resourceUrl =
           taggedResourceId.type === "project"
             ? createProjectUrl(host, id)
             : taggedResourceId.type === "workspace"
-            ? createWorkspaceUrl(host, id)
-            : createTeamUrl(host, id);
+              ? createWorkspaceUrl(host, id)
+              : createTeamUrl(host, id);
         if (
           taggedResourceId.type === "team" &&
           toGrant.some((grant) => grant.accessLevel === "owner")
@@ -284,7 +284,7 @@ export async function changeResourcePermissions(req: Request, res: Response) {
             pluralizeResourceId(taggedResourceId),
             email,
             accessLevel,
-            requireSignUp
+            requireSignUp,
           );
           req.analytics.track("Share resource", {
             type,
@@ -316,7 +316,7 @@ export async function changeResourcePermissions(req: Request, res: Response) {
     // Revokes
     const handleRevoke = async (
       type: ResourceType,
-      getId: (r: Revoke) => ResourceId | undefined
+      getId: (r: Revoke) => ResourceId | undefined,
     ) => {
       const revokesById = xGroupBy(revokes, getId);
       for (const [id, toRevoke] of revokesById) {
@@ -330,13 +330,13 @@ export async function changeResourcePermissions(req: Request, res: Response) {
           taggedResourceId.type === "project"
             ? await mgr.getProjectById(taggedResourceId.id)
             : taggedResourceId.type === "workspace"
-            ? await mgr.getWorkspaceById(taggedResourceId.id)
-            : await mgr.getTeamById(taggedResourceId.id);
+              ? await mgr.getWorkspaceById(taggedResourceId.id)
+              : await mgr.getTeamById(taggedResourceId.id);
         resourcesById[taggedResourceId.id] = resource;
         const emails = toRevoke.map(({ email }) => email);
         await mgr.revokeResourcesPermissionsByEmail(
           pluralizeResourceId(taggedResourceId),
-          emails
+          emails,
         );
       }
     };
@@ -346,11 +346,11 @@ export async function changeResourcePermissions(req: Request, res: Response) {
 
     // Get the final permissions of affected resources
     const getUniqueAffectedIds = (
-      getId: (r: Grant | Revoke) => ResourceId | undefined
+      getId: (r: Grant | Revoke) => ResourceId | undefined,
     ) => L.uniq(filterFalsy([...grants.map(getId), ...revokes.map(getId)]));
     const projectIds = getUniqueAffectedIds((x) => x.projectId);
     const workspaceIds = getUniqueAffectedIds(
-      (x) => x.workspaceId
+      (x) => x.workspaceId,
     ) as WorkspaceId[];
     const teamIds = getUniqueAffectedIds((x) => x.teamId) as TeamId[];
     const perms = [
@@ -369,11 +369,11 @@ export async function changeResourcePermissions(req: Request, res: Response) {
       ...L.uniq(
         filterFalsy([
           ...projectIds.map(
-            (id) => (resourcesById[id] as Project).workspace?.teamId
+            (id) => (resourcesById[id] as Project).workspace?.teamId,
           ),
           ...workspaceIds.map((id) => (resourcesById[id] as Workspace).teamId),
           ...teamIds,
-        ])
+        ]),
       ).map((id) => createTaggedResourceId("team", id)),
       ...projectIds.map((id) => createTaggedResourceId("project", id)),
     ];
@@ -381,7 +381,7 @@ export async function changeResourcePermissions(req: Request, res: Response) {
       req,
       affectedResourceIds,
       {},
-      passResponse
+      passResponse,
     );
     if (paywall.paywall == "pass" && !req.apiTeam?.whiteLabelInfo) {
       const promises = emailsToSend.map(
@@ -393,8 +393,8 @@ export async function changeResourcePermissions(req: Request, res: Response) {
             x.resourceType,
             x.resourceName,
             x.resourceUrl,
-            !!(await mgr.tryGetUserByEmail(x.email))
-          )
+            !!(await mgr.tryGetUserByEmail(x.email)),
+          ),
       );
       await Promise.all(promises);
     }
@@ -508,19 +508,19 @@ export async function getTeamProjects(req: Request, res: Response) {
   const workspaces = await userMgr.getAffiliatedWorkspaces(teamId);
   const workspacePerms = await userMgr.getPermissionsForWorkspaces(
     workspaces.map((workspace) => workspace.id),
-    true
+    true,
   );
   const apiWorkspaces = workspaces.map((w) => mkApiWorkspace(w));
 
   checkPermissions(
     teamPerms.length > 0 || workspaces.length > 0,
-    `User does not have access to team or any of its workspaces.`
+    `User does not have access to team or any of its workspaces.`,
   );
 
   const projects = await userMgr.getAffiliatedProjects(teamId);
   const projectPerms = await userMgr.getPermissionsForProjects(
     projects.map((project) => project.id),
-    true
+    true,
   );
   const apiProjects = projects.map((p) => mkApiProject(p));
 
@@ -531,7 +531,7 @@ export async function getTeamProjects(req: Request, res: Response) {
       projects: apiProjects,
       perms: [...teamPerms, ...workspacePerms, ...projectPerms],
       members,
-    })
+    }),
   );
 }
 
@@ -560,13 +560,13 @@ export async function getTeamWorkspaces(req: Request, res: Response) {
   const workspaces = await userMgr.getAffiliatedWorkspaces(teamId);
   const workspacePerms = await userMgr.getPermissionsForWorkspaces(
     workspaces.map((workspace) => workspace.id),
-    true
+    true,
   );
   const apiWorkspaces = workspaces.map((w) => mkApiWorkspace(w));
 
   checkPermissions(
     teamPerms.length > 0 || workspaces.length > 0,
-    `User does not have access to team or any of its workspaces.`
+    `User does not have access to team or any of its workspaces.`,
   );
 
   res.json(
@@ -574,7 +574,7 @@ export async function getTeamWorkspaces(req: Request, res: Response) {
       team: apiTeam,
       workspaces: apiWorkspaces,
       perms: [...teamPerms, ...workspacePerms],
-    })
+    }),
   );
 }
 

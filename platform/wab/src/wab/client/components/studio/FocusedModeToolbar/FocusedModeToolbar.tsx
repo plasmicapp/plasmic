@@ -65,5 +65,5 @@ export const FocusedModeToolbar = observer(
         </div>
       </div>
     );
-  }
+  },
 );

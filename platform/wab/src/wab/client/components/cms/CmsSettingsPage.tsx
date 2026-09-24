@@ -23,7 +23,7 @@ export type CmsSettingsPageProps = DefaultCmsSettingsPageProps;
 
 function CmsSettingsPage_(
   props: CmsSettingsPageProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const match = useMatchedRoute(APP_ROUTES.cmsSettings);
   const database = useCmsDatabase(match?.pathParams.databaseId);

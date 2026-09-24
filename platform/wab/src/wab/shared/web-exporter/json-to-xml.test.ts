@@ -60,8 +60,8 @@ describe("jsonToXml", () => {
           __type: "Component",
           baseVariantTplTree: '<div class="root"><span>A & B</span></div>',
         },
-        true
-      )
+        true,
+      ),
     ).toMatchInlineSnapshot(`
       "<Component>
         <baseVariantTplTree><![CDATA[<div class="root"><span>A & B</span></div>]]></baseVariantTplTree>
@@ -73,16 +73,16 @@ describe("jsonToXml", () => {
     expect(
       jsonToXml(
         { __type: "Demo", amp: "A & B", gt: "x > y", quote: 'say "hi"' },
-        true
-      )
+        true,
+      ),
     ).toMatchInlineSnapshot(
-      `"<Demo amp="A & B" gt="x > y" quote='say "hi"'></Demo>"`
+      `"<Demo amp="A & B" gt="x > y" quote='say "hi"'></Demo>"`,
     );
   });
 
   it("falls back to &quot; escaping when a value mixes both quote kinds", () => {
     expect(
-      jsonToXml({ __type: "Demo", mixed: `it's "quoted"` }, true)
+      jsonToXml({ __type: "Demo", mixed: `it's "quoted"` }, true),
     ).toMatchInlineSnapshot(`"<Demo mixed="it's &quot;quoted&quot;"></Demo>"`);
   });
 
@@ -94,8 +94,8 @@ describe("jsonToXml", () => {
           messages: ["No changes."],
           results: [],
         },
-        true
-      )
+        true,
+      ),
     ).toMatchInlineSnapshot(`
       "<OutputResult>
         <messages>
@@ -121,8 +121,8 @@ describe("jsonToXml", () => {
             [3, 4],
           ],
         },
-        true
-      )
+        true,
+      ),
     ).toMatchInlineSnapshot(`
       "<Prop name="matrix">
         <default>
@@ -147,7 +147,7 @@ describe("jsonToXml", () => {
 
   it("renders null as an attribute", () => {
     expect(
-      jsonToXml({ __type: "Foo", a: null, c: "x" }, true)
+      jsonToXml({ __type: "Foo", a: null, c: "x" }, true),
     ).toMatchInlineSnapshot(`"<Foo a="null" c="x"></Foo>"`);
   });
 
@@ -159,8 +159,8 @@ describe("jsonToXml", () => {
           uuid: "abc",
           styles: { color: "red", background: "blue" },
         },
-        true
-      )
+        true,
+      ),
     ).toMatchInlineSnapshot(`
       "<ElementOverride uuid="abc">
         <styles color="red" background="blue"></styles>

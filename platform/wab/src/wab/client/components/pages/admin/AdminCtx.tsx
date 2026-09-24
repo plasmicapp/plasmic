@@ -28,7 +28,7 @@ const AdminCtxContext = React.createContext<AdminCtx | undefined>(undefined);
 export function useAdminCtx() {
   return ensure(
     useContext(AdminCtxContext),
-    () => "AdminCtxProvider must be used"
+    () => "AdminCtxProvider must be used",
   );
 }
 
@@ -65,7 +65,7 @@ export function AdminCtxProvider({ children }: React.PropsWithChildren) {
         history.push(APP_ROUTES.admin.fill({ tab }));
       }
     },
-    [history, pathState]
+    [history, pathState],
   );
 
   const listUsers = useAsyncStrict(async () => {

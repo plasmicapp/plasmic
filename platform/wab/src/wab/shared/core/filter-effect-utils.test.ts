@@ -43,7 +43,7 @@ describe("fromFilterStringToObj", () => {
 
   it("should parse a filter string with hidden# and multiple arguments", () => {
     const result = fromFilterStringToObj(
-      "hidden#drop-shadow(10px 10px 5px #000000)"
+      "hidden#drop-shadow(10px 10px 5px #000000)",
     );
     expect(result).toEqual({
       type: "drop-shadow",
@@ -54,7 +54,7 @@ describe("fromFilterStringToObj", () => {
 
   it("should parse a filter string with CSS variable as an argument", () => {
     const result = fromFilterStringToObj(
-      "drop-shadow(10px 10px 10px var(--token-c0_lor))"
+      "drop-shadow(10px 10px 10px var(--token-c0_lor))",
     );
     expect(result).toEqual({
       type: "drop-shadow",

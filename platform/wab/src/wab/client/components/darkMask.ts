@@ -71,6 +71,6 @@ export function createDarkMask(studioCtx: StudioCtx) {
 
 export function clearDarkMask() {
   [".dark-mask", ...standardSides.map((s) => ".dark-mask-" + s)].forEach(
-    (cls) => $(cls).remove()
+    (cls) => $(cls).remove(),
   );
 }

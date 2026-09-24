@@ -20,7 +20,7 @@ const ImagesPanel = observer(function ImagesPanel(props: ImagesPanelProps) {
     (value) =>
       value.type === ImageAssetType.Icon &&
       !!value.dataUri &&
-      matcher.matches(value.name)
+      matcher.matches(value.name),
   );
 
   return (

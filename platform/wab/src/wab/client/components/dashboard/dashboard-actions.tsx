@@ -56,7 +56,7 @@ export function getTeamMenuItems(appCtx: AppCtx, team: ApiTeam) {
   const accessLevel = getAccessLevelToResource(
     { type: "team", resource: team },
     appCtx.selfInfo,
-    appCtx.perms
+    appCtx.perms,
   );
 
   const items: TeamMenuItem[] = [];
@@ -65,7 +65,7 @@ export function getTeamMenuItems(appCtx: AppCtx, team: ApiTeam) {
       team,
       { type: "team", resource: team },
       appCtx.selfInfo,
-      appCtx.perms
+      appCtx.perms,
     )
   ) {
     items.push("ui-config");
@@ -92,7 +92,7 @@ export function TeamMenu(props: TeamMenuProps) {
               appCtx,
               `Studio UI for "${team.name}"`,
               team.uiConfig ?? {},
-              "team"
+              "team",
             );
             if (config) {
               await appCtx.api.updateTeam(team.id, {
@@ -103,7 +103,7 @@ export function TeamMenu(props: TeamMenuProps) {
           }}
         >
           Configure Studio UI for {ORGANIZATION_CAP}
-        </Menu.Item>
+        </Menu.Item>,
       );
     });
   }
@@ -115,7 +115,7 @@ export function TeamMenu(props: TeamMenuProps) {
           key="delete"
           onClick={async () => {
             const { meta } = await appCtx.app.withSpinner(
-              appCtx.api.getTeamMeta(team.id)
+              appCtx.api.getTeamMeta(team.id),
             );
             const confirm = await reactConfirm({
               title: `Delete ${ORGANIZATION_LOWER}`,
@@ -161,7 +161,7 @@ export function TeamMenu(props: TeamMenuProps) {
           }}
         >
           <strong>Delete</strong> {ORGANIZATION_LOWER}
-        </Menu.Item>
+        </Menu.Item>,
       );
     });
   }
@@ -193,13 +193,13 @@ export function WorkspaceMenu(props: WorkspaceMenuProps) {
   const workspaceAccessLevel = getAccessLevelToResource(
     { type: "workspace", resource: workspace },
     appCtx.selfInfo,
-    perms
+    perms,
   );
 
   const teamAccessLevel = getAccessLevelToResource(
     { type: "team", resource: workspace.team },
     appCtx.selfInfo,
-    perms
+    perms,
   );
 
   return (
@@ -213,9 +213,9 @@ export function WorkspaceMenu(props: WorkspaceMenuProps) {
                 `Content editor mode for "${workspace.name}"`,
                 mergeUiConfigs(
                   appCtx.appConfig.defaultContentCreatorConfig,
-                  workspace.contentCreatorConfig ?? undefined
+                  workspace.contentCreatorConfig ?? undefined,
                 ),
-                "content-editor"
+                "content-editor",
               );
 
               if (contentCreatorConfig) {
@@ -243,7 +243,7 @@ export function WorkspaceMenu(props: WorkspaceMenuProps) {
               {
                 title: "Upgrade to move this workspace",
                 description: `The destination ${ORGANIZATION_LOWER} does not support workspaces or it has no enough seats to move this workspace. Select a new plan and/or increase the number of seats to perform this action.`,
-              }
+              },
             );
             await appCtx.reloadAppCtx();
             await onUpdate();
@@ -300,7 +300,7 @@ export function WorkspaceMenu(props: WorkspaceMenuProps) {
 
 async function promptTeam(
   appCtx: AppCtx,
-  currentTeamId: TeamId
+  currentTeamId: TeamId,
 ): Promise<TeamId | undefined> {
   const selfInfo = ensure(appCtx.selfInfo, "Unexpected nullish selfInfo");
   const { teams: allTeams, perms } = appCtx;
@@ -309,8 +309,12 @@ async function promptTeam(
     (t) =>
       t.id !== currentTeamId &&
       accessLevelRank(
-        getAccessLevelToResource({ type: "team", resource: t }, selfInfo, perms)
-      ) >= accessLevelRank("editor")
+        getAccessLevelToResource(
+          { type: "team", resource: t },
+          selfInfo,
+          perms,
+        ),
+      ) >= accessLevelRank("editor"),
   );
 
   return await showTemporaryPrompt<TeamId | undefined>((onSubmit, onCancel) => (
@@ -360,7 +364,7 @@ async function promptContentCreatorConfig(
   appCtx: AppCtx,
   title: string,
   currentConfig: UiConfig,
-  level: "workspace" | "team" | "content-editor"
+  level: "workspace" | "team" | "content-editor",
 ): Promise<UiConfig | undefined> {
   return await showTemporaryPrompt<UiConfig | undefined>(
     (onSubmit, onCancel) => (
@@ -372,7 +376,7 @@ async function promptContentCreatorConfig(
         onCancel={onCancel}
         config={currentConfig}
       />
-    )
+    ),
   );
 }
 type PromptMoveToWorkspaceOperation = "Duplicate" | "Move";
@@ -390,7 +394,7 @@ export async function promptMoveToWorkspace(
   currentWorkspaceId: WorkspaceId | null,
   allowNoWorkspace: boolean,
   operationLabel: PromptMoveToWorkspaceOperation,
-  projectName?: string
+  projectName?: string,
 ): Promise<PromptWorkspaceResponse | undefined> {
   const selfInfo = ensure(appCtx.selfInfo, "Unexpected nullish selfInfo");
   const { workspaces, perms } = appCtx;
@@ -403,9 +407,9 @@ export async function promptMoveToWorkspace(
         getAccessLevelToResource(
           { type: "workspace", resource: w },
           selfInfo,
-          perms
-        )
-      ) >= accessLevelRank("editor")
+          perms,
+        ),
+      ) >= accessLevelRank("editor"),
   );
 
   return await promptWorkspace({
@@ -443,7 +447,7 @@ export async function promptWorkspace({
 }: PromptWorkspaceProps) {
   const defaultNewName = projectName ? `Copy of ${projectName}` : "New Project";
   const teams = allTeams.filter((t) =>
-    workspaces.find((w) => w.team.id === t.id)
+    workspaces.find((w) => w.team.id === t.id),
   );
 
   return await showTemporaryPrompt<PromptWorkspaceResponse | undefined>(
@@ -535,7 +539,7 @@ export async function promptWorkspace({
           </Form.Item>
         </Form>
       </Modal>
-    )
+    ),
   );
 }
 
@@ -554,14 +558,14 @@ export async function promptNewTeam(appCtx: AppCtx, history: History) {
   history.push(
     APP_ROUTES.org.fill({
       teamId: team.id,
-    })
+    }),
   );
 }
 
 export async function promptNewWorkspace(
   appCtx: AppCtx,
   history: History,
-  teamId: TeamId
+  teamId: TeamId,
 ) {
   const name = await reactPrompt({
     message: `Enter the name for your new workspace`,
@@ -581,20 +585,20 @@ export async function promptNewWorkspace(
     {
       title: "Upgrade to create a shared workspace",
       description: `This ${ORGANIZATION_LOWER}'s current plan does not support shared workspaces. Select a new plan to upgrade.`,
-    }
+    },
   );
   await appCtx.reloadAppCtx();
   history.push(
     APP_ROUTES.workspace.fill({
       workspaceId: workspace.id,
-    })
+    }),
   );
 }
 
 export async function promptNewDatabase(
   appCtx: AppCtx,
   history: History,
-  workspaceId: WorkspaceId
+  workspaceId: WorkspaceId,
 ) {
   const name = await reactPrompt({
     message: `Enter the name for your new CMS database`,
@@ -608,14 +612,14 @@ export async function promptNewDatabase(
   history.push(
     APP_ROUTES.cmsRoot.fill({
       databaseId: database.id,
-    })
+    }),
   );
 }
 
 export async function promptNewTable(
   appCtx: AppCtx,
   history: History,
-  databaseId: CmsDatabaseId
+  databaseId: CmsDatabaseId,
 ) {
   const name = await reactPrompt({
     message: `Enter the name for your new CMS table`,
@@ -633,6 +637,6 @@ export async function promptNewTable(
     APP_ROUTES.model.fill({
       databaseId,
       tableId: table.id,
-    })
+    }),
   );
 }

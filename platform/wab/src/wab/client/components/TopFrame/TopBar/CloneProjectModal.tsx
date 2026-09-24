@@ -29,7 +29,7 @@ export const CloneProjectModal = observer(function ProjectNameModal({
             null,
             false,
             "Duplicate",
-            project.name
+            project.name,
           );
           if (!response) {
             await setShowCloneProjectModal(false);
@@ -46,14 +46,14 @@ export const CloneProjectModal = observer(function ProjectNameModal({
               parsedLocation.branchName !== MainBranchId
                 ? { branchName: parsedLocation.branchName }
                 : {}),
-            })
+            }),
           );
           window.open(
             APP_ROUTES.project.fill({ projectId: newProjectId }),
-            "_blank"
+            "_blank",
           );
         }
-      })()
+      })(),
     );
   }, [showCloneProjectModal]);
 

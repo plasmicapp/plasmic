@@ -87,7 +87,7 @@ export interface Offset {
  */
 export function showGridCss(
   spec: GridSpec,
-  emptyTracks?: TrackArrays<boolean>
+  emptyTracks?: TrackArrays<boolean>,
 ): CSSProperties {
   function showTracksCss(axis: Axis, tracks: ReadonlyArray<Track>) {
     return tracks
@@ -97,7 +97,7 @@ export function showGridCss(
         track.size.value === "auto" &&
         emptyTracks[axis][trackNum]
           ? emptyTrackSize
-          : showSizeCss(track.size)
+          : showSizeCss(track.size),
       )
       .join(" ");
   }
@@ -128,7 +128,7 @@ export interface Area {
 export function withinArea(
   rowNum: number,
   colNum: number,
-  area: Area
+  area: Area,
 ): boolean {
   return (
     betweenInclusive(rowNum, area.rows.start, area.rows.end) &&
@@ -145,7 +145,7 @@ export interface Child {
  * Simply converts line number specs to track specs.  Any `auto` become 0.
  */
 export function parseGridChildAreaCss(
-  props: CSSProperties | CSSStyleDeclaration
+  props: CSSProperties | CSSStyleDeclaration,
 ): Area {
   const [rowStart, rowEnd] = L.words(ensureString(props.gridRow));
   const [colStart, colEnd] = L.words(ensureString(props.gridColumn));

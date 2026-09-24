@@ -29,14 +29,14 @@ export type XmlChild = XmlElement | string;
 export function mkXmlElement(
   name: string,
   attrs: XmlAttrs,
-  children: XmlChild[] = []
+  children: XmlChild[] = [],
 ): XmlElement {
   return {
     type: "element",
     name,
     attributes: attrs,
     elements: children.map((child) =>
-      typeof child === "string" ? { type: "text", text: child } : child
+      typeof child === "string" ? { type: "text", text: child } : child,
     ),
   };
 }
@@ -63,8 +63,8 @@ function writeElement(el: XmlElement, spaces: number, depth: number): string {
     child.type === "element"
       ? indent(depth + 1) + writeElement(child, childSpaces, depth + 1)
       : child.type === "cdata"
-      ? `<![CDATA[${child.cdata}]]>`
-      : escapeText(child.text)
+        ? `<![CDATA[${child.cdata}]]>`
+        : escapeText(child.text),
   );
   const closeIndent = children.some((child) => child.type === "element")
     ? indent(depth)

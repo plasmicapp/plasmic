@@ -24,7 +24,7 @@ type RichTextToolbarDividerProps = DefaultRichTextToolbarDividerProps;
 
 function RichTextToolbarDivider_(
   props: RichTextToolbarDividerProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicRichTextToolbarDivider to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

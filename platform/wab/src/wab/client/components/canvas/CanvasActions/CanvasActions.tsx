@@ -99,7 +99,7 @@ function _CanvasAction(props: {
             const valOwners = viewCtx.valState().valOwners(valComponent);
             assert(
               valOwners.length >= 1,
-              "There should be at least one val owners in the path from valComponent to root"
+              "There should be at least one val owners in the path from valComponent to root",
             );
 
             // This is the tpl in the current view that owns the invalid tpl, we will highlight it
@@ -111,14 +111,14 @@ function _CanvasAction(props: {
               const arg = getTplComponentArg(
                 invalidTpl,
                 ensureBaseVariantSetting(invalidTpl),
-                invalidParam.variable
+                invalidParam.variable,
               );
 
               if (arg && isKnownVarRef(arg.expr)) {
                 // If it's a linked prop we highlight will get the respective param in the component
                 const linkedParam = getParamForVar(
                   visibleTplOwner.component,
-                  arg.expr.variable
+                  arg.expr.variable,
                 );
 
                 viewCtx.highlightParams = {

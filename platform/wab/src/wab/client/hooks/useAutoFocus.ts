@@ -5,7 +5,7 @@ interface Focusable {
 }
 
 export function useAutoFocus(
-  target: React.RefObject<Focusable | null> | false | null | undefined
+  target: React.RefObject<Focusable | null> | false | null | undefined,
 ) {
   React.useLayoutEffect(() => {
     if (target && target.current) {

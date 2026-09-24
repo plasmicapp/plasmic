@@ -70,7 +70,7 @@ import { regex } from "regex";
  */
 export function splitNodesByOperator<T extends CssNode>(
   children: T[],
-  operatorValue: string = ","
+  operatorValue: string = ",",
 ): T[][] {
   const groups: T[][] = [];
   let currentGroup: T[] = [];
@@ -146,7 +146,7 @@ export function extractColorFromNode(node: CssNode) {
  * @returns Dim instance if found, null otherwise
  */
 export function extractDimensionFromNode(
-  node: Extract<CssNode, { type: "Dimension" | "Percentage" | "Number" }>
+  node: Extract<CssNode, { type: "Dimension" | "Percentage" | "Number" }>,
 ): Dim;
 export function extractDimensionFromNode(node: CssNode): Dim | null;
 export function extractDimensionFromNode(node: CssNode): Dim | null {
@@ -192,7 +192,7 @@ export function extractUrlFromNode(node: Url | StringNode | Raw) {
  */
 export function findAndMap<T>(
   nodes: CssNode[],
-  findFn: (node: CssNode) => T | null | undefined
+  findFn: (node: CssNode) => T | null | undefined,
 ): T | null {
   for (const node of nodes) {
     const foundItem = findFn(node);
@@ -208,7 +208,7 @@ export function findAndMap<T>(
  */
 export function findAllAndMap<T>(
   nodes: CssNode[],
-  findFn: (node: CssNode) => T | null | undefined
+  findFn: (node: CssNode) => T | null | undefined,
 ): T[] {
   const foundItems: T[] = [];
   for (const node of nodes) {
@@ -224,7 +224,7 @@ export function findAllAndMap<T>(
  * Checks if a node represents a dimension value
  */
 export function isDimensionNode(
-  node: CssNode
+  node: CssNode,
 ): node is Dimension | Percentage | NumberNode | FunctionNode {
   if (
     node.type === "Dimension" ||
@@ -289,10 +289,10 @@ type DimCssFunctionValidationResult =
  */
 export function validateDimCssFunction(
   value: string,
-  allowedUnits?: readonly string[]
+  allowedUnits?: readonly string[],
 ): DimCssFunctionValidationResult {
   const invalidFunctionError = `Not a valid CSS dimension function. Must be one of these: ${DIM_CSS_FUNCTIONS.join(
-    ", "
+    ", ",
   )}`;
   if (!isDimCssFunction(value)) {
     return {
@@ -324,7 +324,7 @@ export function validateDimCssFunction(
           error = `The unit '${
             dim.unit
           }' isn't supported here. Please use one of: ${allowedUnits.join(
-            ", "
+            ", ",
           )}`;
           return walk.break;
         }
@@ -335,7 +335,7 @@ export function validateDimCssFunction(
           error = `'${
             node.name
           }' isn't a valid keyword here. Please use one of: ${DIM_CSS_IDENTIFIER_KEYWORDS.join(
-            ", "
+            ", ",
           )}`;
           return walk.break;
         }
@@ -385,7 +385,7 @@ export function validateDimCssFunction(
  */
 export function checkAllowedUnits(
   value: string,
-  allowedUnits: LengthUnit[]
+  allowedUnits: LengthUnit[],
 ): boolean {
   if (!value || value.trim().length === 0) {
     return true;

@@ -12,7 +12,7 @@ interface SwitchCase<PathParams> {
 
 /** Helper function that helps infer params. */
 export function switchCase<PathParams extends {}>(
-  matchCase: SwitchCase<PathParams>
+  matchCase: SwitchCase<PathParams>,
 ): SwitchCase<PathParams> {
   return matchCase;
 }
@@ -37,7 +37,7 @@ export function Switch({ cases }: SwitchProps) {
     for (const route of ensureArray(matchCase.route)) {
       const pathParams = route.parse(
         location.pathname,
-        matchCase.exact ?? false
+        matchCase.exact ?? false,
       );
       if (pathParams) {
         return (

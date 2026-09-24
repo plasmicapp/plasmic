@@ -40,7 +40,7 @@ function AppAuthSettings(props: AppAuthSettingsModalProps) {
   } = useAppAuthConfig(appCtx, project.id);
   const { directories, mutate: mutateTeamDirectories } = useTeamDirectories(
     appCtx,
-    teamId ?? undefined
+    teamId ?? undefined,
   );
   const mutateHostAppAuthData = useMutateHostAppAuthData(project.id);
   const [isSettingUp, setIsSettingUp] = React.useState(false);
@@ -109,8 +109,8 @@ function AppAuthSettings(props: AppAuthSettingsModalProps) {
                   teamId,
                   uniqueName(
                     withoutNils(directories.map((d) => d.name)),
-                    `App "${project.name}" directory`
-                  )
+                    `App "${project.name}" directory`,
+                  ),
                 );
                 directoryId = directory.id;
                 await appCtx.api.upsertAppAuthConfig(project.id, {

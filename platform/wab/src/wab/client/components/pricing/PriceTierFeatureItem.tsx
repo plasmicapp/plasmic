@@ -11,7 +11,7 @@ export type PriceTierFeatureItemProps = DefaultPriceTierFeatureItemProps;
 
 function PriceTierFeatureItem_(
   props: PriceTierFeatureItemProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   return <PlasmicPriceTierFeatureItem root={{ ref }} {...props} />;
 }

@@ -63,7 +63,7 @@ export const makeCancelable = <T>(promise: Promise<T>): Cancelable<T> => {
   const wrappedPromise = new Promise<T>((resolve, reject) => {
     promise.then(
       (value) => (hasCanceled ? reject({ isCanceled: true }) : resolve(value)),
-      (error) => (hasCanceled ? reject({ isCanceled: true }) : reject(error))
+      (error) => (hasCanceled ? reject({ isCanceled: true }) : reject(error)),
     );
   });
 
@@ -102,7 +102,7 @@ export class Switcher<R> {
   when<T, R1>(types: TypeStamped<T>, f: (x: T) => R1): Switcher<R | R1>;
   when<T extends string, R1>(
     types: Constructor<T>,
-    f: (x: string) => R1
+    f: (x: string) => R1,
   ): Switcher<R | R1>;
   when<T, R1>(types: Constructor<T>, f: (x: T) => R1): Switcher<R | R1>;
   when<R1>(types: null, f: (x: null) => R1): Switcher<R | R1>;
@@ -115,15 +115,15 @@ export class Switcher<R> {
   // when<T, R1>(types: Abstract<T>, f: (x: T) => R1): Switcher<R | R1>;
   when<T, U, R1>(
     types: [Constructor<T>, Constructor<U>],
-    f: (x: T | U) => R1
+    f: (x: T | U) => R1,
   ): Switcher<R | R1>;
   when<T, U, V, R1>(
     types: [Constructor<T>, Constructor<U>, Constructor<V>],
-    f: (x: T | U | V) => R1
+    f: (x: T | U | V) => R1,
   ): Switcher<R | R1>;
   when<T, U, V, W, R1>(
     types: [Constructor<T>, Constructor<U>, Constructor<V>, Constructor<W>],
-    f: (x: T | U | V | W) => R1
+    f: (x: T | U | V | W) => R1,
   ): Switcher<R | R1>;
   when<T, U, V, W, X, R1>(
     types: [
@@ -131,9 +131,9 @@ export class Switcher<R> {
       Constructor<U>,
       Constructor<V>,
       Constructor<W>,
-      Constructor<X>
+      Constructor<X>,
     ],
-    f: (x: T | U | V | W | X) => R1
+    f: (x: T | U | V | W | X) => R1,
   ): Switcher<R | R1>;
   // type can be null/undefined, which will just check for null/undefined
   when<R1>(types: any, f: (x: any) => R1): Switcher<R | R1> {
@@ -169,7 +169,7 @@ export class Switcher<R> {
     } else {
       throw new UnexpectedTypeError(
         this._x,
-        this._types.filter((t) => t != null)
+        this._types.filter((t) => t != null),
       );
     }
   }
@@ -206,27 +206,27 @@ class ModelSwitcher<RemainingInput, Result = never> {
     private _x: RemainingInput,
     private _matched: boolean,
     private _result: Result = undefined as any,
-    private _types: any[] = []
+    private _types: any[] = [],
   ) {}
 
   when<Case extends RemainingInput, NewResult>(
     type: TypeStamped<Case>,
-    fn: (x: Case) => NewResult
+    fn: (x: Case) => NewResult,
   ): SwitcherOrResult<Exclude<RemainingInput, Case>, Result | NewResult>;
   when<Case extends RemainingInput, NewResult>(
     type: Constructor<Case>,
-    fn: (x: Case) => NewResult
+    fn: (x: Case) => NewResult,
   ): SwitcherOrResult<Exclude<RemainingInput, Case>, Result | NewResult>;
   when<Case extends RemainingInput, Case2 extends RemainingInput, NewResult>(
     types: [TypeStamped<Case>, TypeStamped<Case2>],
-    fn: (x: Case | Case2) => NewResult
+    fn: (x: Case | Case2) => NewResult,
   ): SwitcherOrResult<
     Exclude<RemainingInput, Case | Case2>,
     Result | NewResult
   >;
   when<Case extends RemainingInput, Case2 extends RemainingInput, NewResult>(
     types: [Constructor<Case>, Constructor<Case2>],
-    fn: (x: Case | Case2) => NewResult
+    fn: (x: Case | Case2) => NewResult,
   ): SwitcherOrResult<
     Exclude<RemainingInput, Case | Case2>,
     Result | NewResult
@@ -235,10 +235,10 @@ class ModelSwitcher<RemainingInput, Result = never> {
     Case extends RemainingInput,
     Case2 extends RemainingInput,
     Case3 extends RemainingInput,
-    NewResult
+    NewResult,
   >(
     types: [TypeStamped<Case>, TypeStamped<Case2>, TypeStamped<Case3>],
-    fn: (x: Case | Case2 | Case3) => NewResult
+    fn: (x: Case | Case2 | Case3) => NewResult,
   ): SwitcherOrResult<
     Exclude<RemainingInput, Case | Case2 | Case3>,
     Result | NewResult
@@ -247,10 +247,10 @@ class ModelSwitcher<RemainingInput, Result = never> {
     Case extends RemainingInput,
     Case2 extends RemainingInput,
     Case3 extends RemainingInput,
-    NewResult
+    NewResult,
   >(
     types: [Constructor<Case>, Constructor<Case2>, Constructor<Case3>],
-    fn: (x: Case | Case2 | Case3) => NewResult
+    fn: (x: Case | Case2 | Case3) => NewResult,
   ): SwitcherOrResult<
     Exclude<RemainingInput, Case | Case2 | Case3>,
     Result | NewResult
@@ -258,32 +258,32 @@ class ModelSwitcher<RemainingInput, Result = never> {
   when<
     Cases extends Array<Constructor<RemainingInput>>,
     Case extends Cases extends Array<Constructor<infer R>> ? R : never,
-    NewResult
+    NewResult,
   >(
     types: Cases,
-    fn: (x: Case) => NewResult
+    fn: (x: Case) => NewResult,
   ): SwitcherOrResult<Exclude<RemainingInput, Case>, Result | NewResult>;
   // eslint-disable-next-line @typescript-eslint/ban-types
   when<Case extends RemainingInput & Object, NewResult>(
     types: typeof Object,
-    fn: (x: Case) => NewResult
+    fn: (x: Case) => NewResult,
   ): SwitcherOrResult<Exclude<RemainingInput, Case>, Result | NewResult>;
   when<Case extends RemainingInput & string, NewResult>(
     types: typeof String,
-    fn: (x: Case) => NewResult
+    fn: (x: Case) => NewResult,
   ): SwitcherOrResult<Exclude<RemainingInput, Case>, Result | NewResult>;
   when<Case extends RemainingInput & (null | undefined), NewResult>(
     types: null | undefined,
-    fn: (x: Case) => NewResult
+    fn: (x: Case) => NewResult,
   ): SwitcherOrResult<Exclude<RemainingInput, Case>, Result | NewResult>;
   when<
     Case extends RemainingInput,
     Case2 extends RemainingInput,
     Case3 extends RemainingInput,
-    NewResult
+    NewResult,
   >(
     maybeTypes: any,
-    fn: (x: Case | Case2 | Case3) => NewResult
+    fn: (x: Case | Case2 | Case3) => NewResult,
   ): SwitcherOrResult<Exclude<RemainingInput, Case>, Result | NewResult> {
     if (!this._matched) {
       const types = maybeTypes;
@@ -310,14 +310,18 @@ class ModelSwitcher<RemainingInput, Result = never> {
    */
   whenUnsafe<Case, NewResult>(
     types: TypeStamped<Case>,
-    fn: [RemainingInput & Case] extends [never] ? never : (x: Case) => NewResult
+    fn: [RemainingInput & Case] extends [never]
+      ? never
+      : (x: Case) => NewResult,
   ): SwitcherOrResult<Exclude<RemainingInput, Case>, Result | NewResult>;
   /**
    * This is lax. You could end up writing switchType(tplTag).when(TplNode)
    */
   whenUnsafe<Case, NewResult>(
     types: Constructor<Case>,
-    fn: [RemainingInput & Case] extends [never] ? never : (x: Case) => NewResult
+    fn: [RemainingInput & Case] extends [never]
+      ? never
+      : (x: Case) => NewResult,
   ): SwitcherOrResult<Exclude<RemainingInput, Case>, Result | NewResult>;
   /**
    * This is lax. You could end up writing switchType(tplTag).when(TplNode)
@@ -326,7 +330,7 @@ class ModelSwitcher<RemainingInput, Result = never> {
     types: [Constructor<Case>, Constructor<Case2>],
     fn: [RemainingInput & (Case | Case2)] extends [never]
       ? never
-      : (x: Case | Case2) => NewResult
+      : (x: Case | Case2) => NewResult,
   ): SwitcherOrResult<
     Exclude<RemainingInput, Case | Case2>,
     Result | NewResult
@@ -335,10 +339,10 @@ class ModelSwitcher<RemainingInput, Result = never> {
     Case extends RemainingInput,
     Case2 extends RemainingInput,
     Case3 extends RemainingInput,
-    NewResult
+    NewResult,
   >(
     maybeTypes: any,
-    fn: (x: Case | Case2 | Case3) => NewResult
+    fn: (x: Case | Case2 | Case3) => NewResult,
   ): SwitcherOrResult<Exclude<RemainingInput, Case>, Result | NewResult> {
     return this.when(maybeTypes, fn) as any;
   }
@@ -353,7 +357,7 @@ class ModelSwitcher<RemainingInput, Result = never> {
     } else {
       throw new UnexpectedTypeError(
         this._x,
-        this._types.filter((t) => t != null)
+        this._types.filter((t) => t != null),
       );
     }
   }
@@ -385,7 +389,7 @@ export class UnexpectedTypeError extends CustomError {
           expectedTypes = [expectedTypes];
         }
         return mkUnexpectedTypeMsg(expectedTypes, actualInstance);
-      })()
+      })(),
     );
   }
 }
@@ -426,7 +430,7 @@ export function assert<T>(cond: T, msg: StringGen): asserts cond;
  */
 export function assert<T>(
   cond: T,
-  msg: StringGen = "Assertion failed"
+  msg: StringGen = "Assertion failed",
 ): asserts cond {
   if (!cond) {
     // We always generate an non empty message so that it doesn't get swallowed
@@ -445,7 +449,7 @@ export function check<U>(value: U, msg: StringGen = "") {
 export function unexpected(msg: StringGen = ""): never {
   debugger;
   throw new InvalidCodePathError(
-    !msg ? undefined : isString(msg) ? msg : msg()
+    !msg ? undefined : isString(msg) ? msg : msg(),
   );
 }
 
@@ -510,7 +514,7 @@ export function reverseIf(condition: boolean, arr: any[]) {
 
 export function maybe<T, U>(
   x: T | undefined | null,
-  f: (y: T) => U
+  f: (y: T) => U,
 ): U | undefined {
   if (x === undefined || x === null) {
     return undefined;
@@ -522,12 +526,12 @@ export function maybeInstance<T>(x: any, cls: Constructor<T>): T | undefined;
 export function maybeInstance<T, U>(
   x: any,
   cls: Constructor<T>,
-  f: (y: T) => U
+  f: (y: T) => U,
 ): U | undefined;
 export function maybeInstance<T, U>(
   x: any,
   cls: Constructor<T>,
-  f?: (y: T) => any
+  f?: (y: T) => any,
 ): U | undefined {
   f = f || strictIdentity;
   if (x instanceof cls) {
@@ -562,7 +566,7 @@ export function asOne<T>(xs: T | T[] | undefined): T | undefined {
 }
 
 export function assertAtMostOne<T>(
-  xs: T | T[] | undefined | null
+  xs: T | T[] | undefined | null,
 ): T | undefined {
   if (xs === undefined || xs === null) {
     return undefined;
@@ -575,7 +579,7 @@ export function assertAtMostOne<T>(
 
 export function firstWhere<T>(
   xs: T[],
-  f: (x: T, i: number) => boolean
+  f: (x: T, i: number) => boolean,
 ): [T | null, number] {
   for (let i = 0; i < xs.length; i++) {
     const x = xs[i];
@@ -588,7 +592,7 @@ export function firstWhere<T>(
 
 export function lastWhere<T>(
   xs: T[],
-  f: (x: T, i: number) => boolean
+  f: (x: T, i: number) => boolean,
 ): [null | T, number] {
   for (let i = xs.length - 1; i >= 0; i--) {
     const x = xs[i];
@@ -606,7 +610,7 @@ export const withoutFalsy = <T>(xs: Array<T | Falsy>): T[] =>
   xs.filter((x): x is T => !!x);
 
 export const withoutNilTuples = <K, V>(
-  tups: Array<[K, V | undefined | null]>
+  tups: Array<[K, V | undefined | null]>,
 ): Array<[K, V]> => tups.filter((tup): tup is [K, V] => notNil(tup[1]));
 
 export const omitNils = <V>(x: {
@@ -625,7 +629,7 @@ export const xOmitNils = <K, V>(x: Map<K, V | undefined | null>): Map<K, V> => {
 
 export const undefinedToDefault = <K, V>(
   x: Map<K, V | undefined | null>,
-  defaultValue: V
+  defaultValue: V,
 ): Map<K, V> => {
   const map = new Map<K, V>();
   for (const [k, v] of x.entries()) {
@@ -727,8 +731,8 @@ export const cx = (...xs) =>
             })(),
           ];
         })() || []),
-      ]
-    )
+      ],
+    ),
   );
 
 type SwallowParams = { etypes?: Function[]; warn?: boolean };
@@ -737,7 +741,7 @@ export function swallow<T>(f: () => T): T | null;
 export function swallow<T>(opts: SwallowParams, f: () => T): T | null;
 export function swallow<T>(
   a: (() => T) | SwallowParams,
-  b?: () => T
+  b?: () => T,
 ): T | null {
   const [f, { etypes = undefined, warn = false } = {}] = b
     ? tuple(b, a as SwallowParams)
@@ -766,7 +770,7 @@ export function maybeSwallow<T>(cond: boolean, fn: () => T): T | null {
 export function maybeTry<T, U>(
   cond: boolean,
   fn: () => T,
-  catcher: (error: any) => U
+  catcher: (error: any) => U,
 ): T | U | null {
   if (cond) {
     try {
@@ -785,11 +789,11 @@ export function maybeTry<T, U>(
 export async function swallowAsync<T>(f: Promise<T>): Promise<T | undefined>;
 export async function swallowAsync<T>(
   etypes: Function[],
-  f: Promise<T>
+  f: Promise<T>,
 ): Promise<T | undefined>;
 export async function swallowAsync<T>(
   a: Promise<T> | Function[],
-  b?: Promise<T>
+  b?: Promise<T>,
 ): Promise<T | undefined> {
   const [promise, etypes] = b
     ? tuple(b, a as Function[])
@@ -894,12 +898,12 @@ export function replaceObj<T extends object = any>(x: any, y: T): T {
 
 export function strictZip<T, U>(
   xs: ReadonlyArray<T>,
-  ys: ReadonlyArray<U>
+  ys: ReadonlyArray<U>,
 ): [T, U][];
 export function strictZip<T, U, V>(
   xs: ReadonlyArray<T>,
   ys: ReadonlyArray<U>,
-  zs: ReadonlyArray<V>
+  zs: ReadonlyArray<V>,
 ): [T, U, V][];
 export function strictZip<T>(...arrays: ReadonlyArray<T>[]): T[][] {
   check(new Set(arrays.map((a) => a.length)).size === 1);
@@ -908,12 +912,12 @@ export function strictZip<T>(...arrays: ReadonlyArray<T>[]): T[][] {
 
 export function leftZip<T, U>(
   xs: ReadonlyArray<T>,
-  ys: ReadonlyArray<U>
+  ys: ReadonlyArray<U>,
 ): [T, U][];
 export function leftZip<T, U, V>(
   xs: ReadonlyArray<T>,
   ys: ReadonlyArray<U>,
-  zs: ReadonlyArray<V>
+  zs: ReadonlyArray<V>,
 ): [T, U, V][];
 export function leftZip<T>(
   left: ReadonlyArray<T>,
@@ -943,7 +947,7 @@ export function replaceWhere(xs, p, x) {
 export function xpick<K, V>(map: Map<K, V>, ...keys: K[]) {
   assert(
     keys.every((key) => map.has(key)),
-    "common.xpick: every key should be in the map."
+    "common.xpick: every key should be in the map.",
   );
   return new Map(keys.map((key) => tuple(key, map.get(key))));
 }
@@ -960,19 +964,19 @@ export function xpickExists<K, V>(map: Map<K, V>, ...keys: K[]) {
 
 export function xpickBy<K, V>(
   map: Map<K, V>,
-  func: (val: V, key: K) => boolean
+  func: (val: V, key: K) => boolean,
 ) {
   return new Map(
-    Array.from(map.entries()).filter(([key, val]) => func(val, key))
+    Array.from(map.entries()).filter(([key, val]) => func(val, key)),
   );
 }
 
 export function xMapValues<K, V1, V2>(
   map: Map<K, V1>,
-  func: (v: V1, k: K) => V2
+  func: (v: V1, k: K) => V2,
 ) {
   return new Map(
-    Array.from(map.entries()).map(([key, val]) => [key, func(val, key)])
+    Array.from(map.entries()).map(([key, val]) => [key, func(val, key)]),
   );
 }
 
@@ -1003,7 +1007,7 @@ export function uniqueName(
   {
     separator = " ",
     normalize = identity,
-  }: { separator?: string; normalize?: (x: string) => string } = {}
+  }: { separator?: string; normalize?: (x: string) => string } = {},
 ) {
   const existing = new Set(existingNames.map(normalize));
   if (!existing.has(normalize(base))) {
@@ -1054,7 +1058,7 @@ export const xDifference = <T>(a: Iterable<T>, b: Iterable<T>) => {
 
 export function xSymmetricDifference<T>(
   leftSet: Iterable<T>,
-  ancSet: Iterable<T>
+  ancSet: Iterable<T>,
 ) {
   return [...xDifference(leftSet, ancSet), ...xDifference(ancSet, leftSet)];
 }
@@ -1098,10 +1102,10 @@ export function longestCommonPrefix<T, K = T>(
   }: {
     key?: (x: T) => K;
     comparator?: (x: K, y: K) => boolean;
-  } = {}
+  } = {},
 ) {
   return takeWhile(shortZip(xs, ys), ([x, y]) =>
-    comparator(key(x), key(y))
+    comparator(key(x), key(y)),
   ).map(([x, _y]) => x);
 }
 
@@ -1126,7 +1130,7 @@ export function ensure<T>(x: T | null | undefined, msg: StringGen = ""): T {
     debugger;
     msg = (isString(msg) ? msg : msg()) || "";
     throw new NullOrUndefinedValueError(
-      `Value must not be undefined or null${msg ? `- ${msg}` : ""}`
+      `Value must not be undefined or null${msg ? `- ${msg}` : ""}`,
     );
   } else {
     return x;
@@ -1175,7 +1179,7 @@ export function isTruthy<T>(value: T): value is Truthy<T> {
 
 export function ensureTruthy<T>(
   x: T | null | undefined,
-  msg: StringGen = ""
+  msg: StringGen = "",
 ): T {
   if (!x) {
     debugger;
@@ -1337,7 +1341,7 @@ export function isShortUuidV4(shortId: string): boolean {
 
 export function groupConsecBy<T, K>(
   xs: T[],
-  f: (x: T, i: number) => K
+  f: (x: T, i: number) => K,
 ): [K, T[]][] {
   const groups: [K, T[]][] = [];
   let group: null | T[] = null;
@@ -1356,7 +1360,7 @@ export function groupConsecBy<T, K>(
 
 export function rMaybe<T, U>(
   f: (y: T) => U,
-  x: T | null | undefined
+  x: T | null | undefined,
 ): U | undefined {
   return maybe(x, f);
 }
@@ -1417,7 +1421,7 @@ export function toggleSet<T>(set: Immutable.Set<T>, x: T) {
 
 export const generateWith = <T, V>(
   ctx: T,
-  fn: (this: T) => IterableIterator<V>
+  fn: (this: T) => IterableIterator<V>,
 ) => [...fn.call(ctx)];
 
 export function generate<T>(gen: () => IterableIterator<T>) {
@@ -1481,23 +1485,23 @@ export const tuple = <T extends any[]>(...args: T): T => args;
 
 export async function asyncFilter<T>(
   arr: T[],
-  predicate: (item: T) => Promise<boolean>
+  predicate: (item: T) => Promise<boolean>,
 ): Promise<T[]> {
   return Promise.all(arr.map(predicate)).then((results) =>
-    arr.filter((_v, index) => results[index])
+    arr.filter((_v, index) => results[index]),
   );
 }
 
 export function filterMapTruthy<T, U>(
   xs: T[],
-  f: (x: T, i: number) => U | Falsy
+  f: (x: T, i: number) => U | Falsy,
 ): U[] {
   return xs.map(f).filter((x) => x) as U[];
 }
 
 export function filterMapNils<T, U>(
   xs: T[],
-  f: (x: T) => U | null | undefined
+  f: (x: T) => U | null | undefined,
 ): U[] {
   return xs.map(f).filter((x) => x !== null && x !== undefined) as U[];
 }
@@ -1542,10 +1546,10 @@ export function describeValueOrType(x: any): string {
       ? JSON.stringify(truncateTextMid(100, x))
       : JSON.stringify(x)
     : x === undefined
-    ? "undefined"
-    : isDate(x)
-    ? `new Date("${x.toISOString()}")`
-    : x.constructor.modelTypeName ?? x.constructor.name;
+      ? "undefined"
+      : isDate(x)
+        ? `new Date("${x.toISOString()}")`
+        : (x.constructor.modelTypeName ?? x.constructor.name);
 }
 
 export function stableJsonStringify(x: any, exclude: Set<string>): string {
@@ -1560,7 +1564,7 @@ export function stableJsonStringify(x: any, exclude: Set<string>): string {
             sortedObject[key] = value[key];
             return sortedObject;
           }, {})
-      : value
+      : value,
   );
 }
 
@@ -1576,13 +1580,13 @@ export function eagerCoalesce<T>(...attempts: (T | null | undefined)[]): T {
     }
   }
   throw new Error(
-    "none of the values to coalesce() are non-null/non-undefined"
+    "none of the values to coalesce() are non-null/non-undefined",
   );
 }
 
 export function coalesce<T extends {}, U>(
   x: T | null | undefined,
-  fallback: () => U
+  fallback: () => U,
 ): T | U {
   return x !== null && x !== undefined ? x : fallback();
 }
@@ -1596,7 +1600,7 @@ export function filterFalsy<T>(xs: ReadonlyArray<T | Falsy>): T[] {
 }
 
 export function spawnWrapper<T extends (...args: any[]) => Promise<any>>(
-  fn: T
+  fn: T,
 ): (...funcArgs: Parameters<T>) => void {
   return (...args) => {
     spawn(fn(...args));
@@ -1623,7 +1627,7 @@ export function deriveWindow(elm: Element) {
   return ensure(
     ensure(elm.ownerDocument, "no ownerDocument in " + elm.constructor.name)
       .defaultView,
-    "no defaultView in ownerDocument of " + elm.constructor.name
+    "no defaultView in ownerDocument of " + elm.constructor.name,
   );
 }
 
@@ -1664,25 +1668,25 @@ export function ensureElt(x: any): HTMLElement {
 
 export function ensureInstance<T>(
   x: any,
-  type: Constructor<T> | TypeStamped<T>
+  type: Constructor<T> | TypeStamped<T>,
 ): T;
 export function ensureInstance<T, U>(
   x: any,
   type1: Constructor<T> | TypeStamped<T>,
-  type2: Constructor<U> | TypeStamped<U>
+  type2: Constructor<U> | TypeStamped<U>,
 ): T | U;
 export function ensureInstance<T, U, V>(
   x: any,
   type1: Constructor<T> | TypeStamped<T>,
   type2: Constructor<U> | TypeStamped<U>,
-  type3: Constructor<V> | TypeStamped<V>
+  type3: Constructor<V> | TypeStamped<V>,
 ): T | U | V;
 export function ensureInstance<T, U, V, W>(
   x: any,
   type1: Constructor<T> | TypeStamped<T>,
   type2: Constructor<U> | TypeStamped<U>,
   type3: Constructor<V> | TypeStamped<V>,
-  type4: Constructor<W> | TypeStamped<W>
+  type4: Constructor<W> | TypeStamped<W>,
 ): T | U | V | W;
 export function ensureInstance(
   x: any,
@@ -1690,7 +1694,7 @@ export function ensureInstance(
 ): any {
   check(
     types.some((type) => x instanceof (type as any)),
-    () => mkUnexpectedTypeMsg(hackyCast(types), x)
+    () => mkUnexpectedTypeMsg(hackyCast(types), x),
   );
   return x;
 }
@@ -1702,7 +1706,7 @@ function getTypeName(type: Function | TypeStamped<any>) {
 
 export function mkUnexpectedTypeMsg(
   types: (Function | TypeStamped<any>)[],
-  x: any
+  x: any,
 ) {
   const expected = types.map((t) => getTypeName(t)).join(" | ");
   const actual = describeValueOrType(x);
@@ -1711,7 +1715,7 @@ export function mkUnexpectedTypeMsg(
 
 export function ensureArrayOfInstances<T>(
   xs: any,
-  type: Constructor<T> | TypeStamped<T>
+  type: Constructor<T> | TypeStamped<T>,
 ): T[] {
   check(Array.isArray(xs) && xs.every((x) => ensureInstance(x, type) && true));
   return xs;
@@ -1721,7 +1725,7 @@ export function ensureInstanceMaybe<T>(x: any, type: { new (...args): T }): T;
 export function ensureInstanceMaybe<T, U>(
   x: any,
   type1: { new (...args): T },
-  type2: { new (...args): U }
+  type2: { new (...args): U },
 ): T | U;
 export function ensureInstanceMaybe(
   x: any,
@@ -1793,8 +1797,8 @@ export function maybes<T>(x: T | null | undefined): Maybe<T> {
     return !f
       ? x
       : x !== null && x !== undefined
-      ? maybes<U>(f(x))
-      : maybes<U>(undefined);
+        ? maybes<U>(f(x))
+        : maybes<U>(undefined);
   };
 }
 
@@ -1815,7 +1819,7 @@ export function assertNever(_x: never): never {
 
 export function rotateStartingFrom<T>(
   xs: ReadonlyArray<T>,
-  x: T
+  x: T,
 ): ReadonlyArray<T> {
   const pos = xs.indexOf(x);
   check(pos >= 0);
@@ -1828,7 +1832,7 @@ export function rotateStartingFrom<T>(
 export function arrayEq(
   xs: ReadonlyArray<any>,
   ys: ReadonlyArray<any>,
-  comparator?: (a: any, b: any) => boolean
+  comparator?: (a: any, b: any) => boolean,
 ) {
   return (
     xs.length === ys.length &&
@@ -1844,7 +1848,7 @@ export function isPrefixArray(xs: ReadonlyArray<any>, ys: ReadonlyArray<any>) {
  */
 export function arrayEqIgnoreOrder(
   xs: ReadonlyArray<any>,
-  ys: ReadonlyArray<any>
+  ys: ReadonlyArray<any>,
 ) {
   if (xs.length !== ys.length) {
     return false;
@@ -1938,7 +1942,7 @@ export function xSetDefault<K, V>(xs: MapLike<K, V>, k: K, gen: () => V): V {
 export function withDefault<K extends string | number | symbol, V>(
   xs: Record<K, V>,
   key: K,
-  defaultVal: V
+  defaultVal: V,
 ) {
   if (!(key in xs)) {
     xs[key] = defaultVal;
@@ -1949,7 +1953,7 @@ export function withDefault<K extends string | number | symbol, V>(
 export function withDefaultFunc<K extends string | number | symbol, V>(
   xs: Record<K, V>,
   key: K,
-  defaultValFunc: () => V
+  defaultValFunc: () => V,
 ) {
   if (!(key in xs)) {
     xs[key] = defaultValFunc();
@@ -1962,7 +1966,7 @@ export const MAKE_EMPTY_ARRAY = () => [];
 
 export function invertRecord<
   K extends string | number | symbol,
-  V extends string | number | symbol
+  V extends string | number | symbol,
 >(xs: Record<K, V>): Record<V, K> {
   return Object.fromEntries(Object.entries(xs).map(([k, v]) => [v, k]));
 }
@@ -1975,7 +1979,7 @@ export function sliding<T>(
   xs: ReadonlyArray<T>,
   chunkSize: number,
   step: number,
-  onlyFullChunks = false
+  onlyFullChunks = false,
 ): T[][] {
   function* gen() {
     for (const i of lodashRange(0, xs.length, step)) {
@@ -2034,7 +2038,7 @@ export function butLast<Arr extends ReadonlyArray<any>>(xs: Arr): ButLast<Arr> {
 }
 
 export function spanLast<Arr extends ReadonlyArray<any>>(
-  xs: Arr
+  xs: Arr,
 ): [ButLast<Arr>, Last<Arr>] {
   check(xs.length > 0, "Expected non-empty array");
   return [butLast(xs), last(xs)];
@@ -2043,7 +2047,7 @@ export function spanLast<Arr extends ReadonlyArray<any>>(
 export function first<T>(xs: ReadonlyArray<T>): T {
   return ensure(
     xs[0],
-    "Unexpected nullish value in array of length " + xs.length
+    "Unexpected nullish value in array of length " + xs.length,
   );
 }
 
@@ -2061,7 +2065,7 @@ export function clampedIndex<T>(xs: ReadonlyArray<T>, i: number): number {
 
 export function ifEmpty<T, U>(
   xs: ReadonlyArray<T>,
-  otherwise: () => U
+  otherwise: () => U,
 ): ReadonlyArray<T> | U {
   return xs.length > 0 ? xs : otherwise();
 }
@@ -2074,13 +2078,13 @@ export function isInstanceOfAny<T>(x: any, type1: { new (...args): T }): x is T;
 export function isInstanceOfAny<T, U>(
   x: any,
   type1: { new (...args): T },
-  type2: { new (...args): U }
+  type2: { new (...args): U },
 ): x is T | U;
 export function isInstanceOfAny<T, U, V>(
   x: any,
   type1: { new (...args): T },
   type2: { new (...args): U },
-  type3: { new (...args): V }
+  type3: { new (...args): V },
 ): x is T | U | V;
 export function isInstanceOfAny(
   x: any,
@@ -2102,7 +2106,7 @@ export type StandardCallback<T> = (err: Error | undefined, res?: T) => void;
 
 export function asyncToCallback<T>(
   cb: StandardCallback<T>,
-  fn: () => Promise<T>
+  fn: () => Promise<T>,
 ) {
   return promiseToCallback(cb, fn());
 }
@@ -2120,7 +2124,7 @@ export async function asyncNever() {
  * T).
  */
 export function doMaybeAsync<T>(
-  f: (wrapper: <U>(x: Promise<U | undefined>) => Promise<U>) => Promise<T>
+  f: (wrapper: <U>(x: Promise<U | undefined>) => Promise<U>) => Promise<T>,
 ): Promise<T | undefined> {
   return new Promise((finalResolve) => {
     spawn(
@@ -2132,13 +2136,13 @@ export function doMaybeAsync<T>(
           finalResolve(undefined);
           return asyncNever();
         }
-      }).then(finalResolve)
+      }).then(finalResolve),
     );
   });
 }
 
 export function asyncWrapper<T extends any[], R>(
-  f: (...args: T) => R
+  f: (...args: T) => R,
 ): (...args: T) => Promise<R> {
   return async (...args) => f(...args);
 }
@@ -2161,7 +2165,7 @@ export type AsyncCallable = (...args: any[]) => Promise<any>;
  */
 export function asyncOneAtATime(
   f: AsyncCallable,
-  bounceValue: any
+  bounceValue: any,
 ): AsyncCallable {
   interface CallInfo {
     args: any[];
@@ -2280,7 +2284,7 @@ export function shallowJson(x: {}) {
   return Object.fromEntries(
     Object.getOwnPropertyNames(x)
       .map((k) => tuple(k, x[k]))
-      .filter(([_k, v]) => isJsonScalar(v))
+      .filter(([_k, v]) => isJsonScalar(v)),
   );
 }
 
@@ -2324,25 +2328,25 @@ export function capCamelCase(text: string) {
  */
 export function mergeSane<TObject, TSource>(
   object: TObject,
-  source: TSource
+  source: TSource,
 ): TObject & TSource;
 export function mergeSane<TObject, TSource1, TSource2>(
   object: TObject,
   source1: TSource1,
-  source2: TSource2
+  source2: TSource2,
 ): TObject & TSource1 & TSource2;
 export function mergeSane<TObject, TSource1, TSource2, TSource3>(
   object: TObject,
   source1: TSource1,
   source2: TSource2,
-  source3: TSource3
+  source3: TSource3,
 ): TObject & TSource1 & TSource2 & TSource3;
 export function mergeSane<TObject, TSource1, TSource2, TSource3, TSource4>(
   object: TObject,
   source1: TSource1,
   source2: TSource2,
   source3: TSource3,
-  source4: TSource4
+  source4: TSource4,
 ): TObject & TSource1 & TSource2 & TSource3 & TSource4;
 export function mergeSane(x: any, ...y: any[]): any[] {
   return mergeWith(x, ...y, (objVal, srcVal) => {
@@ -2411,7 +2415,7 @@ export function structuralMerge<T>(xs: T[]) {
               continue;
             }
             res[key] = mergeAny(
-              objs.map((o) => (o == null ? undefined : o[key]))
+              objs.map((o) => (o == null ? undefined : o[key])),
             );
           }
         }
@@ -2644,7 +2648,7 @@ export function arrayOf<T>(count: number, factory: () => T) {
 
 export function partitions<T>(
   values: T[],
-  predicates: ((val: T) => boolean)[]
+  predicates: ((val: T) => boolean)[],
 ) {
   const results = arrayOf(predicates.length + 1, () => [] as T[]);
   for (const value of values) {
@@ -2660,15 +2664,15 @@ export function partitions<T>(
 
 export function partitionMap<K, V>(
   map: Map<K, V>,
-  predicates: ((key: K, val: V) => boolean)[]
+  predicates: ((key: K, val: V) => boolean)[],
 ) {
   const partitioned = partitions(
     [...map.entries()],
     predicates.map(
       (p) =>
         ([k, v]) =>
-          p(k, v)
-    )
+          p(k, v),
+    ),
   );
   return partitioned.map((chunk) => new Map(chunk));
 }
@@ -2680,7 +2684,7 @@ export function pathGet(x: any, path: (string | number)[]) {
 export function pathSet<T extends {} = any>(
   x: T,
   path: (string | number)[],
-  value: unknown
+  value: unknown,
 ): T {
   ensure(path.length > 0, "cannot set with empty path");
   return lodashSet(x, path, value);
@@ -2694,7 +2698,7 @@ export function asyncTimeout(ms: number) {
 
 export async function waitUntil(
   cond: () => boolean | Promise<boolean>,
-  opts: { maxTimeout?: number; timeout?: number } = {}
+  opts: { maxTimeout?: number; timeout?: number } = {},
 ) {
   const start = new Date().getTime();
   const maxTimeout = opts.maxTimeout ?? 300000;
@@ -2714,7 +2718,7 @@ export async function waitUntil(
         }
         await asyncTimeout(timeout);
       }
-    })
+    }),
   );
 }
 
@@ -2728,14 +2732,17 @@ export class PromiseTimeoutError extends CustomError {
 export function withTimeout<T>(
   promise: Promise<T>,
   msg: string,
-  ms: number = 60 * 1000 // 1 minute
+  ms: number = 60 * 1000, // 1 minute
 ): Promise<T> {
   let timeoutId: NodeJS.Timeout;
   return Promise.race([
     promise.finally(() => clearTimeout(timeoutId!)),
     new Promise<never>(
       (_resolve, reject) =>
-        (timeoutId = setTimeout(() => reject(new PromiseTimeoutError(msg)), ms))
+        (timeoutId = setTimeout(
+          () => reject(new PromiseTimeoutError(msg)),
+          ms,
+        )),
     ),
   ]);
 }
@@ -2807,18 +2814,15 @@ export function substringOccurrencesCount(text: string, sub: string) {
   return (
     text.match(
       // https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
-      new RegExp(sub.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")
+      new RegExp(sub.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
     ) || []
   ).length;
 }
 
 // Extract only writable properties from a type
 // https://stackoverflow.com/questions/52443276/how-to-exclude-getter-only-properties-from-type-in-typescript
-type IfEquals<X, Y, A, B> = (<T>() => T extends X ? 1 : 2) extends <
-  T
->() => T extends Y ? 1 : 2
-  ? A
-  : B;
+type IfEquals<X, Y, A, B> =
+  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? A : B;
 type WritableKeysOf<T> = {
   [P in keyof T]: IfEquals<
     { [Q in P]: T[P] },
@@ -2848,7 +2852,7 @@ export function maybeMemoizeFn<T extends (...args: any[]) => any>(fn: T): T {
 }
 
 export function ensureClientMemoizedFunction<T extends (...args: any[]) => any>(
-  fn: T
+  fn: T,
 ): T & MemoizedFunction {
   assert(typeof window !== "undefined", "not running in client");
   return fn as T & MemoizedFunction;

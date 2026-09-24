@@ -58,16 +58,16 @@ export async function promptRemapCodeComponent(props: {
             (c): c is CodeComponent =>
               isCodeComponent(c) &&
               !isBuiltinCodeComponent(c) &&
-              c.name === r.meta.name
+              c.name === r.meta.name,
           );
           if (!comp || comp === component) {
             return null;
           }
 
           return comp;
-        })
+        }),
     ),
-    (comp) => getComponentDisplayName(comp)
+    (comp) => getComponentDisplayName(comp),
   );
   return showTemporaryPrompt<RemapComponentResponse>((onSubmit, onCancel) => (
     <Modal
@@ -90,12 +90,12 @@ export async function promptRemapCodeComponent(props: {
             if (value) {
               const comp = ensure(
                 candidates.find((c) => c.uuid === value),
-                "Must have picked from candidates list"
+                "Must have picked from candidates list",
               );
               if (
                 await reactConfirm({
                   message: `Replace all instances of "${getComponentDisplayName(
-                    component
+                    component,
                   )}" with "${getComponentDisplayName(comp)}"?`,
                 })
               ) {
@@ -189,7 +189,7 @@ export async function promptRemapCodeComponent(props: {
 export async function fixMissingCodeComponents(
   studioCtx: StudioCtx,
   missingComponents: CodeComponent[],
-  missingContexts: CodeComponent[]
+  missingContexts: CodeComponent[],
 ): Promise<Result<void, never>> {
   for (const c of missingComponents) {
     // Loop until it's fixed
@@ -200,7 +200,7 @@ export async function fixMissingCodeComponents(
         <>
           Code component no longer registered: {getComponentDisplayName(c)} (
           <code>{c.codeComponentMeta?.importPath}</code>)
-        </>
+        </>,
       );
     }
   }
@@ -211,20 +211,20 @@ export async function fixMissingCodeComponents(
         () => {
           arrayRemove(
             studioCtx.site.globalContexts,
-            studioCtx.site.globalContexts.find((tpl) => tpl.component === c)
+            studioCtx.site.globalContexts.find((tpl) => tpl.component === c),
           );
           studioCtx.siteOps().tryRemoveComponent(c);
           return ok();
         },
-        { noUndoRecord: true }
-      )
+        { noUndoRecord: true },
+      ),
     );
   }
   return ok();
 }
 
 export async function confirmRemovedCodeComponentVariants(
-  removedSelectorsByComponent: [Component, string[]][]
+  removedSelectorsByComponent: [Component, string[]][],
 ): Promise<Result<void, never>> {
   let shouldDelete: boolean | undefined;
   do {
@@ -311,13 +311,13 @@ function promptFixReactVersionForHostLessPackages(props: {
           </Button>
         </div>
       </Modal>
-    )
+    ),
   );
 }
 
 export async function fixInvalidReactVersion(
   studioCtx: StudioCtx,
-  hostLessPkgInfo: HostLessPackageInfo
+  hostLessPkgInfo: HostLessPackageInfo,
 ) {
   return safeTry<void, never>(async function* () {
     let shouldDelete: FixReactVersionHostLessPackagesResponse = "delete";
@@ -328,15 +328,15 @@ export async function fixInvalidReactVersion(
     } while (!shouldDelete);
     yield* await studioCtx.change(() => {
       const dep = studioCtx.site.projectDependencies.find(
-        (projectDep) => projectDep.site.hostLessPackageInfo === hostLessPkgInfo
+        (projectDep) => projectDep.site.hostLessPackageInfo === hostLessPkgInfo,
       );
       spawn(
         studioCtx.projectDependencyManager.removeByPkgId(
           ensure(
             dep,
-            `didn't find the ${hostLessPkgInfo.name} pkg in the list of project dependencies`
-          ).pkgId
-        )
+            `didn't find the ${hostLessPkgInfo.name} pkg in the list of project dependencies`,
+          ).pkgId,
+        ),
       );
       return ok();
     });
@@ -354,7 +354,7 @@ export const duplicateCodeComponentErrorDescription = (
 );
 
 export function unknownCodeComponentErrorDescription(
-  err: UnknownComponentError
+  err: UnknownComponentError,
 ) {
   return (
     <p>
@@ -367,7 +367,7 @@ export function unknownCodeComponentErrorDescription(
 
 export async function showModalToRefreshCodeComponentProps(
   changes: CodeComponentMetaDiffWithComponent[],
-  opts?: { force?: boolean }
+  opts?: { force?: boolean },
 ) {
   if (opts?.force) {
     return true;
@@ -730,7 +730,7 @@ function HostLessPackageForm({
 }
 
 export async function promptHostLessPackageInfo(
-  initialValue?: HostLessPackageInfo
+  initialValue?: HostLessPackageInfo,
 ) {
   return showTemporaryPrompt<HostLessPackageInfo | undefined>((onSubmit) => (
     <HostLessPackageForm onSubmit={onSubmit} initialValue={initialValue} />
@@ -760,7 +760,7 @@ export function checkAndNotifyUnsupportedHostVersion(requiredVersion?: number) {
 
 export function notifyInstallableSuccess(
   name: string,
-  description?: React.ReactNode
+  description?: React.ReactNode,
 ) {
   notification.success({
     message: <>{name} has successfully been installed!</>,
@@ -778,7 +778,7 @@ export function notifyInstallableFailure(name: string, errorMessage: string) {
 export function notifyCodeLibraryInstalled(
   name: string,
   jsIdentifier: string,
-  type: string
+  type: string,
 ) {
   const commonOpts = { duration: 0 };
   switch (type) {
@@ -815,15 +815,15 @@ export function notifyCodeLibraryInstalled(
 
 // Returns true if the user needs to upgrade their react version
 export function checkAndNotifyUnsupportedReactVersion(
-  deps: ProjectDependency[]
+  deps: ProjectDependency[],
 ) {
   const invalidDep = deps.find(
     (dep) =>
       dep.site.hostLessPackageInfo?.minimumReactVersion &&
       semver.lt(
         getRootSubReactVersion(),
-        dep.site.hostLessPackageInfo?.minimumReactVersion
-      )
+        dep.site.hostLessPackageInfo?.minimumReactVersion,
+      ),
   );
   if (invalidDep) {
     // Host app needs to be version 2 or greater to use the store

@@ -24,7 +24,7 @@ export type AddDrawerCardItemProps = DefaultAddDrawerCardItemProps;
 
 function AddDrawerCardItem_(
   props: AddDrawerCardItemProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicAddDrawerCardItem to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

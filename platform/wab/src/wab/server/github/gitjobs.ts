@@ -1,4 +1,3 @@
-import { ensure } from "@/wab/shared/common";
 import { Config } from "@/wab/server/config";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { ProjectRepository, User } from "@/wab/server/entities/Entities";
@@ -10,6 +9,7 @@ import {
   tryGetLastUnfinishedWorkflowRun,
 } from "@/wab/server/github/workflows";
 import { GitSyncAction, GitWorkflowJobStatus } from "@/wab/shared/ApiSchema";
+import { ensure } from "@/wab/shared/common";
 import * as L from "lodash";
 
 type RunGitJobArgs = {
@@ -32,7 +32,7 @@ type RunGitJobArgs = {
 // If the workflow is already running, it returns the current run; otherwise
 // start running a workflow and return null.
 export async function runGitJob(
-  args: RunGitJobArgs
+  args: RunGitJobArgs,
 ): Promise<GitWorkflowJobStatus> {
   const { projectRepository, config, mgr, user } = args;
 
@@ -49,7 +49,7 @@ export async function runGitJob(
     args.description,
     user,
     project,
-    config
+    config,
   );
 
   const projectApiToken = await mgr.validateOrGetProjectApiToken(projectId);

@@ -42,7 +42,7 @@ export const STUDIO_ONBOARDING_TUTORIALS: Record<string, StudioTutorialStep[]> =
   };
 
 export const STUDIO_ONBOARDING_TUTORIALS_LIST = Object.keys(
-  STUDIO_ONBOARDING_TUTORIALS
+  STUDIO_ONBOARDING_TUTORIALS,
 );
 
 export const TOPFRAME_ONBOARDING_TUTORIALS: Record<

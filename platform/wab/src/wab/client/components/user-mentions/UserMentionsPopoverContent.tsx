@@ -9,8 +9,7 @@ import { ApiUser } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
-export interface UserMentionsPopoverContentProps
-  extends DefaultUserMentionsPopoverContentProps {
+export interface UserMentionsPopoverContentProps extends DefaultUserMentionsPopoverContentProps {
   users: ApiUser[];
   highlightIndex: number;
   onSelectUser: (user: ApiUser) => void;
@@ -18,7 +17,7 @@ export interface UserMentionsPopoverContentProps
 
 function UserMentionsPopoverContent_(
   props: UserMentionsPopoverContentProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { users, highlightIndex = 0, onSelectUser, ...plasmicProps } = props;
   const { openShareDialog } = useShareDialog();
@@ -53,6 +52,6 @@ function UserMentionsPopoverContent_(
 }
 
 const UserMentionsPopoverContent = React.forwardRef(
-  UserMentionsPopoverContent_
+  UserMentionsPopoverContent_,
 );
 export { UserMentionsPopoverContent };

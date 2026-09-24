@@ -10,17 +10,17 @@ import {
 } from "@/wab/shared/common";
 import { isContextCodeComponent } from "@/wab/shared/core/components";
 import {
-  SQ,
-  Selectable,
   getFocusTrappingAncestor,
   getUnlockedAncestor,
+  Selectable,
+  SQ,
 } from "@/wab/shared/core/selection";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import {
+  slotHasDefaultContent,
   ValComponent,
   ValNode,
   ValSlot,
-  slotHasDefaultContent,
 } from "@/wab/shared/core/val-nodes";
 import { asVal } from "@/wab/shared/core/vals";
 import { ValState } from "@/wab/shared/eval/val-state";
@@ -38,7 +38,7 @@ export class FocusHeuristics {
     private tplMgr: TplMgr,
     private valState: ValState,
     private currentComponentCtx: ComponentCtx | null,
-    private showingDefaultSlotContents: boolean
+    private showingDefaultSlotContents: boolean,
   ) {}
 
   // Similar to containingComponentWithinCurrentComponentCtx.  This serves as
@@ -120,16 +120,16 @@ export class FocusHeuristics {
       curFocused?: Selectable | null;
       deepSelect?: boolean;
       exact: boolean;
-    }
+    },
   ) {
     return switchType(focusObj)
       .when(SlotSelection, (slotSelection: SlotSelection) => {
         const target = this.bestFocusValTarget(
           ensure(
             slotSelection.val,
-            () => "Expected ValNode to exist in Slot Selection"
+            () => "Expected ValNode to exist in Slot Selection",
           ),
-          opts
+          opts,
         );
         if (target.focusTarget === slotSelection.val) {
           return L.assignIn(target, { focusTarget: slotSelection }, opts);
@@ -154,7 +154,7 @@ export class FocusHeuristics {
       deepSelect?: boolean;
       curFocused?: Selectable | null;
       exact: boolean;
-    }
+    },
   ) {
     if (
       !this.valState.maybeValUserRoot() ||
@@ -176,7 +176,7 @@ export class FocusHeuristics {
 
     const slot = this.valState.getValSlotContainingSubstitutedArgVal(
       valNode,
-      currentComponent
+      currentComponent,
     );
 
     // Normally in component edit mode, if we select slot content, we only want to
@@ -202,7 +202,7 @@ export class FocusHeuristics {
         currentComponent != null
           ? tuple(
               ...this.parentComponents(currentComponent).reverse(),
-              currentComponent
+              currentComponent,
             )
           : [];
       const newStack = this.parentComponents(valNode).reverse();
@@ -215,7 +215,7 @@ export class FocusHeuristics {
           ? new ComponentCtx({
               valComponent: ensure(
                 L.last(commonStack),
-                () => "Failed to get last element of commonStack"
+                () => "Failed to get last element of commonStack",
               ),
             })
           : null;
@@ -265,7 +265,7 @@ export class FocusHeuristics {
         focusTarget = getFocusTrappingAncestor(
           focusTarget,
           this.valState,
-          opts.curFocused
+          opts.curFocused,
         );
       }
 
@@ -330,7 +330,7 @@ export class FocusHeuristics {
     if (current !== undefined) {
       const slot = this.valState.getValSlotContainingSubstitutedArgVal(
         valNode,
-        current
+        current,
       );
       if (slot != null && !slotHasDefaultContent(slot)) {
         // parent may be top-level, in which case return null
@@ -351,13 +351,13 @@ export class FocusHeuristics {
     const parents = this.parentComponents(valNode).reverse();
     assert(
       current == null || [...parents].includes(current),
-      () => "Expected current ValComponent to exist in component stack"
+      () => "Expected current ValComponent to exist in component stack",
     );
     const parentsUntilCurrent =
       current != null
         ? L.dropWhile(
             parents,
-            (x: /*TWZ*/ ValComponent) => x !== current
+            (x: /*TWZ*/ ValComponent) => x !== current,
           ).slice(1)
         : parents;
     if (parentsUntilCurrent.length === 0) {
@@ -369,7 +369,7 @@ export class FocusHeuristics {
       // to Components owned by this site, as you cannot enter / edit an
       // imported component.
       const container = parentsUntilCurrent.find((v) =>
-        this.tplMgr.isOwnedBySite(v.tpl.component)
+        this.tplMgr.isOwnedBySite(v.tpl.component),
       );
       return { container };
     }
@@ -379,8 +379,8 @@ export class FocusHeuristics {
     return this.containingComponentWithinCurrentComponentCtxForVal(
       ensure(
         asVal(focusObj),
-        () => "Expected ValNode to exist in Slot Selection"
-      )
+        () => "Expected ValNode to exist in Slot Selection",
+      ),
     );
   }
 

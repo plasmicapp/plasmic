@@ -30,7 +30,7 @@ export interface Analytics {
   track(
     eventName: string,
     eventProperties?: Properties,
-    opts?: TrackOptions
+    opts?: TrackOptions,
   ): void;
   /**
    * Starts recording a session for replay.

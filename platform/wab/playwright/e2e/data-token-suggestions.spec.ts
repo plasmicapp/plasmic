@@ -10,7 +10,7 @@ test.describe("data token suggestions popover", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -28,7 +28,7 @@ test.describe("data token suggestions popover", () => {
   /** A suggestion row in the popover, matched by its token name. */
   function suggestion(studio: StudioModel, tokenName: string): Locator {
     return studio.frame.locator(
-      `[data-test-id="data-token-suggestions"] [role="option"][aria-label="${tokenName}"]`
+      `[data-test-id="data-token-suggestions"] [role="option"][aria-label="${tokenName}"]`,
     );
   }
 
@@ -50,7 +50,7 @@ test.describe("data token suggestions popover", () => {
     await studio.rightPanel.expandComponentPropsSection();
 
     const row = studio.rightPanel.frame.locator(
-      `[data-test-id="prop-editor-row-ARIA label"]`
+      `[data-test-id="prop-editor-row-ARIA label"]`,
     );
     await row.scrollIntoViewIfNeeded();
     const input = row.locator(`[data-plasmic-prop="ARIA label"]`);
@@ -71,7 +71,7 @@ test.describe("data token suggestions popover", () => {
     await studio.page.keyboard.press("ArrowDown");
     await expect(suggestion(studio, "Aria Label")).toHaveAttribute(
       "aria-selected",
-      "true"
+      "true",
     );
 
     // Tab binds the highlighted suggestion;
@@ -100,7 +100,7 @@ test.describe("data token suggestions popover", () => {
 
     const rowFor = (prop: string) =>
       studio.rightPanel.frame.locator(
-        `[data-test-id="prop-editor-row-${prop}"]`
+        `[data-test-id="prop-editor-row-${prop}"]`,
       );
     const emptyTheInput = async (input: Locator) => {
       await input.click();
@@ -129,11 +129,11 @@ test.describe("data token suggestions popover", () => {
       // Nothing starts highlighted, so the first Arrow↓ lands on the top row.
       await expect(suggestion(studio, "Initial Value")).toHaveAttribute(
         "aria-selected",
-        "true"
+        "true",
       );
       await expect(suggestion(studio, "Initial Value Alt")).toHaveAttribute(
         "aria-selected",
-        "false"
+        "false",
       );
 
       await studio.page.keyboard.press("Enter");
@@ -168,7 +168,7 @@ test.describe("data token suggestions popover", () => {
     await studio.rightPanel.expandComponentPropsSection();
 
     const row = studio.rightPanel.frame.locator(
-      `[data-test-id="prop-editor-row-ARIA label"]`
+      `[data-test-id="prop-editor-row-ARIA label"]`,
     );
     await row.scrollIntoViewIfNeeded();
     const input = row.locator(`[data-plasmic-prop="ARIA label"]`);
@@ -218,7 +218,7 @@ test.describe("data token suggestions popover", () => {
     await expect(
       studio.frame
         .locator(`[data-test-id="data-token-suggestions"] [role="option"]`)
-        .first()
+        .first(),
     ).toHaveAttribute("aria-label", "Strapi Host");
 
     await suggestion(studio, "Host").click();
@@ -255,7 +255,7 @@ test.describe("data token suggestions popover", () => {
     await tokenItem.click();
 
     await expect(
-      studio.rightPanel.frame.getByText("$dataTokens.myLink")
+      studio.rightPanel.frame.getByText("$dataTokens.myLink"),
     ).toBeVisible();
   });
 });

@@ -77,7 +77,7 @@ export function makeDataSourcesServerQueryImports() {
 
 export function serializeServerQueryCustomFunctionArgs(
   op: CustomFunctionExpr,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
 ) {
   const argsMap = groupBy(op.args, (arg) => arg.argType.argName);
   return op.func.params
@@ -97,7 +97,7 @@ export function makeComponentTypeImport(
   component: Component,
   opts?: {
     includePlasmicComponent?: boolean;
-  }
+  },
 ) {
   const plasmicComponentName = makePlasmicComponentName(component);
   const genPropsName = makeDefaultExternalPropsName(component);
@@ -117,13 +117,13 @@ export function makeComponentTypeImport(
 
 export function makePageParamsTypeImport(exportOpts: ExportOpts) {
   return `import type { ParamsRecord, PlasmicPageProps } from "${getReactWebPackageName(
-    exportOpts
+    exportOpts,
   )}";`;
 }
 
 export function serializeMakeAppRouterPageCtx(
   ctx: SerializerBaseContext,
-  opts?: { usesSearchParams?: boolean }
+  opts?: { usesSearchParams?: boolean },
 ) {
   const pageMeta = ctx.component.pageMeta;
   if (!pageMeta) {
@@ -153,7 +153,7 @@ export async function makeAppRouterPageCtx({ params, searchParams }: PlasmicPage
 
 export function makeServerQueryImports(
   ctx: SerializerBaseContext,
-  componentName: string
+  componentName: string,
 ) {
   const { component, exportOpts } = ctx;
 
@@ -167,7 +167,7 @@ export function makeServerQueryImports(
       ctx.useRSC ? makePlasmicServerRscComponentName(component) : componentName
     }`,
     component.uuid,
-    ctx.useRSC ? "rscServer" : "render"
+    ctx.useRSC ? "rscServer" : "render",
   );
   return imports;
 }

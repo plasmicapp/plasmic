@@ -7,12 +7,13 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
 export interface CopilotLikeDislikeProps
-  extends DefaultCopilotLikeDislikeProps,
+  extends
+    DefaultCopilotLikeDislikeProps,
     PlasmicCopilotLikeDislike__OverridesType {}
 
 function CopilotLikeDislike_(
   props: CopilotLikeDislikeProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   return <PlasmicCopilotLikeDislike root={{ ref }} {...props} />;
 }

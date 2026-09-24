@@ -57,7 +57,7 @@ import {
 } from "@/wab/shared/model/classes";
 
 export function getRscMetadata(
-  ctx: SerializerBaseContext
+  ctx: SerializerBaseContext,
 ): ComponentExportOutput["rscMetadata"] {
   if (!isPageComponent(ctx.component) || !ctx.useRSC) {
     return undefined;
@@ -92,7 +92,7 @@ export function serializeServerComponentBody(ctx: SerializerBaseContext) {
 
 function serializeServerQueriesServerWrapper(
   ctx: SerializerBaseContext,
-  opts: ExportOpts
+  opts: ExportOpts,
 ) {
   const { component } = ctx;
 
@@ -127,7 +127,7 @@ ${makeTaggedPlasmicImport(
   clientComponentName,
   makePlasmicClientRscComponentFileName(component),
   component.uuid,
-  "rscClient"
+  "rscClient",
 )}
 
 ${serializeServerPageQueries(ctx)}
@@ -156,7 +156,7 @@ export ${
 
 function serializeServerQueriesClientWrapper(
   ctx: SerializerBaseContext,
-  opts: ExportOpts
+  opts: ExportOpts,
 ) {
   const { component } = ctx;
 
@@ -182,12 +182,12 @@ export function ${componentName}(props: ${defaultPropsName}) {
  * Extract data token identifiers from server query expressions
  */
 export function getDataTokensFromServerQueries(
-  queries: ComponentServerQuery[]
+  queries: ComponentServerQuery[],
 ): Set<string> {
   const tokenIdentifiers = queries
     .filter(isServerQueryWithOperation)
     .flatMap((query): Expr[] =>
-      isKnownCustomFunctionExpr(query.op) ? query.op.args : [query.op]
+      isKnownCustomFunctionExpr(query.op) ? query.op.args : [query.op],
     )
     .flatMap(flattenExprs)
     .filter(isDataTokenExpr)
@@ -200,7 +200,7 @@ export function getDataTokensFromServerQueries(
  */
 function serializeComponentServerQueryTree(
   ctx: SerializerBaseContext,
-  serializedTree: string
+  serializedTree: string,
 ) {
   if (!ctx.hasServerQueries) {
     return "";
@@ -220,7 +220,7 @@ export function serializeRootServerQueryTree(ctx: SerializerBaseContext) {
     return "";
   }
   const serverQueries = ctx.component.serverQueries.filter(
-    isServerQueryWithOperation
+    isServerQueryWithOperation,
   );
 
   const serializedTree = serializeRootComponentQueries(serverQueries, ctx);
@@ -236,7 +236,7 @@ export function serializePageQueryTree(ctx: SerializerBaseContext) {
     return "";
   }
   const serverQueries = ctx.component.serverQueries.filter(
-    isServerQueryWithOperation
+    isServerQueryWithOperation,
   );
   const serializedTree = serializeRootComponentQueries(serverQueries, ctx);
   return `const pageQueryTree: QueryComponentNode = ${serializedTree};`;
@@ -251,7 +251,7 @@ function serializeServerPageQueries(ctx: SerializerBaseContext) {
     component,
     ctx.site,
     ctx.projectConfig.projectId,
-    ctx.exportOpts
+    ctx.exportOpts,
   );
 
   if (!ctx.hasServerQueries) {
@@ -296,7 +296,7 @@ ${serializeComponentServerQueryTree(ctx, serializedTree)}
  * Returns empty string if the component has no page metadata.
  */
 function serializeLoaderGenerateMetadataSection(
-  ctx: SerializerBaseContext
+  ctx: SerializerBaseContext,
 ): string {
   const { component, hasServerQueries } = ctx;
 
@@ -360,7 +360,7 @@ ${serializeRequiredQueryFunctions(ctx)}`;
 
 export function getPageRouterSkeletonImports(
   ctx: SerializerBaseContext,
-  isDynamicRoute: boolean
+  isDynamicRoute: boolean,
 ) {
   let imports = `import { useRouter } from "next/router";
 import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";`;
@@ -445,10 +445,10 @@ function serializeRequiredQueryFunctions(ctx: SerializerBaseContext): string {
     .map(
       (fn) =>
         `  { id: ${JSON.stringify(
-          customFunctionId(fn)
+          customFunctionId(fn),
         )}, name: ${JSON.stringify(fn.importName)}, namespace: ${JSON.stringify(
-          fn.namespace || null
-        )}, alias: ${JSON.stringify(customFunctionImportAlias(fn))} }`
+          fn.namespace || null,
+        )}, alias: ${JSON.stringify(customFunctionImportAlias(fn))} }`,
     )
     .join(",\n");
 
@@ -464,7 +464,7 @@ ${entries}
  */
 export function serializePagesRouterGetStaticProps(
   componentName: string,
-  pagePath: string
+  pagePath: string,
 ): string {
   const getStaticProps = `
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -515,13 +515,13 @@ export function serializeAppRouterGenerateMetadata(ctx: SerializerBaseContext) {
       serializeCustomFunctionsAndLibs(ctx);
 
     const tokenIdentifiers = getDataTokensFromServerQueries(
-      component.serverQueries
+      component.serverQueries,
     );
     const dataTokenImports = generateDataTokenImports(
       tokenIdentifiers,
       ctx.site,
       ctx.projectConfig.projectId,
-      ctx.exportOpts
+      ctx.exportOpts,
     );
 
     metadataQuerySetup = `

@@ -513,11 +513,10 @@ export interface ApiProject extends ApiEntityBase {
   secretApiToken?: never;
 }
 
-export interface ApiProjectMeta
-  extends Pick<
-    ApiProject,
-    "id" | "name" | "workspaceId" | "hostUrl" | "uiConfig"
-  > {
+export interface ApiProjectMeta extends Pick<
+  ApiProject,
+  "id" | "name" | "workspaceId" | "hostUrl" | "uiConfig"
+> {
   lastPublishedVersion?: string;
   publishedVersions: (Pick<
     PkgVersionInfo,
@@ -989,18 +988,17 @@ export interface UpdateProjectReq {
   branchId?: string;
 }
 
-export interface SetSiteInfoReq
-  extends Partial<
-    Pick<
-      ApiProject,
-      | "name"
-      | "workspaceId"
-      | "inviteOnly"
-      | "defaultAccessLevel"
-      | "readableByPublic"
-      | "isUserStarter"
-    >
-  > {
+export interface SetSiteInfoReq extends Partial<
+  Pick<
+    ApiProject,
+    | "name"
+    | "workspaceId"
+    | "inviteOnly"
+    | "defaultAccessLevel"
+    | "readableByPublic"
+    | "isUserStarter"
+  >
+> {
   regenerateSecretApiToken?: boolean;
 }
 
@@ -1371,14 +1369,10 @@ export interface CmsList extends CmsBaseType<any[]>, CmsTypeList {}
 export interface CmsObject extends CmsBaseType<object>, CmsTypeObject {}
 
 export interface CmsText
-  extends CmsBaseType<string>,
-    CmsTextLike,
-    CmsTypeText {}
+  extends CmsBaseType<string>, CmsTextLike, CmsTypeText {}
 
 export interface CmsLongText
-  extends CmsBaseType<string>,
-    CmsTextLike,
-    CmsTypeLongText {}
+  extends CmsBaseType<string>, CmsTextLike, CmsTypeLongText {}
 
 export interface CmsNumber extends CmsBaseType<number>, CmsTypeNumber {}
 
@@ -1516,8 +1510,7 @@ export interface ApiCmseRow extends ApiEntityBase<CmsRowId> {
   revision: number | null;
 }
 
-export interface ApiCmseRowRevisionMeta
-  extends ApiEntityBase<CmsRowRevisionId> {
+export interface ApiCmseRowRevisionMeta extends ApiEntityBase<CmsRowRevisionId> {
   rowId: string;
   isPublished: boolean;
 }
@@ -1602,8 +1595,7 @@ export interface ApiCommentThread extends ApiEntityBase<CommentThreadId> {
   commentThreadHistories: ApiCommentThreadHistory[];
 }
 
-export interface ApiCommentThreadHistory
-  extends ApiEntityBase<ThreadHistoryId> {
+export interface ApiCommentThreadHistory extends ApiEntityBase<ThreadHistoryId> {
   resolved: boolean;
   commentThreadId: CommentThreadId;
 }

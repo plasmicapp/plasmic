@@ -16,7 +16,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   let hasBundleChanged = false;
@@ -47,7 +47,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
 
         if (dupEmptyRsVariantSettings.size > 0) {
           tpl.vsettings = tpl.vsettings.filter(
-            (vs) => !dupEmptyRsVariantSettings.has(vs)
+            (vs) => !dupEmptyRsVariantSettings.has(vs),
           );
           hasBundleChanged = true;
         }
@@ -64,11 +64,11 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     if (dupNonEmptyRsVariantSettingsSet.size > 0) {
       // duplicate issue still exists even after removing the empty RS
       console.log(
-        `MIGRATION_DUP_VS_ISSUE_EXISTS: PROJECT=${projectId} has duplicate VariantSettings with non-empty RuleSet.`
+        `MIGRATION_DUP_VS_ISSUE_EXISTS: PROJECT=${projectId} has duplicate VariantSettings with non-empty RuleSet.`,
       );
     } else {
       console.log(
-        `MIGRATION_DUP_VS_ISSUE_RESOLVED: PROJECT=${projectId} has no more duplicate VariantSettings.`
+        `MIGRATION_DUP_VS_ISSUE_RESOLVED: PROJECT=${projectId} has no more duplicate VariantSettings.`,
       );
     }
   }
@@ -76,7 +76,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "242-remove-duplicate-variants"
+    "242-remove-duplicate-variants",
   );
   Object.assign(bundle, newBundle);
 };

@@ -26,8 +26,7 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultEditOverrideToggleButtonProps altogether and have
 // total control over the props for your component.
-export interface EditOverrideToggleButtonProps
-  extends DefaultEditOverrideToggleButtonProps {
+export interface EditOverrideToggleButtonProps extends DefaultEditOverrideToggleButtonProps {
   slice: SplitSlice;
 }
 
@@ -52,7 +51,7 @@ function EditOverrideToggleButton(props: EditOverrideToggleButtonProps) {
               vcontroller?.onClickVariant(variant);
             }
             return ok();
-          })
+          }),
         );
       }}
     />

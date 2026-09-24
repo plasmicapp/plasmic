@@ -62,7 +62,7 @@ beforeEach(() => {
       pkgId: "123",
       version: "0.0.1",
       site: depSite,
-    })
+    }),
   );
   sites.unshift(site);
 });
@@ -82,7 +82,7 @@ const nextSite = () => {
 const compareCheck = (
   releaseType: string,
   numChanges?: number,
-  compareIndex?: number
+  compareIndex?: number,
 ) => {
   let result: ChangeLogEntry[] = [];
   if (compareIndex) {
@@ -121,7 +121,7 @@ describe("compareSites / calculateSemVer", () => {
         type: typeFactory.num(),
         exportType: ParamExportType.External,
         paramType: "prop",
-      })
+      }),
     );
     // site.components[i].variants
     // - add new variants
@@ -141,7 +141,7 @@ describe("compareSites / calculateSemVer", () => {
         multi: false,
         type: "component",
         linkedState: UNINITIALIZED_VALUE,
-      })
+      }),
     );
     // site.components[i].variantGroups[j].variants
     // - add new variants to the variant groups
@@ -156,7 +156,7 @@ describe("compareSites / calculateSemVer", () => {
         forTpl: null,
         codeComponentName: null,
         codeComponentVariantKeys: null,
-      })
+      }),
     );
     // site.components[i].tplTree
     // - add to the TplTree
@@ -284,7 +284,7 @@ describe("compareSites / calculateSemVer", () => {
     // - indirect component changes
     const oldSite = nextSite();
     $$$(oldSite.components[0].tplTree).append(
-      mkTplComponent(oldSite.components[1], oldSite.components[0].variants[0])
+      mkTplComponent(oldSite.components[1], oldSite.components[0].variants[0]),
     );
 
     $$$(nextSite().components[1].tplTree).append(newTpl());
@@ -378,7 +378,7 @@ describe("compareSites / calculateSemVer", () => {
         variants: [],
         multi: false,
         type: VariantGroupType.GlobalUserDefined,
-      })
+      }),
     );
     compareCheck("minor", 1);
     // site.globalVariantGroups[i].variants
@@ -394,7 +394,7 @@ describe("compareSites / calculateSemVer", () => {
         forTpl: null,
         codeComponentName: null,
         codeComponentVariantKeys: null,
-      })
+      }),
     );
     compareCheck("minor", 1);
     // - start mucking around interface-neutral props
@@ -431,7 +431,7 @@ describe("compareSites / calculateSemVer", () => {
         uuid: mkShortId(),
         forTheme: false,
         variantedRs: [],
-      })
+      }),
     );
     compareCheck("minor", 1);
     // - change mixin preview
@@ -481,7 +481,7 @@ describe("compareSites / calculateSemVer", () => {
       mkDataToken({
         name: "Data Token 1",
         value: "123",
-      })
+      }),
     );
     compareCheck("minor", 1);
     // - change data token value
@@ -511,7 +511,7 @@ describe("compareSites / calculateSemVer", () => {
         params: [],
         isQuery: true,
         isMutation: false,
-      })
+      }),
     );
     compareCheck("minor", 1);
 
@@ -534,7 +534,7 @@ describe("compareSites / calculateSemVer", () => {
         variantedValues: [],
         isRegistered: false,
         regKey: undefined,
-      })
+      }),
     );
     compareCheck("minor", 1);
     // - change token value
@@ -548,7 +548,7 @@ describe("compareSites / calculateSemVer", () => {
       new VariantedValue({
         variants: [mkBaseVariant()],
         value: "rgb(255,255,255)",
-      })
+      }),
     );
     compareCheck("patch", 1);
     // - change varianted value
@@ -574,7 +574,7 @@ describe("compareSites / calculateSemVer", () => {
       .children[0] as TplTag;
     ensureBaseVariantSetting(oldSite.components[0], children);
     children.vsettings[0].rs.values["background-color"] = mkTokenRef(
-      oldSite.styleTokens[0]
+      oldSite.styleTokens[0],
     );
     nextSite().styleTokens[0].value = "rgb(0, 0, 0)";
     compareCheck("patch", 2);
@@ -590,7 +590,7 @@ describe("compareSites / calculateSemVer", () => {
         token: depStyleToken,
         value: "rgb(255,0,0)",
         variantedValues: [],
-      })
+      }),
     );
     compareCheck("minor", 1);
     // - change override value
@@ -601,7 +601,7 @@ describe("compareSites / calculateSemVer", () => {
       new VariantedValue({
         variants: [mkBaseVariant()],
         value: "rgb(255,255,255)",
-      })
+      }),
     );
     compareCheck("patch", 1);
     // - change override varianted value
@@ -623,7 +623,7 @@ describe("compareSites / calculateSemVer", () => {
       .children[0] as TplTag;
     ensureBaseVariantSetting(oldSite.components[0], children);
     children.vsettings[0].rs.values["background-color"] = mkTokenRef(
-      oldSite.styleTokenOverrides[0].token
+      oldSite.styleTokenOverrides[0].token,
     );
     nextSite().styleTokenOverrides[0].value = "rgb(0, 0, 0)";
     compareCheck("patch", 2);

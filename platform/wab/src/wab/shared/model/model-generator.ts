@@ -71,7 +71,7 @@ export function clean(x: string) {
         result2.push("}}}");
       }
       return result2;
-    })().join(" ")
+    })().join(" "),
   );
   return res.join("\n");
 }
@@ -127,13 +127,13 @@ ast.cls = function (cls, base): ClassWithSubclasses {
       assignIn({}, cls, base != null ? { base } : {}, {
         fields: coalesce(
           cls.fields != null ? cls.fields.map(ast.field) : undefined,
-          () => []
+          () => [],
         ),
-      })
+      }),
     ),
     Array.from(cls.subclasses != null ? cls.subclasses : []).map((c) =>
-      ast.cls(c, cls.name)
-    )
+      ast.cls(c, cls.name),
+    ),
   );
 };
 
@@ -149,10 +149,10 @@ export function writeTypescriptClasses(schema: string, classesPath: string) {
           `${field.annotations.includes("Const") ? "readonly " : ""}${
             field.name
           }${field.annotations.includes("Transient") ? "?" : ""}: ${toTs(
-            field.type
+            field.type,
           )}${field.annotations.includes("Transient") ? " = null" : ""}${
             field.annotations ? ` /* ${field.annotations} */` : ""
-          }`
+          }`,
       );
     const fieldsList = Array.from(fields)
       .map((field) => {
@@ -166,8 +166,8 @@ export function writeTypescriptClasses(schema: string, classesPath: string) {
           `${field.annotations.includes("Const") ? "readonly " : ""}${
             field.name
           }${field.annotations.includes("Transient") ? "?" : ""}: ${toTs(
-            field.type
-          )}${field.annotations ? ` /* ${field.annotations} */` : ""}`
+            field.type,
+          )}${field.annotations ? ` /* ${field.annotations} */` : ""}`,
       );
     const paramsList = Array.from(params)
       .map((field) => {
@@ -299,10 +299,10 @@ export function writeClassesMetas(schema: string, outfile: string) {
       tuple(cls.name, {
         ...cls,
         fields: Object.fromEntries(
-          meta.allFields(cls).map((field) => tuple(field.name, field))
+          meta.allFields(cls).map((field) => tuple(field.name, field)),
         ),
-      })
-    )
+      }),
+    ),
   );
   const metaCode = `
   import {Class, Field, Type, MetaRuntime} from "@/wab/shared/model/model-meta";
@@ -322,11 +322,11 @@ export function writeClassesMetas(schema: string, outfile: string) {
             type: ${makeType(field.type)},
             annotations: ${JSON.stringify(field.annotations)}
           })
-        `
+        `,
           )
           .join(", ")}
       ]
-    })`
+    })`,
       )
       .join(", ")}
   ];
@@ -343,6 +343,6 @@ function prettierFile(file: string) {
   return ChildProc.spawnSync(
     "pre-commit",
     simpleWords(`run prettier --files ${file}`),
-    { stdio: "inherit" }
+    { stdio: "inherit" },
   );
 }

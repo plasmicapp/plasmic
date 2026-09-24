@@ -20,7 +20,7 @@ export async function putClip(req: Request, res: Response) {
       Bucket: CLIP_BUCKET,
       Key: clipId,
       Body: req.body.content,
-    })
+    }),
   );
   req.analytics.track("Figma put clip", {
     size: req.body.content.length,
@@ -35,11 +35,11 @@ export async function getClip(req: Request, res: Response) {
     new GetObjectCommand({
       Bucket: CLIP_BUCKET,
       Key: clipId,
-    })
+    }),
   );
   const content = await ensure(
     result.Body,
-    "Unexpected empty clip body"
+    "Unexpected empty clip body",
   ).transformToString("utf8");
   req.analytics.track("Figma get clip", {
     size: content.length,

@@ -68,7 +68,7 @@ export class HttpFetcher {
       body?: string | object;
       params?: Record<string, string>;
       headers?: Record<string, string>;
-    }
+    },
   ) {
     const url = this.makeUrl(opts.path, opts.params).toString();
     const headers = this.makeHeaders(opts.headers);
@@ -96,8 +96,8 @@ export class HttpFetcher {
     const fixedPath = isNil(path)
       ? ""
       : path.startsWith("/")
-      ? path.slice(1)
-      : path;
+        ? path.slice(1)
+        : path;
     const url = new URL(this.baseUrl + fixedPath);
 
     const searchParams = new URLSearchParams(params);
@@ -128,7 +128,7 @@ async function processResult(res: AxiosResponse<string>) {
       isString(processedResponse) || !isEmpty(processedResponse)
         ? processedResponse
         : undefined,
-      statusCode
+      statusCode,
     );
   }
   return {

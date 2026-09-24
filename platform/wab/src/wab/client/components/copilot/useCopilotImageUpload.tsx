@@ -38,8 +38,8 @@ export function useCopilotImageUpload({
           (err) =>
             onUploadError?.(
               file,
-              err instanceof Error ? err : new Error(String(err))
-            )
+              err instanceof Error ? err : new Error(String(err)),
+            ),
         )
         .finally(() => setPendingReads((n) => n - 1));
     }

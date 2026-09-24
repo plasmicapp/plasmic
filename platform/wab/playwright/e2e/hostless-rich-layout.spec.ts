@@ -19,7 +19,7 @@ async function showMoreInSidebarModal(rightPanel: any) {
 async function chooseDataPlasmicProp(
   rightPanel: RightPanel,
   prop: string,
-  value: string
+  value: string,
 ) {
   await rightPanel.frame.locator(`[data-plasmic-prop="${prop}"]`).click();
 
@@ -27,7 +27,7 @@ async function chooseDataPlasmicProp(
     .locator('[data-plasmic-role="overlay"]')
     .waitFor({ state: "visible", timeout: 5000 });
   const option = rightPanel.frame.locator(
-    `[data-plasmic-role="overlay"] [data-key="'${value}'"]`
+    `[data-plasmic-role="overlay"] [data-key="'${value}'"]`,
   );
   await option.click();
 
@@ -50,7 +50,7 @@ async function checkLightFgColors(page?: Page) {
     .waitFor({ state: "visible", timeout: 5000 });
   const menuItem = element.locator(".ant-menu-item a").first();
   const color = await menuItem.evaluate(
-    (el: Element) => getComputedStyle(el).color
+    (el: Element) => getComputedStyle(el).color,
   );
 
   const validColors = [
@@ -69,7 +69,7 @@ async function checkDarkFgColors(page?: Page) {
     .waitFor({ state: "visible", timeout: 5000 });
   const menuItem = element.locator(".ant-menu-item a").first();
   const color = await menuItem.evaluate(
-    (el: Element) => getComputedStyle(el).color
+    (el: Element) => getComputedStyle(el).color,
   );
   expect(color).toBe("rgba(0, 0, 0, 0.65)");
 }
@@ -79,7 +79,7 @@ async function checkActiveNavDarkBgPrimary(page?: Page) {
   const activeItem = element.locator(".ant-menu-item").last();
   await activeItem.waitFor({ state: "visible", timeout: 5000 });
   const bgColor = await activeItem.evaluate(
-    (el: Element) => getComputedStyle(el).backgroundColor
+    (el: Element) => getComputedStyle(el).backgroundColor,
   );
   const validBgColors = ["rgb(22, 104, 220)", "rgba(0, 0, 0, 0.15)"];
   expect(validBgColors).toContain(bgColor);
@@ -90,10 +90,10 @@ async function checkSubmenus(page?: Page) {
   await expect(
     element
       .locator(".ant-menu-submenu-open")
-      .filter({ hasText: "Should be expanded" })
+      .filter({ hasText: "Should be expanded" }),
   ).toBeVisible();
   await expect(
-    element.locator(".ant-menu-submenu-open").filter({ hasText: "Nested" })
+    element.locator(".ant-menu-submenu-open").filter({ hasText: "Nested" }),
   ).toBeVisible();
 }
 
@@ -102,7 +102,7 @@ async function checkSiderStyles(page?: Page) {
   const sider = element.locator(".ant-layout-sider");
   await sider.waitFor({ state: "visible", timeout: 5000 });
   const bgColor = await sider.evaluate(
-    (el: Element) => getComputedStyle(el).backgroundColor
+    (el: Element) => getComputedStyle(el).backgroundColor,
   );
   expect(bgColor).toBe("rgb(22, 119, 255)");
   await checkLightFgColors(page);
@@ -138,7 +138,7 @@ test.describe("hostless-rich-components", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -167,12 +167,12 @@ test.describe("hostless-rich-components", () => {
     const defaultElt = maybeSelectedElt(page);
     await expect(defaultElt.locator(".ant-layout-header")).toHaveCSS(
       "background-color",
-      "rgb(255, 255, 255)"
+      "rgb(255, 255, 255)",
     );
     await checkDarkFgColors(page);
 
     const addBtn = models.studio.rightPanel.frame.locator(
-      '[data-test-id="navMenuItems-add-btn"]'
+      '[data-test-id="navMenuItems-add-btn"]',
     );
     await addBtn.click();
 
@@ -204,7 +204,7 @@ test.describe("hostless-rich-components", () => {
     const darkElt = maybeSelectedElt(page);
     await expect(darkElt.locator(".ant-layout-header")).toHaveCSS(
       "background-color",
-      "rgb(1, 21, 40)"
+      "rgb(1, 21, 40)",
     );
     await checkLightFgColors(page);
 
@@ -216,7 +216,7 @@ test.describe("hostless-rich-components", () => {
     const customElt = maybeSelectedElt(page);
     await expect(customElt.locator(".ant-layout-header")).toHaveCSS(
       "background-color",
-      "rgb(230, 238, 244)"
+      "rgb(230, 238, 244)",
     );
     await checkDarkFgColors(page);
     await models.studio.frame
@@ -228,7 +228,7 @@ test.describe("hostless-rich-components", () => {
     const primaryElt = maybeSelectedElt(page);
     await expect(primaryElt.locator(".ant-layout-header")).toHaveCSS(
       "background-color",
-      "rgb(22, 119, 255)"
+      "rgb(22, 119, 255)",
     );
     await checkLightFgColors(page);
     await checkActiveNavDarkBgPrimary(page);
@@ -243,7 +243,7 @@ test.describe("hostless-rich-components", () => {
     await checkSiderStyles(page);
 
     const addNavBtn1 = models.studio.rightPanel.frame.locator(
-      '[data-test-id="navMenuItems-add-btn"]'
+      '[data-test-id="navMenuItems-add-btn"]',
     );
     await addNavBtn1.click();
     await page.waitForTimeout(200);
@@ -252,7 +252,7 @@ test.describe("hostless-rich-components", () => {
 
     await models.studio.rightPanel.setDataPlasmicProp(
       "name",
-      "Should be closed"
+      "Should be closed",
     );
     await showMoreInSidebarModal(models.studio.rightPanel);
     await page.waitForTimeout(200);
@@ -260,7 +260,7 @@ test.describe("hostless-rich-components", () => {
     await page.waitForTimeout(300);
 
     const addNestedBtn1 = models.studio.rightPanel.frame.locator(
-      '[data-test-id="routes-add-btn"]'
+      '[data-test-id="routes-add-btn"]',
     );
     await addNestedBtn1.click();
     await page.waitForTimeout(400);
@@ -276,7 +276,7 @@ test.describe("hostless-rich-components", () => {
     await page.waitForTimeout(200);
 
     const addNavBtn2 = models.studio.rightPanel.frame.locator(
-      '[data-test-id="navMenuItems-add-btn"]'
+      '[data-test-id="navMenuItems-add-btn"]',
     );
     await addNavBtn2.click();
     await page.waitForTimeout(200);
@@ -285,7 +285,7 @@ test.describe("hostless-rich-components", () => {
 
     await models.studio.rightPanel.setDataPlasmicProp(
       "name",
-      "Should be expanded"
+      "Should be expanded",
     );
 
     await showMoreInSidebarModal(models.studio.rightPanel);
@@ -294,7 +294,7 @@ test.describe("hostless-rich-components", () => {
     await page.waitForTimeout(300);
 
     const addNestedBtn2 = models.studio.rightPanel.frame.locator(
-      '[data-test-id="routes-add-btn"]'
+      '[data-test-id="routes-add-btn"]',
     );
     await addNestedBtn2.click();
     await page.waitForTimeout(400);
@@ -318,7 +318,7 @@ test.describe("hostless-rich-components", () => {
       await checkSubmenus(page);
 
       const collapsedButton = liveFrame.locator(
-        ".ant-pro-sider-collapsed-button"
+        ".ant-pro-sider-collapsed-button",
       );
       await collapsedButton.waitFor({ state: "visible", timeout: 5000 });
       await collapsedButton.click();
@@ -326,7 +326,7 @@ test.describe("hostless-rich-components", () => {
 
       const sider = liveFrame.locator(".ant-layout-sider");
       const width1 = await sider.evaluate(
-        (el: Element) => el.getBoundingClientRect().width
+        (el: Element) => el.getBoundingClientRect().width,
       );
       expect(width1).toBeLessThan(100);
 
@@ -334,7 +334,7 @@ test.describe("hostless-rich-components", () => {
       await page.waitForTimeout(300);
 
       const width2 = await sider.evaluate(
-        (el: Element) => el.getBoundingClientRect().width
+        (el: Element) => el.getBoundingClientRect().width,
       );
       expect(width2).toBeGreaterThan(100);
     });

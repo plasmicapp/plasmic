@@ -23,7 +23,7 @@ describe("makeGraphqlFetcher", () => {
       makeGraphqlFetcher({
         source: "graphql",
         settings: { baseUrl: ssrf!.externalGoodServer.url },
-      } as GraphqlDataSource).query({ query: "{ __typename }" })
+      } as GraphqlDataSource).query({ query: "{ __typename }" }),
     ).resolves.toMatchObject({
       data: {
         response: { result: "Hello, world!" },
@@ -38,7 +38,7 @@ describe("makeGraphqlFetcher", () => {
       makeGraphqlFetcher({
         source: "graphql",
         settings: { baseUrl: ssrf!.internalServer.url },
-      } as GraphqlDataSource).query({ query: "{ __typename }" })
+      } as GraphqlDataSource).query({ query: "{ __typename }" }),
     ).rejects.toThrow(DataSourceError);
     expect(ssrf!.internalServer.requestCount()).toBe(0);
   });
@@ -48,7 +48,7 @@ describe("makeGraphqlFetcher", () => {
       makeGraphqlFetcher({
         source: "graphql",
         settings: { baseUrl: ssrf!.externalBadServer.url },
-      } as GraphqlDataSource).query({ query: "{ __typename }" })
+      } as GraphqlDataSource).query({ query: "{ __typename }" }),
     ).rejects.toThrow(DataSourceError);
     expect(ssrf!.externalBadServer.requestCount()).toBe(1);
     expect(ssrf!.internalServer.requestCount()).toBe(0);

@@ -24,7 +24,7 @@ export type BoundingBoxHighlighterProps = DefaultBoundingBoxHighlighterProps;
 
 function BoundingBoxHighlighter_(
   props: BoundingBoxHighlighterProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicBoundingBoxHighlighter to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

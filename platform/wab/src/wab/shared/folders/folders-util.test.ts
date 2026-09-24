@@ -192,7 +192,7 @@ describe("getAncestorFolderPaths", () => {
 describe("renameFolderLeaf", () => {
   it("should replace the last segment in a folder path", () => {
     expect(renameFolderLeaf("Header / Title", "Heading")).toEqual(
-      "Header / Heading"
+      "Header / Heading",
     );
   });
 
@@ -206,7 +206,7 @@ describe("renameFolderLeaf", () => {
 
   it("should handle leading/trailing whitespace in segments", () => {
     expect(renameFolderLeaf(" Header / Title ", "Heading")).toEqual(
-      "Header / Heading"
+      "Header / Heading",
     );
   });
 
@@ -214,7 +214,7 @@ describe("renameFolderLeaf", () => {
     expect(renameFolderLeaf(" / Title", "Heading")).toEqual("Heading");
     expect(renameFolderLeaf(" // / Title", "Heading")).toEqual("Heading");
     expect(renameFolderLeaf(" // / World / Title /", "Heading")).toEqual(
-      "World / Heading"
+      "World / Heading",
     );
   });
 

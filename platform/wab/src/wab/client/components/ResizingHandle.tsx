@@ -26,7 +26,7 @@ export const ResizingHandle = observer(function ResizingHandle({
 }: {
   onDrag: (
     move: { deltaY?: number; deltaX?: number },
-    handlePosition: HandlePosition
+    handlePosition: HandlePosition,
   ) => void;
   onStopDragging?: () => void;
   onStartDragging?: () => void;
@@ -55,7 +55,7 @@ export const ResizingHandle = observer(function ResizingHandle({
           return onDrag({ deltaX: -data.deltaX / zoom }, position);
       }
     },
-    [onDrag, position]
+    [onDrag, position],
   );
 
   const [offset, setOffset] = useState<{

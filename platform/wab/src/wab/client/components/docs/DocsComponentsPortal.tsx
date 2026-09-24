@@ -12,7 +12,7 @@ import * as React from "react";
 type DocsComponentsPortalProps = DefaultDocsComponentsPortalProps;
 
 const DocsComponentsPortal = observer(function DocsComponentsPortal(
-  props: DocsComponentsPortalProps
+  props: DocsComponentsPortalProps,
 ) {
   const docsCtx = useDocsPortalCtx();
   const component = docsCtx.tryGetFocusedComponent();

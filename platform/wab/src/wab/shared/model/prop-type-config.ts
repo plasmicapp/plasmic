@@ -87,21 +87,21 @@ export type PropTypeData = {
 };
 
 export const COMPONENT_PARAM_TYPES: PropTypeData[] = Object.entries(
-  COMPONENT_PARAM_TYPES_CONFIG
+  COMPONENT_PARAM_TYPES_CONFIG,
 ).map(([value, data]) => ({
   value: value as ComponentParamTypeOptions,
   ...data,
 }));
 
 export function getComponentParamTypeOption(
-  paramType: string
+  paramType: string,
 ): PropTypeData | undefined {
   return COMPONENT_PARAM_TYPES.find((opt) => opt.value === paramType);
 }
 
 export function getPropTypeDataForType(type: Type): PropTypeData | undefined {
   return getComponentParamTypeOption(
-    isKnownFunctionType(type) ? "eventHandler" : type.name
+    isKnownFunctionType(type) ? "eventHandler" : type.name,
   );
 }
 
@@ -109,8 +109,9 @@ export function getPropTypeDataForType(type: Type): PropTypeData | undefined {
  * A choice option is either a plain value or a `{ label, value }` object;
  * returns the plain value.
  */
-export const getChoiceValue = (item: ChoiceValue | ChoiceObject): ChoiceValue =>
-  typeof item === "object" ? item.value : item;
+export const getChoiceValue = (
+  item: ChoiceValue | ChoiceObject,
+): ChoiceValue => (typeof item === "object" ? item.value : item);
 
 /**
  * The kinds allowed as arguments of an eventHandler's function signature
@@ -121,13 +122,13 @@ export type FuncArgTypeKind = {
   }
     ? never
     : (typeof COMPONENT_PARAM_TYPES_CONFIG)[K] extends { jsonType: false }
-    ? never
-    : K;
+      ? never
+      : K;
 }[ComponentParamTypeOptions];
 
 export const FUNC_ARG_TYPES: readonly PropTypeData[] =
   COMPONENT_PARAM_TYPES.filter(
-    (data) => data.jsonType !== false && !data.exprTypeGuard
+    (data) => data.jsonType !== false && !data.exprTypeGuard,
   );
 
 function mkWabTypeForFuncArgKind(kind: FuncArgTypeKind) {
@@ -149,7 +150,7 @@ export function mkWabTypeForPropKind(
   opts?: {
     options?: ChoiceOptions;
     funcArgs?: { name: string; type: FuncArgTypeKind }[];
-  }
+  },
 ) {
   switch (kind) {
     case "choice":
@@ -159,8 +160,8 @@ export function mkWabTypeForPropKind(
     case "eventHandler":
       return typeFactory.func(
         ...(opts?.funcArgs ?? []).map((arg) =>
-          typeFactory.arg(arg.name, mkWabTypeForFuncArgKind(arg.type))
-        )
+          typeFactory.arg(arg.name, mkWabTypeForFuncArgKind(arg.type)),
+        ),
       );
     default:
       return typeFactory[kind]();

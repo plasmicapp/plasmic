@@ -42,7 +42,7 @@ function extractReferencedVariable(value: string) {
 }
 function makeClientTokenResolver(
   resolver: TokenResolver,
-  clientCtx: StudioCtx | ViewCtx | undefined
+  clientCtx: StudioCtx | ViewCtx | undefined,
 ): TokenValueResolver {
   const studioCtx =
     clientCtx instanceof ViewCtx ? clientCtx.studioCtx : clientCtx;
@@ -67,7 +67,7 @@ function makeClientTokenResolver(
   };
   return (
     token: FinalToken<StyleToken>,
-    vsh?: VariantedStylesHelper
+    vsh?: VariantedStylesHelper,
   ): StyleTokenValue => {
     const { value, token: resolvedToken } = resolver(token, vsh);
     const refVarName = extractReferencedVariable(value);
@@ -87,7 +87,7 @@ function makeClientTokenResolver(
 
 function getCssVariableValue(
   elt: HTMLElement,
-  name: string
+  name: string,
 ): StyleTokenValue | undefined {
   const win = elt.ownerDocument.defaultView;
   if (!win) {

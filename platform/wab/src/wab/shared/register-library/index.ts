@@ -53,7 +53,8 @@ export function registerLibrary(lib: any, meta: CodeLibraryMeta) {
   // Check for duplicates
   if (
     root.__PlasmicLibraryRegistry.some(
-      (r: CodeLibraryRegistration) => r.lib === lib && r.meta.name === meta.name
+      (r: CodeLibraryRegistration) =>
+        r.lib === lib && r.meta.name === meta.name,
     )
   ) {
     return;

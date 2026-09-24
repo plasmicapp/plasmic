@@ -47,7 +47,7 @@ export function ensureJsIdentifier(str: string) {
 // One cache per distinct opts behavior, so the input string is the only key.
 const toJsIdentifierCaches = Array.from(
   { length: 6 },
-  () => new Map<string, JsIdentifier>()
+  () => new Map<string, JsIdentifier>(),
 );
 export function toJsIdentifier(
   ...args: Parameters<typeof toJsIdentifier_>
@@ -57,8 +57,8 @@ export function toJsIdentifier(
     opts?.capitalizeFirst === true
       ? 1
       : opts?.capitalizeFirst === false
-      ? 2
-      : 0;
+        ? 2
+        : 0;
   const cache =
     toJsIdentifierCaches[capitalize * 2 + (opts?.camelCase === false ? 1 : 0)];
   let res = cache.get(original);
@@ -84,7 +84,7 @@ function toJsIdentifier_(
   opts?: {
     capitalizeFirst?: boolean;
     camelCase?: boolean;
-  }
+  },
 ): JsIdentifier {
   let str = original;
 
@@ -110,14 +110,14 @@ function toJsIdentifier_(
 
   assert(
     isValidJsIdentifier(str),
-    `Couldn't transform "${original}" into a valid JS identifier.`
+    `Couldn't transform "${original}" into a valid JS identifier.`,
   );
 
   return str;
 }
 
 export function sortedDict(
-  collection: { [key: string]: string } | [string, string][]
+  collection: { [key: string]: string } | [string, string][],
 ): string {
   const pairs = Array.isArray(collection)
     ? collection
@@ -145,7 +145,7 @@ export function paramToVarName(
   param: DeepReadonly<Param>,
   opts?: {
     useControlledProp?: boolean;
-  }
+  },
 ) {
   const paramName = param.variable.name;
   if (isCodeComponent(component)) {

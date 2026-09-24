@@ -1,31 +1,31 @@
-import { ensure } from "@/wab/shared/common";
+import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { Bundler } from "@/wab/shared/bundler";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { isKnownNamedState, State } from "@/wab/shared/model/classes";
-import { renameObjectInExpr } from "@/wab/shared/refactoring";
+import { ensure } from "@/wab/shared/common";
 import { getStateVarName } from "@/wab/shared/core/states";
 import * as Tpls from "@/wab/shared/core/tpls";
+import { State, isKnownNamedState } from "@/wab/shared/model/classes";
+import { renameObjectInExpr } from "@/wab/shared/refactoring";
 
 function getOldLastPartOfImplicitStateName(state: State) {
   return isKnownNamedState(state.implicitState)
     ? state.implicitState.name
     : toVarName(
-        state.implicitState?.param.variable.name ?? state.param.variable.name
+        state.implicitState?.param.variable.name ?? state.param.variable.name,
       );
 }
 
 function getOldStateVarName(state: State) {
   if (state.tplNode) {
     const dataReps = Tpls.ancestorsUp(state.tplNode).filter(
-      Tpls.isTplRepeated
+      Tpls.isTplRepeated,
     ).length;
     const tplName = toVarName(
-      ensure(state.tplNode.name, "TplNode with public states must be named")
+      ensure(state.tplNode.name, "TplNode with public states must be named"),
     );
     const stateName = toVarName(getOldLastPartOfImplicitStateName(state));
     return `${tplName}${"[]".repeat(dataReps)}.${stateName}`;
@@ -40,7 +40,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   for (const component of site.components) {
@@ -60,7 +60,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "118-refactor-tpltag-state-names"
+    "118-refactor-tpltag-state-names",
   );
   Object.assign(bundle, newBundle);
 };

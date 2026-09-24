@@ -32,7 +32,7 @@ export function CmsEntryHistory(props: {
   const { databaseId, tableId, rowId } = props;
   const revisions = useCmsRowHistory(rowId);
   const { data: userById } = useUsersMap(
-    (revisions ?? []).map((rev) => rev.createdById)
+    (revisions ?? []).map((rev) => rev.createdById),
   );
 
   if (!revisions) {
@@ -67,7 +67,7 @@ export function CmsEntryHistory(props: {
                     >
                       <div>
                         {formatDateMediumTimeShort(
-                          new Date(revision.createdAt)
+                          new Date(revision.createdAt),
                         )}
                         <div>
                           {revision.isPublished ? (
@@ -131,7 +131,7 @@ export function CmsEntryHistory(props: {
 
 function EntryRevisionView() {
   const { databaseId, tableId, rowId, revisionId } = useMatchedRoute(
-    APP_ROUTES.cmsEntryRevision
+    APP_ROUTES.cmsEntryRevision,
   )!.pathParams;
 
   const database = useCmsDatabase(databaseId);
@@ -174,7 +174,7 @@ function EntryRevisionView() {
                   content: "Restoring data...",
                   key: "update-message",
                   duration: undefined,
-                })
+                }),
               );
               await api.updateCmsRow(rowId, {
                 draftData: revision.data,
@@ -187,11 +187,11 @@ function EntryRevisionView() {
                 message.success({
                   content: "Revision restored!",
                   key: "update-message",
-                })
+                }),
               );
 
               history.push(
-                APP_ROUTES.cmsEntry.fill({ databaseId, tableId, rowId })
+                APP_ROUTES.cmsEntry.fill({ databaseId, tableId, rowId }),
               );
             }}
           >
@@ -202,7 +202,7 @@ function EntryRevisionView() {
           table,
           database,
           database.extraData.locales,
-          true
+          true,
         )}
       </Form>
     </div>

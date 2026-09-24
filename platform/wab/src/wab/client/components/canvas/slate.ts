@@ -66,7 +66,7 @@ export function mkTplTagElement(
   uuid: string,
   tag: TagName,
   attributes: Record<string, string>,
-  children: slate.Descendant[]
+  children: slate.Descendant[],
 ): slate.Element {
   return {
     type: "TplTag",
@@ -88,21 +88,21 @@ export function resetNodes(
     nodes?: slate.Node | slate.Node[];
     at?: slate.Location;
   } = {},
-  libs: SlateLibs = { slate, slateReact }
+  libs: SlateLibs = { slate, slateReact },
 ): void {
   const { Editor, Node, Point, Transforms } = libs.slate;
 
   const children = [...editor.children];
 
   children.forEach((node) =>
-    editor.apply({ type: "remove_node", path: [0], node })
+    editor.apply({ type: "remove_node", path: [0], node }),
   );
 
   if (options.nodes) {
     const nodes = Node.isNode(options.nodes) ? [options.nodes] : options.nodes;
 
     nodes.forEach((node, i) =>
-      editor.apply({ type: "insert_node", path: [i], node: node })
+      editor.apply({ type: "insert_node", path: [i], node: node }),
     );
   }
 
@@ -127,7 +127,7 @@ export function resetNodes(
  */
 export function marksForToolbar(
   editor: slate.Editor,
-  libs: SlateLibs = { slate, slateReact }
+  libs: SlateLibs = { slate, slateReact },
 ): Omit<slate.Text, "text"> | null {
   const { Editor, Node, Range } = libs.slate;
 
@@ -159,7 +159,7 @@ export function marksForToolbar(
 export function focusSlateEditor(
   editor: slate.Editor,
   select: "all" | "end",
-  libs: SlateLibs = { slate, slateReact }
+  libs: SlateLibs = { slate, slateReact },
 ): void {
   const { Editor, Transforms } = libs.slate;
   const { ReactEditor } = libs.slateReact;
@@ -169,6 +169,6 @@ export function focusSlateEditor(
   const end = Editor.end(editor, []);
   Transforms.select(
     editor,
-    select === "all" ? { anchor: Editor.start(editor, []), focus: end } : end
+    select === "all" ? { anchor: Editor.start(editor, []), focus: end } : end,
   );
 }

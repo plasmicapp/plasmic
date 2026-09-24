@@ -77,7 +77,7 @@ const VariantBadge = observer(function VariantBadge_({
                   variantLabelRef.current?.setEditing(true);
                 }
               },
-            })
+            }),
           );
         },
       }}

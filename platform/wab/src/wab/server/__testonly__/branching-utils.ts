@@ -21,7 +21,7 @@ class Helpers {
   constructor(
     public db: DbMgr,
     public projectId: ProjectId,
-    public branchId?: BranchId
+    public branchId?: BranchId,
   ) {}
   async save(site: Site, db = this.db) {
     const commonArgs = {
@@ -32,7 +32,7 @@ class Helpers {
     const rev = await db.saveProjectRev({
       ...commonArgs,
       data: JSON.stringify(
-        bundler.bundle(site, this.projectId, await getLastBundleVersion())
+        bundler.bundle(site, this.projectId, await getLastBundleVersion()),
       ),
     });
     await db.savePartialRevision({
@@ -51,10 +51,10 @@ export async function withBranch(
     ...args: [
       branch: Branch,
       helpers: [mainHelpers: Helpers, branchHelpers: Helpers],
-      ...rest: DbTestArgs
+      ...rest: DbTestArgs,
     ]
   ) => Promise<void>,
-  opts?: { numUsers?: number }
+  opts?: { numUsers?: number },
 ) {
   return withDb(async (...args) => {
     const [_sudo, _users, [db1], project] = args;
@@ -65,7 +65,7 @@ export async function withBranch(
       project.id,
       "0.0.1",
       [],
-      "Initial commit"
+      "Initial commit",
     );
 
     const branch = await db1().createBranch(project.id, {
@@ -82,7 +82,7 @@ export function withTokens(baseSite: Site, tokens: Record<string, number>) {
   for (const [k, v] of Object.entries(tokens)) {
     ensure(
       site.styleTokens.find((t) => t.name === k),
-      ""
+      "",
     ).value = "" + v;
   }
   return site;
@@ -98,7 +98,7 @@ export async function setupMainAndBranch(
     data1?: Record<string, number>;
     data2?: Record<string, number>;
     skipPublishMain?: boolean;
-  }
+  },
 ) {
   const rev = await helpers1.db.getLatestProjectRev(helpers1.projectId);
   const baseSite = readRev(rev);
@@ -114,7 +114,7 @@ export async function setupMainAndBranch(
       helpers1.projectId,
       "1.0.0",
       [],
-      "Main branch commit"
+      "Main branch commit",
     );
   }
 }
@@ -135,12 +135,12 @@ export function basicSite(tokens: Record<string, number> = {}) {
 export function extractTokensPkgVersion(ver: PkgVersion, projectId: ProjectId) {
   const dep = bundler.unbundle(
     JSON.parse(ver.model),
-    ver.id
+    ver.id,
   ) as ProjectDependency;
   return Object.fromEntries(
     dep.site.styleTokens.map((token) =>
-      tuple(token.name, parseInt(token.value))
-    )
+      tuple(token.name, parseInt(token.value)),
+    ),
   );
 }
 
@@ -151,6 +151,6 @@ export function readRev(rev: ProjectRevision): Site {
 export function extractTokensRev(rev: ProjectRevision) {
   const site = readRev(rev);
   return Object.fromEntries(
-    site.styleTokens.map((token) => tuple(token.name, parseInt(token.value)))
+    site.styleTokens.map((token) => tuple(token.name, parseInt(token.value))),
   );
 }

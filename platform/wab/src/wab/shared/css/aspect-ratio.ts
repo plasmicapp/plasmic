@@ -98,7 +98,7 @@ export function parseAspectRatio(value: string): AspectRatioResult {
  * @returns { aspectRatio: string } if valid, {} if invalid
  */
 export function parseAspectRatioFromValueNode(
-  valueNode: Value
+  valueNode: Value,
 ): AspectRatioResult {
   const value = generate(valueNode);
   return parseAspectRatio(value);

@@ -99,7 +99,7 @@ interface TeamPageContentProps extends DefaultTeamPageProps {
 
 function TeamPageContent_(
   props: TeamPageContentProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const appCtx = useAppCtx();
   const { data, onUpdate, ...rest } = props;
@@ -108,7 +108,7 @@ function TeamPageContent_(
 
   const numProjects = data.projects.length;
   const numMembers = members.filter(
-    (member) => !isAdminTeamEmail(member.email, appCtx.appConfig)
+    (member) => !isAdminTeamEmail(member.email, appCtx.appConfig),
   ).length;
 
   React.useEffect(() => {

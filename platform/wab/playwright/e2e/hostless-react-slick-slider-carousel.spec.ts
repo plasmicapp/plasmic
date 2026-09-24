@@ -25,7 +25,7 @@ test.describe("hostless-react-slick slider carousel", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -94,10 +94,10 @@ test.describe("hostless-react-slick slider carousel", () => {
 
     const assertCurrentSlides = async (first: string, second: string) => {
       await expect(
-        sliders.nth(0).locator(".slick-slide.slick-current")
+        sliders.nth(0).locator(".slick-slide.slick-current"),
       ).toHaveAttribute("data-index", first, { timeout: 8000 });
       await expect(
-        sliders.nth(1).locator(".slick-slide.slick-current")
+        sliders.nth(1).locator(".slick-slide.slick-current"),
       ).toHaveAttribute("data-index", second, { timeout: 8000 });
     };
 
@@ -128,7 +128,7 @@ test.describe("hostless-react-slick slider carousel", () => {
 
     await models.studio.leftPanel.insertNode("Text");
     const htmlAttributesSection = models.studio.frame.locator(
-      'text="HTML attributes"'
+      'text="HTML attributes"',
     );
     await page.waitForTimeout(500);
     await htmlAttributesSection.waitFor({ state: "visible", timeout: 5000 });
@@ -140,7 +140,7 @@ test.describe("hostless-react-slick slider carousel", () => {
     await page.waitForTimeout(500);
     const idField = models.studio.rightPanel.frame
       .locator(
-        'div[role="textbox"].templated-string-input[data-slate-editor="true"]'
+        'div[role="textbox"].templated-string-input[data-slate-editor="true"]',
       )
       .nth(2);
 
@@ -156,7 +156,7 @@ test.describe("hostless-react-slick slider carousel", () => {
     await page.waitForTimeout(500);
 
     const textContentLabel = models.studio.rightPanel.frame.locator(
-      `[data-test-id="text-content"] label`
+      `[data-test-id="text-content"] label`,
     );
     await textContentLabel.waitFor({ state: "visible", timeout: 5000 });
     await textContentLabel.evaluate((element) => {
@@ -187,7 +187,7 @@ test.describe("hostless-react-slick slider carousel", () => {
     await assertState(framed, page, "0");
 
     const outlineButton = models.studio.frame.locator(
-      'button[data-test-tabkey="outline"]'
+      'button[data-test-tabkey="outline"]',
     );
     await outlineButton.click();
 
@@ -197,7 +197,7 @@ test.describe("hostless-react-slick slider carousel", () => {
     await sliderInTree.click();
 
     const initialSlideLabel = models.studio.frame.locator(
-      `[data-test-id="prop-editor-row-initialSlide"] label`
+      `[data-test-id="prop-editor-row-initialSlide"] label`,
     );
     await initialSlideLabel.click({ button: "right", force: true });
     await page.waitForTimeout(500);

@@ -16,8 +16,8 @@ export const migrate: BundledMigrationFn = async (bundle) => {
   // get list of default components to find
   const missingDefaultComponents = new Set(
     ["checkbox", "select", "switch", "button", "text-input"].filter(
-      (type) => !(type in defaultComponents)
-    )
+      (type) => !(type in defaultComponents),
+    ),
   );
   if (missingDefaultComponents.size === 0) {
     return;

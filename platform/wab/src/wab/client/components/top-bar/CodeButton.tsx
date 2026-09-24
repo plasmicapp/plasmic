@@ -31,7 +31,7 @@ export const CodeButton = observer(function CodeButton() {
 
   const [hasClicked, setHasClicked] = useLocalStorage(
     "CodeButton--hasClicked",
-    false
+    false,
   );
 
   const codegenType = useCodegenType();

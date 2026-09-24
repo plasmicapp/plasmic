@@ -37,7 +37,7 @@ test.describe("Antd5 segmented", () => {
     await models.studio.leftPanel.insertNode("Text");
 
     const htmlAttributesSection = models.studio.rightPanel.frame.locator(
-      'text="HTML attributes"'
+      'text="HTML attributes"',
     );
     await htmlAttributesSection.waitFor({ state: "visible", timeout: 5000 });
     await htmlAttributesSection.evaluate((element) => {
@@ -49,7 +49,7 @@ test.describe("Antd5 segmented", () => {
 
     const idField = models.studio.rightPanel.frame
       .locator(
-        'div[role="textbox"].templated-string-input[data-slate-editor="true"]'
+        'div[role="textbox"].templated-string-input[data-slate-editor="true"]',
       )
       .nth(2);
 
@@ -65,7 +65,7 @@ test.describe("Antd5 segmented", () => {
     await page.waitForTimeout(500);
 
     const outlineButton = models.studio.frame.locator(
-      'button[data-test-tabkey="outline"]'
+      'button[data-test-tabkey="outline"]',
     );
     await outlineButton.click();
 
@@ -88,12 +88,12 @@ test.describe("Antd5 segmented", () => {
     await page.waitForTimeout(500);
 
     const textContentLabel = models.studio.rightPanel.frame.locator(
-      `[data-test-id="text-content"] label`
+      `[data-test-id="text-content"] label`,
     );
     await textContentLabel.waitFor({ state: "visible", timeout: 15000 });
 
     const disablePane = models.studio.frame.locator(
-      ".canvas-editor__disable-right-pane"
+      ".canvas-editor__disable-right-pane",
     );
     const count = await disablePane.count();
     if (count > 0) {
@@ -151,7 +151,7 @@ test.describe("Antd5 segmented", () => {
     await models.studio.leftPanel.insertNode("plasmic-antd5-segmented");
 
     const segmentedElement = models.studio.frame.locator(
-      '[data-test-id="prop-editor-row-options"]'
+      '[data-test-id="prop-editor-row-options"]',
     );
     await segmentedElement.waitFor({ state: "visible", timeout: 5000 });
 
@@ -160,22 +160,22 @@ test.describe("Antd5 segmented", () => {
       .click();
 
     const optionsLabel = models.studio.rightPanel.frame.locator(
-      `[data-test-id="prop-editor-row-options"] label`
+      `[data-test-id="prop-editor-row-options"] label`,
     );
     await expect(optionsLabel).toBeVisible();
 
     const slotOptions = models.studio.rightPanel.frame.locator(
-      'text="Slot: Options"'
+      'text="Slot: Options"',
     );
     await expect(slotOptions).not.toBeVisible();
 
     const addNewOption = models.studio.rightPanel.frame.locator(
-      'text="Add new option"'
+      'text="Add new option"',
     );
     await expect(addNewOption).not.toBeVisible();
 
     const deleteCurrentOption = models.studio.rightPanel.frame.locator(
-      'text="Delete current option"'
+      'text="Delete current option"',
     );
     await expect(deleteCurrentOption).not.toBeVisible();
 
@@ -219,12 +219,12 @@ test.describe("Antd5 segmented", () => {
     await models.studio.leftPanel.insertNode("Text");
 
     const textContent = models.studio.rightPanel.frame.locator(
-      '[data-test-id="text-content"]'
+      '[data-test-id="text-content"]',
     );
     await textContent.waitFor({ state: "visible", timeout: 5000 });
 
     const htmlAttributesSection = models.studio.rightPanel.frame.locator(
-      'text="HTML attributes"'
+      'text="HTML attributes"',
     );
     await htmlAttributesSection.waitFor({ state: "visible", timeout: 5000 });
     await htmlAttributesSection.evaluate((element) => {
@@ -236,7 +236,7 @@ test.describe("Antd5 segmented", () => {
 
     const idField = models.studio.rightPanel.frame
       .locator(
-        'div[role="textbox"].templated-string-input[data-slate-editor="true"]'
+        'div[role="textbox"].templated-string-input[data-slate-editor="true"]',
       )
       .nth(2);
 
@@ -272,12 +272,12 @@ test.describe("Antd5 segmented", () => {
     await page.waitForTimeout(500);
 
     const textContentLabel = models.studio.rightPanel.frame.locator(
-      `[data-test-id="text-content"] label`
+      `[data-test-id="text-content"] label`,
     );
     await textContentLabel.waitFor({ state: "visible", timeout: 15000 });
 
     const disablePane = models.studio.frame.locator(
-      ".canvas-editor__disable-right-pane"
+      ".canvas-editor__disable-right-pane",
     );
     const count = await disablePane.count();
     if (count > 0) {

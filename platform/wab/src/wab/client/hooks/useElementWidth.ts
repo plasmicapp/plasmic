@@ -6,7 +6,7 @@ import * as React from "react";
  */
 export function useElementWidth(
   element: HTMLElement | null,
-  { enabled = true }: { enabled?: boolean } = {}
+  { enabled = true }: { enabled?: boolean } = {},
 ): number | undefined {
   const [width, setWidth] = React.useState<number | undefined>(undefined);
   React.useEffect(() => {

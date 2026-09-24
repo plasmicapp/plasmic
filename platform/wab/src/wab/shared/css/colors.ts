@@ -154,7 +154,7 @@ const CSS_NAMED_COLORS = [
 ];
 
 export const CSS_NAMED_COLORS_IDENTIFIERS = CSS_NAMED_COLORS.map(
-  (color) => color.name
+  (color) => color.name,
 );
 
 export function isColorFunction(funcName: string) {

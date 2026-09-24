@@ -74,12 +74,15 @@ body {
 $checkerboard-color: #f0f2f5;
 $checkerboard-size: 16px;
 .__wab_root--checkerboard {
-  background: linear-gradient(45deg, $checkerboard-color 25%, transparent 25%),
+  background:
+    linear-gradient(45deg, $checkerboard-color 25%, transparent 25%),
     linear-gradient(-45deg, $checkerboard-color 25%, transparent 25%),
     linear-gradient(45deg, transparent 75%, $checkerboard-color 75%),
     linear-gradient(-45deg, transparent 75%, $checkerboard-color 75%), white;
   background-size: $checkerboard-size $checkerboard-size;
-  background-position: 0 0, 0 calc($checkerboard-size / 2),
+  background-position:
+    0 0,
+    0 calc($checkerboard-size / 2),
     calc($checkerboard-size / 2) calc(0px - $checkerboard-size / 2),
     calc(0px - $checkerboard-size / 2) 0;
 }
@@ -88,8 +91,12 @@ $checkerboard-size: 16px;
   font-family: "IBM Plex Mono", monospace;
 }
 
-$grab: url(/static/img/openhand.cur) 10 7, default;
-$grabbing: url(/static/img/closedhand.cur) 10 7, default;
+$grab:
+  url(/static/img/openhand.cur) 10 7,
+  default;
+$grabbing:
+  url(/static/img/closedhand.cur) 10 7,
+  default;
 
 .panning-grabbable * {
   cursor: $grab !important;
@@ -111,7 +118,8 @@ $placeholder-hue: black;
 // The use of two layers of translucent color is so that if
 // we're on a white background, a darkening shade will appear.
 @mixin placeholder-shade($size) {
-  box-shadow: inset 0 0 0 $size rgba(0, 0, 0, 0.1),
+  box-shadow:
+    inset 0 0 0 $size rgba(0, 0, 0, 0.1),
     inset 0 0 0 $size rgba(255, 255, 255, 0.8);
 }
 

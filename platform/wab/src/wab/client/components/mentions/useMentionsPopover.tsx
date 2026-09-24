@@ -124,7 +124,7 @@ export function useMentionsPopover<T>({
       onPick(item);
       onClose();
     },
-    [onPick, onClose]
+    [onPick, onClose],
   );
 
   const onKeyHandler = useCallback(
@@ -143,7 +143,7 @@ export function useMentionsPopover<T>({
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
           setHighlightIndex(
-            (prev) => (prev - 1 + suggestions.length) % suggestions.length
+            (prev) => (prev - 1 + suggestions.length) % suggestions.length,
           );
         } else if (e.key === "Enter" || e.key === "Tab") {
           e.preventDefault();
@@ -151,7 +151,7 @@ export function useMentionsPopover<T>({
         }
       }
     },
-    [suggestions, handleSelect, highlightIndex, mentionActive, onClose]
+    [suggestions, handleSelect, highlightIndex, mentionActive, onClose],
   );
 
   const popoverContent =

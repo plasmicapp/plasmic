@@ -19,7 +19,7 @@ export function isBorderProp(key: string): key is BorderProps {
 
 export function parseBorderShorthand(
   property: BorderProps,
-  valueNode: Value
+  valueNode: Value,
 ): {
   borderTopStyle?: string;
   borderBottomStyle?: string;

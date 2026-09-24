@@ -1,6 +1,6 @@
+import { AnyArena, getArenaFrames } from "@/wab/shared/Arenas";
 import { restrictBetweenInclusive } from "@/wab/shared/common";
 import { Box, Pt, Transformable } from "@/wab/shared/geom";
-import { AnyArena, getArenaFrames } from "@/wab/shared/Arenas";
 import { equalsComparer, getter, setter } from "@/wab/shared/mobx-util";
 import debounce from "lodash/debounce";
 import { action, computed, observable, reaction, runInAction } from "mobx";
@@ -61,7 +61,7 @@ export class ViewportCtx {
         {
           name: "ViewportCtx.updateDomCanvasPadding",
           fireImmediately: true,
-        }
+        },
       ),
       // Check enqueuedTransform and arenaSize in same reaction
       // to avoid duplicate setArenaSize calls.
@@ -81,8 +81,8 @@ export class ViewportCtx {
         {
           name: "ViewportCtx.updateDomTransform",
           fireImmediately: true,
-        }
-      )
+        },
+      ),
     );
   }
 
@@ -170,7 +170,7 @@ export class ViewportCtx {
       clientPt: Pt,
       opts?: {
         smooth?: boolean;
-      }
+      },
     ) => {
       const { smooth = false } = opts ?? {};
       const newScale = restrictBetweenInclusive(scale, MIN_SCALE, MAX_SCALE);
@@ -180,7 +180,7 @@ export class ViewportCtx {
         .sub(clientPt)
         .plus(scalerPt.scale(newScale));
       this.enqueueTransform(newScale, newScroll, smooth);
-    }
+    },
   );
 
   /**
@@ -193,12 +193,12 @@ export class ViewportCtx {
         minScale?: number;
         maxScale?: number;
         smooth?: boolean;
-      }
+      },
     ) => {
       const scalerPt = this.visibleScalerBox().midpt();
       const clientPt = this.scalerToClient(scalerPt);
       return this.scaleAtFixedPt(scale, scalerPt, clientPt, opts);
-    }
+    },
   );
 
   /**
@@ -221,7 +221,7 @@ export class ViewportCtx {
             };
         ignoreHeight?: boolean;
         smooth?: boolean;
-      }
+      },
     ) => {
       const {
         minScale = 0,
@@ -231,13 +231,13 @@ export class ViewportCtx {
         smooth = false,
       } = opts ?? {};
       const minLeftPadding =
-        typeof minPadding === "number" ? minPadding : minPadding.left ?? 0;
+        typeof minPadding === "number" ? minPadding : (minPadding.left ?? 0);
       const minRightPadding =
-        typeof minPadding === "number" ? minPadding : minPadding.right ?? 0;
+        typeof minPadding === "number" ? minPadding : (minPadding.right ?? 0);
       const minTopPadding =
-        typeof minPadding === "number" ? minPadding : minPadding.top ?? 0;
+        typeof minPadding === "number" ? minPadding : (minPadding.top ?? 0);
       const minBottomPadding =
-        typeof minPadding === "number" ? minPadding : minPadding.bottom ?? 0;
+        typeof minPadding === "number" ? minPadding : (minPadding.bottom ?? 0);
 
       const clipperBox = this.clipperBox();
       const maxClientWidth =
@@ -250,13 +250,13 @@ export class ViewportCtx {
             ? maxClientWidth / scalerBox.width()
             : Math.min(
                 maxClientWidth / scalerBox.width(),
-                maxClientHeight / scalerBox.height()
+                maxClientHeight / scalerBox.height(),
               ),
           minScale,
-          maxScale
+          maxScale,
         ),
         MIN_SCALE,
-        MAX_SCALE
+        MAX_SCALE,
       );
 
       const leftPadding =
@@ -273,7 +273,7 @@ export class ViewportCtx {
         .moveBy(-leftPadding, -topPadding);
 
       this.enqueueTransform(newScale, newScroll, smooth);
-    }
+    },
   );
 
   /** Size of the arena in scaler units (before CSS transforms). */
@@ -294,7 +294,7 @@ export class ViewportCtx {
         if (getArenaFrames(this.arena()).length > 0) {
           return new Pt(
             clipperBox.width() * this.arenaPaddingToClipperRatio,
-            clipperBox.height() * this.arenaPaddingToClipperRatio
+            clipperBox.height() * this.arenaPaddingToClipperRatio,
           );
         } else {
           return Pt.zero();
@@ -302,8 +302,8 @@ export class ViewportCtx {
       },
       {
         equals: equalsComparer,
-      }
-    )
+      },
+    ),
   );
 
   /** Box of the clipper, relative to the window. */
@@ -322,9 +322,9 @@ export class ViewportCtx {
         topLeftPt.y,
         topLeftPt.x,
         clipperBox.width(),
-        clipperBox.height()
+        clipperBox.height(),
       ).scale(1 / this.scale());
-    })
+    }),
   );
 
   /**

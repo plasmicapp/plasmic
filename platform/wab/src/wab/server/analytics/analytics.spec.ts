@@ -19,7 +19,7 @@ interface AnalyticsTestEvent {
 async function insertEvents(
   events: AnalyticsTestEvent[],
   testSuffix: string,
-  tid: number
+  tid: number,
 ) {
   const values = events.map((event) => {
     const properties = {
@@ -29,7 +29,7 @@ async function insertEvents(
       projectIds: [event.properties.projectIds[0] + testSuffix],
     };
     return `(generateUUIDv4(), '${event.type}', '${JSON.stringify(
-      properties
+      properties,
     )}', '${event.timestamp}', ${tid}, '${event.distinct_id}', '${
       event.timestamp
     }')`;
@@ -56,13 +56,13 @@ async function dropEvents(tid: number) {
 
 async function withEvents(
   events: AnalyticsTestEvent[],
-  func: (suffix: string) => Promise<void>
+  func: (suffix: string) => Promise<void>,
 ) {
   const tid = getTID();
   const suffix = getRandomStr();
 
   console.log(
-    `[analytics.test.ts/${new Date().toISOString()}] Setup analytics test with tid=${tid} suffix=${suffix}`
+    `[analytics.test.ts/${new Date().toISOString()}] Setup analytics test with tid=${tid} suffix=${suffix}`,
   );
 
   await insertEvents(events, suffix, tid);
@@ -249,7 +249,7 @@ describe.skip("Analytics", () => {
             to: "2022-01-02 23:59:59",
             timezone: "UTC",
             period: "day",
-          })
+          }),
         ).toMatchObject([
           expect.objectContaining({
             time: "2022-01-01 00:00:00",
@@ -270,7 +270,7 @@ describe.skip("Analytics", () => {
             to: "2022-03-01",
             timezone: "UTC",
             period: "month",
-          })
+          }),
         ).toMatchObject([
           expect.objectContaining({
             time: "2022-01-01",
@@ -300,7 +300,7 @@ describe.skip("Analytics", () => {
             to: "2022-01-02 23:59:59",
             timezone: "UTC",
             period: "day",
-          })
+          }),
         ).toMatchObject([
           expect.objectContaining({
             time: "2022-01-01 00:00:00",
@@ -322,7 +322,7 @@ describe.skip("Analytics", () => {
             to: "2022-03-01",
             timezone: "UTC",
             period: "month",
-          })
+          }),
         ).toMatchObject([
           expect.objectContaining({
             time: "2022-01-01",
@@ -349,7 +349,7 @@ describe.skip("Analytics", () => {
             to: "2022-02-01",
             timezone: "UTC",
             period: "month",
-          })
+          }),
         ).toMatchObject([
           expect.objectContaining({
             time: "2021-12-01",
@@ -380,7 +380,7 @@ describe.skip("Analytics", () => {
             timezone: "UTC",
             period: "day",
             splitId: "split",
-          })
+          }),
         ).toMatchObject({
           normal: [
             expect.objectContaining({
@@ -417,7 +417,7 @@ describe.skip("Analytics", () => {
             timezone: "UTC",
             period: "month",
             splitId: "split",
-          })
+          }),
         ).toMatchObject({
           normal: [
             expect.objectContaining({
@@ -461,7 +461,7 @@ describe.skip("Analytics", () => {
             to: "2022-01-02 23:59:59",
             timezone: "America/Bahia",
             period: "day",
-          })
+          }),
         ).toMatchObject([
           expect.objectContaining({
             time: "2022-01-01 00:00:00",
@@ -482,7 +482,7 @@ describe.skip("Analytics", () => {
             to: "2022-01-03 23:59:59",
             timezone: "Pacific/Auckland",
             period: "day",
-          })
+          }),
         ).toMatchObject([
           expect.objectContaining({
             time: "2022-01-01 00:00:00",
@@ -514,7 +514,7 @@ describe.skip("Analytics", () => {
             to: "2022-01-01 23:59:59",
             timezone: "UTC",
             period: "day",
-          })
+          }),
         ).toMatchObject([
           {
             time: "2022-01-01 00:00:00",
@@ -532,7 +532,7 @@ describe.skip("Analytics", () => {
             to: "2022-01-02 23:59:59",
             timezone: "UTC",
             period: "day",
-          })
+          }),
         ).toMatchObject([
           {
             time: "2022-01-02 00:00:00",
@@ -550,7 +550,7 @@ describe.skip("Analytics", () => {
             to: "2022-01-03 23:59:59",
             timezone: "UTC",
             period: "day",
-          })
+          }),
         ).toMatchObject([
           {
             time: "2022-01-03 00:00:00",
@@ -568,7 +568,7 @@ describe.skip("Analytics", () => {
             to: "2022-01-04 23:59:59",
             timezone: "UTC",
             period: "day",
-          })
+          }),
         ).toMatchObject([
           {
             time: "2022-01-04 00:00:00",
@@ -586,7 +586,7 @@ describe.skip("Analytics", () => {
             to: "2022-01-05 23:59:59",
             timezone: "UTC",
             period: "day",
-          })
+          }),
         ).toMatchObject([
           {
             time: "2022-01-05 00:00:00",
@@ -604,7 +604,7 @@ describe.skip("Analytics", () => {
             to: "2022-02-05",
             timezone: "UTC",
             period: "month",
-          })
+          }),
         ).toMatchObject([
           {
             time: "2022-01-01",
@@ -632,7 +632,7 @@ describe.skip("Analytics", () => {
             timezone: "UTC",
             period: "month",
             splitId: "split",
-          })
+          }),
         ).toMatchObject({
           normal: [
             {
@@ -674,7 +674,7 @@ describe.skip("Analytics", () => {
             to: "2022-01-01 23:59:59",
             timezone: "UTC",
             period: "day",
-          })
+          }),
         ).rejects.toThrow("Unsupported operation");
       }));
   });
@@ -690,7 +690,7 @@ describe.skip("Analytics", () => {
             to: "2022-01-05 23:59:59",
             timezone: "UTC",
             period: "day",
-          })
+          }),
         ).toMatchObject([
           expect.objectContaining({
             time: "2022-01-01 00:00:00",
@@ -729,7 +729,7 @@ describe.skip("Analytics", () => {
             to: "2022-01-01 23:59:59",
             timezone: "UTC",
             period: "day",
-          })
+          }),
         ).rejects.toThrow("Unsupported operation");
       }));
   });

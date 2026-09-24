@@ -14,7 +14,7 @@ test.describe("Active Screen Variants", () => {
     // The dep project's screen variant group is active
     // This test asserts that the canvas and live preview (codegen) are both able to use the active screen variant group
     projectId = await apiClient.setupProjectFromTemplate(
-      "active-screen-variant-group"
+      "active-screen-variant-group",
     );
     await goToProject(page, `/projects/${projectId}`);
   });
@@ -23,7 +23,7 @@ test.describe("Active Screen Variants", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -35,7 +35,7 @@ test.describe("Active Screen Variants", () => {
       await expect(frame.getByText(DESKTOP_TEXT)).toBeVisible();
       await expect(frame.getByText(DESKTOP_TEXT)).toHaveCSS(
         "color",
-        "rgb(255, 0, 0)"
+        "rgb(255, 0, 0)",
       );
       await expect(frame.getByText(SMALL_SCREEN_TEXT)).not.toBeVisible();
     }
@@ -44,7 +44,7 @@ test.describe("Active Screen Variants", () => {
       await expect(frame.getByText(SMALL_SCREEN_TEXT)).toBeVisible();
       await expect(frame.getByText(SMALL_SCREEN_TEXT)).toHaveCSS(
         "color",
-        "rgb(0, 0, 255)"
+        "rgb(0, 0, 255)",
       );
       await expect(frame.getByText(DESKTOP_TEXT)).not.toBeVisible();
     }
@@ -71,21 +71,21 @@ test.describe("Active Screen Variants", () => {
     // Test desktop width in live preview
     await goToProject(
       page,
-      `/projects/${projectId}/preview/#width=1600&height=900`
+      `/projects/${projectId}/preview/#width=1600&height=900`,
     );
     await assertDesktopText(models.studio.liveFrame);
 
     // Test tablet width in live preview
     await goToProject(
       page,
-      `/projects/${projectId}/preview/#width=1000&height=800`
+      `/projects/${projectId}/preview/#width=1000&height=800`,
     );
     await assertSmallScreenText(models.studio.liveFrame);
 
     // Test mobile width in live preview
     await goToProject(
       page,
-      `/projects/${projectId}/preview/#width=500&height=800`
+      `/projects/${projectId}/preview/#width=500&height=800`,
     );
     await assertSmallScreenText(models.studio.liveFrame);
   });

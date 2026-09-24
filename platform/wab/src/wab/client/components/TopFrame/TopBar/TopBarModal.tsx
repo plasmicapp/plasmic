@@ -7,7 +7,7 @@ export function TopBarModal(
     children?: React.ReactNode;
     onClose?: () => void;
     open?: boolean;
-  }
+  },
 ) {
   const { children, onClose, open = true, ...rest } = props;
   return (

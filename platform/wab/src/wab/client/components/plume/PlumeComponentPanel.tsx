@@ -1,9 +1,10 @@
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { HoverableDisclosure } from "@/wab/client/components/widgets/HoverableDisclosure";
-import { withoutNils } from "@/wab/shared/common";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
-import { allComponentVariants } from "@/wab/shared/core/components";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
+import { withoutNils } from "@/wab/shared/common";
+import { allComponentVariants } from "@/wab/shared/core/components";
+import { isTplSlot } from "@/wab/shared/core/tpls";
 import { Component } from "@/wab/shared/model/classes";
 import {
   getPlumeEditorPlugin,
@@ -11,7 +12,6 @@ import {
   getPlumeSlotDef,
   getPlumeVariantDef,
 } from "@/wab/shared/plume/plume-registry";
-import { isTplSlot } from "@/wab/shared/core/tpls";
 import { Alert } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -28,26 +28,28 @@ export const PlumeMissingIngredientsPanel = observer(
 
     const foundVariantDefs = withoutNils(
       allComponentVariants(component).map((v) =>
-        getPlumeVariantDef(component, v)
-      )
+        getPlumeVariantDef(component, v),
+      ),
     );
 
     const elements = flattenComponent(component);
     const foundSlotDefs = withoutNils(
-      elements.filter(isTplSlot).map((e) => getPlumeSlotDef(component, e.param))
+      elements
+        .filter(isTplSlot)
+        .map((e) => getPlumeSlotDef(component, e.param)),
     );
     const foundElementDefs = withoutNils(
-      elements.map((e) => getPlumeElementDef(component, e))
+      elements.map((e) => getPlumeElementDef(component, e)),
     );
 
     const missingVariantDefs = meta.variantDefs.filter(
-      (d) => !foundVariantDefs.includes(d)
+      (d) => !foundVariantDefs.includes(d),
     );
     const missingSlotDefs = meta.slotDefs.filter(
-      (d) => !foundSlotDefs.includes(d)
+      (d) => !foundSlotDefs.includes(d),
     );
     const missingElementDefs = meta.elementDefs.filter(
-      (d) => !foundElementDefs.includes(d)
+      (d) => !foundElementDefs.includes(d),
     );
 
     if (
@@ -72,7 +74,7 @@ export const PlumeMissingIngredientsPanel = observer(
                         {d.variant}
                       </HoverableDisclosure>
                     )),
-                    ", "
+                    ", ",
                   )}
                 </div>
               )}
@@ -85,7 +87,7 @@ export const PlumeMissingIngredientsPanel = observer(
                         {d.name}
                       </HoverableDisclosure>
                     )),
-                    ", "
+                    ", ",
                   )}
                 </div>
               )}
@@ -98,7 +100,7 @@ export const PlumeMissingIngredientsPanel = observer(
                         {d.name}
                       </HoverableDisclosure>
                     )),
-                    ", "
+                    ", ",
                   )}
                 </div>
               )}
@@ -107,5 +109,5 @@ export const PlumeMissingIngredientsPanel = observer(
         />
       </SidebarSection>
     );
-  }
+  },
 );

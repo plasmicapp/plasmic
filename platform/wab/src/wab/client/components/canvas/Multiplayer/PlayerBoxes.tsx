@@ -7,8 +7,8 @@ import {
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
-import { maybe } from "@/wab/shared/common";
 import { getArenaFrames } from "@/wab/shared/Arenas";
+import { maybe } from "@/wab/shared/common";
 import $ from "jquery";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -57,13 +57,13 @@ const PlayerBox = observer(function PlayerBox({
     }
     const viewCtx = tryGetViewCtxFromFrameUuid(
       studioCtx,
-      playerData.viewInfo.selectionInfo.selectableFrameUuid
+      playerData.viewInfo.selectionInfo.selectableFrameUuid,
     );
     if (!viewCtx) {
       return null;
     }
     const selectable = viewCtx.getSelectableFromSelectionId(
-      playerData.viewInfo.selectionInfo.selectableKey
+      playerData.viewInfo.selectionInfo.selectableKey,
     );
     if (!selectable) {
       return null;
@@ -71,7 +71,7 @@ const PlayerBox = observer(function PlayerBox({
     return {
       $elt: maybe(
         viewCtx.renderState.sel2dom(selectable, viewCtx.canvasCtx),
-        (dom) => $(dom)
+        (dom) => $(dom),
       ),
       viewCtx,
       playerData,
@@ -122,11 +122,11 @@ const PlayerBox = observer(function PlayerBox({
 
 export function tryGetViewCtxFromFrameUuid(
   studioCtx: StudioCtx,
-  selectableFrameUuid: string
+  selectableFrameUuid: string,
 ) {
   return studioCtx.tryGetViewCtxForFrame(
     getArenaFrames(studioCtx.currentArena).find(
-      (frame) => frame.uuid === selectableFrameUuid
-    )
+      (frame) => frame.uuid === selectableFrameUuid,
+    ),
   );
 }

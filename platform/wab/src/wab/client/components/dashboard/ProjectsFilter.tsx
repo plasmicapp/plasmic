@@ -14,7 +14,7 @@ export interface ProjectsFilterProps extends DefaultProjectsFilterProps {
 
 function ProjectsFilter_(
   props: ProjectsFilterProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const { query, setQuery, orderBy, setOrderBy, ...rest } = props;
   return (

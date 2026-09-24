@@ -87,7 +87,7 @@ async function setupEndUsers(mgr: DbMgr) {
       domains: [],
       externalIds: [],
     },
-    appRoles[0].id
+    appRoles[0].id,
   );
 
   await mgr.createAccessRules(
@@ -98,7 +98,7 @@ async function setupEndUsers(mgr: DbMgr) {
       domains: [],
       externalIds: [],
     },
-    appRoles[1].id
+    appRoles[1].id,
   );
 
   await mgr.createAccessRules(project.id, {
@@ -145,7 +145,7 @@ async function withEndUserMngSetup(
     endUsers: EndUser[];
     userDb: () => DbMgr;
     userDb2: () => DbMgr;
-  }) => Promise<void>
+  }) => Promise<void>,
 ) {
   await withDb(async (sudo, [user], [userDb, userDb2], _project, em) => {
     const { team, workspace, project, directory, emails, endUsers } =
@@ -240,10 +240,8 @@ describe("end-user", () => {
         ]);
 
         await sudo.updateAppRole(
-          (
-            await sudo.listAppRoles(project.id)
-          )[0].id,
-          "Low Admin"
+          (await sudo.listAppRoles(project.id))[0].id,
+          "Low Admin",
         );
 
         expect(await sudo.listAppRoles(project.id)).toMatchObject([
@@ -339,19 +337,20 @@ describe("end-user", () => {
               email: "random@co.co",
               roleId: roles[3].id,
             }),
-          ])
+          ]),
         );
 
         // Deletes Fun Group Access
         await sudo.deleteAccessRule(
           project.id,
-          accessRules.find((r) => r.directoryEndUserGroupId === FunGroup.id)!.id
+          accessRules.find((r) => r.directoryEndUserGroupId === FunGroup.id)!
+            .id,
         );
 
         // Deletes HR Group Access
         await sudo.deleteAccessRule(
           project.id,
-          accessRules.find((r) => r.directoryEndUserGroupId === HRGroup.id)!.id
+          accessRules.find((r) => r.directoryEndUserGroupId === HRGroup.id)!.id,
         );
 
         const _accessRules = await sudo.listAppAccessRules(project.id);
@@ -370,13 +369,13 @@ describe("end-user", () => {
               email: "random@co.co",
               roleId: roles[3].id,
             }),
-          ])
+          ]),
         );
 
         await sudo.updateAccessRule(
           project.id,
           _accessRules.find((r) => r.domain === "@ops-company.com")!.id,
-          roles[0].id
+          roles[0].id,
         );
 
         const _accessRules2 = await sudo.listAppAccessRules(project.id);
@@ -395,7 +394,7 @@ describe("end-user", () => {
               email: "random@co.co",
               roleId: roles[3].id,
             }),
-          ])
+          ]),
         );
       });
     });
@@ -416,47 +415,47 @@ describe("end-user", () => {
           expect(
             await getUserRoleForApp(sudo, project.id, {
               email: emails[0],
-            })
+            }),
           ).toMatchObject(SUPER_ADMIN);
 
           expect(
             await getUserRoleForApp(sudo, project.id, {
               email: emails[1],
-            })
+            }),
           ).toMatchObject(SUPER_ADMIN);
 
           // Should get admin through Dev group
           expect(
             await getUserRoleForApp(sudo, project.id, {
               email: emails[2],
-            })
+            }),
           ).toMatchObject(ADMIN);
 
           expect(
             await getUserRoleForApp(sudo, project.id, {
               email: emails[3],
-            })
+            }),
           ).toMatchObject(ADMIN);
 
           // Should get viewer through domain invite
           expect(
             await getUserRoleForApp(sudo, project.id, {
               email: emails[4],
-            })
+            }),
           ).toMatchObject(VIEWER);
 
           // Should get viewer through registered user role
           expect(
             await getUserRoleForApp(sudo, project.id, {
               email: emails[5],
-            })
+            }),
           ).toMatchObject(VIEWER);
 
           // Should get viewer through email invite
           expect(
             await getUserRoleForApp(sudo, project.id, {
               email: "random@co.co",
-            })
+            }),
           ).toMatchObject(VIEWER);
 
           await sudo.upsertAppAuthConfig(project.id, {
@@ -468,14 +467,14 @@ describe("end-user", () => {
           expect(
             await getUserRoleForApp(sudo, project.id, {
               email: emails[5],
-            })
+            }),
           ).toBeUndefined();
           expect(
             await getUserRoleForApp(sudo, project.id, {
               email: "fake@co.co",
-            })
+            }),
           ).toBeUndefined();
-        }
+        },
       );
     });
   });
@@ -499,7 +498,7 @@ describe("end-user", () => {
         const usersWithGroups = await getUsersWithGroups(
           sudo,
           directory.id,
-          users
+          users,
         );
 
         expect(usersWithGroups).toMatchObject(
@@ -561,7 +560,7 @@ describe("end-user", () => {
               email: emails[5],
               groups: [],
             }),
-          ])
+          ]),
         );
       });
     });
@@ -606,15 +605,15 @@ describe("end-user", () => {
             {
               name: "operation",
               templates: {},
-            }
-          )
+            },
+          ),
         ).toBeTrue();
 
         expect(
           await canCurrentUserExecuteOperation(sudo, project.id, ANON_USER, {
             name: "operation",
             templates: {},
-          })
+          }),
         ).toBeTrue();
 
         // Uncofigured apps should block operations if roleId is configured
@@ -627,8 +626,8 @@ describe("end-user", () => {
               name: "operation",
               templates: {},
               roleId: ANONYMOUS.id,
-            }
-          )
+            },
+          ),
         ).toBeFalse();
 
         expect(
@@ -640,8 +639,8 @@ describe("end-user", () => {
               name: "operation",
               templates: {},
               roleId: VIEWER.id,
-            }
-          )
+            },
+          ),
         ).toBeFalse();
 
         // Invalid roleId should block operations
@@ -650,7 +649,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: "invalid",
-          })
+          }),
         ).toBeFalse();
 
         expect(
@@ -658,7 +657,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: "another invalid",
-          })
+          }),
         ).toBeFalse();
 
         // Operations with anonymous role should be allowed
@@ -667,14 +666,14 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: ANONYMOUS.id,
-          })
+          }),
         ).toBeTrue();
 
         expect(
           await canCurrentUserExecuteOperation(sudo, project.id, ANON_USER, {
             name: "operation",
             templates: {},
-          })
+          }),
         ).toBeTrue();
 
         // Super Admin should be able to execute any operation
@@ -683,7 +682,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: SUPER_ADMIN.id,
-          })
+          }),
         ).toBeTrue();
 
         expect(
@@ -691,7 +690,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: ADMIN.id,
-          })
+          }),
         ).toBeTrue();
 
         expect(
@@ -699,7 +698,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: NORMAL.id,
-          })
+          }),
         ).toBeTrue();
 
         expect(
@@ -707,7 +706,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: VIEWER.id,
-          })
+          }),
         ).toBeTrue();
 
         // Admin should be able to execute all operations except SUPER_ADMIN
@@ -716,7 +715,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: SUPER_ADMIN.id,
-          })
+          }),
         ).toBeFalse();
 
         expect(
@@ -724,7 +723,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: ADMIN.id,
-          })
+          }),
         ).toBeTrue();
 
         expect(
@@ -732,7 +731,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: NORMAL.id,
-          })
+          }),
         ).toBeTrue();
 
         expect(
@@ -740,7 +739,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: VIEWER.id,
-          })
+          }),
         ).toBeTrue();
 
         // Viewer should be able to execute only Viewer operations
@@ -749,7 +748,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: SUPER_ADMIN.id,
-          })
+          }),
         ).toBeFalse();
 
         expect(
@@ -757,7 +756,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: ADMIN.id,
-          })
+          }),
         ).toBeFalse();
 
         expect(
@@ -765,7 +764,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: NORMAL.id,
-          })
+          }),
         ).toBeFalse();
 
         expect(
@@ -773,7 +772,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: VIEWER.id,
-          })
+          }),
         ).toBeTrue();
 
         // Anonymous user should be able to execute only ANONYMOUS operations
@@ -782,7 +781,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: SUPER_ADMIN.id,
-          })
+          }),
         ).toBeFalse();
 
         expect(
@@ -790,7 +789,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: ADMIN.id,
-          })
+          }),
         ).toBeFalse();
 
         expect(
@@ -798,7 +797,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: NORMAL.id,
-          })
+          }),
         ).toBeFalse();
 
         expect(
@@ -806,7 +805,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: VIEWER.id,
-          })
+          }),
         ).toBeFalse();
 
         expect(
@@ -814,7 +813,7 @@ describe("end-user", () => {
             name: "operation",
             templates: {},
             roleId: ANONYMOUS.id,
-          })
+          }),
         ).toBeTrue();
       });
     });
@@ -858,8 +857,8 @@ describe("end-user", () => {
                 name: "operation",
                 templates: {},
                 roleId: SUPER_ADMIN.id,
-              }
-            )
+              },
+            ),
           ).toBeFalse();
 
           expect(
@@ -871,8 +870,8 @@ describe("end-user", () => {
                 name: "operation",
                 templates: {},
                 roleId: ADMIN.id,
-              }
-            )
+              },
+            ),
           ).toBeFalse();
 
           expect(
@@ -884,8 +883,8 @@ describe("end-user", () => {
                 name: "operation",
                 templates: {},
                 roleId: NORMAL.id,
-              }
-            )
+              },
+            ),
           ).toBeFalse();
 
           expect(
@@ -897,8 +896,8 @@ describe("end-user", () => {
                 name: "operation",
                 templates: {},
                 roleId: VIEWER.id,
-              }
-            )
+              },
+            ),
           ).toBeFalse();
 
           expect(
@@ -910,10 +909,10 @@ describe("end-user", () => {
                 name: "operation",
                 templates: {},
                 roleId: ANONYMOUS.id,
-              }
-            )
+              },
+            ),
           ).toBeFalse();
-        }
+        },
       );
     });
   });

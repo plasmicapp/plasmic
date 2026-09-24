@@ -39,26 +39,26 @@ export async function listDatabases(req: Request, res: Response) {
     const workspaces = await mgr.getAffiliatedWorkspaces(teamId);
     const databases = flatten(
       await Promise.all(
-        workspaces.map(async (w) => await mgr.listCmsDatabases(w.id))
-      )
+        workspaces.map(async (w) => await mgr.listCmsDatabases(w.id)),
+      ),
     );
     res.json({ databases: await makeApiDatabases(mgr, databases) });
   } else {
     throw new BadRequestError(
-      "Can only fetch databases for a specific workspace"
+      "Can only fetch databases for a specific workspace",
     );
   }
 }
 
 export async function getCmsDatabaseAndSecretTokenById(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   const databaseId = req.params.dbId;
   const includeArchived = req.query.includeArchived as boolean | undefined;
   const mgr = userDbMgr(req);
   const database = await mgr.getCmsDatabaseAndSecretTokenById(
-    databaseId as CmsDatabaseId
+    databaseId as CmsDatabaseId,
   );
   res.json(await makeApiDatabase(mgr, database, includeArchived));
 }
@@ -68,7 +68,7 @@ export async function getDatabaseMeta(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const database = await mgr.getCmsDatabaseById(databaseId as CmsDatabaseId);
   res.json(
-    ensureType<ApiCmsDatabaseMeta>(pick(database, "id", "name", "publicToken"))
+    ensureType<ApiCmsDatabaseMeta>(pick(database, "id", "name", "publicToken")),
   );
 }
 
@@ -81,7 +81,7 @@ export async function listDatabasesMeta(req: Request, res: Response) {
         workspace: mkApiWorkspace(workspace),
         databases: await mgr.listCmsDatabases(workspace.id),
       };
-    })
+    }),
   );
   res.json(ensureType<ListCmsDatabasesMetaResponse>(data));
 }
@@ -91,7 +91,7 @@ export async function updateDatabase(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const database = await mgr.updateCmsDatabaseById(
     databaseId as CmsDatabaseId,
-    req.body
+    req.body,
   );
   req.analytics.track("Update cms database", {
     workspaceId: database.workspaceId,
@@ -121,7 +121,7 @@ export async function makeApiDatabases(mgr: DbMgr, databases: CmsDatabase[]) {
 export async function makeApiDatabase(
   mgr: DbMgr,
   database: CmsDatabase,
-  includeArchived: boolean = false
+  includeArchived: boolean = false,
 ): Promise<ApiCmsDatabase> {
   const tables = await mgr.listCmsTables(database.id, includeArchived);
   return {
@@ -180,7 +180,7 @@ export async function updateTable(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const table = await mgr.updateCmsTable(
     req.params.tableId as CmsTableId,
-    req.body
+    req.body,
   );
   req.analytics.track("Update cms table", {
     tableId: table.id as CmsTableId,
@@ -210,7 +210,7 @@ export async function listRows(req: Request, res: Response) {
     {
       limit: 5000,
     },
-    { useDraft: true }
+    { useDraft: true },
   );
   const fields = ensureArray(req.query.fields ?? []) as string[];
   if (fields && fields.length > 0) {
@@ -260,7 +260,7 @@ export async function cloneRow(req: Request, res: Response) {
   const clonedRow = await mgr.cloneCmsRow(
     row.tableId as CmsTableId,
     req.params.rowId as CmsRowId,
-    req.body
+    req.body,
   );
   res.json(clonedRow);
 }
@@ -269,7 +269,7 @@ export async function checkUniqueFields(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const uniqueFields = await mgr.checkUniqueFields(
     req.params.tableId as CmsTableId,
-    req.body
+    req.body,
   );
   res.json(uniqueFields);
 }
@@ -291,11 +291,11 @@ export async function triggerTableWebhooks(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const table = await mgr.getCmsTableById(req.params.tableId as CmsTableId);
   const webhooks = table.settings?.webhooks?.filter(
-    (hook) => hook.event === event
+    (hook) => hook.event === event,
   );
   if (webhooks && webhooks.length > 0) {
     const responses = await Promise.all(
-      webhooks.map((hook) => triggerWebhookOnly(hook))
+      webhooks.map((hook) => triggerWebhookOnly(hook)),
     );
     res.json({ responses });
   } else {
@@ -307,7 +307,7 @@ export async function createRows(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const rows = await mgr.createCmsRows(
     req.params.tableId as CmsTableId,
-    req.body.rows
+    req.body.rows,
   );
   rows.forEach((row) => {
     req.analytics.track("Create cms row", {
@@ -329,7 +329,7 @@ export async function getRow(req: Request, res: Response) {
 export async function listRowRevisions(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const revisions = await mgr.listCmsRowRevisionsByRowId(
-    req.params.rowId as CmsRowId
+    req.params.rowId as CmsRowId,
   );
   res.json({ revisions });
 }
@@ -337,7 +337,7 @@ export async function listRowRevisions(req: Request, res: Response) {
 export async function getRowRevision(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const revision = await mgr.getCmsRowRevisionById(
-    req.params.revId as CmsRowRevisionId
+    req.params.revId as CmsRowRevisionId,
   );
   res.json({ revision });
 }
@@ -379,8 +379,8 @@ export async function cmsFileUpload(req: Request, res: Response) {
 
   const promises = Promise.all(
     Object.entries(req.files).flatMap(([_, files]) =>
-      Array.isArray(files) ? files.map((f) => upload(f)) : [upload(files)]
-    )
+      Array.isArray(files) ? files.map((f) => upload(f)) : [upload(files)],
+    ),
   );
   const files = ensureType<CmsUploadedFile[]>(await promises);
 

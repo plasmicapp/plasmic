@@ -6,7 +6,9 @@
 // under -submenu for popups), so these have to match that depth to win.
 .ant-dropdown .ant-dropdown-menu,
 .ant-dropdown-menu-submenu .ant-dropdown-menu {
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.03), 2px 2px 10px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.03),
+    2px 2px 10px rgba(0, 0, 0, 0.15);
 
   .ant-dropdown-menu-item-group-list {
     margin: 0;

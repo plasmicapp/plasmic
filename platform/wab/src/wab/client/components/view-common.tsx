@@ -54,7 +54,7 @@ export function truncateAtWordBoundary(str: string, maxLength: number): string {
 export function getTextWithScrolling(
   text: string,
   maxLength: number,
-  matcher?: Matcher
+  matcher?: Matcher,
 ): string {
   const normalized = text.replace(/\s+/g, " ").trim();
 
@@ -133,7 +133,7 @@ export class Matcher {
   boldSnippetsWithScrolling(
     text: string,
     maxLength: number,
-    className?: string
+    className?: string,
   ): React.ReactNode {
     const scrolledText = getTextWithScrolling(text, maxLength, this);
     return this.boldSnippets(scrolledText, className);
@@ -143,7 +143,7 @@ export class Matcher {
 function boldSnippets(text: React.ReactNode, pat: RegExp, className?: string) {
   if (React.isValidElement(text)) {
     const newChildren = React.Children.map(text.props.children, (x) =>
-      boldSnippets(x, pat)
+      boldSnippets(x, pat),
     );
     return React.cloneElement(text, {}, ...newChildren);
   } else {
@@ -190,11 +190,11 @@ function stripDefault(name: string) {
 export function uncontrollable<
   TComp extends React.ComponentType<P>,
   DP extends {},
-  P extends {} = PropsOf<TComp>
+  P extends {} = PropsOf<TComp>,
 >(
   ComponentClass: TComp,
   defaultProps: DP,
-  propToCallbackName: { [prop: string]: string }
+  propToCallbackName: { [prop: string]: string },
 ) {
   const CastedComponent = ComponentClass as React.ComponentType<P>;
   const newClass = class extends React.Component<P, any> {
@@ -206,7 +206,7 @@ export function uncontrollable<
           for (const [prop, pureProp] of [...this.getUncontrolledProps()]) {
             yield tuple(pureProp, this.props[prop]);
           }
-        })
+        }),
       );
     }
     getUncontrolledProps() {
@@ -228,7 +228,7 @@ export function uncontrollable<
           if (pureProp && pureProp in propToCallbackName) {
             props[pureProp] = this.state[pureProp];
             return (props[propToCallbackName[pureProp]] = (
-              val: /*TWZ*/ boolean
+              val: /*TWZ*/ boolean,
             ) => {
               return this.setState(Object.fromEntries([tuple(pureProp, val)]));
             });
@@ -245,7 +245,7 @@ export function uncontrollable<
   return newClass;
 }
 export function absorb<T, This>(
-  fn: (this: This, e: Event | SyntheticEvent | EventBase) => T
+  fn: (this: This, e: Event | SyntheticEvent | EventBase) => T,
 ) {
   return function (this: This, e: Event | SyntheticEvent | EventBase) {
     e.stopPropagation();
@@ -283,7 +283,7 @@ export function replaceLink(
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   >,
-  makeLink: (linkText: string) => ReactElement
+  makeLink: (linkText: string) => ReactElement,
 ) {
   // Replace the [text] with a link.
   const { children: childOrChildren, ...rest } = props;

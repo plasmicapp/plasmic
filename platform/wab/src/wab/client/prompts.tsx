@@ -25,7 +25,7 @@ export async function promptComponentName(
   opts: {
     message?: string;
     default?: string;
-  } = {}
+  } = {},
 ) {
   return await reactPrompt({
     message: opts.message ?? "What's the name for the new component?",
@@ -39,7 +39,7 @@ export async function promptPageName(
   opts: {
     message?: string;
     default?: string;
-  } = {}
+  } = {},
 ) {
   return await reactPrompt({
     message: opts.message ?? "What's the name for the new page?",
@@ -51,7 +51,7 @@ export async function promptPageName(
 
 export async function promptComponentTemplate(
   studioCtx: StudioCtx,
-  folderPath?: string
+  folderPath?: string,
 ) {
   return await showTemporaryPrompt<NewComponentInfo>((onSubmit, onCancel) => (
     <Modal
@@ -76,7 +76,7 @@ export async function promptComponentTemplate(
 
 export async function promptPageTemplate(
   studioCtx: StudioCtx,
-  folderPath?: string
+  folderPath?: string,
 ) {
   return await showTemporaryPrompt<NewPageInfo>((onSubmit, onCancel) => (
     <Modal
@@ -101,7 +101,7 @@ export async function promptPageTemplate(
 
 export async function promptChooseInstallableDependencies(
   studioCtx: StudioCtx,
-  site: Site
+  site: Site,
 ) {
   const res = await promptChooseItems({
     title: "Choose additional dependencies",
@@ -127,13 +127,13 @@ export async function promptChooseInstallableDependencies(
         };
       }),
       ["disabled", "value"],
-      ["desc", "asc"]
+      ["desc", "asc"],
     ),
   });
   return res
     ?.map((i) => i.item)
     .filter(
-      (dep) => !studioCtx.projectDependencyManager.containsPkgId(dep.pkgId)
+      (dep) => !studioCtx.projectDependencyManager.containsPkgId(dep.pkgId),
     );
 }
 
@@ -145,7 +145,7 @@ interface DescAndTags {
 export async function promptTagsAndDesc(
   currDesc: string | undefined,
   currTags: string[],
-  studioCtx: StudioCtx
+  studioCtx: StudioCtx,
 ) {
   const projectReleases = await studioCtx.getProjectReleases();
   const previousTags = [

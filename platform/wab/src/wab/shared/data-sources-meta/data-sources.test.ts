@@ -47,7 +47,7 @@ describe("exprToDataSourceString", () => {
     });
     const result = exprToDataSourceString(templatedString, exprCtxFixture);
     expect(result).toEqual(
-      `${textValue}{{ (${codeValue}) }}{{ (${maybeConvertToIife(iifeValue)}) }}`
+      `${textValue}{{ (${codeValue}) }}{{ (${maybeConvertToIife(iifeValue)}) }}`,
     );
   });
 

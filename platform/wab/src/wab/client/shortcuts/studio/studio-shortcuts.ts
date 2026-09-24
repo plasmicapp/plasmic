@@ -372,6 +372,6 @@ export function getComboForAction(action: StudioShortcutAction) {
   const shortcut = ensure(STUDIO_SHORTCUTS[action], "must be a valid action");
   return ensure(
     asOne(shortcut.combos),
-    "shortcut must have at least one key combo"
+    "shortcut must have at least one key combo",
   );
 }

@@ -25,8 +25,9 @@ import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import cn from "classnames";
 import defer = setTimeout;
 
-export interface CopilotPromptDialogProps<Response>
-  extends DefaultCopilotPromptDialogProps {
+export interface CopilotPromptDialogProps<
+  Response,
+> extends DefaultCopilotPromptDialogProps {
   type: CopilotType;
   maxLength?: number;
   showImageUpload?: boolean;
@@ -150,7 +151,7 @@ function CopilotPromptDialog<Response>({
                       src: asDataUrl(
                         image.base64,
                         `image/${image.type}`,
-                        "base64"
+                        "base64",
                       ),
                     }}
                     onDelete={() =>
@@ -245,7 +246,7 @@ function CopilotPromptDialog<Response>({
                 }}
               />
             </>
-          )
+          ),
         ),
       }}
       promptDialog={{

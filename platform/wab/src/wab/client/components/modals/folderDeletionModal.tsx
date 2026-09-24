@@ -9,7 +9,7 @@ export async function promptDeleteFolder(itemType, path, itemCount = 0) {
       itemCount > 0
         ? ` and all its contents? It currently contains ${itemCount} ${pluralize(
             itemType,
-            itemCount
+            itemCount,
           )}.`
         : "?"
     }`,

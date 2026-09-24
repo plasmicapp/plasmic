@@ -21,8 +21,8 @@ export const canIEditTeam = (appCtx: AppCtx, t: ApiTeam) =>
     appCtx.perms.find(
       (p) =>
         p.teamId === t.id &&
-        p.userId === ensure(appCtx.selfInfo, "User must be authenticated").id
-    )?.accessLevel || "blocked"
+        p.userId === ensure(appCtx.selfInfo, "User must be authenticated").id,
+    )?.accessLevel || "blocked",
   ) >= accessLevelRank("editor");
 
 export const canUpgradeTeam = (appCtx: AppCtx, t: ApiTeam) =>
@@ -53,7 +53,7 @@ export type PromptUpdateCcResponse = MakeADT<
  */
 
 export async function promptUpdateCc(
-  props: PromptUpdateCcArgs
+  props: PromptUpdateCcArgs,
 ): Promise<PromptUpdateCcResponse | undefined> {
   return showTemporaryPrompt<PromptUpdateCcResponse>((onSubmit, onCancel) => (
     // @ts-ignore
@@ -71,7 +71,7 @@ function UpsellCreditCardForm(
   props: PromptUpdateCcArgs & {
     onSubmit: (v: PromptUpdateCcResponse) => void;
     onCancel: () => void;
-  }
+  },
 ) {
   const { appCtx, title, description, team, onSubmit, onCancel } = props;
 
@@ -86,13 +86,13 @@ function UpsellCreditCardForm(
     const pendingSetupIntent = await appCtx.api.createSetupIntent(team.id);
     const clientSecret = ensure(
       pendingSetupIntent.clientSecret,
-      "missing client secret"
+      "missing client secret",
     );
     const ensureStripe = ensure(stripe, "Stripe not loaded yet");
     const ensureElements = ensure(elements, "Stripe not loaded yet");
     const card = ensure(
       ensureElements.getElement(CardElement),
-      "Issue getting CC info from form"
+      "Issue getting CC info from form",
     );
     const result = await ensureStripe.confirmCardSetup(clientSecret, {
       payment_method: { card },

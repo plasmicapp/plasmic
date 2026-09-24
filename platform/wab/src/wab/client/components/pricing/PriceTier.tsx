@@ -5,8 +5,8 @@ import {
   PlasmicPriceTier,
   PlasmicPriceTier__VariantsArgs,
 } from "@/wab/client/plasmic/plasmic_kit_pricing/PlasmicPriceTier";
-import { assertNever } from "@/wab/shared/common";
 import { ApiFeatureTier, BillingFrequency } from "@/wab/shared/ApiSchema";
+import { assertNever } from "@/wab/shared/common";
 import {
   getNewPriceTierType,
   getPriceTierType,
@@ -24,7 +24,7 @@ export type PriceTierStatus = PlasmicPriceTier__VariantsArgs["status"];
 const getPriceSlots = (
   tier?: ApiFeatureTier,
   maybeBillingFreq?: BillingFrequency,
-  isLegacy?: boolean
+  isLegacy?: boolean,
 ) => {
   const tierType = isLegacy
     ? getPriceTierType(tier?.name)

@@ -138,6 +138,6 @@ export const fromFilterStringToObj = (rawFilter: string): FilterEffect => {
 
 export const fromFilterObjToString = (filter: FilterEffect): string => {
   return `${!filter.visible ? "hidden#" : ""}${filter.type}(${filter.args.join(
-    " "
+    " ",
   )})`;
 };

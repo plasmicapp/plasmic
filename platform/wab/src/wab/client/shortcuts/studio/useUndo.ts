@@ -52,7 +52,7 @@ export function useUndo<T>(initialValue: T): UseUndoResult<T> {
       });
       return value;
     },
-    [initialValue]
+    [initialValue],
   );
 
   return {

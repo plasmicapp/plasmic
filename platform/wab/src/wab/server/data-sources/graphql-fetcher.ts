@@ -188,7 +188,7 @@ async function processResult(res: AxiosResponse<string>) {
       isString(processedResponse) || !isEmpty(processedResponse)
         ? processedResponse
         : undefined,
-      statusCode
+      statusCode,
     );
   }
   return {

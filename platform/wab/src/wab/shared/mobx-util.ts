@@ -64,7 +64,7 @@ export function ensureComponentsObserved(components: Component[]) {
 
 export function maybeComputedFn<T extends (...args: any[]) => any>(
   fn: T,
-  opts?: IComputedValueOptions<ReturnType<T>>
+  opts?: IComputedValueOptions<ReturnType<T>>,
 ): T {
   const maybeAddGlobalObservableFn: T = ((...args: any[]) => {
     dependOnGlobalObservable();
@@ -96,7 +96,7 @@ export function keyedComputedFn<T extends (...args: any[]) => any>(
   opts: {
     keyFn: (...args: Parameters<T>) => string;
     name?: string;
-  }
+  },
 ): CachingFunction<T> {
   const cache = new Map<string, IComputedValue<ReturnType<T>>>();
   const { keyFn } = opts;
@@ -121,7 +121,7 @@ export function keyedComputedFn<T extends (...args: any[]) => any>(
       clear: () => {
         cache.clear();
       },
-    }
+    },
   );
   keyedFns.push(func);
   return func;

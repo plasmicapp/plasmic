@@ -126,7 +126,7 @@ export function getAnthropicApiKey() {
 export function getDiscourseConnectSecret() {
   return ensure(
     loadSecrets().discourse?.discourseConnectSecret,
-    "DiscourseConnect secret required"
+    "DiscourseConnect secret required",
   );
 }
 
@@ -152,7 +152,7 @@ export function loadSecrets(): Secrets {
     return {};
   }
   return uncheckedCast<Secrets>(
-    JSON.parse(fs.readFileSync(path, { encoding: "utf8" }))
+    JSON.parse(fs.readFileSync(path, { encoding: "utf8" })),
   );
 }
 

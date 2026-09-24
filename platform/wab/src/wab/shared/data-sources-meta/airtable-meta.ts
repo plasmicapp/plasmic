@@ -55,7 +55,7 @@ const makeFields =
         .filter((field) =>
           field.id === FAKE_AIRTABLE_FIELD && includeAirtableId != null
             ? includeAirtableId
-            : field.type !== "unknown" && (includeReadOnly || !field.readOnly)
+            : field.type !== "unknown" && (includeReadOnly || !field.readOnly),
         )
         .map((field) => [
           field.id,
@@ -63,7 +63,7 @@ const makeFields =
             type: field.type,
             label: field.label ?? field.id,
           },
-        ])
+        ]),
     );
   };
 
@@ -337,7 +337,7 @@ export const QueryBuilderAirtableConfig = {
     number: {
       valueSources: ["value"],
       excludeOperators: OPERATORS_NOT_AVAILABLE.filter(
-        (v) => v != "is_null" && v != "is_not_null"
+        (v) => v != "is_null" && v != "is_not_null",
       ),
     },
     boolean: {

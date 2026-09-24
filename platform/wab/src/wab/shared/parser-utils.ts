@@ -14,7 +14,7 @@ declare module "acorn-walk" {
   type Visitors = {
     [k in ast.Node["type"]]?: (
       node: ast.Node & { type: k },
-      parents: ast.Node[]
+      parents: ast.Node[],
     ) => void;
   } & {
     [k: string]: (node: any, parents: ast.Node[]) => void;
@@ -33,7 +33,7 @@ export function parseJsCode(code: string) {
 
 export function writeJs(
   ast: ast.Program,
-  opts?: { semicolons?: boolean; indentLevel?: number }
+  opts?: { semicolons?: boolean; indentLevel?: number },
 ) {
   return generate(ast, {
     format: {
@@ -94,7 +94,7 @@ export function maybeConvertToIife(code: string) {
 
 export function isValidJavaScriptCode(
   code: string,
-  opts?: { throwIfInvalid?: boolean }
+  opts?: { throwIfInvalid?: boolean },
 ) {
   try {
     // Use AsyncFunction instead of Function to support `await`
@@ -178,7 +178,7 @@ const returnableStatements = new Set([
 ] as ast.Node["type"][]);
 
 function isReturnableStatement(
-  stmt: ast.Program["body"][number]
+  stmt: ast.Program["body"][number],
 ): stmt is ReturnableStatement {
   return returnableStatements.has(stmt.type);
 }
@@ -195,7 +195,7 @@ const convertibleToExprStmts = new Set([
 ] as ast.Node["type"][]);
 
 function canConvertToExpression(
-  stmt: ast.Program["body"][number]
+  stmt: ast.Program["body"][number],
 ): stmt is ConvertibleToExpression {
   return convertibleToExprStmts.has(stmt.type);
 }
@@ -251,7 +251,7 @@ function addImplicitReturnToAst(ast: ast.Program) {
 
   if (lastStmt.type === "VariableDeclaration") {
     const genReturnValueFromPattern = (
-      pattern: ast.Pattern
+      pattern: ast.Pattern,
     ): ast.Expression | null => {
       switch (pattern.type) {
         case "Identifier":
@@ -272,7 +272,7 @@ function addImplicitReturnToAst(ast: ast.Program) {
           }
           const lastProp = last(pattern.properties);
           return genReturnValueFromPattern(
-            lastProp.type === "Property" ? lastProp.value : lastProp.argument
+            lastProp.type === "Property" ? lastProp.value : lastProp.argument,
           );
         }
         default:
@@ -296,7 +296,7 @@ function addImplicitReturnToAst(ast: ast.Program) {
     const plasmicReturnIdentifier = "__plasmic_ret";
 
     function* getCompletionRecords(
-      stmt: ast.Statement
+      stmt: ast.Statement,
     ): Generator<ast.Statement> {
       if (isReturnableStatement(stmt)) {
         switch (stmt.type) {

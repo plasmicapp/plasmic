@@ -12,11 +12,11 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   const nonScreenGlobalVariants = site.globalVariantGroups.flatMap(
-    (variantGroup) => variantGroup.variants.filter((v) => !isScreenVariant(v))
+    (variantGroup) => variantGroup.variants.filter((v) => !isScreenVariant(v)),
   );
   const themeMixins = site.themes.flatMap((theme) => [
     theme.defaultStyle,
@@ -26,15 +26,15 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     mixin.variantedRs = mixin.variantedRs.filter(
       (variantedRs) =>
         !variantedRs.variants.some((variant) =>
-          nonScreenGlobalVariants.includes(variant)
-        )
+          nonScreenGlobalVariants.includes(variant),
+        ),
     );
   }
 
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "40-remove-varianted-rs-for-non-screen-global-variants"
+    "40-remove-varianted-rs-for-non-screen-global-variants",
   );
   Object.assign(bundle, newBundle);
 };

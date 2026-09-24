@@ -36,13 +36,11 @@ export interface InsertableTemplateExtraInfo {
   };
 }
 
-export interface InsertableTemplateComponentExtraInfo
-  extends InsertableTemplateExtraInfo {
+export interface InsertableTemplateComponentExtraInfo extends InsertableTemplateExtraInfo {
   component: Component;
 }
 
-export interface InsertableTemplateArenaExtraInfo
-  extends InsertableTemplateExtraInfo {
+export interface InsertableTemplateArenaExtraInfo extends InsertableTemplateExtraInfo {
   arena: Arena;
 }
 
@@ -74,8 +72,7 @@ export interface CopyState {
   timeStamp: number;
 }
 
-export interface CopyStateExtraInfo
-  extends InsertableTemplateComponentExtraInfo {
+export interface CopyStateExtraInfo extends InsertableTemplateComponentExtraInfo {
   references: CopyElementsReference[];
   activeVariants?: VariantCombo;
 }

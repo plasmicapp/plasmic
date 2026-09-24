@@ -34,7 +34,7 @@ function UsersView() {
 function UserProjects() {
   const nonAuthCtx = useNonAuthCtx();
   const [selectedUserId, setSelectedUserId] = useState<string | undefined>(
-    undefined
+    undefined,
   );
   const { value: projects } = useAsyncStrict(async () => {
     if (!selectedUserId) {

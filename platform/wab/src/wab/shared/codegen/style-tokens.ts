@@ -57,12 +57,12 @@ export interface TheoTokensOutput {
 export function exportStyleTokens(
   projectId: string,
   site: Site,
-  resolver = makeTokenValueResolver(site)
+  resolver = makeTokenValueResolver(site),
 ): TheoTokensOutput {
   const tokens = siteFinalStyleTokens(site);
   return {
     props: tokens.map((token) =>
-      serializeStyleToken(token, { projectId }, resolver)
+      serializeStyleToken(token, { projectId }, resolver),
     ),
     global: {
       meta: {
@@ -75,7 +75,7 @@ export function exportStyleTokens(
 function serializeStyleToken(
   token: FinalToken<StyleToken>,
   meta: { projectId?: string; pkgId?: string },
-  resolver: (token: FinalToken<StyleToken>) => string
+  resolver: (token: FinalToken<StyleToken>) => string,
 ): TheoToken {
   return {
     name: token.name,
@@ -91,7 +91,7 @@ function serializeStyleToken(
 
 export function extractUsedGlobalVariantCombosForTokens(
   site: Site,
-  tokens: Set<StyleToken>
+  tokens: Set<StyleToken>,
 ) {
   const usedGlobalVariantCombos: Set<VariantCombo> = new Set();
   xAddAll(
@@ -100,8 +100,8 @@ export function extractUsedGlobalVariantCombosForTokens(
       Array.from(tokens)
         .flatMap((t) => t.variantedValues)
         .map((v) => new VariantedStylesHelper(site, v.variants)),
-      (el) => el.key()
-    ).map((vsh) => ensure(vsh.globalVariants(), "must be global variants"))
+      (el) => el.key(),
+    ).map((vsh) => ensure(vsh.globalVariants(), "must be global variants")),
   );
   return usedGlobalVariantCombos;
 }
@@ -111,19 +111,19 @@ export function extractUsedGlobalVariantsForTokens(
   site: Site,
   allTokensDict: Readonly<{
     [uuid: string]: FinalToken<StyleToken>;
-  }> = siteFinalStyleTokensAllDepsDict(site)
+  }> = siteFinalStyleTokensAllDepsDict(site),
 ) {
   const usedGlobalVariants: Set<Variant> = new Set();
   for (const token of tokens) {
     const finalToken = allTokensDict[token.uuid] ?? toFinalToken(token, site);
     xAddAll(
       usedGlobalVariants,
-      finalToken.base.variantedValues.flatMap((v) => v.variants)
+      finalToken.base.variantedValues.flatMap((v) => v.variants),
     );
     if (finalToken.override) {
       xAddAll(
         usedGlobalVariants,
-        finalToken.override.variantedValues.flatMap((v) => v.variants)
+        finalToken.override.variantedValues.flatMap((v) => v.variants),
       );
     }
   }
@@ -137,7 +137,7 @@ export function extractUsedTokensForComponents(
     expandMixins: boolean;
     derefTokens: boolean;
     allTokensDict?: Readonly<{ [uuid: string]: FinalToken<StyleToken> }>;
-  }
+  },
 ) {
   const usedTokens = new Set<StyleToken>();
   const allTokensDict =
@@ -161,7 +161,7 @@ export function collectUsedTokensForTpl(
     expandMixins: boolean;
     derefTokens: boolean;
     allTokensDict?: Readonly<{ [uuid: string]: FinalToken<StyleToken> }>;
-  }
+  },
 ) {
   const allTokensDict =
     opts.allTokensDict ?? siteFinalStyleTokensAllDepsDict(site);
@@ -172,7 +172,7 @@ export function collectUsedTokensForTpl(
         collector,
         readonlyRSH(rs, tpl),
         allTokensDict,
-        opts
+        opts,
       );
     }
     for (const arg of vs.args) {
@@ -184,7 +184,7 @@ export function collectUsedTokensForTpl(
             collector,
             new RuleSetHelpers(sty.rs, "div"),
             allTokensDict,
-            opts
+            opts,
           );
         }
       }
@@ -196,7 +196,7 @@ function collectUsedTokensForExp(
   collector: Set<StyleToken>,
   exp: ReadonlyIRuleSetHelpersX,
   allTokensDict: Readonly<{ [uuid: string]: FinalToken<StyleToken> }>,
-  opts: { derefTokens: boolean }
+  opts: { derefTokens: boolean },
 ) {
   for (const prop of exp.props()) {
     const val = exp.getRaw(prop);
@@ -205,7 +205,7 @@ function collectUsedTokensForExp(
       const refTokens = withoutNils(refTokenIds.map((x) => allTokensDict[x]));
       xAddAll(
         collector,
-        refTokens.map((refToken) => refToken.base)
+        refTokens.map((refToken) => refToken.base),
       );
       if (opts.derefTokens) {
         for (const token of refTokens) {
@@ -213,7 +213,7 @@ function collectUsedTokensForExp(
             collector,
             token.value,
             allTokensDict,
-            { derefTokens: true }
+            { derefTokens: true },
           );
         }
       }
@@ -225,7 +225,7 @@ function collectUsedTokensForTokenValue(
   collector: Set<StyleToken>,
   tokenValue: string,
   allTokensDict: Readonly<{ [uuid: string]: FinalToken<StyleToken> }>,
-  opts: { derefTokens: boolean }
+  opts: { derefTokens: boolean },
 ) {
   let sub = tryParseTokenRef(tokenValue, allTokensDict);
   while (sub) {
@@ -244,7 +244,7 @@ export function extractUsedTokensForTokens(
   opts: {
     derefTokens: boolean;
     allTokensDict?: Readonly<{ [uuid: string]: FinalToken<StyleToken> }>;
-  }
+  },
 ) {
   const used = new Set<StyleToken>();
   const allTokensDict =
@@ -256,7 +256,7 @@ export function extractUsedTokensForTokens(
         used,
         variantedValue.value,
         allTokensDict,
-        opts
+        opts,
       );
     }
   }
@@ -269,7 +269,7 @@ export function extractUsedTokensForTokenOverrides(
   opts: {
     derefTokens: boolean;
     allTokensDict?: Readonly<{ [uuid: string]: FinalToken<StyleToken> }>;
-  }
+  },
 ) {
   const used = new Set<StyleToken>();
   const allTokensDict =
@@ -283,7 +283,7 @@ export function extractUsedTokensForTokenOverrides(
         used,
         variantedValue.value,
         allTokensDict,
-        opts
+        opts,
       );
     }
   }
@@ -296,7 +296,7 @@ export function extractUsedTokensForMixins(
   opts: {
     derefTokens: boolean;
     allTokensDict?: Readonly<{ [uuid: string]: FinalToken<StyleToken> }>;
-  }
+  },
 ) {
   const usedTokens = new Set<StyleToken>();
   const allTokensDict =
@@ -317,7 +317,7 @@ export function extractUsedTokensForMixins(
 export function extractUsedTokensForProjectCss(
   sourceSite: Site,
   rootSite: Site,
-  allTokensDict?: Readonly<{ [uuid: string]: FinalToken<StyleToken> }>
+  allTokensDict?: Readonly<{ [uuid: string]: FinalToken<StyleToken> }>,
 ): Set<StyleToken> {
   const opts = {
     derefTokens: true,
@@ -326,19 +326,19 @@ export function extractUsedTokensForProjectCss(
   const tokens = new Set<StyleToken>();
   xAddAll(
     tokens,
-    extractUsedTokensForTokens(sourceSite.styleTokens, rootSite, opts)
+    extractUsedTokensForTokens(sourceSite.styleTokens, rootSite, opts),
   );
   xAddAll(
     tokens,
     extractUsedTokensForTokenOverrides(
       sourceSite.styleTokenOverrides,
       rootSite,
-      opts
-    )
+      opts,
+    ),
   );
   xAddAll(
     tokens,
-    extractUsedTokensForMixins(sourceSite.mixins, rootSite, opts)
+    extractUsedTokensForMixins(sourceSite.mixins, rootSite, opts),
   );
   if (sourceSite.activeTheme) {
     xAddAll(
@@ -349,8 +349,8 @@ export function extractUsedTokensForProjectCss(
           ...sourceSite.activeTheme.styles.map((s) => s.style),
         ],
         rootSite,
-        opts
-      )
+        opts,
+      ),
     );
   }
   return tokens;

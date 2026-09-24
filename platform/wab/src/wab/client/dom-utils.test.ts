@@ -248,7 +248,7 @@ describe("deriveImageAssetTypeAndUri", () => {
         "not-a-valid-data-uri",
         100,
         100,
-        undefined
+        undefined,
       );
 
       const result = deriveImageAssetTypeAndUri(image, {});
@@ -346,7 +346,7 @@ describe("isWithinKeyboardInteractiveElement/isWithinPointerInteractiveElement",
   /** Checks the element with id="target", or the first element. */
   function check(
     html: string,
-    expected: { pointer: boolean; keyboard: boolean }
+    expected: { pointer: boolean; keyboard: boolean },
   ): void {
     const container = document.createElement("div");
     container.innerHTML = html;
@@ -393,7 +393,7 @@ describe("isWithinKeyboardInteractiveElement/isWithinPointerInteractiveElement",
     check(`<div contenteditable="false"></div>`, neither);
     check(
       `<div contenteditable="false"><span id="target"></span></div>`,
-      neither
+      neither,
     );
     check(`<p id="target"></p> <input />`, neither);
   });

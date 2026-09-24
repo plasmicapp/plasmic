@@ -11,7 +11,7 @@ interface VirtualItem<I> {
 
 function buildItemIndexToVirtualIndexMap<I, V extends VirtualItem<I>>(
   virtualItems: V[],
-  items: I[]
+  items: I[],
 ) {
   const map: Record<number, number> = {};
   virtualItems.forEach((vi, index) => {
@@ -63,12 +63,12 @@ export function useVirtualCombobox<I, V extends VirtualItem<I>>(opts: {
 
   const { virtualItems, virtualRows, items } = React.useMemo(
     () => buildItems(query),
-    [buildItems, query]
+    [buildItems, query],
   );
 
   const itemToVirtualIndex = React.useMemo(
     () => buildItemIndexToVirtualIndexMap(virtualItems, items),
-    [virtualItems, items]
+    [virtualItems, items],
   );
 
   const {
@@ -87,8 +87,8 @@ export function useVirtualCombobox<I, V extends VirtualItem<I>>(opts: {
     defaultHighlightedIndex: selectedItem
       ? items.indexOf(selectedItem)
       : alwaysHighlight
-      ? 0
-      : undefined,
+        ? 0
+        : undefined,
     onSelectedItemChange: ({ selectedItem: item }) => {
       if (item) {
         setQuery("");
@@ -143,14 +143,14 @@ export function useVirtualCombobox<I, V extends VirtualItem<I>>(opts: {
 
       if (virtualRows) {
         const virtualRow = virtualRows.findIndex((row) =>
-          row.find((item) => highlightedItem === item.item)
+          row.find((item) => highlightedItem === item.item),
         );
         if (virtualRow >= 0) {
           listRef.current.scrollToItem(virtualRow, "smart");
         }
       } else {
         const virtualIndex = virtualItems.findIndex(
-          (item) => item.item === highlightedItem
+          (item) => item.item === highlightedItem,
         );
 
         if (virtualIndex >= 0) {
@@ -185,7 +185,7 @@ export function useVirtualCombobox<I, V extends VirtualItem<I>>(opts: {
             (e.nativeEvent as any).preventDownshiftDefault = true;
           },
           value: query,
-        })
+        }),
       );
     },
     getComboboxProps,

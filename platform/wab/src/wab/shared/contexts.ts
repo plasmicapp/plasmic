@@ -1,22 +1,22 @@
-import { arrayEq, assert, ensure } from "@/wab/shared/common";
+import { getSlotArgs } from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
 import {
   ContextFactory,
   observeRelevantFields,
 } from "@/wab/shared/code-components/context-factory";
+import { arrayEq, assert, ensure } from "@/wab/shared/common";
 import {
   Arg,
-  isKnownRenderExpr,
   RenderExpr,
   TplComponent,
   TplNode,
+  isKnownRenderExpr,
 } from "@/wab/shared/model/classes";
-import { getSlotArgs } from "@/wab/shared/SlotUtils";
-import { $$$ } from "@/wab/shared/TplQuery";
 
 export function wrapWithContext(
   root: TplComponent,
   contexts: TplComponent[],
-  contextFactory: ContextFactory
+  contextFactory: ContextFactory,
 ): TplNode {
   const persistentContexts = contexts.map((c) => contextFactory.cached(c));
 
@@ -32,13 +32,13 @@ export function wrapWithContext(
       if (!arrayEq(child.expr.tpl, [cur])) {
         $$$(persistentContexts[idx - 1]).setSlotArg(
           "children",
-          new RenderExpr({ tpl: [cur] })
+          new RenderExpr({ tpl: [cur] }),
         );
       }
     } else {
       $$$(persistentContexts[idx - 1]).setSlotArg(
         "children",
-        new RenderExpr({ tpl: [cur] })
+        new RenderExpr({ tpl: [cur] }),
       );
     }
   });
@@ -49,12 +49,12 @@ export function wrapWithContext(
     const lastIndex = persistentContexts.length - 1;
     const param = ensure(
       persistentContexts[lastIndex].component.params.find(
-        (p) => p.variable.name === "children"
+        (p) => p.variable.name === "children",
       ),
-      `global contexts must have a children param`
+      `global contexts must have a children param`,
     );
     const maybeArg = getSlotArgs(persistentContexts[lastIndex]).find(
-      (arg) => arg.param === param
+      (arg) => arg.param === param,
     );
 
     const arg =

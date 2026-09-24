@@ -66,7 +66,7 @@ export const EnableLocalizationModal = observer(
                 await hostFrameApi.updateLocalizationProjectFlags(
                   !isLocalizationEnabled,
                   e.keyScheme,
-                  e.tagPrefix
+                  e.tagPrefix,
                 );
               }
               onDone();
@@ -109,7 +109,7 @@ export const EnableLocalizationModal = observer(
         </FocusScope>
       </Modal>
     );
-  }
+  },
 );
 
 async function canEnableLocalization(appCtx: AppCtx, project: ApiProject) {
@@ -148,7 +148,7 @@ async function canEnableLocalization(appCtx: AppCtx, project: ApiProject) {
   }
 
   await showUpsellConfirm(
-    APP_ROUTES.orgSettings.fill({ teamId: projectTeam.id })
+    APP_ROUTES.orgSettings.fill({ teamId: projectTeam.id }),
   );
   return true;
 }

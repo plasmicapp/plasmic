@@ -24,10 +24,10 @@ export function InitTokenPage(props: InitTokenPageProps) {
           state.loading
             ? "loading"
             : state.error
-            ? "error"
-            : state.value
-            ? "done"
-            : undefined
+              ? "error"
+              : state.value
+                ? "done"
+                : undefined
         }
         onAuthorizeClick={fetch}
       />

@@ -66,7 +66,7 @@ export async function getWorkspace(req: Request, res: Response) {
   const apiWorkspace = mkApiWorkspace(workspace);
   const perms = await userMgr.getPermissionsForWorkspaces([workspaceId]);
   res.json(
-    ensureType<GetWorkspaceResponse>({ workspace: apiWorkspace, perms })
+    ensureType<GetWorkspaceResponse>({ workspace: apiWorkspace, perms }),
   );
 }
 
@@ -85,7 +85,7 @@ export async function getPersonalWorkspace(req: Request, res: Response) {
       ensureType<GetWorkspaceResponse>({
         workspace: apiWorkspace as any,
         perms,
-      })
+      }),
     );
   }
 }
@@ -121,7 +121,7 @@ export async function createWorkspace(req: Request, res: Response) {
       {},
       {
         workspace: apiWorkspace,
-      }
+      },
     );
     if (paywall.paywall === "pass") {
       return commitTransaction(paywall);
@@ -158,7 +158,7 @@ export async function updateWorkspace(req: Request, res: Response) {
           req,
           [createTaggedResourceId("team", apiWorkspace.team.id)],
           {},
-          response
+          response,
         )
       : passPaywall(response);
 

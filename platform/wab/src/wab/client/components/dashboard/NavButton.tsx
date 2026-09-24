@@ -17,8 +17,8 @@ function NavButton_(props: NavButtonProps, ref: HTMLElementRefOf<"a">) {
         as: !props.href
           ? "button"
           : props.href.startsWith("/")
-          ? PublicLink
-          : undefined,
+            ? PublicLink
+            : undefined,
         ref,
       }}
       {...props}

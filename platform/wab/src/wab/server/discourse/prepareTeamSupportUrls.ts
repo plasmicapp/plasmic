@@ -30,7 +30,7 @@ import {
 export async function prepareTeamSupportUrls(
   dbMgr: DbMgr,
   user: User,
-  teamId: TeamId
+  teamId: TeamId,
 ): Promise<ApiTeamSupportUrls> {
   const systemDiscourseClient = createSystemDiscourseClient();
 
@@ -71,7 +71,7 @@ export async function prepareTeamSupportUrls(
   let isOwner: boolean;
   try {
     const userDiscourseClient = createUserDiscourseClient(
-      discourseUser.username
+      discourseUser.username,
     );
     group = (await userDiscourseClient.groupGet(info.slug)).group;
     isMember = group.is_group_user;
@@ -92,14 +92,14 @@ export async function prepareTeamSupportUrls(
       usernames: discourseUser.username,
     });
     logger().info(
-      `Added ${discourseUser.username} as owner of group ${group.name}`
+      `Added ${discourseUser.username} as owner of group ${group.name}`,
     );
   } else if (!isMember) {
     await systemDiscourseClient.groupAddMembers(group.id, {
       usernames: discourseUser.username,
     });
     logger().info(
-      `Added ${discourseUser.username} as member of group ${group.name}`
+      `Added ${discourseUser.username} as member of group ${group.name}`,
     );
   }
 

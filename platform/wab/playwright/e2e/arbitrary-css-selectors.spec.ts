@@ -14,7 +14,7 @@ const checkCssInCanvas = async (
   container: Locator,
   cssProp: string,
   cssPropValue: string,
-  condition = (_index: number) => true
+  condition = (_index: number) => true,
 ) => {
   for (let i = 0; i < items.length; i++) {
     const item = container.locator(`text=Item ${i}`).locator("..");
@@ -31,7 +31,7 @@ const checkCssInPreview = async (
   page: Page,
   cssProp: string,
   cssPropValue: string,
-  condition = (_index: number) => true
+  condition = (_index: number) => true,
 ) => {
   for (let i = 0; i < items.length; i++) {
     const item = page.locator(`text=Item ${i}`);
@@ -56,7 +56,7 @@ test.describe("artbitrary-css-selectors", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -77,7 +77,7 @@ test.describe("artbitrary-css-selectors", () => {
     await models.studio.rightPanel.repeatCollectionButton.click();
     await models.studio.rightPanel.insertMonacoCode(`[${items}]`);
     const disablePane = models.studio.frame.locator(
-      ".canvas-editor__disable-right-pane"
+      ".canvas-editor__disable-right-pane",
     );
     const count = await disablePane.count();
     if (count > 0) {
@@ -94,7 +94,7 @@ test.describe("artbitrary-css-selectors", () => {
     await models.studio.rightPanel.elementVariantsButton.click();
     await models.studio.rightPanel.addElemetVariantsButton.click();
     await models.studio.rightPanel.variantsInput.pressSequentially(
-      ":nth-child(odd)"
+      ":nth-child(odd)",
     );
     await models.studio.rightPanel.variantsInput.press("Enter");
     await models.studio.rightPanel.variantsInput.press("Escape");
@@ -112,7 +112,7 @@ test.describe("artbitrary-css-selectors", () => {
 
     await models.studio.rightPanel.addElemetVariantsButton.click();
     await models.studio.rightPanel.variantsInput.pressSequentially(
-      ":first-child"
+      ":first-child",
     );
     await models.studio.rightPanel.variantsInput.press("Enter");
     await models.studio.rightPanel.variantsInput.press("Escape");
@@ -121,7 +121,7 @@ test.describe("artbitrary-css-selectors", () => {
       pageFrameBody,
       "text-decoration-line",
       "underline",
-      () => false
+      () => false,
     );
 
     await models.studio.rightPanel.underlineTextDecorationButton.click();
@@ -134,7 +134,7 @@ test.describe("artbitrary-css-selectors", () => {
       pageFrameBody,
       "text-decoration-line",
       "underline",
-      (index) => index === 0
+      (index) => index === 0,
     );
 
     await models.studio.rightPanel.addElemetVariantsButton.click();
@@ -146,7 +146,7 @@ test.describe("artbitrary-css-selectors", () => {
       pageFrameBody,
       "font-family",
       "Montserrat, sans-serif",
-      () => false
+      () => false,
     );
 
     await models.studio.rightPanel.fontFamilyInput.click();
@@ -157,7 +157,7 @@ test.describe("artbitrary-css-selectors", () => {
     await checkCssInCanvas(
       pageFrameBody,
       "font-family",
-      "Montserrat, sans-serif"
+      "Montserrat, sans-serif",
     );
 
     // Toggle off the variant (stops recording + deactivates in one action)
@@ -166,7 +166,7 @@ test.describe("artbitrary-css-selectors", () => {
       pageFrameBody,
       "font-family",
       "Montserrat, sans-serif",
-      () => false
+      () => false,
     );
 
     await pageFrame
@@ -179,7 +179,7 @@ test.describe("artbitrary-css-selectors", () => {
       pageFrameBody,
       "font-family",
       "Montserrat, sans-serif",
-      () => false
+      () => false,
     );
 
     await models.studio.withinLiveMode(async (liveFrame) => {
@@ -187,7 +187,7 @@ test.describe("artbitrary-css-selectors", () => {
         liveFrame,
         "text-decoration-line",
         "underline",
-        (index) => index === 0
+        (index) => index === 0,
       );
 
       await liveFrame.locator("text=Item 2").hover();
@@ -195,7 +195,7 @@ test.describe("artbitrary-css-selectors", () => {
         liveFrame,
         "font-family",
         "Montserrat, sans-serif",
-        (index) => index === 2
+        (index) => index === 2,
       );
 
       await checkCssInPreview(liveFrame, "font-size", "30px", isOddChild);

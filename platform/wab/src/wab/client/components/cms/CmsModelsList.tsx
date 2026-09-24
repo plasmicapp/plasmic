@@ -22,7 +22,7 @@ export type CmsModelsListProps = DefaultCmsModelsListProps;
 
 function CmsModelsList_(
   props: CmsModelsListProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const match = useMatchedRoute<{
     databaseId: CmsDatabaseId;
@@ -37,14 +37,14 @@ function CmsModelsList_(
   const matcher = new Matcher(query);
   const tables = database ? sortBy(database.tables, (table) => table.name) : [];
   const searchFilterTables = tables.filter(
-    (t) => matcher.matches(t.name) || matcher.matches(t.identifier)
+    (t) => matcher.matches(t.name) || matcher.matches(t.identifier),
   );
   const [filteredTables, archivedTables] = partition(
     searchFilterTables,
-    (t) => !t.isArchived
+    (t) => !t.isArchived,
   );
   const collapsedState = React.useState(
-    tableId && archivedTables.some((t) => t.id === tableId) ? false : true
+    tableId && archivedTables.some((t) => t.id === tableId) ? false : true,
   );
   return (
     <PlasmicCmsModelsList
@@ -81,7 +81,7 @@ function CmsModelsList_(
             APP_ROUTES.cmsModelSchema.fill({
               databaseId,
               tableId: table.id,
-            })
+            }),
           );
         },
         "data-test-id": "addModelButton",

@@ -61,12 +61,12 @@ export const MenuPlugin: PlumePlugin = {
           Object.assign(impl, getCompMeta()),
           componentProps,
           menuConfig as any,
-          ref
+          ref,
         );
         if (usingDefaultChildren) {
           assert(
             plasmicProps.args.children === usingDefaultChildren,
-            () => `Expected children to match slot stub`
+            () => `Expected children to match slot stub`,
           );
           delete plasmicProps.args.children;
         }
@@ -74,7 +74,7 @@ export const MenuPlugin: PlumePlugin = {
           ...plasmicProps,
           ...internalProps,
         });
-      })
+      }),
     );
   },
 
@@ -99,7 +99,7 @@ export const MenuPlugin: PlumePlugin = {
   genDefaultExternalProps(ctx: SerializerBaseContext, opts) {
     const { component } = ctx;
     const params = getExternalParams(ctx).filter(
-      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name))
+      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name)),
     );
     return `
       export interface ${
@@ -111,8 +111,8 @@ export const MenuPlugin: PlumePlugin = {
               `"${paramToVarName(ctx.component, param)}"?: ${serializeParamType(
                 component,
                 param,
-                ctx.projectFlags
-              )}`
+                ctx.projectFlags,
+              )}`,
           )
           .join(";\n")}
       }
@@ -134,12 +134,12 @@ export const MenuPlugin: PlumePlugin = {
     return `
       import * as React from "react";
       import {${plasmicComponentName}, ${defaultPropsName}} from "${
-      ctx.exportOpts.relPathFromImplToManagedDir
-    }/${makeComponentImportPath(
-      component,
-      ctx,
-      "render"
-    )}";  // plasmic-import: ${component.uuid}/render
+        ctx.exportOpts.relPathFromImplToManagedDir
+      }/${makeComponentImportPath(
+        component,
+        ctx,
+        "render",
+      )}";  // plasmic-import: ${component.uuid}/render
     ${this.genSkeletonImports(ctx).imports}
 
       ${componentSubstitutionApi}
@@ -165,11 +165,11 @@ export const MenuPlugin: PlumePlugin = {
     const { component } = ctx;
     const itemSubComp = ensure(
       component.subComps.find((comp) => comp.plumeInfo?.type === "menu-item"),
-      () => "Expected to find menu-item"
+      () => "Expected to find menu-item",
     );
     const groupSubComp = ensure(
       component.subComps.find((comp) => comp.plumeInfo?.type === "menu-group"),
-      () => "Expected to find menu-group"
+      () => "Expected to find menu-group",
     );
     return `
       {
@@ -182,11 +182,11 @@ export const MenuPlugin: PlumePlugin = {
     const { component } = ctx;
     const itemSubComp = ensure(
       component.subComps.find((comp) => comp.plumeInfo?.type === "menu-item"),
-      () => "Expected to find menu-item"
+      () => "Expected to find menu-item",
     );
     const groupSubComp = ensure(
       component.subComps.find((comp) => comp.plumeInfo?.type === "menu-group"),
-      () => "Expected to find menu-group"
+      () => "Expected to find menu-group",
     );
     return {
       imports: `
@@ -194,12 +194,12 @@ export const MenuPlugin: PlumePlugin = {
         import Item from "./${makeComponentImportPath(
           itemSubComp,
           ctx,
-          "skeleton"
+          "skeleton",
         )}";  // plasmic-import: ${itemSubComp.uuid}/component
         import Group from "./${makeComponentImportPath(
           groupSubComp,
           ctx,
-          "skeleton"
+          "skeleton",
         )}";  // plasmic-import: ${groupSubComp.uuid}/component`,
       refName: "MenuRef",
     };
@@ -208,10 +208,10 @@ export const MenuPlugin: PlumePlugin = {
   getSlotType(component: Component, param: Param) {
     if (param.variable.name === "children") {
       const item = component.subComps.find(
-        (c) => c.plumeInfo?.type === "menu-item"
+        (c) => c.plumeInfo?.type === "menu-item",
       );
       const group = component.subComps.find(
-        (c) => c.plumeInfo?.type === "menu-group"
+        (c) => c.plumeInfo?.type === "menu-group",
       );
       return typeFactory.renderable({
         params: withoutNils([

@@ -30,7 +30,7 @@ describe("Code generation of params", () => {
         getArgsTypeContent({
           ...DEFAULT_CTX,
           component: componentWithParams([]),
-        })
+        }),
       ).toBe("{}");
 
       expect(
@@ -43,7 +43,7 @@ describe("Code generation of params", () => {
               paramType: "prop",
             }),
           ]),
-        })
+        }),
       ).toEqual(`{"param1"?: string;}`);
 
       expect(
@@ -61,7 +61,7 @@ describe("Code generation of params", () => {
               paramType: "slot",
             }),
           ]),
-        })
+        }),
       ).toEqual(`{"param1"?: boolean;\n"param2"?: React.ReactNode;}`);
     });
   });
@@ -72,7 +72,7 @@ describe("Code generation of params", () => {
         serializeArgsType({
           ...DEFAULT_CTX,
           component: componentWithParams([]),
-        })
+        }),
       ).toBe(`
 export type PlasmicComp__ArgsType = {};
 type ArgPropType = keyof PlasmicComp__ArgsType;
@@ -89,7 +89,7 @@ export const PlasmicComp__ArgProps = new Array<ArgPropType>();
               paramType: "prop",
             }),
           ]),
-        })
+        }),
       ).toEqual(`
 export type PlasmicComp__ArgsType = {"param1"?: string;};
 type ArgPropType = keyof PlasmicComp__ArgsType;
@@ -111,7 +111,7 @@ export const PlasmicComp__ArgProps = new Array<ArgPropType>("param1");
               paramType: "slot",
             }),
           ]),
-        })
+        }),
       ).toEqual(`
 export type PlasmicComp__ArgsType = {"param1"?: boolean;\n"param2"?: React.ReactNode;};
 type ArgPropType = keyof PlasmicComp__ArgsType;
@@ -138,7 +138,7 @@ export const PlasmicComp__ArgProps = new Array<ArgPropType>("param1", "param2");
             paramType: "slot",
           }),
         ]),
-      })
+      }),
     ).toEqual(`
 export type PlasmicComp__ArgsType = {"param1"?: boolean;\n"param2"?: React.ReactNode;};
 type ArgPropType = keyof PlasmicComp__ArgsType;

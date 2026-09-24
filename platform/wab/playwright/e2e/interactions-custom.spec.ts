@@ -18,7 +18,7 @@ test.describe("state-management-custom-interactions", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -41,7 +41,7 @@ test.describe("state-management-custom-interactions", () => {
 
     await models.studio.selectInCanvasByText(
       "Go to page2 (dynamic value)",
-      "button"
+      "button",
     );
     await models.studio.rightPanel.addNavigationInteraction("onClick", {
       destination: "`/page2/${$state.count}`",

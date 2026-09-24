@@ -17,7 +17,7 @@ test.describe("interactions-variants", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -46,26 +46,26 @@ test.describe("interactions-variants", () => {
     await page.waitForTimeout(1000);
 
     const actionDropdown = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="action-name"]'
+      '[data-plasmic-prop="action-name"]',
     );
     await actionDropdown.click();
 
     const updateVariantOption = models.studio.rightPanel.frame.locator(
-      'span:text-is("Update variant")'
+      'span:text-is("Update variant")',
     );
     await updateVariantOption.waitFor({ state: "visible", timeout: 5000 });
     await updateVariantOption.click();
     await page.waitForTimeout(500);
 
     const vgroupDropdown = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="vgroup"]'
+      '[data-plasmic-prop="vgroup"]',
     );
     await vgroupDropdown.click();
     await page.keyboard.type("advanced");
     await page.keyboard.press("Enter");
 
     const operationDropdown = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="operation"]'
+      '[data-plasmic-prop="operation"]',
     );
     await operationDropdown.click();
     await page.keyboard.type("Toggle variant");
@@ -86,26 +86,26 @@ test.describe("interactions-variants", () => {
     await page.waitForTimeout(1000);
 
     const actionDropdown2 = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="action-name"]'
+      '[data-plasmic-prop="action-name"]',
     );
     await actionDropdown2.click();
 
     const updateVariantOption2 = models.studio.rightPanel.frame.locator(
-      'span:text-is("Update variant")'
+      'span:text-is("Update variant")',
     );
     await updateVariantOption2.waitFor({ state: "visible", timeout: 5000 });
     await updateVariantOption2.click();
     await page.waitForTimeout(500);
 
     const vgroupDropdown2 = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="vgroup"]'
+      '[data-plasmic-prop="vgroup"]',
     );
     await vgroupDropdown2.click();
     await page.keyboard.type("advanced");
     await page.keyboard.press("Enter");
 
     const operationDropdown2 = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="operation"]'
+      '[data-plasmic-prop="operation"]',
     );
     await operationDropdown2.click();
     await page.keyboard.type("Activate variant");
@@ -126,26 +126,26 @@ test.describe("interactions-variants", () => {
     await page.waitForTimeout(1000);
 
     const actionDropdown3 = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="action-name"]'
+      '[data-plasmic-prop="action-name"]',
     );
     await actionDropdown3.click();
 
     const updateVariantOption3 = models.studio.rightPanel.frame.locator(
-      'span:text-is("Update variant")'
+      'span:text-is("Update variant")',
     );
     await updateVariantOption3.waitFor({ state: "visible", timeout: 5000 });
     await updateVariantOption3.click();
     await page.waitForTimeout(500);
 
     const vgroupDropdown3 = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="vgroup"]'
+      '[data-plasmic-prop="vgroup"]',
     );
     await vgroupDropdown3.click();
     await page.keyboard.type("advanced");
     await page.keyboard.press("Enter");
 
     const operationDropdown3 = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="operation"]'
+      '[data-plasmic-prop="operation"]',
     );
     await operationDropdown3.click();
     await page.keyboard.type("Deactivate variant");
@@ -192,7 +192,7 @@ test.describe("interactions-variants", () => {
     await models.studio.switchArena("single variant interactions");
 
     const allFrames = models.studio.frame.frameLocator(
-      ".canvas-editor__viewport[data-test-frame-uid]"
+      ".canvas-editor__viewport[data-test-frame-uid]",
     );
 
     button = allFrames
@@ -211,12 +211,12 @@ test.describe("interactions-variants", () => {
     await page.waitForTimeout(500);
 
     const actionDropdownRed = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="action-name"]'
+      '[data-plasmic-prop="action-name"]',
     );
     await actionDropdownRed.click({ force: true });
 
     const updateVariantOptionRed = models.studio.rightPanel.frame.locator(
-      'span:text-is("Update variant")'
+      'span:text-is("Update variant")',
     );
     await updateVariantOptionRed.waitFor({ state: "visible", timeout: 5000 });
     await updateVariantOptionRed.click({ force: true });
@@ -239,13 +239,13 @@ test.describe("interactions-variants", () => {
       .last();
     await actionDropdownGreen.click({ force: true });
     const updateVariantOptionGreen = models.studio.rightPanel.frame.locator(
-      'span:text-is("Update variant")'
+      'span:text-is("Update variant")',
     );
     await updateVariantOptionGreen.waitFor({ state: "visible", timeout: 5000 });
     await updateVariantOptionGreen.click({ force: true });
 
     const valueDropdownGreen = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="value"]'
+      '[data-plasmic-prop="value"]',
     );
     await valueDropdownGreen.click();
     await page.keyboard.type("green");
@@ -269,13 +269,13 @@ test.describe("interactions-variants", () => {
       .last();
     await actionDropdownBlue.click({ force: true });
     const updateVariantOptionBlue = models.studio.rightPanel.frame.locator(
-      'span:text-is("Update variant")'
+      'span:text-is("Update variant")',
     );
     await updateVariantOptionBlue.waitFor({ state: "visible", timeout: 5000 });
     await updateVariantOptionBlue.click({ force: true });
 
     const valueDropdownBlue = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="value"]'
+      '[data-plasmic-prop="value"]',
     );
     await valueDropdownBlue.click();
     await page.keyboard.type("blue");
@@ -299,13 +299,13 @@ test.describe("interactions-variants", () => {
       .last();
     await actionDropdownClear.click({ force: true });
     const updateVariantOptionClear = models.studio.rightPanel.frame.locator(
-      'span:text-is("Update variant")'
+      'span:text-is("Update variant")',
     );
     await updateVariantOptionClear.waitFor({ state: "visible", timeout: 5000 });
     await updateVariantOptionClear.click({ force: true });
 
     const operationDropdownClear = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="operation"]'
+      '[data-plasmic-prop="operation"]',
     );
     await operationDropdownClear.click();
     await page.keyboard.type("Clear");
@@ -381,20 +381,20 @@ test.describe("interactions-variants", () => {
         await actionDropdown.click({ force: true });
 
         const updateVariantOption = models.studio.rightPanel.frame.locator(
-          'span:text-is("Update variant")'
+          'span:text-is("Update variant")',
         );
         await updateVariantOption.waitFor({ state: "visible", timeout: 5000 });
         await updateVariantOption.click({ force: true });
 
         const vgroupDropdown = models.studio.rightPanel.frame.locator(
-          '[data-plasmic-prop="vgroup"]'
+          '[data-plasmic-prop="vgroup"]',
         );
         await vgroupDropdown.click();
         await page.keyboard.type("multiVariant");
         await page.keyboard.press("Enter");
 
         const operationDropdown = models.studio.rightPanel.frame.locator(
-          '[data-plasmic-prop="operation"]'
+          '[data-plasmic-prop="operation"]',
         );
         await operationDropdown.click();
 
@@ -408,7 +408,7 @@ test.describe("interactions-variants", () => {
         await page.keyboard.press("Enter");
 
         const valueDropdown = models.studio.rightPanel.frame.locator(
-          '[data-plasmic-prop="value"]'
+          '[data-plasmic-prop="value"]',
         );
         const hasValueField = (await valueDropdown.count()) > 0;
         if (hasValueField) {
@@ -439,20 +439,20 @@ test.describe("interactions-variants", () => {
     await actionDropdownClear.click({ force: true });
 
     const updateVariantOptionClear = models.studio.rightPanel.frame.locator(
-      'span:text-is("Update variant")'
+      'span:text-is("Update variant")',
     );
     await updateVariantOptionClear.waitFor({ state: "visible", timeout: 5000 });
     await updateVariantOptionClear.click({ force: true });
 
     const vgroupDropdownClear = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="vgroup"]'
+      '[data-plasmic-prop="vgroup"]',
     );
     await vgroupDropdownClear.click();
     await page.keyboard.type("multiVariant");
     await page.keyboard.press("Enter");
 
     const operationDropdownClear = models.studio.rightPanel.frame.locator(
-      '[data-plasmic-prop="operation"]'
+      '[data-plasmic-prop="operation"]',
     );
     await operationDropdownClear.click();
     await page.keyboard.type("Clear");
@@ -549,7 +549,7 @@ test.describe("interactions-variants", () => {
             break;
           case "multiDeactivate":
             currentVariants = currentVariants.filter(
-              (v) => !button.variants.includes(v)
+              (v) => !button.variants.includes(v),
             );
             break;
           case "clear":
@@ -565,7 +565,7 @@ test.describe("interactions-variants", () => {
         } else {
           for (const v of currentVariants) {
             await expect(liveFrame.locator("body")).toContainText(
-              `${v} variant`
+              `${v} variant`,
             );
           }
         }

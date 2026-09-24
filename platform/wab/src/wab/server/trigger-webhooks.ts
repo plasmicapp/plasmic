@@ -14,7 +14,7 @@ import { AxiosError, Method } from "axios";
 export async function triggerWebhook(
   mgr: DbMgr,
   projectId: string,
-  webhook: Omit<ApiProjectWebhook, "id" | "includeChangeData">
+  webhook: Omit<ApiProjectWebhook, "id" | "includeChangeData">,
 ) {
   const response = await triggerWebhookOnly(webhook);
   const method = webhook.method as Method;
@@ -23,7 +23,7 @@ export async function triggerWebhook(
 }
 
 export async function triggerWebhookOnly(
-  webhook: Omit<ApiProjectWebhook, "id" | "includeChangeData">
+  webhook: Omit<ApiProjectWebhook, "id" | "includeChangeData">,
 ) {
   const method = webhook.method as Method;
   const url = webhook.url;
@@ -70,7 +70,7 @@ async function addEvent(
   projectId: string,
   method: string,
   url: string,
-  response: { status: number; data: string }
+  response: { status: number; data: string },
 ) {
   return await mgr.createProjectWebhookEvent({
     projectId,
@@ -83,7 +83,7 @@ async function addEvent(
 
 export async function mkWebhookPagesModified(
   mgr: DbMgr,
-  projectId: ProjectId
+  projectId: ProjectId,
 ): Promise<ExternalChangeData> {
   const pkg = await mgr.getPkgByProjectId(projectId);
   if (!pkg) {
@@ -96,7 +96,7 @@ export async function mkWebhookPagesModified(
     projectId,
     undefined,
     pkg?.id,
-    2
+    2,
   );
   if (latestPkgVersionIds.length !== 2) {
     return {
@@ -114,8 +114,8 @@ export async function mkWebhookPagesModified(
           throw new NotFoundError(`PkgVersion ${id} not found`);
         }
         return (await unbundlePkgVersion(mgr, bundler, pkgVersion)).site;
-      })
-    )
+      }),
+    ),
   );
 
   if (sites.length !== 2) {

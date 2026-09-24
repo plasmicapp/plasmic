@@ -80,7 +80,7 @@ describe("renameTpl", () => {
     expect(result).toEqual(
       err({
         message: "Instances of components with public states must be named.",
-      })
+      }),
     );
     expect(tplComponent.name).toEqual("myInput");
   });

@@ -22,7 +22,7 @@ function getOptions(listValues?: ListValues): MultiSelectOption[] {
   return listValues.map((item: ListItem | string | number) =>
     typeof item === "object"
       ? { value: String(item.value), title: String(item.title ?? item.value) }
-      : { value: item, title: String(item) }
+      : { value: item, title: String(item) },
   );
 }
 
@@ -30,7 +30,7 @@ export function MultiSelectEditor(props: Props) {
   const { value, setValue, fieldDefinition } = props;
 
   const options = getOptions(
-    (fieldDefinition?.fieldSettings as SelectFieldSettings)?.listValues
+    (fieldDefinition?.fieldSettings as SelectFieldSettings)?.listValues,
   );
 
   const selectedValues = value ?? [];
@@ -40,10 +40,10 @@ export function MultiSelectEditor(props: Props) {
       className="right-panel-input-background__no-height fill-width"
       options={options.filter(
         (option) =>
-          !(selectedValues as (string | number)[]).includes(option.value)
+          !(selectedValues as (string | number)[]).includes(option.value),
       )}
       selectedItems={withoutNils(
-        selectedValues.map((val) => options.find((op) => op.value === val))
+        selectedValues.map((val) => options.find((op) => op.value === val)),
       )}
       itemKey={(item) => (item ? JSON.stringify(item.value) : "")}
       onSelect={(item) => {
@@ -60,7 +60,7 @@ export function MultiSelectEditor(props: Props) {
           return _options;
         }
         return _options.filter((op) =>
-          op.title.toLowerCase().includes(input.toLowerCase())
+          op.title.toLowerCase().includes(input.toLowerCase()),
         );
       }}
       renderOption={(option) => option.title}

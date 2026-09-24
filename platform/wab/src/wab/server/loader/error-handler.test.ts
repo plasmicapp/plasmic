@@ -30,8 +30,8 @@ render__simple.tsx:69:71: ERROR: Could not resolve "./comp__missing"`,
               projectId: "P2",
               projectName: "Project2",
             },
-          ]
-        )
+          ],
+        ),
       ).toEqual(
         `
 Found 2 errors while bundling the components:
@@ -46,7 +46,7 @@ They are hidden (prefixed with an underscore) or the plasmic-init configuration 
 
 Please make sure that the components are correctly referenced in the Studio.
 Contact support if you need help.
-      `.trim()
+      `.trim(),
       );
 
       expect(
@@ -60,8 +60,8 @@ render__target.tsx:69:71: ERROR: Could not resolve "./comp__missing"`,
               projectId: "P1",
               projectName: "Project1",
             },
-          ]
-        )
+          ],
+        ),
       ).toEqual(
         `
 Found 1 errors while bundling the components:
@@ -74,7 +74,7 @@ They are hidden (prefixed with an underscore) or the plasmic-init configuration 
 
 Please make sure that the components are correctly referenced in the Studio.
 Contact support if you need help.
-      `.trim()
+      `.trim(),
       );
 
       expect(
@@ -94,8 +94,8 @@ render___with-underscore.tsx:69:71: ERROR: Could not resolve "./comp___miss-unde
               projectId: "P2",
               projectName: "Project2",
             },
-          ]
-        )
+          ],
+        ),
       ).toEqual(
         `
 Found 1 errors while bundling the components:
@@ -109,7 +109,7 @@ They are hidden (prefixed with an underscore) or the plasmic-init configuration 
 
 Please make sure that the components are correctly referenced in the Studio.
 Contact support if you need help.
-      `.trim()
+      `.trim(),
       );
     });
   });
@@ -121,16 +121,16 @@ Contact support if you need help.
           `Build failed with 1 error:
 render__p_qAnx7Cavdb.tsx:69:71: ERROR: Could not resolve "./comp__xeF6Jn1vylil"
 render__p_qAnx7Cavdb.tsx:69:71: ERROR: Could not resolve "./comp__xeF6Jn1vylil"
-render__p_qAnx7Cazcg.tsx:69:71: ERROR: Could not resolve "./comp__xeF6Jn1vylil"`
-        )
+render__p_qAnx7Cazcg.tsx:69:71: ERROR: Could not resolve "./comp__xeF6Jn1vylil"`,
+        ),
       ).toEqual(["render__p_qAnx7Cavdb.tsx", "render__p_qAnx7Cazcg.tsx"]);
 
       expect(
         getAllTsxFilesFromString(
           `Build failed with 1 error:
 render___qAnx7Cavd-A.tsx:69:71: ERROR: Could not resolve "./comp__xeF6Jn1vylil"
-render___FXwY-Sc1orN.tsx:69:71: ERROR: Could not resolve "./comp__xeF6Jn1vylil"`
-        )
+render___FXwY-Sc1orN.tsx:69:71: ERROR: Could not resolve "./comp__xeF6Jn1vylil"`,
+        ),
       ).toEqual(["render___qAnx7Cavd-A.tsx", "render___FXwY-Sc1orN.tsx"]);
     });
   });

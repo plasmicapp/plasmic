@@ -11,13 +11,13 @@ export function undoChanges(changes: ModelChange[]) {
       if (
         arrayEq(
           change.object.slice(change.index, change.index + change.added.length),
-          change.added
+          change.added,
         )
       ) {
         change.object.splice(
           change.index,
           change.added.length,
-          ...change.removed
+          ...change.removed,
         );
       } else {
         // If the array has changed (e.g. by someone else) it can be tricky
@@ -26,12 +26,12 @@ export function undoChanges(changes: ModelChange[]) {
         // at the provided index.
         removeWhere(
           change.object,
-          (v) => change.added.includes(v) || change.removed.includes(v)
+          (v) => change.added.includes(v) || change.removed.includes(v),
         );
         change.object.splice(
           Math.min(change.index, change.object.length),
           0,
-          ...change.removed
+          ...change.removed,
         );
       }
     } else if (change.type === "array-update") {
@@ -46,7 +46,7 @@ export function undoChanges(changes: ModelChange[]) {
         // and don't update it.
         // TODO: We might need a better approach.
         const indexes = range(change.object.length).filter(
-          (v) => v === change.newValue
+          (v) => v === change.newValue,
         );
         // We might have several indexes, e.g., if it's an array of strings (but
         // hopefully at most one when it's an array of instances).

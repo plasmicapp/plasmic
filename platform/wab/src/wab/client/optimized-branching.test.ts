@@ -50,7 +50,7 @@ async function observedTestMerge({
   const bundle = bundler.bundle(
     typeof ancestorSite === "function" ? ancestorSite() : ancestorSite,
     ancestorUuid,
-    lastBundleVersion
+    lastBundleVersion,
   );
 
   const aUuid = mkUuid();
@@ -61,7 +61,7 @@ async function observedTestMerge({
     () => {
       a(draftASite, new TplMgr({ site: draftASite }));
       return ok();
-    }
+    },
   );
   studioCtxA.dispose();
 
@@ -73,7 +73,7 @@ async function observedTestMerge({
     () => {
       b(draftBSite, new TplMgr({ site: draftBSite }));
       return ok();
-    }
+    },
   );
   studioCtxB.dispose();
 
@@ -100,7 +100,7 @@ describe("Optimized merging with updatedAt", () => {
 
       function mkComponentWithUpdatedAt(
         uuid: string,
-        updatedAt: number | undefined | null
+        updatedAt: number | undefined | null,
       ) {
         const comp = mkComponent({
           name: "component",
@@ -141,11 +141,11 @@ describe("Optimized merging with updatedAt", () => {
       const updatedComponents = inferUpdatedComponents(
         ancestorSite,
         leftSite,
-        rightSite
+        rightSite,
       );
       // Only c6 is not updated because it's the same in all branches
       expect(updatedComponents).toEqual(
-        new Set(["c1", "c2", "c3", "c4", "c5"])
+        new Set(["c1", "c2", "c3", "c4", "c5"]),
       );
     });
   });
@@ -182,7 +182,7 @@ describe("Optimized merging with updatedAt", () => {
             new VariantedValue({
               value: mkTokenRef(site.styleTokens[0]),
               variants: [site.globalVariantGroups[0].variants[0]],
-            })
+            }),
           );
         },
         changeUpdatedAt: false,
@@ -193,7 +193,7 @@ describe("Optimized merging with updatedAt", () => {
       expect(
         result.mergedSite.components[0].tplTree.vsettings[0].rs.values[
           "line-height"
-        ]
+        ],
       ).toEqual(tokenRef!);
     });
 
@@ -203,7 +203,7 @@ describe("Optimized merging with updatedAt", () => {
         a: (site) => {
           const comp = ensure(
             site.components.find((c) => c.name === "HasSlots"),
-            () => "Couldn't find HasSlots"
+            () => "Couldn't find HasSlots",
           );
           let tplSlot: TplSlot = undefined as any;
           flattenTpls(comp.tplTree).forEach((tpl) => {
@@ -217,13 +217,13 @@ describe("Optimized merging with updatedAt", () => {
               name: "append",
               baseVariant,
               variants: [mkVariantSetting({ variants: [baseVariant] })],
-            })
+            }),
           );
         },
         b: (site) => {
           const comp = ensure(
             site.components.find((c) => c.name === "HasSlots"),
-            () => "Couldn't find HasSlots"
+            () => "Couldn't find HasSlots",
           );
           let tplSlot: TplSlot = undefined as any;
           flattenTpls(comp.tplTree).forEach((tpl) => {
@@ -237,7 +237,7 @@ describe("Optimized merging with updatedAt", () => {
               name: "prepend",
               baseVariant,
               variants: [mkVariantSetting({ variants: [baseVariant] })],
-            })
+            }),
           );
         },
         changeUpdatedAt: false,
@@ -245,19 +245,19 @@ describe("Optimized merging with updatedAt", () => {
 
       const comp = ensure(
         result.mergedSite.components.find((c) => c.name === "HasSlots"),
-        () => "Couldn't find HasSlots"
+        () => "Couldn't find HasSlots",
       );
       const tplSlot = ensure(
         flattenTpls(comp.tplTree).find(
           (tpl): tpl is TplSlot =>
-            isKnownTplSlot(tpl) && tpl.param.variable.name === "slot1"
+            isKnownTplSlot(tpl) && tpl.param.variable.name === "slot1",
         ),
-        () => "Couldn't find slot1"
+        () => "Couldn't find slot1",
       );
 
       // Changes weren't applied since the updatedAt didn't change
       expect(
-        tplSlot.defaultContents.map((c) => isTplNamable(c) && c.name)
+        tplSlot.defaultContents.map((c) => isTplNamable(c) && c.name),
       ).toEqual(["defaultContent"]);
     });
   });
@@ -290,7 +290,7 @@ describe("Optimized merging with updatedAt", () => {
             new VariantedValue({
               value: mkTokenRef(site.styleTokens[0]),
               variants: [site.globalVariantGroups[0].variants[0]],
-            })
+            }),
           );
         },
       });
@@ -298,11 +298,11 @@ describe("Optimized merging with updatedAt", () => {
       expect(
         result.mergedSite.components[0].tplTree.vsettings[0].rs.values[
           "line-height"
-        ]
+        ],
       ).toEqual("1");
 
       expect(result.mergedSite.components[0].updatedAt).not.toEqual(
-        initialUpdatedAt
+        initialUpdatedAt,
       );
     });
 
@@ -312,7 +312,7 @@ describe("Optimized merging with updatedAt", () => {
         a: (site) => {
           const comp = ensure(
             site.components.find((c) => c.name === "HasSlots"),
-            () => "Couldn't find HasSlots"
+            () => "Couldn't find HasSlots",
           );
           let tplSlot: TplSlot = undefined as any;
           flattenTpls(comp.tplTree).forEach((tpl) => {
@@ -326,13 +326,13 @@ describe("Optimized merging with updatedAt", () => {
               name: "append",
               baseVariant,
               variants: [mkVariantSetting({ variants: [baseVariant] })],
-            })
+            }),
           );
         },
         b: (site) => {
           const comp = ensure(
             site.components.find((c) => c.name === "HasSlots"),
-            () => "Couldn't find HasSlots"
+            () => "Couldn't find HasSlots",
           );
           let tplSlot: TplSlot = undefined as any;
           flattenTpls(comp.tplTree).forEach((tpl) => {
@@ -346,26 +346,26 @@ describe("Optimized merging with updatedAt", () => {
               name: "prepend",
               baseVariant,
               variants: [mkVariantSetting({ variants: [baseVariant] })],
-            })
+            }),
           );
         },
       });
 
       const comp = ensure(
         result.mergedSite.components.find((c) => c.name === "HasSlots"),
-        () => "Couldn't find HasSlots"
+        () => "Couldn't find HasSlots",
       );
       const tplSlot = ensure(
         flattenTpls(comp.tplTree).find(
           (tpl): tpl is TplSlot =>
-            isKnownTplSlot(tpl) && tpl.param.variable.name === "slot1"
+            isKnownTplSlot(tpl) && tpl.param.variable.name === "slot1",
         ),
-        () => "Couldn't find slot1"
+        () => "Couldn't find slot1",
       );
 
       // Changes weren't applied since the updatedAt didn't change
       expect(
-        tplSlot.defaultContents.map((c) => isTplNamable(c) && c.name)
+        tplSlot.defaultContents.map((c) => isTplNamable(c) && c.name),
       ).toEqual(["prepend", "defaultContent", "append"]);
     });
   });

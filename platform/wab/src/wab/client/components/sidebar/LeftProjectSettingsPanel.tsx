@@ -69,13 +69,13 @@ const LeftProjectSettingsPanel = observer(function LeftProjectSettingsPanel_() {
   const globalContextDependencies = walkDependencyTree(studioCtx.site, "all")
     .filter(
       (dep) =>
-        dep.site.components.filter((c) => isContextCodeComponent(c)).length > 0
+        dep.site.components.filter((c) => isContextCodeComponent(c)).length > 0,
     )
     .map((dep) => {
       return {
         dep,
         globalContexts: dep.site.components.filter((c) =>
-          isContextCodeComponent(c)
+          isContextCodeComponent(c),
         ),
       };
     });
@@ -85,7 +85,7 @@ const LeftProjectSettingsPanel = observer(function LeftProjectSettingsPanel_() {
       ...studioCtx.site.components.filter((c) => isContextCodeComponent(c)),
       ...globalContextDependencies.flatMap((dep) => dep.globalContexts),
     ],
-    (a, b) => a.name === b.name
+    (a, b) => a.name === b.name,
   );
 
   const tplComponents = studioCtx.site.globalContexts;
@@ -95,10 +95,10 @@ const LeftProjectSettingsPanel = observer(function LeftProjectSettingsPanel_() {
     orderedContexts.push({
       component: ensure(
         contexts.find((c) => c === tpl.component),
-        "Couldn't find context for component " + tpl.component.name
+        "Couldn't find context for component " + tpl.component.name,
       ),
       projectDependency: globalContextDependencies.find((dep) =>
-        dep.globalContexts.find((c) => c === tpl.component)
+        dep.globalContexts.find((c) => c === tpl.component),
       )?.dep,
     });
   }
@@ -139,11 +139,11 @@ const ContextsList = observer(function ContextsList_(props: {
 
   const readOnly = studioCtx.getLeftTabPermission("settings") === "readable";
   const filteredContexts = contexts.filter((c) =>
-    matcher.matches(getComponentDisplayName(c.component))
+    matcher.matches(getComponentDisplayName(c.component)),
   );
 
   const filteredTplComponents = props.tplComponents.filter((tpl) =>
-    matcher.matches(getComponentDisplayName(tpl.component))
+    matcher.matches(getComponentDisplayName(tpl.component)),
   );
 
   return (
@@ -154,7 +154,7 @@ const ContextsList = observer(function ContextsList_(props: {
             firstIndex: number,
             secondIndex: number,
             realArray: any[],
-            array: any[]
+            array: any[],
           ) => {
             const fromRealIndex = realArray.indexOf(array[firstIndex]);
 
@@ -167,7 +167,7 @@ const ContextsList = observer(function ContextsList_(props: {
             fromIndex,
             toIndex,
             tplComponents,
-            filteredTplComponents
+            filteredTplComponents,
           );
         })
       }
@@ -208,7 +208,7 @@ const ContextRow = observer(function ContextRow_(props: {
   const [isVisible, setIsVisible] = React.useState(false);
   const hasParams =
     getRealParams(tplComponent.component).filter(
-      (param) => param.origin !== ComponentPropOrigin.ReactHTMLAttributes
+      (param) => param.origin !== ComponentPropOrigin.ReactHTMLAttributes,
     ).length > 0;
   const componentName = getComponentDisplayName(context.component);
 
@@ -235,14 +235,14 @@ const ContextRow = observer(function ContextRow_(props: {
               studioCtx.projectDependencyManager.getHostLessPackageDependents(
                 ensure(
                   context.projectDependency,
-                  "Should only show this menu if there is a dependency for the context"
-                ).pkgId
+                  "Should only show this menu if there is a dependency for the context",
+                ).pkgId,
               );
 
             if (hostLessDependents.length > 0) {
               notification.error({
                 message: `Cannot remove package, the package is a dependency of the following packages: ${hostLessDependents.join(
-                  ","
+                  ",",
                 )}`,
               });
               return;
@@ -252,7 +252,7 @@ const ContextRow = observer(function ContextRow_(props: {
               studioCtx: studioCtx,
               curDep: ensure(
                 context.projectDependency,
-                "Should only show this menu if there is a dependency for the context"
+                "Should only show this menu if there is a dependency for the context",
               ),
             });
 
@@ -260,8 +260,8 @@ const ContextRow = observer(function ContextRow_(props: {
               await studioCtx.projectDependencyManager.removeByPkgId(
                 ensure(
                   context.projectDependency,
-                  "Should only show this menu if there is a dependency for the context"
-                ).pkgId
+                  "Should only show this menu if there is a dependency for the context",
+                ).pkgId,
               );
             }
           }}
@@ -317,7 +317,7 @@ const ContextPropEditor = observer(function ContextPropEditor_(props: {
       .filter(
         (arg) =>
           !isSlot(arg.param) &&
-          !findVariantGroupForParam(tpl.component, arg.param)
+          !findVariantGroupForParam(tpl.component, arg.param),
       )
       .map((arg) => [
         paramToVarName(tpl.component, arg.param),
@@ -326,9 +326,9 @@ const ContextPropEditor = observer(function ContextPropEditor_(props: {
             projectFlags: studioCtx.projectFlags(),
             component,
             inStudio: true,
-          })
+          }),
         ),
-      ])
+      ]),
   );
 
   const params = getRealParams(tpl.component).filter((param) => {
@@ -351,7 +351,7 @@ const ContextPropEditor = observer(function ContextPropEditor_(props: {
     if (isPlainObjectPropType(propType) && propType.type !== "slot") {
       const objPropType = propType;
       return !swallow(() =>
-        objPropType.hidden?.(componentProps, null, { path: [] })
+        objPropType.hidden?.(componentProps, null, { path: [] }),
       );
     }
     return param.origin !== ComponentPropOrigin.ReactHTMLAttributes;
@@ -388,7 +388,7 @@ const ContextPropEditor = observer(function ContextPropEditor_(props: {
 
               const tplMgr = studioCtx.tplMgr();
               const arg = tpl.vsettings[0].args.find(
-                (_arg) => _arg.param === p
+                (_arg) => _arg.param === p,
               );
               const curExpr =
                 maybe(arg, (x) => x.expr) || p.defaultExpr || undefined;
@@ -402,7 +402,7 @@ const ContextPropEditor = observer(function ContextPropEditor_(props: {
                     };
 
               const exprLit = curExpr
-                ? tryExtractJson(curExpr) ?? curExpr
+                ? (tryExtractJson(curExpr) ?? curExpr)
                 : undefined;
               return {
                 collapsible:
@@ -433,8 +433,8 @@ const ContextPropEditor = observer(function ContextPropEditor_(props: {
                                     tplMgr.delArg(
                                       tpl,
                                       tpl.vsettings[0],
-                                      p.variable
-                                    ) && ok()
+                                      p.variable,
+                                    ) && ok(),
                                 )
                               }
                             >
@@ -464,10 +464,10 @@ const ContextPropEditor = observer(function ContextPropEditor_(props: {
                                 tpl,
                                 tpl.vsettings[0],
                                 p.variable,
-                                newExpr
+                                newExpr,
                               );
                               return ok();
-                            })
+                            }),
                           );
                           studioCtx.closeGlobalContextNotificationForStarters();
                         }}

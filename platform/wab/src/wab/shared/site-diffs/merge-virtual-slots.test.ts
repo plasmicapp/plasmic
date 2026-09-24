@@ -24,13 +24,13 @@ beforeAll(async () => {
 function getComponentInstance(site: Site) {
   const homepage = ensure(
     site.components.find((c) => c.name === "/"),
-    "Couldn't find Homepage"
+    "Couldn't find Homepage",
   );
   const instance = ensure(
     flattenComponent(homepage).find(
-      (tpl) => isTplNamable(tpl) && tpl.name === "wrappedInstance"
+      (tpl) => isTplNamable(tpl) && tpl.name === "wrappedInstance",
     ),
-    "Couldn't find wrappedInstance"
+    "Couldn't find wrappedInstance",
   );
 
   assert(isKnownTplComponent(instance), "Found instance is not of a component");
@@ -41,37 +41,37 @@ function getComponentInstance(site: Site) {
 function getSlotParamContent(
   ancestorInstance: TplComponent,
   mergedInstance: TplComponent,
-  slot: "target" | "content"
+  slot: "target" | "content",
 ) {
   const ancestorParam = ensure(
     getParamByVarName(ancestorInstance.component, slot),
-    `Couldn't find ancestor ${slot} param`
+    `Couldn't find ancestor ${slot} param`,
   );
 
   const mergedParam = ensure(
     getParamByVarName(mergedInstance.component, slot),
-    `Couldn't find merged ${slot} param`
+    `Couldn't find merged ${slot} param`,
   );
 
   expect(ancestorParam.uuid).toEqual(mergedParam.uuid);
 
   const ancestorSlot = ensure(
     getSlotArg(ancestorInstance, ancestorParam),
-    `Couldn't find ancestor ${slot} slot`
+    `Couldn't find ancestor ${slot} slot`,
   ).expr;
   const mergedSlot = ensure(
     getSlotArg(mergedInstance, mergedParam),
-    `Couldn't find merged ${slot} slot`
+    `Couldn't find merged ${slot} slot`,
   ).expr;
 
   assert(
     isKnownVirtualRenderExpr(ancestorSlot),
-    `Ancestor ${slot} content should be virtual render expr`
+    `Ancestor ${slot} content should be virtual render expr`,
   );
 
   assert(
     isKnownVirtualRenderExpr(mergedSlot),
-    `Merged ${slot} content should be virtual render expr`
+    `Merged ${slot} content should be virtual render expr`,
   );
 
   return {
@@ -107,7 +107,7 @@ describe("Merging virtual slots", () => {
      * site instance in `WrappedComp`
      */
     const result = testMergeFromJsonBundle(
-      hackyCast<ProjectFullDataResponse>(defaultSlotChangeBundle)
+      hackyCast<ProjectFullDataResponse>(defaultSlotChangeBundle),
     );
 
     expect(result).toMatchObject({
@@ -127,19 +127,19 @@ describe("Merging virtual slots", () => {
 
     // Since this slot wasn't changed, we should expect all the uuids to be the same
     expect(uuidsOfFlattenedTpls(mergedSlotTarget.tpl)).toEqual(
-      uuidsOfFlattenedTpls(ancestorSlotTarget.tpl)
+      uuidsOfFlattenedTpls(ancestorSlotTarget.tpl),
     );
 
     const { ancestorSlot: ancestorSlotContent, mergedSlot: mergedSlotContent } =
       getSlotParamContent(ancestorInstance, mergedInstance, "content");
 
     const uuidsAncestorSlotContent = uuidsOfFlattenedTpls(
-      ancestorSlotContent.tpl
+      ancestorSlotContent.tpl,
     );
     const uuidsMergedSlotContent = uuidsOfFlattenedTpls(mergedSlotContent.tpl);
 
     expect(uuidsAncestorSlotContent.length).toEqual(
-      uuidsMergedSlotContent.length
+      uuidsMergedSlotContent.length,
     );
 
     // All the uuids should be different because we changed the default value of the text node in the `content` slot
@@ -147,8 +147,8 @@ describe("Merging virtual slots", () => {
     expect(
       intersectSets(
         new Set(uuidsAncestorSlotContent),
-        new Set(uuidsMergedSlotContent)
-      ).size
+        new Set(uuidsMergedSlotContent),
+      ).size,
     ).toEqual(0);
   });
 });

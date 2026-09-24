@@ -14,7 +14,7 @@ type KeySymbol = (typeof Keys)[keyof typeof Keys];
 export async function typeKeys(
   page: Page,
   entries: (string | KeySymbol)[],
-  delay: number | undefined = 100
+  delay: number | undefined = 100,
 ) {
   for (const entry of entries) {
     if (typeof entry === "symbol") {
@@ -35,7 +35,7 @@ export async function typeKeys(
  */
 export async function pasteIntoMonaco(
   monacoContainer: Locator,
-  text: string
+  text: string,
 ): Promise<void> {
   await monacoContainer
     .locator("textarea.inputarea")
@@ -47,7 +47,7 @@ export async function pasteIntoMonaco(
           bubbles: true,
           cancelable: true,
           clipboardData: dataTransfer,
-        })
+        }),
       );
     }, text);
 }

@@ -35,7 +35,7 @@ export function getSiteComponentsToExport(
       "codeComponentStubs" | "hostLessComponentsConfig"
     >;
     includePages: boolean;
-  }
+  },
 ) {
   const { componentIdOrNames, componentExportOpts, includePages } = opts;
 
@@ -74,15 +74,15 @@ export function getSiteComponentsToExport(
 /** Code components whose imports can be emitted for the selected components. */
 export function getCodeComponentsUsedByExport(
   site: Site,
-  components: readonly Component[]
+  components: readonly Component[],
 ): CodeComponent[] {
   const usedComponents = new Set<Component>(
-    site.globalContexts.map((tpl) => tpl.component)
+    site.globalContexts.map((tpl) => tpl.component),
   );
   for (const component of components) {
     for (const referencedComponent of componentToDeepReferenced(
       component,
-      true
+      true,
     )) {
       usedComponents.add(referencedComponent);
     }
@@ -106,7 +106,7 @@ export function exportSiteComponents(
     forceAllCsr: boolean;
     appAuthProvider?: AppAuthProvider;
     siteGenHelper?: SiteGenHelper;
-  }
+  },
 ) {
   const {
     scheme,
@@ -131,10 +131,10 @@ export function exportSiteComponents(
     site.activeTheme,
     {
       keepAssetRefs: ["files", "public-files"].includes(
-        opts.componentExportOpts.imageOpts.scheme
+        opts.componentExportOpts.imageOpts.scheme,
       ),
       useCssVariables: true,
-    }
+    },
   );
 
   const components = getSiteComponentsToExport(site, {
@@ -146,7 +146,7 @@ export function exportSiteComponents(
   const genComponentBundle = (component: Component) => {
     const componentGenHelper = new ComponentGenHelper(
       siteGenHelper,
-      cssVarResolver
+      cssVarResolver,
     );
     if (scheme === "blackbox") {
       return exportReactPresentational(
@@ -159,7 +159,7 @@ export function exportSiteComponents(
         forceAllCsr,
         appAuthProvider,
         componentExportOpts,
-        siteCtx
+        siteCtx,
       );
     } else {
       return exportReactPlain(
@@ -168,7 +168,7 @@ export function exportSiteComponents(
         site,
         projectConfig,
         componentExportOpts,
-        siteCtx
+        siteCtx,
       );
     }
   };
@@ -182,11 +182,11 @@ export function exportSiteComponents(
     .map(exportCodeComponentConfig);
 
   const customFunctionMetas = site.customFunctions.map((customFunction) =>
-    exportCustomFunctionConfig(customFunction)
+    exportCustomFunctionConfig(customFunction),
   );
 
   const globalVariantGroups = site.globalVariantGroups.filter(
-    (g) => g.variants.length > 0
+    (g) => g.variants.length > 0,
   );
   const globalVariantBundles = [...globalVariantGroups].map((vg) => {
     return exportGlobalVariantGroup(vg, componentExportOpts);
@@ -194,7 +194,7 @@ export function exportSiteComponents(
   const tokens = exportStyleTokens(
     projectConfig.projectId,
     site,
-    siteGenHelper.makeTokenValueResolver()
+    siteGenHelper.makeTokenValueResolver(),
   );
   const iconAssets = site.imageAssets
     .filter((x) => x.type === ImageAssetType.Icon && x.dataUri)
@@ -208,7 +208,7 @@ export function exportSiteComponents(
             (x) =>
               x.type === ImageAssetType.Picture &&
               x.dataUri &&
-              !imagesToFilter.has(x.uuid)
+              !imagesToFilter.has(x.uuid),
           )
           .map((x) => {
             return exportPictureAsset(x, componentExportOpts);

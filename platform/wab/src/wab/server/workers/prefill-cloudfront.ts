@@ -14,15 +14,14 @@ import { uniqBy } from "lodash";
 export async function prefillCloudfront(
   mgr: DbMgr,
   pool: PlasmicWorkerPool,
-  pkgVersionId: string
+  pkgVersionId: string,
 ) {
   await ensureDevFlags(mgr);
   const pkgVersion = await mgr.getPkgVersionById(pkgVersionId);
   const pkg = await mgr.getPkgById(pkgVersion.pkgId);
   const projectId = pkg.projectId;
-  const loaderPublishmentsRaw = await mgr.getRecentLoaderPublishments(
-    projectId
-  );
+  const loaderPublishmentsRaw =
+    await mgr.getRecentLoaderPublishments(projectId);
   const loaderPublishments = uniqBy(loaderPublishmentsRaw, (publishment) =>
     [
       publishment.platform,
@@ -32,11 +31,11 @@ export async function prefillCloudfront(
       publishment.i18nTagPrefix,
       publishment.appDir,
       ...publishment.projectIds,
-    ].join(",")
+    ].join(","),
   );
 
   logger().info(
-    `Pre-filling ${projectId}@${pkgVersion.version} for combinations [${loaderPublishments.map(stringifyPublishment).join(", ")}]`
+    `Pre-filling ${projectId}@${pkgVersion.version} for combinations [${loaderPublishments.map(stringifyPublishment).join(", ")}]`,
   );
 
   for (const publishment of loaderPublishments) {
@@ -44,7 +43,7 @@ export async function prefillCloudfront(
     try {
       const resolvedProjectIdSpecs = await getResolvedProjectVersions(
         mgr,
-        publishment.projectIds
+        publishment.projectIds,
       );
 
       const label = `Pre-filling combo ${comboInfo} resolvedProjectIds=${JSON.stringify(resolvedProjectIdSpecs)} pkgVersionId=${pkgVersionId}`;
@@ -61,7 +60,7 @@ export async function prefillCloudfront(
                 resolvedProjectIdSpecs.map((spec) => {
                   const [pid, version] = spec.split("@");
                   return [pid, mkVersionToSync(version, false)];
-                })
+                }),
               ),
               platform: publishment.platform,
               appDir: publishment.appDir ?? false,
@@ -71,13 +70,13 @@ export async function prefillCloudfront(
                 keyScheme: publishment.i18nKeyScheme ?? undefined,
                 tagPrefix: publishment.i18nTagPrefix ?? undefined,
               },
-            })
+            }),
           );
         },
-        label
+        label,
       );
       logger().info(
-        `Done pre-filling combo ${comboInfo} resolvedProjectIds=${JSON.stringify(resolvedProjectIdSpecs)}`
+        `Done pre-filling combo ${comboInfo} resolvedProjectIds=${JSON.stringify(resolvedProjectIdSpecs)}`,
       );
     } catch (err) {
       // Even if there was an error, continue with remaining combos and mark
@@ -91,7 +90,7 @@ export async function prefillCloudfront(
     pkgVersion.branchId,
     {
       isPrefilled: true,
-    }
+    },
   );
 }
 

@@ -8,7 +8,7 @@ export class BooleanInteractionsArena extends BaseModel {
     readonly setToTrueButton: Locator,
     readonly setToFalseButton: Locator,
     readonly toggleButton: Locator,
-    readonly clearButton: Locator
+    readonly clearButton: Locator,
   ) {
     super(page);
   }
@@ -39,7 +39,7 @@ export class BooleanInteractionsArena extends BaseModel {
       setToTrueButton,
       setToFalseButton,
       toggleButton,
-      clearButton
+      clearButton,
     );
     return instance;
   }

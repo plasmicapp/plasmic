@@ -64,7 +64,7 @@ function getDefaultText(slot: TplSlot, docsCtx: DocsPortalCtx) {
   const vs = ensure(tryGetBaseVariantSetting(textNode));
   const viewCtx = ensure(
     docsCtx.studioCtx.focusedOrFirstViewCtx(),
-    "Missing viewCtx in docs portal"
+    "Missing viewCtx in docs portal",
   );
   return vs.text ? getRichTextContent(vs.text, viewCtx) : "";
 }

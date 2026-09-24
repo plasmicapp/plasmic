@@ -35,7 +35,7 @@ test.describe("conversion-between-modes", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -103,13 +103,13 @@ test.describe("conversion-between-modes", () => {
     await selectFormInOutline(models);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle"
+      "simplified-mode-toggle",
     );
 
     await checkFormValues(expectedFormItems, frame);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle"
+      "simplified-mode-toggle",
     );
 
     await checkFormValues(expectedFormItems, frame);
@@ -181,13 +181,13 @@ test.describe("conversion-between-modes", () => {
     await selectFormInOutline(models);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle"
+      "simplified-mode-toggle",
     );
 
     await checkFormValues(expectedFormItems, frame);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle"
+      "simplified-mode-toggle",
     );
 
     await checkFormValues(expectedFormItems, frame);
@@ -213,13 +213,13 @@ test.describe("conversion-between-modes", () => {
     await checkFormValues(expectedFormItems, frame);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle"
+      "simplified-mode-toggle",
     );
 
     await checkFormValues(expectedFormItems, frame);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle"
+      "simplified-mode-toggle",
     );
 
     await checkFormValues(expectedFormItems, frame);
@@ -243,13 +243,13 @@ test.describe("conversion-between-modes", () => {
     await checkFormValues(expectedFormItems, frame);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle"
+      "simplified-mode-toggle",
     );
 
     await checkFormValues(expectedFormItems, frame);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle"
+      "simplified-mode-toggle",
     );
 
     await checkFormValues(expectedFormItems, frame);
@@ -286,13 +286,13 @@ test.describe("conversion-between-modes", () => {
     await checkFormValues(expectedFormItems, frame);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle"
+      "simplified-mode-toggle",
     );
 
     await checkFormValues(expectedFormItems, frame);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle"
+      "simplified-mode-toggle",
     );
 
     await checkFormValues(expectedFormItems, frame);
@@ -366,13 +366,13 @@ test.describe("conversion-between-modes", () => {
     await checkFormValues(expectedFormItems, frame);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle"
+      "simplified-mode-toggle",
     );
 
     await checkFormValues(expectedFormItems, frame);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle"
+      "simplified-mode-toggle",
     );
 
     await checkFormValues(expectedFormItems, frame);
@@ -418,13 +418,13 @@ test.describe("conversion-between-modes", () => {
     await selectFormInOutline(models);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle"
+      "simplified-mode-toggle",
     );
 
     await checkFormValues(expectedFormItems, frame);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle"
+      "simplified-mode-toggle",
     );
 
     await checkFormValues(expectedFormItems, frame);

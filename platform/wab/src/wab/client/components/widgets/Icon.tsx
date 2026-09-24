@@ -8,7 +8,7 @@ export function Icon(
     monochromeExempt?: boolean;
     icon: SvgIcon;
     size?: number | string;
-  }
+  },
 ) {
   const {
     icon,

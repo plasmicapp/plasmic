@@ -12,7 +12,7 @@ import url from "url";
 
 export function route<
   Pattern extends string,
-  ParamTypes extends ParamData = {}
+  ParamTypes extends ParamData = {},
 >(pattern: Pattern): Route<PathParamsOf<Pattern, ParamTypes>> {
   return new Route(pattern);
 }
@@ -81,7 +81,7 @@ function fixParamData(params: ParamData): ParamData {
           return [key, value];
         }
       })
-      .filter(isNonNil)
+      .filter(isNonNil),
   );
 }
 
@@ -107,7 +107,7 @@ export type PathParamsOf<Pattern extends string, ParamTypes = {}> = Simplify<
  */
 type FindOptional<
   Pattern extends string,
-  ParamTypes
+  ParamTypes,
 > = Pattern extends `${infer Head}{${infer Optional}}${infer Tail}`
   ? FindOptional<Head, ParamTypes> &
       Partial<FindSegments<Optional, ParamTypes, true>> &
@@ -118,7 +118,7 @@ type FindOptional<
 type FindSegments<
   Pattern extends string,
   ParamTypes,
-  IsOptional extends boolean
+  IsOptional extends boolean,
 > = Pattern extends `${infer Head}/${infer Tail}`
   ? MapSegment<Head, ParamTypes, IsOptional> &
       FindSegments<Tail, ParamTypes, IsOptional>
@@ -133,12 +133,14 @@ type FindSegments<
 type MapSegment<
   Segment extends string,
   ParamTypes,
-  IsOptional extends boolean
+  IsOptional extends boolean,
 > = Segment extends `:${infer Name}`
   ? { [K in Name]: ParamValue<Name, ParamTypes> }
   : Segment extends `*${infer Name}`
-  ? { [K in Name]: IsOptional extends true ? string[] : [string, ...string[]] }
-  : {};
+    ? {
+        [K in Name]: IsOptional extends true ? string[] : [string, ...string[]];
+      }
+    : {};
 
 /** Map known params like ":projectId" to ProjectId. */
 type ParamValue<Name extends string, ParamTypes> = Name extends keyof ParamTypes

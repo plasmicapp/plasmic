@@ -20,7 +20,7 @@ interface LeftSearchPanelProps extends DefaultLeftSearchPanelProps {
 
 const LeftSearchPanel = React.forwardRef(function LeftSearchPanel(
   props: LeftSearchPanelProps,
-  outerRef: React.Ref<TextboxRef>
+  outerRef: React.Ref<TextboxRef>,
 ) {
   const {
     wrapperProps,

@@ -77,7 +77,7 @@ async function main() {
   console.log(
     `${keysInCliques.size} keys in cliques (out of ${
       Object.keys(key2prop).length
-    })`
+    })`,
   );
 
   // Filter global/commmon tags
@@ -109,7 +109,7 @@ export interface CompressedReactMeta {
 export const compressedReactMetaString = \`${JSON.stringify(
     compressedReactMeta,
     null,
-    2
+    2,
   )}\`;
 `;
 

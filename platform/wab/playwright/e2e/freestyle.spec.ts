@@ -15,7 +15,7 @@ test.describe("freestyle", () => {
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
-      "!53kr3tz!"
+      "!53kr3tz!",
     );
   });
 
@@ -43,42 +43,42 @@ test.describe("freestyle", () => {
       initX + 10,
       initY + 10,
       imgSize,
-      imgSize
+      imgSize,
     );
 
     await models.studio.plotText(
       framed,
       textLeft + spanInterval * 0,
       initY + 10,
-      "Yang"
+      "Yang",
     );
 
     await models.studio.plotText(
       framed,
       textLeft + spanInterval * 1,
       initY + 10,
-      "@yang"
+      "@yang",
     );
 
     await models.studio.plotText(
       framed,
       textLeft + spanInterval * 2 + 5,
       initY + 10,
-      "23m ago"
+      "23m ago",
     );
 
     await models.studio.plotText(
       framed,
       textLeft,
       initY + 10 + lineHeight * 1,
-      "Hello world!"
+      "Hello world!",
     );
 
     await models.studio.plotText(
       framed,
       textLeft,
       initY + 10 + lineHeight * 2,
-      "3 likes"
+      "3 likes",
     );
 
     await page.keyboard.press("h");
@@ -88,7 +88,7 @@ test.describe("freestyle", () => {
       textLeft - 3,
       initY + 8,
       containerWidth - textLeft + 1,
-      25
+      25,
     );
 
     await page.keyboard.press("v");
@@ -98,7 +98,7 @@ test.describe("freestyle", () => {
       textLeft - 5,
       initY + 5,
       containerWidth - textLeft + 3,
-      80
+      80,
     );
 
     await page.keyboard.press("h");
@@ -108,7 +108,7 @@ test.describe("freestyle", () => {
       initX + 5,
       initY + 3,
       containerWidth - 5,
-      110
+      110,
     );
 
     await models.studio.withinLiveMode(async (liveFrame) => {

@@ -10,17 +10,17 @@ async function stampMigration(em: EntityManager) {
   // MigrationExecutor.getPendingMigrations() implementation is buggy, and so
   // we do our own here :-/
   const executedMigrationNames = new Set(
-    (await migrator.getExecutedMigrations()).map((m) => m.name)
+    (await migrator.getExecutedMigrations()).map((m) => m.name),
   );
   const allMigrations = await migrator.getAllMigrations();
   const pendingMigrations = allMigrations.filter(
-    (m) => !executedMigrationNames.has(m.name)
+    (m) => !executedMigrationNames.has(m.name),
   );
   const driverOptions = conn.driver.options as PostgresConnectionOptions;
   const tableName = conn.driver.buildTableName(
     conn.options.migrationsTableName || "migrations",
     driverOptions.schema,
-    driverOptions.database
+    driverOptions.database,
   );
   const qb = em.createQueryBuilder();
   for (const m of pendingMigrations) {

@@ -12,8 +12,7 @@ import { canEditDataSource } from "@/wab/shared/perms";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
-export interface WorkspaceDataSourcesProps
-  extends DefaultWorkspaceDataSourcesProps {
+export interface WorkspaceDataSourcesProps extends DefaultWorkspaceDataSourcesProps {
   workspaceId: WorkspaceId;
   appCtx: AppCtx;
   dataSources: ApiDataSource[];
@@ -34,7 +33,7 @@ function WorkspaceDataSources_(
     onUpdate,
     ...props
   }: WorkspaceDataSourcesProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   const [isEditing, setIsEditing] = React.useState<"new" | ApiDataSource>();
   const allowNewDataSources = appCtx.appConfig.enableDataQueries;
@@ -58,7 +57,7 @@ function WorkspaceDataSources_(
                       !canEditDataSource(
                         source.ownerId,
                         appCtx.selfInfo?.id,
-                        workspaceAccessLevel
+                        workspaceAccessLevel,
                       )
                     }
                     matcher={matcher}
@@ -92,7 +91,7 @@ function WorkspaceDataSources_(
               canEditDataSource(
                 isEditing.ownerId,
                 appCtx.selfInfo?.id,
-                workspaceAccessLevel
+                workspaceAccessLevel,
               )
             }
           />

@@ -24,7 +24,7 @@ export const DefaultStylesPanel = observer(function DefaultStylesPanel() {
               : `Theme from ${
                   ensure(
                     studioCtx.projectDependencyManager.getOwnerDep(theme),
-                    "Could not find owner dep for theme"
+                    "Could not find owner dep for theme",
                   ).name
                 }`,
           })),

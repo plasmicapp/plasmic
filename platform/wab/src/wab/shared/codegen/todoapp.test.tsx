@@ -36,17 +36,17 @@ describe("todo app codegen", () => {
     let nextId = tasksList.length;
 
     const rootElement = document.querySelector(
-      `[data-testid="root"]`
+      `[data-testid="root"]`,
     ) as HTMLElement;
     const root = within(rootElement);
 
     const checkTasks = () => {
       expect(root.getByTestId(`tasks-container`).children.length).toBe(
-        tasksList.length
+        tasksList.length,
       );
       for (const task of tasksList) {
         expect(root.getByTestId(`text-${task.id}`)).toHaveTextContent(
-          task.title
+          task.title,
         );
         if (task.done) {
           expect(root.getByTestId(`text-${task.id}`)).toHaveStyle({
@@ -86,7 +86,7 @@ describe("todo app codegen", () => {
       await userEvent.dblClick(root.getByTestId(`text-${id}`));
       await userEvent.type(
         root.getByTestId(`textInput-${id}`),
-        `${newText}{enter}`
+        `${newText}{enter}`,
       );
       const task = tasksList.find((itask) => itask.id === id);
       if (task) {

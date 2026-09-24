@@ -24,7 +24,7 @@ export const lintScreenVariantOverrides = maybeComputedFn(
     keepAlive: false,
     equals: lintIssuesEquals,
     name: "lintScreenVariantOverrides",
-  }
+  },
 );
 
 const lintComponent = maybeComputedFn(
@@ -39,7 +39,7 @@ const lintComponent = maybeComputedFn(
     keepAlive: false,
     equals: lintIssuesEquals,
     name: "lintScreenVariantOverridesComponent",
-  }
+  },
 );
 
 const lintTpl = maybeComputedFn(
@@ -56,7 +56,7 @@ const lintTpl = maybeComputedFn(
     keepAlive: false,
     equals: lintIssuesEquals,
     name: "lintScreenVariantOverridesTpl",
-  }
+  },
 );
 
 const lintVs = maybeComputedFn(
@@ -98,7 +98,7 @@ const lintVs = maybeComputedFn(
     keepAlive: false,
     equals: lintIssuesEquals,
     name: "lintScreenVariantOverridesVs",
-  }
+  },
 );
 
 function makeKeyPrefix(component: Component, tpl: TplNode, vs: VariantSetting) {

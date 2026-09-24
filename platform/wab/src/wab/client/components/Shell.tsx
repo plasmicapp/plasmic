@@ -43,12 +43,12 @@ function reportAndFixOversizedLocalStorage() {
     .filter(([_key, len]) => len > 500000);
   if (report.length > 0) {
     Sentry.captureMessage(
-      `Found oversized localStorage: ${JSON.stringify(report)}`
+      `Found oversized localStorage: ${JSON.stringify(report)}`,
     );
     for (const [key, _len] of report) {
       if (
         localStoragePrefixesThatAreSafeToRemove.some((prefix) =>
-          key.startsWith(prefix)
+          key.startsWith(prefix),
         )
       ) {
         localStorage.removeItem(key);
@@ -77,7 +77,7 @@ export function main() {
       source?: string,
       lineno?: number,
       colno?: number,
-      error?: Error
+      error?: Error,
     ) => {
       // We check `source` to weed out errors that come from
       // the console.
@@ -134,7 +134,7 @@ export function main() {
       <HostFrameCtxProvider>
         <Shell />
       </HostFrameCtxProvider>,
-      appContainerElement
+      appContainerElement,
     );
   }
 
@@ -144,11 +144,11 @@ export function main() {
 export function Shell() {
   const hostFrameCtx = useHostFrameCtxIfHostFrame();
   const [history] = React.useState(() =>
-    hostFrameCtx ? hostFrameCtx.history : createBrowserHistory()
+    hostFrameCtx ? hostFrameCtx.history : createBrowserHistory(),
   );
 
   const isProjectPathRef = React.useRef(
-    isProjectPath(history.location.pathname)
+    isProjectPath(history.location.pathname),
   );
 
   React.useEffect(() => {
@@ -190,7 +190,7 @@ function monkeyPatchConsoleLog() {
   let finalConsoleLog = console.log;
   let innerConsoleLog = false;
   const monkeyPatchConsoleLogValue = (
-    previousConsoleLog: typeof console.log
+    previousConsoleLog: typeof console.log,
   ) => {
     finalConsoleLog = (...args: any[]) => {
       if (innerConsoleLog) {
@@ -216,10 +216,11 @@ function monkeyPatchConsoleLog() {
               const filtered = Array.isArray(arg)
                 ? "[ Array ]"
                 : isLiteralObject(arg)
-                ? "[ Object ]"
-                : `[ ${
-                    swallow(() => arg.typeTag as string) || arg.constructor.name
-                  } ]`;
+                  ? "[ Object ]"
+                  : `[ ${
+                      swallow(() => arg.typeTag as string) ||
+                      arg.constructor.name
+                    } ]`;
               visitedObjects.set(arg, filtered);
               return filtered;
             } else {
@@ -230,7 +231,7 @@ function monkeyPatchConsoleLog() {
                   ...(arg.length > MAX_WIDTH
                     ? [...arg.slice(0, MAX_WIDTH), "..."]
                     : arg
-                  ).map((subArg) => sanitizeLogArg(subArg, depth + 1))
+                  ).map((subArg) => sanitizeLogArg(subArg, depth + 1)),
                 );
                 return filtered;
               } else {
@@ -254,7 +255,7 @@ function monkeyPatchConsoleLog() {
                               arg.constructor.name,
                           ],
                         ]),
-                  ])
+                  ]),
                 );
                 return filtered;
               }

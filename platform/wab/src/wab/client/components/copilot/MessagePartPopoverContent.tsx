@@ -8,14 +8,13 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
-export interface MessagePartPopoverContentProps
-  extends DefaultMessagePartPopoverContentProps {
+export interface MessagePartPopoverContentProps extends DefaultMessagePartPopoverContentProps {
   content?: PlasmicMessagePartPopoverContent__OverridesType["content"];
 }
 
 function MessagePartPopoverContent_(
   props: MessagePartPopoverContentProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   return <PlasmicMessagePartPopoverContent root={{ ref }} {...props} />;
 }

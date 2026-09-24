@@ -143,7 +143,7 @@ export function fakeStudioCtx(opts?: {
     }
 
     const existingViewCtx = studioCtx.viewCtxs.find(
-      (viewCtx) => viewCtx.arenaFrame() === frame
+      (viewCtx) => viewCtx.arenaFrame() === frame,
     );
     if (existingViewCtx) {
       return existingViewCtx;
@@ -174,13 +174,13 @@ export function stubBackgroundViewCtxForComponent(
   studioCtx: StudioCtx,
   envProvider: (
     component: Component,
-    tpl: TplNode
+    tpl: TplNode,
   ) => Record<string, unknown> | undefined,
-  opts?: { noViewCtx?: boolean }
+  opts?: { noViewCtx?: boolean },
 ) {
   studioCtx.withBackgroundViewCtxForComponent = (async (
     component: Component,
-    cb: (viewCtx: ViewCtx) => Promise<unknown>
+    cb: (viewCtx: ViewCtx) => Promise<unknown>,
   ) => {
     if (opts?.noViewCtx) {
       return undefined;

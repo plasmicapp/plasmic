@@ -8,7 +8,7 @@ import { Request } from "express-serve-static-core";
 
 export async function sendTeamSupportWelcomeEmail(
   req: Request,
-  teamId: TeamId
+  teamId: TeamId,
 ): Promise<SendEmailsResponse> {
   const mgr = superDbMgr(req);
   const team = await mgr.getTeamById(teamId);

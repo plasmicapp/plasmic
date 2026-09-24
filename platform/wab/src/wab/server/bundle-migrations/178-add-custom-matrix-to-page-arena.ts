@@ -13,14 +13,14 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   for (const arena of site.pageArenas) {
     try {
       const newCustomMatrix = makeComponentArenaCustomMatrix(
         site,
-        arena.component
+        arena.component,
       );
       arena.customMatrix = newCustomMatrix;
     } catch (e) {
@@ -46,7 +46,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    bundle.version || "0-new-version"
+    bundle.version || "0-new-version",
   );
   Object.assign(bundle, newBundle);
 };

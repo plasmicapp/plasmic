@@ -37,7 +37,7 @@ export type NormalizedMarker = {
 export function normalizeMarkers(
   markers: Marker[],
   length: number,
-  isInline?: boolean
+  isInline?: boolean,
 ): Array<NormalizedMarker> {
   const newMarkers: NormalizedMarker[] = [];
   let lastInsertedMarker = 0;
@@ -95,7 +95,7 @@ export interface RichTextRenderTarget<T> {
     text: string,
     cssRules: Record<string, any>,
     spanClassName: string,
-    key: string
+    key: string,
   ): T;
   // Render a nested child (NodeMarker).
   nodeMarker(tpl: NodeMarker["tpl"], key: string): T;
@@ -116,7 +116,7 @@ export interface RenderRichTextOpts {
 export function renderRichTextChildren<T>(
   rawText: RawText,
   target: RichTextRenderTarget<T>,
-  opts: RenderRichTextOpts
+  opts: RenderRichTextOpts,
 ): T[] {
   const transform = opts.whitespaceNormal ? plainTextToReact : cleanPlainText;
 
@@ -126,7 +126,7 @@ export function renderRichTextChildren<T>(
 
   const normalizedMarkers = normalizeMarkers(
     rawText.markers,
-    rawText.text.length
+    rawText.text.length,
   );
   const children: T[] = [];
 
@@ -149,21 +149,21 @@ export function renderRichTextChildren<T>(
       !isTagInline(prevMarker.tpl.tag);
     const textPart = transform(
       rawText.text.substr(marker.position, marker.length),
-      removeInitialLineBreak
+      removeInitialLineBreak,
     );
 
     if (marker.type === "styleMarker") {
       const cssRules: Record<string, any> = getCssRulesFromRs(marker.rs, true);
       if ("fontWeight" in cssRules) {
         cssRules["fontWeight"] = fontWeightNumber(
-          String(cssRules["fontWeight"])
+          String(cssRules["fontWeight"]),
         );
       }
       if (L.isEmpty(cssRules)) {
         children.push(target.text(textPart, `t-${i}`));
       } else {
         children.push(
-          target.styledRun(textPart, cssRules, opts.spanClassName, `s-${i}`)
+          target.styledRun(textPart, cssRules, opts.spanClassName, `s-${i}`),
         );
       }
     } else {

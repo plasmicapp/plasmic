@@ -25,7 +25,7 @@ export type InsertPanelTabItemProps = DefaultInsertPanelTabItemProps &
 
 function InsertPanelTabItem_(
   props: InsertPanelTabItemProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   // Use PlasmicInsertPanelTabItem to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,

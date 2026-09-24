@@ -24,7 +24,7 @@ export type TitleEditableProps = DefaultTitleEditableProps;
 
 function TitleEditable_(
   props: TitleEditableProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   return (
     <div

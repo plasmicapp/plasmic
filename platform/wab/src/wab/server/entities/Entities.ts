@@ -71,10 +71,10 @@ function normalizeJson(x, mapping = { model: "json" }) {
       v === null || v === undefined
         ? null
         : v instanceof Date
-        ? v.toISOString()
-        : mapping[k] === "json"
-        ? JSON.parse(v)
-        : v,
+          ? v.toISOString()
+          : mapping[k] === "json"
+            ? JSON.parse(v)
+            : v,
     ])
     .fromPairs()
     .value();
@@ -779,7 +779,7 @@ export type PermissionId = Opaque<string, "PermissionId">;
 @Entity()
 @Check(`("userId" is not null) <> ("email" is not null)`)
 @Check(
-  `("projectId" is not null)::int + ("workspaceId" is not null)::int + ("teamId" is not null)::int = 1`
+  `("projectId" is not null)::int + ("workspaceId" is not null)::int + ("teamId" is not null)::int = 1`,
 )
 export class Permission extends Base<"PermissionId"> {
   @ManyToOne(() => Project)
@@ -1283,7 +1283,7 @@ export class CommentThread extends Base<"CommentThreadId"> {
 
   @OneToMany(
     () => CommentThreadHistory,
-    (commentThreadHistory) => commentThreadHistory.commentThread
+    (commentThreadHistory) => commentThreadHistory.commentThread,
   )
   commentThreadHistories: CommentThreadHistory[];
 

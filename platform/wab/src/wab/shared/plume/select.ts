@@ -76,13 +76,13 @@ interface CanvasSelectedValueState {
 export const mkCanvasSelectedValueState = computedFn(
   function mkCanvasSelectState(react: typeof React) {
     return react.createContext<undefined | CanvasSelectedValueState>(undefined);
-  }
+  },
 );
 
 export const mkCanvasIsFirstGroupState = computedFn(
   function mkCanvasSelectState(react: typeof React) {
     return react.createContext<boolean>(false);
-  }
+  },
 );
 
 export const SelectPlugin: PlumePlugin = {
@@ -94,7 +94,7 @@ export const SelectPlugin: PlumePlugin = {
     getCompMeta,
     _component,
     _viewCtx,
-    createCanvasComponent
+    createCanvasComponent,
   ) => {
     return sub.React.forwardRef((allProps, ref: SelectRef) =>
       observer(() => {
@@ -102,10 +102,10 @@ export const SelectPlugin: PlumePlugin = {
         const props = omit(allProps, "selectedContent");
 
         const optionComponent = _component.subComps.find(
-          (c) => c.plumeInfo?.type === "select-option"
+          (c) => c.plumeInfo?.type === "select-option",
         )!;
         const optionGroupComponent = _component.subComps.find(
-          (c) => c.plumeInfo?.type === "select-option-group"
+          (c) => c.plumeInfo?.type === "select-option-group",
         )!;
         const internalProps = pick(props, internalCanvasElementProps);
         const { plasmicProps } = sub.reactWeb.useSelect(
@@ -116,14 +116,14 @@ export const SelectPlugin: PlumePlugin = {
             OptionComponent: createCanvasComponent(optionComponent),
             OptionGroupComponent: createCanvasComponent(optionGroupComponent),
           } as any,
-          ref
+          ref,
         );
 
         return sub.React.createElement(comp, {
           ...plasmicProps,
           ...internalProps,
         });
-      })
+      }),
     );
   },
 
@@ -132,15 +132,15 @@ export const SelectPlugin: PlumePlugin = {
     const { component } = ctx;
     const optionSubComp = ensure(
       component.subComps.find(
-        (comp) => comp.plumeInfo?.type === "select-option"
+        (comp) => comp.plumeInfo?.type === "select-option",
       ),
-      "Expected to find select-option subComponent"
+      "Expected to find select-option subComponent",
     );
     const optionGroupSubComp = ensure(
       component.subComps.find(
-        (comp) => comp.plumeInfo?.type === "select-option-group"
+        (comp) => comp.plumeInfo?.type === "select-option-group",
       ),
-      "Expected to find select-option-group subComponent"
+      "Expected to find select-option-group subComponent",
     );
     return `
       function useBehavior<P extends pp.BaseSelectProps>(props: P, ref: pp.SelectRef) {
@@ -153,7 +153,7 @@ export const SelectPlugin: PlumePlugin = {
               generateSubstituteComponentCalls(
                 [optionSubComp, optionGroupSubComp],
                 ctx.exportOpts,
-                ctx.aliases
+                ctx.aliases,
               ).join("\n")
             : ""
         }
@@ -167,11 +167,11 @@ export const SelectPlugin: PlumePlugin = {
             ...${jsLiteral(selectConfig)},
             OptionComponent: ${getImportedComponentName(
               ctx.aliases,
-              optionSubComp
+              optionSubComp,
             )},\
             OptionGroupComponent: ${getImportedComponentName(
               ctx.aliases,
-              optionGroupSubComp
+              optionGroupSubComp,
             )},
           },
           ref
@@ -182,7 +182,7 @@ export const SelectPlugin: PlumePlugin = {
   genDefaultExternalProps(ctx, opts) {
     const { component } = ctx;
     const params = getExternalParams(ctx).filter(
-      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name))
+      (p) => !RESERVED_PROPS.includes(toVarName(p.variable.name)),
     );
     return `
       export interface ${
@@ -197,8 +197,8 @@ export const SelectPlugin: PlumePlugin = {
               `"${paramToVarName(ctx.component, param)}"?: ${serializeParamType(
                 component,
                 param,
-                ctx.projectFlags
-              )}`
+                ctx.projectFlags,
+              )}`,
           )
           .join(";\n")}
       }
@@ -213,15 +213,15 @@ export const SelectPlugin: PlumePlugin = {
     const skeletonImports = this.genSkeletonImports(ctx);
     const optionSubComp = ensure(
       component.subComps.find(
-        (comp) => comp.plumeInfo?.type === "select-option"
+        (comp) => comp.plumeInfo?.type === "select-option",
       ),
-      "Expected to find select-option subComponent"
+      "Expected to find select-option subComponent",
     );
     const optionGroupSubComp = ensure(
       component.subComps.find(
-        (comp) => comp.plumeInfo?.type === "select-option-group"
+        (comp) => comp.plumeInfo?.type === "select-option-group",
       ),
-      "Expected to find select-option-group subComponent"
+      "Expected to find select-option-group subComponent",
     );
     const componentSubstitutionApi = ctx.exportOpts.useComponentSubstitutionApi
       ? `import { components } from "@plasmicapp/loader-runtime-registry";
@@ -234,18 +234,18 @@ export const SelectPlugin: PlumePlugin = {
       ? generateSubstituteComponentCalls(
           [optionSubComp, optionGroupSubComp],
           ctx.exportOpts,
-          ctx.aliases
+          ctx.aliases,
         )
       : [];
     return `
       import * as React from "react";
       import {${plasmicComponentName}, ${defaultPropsName}} from "${
-      ctx.exportOpts.relPathFromImplToManagedDir
-    }/${makeComponentImportPath(
-      component,
-      ctx,
-      "render"
-    )}";  // plasmic-import: ${component.uuid}/render
+        ctx.exportOpts.relPathFromImplToManagedDir
+      }/${makeComponentImportPath(
+        component,
+        ctx,
+        "render",
+      )}";  // plasmic-import: ${component.uuid}/render
       ${skeletonImports.imports}
 
       ${componentSubstitutionApi}
@@ -273,22 +273,22 @@ export const SelectPlugin: PlumePlugin = {
     const { component } = ctx;
     const optionSubComp = ensure(
       component.subComps.find(
-        (comp) => comp.plumeInfo?.type === "select-option"
+        (comp) => comp.plumeInfo?.type === "select-option",
       ),
-      "Expected to find select-option subComponent"
+      "Expected to find select-option subComponent",
     );
     const optionGroupSubComp = ensure(
       component.subComps.find(
-        (comp) => comp.plumeInfo?.type === "select-option-group"
+        (comp) => comp.plumeInfo?.type === "select-option-group",
       ),
-      "Expected to find select-option-group subComponent"
+      "Expected to find select-option-group subComponent",
     );
     return `
       {
         Option: ${getImportedComponentName(ctx.aliases, optionSubComp)},
         OptionGroup: ${getImportedComponentName(
           ctx.aliases,
-          optionGroupSubComp
+          optionGroupSubComp,
         )},
         __plumeType: "select"
       }
@@ -299,41 +299,41 @@ export const SelectPlugin: PlumePlugin = {
     const { component } = ctx;
     const optionSubComp = ensure(
       component.subComps.find(
-        (comp) => comp.plumeInfo?.type === "select-option"
+        (comp) => comp.plumeInfo?.type === "select-option",
       ),
-      "Expected to find select-option subComponent"
+      "Expected to find select-option subComponent",
     );
     const optionGroupSubComp = ensure(
       component.subComps.find(
-        (comp) => comp.plumeInfo?.type === "select-option-group"
+        (comp) => comp.plumeInfo?.type === "select-option-group",
       ),
-      "Expected to find select-option-group subComponent"
+      "Expected to find select-option-group subComponent",
     );
 
     return {
       imports: `
         import {SelectRef} from "${getPlumePackageName(
           ctx.exportOpts,
-          "select"
+          "select",
         )}";
         import ${makeComponentImportName(
           optionSubComp,
           ctx.aliases,
-          ctx.exportOpts
+          ctx.exportOpts,
         )} from "./${makeComponentImportPath(
-        optionSubComp,
-        ctx,
-        "skeleton"
-      )}";  // plasmic-import: ${optionSubComp.uuid}/component
+          optionSubComp,
+          ctx,
+          "skeleton",
+        )}";  // plasmic-import: ${optionSubComp.uuid}/component
         import ${makeComponentImportName(
           optionGroupSubComp,
           ctx.aliases,
-          ctx.exportOpts
+          ctx.exportOpts,
         )} from "./${makeComponentImportPath(
-        optionGroupSubComp,
-        ctx,
-        "skeleton"
-      )}";  // plasmic-import: ${optionGroupSubComp.uuid}/component
+          optionGroupSubComp,
+          ctx,
+          "skeleton",
+        )}";  // plasmic-import: ${optionGroupSubComp.uuid}/component
       `,
       refName: "SelectRef",
     };
@@ -434,7 +434,7 @@ export const SelectPlugin: PlumePlugin = {
     if (varName === "children") {
       // Only show `children` slot if no `options` are set
       const hasOptions = tpl?.vsettings.some((vs) =>
-        vs.args.some((arg) => arg.param.variable.name === "options")
+        vs.args.some((arg) => arg.param.variable.name === "options"),
       );
       if (hasOptions) {
         return false;
@@ -446,10 +446,10 @@ export const SelectPlugin: PlumePlugin = {
   getSlotType(component: Component, param: Param) {
     if (param.variable.name === "children") {
       const option = component.subComps.find(
-        (c) => c.plumeInfo?.type === "select-option"
+        (c) => c.plumeInfo?.type === "select-option",
       );
       const group = component.subComps.find(
-        (c) => c.plumeInfo?.type === "select-option-group"
+        (c) => c.plumeInfo?.type === "select-option-group",
       );
       return typeFactory.renderable({
         params: withoutNils([
@@ -479,7 +479,7 @@ export const SelectPlugin: PlumePlugin = {
     $$$(tpl).delSlotArg("children");
 
     const optionsParam = tpl.component.params.find(
-      (p) => p.variable.name === "options"
+      (p) => p.variable.name === "options",
     );
     if (optionsParam) {
       const baseVs = ensureBaseVariantSetting(tpl);
@@ -497,7 +497,7 @@ export const SelectPlugin: PlumePlugin = {
           codeLit([
             { value: "option1", label: "Option 1" },
             { value: "option2", label: "Option 2" },
-          ])
+          ]),
         );
       }
     }
@@ -505,7 +505,7 @@ export const SelectPlugin: PlumePlugin = {
 
   getArtboardRootDefaultProps(component) {
     const optionsParam = component.params.find(
-      (p) => p.variable.name === "options"
+      (p) => p.variable.name === "options",
     );
     if (!optionsParam || optionsParam.defaultExpr) {
       return undefined;

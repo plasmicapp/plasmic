@@ -42,7 +42,7 @@ export function deleteTpl(
     component: Component;
     site: Site;
     vtm: VariantTplMgr;
-  }
+  },
 ): DeleteTplResult {
   const { component, site, vtm } = opts;
 

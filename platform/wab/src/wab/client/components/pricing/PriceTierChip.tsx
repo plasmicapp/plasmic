@@ -11,7 +11,7 @@ export type PriceTierChipProps = DefaultPriceTierChipProps;
 
 function PriceTierChip_(
   props: PriceTierChipProps,
-  ref: HTMLElementRefOf<"div">
+  ref: HTMLElementRefOf<"div">,
 ) {
   return <PlasmicPriceTierChip root={{ ref }} {...props} />;
 }

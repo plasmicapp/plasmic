@@ -12,7 +12,7 @@ export class SupabaseFetcher {
   constructor(source: SupabaseDataSource) {
     this.supabaseClient = createClient(
       source.settings.url,
-      source.credentials.apiKey
+      source.credentials.apiKey,
     );
   }
 
@@ -32,7 +32,7 @@ export class SupabaseFetcher {
     if (res.error) {
       throw new DataSourceError(
         res.error.message,
-        (res.error as any).statusCode
+        (res.error as any).statusCode,
       );
     }
     return res.data;

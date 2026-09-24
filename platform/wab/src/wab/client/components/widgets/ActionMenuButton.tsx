@@ -18,7 +18,7 @@ interface ActionMenuButtonProps extends DefaultActionMenuButtonProps {
 
 const ActionMenuButton = React.forwardRef(function ActionMenuButton(
   props: ActionMenuButtonProps,
-  ref: React.Ref<HTMLDivElement>
+  ref: React.Ref<HTMLDivElement>,
 ) {
   const { menu, onClick, href, target, tooltip, ...rest } = props;
   const [tooltipVisible, setTooltipVisible] = React.useState(false);

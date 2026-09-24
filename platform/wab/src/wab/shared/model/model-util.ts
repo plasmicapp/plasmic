@@ -118,7 +118,7 @@ export const typeFactory = {
       label?: string | null;
       defaultStyles?: Record<string, string>;
     }[],
-    defaultStyles: Record<string, string>
+    defaultStyles: Record<string, string>,
   ) =>
     new ClassNamePropType({
       name: "className",
@@ -128,7 +128,7 @@ export const typeFactory = {
             label: s.label,
             selector: s.selector,
             defaultStyles: { ...(s.defaultStyles ?? {}) },
-          })
+          }),
       ),
       defaultStyles: { ...defaultStyles },
     }),
@@ -166,7 +166,7 @@ function isGenericType(type: Type): type is GenericType {
     // list of generic types.
     assert(
       !("params" in type) && !("param" in type),
-      "Unexpected parameters in Type marked as non-generic"
+      "Unexpected parameters in Type marked as non-generic",
     );
   }
   return result;
@@ -212,13 +212,13 @@ export function isOptionsType(type: Type): type is Choice | MultiChoice {
  * `{ value, label }` objects — into a consistent `{ value, label }` shape.
  */
 export function normalizeToChoiceObjects(
-  options: Array<ChoiceValue | { [key: string]: ChoiceValue }>
+  options: Array<ChoiceValue | { [key: string]: ChoiceValue }>,
 ): { value: ChoiceValue; label: string }[] {
   return options.map((o) => {
     const isObj = typeof o === "object";
     return {
       value: isObj ? o.value : o,
-      label: String(isObj ? o.label ?? o.value : o),
+      label: String(isObj ? (o.label ?? o.value) : o),
     };
   });
 }
@@ -253,22 +253,22 @@ export function wabToTsType(type: Type, forCodeGen?: boolean): string {
     type.name === "any"
       ? "any"
       : isKnownFunctionType(type)
-      ? `(${type.params
-          .map((p) => `${p.argName}: ${wabToTsType(p.type, forCodeGen)}`)
-          .join(", ")}) => void`
-      : isChoiceType(type)
-      ? type.options.length > 0
-        ? type.options
-            .map((v) => jsLiteral(typeof v === "object" ? v.value : v))
-            .join("|")
-        : "string"
-      : isMultiChoiceType(type)
-      ? type.options.length > 0
-        ? `(${type.options
-            .map((v) => jsLiteral(typeof v === "object" ? v.value : v))
-            .join("|")})[]`
-        : "string[]"
-      : wabToTsTypeMap[type.name] || "any";
+        ? `(${type.params
+            .map((p) => `${p.argName}: ${wabToTsType(p.type, forCodeGen)}`)
+            .join(", ")}) => void`
+        : isChoiceType(type)
+          ? type.options.length > 0
+            ? type.options
+                .map((v) => jsLiteral(typeof v === "object" ? v.value : v))
+                .join("|")
+            : "string"
+          : isMultiChoiceType(type)
+            ? type.options.length > 0
+              ? `(${type.options
+                  .map((v) => jsLiteral(typeof v === "object" ? v.value : v))
+                  .join("|")})[]`
+              : "string[]"
+            : wabToTsTypeMap[type.name] || "any";
   return forCodeGen && typeName === wabToTsTypeMap.renderable
     ? "React.ReactNode"
     : typeName;
@@ -287,7 +287,7 @@ export const wabTypeToPlaceholderValueMap = {
 } as const;
 
 export function isPlaceholderValue(
-  x: any
+  x: any,
 ): x is Values<typeof wabTypeToPlaceholderValueMap> {
   return Object.values(wabTypeToPlaceholderValueMap).includes(x);
 }
@@ -350,7 +350,7 @@ export const STATE_VARIABLE_TYPE_TO_PROP_TYPE: Record<
 };
 
 export function convertVariableTypeToPropType(
-  variableType: StateVariableType
+  variableType: StateVariableType,
 ): StudioPropType<any> {
   return STATE_VARIABLE_TYPE_TO_PROP_TYPE[variableType];
 }
@@ -367,18 +367,18 @@ export function typeDisplayName(type: Type, shortDescription?: boolean) {
         ? `choice of ${t.options
             .map((v) => jsLiteral(typeof v === "object" ? v.value : v))
             .join(", ")}`
-        : `choice`
+        : `choice`,
     )
     .when(MultiChoice, (t) =>
       !shortDescription
         ? `multi-choice of ${t.options
             .map((v) => jsLiteral(typeof v === "object" ? v.value : v))
             .join(", ")}`
-        : `multi-choice`
+        : `multi-choice`,
     )
     .when(
       ComponentInstance,
-      (t) => `instance of ${getComponentDisplayName(t.component)}`
+      (t) => `instance of ${getComponentDisplayName(t.component)}`,
     )
     .when(PlumeInstance, (t) => `instance of ${t.plumeType}`)
     .when(RenderableType, (t) => {
@@ -405,7 +405,7 @@ export function typeDisplayName(type: Type, shortDescription?: boolean) {
 export function conformsToType(
   value: any,
   type: ModelType,
-  instUtil = defaultInstUtil
+  instUtil = defaultInstUtil,
 ) {
   switch (type.type) {
     case "String":
@@ -423,7 +423,11 @@ export function conformsToType(
       return (
         isArray(value) &&
         value.every((v) =>
-          conformsToType(v, ensureInstance(type.params[0], ModelType), instUtil)
+          conformsToType(
+            v,
+            ensureInstance(type.params[0], ModelType),
+            instUtil,
+          ),
         )
       );
     case "Optional":
@@ -432,7 +436,7 @@ export function conformsToType(
         conformsToType(
           value,
           ensureInstance(type.params[0], ModelType),
-          instUtil
+          instUtil,
         )
       );
     case "Map":
@@ -441,13 +445,17 @@ export function conformsToType(
           conformsToType(
             k,
             ensureInstance(type.params[0], ModelType),
-            instUtil
+            instUtil,
           ) &&
-          conformsToType(v, ensureInstance(type.params[1], ModelType), instUtil)
+          conformsToType(
+            v,
+            ensureInstance(type.params[1], ModelType),
+            instUtil,
+          ),
       );
     case "Or":
       return type.params.some((sub) =>
-        conformsToType(value, ensureInstance(sub, ModelType), instUtil)
+        conformsToType(value, ensureInstance(sub, ModelType), instUtil),
       );
     case "Any":
       return true;
@@ -462,7 +470,7 @@ export function conformsToType(
 export function nodeConformsToType(
   node: TplNode,
   type: Type,
-  opts?: { allowRootWrapper?: boolean }
+  opts?: { allowRootWrapper?: boolean },
 ) {
   if (isAnyType(type)) {
     return true;
@@ -476,7 +484,7 @@ export function nodeConformsToType(
       return type.params.some((t) =>
         nodeConformsToType(node, t, {
           allowRootWrapper: type.allowRootWrapper ?? undefined,
-        })
+        }),
       );
     }
   } else if (isRenderFuncType(type)) {
@@ -486,7 +494,7 @@ export function nodeConformsToType(
       return type.allowed.some((t) =>
         nodeConformsToType(node, t, {
           allowRootWrapper: type.allowRootWrapper ?? undefined,
-        })
+        }),
       );
     }
   } else if (isKnownComponentInstance(type)) {
@@ -526,7 +534,7 @@ export function typesEqual(t1: Type, t2: Type): boolean {
         t1.params.every(
           (p, i) =>
             p.argName === t2.params[i].argName &&
-            typesEqual(p.type, t2.params[i].type)
+            typesEqual(p.type, t2.params[i].type),
         ) &&
         t1.allowed.length === t2.allowed.length &&
         t1.allowed.every((c, i) => typesEqual(c, t2.allowed[i]))
@@ -534,7 +542,7 @@ export function typesEqual(t1: Type, t2: Type): boolean {
     } else {
       assert(
         !isKnownArgType(t2) && !isKnownRenderFuncType(t2),
-        typesDidntMatchMessage
+        typesDidntMatchMessage,
       );
       if (t1.params.length !== t2.params.length) {
         return false;
@@ -542,7 +550,7 @@ export function typesEqual(t1: Type, t2: Type): boolean {
       const params: (ComponentInstance | PlumeInstance | ArgType)[] = t1.params;
       return params.every(
         // TODO: ignore order for union types
-        (p, i) => !!t2.params[i] && typesEqual(p, t2.params[i])
+        (p, i) => !!t2.params[i] && typesEqual(p, t2.params[i]),
       );
     }
   }
@@ -571,7 +579,7 @@ export function typesEqual(t1: Type, t2: Type): boolean {
         (s, i) =>
           s.label === t2.selectors[i].label &&
           s.selector === t2.selectors[i].selector &&
-          objsEq(s.defaultStyles, t2.selectors[i].defaultStyles)
+          objsEq(s.defaultStyles, t2.selectors[i].defaultStyles),
       ) &&
       objsEq(t1.defaultStyles, t2.defaultStyles)
     );

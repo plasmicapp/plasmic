@@ -6,9 +6,9 @@ import {
 import {
   ApiProjectWebhook,
   ApiProjectWebhookEvent,
-  apiProjectWebhookFields,
   ProjectId,
   ProjectWebhookEventsResponse,
+  apiProjectWebhookFields,
 } from "@/wab/shared/ApiSchema";
 import { ensureString, ensureType } from "@/wab/shared/common";
 import { Request, Response } from "express-serve-static-core";
@@ -34,7 +34,7 @@ export async function triggerProjectWebhook(req: Request, res: Response) {
   };
 
   const event = ensureType<ApiProjectWebhookEvent>(
-    await triggerWebhook(mgr, projectId, webhook)
+    await triggerWebhook(mgr, projectId, webhook),
   );
   res.json({ event });
 }
@@ -45,7 +45,7 @@ export async function getProjectWebhooks(req: Request, res: Response) {
   const webhooks = await mgr.listProjectWebhooks(projectId);
   res.json({
     webhooks: ensureType<ApiProjectWebhook[]>(
-      webhooks.map((w) => _.pick(w, apiProjectWebhookFields))
+      webhooks.map((w) => _.pick(w, apiProjectWebhookFields)),
     ),
   });
 }
@@ -64,7 +64,7 @@ export async function createProjectWebhook(req: Request, res: Response) {
   });
   res.json({
     webhook: ensureType<ApiProjectWebhook>(
-      _.pick(webhook, apiProjectWebhookFields)
+      _.pick(webhook, apiProjectWebhookFields),
     ),
   });
 }
@@ -83,7 +83,7 @@ export async function updateProjectWebhook(req: Request, res: Response) {
   });
   res.json({
     webhook: ensureType<ApiProjectWebhook>(
-      _.pick(webhook, apiProjectWebhookFields)
+      _.pick(webhook, apiProjectWebhookFields),
     ),
   });
 }

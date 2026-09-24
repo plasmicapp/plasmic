@@ -58,7 +58,7 @@ export interface GlobalVariantConfig {
 
 export function exportGlobalVariantGroup(
   vg: VariantGroup,
-  opts: Partial<ExportOpts>
+  opts: Partial<ExportOpts>,
 ): GlobalVariantConfig {
   return {
     id: vg.uuid,
@@ -73,7 +73,7 @@ export function exportGlobalVariantGroup(
 
 function serializeGlobalVariantGroup(
   vg: VariantGroup,
-  opts: Partial<ExportOpts>
+  opts: Partial<ExportOpts>,
 ) {
   const valueTypeName = makeGlobalVariantGroupValueTypeName(vg);
   const contextName = makeGlobalVariantGroupContextName(vg);
@@ -88,12 +88,12 @@ export function ${makeGlobalVariantGroupUseName(vg)}() {
 
   if (vg.type === "global-screen") {
     const variants = vg.variants.filter(
-      (v) => v.mediaQuery && v.mediaQuery.trim().length > 0
+      (v) => v.mediaQuery && v.mediaQuery.trim().length > 0,
     );
 
     serializedHook = `
 export const useScreenVariants = createUseScreenVariants(${jsLiteral(
-      vg.multi
+      vg.multi,
     )},{
   ${variants
     .map((v) => `"${toVarName(v.name)}": "${v.mediaQuery}"`)
@@ -173,7 +173,7 @@ export function makeUniqueUseScreenVariantsName(vg: VariantGroup) {
 export function makeGlobalVariantGroupImportTemplate(
   vg: VariantGroup,
   relDir: string,
-  opts: { idFileNames?: boolean }
+  opts: { idFileNames?: boolean },
 ) {
   const fileName = opts.idFileNames
     ? makeGlobalVariantIdFileName(vg)
@@ -188,7 +188,7 @@ export function makeGlobalVariantGroupImportTemplate(
   const importPath = `${relDir}/${fileName}`;
 
   return `import {${imports.join(
-    ", "
+    ", ",
   )}} from "${importPath}";  // plasmic-import: ${vg.uuid}/globalVariant`;
 }
 
@@ -200,7 +200,7 @@ export function extractUsedGlobalVariantsForComponents(
   site: Site,
   components: Component[],
   usePlasmicImg: boolean,
-  allTokensDict?: Readonly<{ [uuid: string]: FinalToken<StyleToken> }>
+  allTokensDict?: Readonly<{ [uuid: string]: FinalToken<StyleToken> }>,
 ) {
   const usedGlobalVariants = new Set<Variant>();
   for (const component of components) {
@@ -209,8 +209,8 @@ export function extractUsedGlobalVariantsForComponents(
       extractUsedGlobalVariantsForNodes(
         site,
         flattenComponent(component),
-        usePlasmicImg
-      )
+        usePlasmicImg,
+      ),
     );
   }
 
@@ -227,8 +227,8 @@ export function extractUsedGlobalVariantsForComponents(
         allTokensDict,
       }),
       site,
-      allTokensDict
-    )
+      allTokensDict,
+    ),
   );
   return usedGlobalVariants;
 }
@@ -236,7 +236,7 @@ export function extractUsedGlobalVariantsForComponents(
 export function extractUsedGlobalVariantsForNodes(
   site: Site,
   nodes: TplNode[],
-  usePlasmicImg: boolean
+  usePlasmicImg: boolean,
 ) {
   const usedGlobalVariants = new Set<Variant>();
   const siteGlobalVariantGroups = allGlobalVariantGroups(site, {
@@ -250,7 +250,7 @@ export function extractUsedGlobalVariantsForNodes(
         for (const v of getUsedGlobalVariantsForNonCss(
           vs,
           node,
-          usePlasmicImg
+          usePlasmicImg,
         )) {
           if (
             v.parent &&
@@ -269,7 +269,7 @@ export function extractUsedGlobalVariantsForNodes(
 export function getUsedGlobalVariantsForNonCss(
   vs: VariantSetting,
   tpl: TplNode,
-  usePlasmicImg: boolean
+  usePlasmicImg: boolean,
 ) {
   return vs.variants.filter((v) => {
     if (isGlobalVariant(v)) {
@@ -277,7 +277,7 @@ export function getUsedGlobalVariantsForNonCss(
       if (vg && vg.type === "global-screen") {
         const exp = createExpandedRuleSetMerger(
           makeLayoutAwareRuleSet(vs.rs, false),
-          tpl
+          tpl,
         );
         // For GlobalScreen variants, we only add it as used if it contains
         // non-css changes
@@ -334,8 +334,8 @@ export function serializeVariantsArgsTypeContent(vgs: VariantGroup[]) {
       .map(
         (vg) =>
           `${toVarName(
-            vg.param.variable.name
-          )}?: ${serializeVariantArgsGroupType(vg)}`
+            vg.param.variable.name,
+          )}?: ${serializeVariantArgsGroupType(vg)}`,
       )
       .join("\n")}
   }`;

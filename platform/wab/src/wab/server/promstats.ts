@@ -90,7 +90,7 @@ export function incHttpRequestCount(opts: {
 }
 
 export function getTemplatedEndpointFromExpressRoutePath(
-  routePath: unknown
+  routePath: unknown,
 ): string {
   const raw = typeof routePath === "string" ? routePath : routePath?.toString();
   if (!raw) {

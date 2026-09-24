@@ -1,4 +1,3 @@
-import { isCodeComponent } from "@/wab/shared/core/components";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
@@ -7,8 +6,9 @@ import {
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
 import { Bundler } from "@/wab/shared/bundler";
-import { TplComponent } from "@/wab/shared/model/classes";
+import { isCodeComponent } from "@/wab/shared/core/components";
 import { flattenTpls, isTplComponent } from "@/wab/shared/core/tpls";
+import { TplComponent } from "@/wab/shared/model/classes";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();
@@ -16,7 +16,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     bundler,
     bundle,
     db,
-    entity
+    entity,
   );
 
   for (const component of site.components) {
@@ -25,7 +25,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
         isTplComponent(t) &&
         isCodeComponent(t.component) &&
         t.component.codeComponentMeta.importName === "CmsRowField" &&
-        t.component.codeComponentMeta.importPath === "@plasmicpkgs/plasmic-cms"
+        t.component.codeComponentMeta.importPath === "@plasmicpkgs/plasmic-cms",
     )) {
       const baseVariantSetting = tryGetBaseVariantSetting(tpl);
       if (!baseVariantSetting) {
@@ -43,7 +43,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const newBundle = bundler.bundle(
     siteOrProjectDep,
     entity.id,
-    "89-cms-entry-field-object-fit"
+    "89-cms-entry-field-object-fit",
   );
   Object.assign(bundle, newBundle);
 };

@@ -50,7 +50,7 @@ export function DataSourcePicker({
       thisProjectsWorkspace
         ? `/data-source/sources?workspaceId=${thisProjectsWorkspace!.id}`
         : null,
-    async () => await appCtx.api.listDataSources(thisProjectsWorkspace!.id)
+    async () => await appCtx.api.listDataSources(thisProjectsWorkspace!.id),
   );
 
   const [addNewDataSourceForWorkspace, setAddNewDataSourceForWorkspace] =
@@ -67,7 +67,7 @@ export function DataSourcePicker({
         footer={null}
         onOk={() =>
           onSelected(
-            selectedSourceId ? { sourceId: selectedSourceId } : undefined
+            selectedSourceId ? { sourceId: selectedSourceId } : undefined,
           )
         }
       >
@@ -80,7 +80,7 @@ export function DataSourcePicker({
           }}
           onFinish={async () => {
             await onSelected(
-              selectedSourceId ? { sourceId: selectedSourceId } : undefined
+              selectedSourceId ? { sourceId: selectedSourceId } : undefined,
             );
           }}
         >
@@ -97,7 +97,7 @@ export function DataSourcePicker({
             (() => {
               const sources =
                 data.find(
-                  ({ workspace }) => workspace.id === thisProjectsWorkspace.id
+                  ({ workspace }) => workspace.id === thisProjectsWorkspace.id,
                 )?.dataSources ?? [];
               return (
                 <Form.Item label={DATA_SOURCE_CAP} name={"sourceId"}>
@@ -108,7 +108,7 @@ export function DataSourcePicker({
                       onChange={(selectedId) => {
                         if (selectedId === "create") {
                           setAddNewDataSourceForWorkspace(
-                            thisProjectsWorkspace.id
+                            thisProjectsWorkspace.id,
                           );
                         } else {
                           setSelectedSourceId(selectedId ?? undefined);
@@ -131,8 +131,8 @@ export function DataSourcePicker({
                           (source) =>
                             !readOpsOnly ||
                             getDataSourceMeta(source.source).ops.some(
-                              (op) => op.type === "read"
-                            )
+                              (op) => op.type === "read",
+                            ),
                         )
                         .map((source) => (
                           <Select.Option

@@ -14,7 +14,7 @@ describe("combineProps", () =>
         className: cx({
           b: true,
         }),
-      })
+      }),
     );
     expect(combined.className).toBe("a b");
     combined.onChange("foo");

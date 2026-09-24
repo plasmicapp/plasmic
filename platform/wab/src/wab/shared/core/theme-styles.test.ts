@@ -85,7 +85,7 @@ describe("theme-styles with a site", () => {
       const before = theme.styles.length;
       const existing = ensure(
         theme.styles.find((ts) => ts.selector === "h1"),
-        "Expected an h1 theme style"
+        "Expected an h1 theme style",
       );
       expect(ensureThemeStyleMixin(theme, "h1")).toBe(existing.style);
       expect(theme.styles.length).toBe(before);

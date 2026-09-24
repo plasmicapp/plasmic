@@ -27,7 +27,7 @@ describe("methodForwarder", () => {
       logger1,
       logger2,
       logger3,
-      undefined
+      undefined,
     );
 
     composedLogger.log("foo");

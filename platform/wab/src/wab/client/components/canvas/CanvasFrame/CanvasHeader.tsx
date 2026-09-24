@@ -60,14 +60,14 @@ function CanvasHeader_(props: {
 
   useZoomStyledRef(
     (zoom) => ({ maxWidth: `${frame.width * zoom}px` }),
-    rootRef
+    rootRef,
   );
 
   const [contentIsCollapsed, setContentIsCollapsed] = useState(false);
   useLayoutEffect(() => {
     if (rootRef.current) {
       setContentIsCollapsed(
-        rootRef.current.offsetWidth < rootRef.current.scrollWidth
+        rootRef.current.offsetWidth < rootRef.current.scrollWidth,
       );
     }
   }, [studioCtx.zoom]);
@@ -80,7 +80,7 @@ function CanvasHeader_(props: {
           "CanvasFrame__Label flex flex-vcenter flex-no-shrink-children",
           {
             "CanvasFrame__Label--focused": isFocused,
-          }
+          },
         )}
         onClick={async (e) => {
           if (studioCtx.isSpaceDown()) {
@@ -89,7 +89,7 @@ function CanvasHeader_(props: {
           }
           e.stopPropagation();
           await studioCtx.changeUnsafe(() =>
-            studioCtx.setStudioFocusOnFrame({ frame: frame, autoZoom: false })
+            studioCtx.setStudioFocusOnFrame({ frame: frame, autoZoom: false }),
           );
         }}
       >
@@ -218,7 +218,7 @@ export const VariantName = observer(function VariantName_({
                 variantLabelRef.current?.setEditing(true);
               }
             },
-          })
+          }),
         );
       }}
     >
