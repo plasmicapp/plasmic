@@ -1,5 +1,12 @@
+import {
+  getDataTokenType,
+  toDataTokenDisplayValue,
+} from "@/wab/commons/DataToken";
 import { derefTokenRefs, isTokenRef } from "@/wab/commons/StyleToken";
+import { ProjectId } from "@/wab/shared/ApiSchema";
+import { makeShortProjectId, toVarName } from "@/wab/shared/codegen/util";
 import { isPageComponent } from "@/wab/shared/core/components";
+import { siteDataTokensDirectDeps } from "@/wab/shared/core/site-data-tokens";
 import {
   siteFinalStyleTokensAllDeps,
   siteFinalStyleTokensDirectDeps,
@@ -7,12 +14,14 @@ import {
 import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
 import { generateKeyframesRule } from "@/wab/shared/core/styles";
 import { getSelectableThemes } from "@/wab/shared/core/theme-styles";
-import { BASE_THEMABLE_TAG } from "@/wab/shared/html";
 import { FinalToken, toFinalToken } from "@/wab/shared/core/tokens";
 import { parseScreenSpec } from "@/wab/shared/css-size";
+import { makeDataTokenIdentifier } from "@/wab/shared/eval/expression-parser";
+import { BASE_THEMABLE_TAG } from "@/wab/shared/html";
 import {
   AnimationSequence,
   Component,
+  DataToken,
   Mixin,
   Site,
   StyleToken,
@@ -25,6 +34,7 @@ import {
   type AnimationSummaryJson,
   type ComponentSummaryJson,
   type DataQueryFunctionsJson,
+  type DataTokenJson,
   type GlobalVariantGroupJson,
   type MixinJson,
   type ProjectJson,
@@ -54,16 +64,17 @@ export function buildProjectResource(
     screenBreakpoints?: boolean;
     globalVariants?: boolean;
     tokens?: boolean;
+    dataTokens?: boolean;
     mixins?: boolean;
     animations?: boolean;
     themes?: "active" | "all";
-  }
+  },
 ): ProjectJson {
   let components: ComponentSummaryJson[] | undefined;
   if (opts.components) {
     const toComponentSummary = (
       comp: Component,
-      fromProject?: string
+      fromProject?: string,
     ): ComponentSummaryJson => {
       const path =
         isPageComponent(comp) && comp.pageMeta.path
@@ -82,8 +93,8 @@ export function buildProjectResource(
       ...site.components.map((comp) => toComponentSummary(comp)),
       ...site.projectDependencies.flatMap((dep) =>
         dep.site.components.map((comp) =>
-          toComponentSummary(comp, dep.projectId)
-        )
+          toComponentSummary(comp, dep.projectId),
+        ),
       ),
     ];
   }
@@ -115,9 +126,9 @@ export function buildProjectResource(
     const groupToDepProjectId = new Map(
       site.projectDependencies.flatMap((dep) =>
         dep.site.globalVariantGroups.map(
-          (group) => [group, dep.projectId] as const
-        )
-      )
+          (group) => [group, dep.projectId] as const,
+        ),
+      ),
     );
     globalVariantGroups = allGlobalVariantGroups(site, {
       includeDeps: "direct",
@@ -143,14 +154,21 @@ export function buildProjectResource(
     const allFinalTokens = siteFinalStyleTokensAllDeps(site);
     const tokenToDepProjectId = new Map(
       site.projectDependencies.flatMap((dep) =>
-        dep.site.styleTokens.map((token) => [token, dep.projectId] as const)
-      )
+        dep.site.styleTokens.map((token) => [token, dep.projectId] as const),
+      ),
     );
     tokens = siteFinalStyleTokensDirectDeps(site).map((finalToken) =>
       buildTokenModel(finalToken.base, allFinalTokens, {
         override: finalToken.override,
         fromProject: tokenToDepProjectId.get(finalToken.base),
-      })
+      }),
+    );
+  }
+
+  let dataTokens: DataTokenJson[] | undefined;
+  if (opts.dataTokens) {
+    dataTokens = siteDataTokensDirectDeps(site).map((token) =>
+      buildDataTokenResource(token, { site, projectId: opts.projectId }),
     );
   }
 
@@ -160,8 +178,8 @@ export function buildProjectResource(
       ...site.mixins.map((mixin) => buildMixinResource(mixin)),
       ...site.projectDependencies.flatMap((dep) =>
         dep.site.mixins.map((mixin) =>
-          buildMixinResource(mixin, { fromProject: dep.projectId })
-        )
+          buildMixinResource(mixin, { fromProject: dep.projectId }),
+        ),
       ),
     ];
   }
@@ -170,7 +188,7 @@ export function buildProjectResource(
   if (opts.animations) {
     const toAnimationSummary = (
       sequence: AnimationSequence,
-      fromProject?: string
+      fromProject?: string,
     ): AnimationSummaryJson => ({
       __type: "Animation",
       name: sequence.name,
@@ -181,8 +199,8 @@ export function buildProjectResource(
       ...site.animationSequences.map((seq) => toAnimationSummary(seq)),
       ...site.projectDependencies.flatMap((dep) =>
         dep.site.animationSequences.map((seq) =>
-          toAnimationSummary(seq, dep.projectId)
-        )
+          toAnimationSummary(seq, dep.projectId),
+        ),
       ),
     ];
   }
@@ -206,7 +224,7 @@ export function buildProjectResource(
       buildThemeResource(theme, {
         active: theme === site.activeTheme,
         fromProject,
-      })
+      }),
     );
   }
 
@@ -217,6 +235,7 @@ export function buildProjectResource(
     ...(screenBreakpoints ? { screenBreakpoints } : {}),
     ...(globalVariantGroups ? { globalVariantGroups } : {}),
     ...(tokens ? { tokens } : {}),
+    ...(dataTokens ? { dataTokens } : {}),
     ...(mixins ? { mixins } : {}),
     ...(animations ? { animations } : {}),
     ...(themes ? { themes } : {}),
@@ -231,11 +250,11 @@ export function buildProjectResource(
 
 export function buildThemeResource(
   theme: Theme,
-  opts: { active?: boolean; fromProject?: string } = {}
+  opts: { active?: boolean; fromProject?: string } = {},
 ): ThemeJson {
   const toThemeStyleModel = (
     selector: string,
-    mixin: Mixin
+    mixin: Mixin,
   ): ThemeStyleJson => {
     const variantedStyles = buildVariantedStylesModel(mixin);
     return {
@@ -260,7 +279,7 @@ export function buildThemeResource(
 /** Build the canonical JSON model for a single style token. */
 export function buildTokenResource(
   token: StyleToken,
-  opts: { site: Site }
+  opts: { site: Site },
 ): TokenJson {
   const allFinalTokens = siteFinalStyleTokensAllDeps(opts.site);
   const override = toFinalToken(token, opts.site).override;
@@ -270,7 +289,7 @@ export function buildTokenResource(
 function buildTokenModel(
   token: StyleToken,
   allFinalTokens: ReadonlyArray<FinalToken<StyleToken>>,
-  opts: { override?: StyleTokenOverride | null; fromProject?: string } = {}
+  opts: { override?: StyleTokenOverride | null; fromProject?: string } = {},
 ): TokenJson {
   return {
     __type: "Token",
@@ -292,7 +311,7 @@ function buildTokenModel(
 
 function buildTokenValuesModel(
   source: StyleToken | StyleTokenOverride,
-  allFinalTokens: ReadonlyArray<FinalToken<StyleToken>>
+  allFinalTokens: ReadonlyArray<FinalToken<StyleToken>>,
 ): TokenValuesJson {
   const resolvedValue =
     source.value != null && isTokenRef(source.value)
@@ -309,7 +328,7 @@ function buildTokenValuesModel(
 
 function buildVariantedValuesModel(
   token: StyleToken | StyleTokenOverride,
-  allFinalTokens: ReadonlyArray<FinalToken<StyleToken>>
+  allFinalTokens: ReadonlyArray<FinalToken<StyleToken>>,
 ): VariantedValueJson[] | undefined {
   if (token.variantedValues.length === 0) {
     return undefined;
@@ -327,9 +346,36 @@ function buildVariantedValuesModel(
   });
 }
 
+/**
+ * Build the canonical JSON model for a data token of `site` or one of its direct
+ * dependencies. `projectId` is the id of `site`.
+ */
+export function buildDataTokenResource(
+  token: DataToken,
+  opts: { site: Site; projectId: string },
+): DataTokenJson {
+  const dep = opts.site.projectDependencies.find((d) =>
+    d.site.dataTokens.includes(token),
+  );
+  const ownerId = (dep?.projectId ?? opts.projectId) as ProjectId;
+  const type = getDataTokenType(token.value);
+  return {
+    __type: "DataToken",
+    name: token.name,
+    uuid: token.uuid,
+    type,
+    value: toDataTokenDisplayValue(token.value, type),
+    reference: makeDataTokenIdentifier(
+      makeShortProjectId(ownerId),
+      toVarName(token.name),
+    ),
+    ...(dep ? { fromProject: dep.projectId } : {}),
+  };
+}
+
 export function buildMixinResource(
   mixin: Mixin,
-  opts: { fromProject?: string } = {}
+  opts: { fromProject?: string } = {},
 ): MixinJson {
   const variantedStyles = buildVariantedStylesModel(mixin);
   return {
@@ -349,13 +395,13 @@ function buildVariantedStylesModel(mixin: Mixin): VariantedStyleJson[] {
       __type: "VariantedStyle",
       variantUuids: vRs.variants.map((v) => v.uuid),
       styles: getStylesFromRuleSet(vRs.rs),
-    })
+    }),
   );
 }
 
 /** Build the canonical JSON model for an animation sequence. */
 export function buildAnimationResource(
-  sequence: AnimationSequence
+  sequence: AnimationSequence,
 ): AnimationJson {
   return {
     __type: "Animation",

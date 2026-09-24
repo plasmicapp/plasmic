@@ -64,14 +64,14 @@ const PICKER_OPTS: DataPickerOpts = { showAdvancedFields: false };
  */
 export function buildDataContextResourceResult(
   env: Record<string, unknown>,
-  opts: BuildDataContextOpts
+  opts: BuildDataContextOpts,
 ): BuildDataContextResult {
   const preparedEnv =
     opts.scope === "root"
       ? prepareRootEnv(
           env,
           opts.componentDataQueryNames,
-          opts.componentServerQueryNames
+          opts.componentServerQueryNames,
         )
       : { ...env };
   unwrapServerQueries(preparedEnv);
@@ -85,7 +85,7 @@ export function buildDataContextResourceResult(
     seen: new Set(),
     currentDepth: 0,
   };
-  const result = opts.paths
+  const result = opts.paths?.length
     ? selectPaths(preparedEnv, opts.paths, ctx)
     : { paths: buildAllPaths(preparedEnv, [], ctx), invalidPaths: [] };
 
@@ -115,7 +115,7 @@ interface SelectPathsResult {
 function selectPaths(
   env: Record<string, unknown>,
   requestedPaths: string[],
-  ctx: BuildCtx
+  ctx: BuildCtx,
 ): SelectPathsResult {
   const nodes: DataPathJson[] = [];
   const invalidPaths: InvalidDataContextPath[] = [];
@@ -141,7 +141,7 @@ function selectPaths(
       resolved.value,
       segments.slice(0, -1),
       resolved.parent,
-      ctx
+      ctx,
     );
     node.name = rawPath;
     nodes.push(node);
@@ -163,7 +163,7 @@ function selectPaths(
  */
 function resolvePath(
   env: Record<string, unknown>,
-  segments: (string | number)[]
+  segments: (string | number)[],
 ):
   | { found: true; value: unknown; parent: Record<string, unknown> | undefined }
   | { found: false } {
@@ -212,7 +212,7 @@ function invalidPath(path: string, reason: string): InvalidDataContextPath {
 function prepareRootEnv(
   env: Record<string, unknown>,
   componentDataQueryNames: string[] | undefined,
-  componentServerQueryNames: string[] | undefined
+  componentServerQueryNames: string[] | undefined,
 ): Record<string, unknown> {
   const rest = { ...env } as Record<string, any>;
   if ("$queries" in rest && componentDataQueryNames) {
@@ -241,7 +241,7 @@ function unwrapServerQueries(env: Record<string, unknown>): void {
           // settled with undefined data.
           { ...unwrapStatefulQueryResult(query), isLoading: query.isLoading }
         : query,
-    ])
+    ]),
   );
 }
 
@@ -254,27 +254,26 @@ function isStatefulQueryResult(query: unknown): query is StatefulQueryResult {
 
 function filterByName(
   bag: Record<string, unknown> | undefined,
-  ownedNames: string[]
+  ownedNames: string[],
 ): Record<string, unknown> {
   if (!bag) {
     return {};
   }
   const owned = new Set(ownedNames);
   return Object.fromEntries(
-    Object.entries(bag).filter(([name]) => owned.has(name))
+    Object.entries(bag).filter(([name]) => owned.has(name)),
   );
 }
 
 /**
  * Sizing options from `BuildDataContextOpts` with defaults, plus mutable walk state.
  */
-interface BuildCtx
-  extends Required<
-    Pick<
-      BuildDataContextOpts,
-      "maxDepth" | "maxKeysPerObject" | "maxArrayItems" | "valueMaxLength"
-    >
-  > {
+interface BuildCtx extends Required<
+  Pick<
+    BuildDataContextOpts,
+    "maxDepth" | "maxKeysPerObject" | "maxArrayItems" | "valueMaxLength"
+  >
+> {
   /** Remaining node budget (from `maxTotalPaths`). */
   remaining: number;
   seen: Set<unknown>;
@@ -289,10 +288,10 @@ interface BuildCtx
 function buildAllPaths(
   obj: Record<string, unknown>,
   pathPrefix: (string | number)[],
-  ctx: BuildCtx
+  ctx: BuildCtx,
 ): DataPathJson[] {
   const allKeys = Object.keys(obj).filter(
-    (key) => !dataPickerShouldHideKey(key, obj, pathPrefix, PICKER_OPTS)
+    (key) => !dataPickerShouldHideKey(key, obj, pathPrefix, PICKER_OPTS),
   );
   const nodes: DataPathJson[] = [];
   let emitted = 0;
@@ -320,7 +319,7 @@ function buildPathNode(
   value: unknown,
   pathPrefix: (string | number)[],
   parent: Record<string, unknown> | undefined,
-  ctx: BuildCtx
+  ctx: BuildCtx,
 ): DataPathJson {
   const type = getVariableType(value);
   const node: DataPathJson = { __type: "DataPath", name: String(name), type };
@@ -362,7 +361,7 @@ function buildPathNode(
         }
         ctx.remaining--;
         children.push(
-          buildPathNode(emitted, item, [...pathPrefix, name], undefined, ctx)
+          buildPathNode(emitted, item, [...pathPrefix, name], undefined, ctx),
         );
         emitted++;
       }

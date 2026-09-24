@@ -8,7 +8,7 @@ function countRealPaths(nodes: DataPathJson[]): number {
   return nodes.reduce(
     (count, node) =>
       count + (node.name === "…" ? 0 : 1) + countRealPaths(node.children ?? []),
-    0
+    0,
   );
 }
 
@@ -24,7 +24,7 @@ describe("buildDataContextResourceResult", () => {
         componentUuid: "C1",
         scope: "root",
         componentServerQueryNames: ["orders", "pending"],
-      }
+      },
     );
     expect(resource).toMatchSnapshot();
   });
@@ -35,7 +35,7 @@ describe("buildDataContextResourceResult", () => {
 
     const { resource } = buildDataContextResourceResult(
       { $q: { status: resolved } },
-      { componentUuid: "C1", elementUuid: "T1", scope: "element" }
+      { componentUuid: "C1", elementUuid: "T1", scope: "element" },
     );
     expect(resource).toMatchSnapshot();
   });
@@ -49,10 +49,10 @@ describe("buildDataContextResourceResult", () => {
         componentUuid: "C1",
         scope: "root",
         componentServerQueryNames: ["failed"],
-      }
+      },
     );
     expect(jsonToXml(resource)).toContain(
-      'name="error" type="string" value=\'"boom"\''
+      'name="error" type="string" value=\'"boom"\'',
     );
   });
 
@@ -73,7 +73,7 @@ describe("buildDataContextResourceResult", () => {
         currentItem: { id: 1, name: "Ada" },
         currentIndex: 0,
       },
-      { componentUuid: "C1", elementUuid: "T1", scope: "element" }
+      { componentUuid: "C1", elementUuid: "T1", scope: "element" },
     );
     expect(resource).toMatchSnapshot();
   });
@@ -95,7 +95,7 @@ describe("buildDataContextResourceResult", () => {
         scope: "root",
         componentDataQueryNames: ["mine"],
         componentServerQueryNames: ["serverMine"],
-      }
+      },
     );
     expect(resource).toMatchSnapshot();
   });
@@ -114,7 +114,7 @@ describe("buildDataContextResourceResult", () => {
         componentUuid: "C1",
         scope: "root",
         componentServerQueryNames: ["orders"],
-      }
+      },
     );
     // $q (1) -> orders (2) -> data (3) -> [0] (4) -> customer (5)
     expect(resource).toMatchSnapshot();
@@ -135,7 +135,7 @@ describe("buildDataContextResourceResult", () => {
           [mkMetaName("advancedField")]: { advanced: true },
         },
       },
-      { componentUuid: "C1", elementUuid: "T1", scope: "element" }
+      { componentUuid: "C1", elementUuid: "T1", scope: "element" },
     );
     expect(resource).toMatchSnapshot();
   });
@@ -152,7 +152,7 @@ describe("buildDataContextResourceResult", () => {
         scope: "element",
         maxArrayItems: 3,
         maxKeysPerObject: 3,
-      }
+      },
     );
     expect(resource).toMatchSnapshot();
   });
@@ -161,7 +161,7 @@ describe("buildDataContextResourceResult", () => {
     const reactElt = { $$typeof: Symbol.for("react.element"), type: "div" };
     const { resource } = buildDataContextResourceResult(
       { $props: { children: reactElt } },
-      { componentUuid: "C1", elementUuid: "T1", scope: "element" }
+      { componentUuid: "C1", elementUuid: "T1", scope: "element" },
     );
     const props = resource.paths.find((p) => p.name === "$props");
     expect(props?.children ?? []).toEqual([]);
@@ -187,10 +187,25 @@ describe("buildDataContextResourceResult", () => {
   });
 
   describe("paths", () => {
+    it("treats an empty list as the whole context", () => {
+      const env = { $state: { a: 1 } };
+      const whole = buildDataContextResourceResult(env, {
+        componentUuid: "C1",
+        scope: "element",
+      });
+      expect(
+        buildDataContextResourceResult(env, {
+          componentUuid: "C1",
+          scope: "element",
+          paths: [],
+        }),
+      ).toEqual(whole);
+    });
+
     it("resolves a nested object path", () => {
       const { resource, invalidPaths } = buildDataContextResourceResult(
         { $state: { user: { name: "Ada", age: 30 } } },
-        { componentUuid: "C1", scope: "element", paths: ["$state.user"] }
+        { componentUuid: "C1", scope: "element", paths: ["$state.user"] },
       );
       expect(invalidPaths).toEqual([]);
       expect(resource.paths).toHaveLength(1);
@@ -203,7 +218,7 @@ describe("buildDataContextResourceResult", () => {
     it("resolves an in-range array index", () => {
       const { resource, invalidPaths } = buildDataContextResourceResult(
         { $q: { orders: { data: [{ id: 1 }, { id: 2 }], isLoading: false } } },
-        { componentUuid: "C1", scope: "element", paths: ["$q.orders.data[1]"] }
+        { componentUuid: "C1", scope: "element", paths: ["$q.orders.data[1]"] },
       );
       expect(invalidPaths).toEqual([]);
       const node = resource.paths[0];
@@ -218,7 +233,7 @@ describe("buildDataContextResourceResult", () => {
           componentUuid: "C1",
           scope: "element",
           paths: ['$q.result["key.with.dot"]'],
-        }
+        },
       );
       expect(invalidPaths).toEqual([]);
       const node = resource.paths[0];
@@ -230,7 +245,7 @@ describe("buildDataContextResourceResult", () => {
     it("rejects malformed path syntax", () => {
       const { resource, invalidPaths } = buildDataContextResourceResult(
         { $q: { orders: { data: [] } } },
-        { componentUuid: "C1", scope: "element", paths: ["$q.orders["] }
+        { componentUuid: "C1", scope: "element", paths: ["$q.orders["] },
       );
       expect(resource.paths).toEqual([]);
       expect(invalidPaths).toEqual([
@@ -245,7 +260,7 @@ describe("buildDataContextResourceResult", () => {
     it("rejects a missing object key", () => {
       const { resource, invalidPaths } = buildDataContextResourceResult(
         { $state: { a: 1 } },
-        { componentUuid: "C1", scope: "element", paths: ["$state.b"] }
+        { componentUuid: "C1", scope: "element", paths: ["$state.b"] },
       );
       expect(resource.paths).toEqual([]);
       expect(invalidPaths).toEqual([
@@ -263,7 +278,7 @@ describe("buildDataContextResourceResult", () => {
           componentUuid: "C1",
           scope: "element",
           paths: ["$q.orders.data[99]"],
-        }
+        },
       );
       expect(resource.paths).toEqual([]);
       expect(invalidPaths).toEqual([
@@ -278,7 +293,7 @@ describe("buildDataContextResourceResult", () => {
     it("does not traverse through a primitive", () => {
       const { invalidPaths } = buildDataContextResourceResult(
         { $state: { count: 3 } },
-        { componentUuid: "C1", scope: "element", paths: ["$state.count.x"] }
+        { componentUuid: "C1", scope: "element", paths: ["$state.count.x"] },
       );
       expect(invalidPaths).toEqual([
         {
@@ -309,7 +324,7 @@ describe("buildDataContextResourceResult", () => {
             "$state.registerInitFunc",
             "$state.visible",
           ],
-        }
+        },
       );
 
       expect(resource.paths.map((path) => path.name)).toEqual([
@@ -359,7 +374,7 @@ describe("buildDataContextResourceResult", () => {
           scope: "element",
           maxTotalPaths: 4,
           paths: ["a", "b", "missing", "bad["],
-        }
+        },
       );
       // A per-path budget would emit both subtrees (8 nodes); a shared budget
       // of 4 is exhausted by "a" alone, so "b" is represented by a marker.
@@ -383,7 +398,7 @@ describe("buildDataContextResourceResult", () => {
           componentUuid: "C1",
           scope: "element",
           paths: ["b", "a", "b"],
-        }
+        },
       );
       expect(resource.paths.map((p) => p.name)).toEqual(["b", "a"]);
     });
@@ -396,7 +411,7 @@ describe("buildDataContextResourceResult", () => {
           scope: "element",
           maxArrayItems: 2,
           paths: ["items"],
-        }
+        },
       );
       const node = resource.paths[0];
       expect(node.type).toBe("array");
@@ -422,7 +437,7 @@ describe("buildDataContextResourceResult", () => {
           componentServerQueryNames: ["mine"],
           componentDataQueryNames: ["legacyMine"],
           paths: ["$q.mine", "$q.foreign", "$queries.legacyForeign"],
-        }
+        },
       );
       expect(resource.paths.map((p) => p.name)).toEqual(["$q.mine"]);
       expect(invalidPaths.map((e) => e.path)).toEqual([

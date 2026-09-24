@@ -1723,7 +1723,7 @@ export class SiteOps {
     );
   }
 
-  async tryDeleteDataTokens(tokens: DataToken[]) {
+  async tryDeleteDataTokens(tokens: DataToken[], opts?: DeleteResourcesOpts) {
     const resourcesWithUsage = tokens.map((token) => {
       const usageSummary = extractDataTokenUsages(
         this.studioCtx.siteInfo.id,
@@ -1751,6 +1751,7 @@ export class SiteOps {
         arrayRemove(this.site.dataTokens, token);
       },
       {
+        ...opts,
         deleteLabel: DATA_TOKEN_LOWER,
       },
     );

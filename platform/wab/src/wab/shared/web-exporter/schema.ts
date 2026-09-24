@@ -1,3 +1,4 @@
+import { dataTokenTypes } from "@/wab/commons/DataToken";
 import { tokenTypes } from "@/wab/commons/StyleToken";
 import { dataQueryArgSchema } from "@/wab/shared/copilot/dynamic-value-input";
 import { JsonValue } from "@/wab/shared/core/lang";
@@ -30,7 +31,7 @@ export function outputResultSchema(resultSchema: z.ZodTypeAny) {
  */
 export function outputResult<T extends ReadResultJson>(
   results: T[],
-  messages?: string[]
+  messages?: string[],
 ): { __type: "OutputResult"; messages?: string[]; results: T[] } {
   return {
     __type: "OutputResult",
@@ -43,7 +44,7 @@ export function outputResult<T extends ReadResultJson>(
 export function serializeInvalidResource(
   uuid: string,
   type: InvalidResourceJson["type"],
-  message: string
+  message: string,
 ): InvalidResourceJson {
   return { __type: "InvalidResource", type, uuid, message };
 }
@@ -55,6 +56,7 @@ export function readResultSchema() {
     componentSchema(),
     elementSchema(),
     tokenSchema(),
+    dataTokenSchema(),
     mixinSchema(),
     animationSchema(),
     themeSchema(),
@@ -81,6 +83,13 @@ export function componentResultSchema() {
 export function tokenResultSchema() {
   return z.discriminatedUnion("__type", [
     tokenSchema(),
+    invalidResourceSchema(),
+  ]);
+}
+
+export function dataTokenResultSchema() {
+  return z.discriminatedUnion("__type", [
+    dataTokenSchema(),
     invalidResourceSchema(),
   ]);
 }
@@ -119,6 +128,10 @@ export function projectSchema() {
       .array(tokenSchema())
       .optional()
       .describe("Style tokens (own + imported), when requested."),
+    dataTokens: z
+      .array(dataTokenSchema())
+      .optional()
+      .describe("Data tokens (own + imported), when requested."),
     mixins: z
       .array(mixinSchema())
       .optional()
@@ -134,7 +147,7 @@ export function projectSchema() {
     dataQueryFunctions: dataQueryFunctionsSchema()
       .optional()
       .describe(
-        "Installed and installable custom functions usable by createDataQuery/updateDataQuery, when requested."
+        "Installed and installable custom functions usable by createDataQuery/updateDataQuery, when requested.",
       ),
     importedProjects: z
       .array(importedProjectSchema())
@@ -201,7 +214,7 @@ export function componentSchema() {
       .array(legacyDataQuerySchema())
       .optional()
       .describe(
-        "Legacy integration data queries (`$queries.*`) defined on this component/page."
+        "Legacy integration data queries (`$queries.*`) defined on this component/page.",
       ),
     baseVariantTplTree: z
       .string()
@@ -225,7 +238,7 @@ export function interactionSchema() {
     name: z
       .string()
       .describe(
-        "Step name; later steps in the same handler read this step's result as $steps.<name>."
+        "Step name; later steps in the same handler read this step's result as $steps.<name>.",
       ),
     elementUuid: z
       .string()
@@ -236,7 +249,7 @@ export function interactionSchema() {
     actionName: z
       .string()
       .describe(
-        'Action kind; "customFunction" is a Run-code step and carries `code`. Other kinds are Studio-built actions and carry structured args.'
+        'Action kind; "customFunction" is a Run-code step and carries `code`. Other kinds are Studio-built actions and carry structured args.',
       ),
     code: z
       .string()
@@ -246,19 +259,19 @@ export function interactionSchema() {
       .record(z.string(), z.any())
       .optional()
       .describe(
-        "Structured arguments of Studio-built actions, keyed by argument name."
+        "Structured arguments of Studio-built actions, keyed by argument name.",
       ),
     conditionalMode: z
       .enum(["never", "expression"])
       .optional()
       .describe(
-        'Present when the step does not always run: "never" (disabled) or "expression" (gated by `condition`).'
+        'Present when the step does not always run: "never" (disabled) or "expression" (gated by `condition`).',
       ),
     condition: z
       .union([z.any(), exprSchema()])
       .optional()
       .describe(
-        'The run-when expression, present when conditionalMode is "expression": the typed value when statically known, otherwise a serialized dynamic expression.'
+        'The run-when expression, present when conditionalMode is "expression": the typed value when statically known, otherwise a serialized dynamic expression.',
       ),
   });
 }
@@ -276,7 +289,7 @@ export function dataQuerySchema() {
     kind: z
       .enum(["customCode", "function", "empty"])
       .describe(
-        "How the query is defined: `customCode` (inline expression), `function` (a bound custom function), or `empty` (not yet configured)."
+        "How the query is defined: `customCode` (inline expression), `function` (a bound custom function), or `empty` (not yet configured).",
       ),
     code: z
       .string()
@@ -286,7 +299,7 @@ export function dataQuerySchema() {
       .string()
       .optional()
       .describe(
-        "Bound custom-function id, present when kind is `function` (absent if the function ref is dangling)."
+        "Bound custom-function id, present when kind is `function` (absent if the function ref is dangling).",
       ),
     args: z
       .array(dataQueryArgSchema())
@@ -305,7 +318,7 @@ export function legacyDataQuerySchema() {
     reference: z
       .string()
       .describe(
-        "How to reference the result in bindings, e.g. `$queries.myQuery`."
+        "How to reference the result in bindings, e.g. `$queries.myQuery`.",
       ),
     op: dataSourceOpSchema()
       .optional()
@@ -315,24 +328,24 @@ export function legacyDataQuerySchema() {
       .describe(
         "Number of places that may reference this query: bindings in its own " +
           "component (a dynamic access like `$queries[someVar]` counts toward " +
-          "every query), plus query invalidations anywhere in the project."
+          "every query), plus query invalidations anywhere in the project.",
       ),
     migratable: z
       .boolean()
       .describe(
-        "Whether this query can be migrated to a modern `$q` data query."
+        "Whether this query can be migrated to a modern `$q` data query.",
       ),
     migrationBlockers: z
       .array(z.string())
       .optional()
       .describe(
-        "Why it can't be migrated. Report these to the user instead of attempting the migration."
+        "Why it can't be migrated. Report these to the user instead of attempting the migration.",
       ),
     migrationWarnings: z
       .array(z.string())
       .optional()
       .describe(
-        "Caveats that don't prevent the migration. Report these to the user after migrating."
+        "Caveats that don't prevent the migration. Report these to the user after migrating.",
       ),
   });
 }
@@ -357,7 +370,7 @@ export function dataSourceOpSchema() {
       .optional()
       .describe(
         "Public base URL for HTTP/GraphQL integrations. Reduced to the host when not " +
-          "migratable, since a base URL can have credentials."
+          "migratable, since a base URL can have credentials.",
       ),
     defaultHeaders: z
       .record(z.string(), z.string())
@@ -365,7 +378,7 @@ export function dataSourceOpSchema() {
       .describe(
         "Headers the integration sends with every request. A migrated query " +
           "must send them itself: merge them into `opts.headers`, with the " +
-          "op's own `headers` arg winning on conflict."
+          "op's own `headers` arg winning on conflict.",
       ),
     opName: z.string().describe("Operation name."),
     opLabel: z
@@ -428,24 +441,24 @@ export function propSchema() {
     type: z
       .string()
       .describe(
-        'Prop type, e.g. "text", "boolean", "number", "href", "enum", or a variant-group options string.'
+        'Prop type, e.g. "text", "boolean", "number", "href", "enum", or a variant-group options string.',
       ),
     options: z
       .array(
         z.object({
           label: z.string(),
           value: z.union([z.string(), z.number(), z.boolean()]),
-        })
+        }),
       )
       .optional()
       .describe(
-        "Allowed values, present for enum/choice props. An option with no label of its own shows its value as the label."
+        "Allowed values, present for enum/choice props. An option with no label of its own shows its value as the label.",
       ),
     default: z
       .union([z.any(), exprSchema()])
       .optional()
       .describe(
-        "Default value: the real typed value when statically known, otherwise a serialized dynamic expression."
+        "Default value: the real typed value when statically known, otherwise a serialized dynamic expression.",
       ),
   });
 }
@@ -457,7 +470,7 @@ export function stateSchema() {
     name: z
       .string()
       .describe(
-        'Variable name, as accessed via `$state` (implicit states use a dotted path, e.g. "myInput.value").'
+        'Variable name, as accessed via `$state` (implicit states use a dotted path, e.g. "myInput.value").',
       ),
     uuid: z
       .string()
@@ -468,25 +481,25 @@ export function stateSchema() {
     accessType: z
       .enum(STATE_ACCESS_TYPES)
       .describe(
-        "private: internal only; readonly: parent components can read it; writable: exposed as a prop (controlled-component style)."
+        "private: internal only; readonly: parent components can read it; writable: exposed as a prop (controlled-component style).",
       ),
     initialValue: z
       .union([z.any(), exprSchema()])
       .optional()
       .describe(
-        "Initial value: the real typed value when statically known, otherwise a serialized dynamic expression."
+        "Initial value: the real typed value when statically known, otherwise a serialized dynamic expression.",
       ),
     onChangeProp: z
       .string()
       .optional()
       .describe(
-        "Change-handler prop name, present for public (non-private) states."
+        "Change-handler prop name, present for public (non-private) states.",
       ),
     elementUuid: z
       .string()
       .optional()
       .describe(
-        "Present for implicit states: UUID of the element (component instance or input tag) whose state this mirrors."
+        "Present for implicit states: UUID of the element (component instance or input tag) whose state this mirrors.",
       ),
   });
 }
@@ -586,7 +599,7 @@ const objectPathExprSchema = z.object({
   path: z
     .array(z.union([z.string(), z.number()]))
     .describe(
-      'Member-access path, e.g. ["$ctx", "params", "slug"] for $ctx.params.slug.'
+      'Member-access path, e.g. ["$ctx", "params", "slug"] for $ctx.params.slug.',
     ),
   fallback: fallbackSchema,
 });
@@ -621,7 +634,7 @@ export function componentVariantDefSchema() {
     type: z
       .enum(["single", "multi", "boolean"])
       .describe(
-        "Variant group kind: single (one-of-many), multi (any-of-many), or boolean (standalone)."
+        "Variant group kind: single (one-of-many), multi (any-of-many), or boolean (standalone).",
       ),
     group: z.string().describe("Owning variant group name."),
   });
@@ -663,7 +676,7 @@ export function elementOverrideSchema() {
       .record(z.string(), z.string())
       .optional()
       .describe(
-        "HTML attribute overrides for this element under this variant."
+        "HTML attribute overrides for this element under this variant.",
       ),
   });
 }
@@ -695,7 +708,7 @@ export function tokenSchema() {
       .optional()
       .describe("Imported project id, present only for imported tokens."),
     value: tokenValuesSchema().describe(
-      "Token values: base value (+ resolved alias) and per-variant values."
+      "Token values: base value (+ resolved alias) and per-variant values.",
     ),
     override: z
       .object({
@@ -707,6 +720,30 @@ export function tokenSchema() {
   });
 }
 export type TokenJson = z.infer<ReturnType<typeof tokenSchema>>;
+
+export function dataTokenSchema() {
+  return z.object({
+    __type: z.literal("DataToken"),
+    name: z.string().describe("Data token name."),
+    uuid: z.string().describe("Data token UUID."),
+    type: z.enum(dataTokenTypes).describe("Value type."),
+    value: z
+      .string()
+      .describe(
+        'Raw text for "string", a numeric literal for "number", a JS expression for "code".',
+      ),
+    reference: z
+      .string()
+      .describe(
+        "Identifier that dynamic values use to read the token, e.g. `{{ $dataTokens_abcde_apiUrl }}`.",
+      ),
+    fromProject: z
+      .string()
+      .optional()
+      .describe("Imported project id, present only for imported tokens."),
+  });
+}
+export type DataTokenJson = z.infer<ReturnType<typeof dataTokenSchema>>;
 
 /** A token's values: base value (+ resolved alias) and per-variant values. */
 export function tokenValuesSchema() {
@@ -720,7 +757,7 @@ export function tokenValuesSchema() {
       .string()
       .optional()
       .describe(
-        "Dereferenced value, present only when `value` is a token ref."
+        "Dereferenced value, present only when `value` is a token ref.",
       ),
     variantedValues: z
       .array(variantedValueSchema())
@@ -737,14 +774,14 @@ export function variantedValueSchema() {
     variantUuids: z
       .array(z.string())
       .describe(
-        "Global-variant UUIDs whose combination this value applies to (order-independent)."
+        "Global-variant UUIDs whose combination this value applies to (order-independent).",
       ),
     value: z.string().describe("CSS value for this variant combination."),
     resolvedValue: z
       .string()
       .optional()
       .describe(
-        "Dereferenced value, present only when `value` is a token ref."
+        "Dereferenced value, present only when `value` is a token ref.",
       ),
   });
 }
@@ -784,18 +821,18 @@ export function themeSchema() {
       .boolean()
       .optional()
       .describe(
-        "True for the project's currently active theme; at most one theme is active."
+        "True for the project's currently active theme; at most one theme is active.",
       ),
     fromProject: z
       .string()
       .optional()
       .describe(
-        "Imported project id, present only for imported themes. Imported themes can be activated but not edited."
+        "Imported project id, present only for imported themes. Imported themes can be activated but not edited.",
       ),
     styles: z
       .array(themeStyleSchema())
       .describe(
-        'Default style entries: the base typography entry (selector "") plus per-tag entries (e.g. "h1", "a:hover").'
+        'Default style entries: the base typography entry (selector "") plus per-tag entries (e.g. "h1", "a:hover").',
       ),
   });
 }
@@ -807,7 +844,7 @@ export function themeStyleSchema() {
     selector: z
       .string()
       .describe(
-        'What this entry styles: "" for base typography (all text), an HTML tag (e.g. "h1"), or a tag plus pseudo-class (e.g. "a:hover").'
+        'What this entry styles: "" for base typography (all text), an HTML tag (e.g. "h1"), or a tag plus pseudo-class (e.g. "a:hover").',
       ),
     styles: z
       .record(z.string(), z.string())
@@ -816,7 +853,7 @@ export function themeStyleSchema() {
       .array(variantedStyleSchema())
       .optional()
       .describe(
-        "Per-global-variant style overrides (e.g. per screen breakpoint)."
+        "Per-global-variant style overrides (e.g. per screen breakpoint).",
       ),
   });
 }
@@ -828,7 +865,7 @@ export function variantedStyleSchema() {
     variantUuids: z
       .array(z.string())
       .describe(
-        "Global-variant UUIDs whose combination these styles apply to (order-independent)."
+        "Global-variant UUIDs whose combination these styles apply to (order-independent).",
       ),
     styles: z
       .record(z.string(), z.string())
@@ -871,6 +908,7 @@ export function invalidResourceSchema() {
       .enum([
         "Component",
         "Token",
+        "DataToken",
         "Mixin",
         "Element",
         "Variant",
@@ -885,7 +923,7 @@ export function invalidResourceSchema() {
         "ThemeStyle",
       ])
       .describe(
-        "Kind of resource that could not be found (matches its __type)."
+        "Kind of resource that could not be found (matches its __type).",
       ),
     uuid: z.string().describe("The requested (missing) resource UUID."),
     message: z.string().describe("Human-readable explanation."),
@@ -910,7 +948,7 @@ export function dataContextSchema() {
     scope: z
       .enum(["root", "element"])
       .describe(
-        "`root` for the component/page-level context, `element` for a specific element's context."
+        "`root` for the component/page-level context, `element` for a specific element's context.",
       ),
     elementUuid: z
       .string()
@@ -919,7 +957,7 @@ export function dataContextSchema() {
     paths: z
       .array(dataPathSchema())
       .describe(
-        "Top-level data paths available in this context (e.g. $props, $state, $queries, $q, $ctx)."
+        "Top-level data paths available in this context (e.g. $props, $state, $queries, $q, $ctx).",
       ),
   });
 }
@@ -961,7 +999,7 @@ export function dataPathSchema(): z.ZodType<DataPathJson> {
       .string()
       .optional()
       .describe(
-        'Variable type, e.g. "string", "number", "boolean", "object", "array", "react-element", "function". Absent on `…` markers.'
+        'Variable type, e.g. "string", "number", "boolean", "object", "array", "react-element", "function". Absent on `…` markers.',
       ),
     label: z
       .string()
@@ -971,7 +1009,7 @@ export function dataPathSchema(): z.ZodType<DataPathJson> {
       .string()
       .optional()
       .describe(
-        "Short JSON-encoded preview of a primitive value (may be truncated)."
+        "Short JSON-encoded preview of a primitive value (may be truncated).",
       ),
     length: z
       .number()
@@ -1058,7 +1096,7 @@ export function dataQueryFunctionsSchema() {
     installable: z
       .array(installableFunctionSchema())
       .describe(
-        "Custom functions available from hostless packages not yet installed."
+        "Custom functions available from hostless packages not yet installed.",
       ),
   });
 }
@@ -1122,7 +1160,7 @@ export function functionParamSchema() {
       .optional()
       .describe(
         "For an object param: its nested fields. Pass the whole param as one " +
-          'JSON literal, e.g. opts: \'{ "url": "https://...", "method": "GET" }\'.'
+          'JSON literal, e.g. opts: \'{ "url": "https://...", "method": "GET" }\'.',
       ),
   });
 }
@@ -1134,7 +1172,7 @@ export function installableFunctionSchema() {
     id: z
       .string()
       .describe(
-        "Stable id used to install and bind via createDataQuery/updateDataQuery."
+        "Stable id used to install and bind via createDataQuery/updateDataQuery.",
       ),
     displayName: z.string(),
     packageProjectId: z.string().optional(),

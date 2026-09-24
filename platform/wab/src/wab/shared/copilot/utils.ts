@@ -1,3 +1,9 @@
+import {
+  DataTokenType,
+  getDataTokenType,
+  isDataTokenEditable,
+  toDataTokenStoredValue,
+} from "@/wab/commons/DataToken";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import {
@@ -14,7 +20,9 @@ import {
 } from "@/wab/shared/component-frame";
 import { tryGetComponentByUuid } from "@/wab/shared/core/components";
 import { mkVar } from "@/wab/shared/core/lang";
+import { siteDataTokensDirectDeps } from "@/wab/shared/core/site-data-tokens";
 import { getDedicatedArena } from "@/wab/shared/core/sites";
+import { toFinalToken } from "@/wab/shared/core/tokens";
 import {
   EventHandlerKeyType,
   flattenTpls,
@@ -28,6 +36,7 @@ import {
   Component,
   ComponentArena,
   CustomCode,
+  DataToken,
   Interaction,
   ObjectPath,
   PageArena,
@@ -36,6 +45,12 @@ import {
   TplNode,
   isKnownEventHandler,
 } from "@/wab/shared/model/classes";
+import { parseJsCode } from "@/wab/shared/parser-utils";
+import {
+  serializeInvalidResource,
+  type InvalidResourceJson,
+} from "@/wab/shared/web-exporter/schema";
+import { Result, err, ok } from "neverthrow";
 
 /**
  * Find a component by UUID. Throws if not found.
@@ -43,7 +58,7 @@ import {
 export function getComponentByUuid(site: Site, uuid: string): Component {
   return ensure(
     tryGetComponentByUuid(site, uuid),
-    () => `Component with UUID "${uuid}" not found.`
+    () => `Component with UUID "${uuid}" not found.`,
   );
 }
 
@@ -54,7 +69,7 @@ export function getTplByUuid(component: Component, uuid: string): TplNode {
   return ensure(
     tryGetTplByUuid(component, uuid),
     () =>
-      `Element with UUID "${uuid}" not found in component "${component.name}".`
+      `Element with UUID "${uuid}" not found in component "${component.name}".`,
   );
 }
 
@@ -66,7 +81,7 @@ export function getTplByUuid(component: Component, uuid: string): TplNode {
  */
 export function findInteractionInComponent(
   component: Component,
-  interactionUuid: string
+  interactionUuid: string,
 ):
   | {
       tpl: TplNode;
@@ -88,7 +103,7 @@ export function findInteractionInComponent(
         continue;
       }
       const interaction = eventHandler.expr.interactions.find(
-        (it) => it.uuid === interactionUuid
+        (it) => it.uuid === interactionUuid,
       );
       if (interaction) {
         return {
@@ -121,7 +136,7 @@ export function getVariantsByUuids(
     site: Site;
     component?: Component;
     tpl?: TplNode | null;
-  }
+  },
 ): { variants: VariantCombo; invalidUuids: string[] } {
   const variantPool = getAllVariantsForTpl({
     component: opts.component,
@@ -147,7 +162,7 @@ export function getVariantsByUuids(
 export function getComponentVariantCombo(
   site: Site,
   component: Component,
-  variantUuids: string[] | undefined
+  variantUuids: string[] | undefined,
 ): VariantCombo {
   if (!variantUuids?.length) {
     return [getBaseVariant(component)];
@@ -161,7 +176,7 @@ export function getComponentVariantCombo(
     throw new Error(
       `Variant(s) not found: ${result.invalidUuids
         .map((u) => `"${u}"`)
-        .join(", ")}.`
+        .join(", ")}.`,
     );
   }
   return result.variants;
@@ -181,7 +196,7 @@ export function getComponentVariantCombo(
 export function getComponentArenaAndVariantTplMgr(
   site: Site,
   component: Component,
-  tplMgr: TplMgr
+  tplMgr: TplMgr,
 ): { vtm: VariantTplMgr; arena: ComponentArena | PageArena } {
   const arena = getDedicatedArena(site, component);
   if (!arena) {
@@ -192,7 +207,7 @@ export function getComponentArenaAndVariantTplMgr(
     [new TransientComponentVariantFrame(arenaFrame.container)],
     site,
     tplMgr,
-    new GlobalVariantFrame(site, arenaFrame)
+    new GlobalVariantFrame(site, arenaFrame),
   );
   return { vtm, arena };
 }
@@ -203,7 +218,7 @@ export function getComponentArenaAndVariantTplMgr(
 export function mkNormalizedRep(
   collection: CustomCode | ObjectPath,
   itemName?: string,
-  indexName?: string
+  indexName?: string,
 ): Rep {
   const element = toVarName(itemName || "currentItem");
   const index = uniqueName([element], toVarName(indexName || "currentIndex"), {
@@ -211,4 +226,48 @@ export function mkNormalizedRep(
     normalize: toVarName,
   });
   return new Rep({ collection, element: mkVar(element), index: mkVar(index) });
+}
+
+export function getEditableDataToken(
+  site: Site,
+  uuid: string,
+): Result<DataToken, InvalidResourceJson> {
+  const token = siteDataTokensDirectDeps(site).find((t) => t.uuid === uuid);
+  if (!token) {
+    return err(
+      serializeInvalidResource(
+        uuid,
+        "DataToken",
+        `Data token with UUID "${uuid}" not found.`,
+      ),
+    );
+  }
+  if (!isDataTokenEditable(toFinalToken(token, site))) {
+    return err(
+      serializeInvalidResource(
+        uuid,
+        "DataToken",
+        `Data token "${token.name}" is imported or registered and cannot be edited or deleted.`,
+      ),
+    );
+  }
+  return ok(token);
+}
+
+export function toValidStoredValue(
+  value: string,
+  type: DataTokenType,
+): Result<string, string> {
+  if (type === "number" && getDataTokenType(value) !== "number") {
+    return err(`"${value}" is not a number.`);
+  }
+  const storedValue = toDataTokenStoredValue(value, type);
+  if (type === "code") {
+    try {
+      parseJsCode(storedValue);
+    } catch (e) {
+      return err(`invalid code: ${e instanceof Error ? e.message : e}.`);
+    }
+  }
+  return ok(storedValue);
 }
