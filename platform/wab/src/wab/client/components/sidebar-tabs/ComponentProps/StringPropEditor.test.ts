@@ -8,7 +8,7 @@ import { createSite } from "@/wab/shared/core/sites";
 import { getProjectFlags } from "@/wab/shared/devflags";
 import { ObjectPath, TemplatedString } from "@/wab/shared/model/classes";
 
-const { templatedStringsEqual } = _testonly;
+const { templatedStringsEqual, normalizeToTemplatedString } = _testonly;
 
 const exprCtx: ExprCtx = {
   component: null,
@@ -147,5 +147,23 @@ describe("simplifyTemplatedString", () => {
     const cc = customCode("cc");
     const ts = new TemplatedString({ text: ["aa", "bb", cc, "dd"] });
     expect(simplifyTemplatedString(ts)).toBe(ts);
+  });
+});
+
+describe("normalizeToTemplatedString", () => {
+  it("keeps a plain string as one segment so the editor can show a placeholder when it is empty", () => {
+    expect(normalizeToTemplatedString("").text).toEqual([""]);
+    expect(normalizeToTemplatedString("hello").text).toEqual(["hello"]);
+    expect(normalizeToTemplatedString(undefined).text).toEqual([""]);
+  });
+
+  it("wraps a dynamic value in empty text so there is room to type on either side", () => {
+    const code = customCode("(user.name)");
+    expect(normalizeToTemplatedString(code).text).toEqual(["", code, ""]);
+  });
+
+  it("returns a TemplatedString unchanged", () => {
+    const ts = new TemplatedString({ text: ["a", customCode("(b)"), "c"] });
+    expect(normalizeToTemplatedString(ts)).toBe(ts);
   });
 });

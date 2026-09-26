@@ -1651,7 +1651,7 @@ a.btn-link
 
 .list-box-item__handle
   padding: 0 5px
-  width: 20px
+  width: $list-box-item-handle-width
   font-size: 16px
   cursor: grab
   color: $dimdimfg
@@ -1669,6 +1669,13 @@ a.btn-link
 
 .list-box-item--top > *
   align-items: flex-start
+
+// A list box row ends with a drag grip and a delete button, and the delete
+// button is a panel button. This reserves their combined width so
+// columns line up with the row content.
+.list-box-header__spacer
+  flex: none
+  width: $list-box-item-handle-width + $panel-button-size
 
 .list-item-height
   min-height: $section-list-item-height

@@ -116,57 +116,68 @@ export const ArrayPrimitiveEditor = observer(function ArrayPrimitiveEditor({
         </div>
       }
     >
-      <ListBox
-        appendPrepend={"append"}
-        onReorder={(from, to) => change(arrayMoveIndex(rows, from, to))}
-        data-test-id={dataTestId}
-      >
-        {rows.map((row, index) => {
-          return (
-            <ListBoxItem
-              data-test-id={`${dataTestId}-${index}`}
-              mainContent={
-                <div className={"flex-fill flex-row gap-sm"}>
-                  <PropValueEditor
-                    label={"value"}
-                    attr={"value"}
-                    propType={"string"}
-                    value={String(row.value)}
-                    onChange={(val) =>
-                      change(
-                        arrayReplaceAt(rows, index, {
-                          ...row,
-                          value: parseValue(String(val ?? ""), rows),
-                        }),
-                      )
-                    }
-                  />
-                  <PropValueEditor
-                    label={"label"}
-                    attr={"label"}
-                    propType={{
-                      type: "string",
-                      defaultValueHint: String(row.value),
-                    }}
-                    value={row.label ?? ""}
-                    onChange={(val) =>
-                      change(
-                        arrayReplaceAt(rows, index, {
-                          ...row,
-                          label: String(val ?? ""),
-                        }),
-                      )
-                    }
-                  />
-                </div>
-              }
-              index={index}
-              key={index}
-              onRemove={() => change(arrayRemoveAt(rows, index))}
-            />
-          );
-        })}
-      </ListBox>
+      <div className={"flex-col flex-fill"}>
+        {rows.length > 0 && (
+          <div className={"flex-row flex-vcenter fill-width"}>
+            <div className={"flex-fill flex-row gap-sm"}>
+              <div className={"flex-fill text-sm dimfg"}>Value</div>
+              <div className={"flex-fill text-sm dimfg"}>Label</div>
+            </div>
+            <div className={"list-box-header__spacer"} />
+          </div>
+        )}
+        <ListBox
+          appendPrepend={"append"}
+          onReorder={(from, to) => change(arrayMoveIndex(rows, from, to))}
+          data-test-id={dataTestId}
+        >
+          {rows.map((row, index) => {
+            return (
+              <ListBoxItem
+                data-test-id={`${dataTestId}-${index}`}
+                mainContent={
+                  <div className={"flex-fill flex-row gap-sm"}>
+                    <PropValueEditor
+                      label={"value"}
+                      attr={"value"}
+                      propType={"string"}
+                      value={String(row.value)}
+                      onChange={(val) =>
+                        change(
+                          arrayReplaceAt(rows, index, {
+                            ...row,
+                            value: parseValue(String(val ?? ""), rows),
+                          }),
+                        )
+                      }
+                    />
+                    <PropValueEditor
+                      label={"label"}
+                      attr={"label"}
+                      propType={{
+                        type: "string",
+                        defaultValueHint: String(row.value),
+                      }}
+                      value={row.label ?? ""}
+                      onChange={(val) =>
+                        change(
+                          arrayReplaceAt(rows, index, {
+                            ...row,
+                            label: String(val ?? ""),
+                          }),
+                        )
+                      }
+                    />
+                  </div>
+                }
+                index={index}
+                key={index}
+                onRemove={() => change(arrayRemoveAt(rows, index))}
+              />
+            );
+          })}
+        </ListBox>
+      </div>
     </LabeledItemRow>
   );
 });

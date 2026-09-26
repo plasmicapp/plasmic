@@ -42,7 +42,7 @@ export const COMPONENT_PARAM_TYPES_CONFIG = {
   bool: { label: "Toggle", jsonType: "boolean" },
   any: { label: "Object", jsonType: "any" }, // any / Object = JsonValue, NOT JsonObject
   choice: { label: "Choice", jsonType: "any" }, // string | number | boolean
-  multiChoice: { label: "Multi-Choice", jsonType: "any" }, // string[] | number[] | boolean[]
+  multiChoice: { label: "Multi-choice", jsonType: "any" }, // string[] | number[] | boolean[]
   queryData: {
     label: "Query data",
     jsonType: "any",

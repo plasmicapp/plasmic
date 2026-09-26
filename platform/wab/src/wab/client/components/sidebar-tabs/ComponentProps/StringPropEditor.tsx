@@ -268,6 +268,10 @@ function normalizeToTemplatedString(
     return new TemplatedString({ text: [""] });
   } else if (isKnownTemplatedString(value)) {
     return value;
+  } else if (typeof value === "string") {
+    // A plain string stays one segment. Slate shows the placeholder only for a
+    // single empty text node.
+    return new TemplatedString({ text: [value] });
   } else {
     return new TemplatedString({ text: ["", value, ""] });
   }
@@ -286,4 +290,4 @@ function templatedStringsEqual(
   return codeA === codeB;
 }
 
-export const _testonly = { templatedStringsEqual };
+export const _testonly = { templatedStringsEqual, normalizeToTemplatedString };
