@@ -20,7 +20,7 @@ import {
   CopilotType,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
-import { asDataUrl } from "@/wab/shared/data-urls";
+import { uniqueKey } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import cn from "classnames";
 import defer = setTimeout;
@@ -146,14 +146,8 @@ function CopilotPromptDialog<Response>({
               wrapChildren: () =>
                 copilotPrompt.images.map((image) => (
                   <CopilotPromptImage
-                    key={image.base64}
-                    img={{
-                      src: asDataUrl(
-                        image.base64,
-                        `image/${image.type}`,
-                        "base64",
-                      ),
-                    }}
+                    key={uniqueKey(image)}
+                    image={image}
                     onDelete={() =>
                       setCopilotPrompt((prev) => ({
                         ...prev,

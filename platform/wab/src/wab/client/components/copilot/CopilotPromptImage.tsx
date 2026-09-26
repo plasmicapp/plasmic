@@ -1,21 +1,26 @@
 import {
   DefaultCopilotPromptImageProps,
   PlasmicCopilotPromptImage,
-  PlasmicCopilotPromptImage__OverridesType,
 } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotPromptImage";
+import { CopilotImage } from "@/wab/shared/ApiSchema";
+import { asDataUrl } from "@/wab/shared/data-urls";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
-export type CopilotPromptImageProps = DefaultCopilotPromptImageProps &
-  Pick<PlasmicCopilotPromptImage__OverridesType, "img"> & {
-    onDelete: () => void;
-  };
+export type CopilotPromptImageProps = DefaultCopilotPromptImageProps & {
+  image: CopilotImage;
+  onDelete: () => void;
+};
 
 function CopilotPromptImage_(
   props: CopilotPromptImageProps,
   ref: HTMLElementRefOf<"div">,
 ) {
-  const { img, onDelete, ...plasmicProps } = props;
+  const { image, onDelete, ...plasmicProps } = props;
+  const img = React.useMemo(
+    () => ({ src: asDataUrl(image.base64, `image/${image.type}`, "base64") }),
+    [image.base64, image.type],
+  );
   return (
     <PlasmicCopilotPromptImage
       root={{ ref }}
