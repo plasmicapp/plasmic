@@ -1,5 +1,5 @@
 import { toVarName } from "@/wab/shared/codegen/util";
-import { maybe, switchType } from "@/wab/shared/common";
+import { ensure, maybe, switchType } from "@/wab/shared/common";
 import {
   TemplatedStringPropEditorValue,
   codeLit,
@@ -30,6 +30,7 @@ import {
   PageHref,
   RawText,
   RichText,
+  Site,
   TemplatedString,
   VarRef,
   isKnownCompositeExpr,
@@ -37,8 +38,11 @@ import {
   isKnownObjectPath,
 } from "@/wab/shared/model/classes";
 import { parseJsCode } from "@/wab/shared/parser-utils";
-import { renderPageHrefUrl } from "@/wab/shared/utils/url-utils";
-import { mapValues } from "lodash";
+import {
+  getMatchingPagePathParams,
+  renderPageHrefUrl,
+} from "@/wab/shared/utils/url-utils";
+import { mapValues, minBy } from "lodash";
 import { z } from "zod";
 
 /**
@@ -53,7 +57,9 @@ export const interpolatedStringFormatDescription = `Values are static by default
  * or one that simplifies to static text, becomes a static `codeLit`, otherwise
  * `ObjectPath` / `CustomCode` / `TemplatedString`.
  */
-export function interpolatedStringToExpr(str: string): Expr {
+export function interpolatedStringToExpr(
+  str: string,
+): ObjectPath | CustomCode | TemplatedString {
   const simplified = parseInterpolatedString(str);
   return typeof simplified === "string" ? codeLit(simplified) : simplified;
 }
@@ -259,6 +265,58 @@ function pageHrefToInterpolatedString(pageHref: PageHref): string | undefined {
     pageHref,
     (value) => exprToInterpolatedString(value) ?? "",
   );
+}
+
+/**
+ * Inverse of `pageHrefToInterpolatedString`: a root-relative href becomes a
+ * `PageHref` to the page whose path it matches, preferring the fewest params
+ * like routing does. Other hrefs convert with `interpolatedStringToExpr`.
+ * Throws `EvaluationError` when no page matches.
+ */
+export function interpolatedStringToHrefExpr(site: Site, href: string): Expr {
+  if (!href.startsWith("/") || href.startsWith("//")) {
+    return interpolatedStringToExpr(href);
+  }
+  // Mask each {{ }} so its code cannot split the URL.
+  const dynSegments: string[] = [];
+  const masked = getDynamicStringSegments(href)
+    .map((seg) =>
+      isDynamicValue(seg) ? `\uE000${dynSegments.push(seg) - 1}\uE001` : seg,
+    )
+    .join("");
+  const toExpr = (str: string) =>
+    interpolatedStringToExpr(
+      str.replace(/\uE000(\d+)\uE001/g, (_, i) => dynSegments[Number(i)]),
+    );
+  const [, path, search, fragment] = ensure(
+    /^([^?#]*)(?:\?([^#]*))?(?:#(.*))?$/.exec(masked),
+    "Every string matches",
+  );
+  const match = minBy(
+    site.components.flatMap((page) => {
+      const params =
+        page.pageMeta && getMatchingPagePathParams(page.pageMeta.path, path);
+      return params ? [{ page, params }] : [];
+    }),
+    ({ params }) => Object.keys(params).length,
+  );
+  if (!match) {
+    throw new EvaluationError(
+      `no page path matches "${href}"; once that page exists, set this href again`,
+    );
+  }
+  return new PageHref({
+    page: match.page,
+    params: mapValues(match.params, toExpr),
+    query: Object.fromEntries(
+      [...new URLSearchParams(search)].map(([key, value]) => [
+        key,
+        toExpr(value),
+      ]),
+    ),
+    fragment: fragment === undefined ? null : toExpr(fragment),
+    encode: true,
+  });
 }
 
 export function dataQueryArgSchema() {

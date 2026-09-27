@@ -19,13 +19,18 @@ import {
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ApiBranch } from "@/wab/shared/ApiSchema";
-import { isComponentArena, isPageArena } from "@/wab/shared/Arenas";
+import { ApiBranch, ArenaRef } from "@/wab/shared/ApiSchema";
+import {
+  getArenaRef,
+  isComponentArena,
+  isPageArena,
+} from "@/wab/shared/Arenas";
 import { findAllDataSourceOpExprForComponent } from "@/wab/shared/cached-selectors";
 import { getNormalizedComponentName } from "@/wab/shared/codegen/react-p/serialize-utils";
 import {
   filterFalsy,
   jsonClone,
+  maybe,
   spawn,
   withoutNils,
 } from "@/wab/shared/common";
@@ -265,6 +270,9 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
           getDepName: (dep) =>
             studioCtx.projectDependencyManager.getNiceDepName(dep),
         });
+      },
+      async getCurrentArena(): Promise<ArenaRef | undefined> {
+        return maybe(studioCtx.currentArena, getArenaRef);
       },
       async findMissingMentions(text: string): Promise<string[]> {
         return findMissingMentions(text, studioCtx.site);

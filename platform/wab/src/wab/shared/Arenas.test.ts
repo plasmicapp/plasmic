@@ -1,11 +1,16 @@
 import {
+  getArenaRef,
   getFrameSizeForTargetScreenVariant,
+  mkArenaFrame,
+  mkMixedArena,
   normalDesktopWidth,
   normalMobileWidth,
 } from "@/wab/shared/Arenas";
+import { TplMgr } from "@/wab/shared/TplMgr";
 import { mkVariant } from "@/wab/shared/Variants";
 import { ensure } from "@/wab/shared/common";
-import { createSite } from "@/wab/shared/core/sites";
+import { ComponentType } from "@/wab/shared/core/components";
+import { createSite, getDedicatedArena } from "@/wab/shared/core/sites";
 import { Variant } from "@/wab/shared/model/classes";
 
 describe("getFrameSizeForTargetScreenVariant", () => {
@@ -107,5 +112,37 @@ describe("getFrameSizeForTargetScreenVariant", () => {
         ),
       ).toBe(1440);
     }
+  });
+});
+
+describe("getArenaRef", () => {
+  const site = createSite();
+  const tplMgr = new TplMgr({ site });
+  const home = tplMgr.addComponent({ name: "Home", type: ComponentType.Page });
+  const card = tplMgr.addComponent({ name: "Card", type: ComponentType.Plain });
+  const frame = (component: typeof card) =>
+    mkArenaFrame({ site, name: "", component, width: 100, height: 100 });
+
+  it("refers to a page arena by its component", () => {
+    expect(
+      getArenaRef(ensure(getDedicatedArena(site, home), "Home arena")),
+    ).toEqual({
+      type: "page",
+      name: "Home",
+      componentUuids: [home.uuid],
+    });
+  });
+
+  it("lists each framed component of a custom arena once", () => {
+    const arena = mkMixedArena("Scratch", [
+      frame(card),
+      frame(home),
+      frame(card),
+    ]);
+    expect(getArenaRef(arena)).toEqual({
+      type: "custom",
+      name: "Scratch",
+      componentUuids: [card.uuid, home.uuid],
+    });
   });
 });

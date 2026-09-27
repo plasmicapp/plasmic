@@ -7,7 +7,7 @@ import {
   PublishResult,
   StudioAppUser,
 } from "@/wab/client/studio-ctx/StudioCtx";
-import { ApiBranch, BranchId } from "@/wab/shared/ApiSchema";
+import { ApiBranch, ArenaRef, BranchId } from "@/wab/shared/ApiSchema";
 import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
 import type { AiOutputFormat } from "@/wab/shared/copilot/copilot-tool-types";
 import { ChangeLogEntry, SemVerReleaseType } from "@/wab/shared/site-diffs";
@@ -69,6 +69,7 @@ export type HostFrameApi = {
    */
   blockChanges(): Promise<void>;
   listMentionableResources(): Promise<MentionableResources>;
+  getCurrentArena(): Promise<ArenaRef | undefined>;
   /** Labels of `@<…>` mentions whose resource no longer exists. */
   findMissingMentions(text: string): Promise<string[]>;
   navigateToMentionedResource(

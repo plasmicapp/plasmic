@@ -29,6 +29,7 @@ import { assert, assertNever, ensure, mkShortId } from "@/wab/shared/common";
 import {
   interpolatedStringToCodeExpr,
   interpolatedStringToExpr,
+  interpolatedStringToHrefExpr,
   interpolatedStringToRichText,
 } from "@/wab/shared/copilot/dynamic-value-input";
 import { mkNormalizedRep } from "@/wab/shared/copilot/utils";
@@ -83,6 +84,7 @@ import {
   Interaction,
   isKnownDateRangeStrings,
   isKnownDateString,
+  isKnownHrefType,
   isKnownTplComponent,
   isKnownTplSlot,
   isKnownTplTag,
@@ -158,9 +160,10 @@ export async function htmlToTpl(
     site: Site;
     vtm: VariantTplMgr;
     appCtx: AppCtx;
+    pageHrefs: boolean;
   },
 ): Promise<Result<HtmlToTplResult, WIImportFailedError>> {
-  const { site, vtm, appCtx } = opts;
+  const { site, vtm, appCtx, pageHrefs } = opts;
 
   const parseResult = await parseHtmlToWebImporterTree(html, site);
   if (parseResult.isErr()) {
@@ -177,7 +180,7 @@ export async function htmlToTpl(
     tplRepeatData,
     tplVisibilityData,
     tplMixinsData,
-  } = await wiTreeToTpl(wiTree, { site, vtm, appCtx, errors });
+  } = await wiTreeToTpl(wiTree, { site, vtm, appCtx, errors, pageHrefs });
 
   if (tpls.length === 0) {
     return err(
@@ -528,9 +531,10 @@ async function wiTreeToTpl(
     vtm: VariantTplMgr;
     appCtx: AppCtx;
     errors: WIError[];
+    pageHrefs: boolean;
   },
 ) {
-  const { site, vtm, appCtx, errors } = opts;
+  const { site, vtm, appCtx, errors, pageHrefs } = opts;
   const tplImageAssetMap = new Map<
     TplTag,
     {
@@ -681,6 +685,21 @@ async function wiTreeToTpl(
           mkEventHandlerExprFromHtmlAttrValue(value);
         continue;
       }
+      if (key === "href" && pageHrefs) {
+        try {
+          result[key] = interpolatedStringToHrefExpr(site, value);
+        } catch (e) {
+          if (!(e instanceof EvaluationError)) {
+            throw e;
+          }
+          errors.push({
+            code: "invalid-href",
+            path: node.path,
+            reason: e.message,
+          });
+        }
+        continue;
+      }
       result[key] = isDynamicValue(value)
         ? interpolatedStringToExpr(value)
         : value;
@@ -820,6 +839,7 @@ async function wiTreeToTpl(
         for (const [propName, propValue] of Object.entries(node.props)) {
           // An invalid prop drops just that prop; the instance still inserts.
           getComponentArgFromHtmlProp(
+            site,
             component,
             componentName,
             propName,
@@ -1087,6 +1107,7 @@ function splitStylesByAnimations(styles: Record<string, string>): {
  * Err (an `invalid-component-prop` WIError) on invalid prop name, slot params, or type mismatches.
  */
 export function getComponentArgFromHtmlProp(
+  site: Site,
   component: Component,
   componentName: string,
   propName: string,
@@ -1158,6 +1179,17 @@ export function getComponentArgFromHtmlProp(
         return fail(`no variant matching ${JSON.stringify(`${value}`)}`);
       }
       return ok([param, new VariantsRef({ variants: [variant] })]);
+    }
+  }
+
+  if (isKnownHrefType(param.type) && typeof value === "string") {
+    try {
+      return ok([param, interpolatedStringToHrefExpr(site, value)]);
+    } catch (e) {
+      if (!(e instanceof EvaluationError)) {
+        throw e;
+      }
+      return fail(e.message);
     }
   }
 

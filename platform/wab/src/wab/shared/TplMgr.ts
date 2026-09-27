@@ -422,7 +422,7 @@ export function uniquePagePath(path: string, existingPaths: string[]): string {
 export class TplMgr {
   constructor(private readonly args: { site: Site }) {}
 
-  private site() {
+  site() {
     return this.args.site;
   }
 
@@ -1827,9 +1827,18 @@ export class TplMgr {
    * - "ComponentName" -> "/component-name"
    * - "Parent Title/New Page" -> "/parent-title/new-page"
    * - "/valid-uri" -> "/valid-uri"
+   * - "/plans/[id]" -> "/plans/[id]"
    */
   nameToPath(name: string): string {
-    return "/" + trim(name, "/").split("/").map(kebabCase).join("/");
+    return (
+      "/" +
+      trim(name, "/")
+        .split("/")
+        .map((segment) =>
+          /^\[.*\]$/.test(segment) ? segment : kebabCase(segment),
+        )
+        .join("/")
+    );
   }
 
   tryGetPageByPath(path: string): PageComponent | undefined {

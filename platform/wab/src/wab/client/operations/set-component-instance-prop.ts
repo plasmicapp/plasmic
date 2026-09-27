@@ -23,7 +23,13 @@ export function setComponentInstanceProp(
   const { vs, tplMgr } = opts;
   const component = tpl.component;
 
-  return getComponentArgFromHtmlProp(component, component.name, propName, value)
+  return getComponentArgFromHtmlProp(
+    tplMgr.site(),
+    component,
+    component.name,
+    propName,
+    value,
+  )
     .map(([param, expr]) => {
       tplMgr.setArg(tpl, vs, param.variable, expr);
     })

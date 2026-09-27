@@ -12,16 +12,22 @@ import {
   getBaseVariant,
 } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { ensure, uniqueName } from "@/wab/shared/common";
+import { ensure, maybe, uniqueName } from "@/wab/shared/common";
 import { getComponentArenaBaseFrame } from "@/wab/shared/component-arenas";
 import {
   GlobalVariantFrame,
   TransientComponentVariantFrame,
 } from "@/wab/shared/component-frame";
-import { tryGetComponentByUuid } from "@/wab/shared/core/components";
+import {
+  isFrameComponent,
+  tryGetComponentByUuid,
+} from "@/wab/shared/core/components";
 import { mkVar } from "@/wab/shared/core/lang";
 import { siteDataTokensDirectDeps } from "@/wab/shared/core/site-data-tokens";
-import { getDedicatedArena } from "@/wab/shared/core/sites";
+import {
+  getDedicatedArena,
+  getReferencingFrames,
+} from "@/wab/shared/core/sites";
 import { toFinalToken } from "@/wab/shared/core/tokens";
 import {
   EventHandlerKeyType,
@@ -34,12 +40,10 @@ import {
 } from "@/wab/shared/core/tpls";
 import {
   Component,
-  ComponentArena,
   CustomCode,
   DataToken,
   Interaction,
   ObjectPath,
-  PageArena,
   Rep,
   Site,
   TplNode,
@@ -192,24 +196,33 @@ export function getComponentVariantCombo(
  * TransientComponentVariantFrame stores variant state in memory only,
  * so any variant operations through this VariantTplMgr won't mutate
  * the ArenaFrame's persisted state.
+ *
+ * `variantCombo` is the combo the VariantTplMgr targets, as a view of that
+ * combo would. Defaults to the base variant.
  */
 export function getComponentArenaAndVariantTplMgr(
   site: Site,
   component: Component,
   tplMgr: TplMgr,
-): { vtm: VariantTplMgr; arena: ComponentArena | PageArena } {
-  const arena = getDedicatedArena(site, component);
-  if (!arena) {
-    throw new Error(`Component "${component.name}" has no dedicated arena.`);
+  variantCombo?: VariantCombo,
+): { vtm: VariantTplMgr } {
+  const arenaFrame = isFrameComponent(component)
+    ? getReferencingFrames(site, component)[0]
+    : maybe(getDedicatedArena(site, component), getComponentArenaBaseFrame);
+  if (!arenaFrame) {
+    throw new Error(`Component "${component.name}" has no arena.`);
   }
-  const arenaFrame = getComponentArenaBaseFrame(arena);
+  const frame = new TransientComponentVariantFrame(arenaFrame.container);
+  if (variantCombo) {
+    frame.setTargetVariants(variantCombo);
+  }
   const vtm = new VariantTplMgr(
-    [new TransientComponentVariantFrame(arenaFrame.container)],
+    [frame],
     site,
     tplMgr,
     new GlobalVariantFrame(site, arenaFrame),
   );
-  return { vtm, arena };
+  return { vtm };
 }
 
 /**

@@ -1,14 +1,17 @@
+import { TplMgr } from "@/wab/shared/TplMgr";
 import {
   codeToDynExpr,
   exprToDataQueryArg,
   exprToInterpolatedString,
   interpolatedStringToCodeExpr,
   interpolatedStringToExpr,
+  interpolatedStringToHrefExpr,
   interpolatedStringToRichText,
   interpolatedStringToTemplatedString,
   objectLiteralToExpr,
   parseInterpolatedString,
 } from "@/wab/shared/copilot/dynamic-value-input";
+import { ComponentType } from "@/wab/shared/core/components";
 import {
   codeLit,
   customCode,
@@ -16,6 +19,7 @@ import {
   tryExtractJson,
 } from "@/wab/shared/core/exprs";
 import { mkVar } from "@/wab/shared/core/lang";
+import { createSite } from "@/wab/shared/core/sites";
 import { EvaluationError } from "@/wab/shared/eval/expression-parser";
 import {
   Component,
@@ -28,6 +32,7 @@ import {
   VarRef,
   ensureKnownCompositeExpr,
   ensureKnownExprText,
+  ensureKnownPageHref,
   ensureKnownRawText,
   isKnownCompositeExpr,
   isKnownExprText,
@@ -396,6 +401,52 @@ describe("exprToInterpolatedString", () => {
       encode: true,
     });
     expect(exprToInterpolatedString(expr)).toBeUndefined();
+  });
+});
+
+describe("interpolatedStringToHrefExpr", () => {
+  const site = createSite();
+  const tplMgr = new TplMgr({ site });
+  const mkPage = (path: string) =>
+    tplMgr.addComponent({
+      name: path,
+      type: ComponentType.Page,
+      pageMeta: { path },
+    });
+  const planPage = mkPage("/plans/[id]");
+  const newPlanPage = mkPage("/plans/new");
+
+  it("links a path to the page it matches, with dynamic parts as params/query/fragment", () => {
+    const href =
+      "/plans/{{ currentItem.id }}?ref={{ $ctx.query.ref }}#{{ $state.tab }}";
+    const expr = ensureKnownPageHref(interpolatedStringToHrefExpr(site, href));
+    expect(expr.page).toBe(planPage);
+    expect(exprToInterpolatedString(expr)).toEqual(href);
+  });
+
+  it("prefers the page with the fewest params", () => {
+    const expr = ensureKnownPageHref(
+      interpolatedStringToHrefExpr(site, "/plans/new"),
+    );
+    expect(expr.page).toBe(newPlanPage);
+  });
+
+  it("keeps other hrefs as plain values", () => {
+    for (const href of [
+      "#top",
+      "https://x.com/plans/1",
+      "{{ currentItem.url }}",
+    ]) {
+      const expr = interpolatedStringToHrefExpr(site, href);
+      expect(expr).not.toBeInstanceOf(PageHref);
+      expect(exprToInterpolatedString(expr)).toEqual(href);
+    }
+  });
+
+  it("throws an EvaluationError for a path that matches no page", () => {
+    expect(() => interpolatedStringToHrefExpr(site, "/recipes/1")).toThrow(
+      EvaluationError,
+    );
   });
 });
 

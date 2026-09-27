@@ -710,6 +710,12 @@ export interface ArenaInfo {
   focused: boolean;
 }
 
+export interface ArenaRef {
+  type: ArenaType;
+  name: string;
+  componentUuids: string[];
+}
+
 export interface PlayerSelectionInfo {
   selectableFrameUuid: string;
   selectableKey?: string;

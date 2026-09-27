@@ -1,4 +1,4 @@
-import { ArenaType } from "@/wab/shared/ApiSchema";
+import { ArenaRef, ArenaType } from "@/wab/shared/ApiSchema";
 import { arrayRemove, arrayReversed } from "@/wab/shared/collections";
 import {
   assert,
@@ -86,7 +86,7 @@ import {
   isScreenVariant,
   VariantCombo,
 } from "@/wab/shared/Variants";
-import { has, isArray, isEmpty, keyBy, orderBy } from "lodash";
+import { has, isArray, isEmpty, keyBy, orderBy, uniq } from "lodash";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { IObservableValue, observable } from "mobx";
 
@@ -180,6 +180,16 @@ export function getArenaUuidOrName(arena: AnyArena) {
     .when(PageArena, (it) => it.component.uuid)
     .when(ComponentArena, (it) => it.component.uuid)
     .result();
+}
+
+export function getArenaRef(arena: AnyArena): ArenaRef {
+  return {
+    type: getArenaType(arena),
+    name: getArenaName(arena),
+    componentUuids: uniq(
+      getArenaFrames(arena, true).map((f) => f.container.component.uuid),
+    ),
+  };
 }
 
 export function getArenaName(arena: AnyArena) {

@@ -30,6 +30,7 @@ export async function pasteFromWebImporter(
       site: studioCtx.site,
       vtm: viewCtx.variantTplMgr(),
       appCtx: viewCtx.appCtx,
+      pageHrefs: false,
     }),
   );
 

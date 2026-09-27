@@ -1,5 +1,10 @@
 import { tokenTypes } from "@/wab/commons/StyleToken";
-import { CopilotImage, CopilotToken } from "@/wab/shared/ApiSchema";
+import {
+  ArenaRef,
+  arenaTypes,
+  CopilotImage,
+  CopilotToken,
+} from "@/wab/shared/ApiSchema";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import { UIMessage } from "ai";
 import GPT3Tokenizer from "gpt3-tokenizer";
@@ -101,6 +106,21 @@ export interface CopilotUiProps {
 export interface CopilotChat {
   messages: UIMessage[];
 }
+
+export const copilotMessageMetadataSchema = z.object({
+  /** The arena open in Studio when the user sent the message. */
+  currentArena: z
+    .object({
+      type: z.enum(arenaTypes),
+      name: z.string(),
+      componentUuids: z.array(z.string()),
+    })
+    .optional() satisfies z.ZodType<ArenaRef | undefined>,
+});
+
+export type CopilotMessageMetadata = z.infer<
+  typeof copilotMessageMetadataSchema
+>;
 
 // Structured Response schemas
 const CopilotUiGenerateHtmlActionSchema = z.object({
