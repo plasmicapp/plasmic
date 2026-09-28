@@ -65,7 +65,7 @@
     "path": "^0.12.7",
     "prettier": "catalog:",
     "semver": "^7.7.4",
-    "socket.io-client": "^4.8.3",
+    "socket.io-client": "^4.8.4",
     "tmp": "^0.2.5",
     "tsx": "catalog:",
     "typescript": "catalog:",
