@@ -184,7 +184,10 @@ export async function updateTeam(req: Request, res: Response) {
     ...req.body,
   });
 
-  await syncDataWithStripe(team, req.config.host);
+  // Only sync what Stripe stores.
+  if ("name" in req.body || "billingEmail" in req.body) {
+    await syncDataWithStripe(team, req.config.host);
+  }
 
   const apiTeam = mkApiTeam(team);
   res.json(ensureType<CreateTeamResponse>({ team: apiTeam }));
