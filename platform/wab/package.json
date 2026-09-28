@@ -202,7 +202,7 @@
     "@react-email/components": "^0.0.38",
     "@sentry/browser": "6.6.0",
     "@sentry/integrations": "6.6.0",
-    "@sentry/node": "6.6.0",
+    "@sentry/node": "catalog:",
     "@simonwep/pickr": "^1.9.1",
     "@stripe/react-stripe-js": "6.8.2",
     "@stripe/stripe-js": "9.14.0",

@@ -279,6 +279,7 @@ import {
   getWorkspaces,
   updateWorkspace,
 } from "@/wab/server/routes/workspaces";
+import { shouldIgnoreErrorByMessage } from "@/wab/server/sentry";
 import { logError } from "@/wab/server/server-util";
 import {
   ASYNC_TIMING,
@@ -354,46 +355,12 @@ const isCsrfFreeRoute = (pathname: string, config: Config) => {
   );
 };
 
-const ignoredErrorMessages = [
-  "CSRF token mismatch",
-  "Connection closed before response fulfilled",
-  // This happens whenever the client disconnects first, and the
-  // server hasn't finished the response yet and attempts to make
-  // a typeorm query. Nothing we can do about that.
-  "Query runner already released",
-];
-
-function shouldIgnoreErrorByMessage(message: string) {
-  return ignoredErrorMessages.some((pattern) => message.includes(pattern));
-}
-
-function addSentry(app: express.Application, config: Config) {
-  if (!config.sentryDSN) {
+function addSentry(app: express.Application) {
+  if (!process.env.SENTRY_DSN) {
     return;
   }
-  logger().debug(`Initializing Sentry with DSN: ${config.sentryDSN}`);
-  Sentry.init({
-    dsn: config.sentryDSN,
-    environment: process.env.SENTRY_ENVIRONMENT,
-    // We need beforeSend because errors don't necessarily make their way through the Express pipeline - they can be
-    // thrown from anywhere, in Express or outside (or from random async event loop iterations).
-    async beforeSend(event: Sentry.Event): Promise<Sentry.Event | null> {
-      const msg = event.exception?.values?.[0].value;
-      if (msg) {
-        if (shouldIgnoreErrorByMessage(msg)) {
-          return null;
-        }
-      }
-      return event;
-    },
-  });
+  logger().debug(`Sentry enabled with DSN: ${process.env.SENTRY_DSN}`);
 
-  app.use(Sentry.Handlers.requestHandler());
-  app.use(Sentry.Handlers.tracingHandler());
-
-  // This anonymous handler uses Sentry.setTag() to modify the current scope.
-  // To ensure the global scope is not modified, the handler must be after
-  // Sentry.Handlers.requestHandler(), which creates a new scope per-request.
   app.use((req, _res, next) => {
     // Some routes get project ID as a path param (e.g.
     // /projects/:projectId/code/components) while others get it as query
@@ -401,7 +368,7 @@ function addSentry(app: express.Application, config: Config) {
     const projectId =
       req.params.projectId ?? req.query.projectId ?? req.params.projectBranchId;
     if (projectId) {
-      Sentry.setTag("projectId", String(projectId));
+      Sentry.getIsolationScope().setTag("projectId", String(projectId));
     }
     next();
   });
@@ -417,26 +384,24 @@ export function getStatusCodeFromResponse(error: any): number {
   return statusCode ? parseInt(statusCode as string, 10) : 500;
 }
 
-function addSentryError(app: express.Application, config: Config) {
-  if (!config.sentryDSN) {
+function addSentryError(app: express.Application) {
+  if (!process.env.SENTRY_DSN) {
     return;
   }
 
-  app.use(
-    Sentry.Handlers.errorHandler({
-      shouldHandleError: (error) => {
-        if (shouldIgnoreErrorByMessage(error.message || "")) {
-          return false;
-        }
-        if (isStampedIgnoreError(error)) {
-          return false;
-        }
-        // Report iff the client gets an internal server error
-        const response = toErrorResponse(error);
-        return !response || response.statusCode >= 500;
-      },
-    }),
-  );
+  Sentry.setupExpressErrorHandler(app, {
+    shouldHandleError: (error) => {
+      if (shouldIgnoreErrorByMessage(error.message || "")) {
+        return false;
+      }
+      if (isStampedIgnoreError(error)) {
+        return false;
+      }
+      // Report iff the client gets an internal server error
+      const response = toErrorResponse(error);
+      return !response || response.statusCode >= 500;
+    },
+  });
 }
 
 export function addLoggingMiddleware(app: express.Application) {
@@ -1945,7 +1910,7 @@ export async function createApp(
   });
 
   // Sentry setup needs to be first
-  addSentry(app, config);
+  addSentry(app);
 
   if (config.production) {
     app.enable("trust proxy");
@@ -1974,7 +1939,7 @@ export async function createApp(
   addNotFoundHandler(app);
 
   // Sentry error handler must go after routes
-  addSentryError(app, config);
+  addSentryError(app);
 
   // On error, rollback transactions
   addEndErrorHandlers(app);

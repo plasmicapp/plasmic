@@ -1,4 +1,5 @@
 // tslint:disable:ordered-imports
+import "@/wab/server/sentry";
 import { spawn } from "@/wab/shared/common";
 import { appBackendMain } from "@/wab/server/app-backend-real";
 import { maybeStartGoogleCloudProfiler } from "@/wab/server/util/profiler";

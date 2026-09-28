@@ -7,7 +7,6 @@ export interface Config {
   production: boolean;
   databaseUri: string;
   adminEmails: string[];
-  sentryDSN?: string;
   sessionSecret: string;
   mailFrom: string;
   mailUserOps: string;
@@ -70,7 +69,6 @@ function parseConfigFromEnv(): Config {
   const envConfig = {
     host: process.env["HOST"],
     databaseUri: process.env["DATABASE_URI"],
-    sentryDSN: process.env["SENTRY_DSN"],
     sessionSecret: process.env["SESSION_SECRET"],
     mailFrom: mailConfig?.mailFrom,
     mailUserOps: mailConfig?.mailUserOps,

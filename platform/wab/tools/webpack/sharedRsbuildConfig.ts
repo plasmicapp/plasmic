@@ -29,6 +29,8 @@ export function mkSharedRsbuildConfig(opts: {
       alias: {
         // data-urls.ts only falls back to xmldom when there is no window.
         "@xmldom/xmldom": false,
+        // site-invariants.ts uses the Node SDK only when there is no window.
+        "@sentry/node": false,
       },
     },
     plugins: [pluginReact(), pluginSass()],

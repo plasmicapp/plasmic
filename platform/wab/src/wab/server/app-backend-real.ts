@@ -92,11 +92,8 @@ export async function runAppServer(config: Config) {
         socketProxy.ws(req, socket, head);
       });
       socketProxy.on("error", (err, _req, res) => {
-        if (config.sentryDSN) {
-          captureException(err);
-        } else {
-          logger().error(`Error in socketProxy. ${err}`);
-        }
+        captureException(err);
+        logger().error(`Error in socketProxy. ${err}`);
         res.end("Something wrong happened when connecting to the server.");
       });
     } else if (attach) {

@@ -87,7 +87,8 @@ import {
   walkModelTree,
 } from "@/wab/shared/model/model-tree-util";
 import { modelConflictsMeta } from "@/wab/shared/site-diffs/model-conflicts-meta";
-import * as Sentry from "@sentry/browser";
+import * as SentryBrowser from "@sentry/browser";
+import * as SentryNode from "@sentry/node";
 import L, { uniqBy } from "lodash";
 
 export class InvariantError extends Error {
@@ -129,9 +130,14 @@ export function* genSiteErrors(site: Site, componentUuidsToSkip?: Set<string>) {
       continue;
     }
     if (componentNames.has(component.name)) {
-      Sentry.captureException(
-        new InvariantError(`Duplicated component name: ${component.name}`),
+      const error = new InvariantError(
+        `Duplicated component name: ${component.name}`,
       );
+      if (typeof window === "undefined") {
+        SentryNode.captureException(error);
+      } else {
+        SentryBrowser.captureException(error);
+      }
     } else {
       componentNames.add(component.name);
     }

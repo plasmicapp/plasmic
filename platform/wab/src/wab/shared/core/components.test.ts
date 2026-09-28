@@ -34,7 +34,11 @@ import {
   isKnownObjectPath,
   isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
-import { assertSiteInvariants } from "@/wab/shared/site-invariants";
+import {
+  assertSiteInvariants,
+  genSiteErrors,
+} from "@/wab/shared/site-invariants";
+import * as Sentry from "@sentry/browser";
 
 describe("extractComponent", () => {
   const site = createSite();
@@ -571,4 +575,24 @@ describe("getCodeComponentImportName", () => {
       getCodeComponentImportName(mkCodeComponent({ importName: "HomeHere" })),
     ).toBe("HomeHere");
   });
+});
+
+it("reports duplicate component names through the browser SDK", () => {
+  const capture = vi.spyOn(Sentry, "captureException").mockReturnValue("test");
+  const site = createSite();
+  site.components.push(
+    ...[1, 2].map(() =>
+      mkComponent({
+        name: "Duplicate",
+        tplTree: mkTplTagX("div"),
+        type: ComponentType.Plain,
+      }),
+    ),
+  );
+  Array.from(genSiteErrors(site));
+  expect(capture).toHaveBeenCalledWith(
+    expect.objectContaining({
+      message: "Cannot save project - Duplicated component name: Duplicate",
+    }),
+  );
 });

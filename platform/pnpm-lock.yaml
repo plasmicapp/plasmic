@@ -1237,8 +1237,8 @@ importers:
         specifier: 6.6.0
         version: 6.6.0
       '@sentry/node':
-        specifier: 6.6.0
-        version: 6.6.0
+        specifier: 'catalog:'
+        version: 10.20.0
       '@simonwep/pickr':
         specifier: ^1.9.1
         version: 1.9.1
@@ -7193,10 +7193,6 @@ packages:
     resolution: {integrity: sha512-Hv6cxQ2ilL54lF6+WwvvrvJEkt0fwUAAQZNwfAR0CfuP4Zg8FPQvxDeLhryd2Qr0nwPMNi3eYjypORjD3dcMLg==}
     engines: {node: '>=18'}
 
-  '@sentry/node@6.6.0':
-    resolution: {integrity: sha512-heKie/AOanYq3mCsKR1igPn1sUIxBmGibBp79Xc0iSAgliPKnnLkqUjvAIKu6mcevL9UOUhpMDLzhilkaG+bAA==}
-    engines: {node: '>=6'}
-
   '@sentry/opentelemetry@10.20.0':
     resolution: {integrity: sha512-91hr3RbMSUWgZb1BpW0gjlPsFaPtx0oNY2HYoC12T//1E0RMV183McBKbghBdT9swjhw112jeTFEERMJCaJyNw==}
     engines: {node: '>=18'}
@@ -7206,10 +7202,6 @@ packages:
       '@opentelemetry/core': ^1.30.1 || ^2.1.0
       '@opentelemetry/sdk-trace-base': ^1.30.1 || ^2.1.0
       '@opentelemetry/semantic-conventions': ^1.37.0
-
-  '@sentry/tracing@6.6.0':
-    resolution: {integrity: sha512-tjXrmAOFfVBfx+ZmgE5bkpDPs/euNj0xrUg8MowCWGfCRn01W679tTb+dyNeP6faxQTo2RcaD68xD8oLroJwwA==}
-    engines: {node: '>=6'}
 
   '@sentry/types@6.6.0':
     resolution: {integrity: sha512-lZ1uFN0lSNftAohi0lciEoSL58Gk/Ib1lLKaj0FSOvB1PAUmvo5dPtLdd0qjtNdtoaM8zqhrAbwCTQ8XZCDRsg==}
@@ -9701,10 +9693,6 @@ packages:
 
   cookie-signature@1.0.7:
     resolution: {integrity: sha512-NXdYc3dLr47pBkpUCHtKSwIOQXLVn8dZEuywboCOJY/osA0wFSLlSawr3KN8qXJEyX66FcONTH8EIlVuK0yyFA==}
-
-  cookie@0.4.2:
-    resolution: {integrity: sha512-aSWTXFzaKWkvHO1Ny/s+ePFpvKsPnjc551iI41v3ny/ow6tBG5Vd+FuqGNhh1LxOmVzOlGUriIlOaokOvhaStA==}
-    engines: {node: '>= 0.6'}
 
   cookie@0.7.2:
     resolution: {integrity: sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==}
@@ -12322,9 +12310,6 @@ packages:
 
   lru-memoizer@2.3.0:
     resolution: {integrity: sha512-GXn7gyHAMhO13WSKrIiNfztwxodVsP8IoZ3XfrJV4yH2x0/OeTO/FIaAHTY5YekdGgW94njfuKmyyt1E0mR6Ug==}
-
-  lru_map@0.3.3:
-    resolution: {integrity: sha512-Pn9cox5CsMYngeDbmChANltQl+5pi6XmTrraMSzhPmMBbmgcxmqWry0U3PGapCU1yB4/LqCcom7qhHZiF/jGfQ==}
 
   lucide-react@0.279.0:
     resolution: {integrity: sha512-LJ8g66+Bxc3t3x9vKTeK3wn3xucrOQGfJ9ou9GsBwCt2offsrT2BB90XrTrIzE1noYYDe2O8jZaRHi6sAHXNxw==}
@@ -23955,20 +23940,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sentry/node@6.6.0':
-    dependencies:
-      '@sentry/core': 6.6.0
-      '@sentry/hub': 6.6.0
-      '@sentry/tracing': 6.6.0
-      '@sentry/types': 6.6.0
-      '@sentry/utils': 6.6.0
-      cookie: 0.4.2
-      https-proxy-agent: 5.0.1
-      lru_map: 0.3.3
-      tslib: 1.14.1
-    transitivePeerDependencies:
-      - supports-color
-
   '@sentry/opentelemetry@10.20.0(@opentelemetry/api@1.9.1)(@opentelemetry/context-async-hooks@2.1.0(@opentelemetry/api@1.9.1))(@opentelemetry/core@2.9.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.1))(@opentelemetry/semantic-conventions@1.37.0)':
     dependencies:
       '@opentelemetry/api': 1.9.1
@@ -23977,14 +23948,6 @@ snapshots:
       '@opentelemetry/sdk-trace-base': 2.2.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/semantic-conventions': 1.37.0
       '@sentry/core': 10.20.0
-
-  '@sentry/tracing@6.6.0':
-    dependencies:
-      '@sentry/hub': 6.6.0
-      '@sentry/minimal': 6.6.0
-      '@sentry/types': 6.6.0
-      '@sentry/utils': 6.6.0
-      tslib: 1.14.1
 
   '@sentry/types@6.6.0': {}
 
@@ -26779,8 +26742,6 @@ snapshots:
   cookie-signature@1.0.6: {}
 
   cookie-signature@1.0.7: {}
-
-  cookie@0.4.2: {}
 
   cookie@0.7.2: {}
 
@@ -29748,8 +29709,6 @@ snapshots:
     dependencies:
       lodash.clonedeep: 4.5.0
       lru-cache: 6.0.0
-
-  lru_map@0.3.3: {}
 
   lucide-react@0.279.0(react@18.3.1):
     dependencies:
