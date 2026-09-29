@@ -492,12 +492,7 @@ export class FreestyleState {
 }
 
 export type PointerState =
-  | "move"
-  | "rect"
-  | "hstack"
-  | "vstack"
-  | "text"
-  | "stack";
+  "move" | "rect" | "hstack" | "vstack" | "text" | "stack";
 
 export class DragInsertState {
   constructor(
@@ -767,6 +762,7 @@ export class StudioCtx extends WithDbCtx {
 
     this.fontManager = new FontManager(this.site);
     this.fontManager.installAllUsedFonts([$(document.head)]);
+    this.disposals.push(this.fontManager.observeHostFonts(window.parent));
 
     this.isDocs = !!APP_ROUTES.projectDocs.parse(location.pathname, false);
 
@@ -1959,8 +1955,7 @@ export class StudioCtx extends WithDbCtx {
       componentArenas.push(compArena);
       for (const subComp of compArena.component.subComps) {
         const subArena = this.getDedicatedArena(subComp) as
-          | ComponentArena
-          | undefined;
+          ComponentArena | undefined;
         if (subArena) {
           addComponentArena(subArena);
         }
@@ -3147,8 +3142,7 @@ export class StudioCtx extends WithDbCtx {
   }
   private _xRightTabKey = observable.box<RightTabKey | undefined>(undefined);
   private lastElementRightTabKey:
-    | Extract<RightTabKey, RightTabKey.style | RightTabKey.settings>
-    | undefined;
+    Extract<RightTabKey, RightTabKey.style | RightTabKey.settings> | undefined;
   get rightTabKey() {
     return this._xRightTabKey.get();
   }
@@ -5280,9 +5274,7 @@ export class StudioCtx extends WithDbCtx {
 
     // If inserting a template, then insert at innermost main-content-slot, or else root.
     const tryGetInsertableTemplateTarget = ():
-      | TplNode
-      | SlotSelection
-      | undefined => {
+      TplNode | SlotSelection | undefined => {
       const tpls = flattenTpls(vc.currentComponent().tplTree).reverse();
       for (const tpl of tpls) {
         if (isTplComponent(tpl)) {
@@ -8108,9 +8100,9 @@ function emptyChanges(recordedChanges: RecordedChanges) {
 
 export function studioCtxKey<
   Method extends keyof StudioCtx,
-  Args extends StudioCtx[Method] extends (..._args: any[]) => any
+  Args extends (StudioCtx[Method] extends (..._args: any[]) => any
     ? Parameters<StudioCtx[Method]>
-    : never,
+    : never),
 >(method: Method, ...args: Args) {
   return invalidationKey(method, ...args);
 }

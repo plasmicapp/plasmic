@@ -195,12 +195,9 @@ export const CanvasFrame = observer(function CanvasFrame({
           : e.target;
 
         const $target = $(actualTarget);
-        if (
-          !(
-            $target.is(canvasCtx().$userBody()) ||
-            $target.is(canvasCtx().$html())
-          )
-        ) {
+        if (!(
+          $target.is(canvasCtx().$userBody()) || $target.is(canvasCtx().$html())
+        )) {
           const closest = closestTaggedNonTextDomElt($target, viewCtx(), {
             excludeNonSelectable: true,
           });
