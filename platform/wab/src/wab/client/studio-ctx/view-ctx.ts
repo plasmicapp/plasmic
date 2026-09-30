@@ -24,6 +24,7 @@ import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
 import { getRenderState } from "@/wab/client/studio-ctx/renderState";
 import { trackEvent } from "@/wab/client/tracking";
 import { ViewStateSnapshot } from "@/wab/client/undo-log";
+import { mkTokenRef } from "@/wab/commons/StyleToken";
 import { drainQueue } from "@/wab/commons/asyncutil";
 import { safeCallbackify } from "@/wab/commons/control";
 import { getArenaFrames } from "@/wab/shared/Arenas";
@@ -31,6 +32,7 @@ import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { getAncestorSlotArg } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { isBaseVariant } from "@/wab/shared/Variants";
 import { FastBundler } from "@/wab/shared/bundler";
 import {
@@ -68,7 +70,10 @@ import { getRawCode } from "@/wab/shared/core/exprs";
 import { metaSvc } from "@/wab/shared/core/metas";
 import { customFunctionId } from "@/wab/shared/core/query-ids";
 import { SQ, Selectable } from "@/wab/shared/core/selection";
-import { makeTokenRefResolver } from "@/wab/shared/core/site-style-tokens";
+import {
+  makeTokenRefResolver,
+  makeTokenValueResolver,
+} from "@/wab/shared/core/site-style-tokens";
 import { isTplAttachedToSite } from "@/wab/shared/core/sites";
 import { SlotSelection, isSlotSelection } from "@/wab/shared/core/slots";
 import {
@@ -77,6 +82,8 @@ import {
   getStateValuePropName,
   getStateVarName,
 } from "@/wab/shared/core/states";
+import { makeStyleExprClassName } from "@/wab/shared/core/styles";
+import { toFinalToken } from "@/wab/shared/core/tokens";
 import * as Tpls from "@/wab/shared/core/tpls";
 import { RawTextLike } from "@/wab/shared/core/tpls";
 import {
@@ -94,7 +101,7 @@ import {
   tplFromSelectable,
 } from "@/wab/shared/core/vals";
 import { isDraggableSize } from "@/wab/shared/css-size";
-import { CanvasEnv, evalCodeWithEnv } from "@/wab/shared/eval";
+import { CanvasEnv, evalCodeWithEnv, tryEvalExpr } from "@/wab/shared/eval";
 import { Pt, rectsIntersect } from "@/wab/shared/geom";
 import {
   ArenaFrame,
@@ -105,12 +112,16 @@ import {
   RawText,
   RichText,
   State,
+  StyleExpr,
+  StyleTokenRef,
   TplComponent,
   TplNode,
   TplSlot,
   TplTag,
   Variant,
   VariantSetting,
+  isKnownColorPropType,
+  isKnownStyleExpr,
   isKnownTplComponent,
 } from "@/wab/shared/model/classes";
 import { isTplResizable } from "@/wab/shared/sizingutils";
@@ -1484,7 +1495,10 @@ export class ViewCtx extends WithDbCtx {
       };
     }
     return {
-      componentPropValues: {},
+      componentPropValues:
+        isKnownTplComponent(tpl) && isKnownTplComponent(actualTpl)
+          ? evalUnrenderedCodeProps(this, tpl, actualTpl)
+          : {},
       invalidArgs: [],
       ccContextData: undefined,
     };
@@ -2760,3 +2774,69 @@ export function getSetOfPinnedVariantsForViewCtx(
     (v) => bundler.addrOf(v)?.iid,
   );
 }
+
+// Unrendered tpls (e.g. Show is false) have no props, so evaluate the model args instead;
+// linked props read the wrapper's args. Memoized because every prop row calls this.
+const evalUnrenderedCodeProps = computedFn(
+  (viewCtx: ViewCtx, tpl: TplComponent, actualTpl: TplComponent) => {
+    const componentPropValues: Record<string, any> = {};
+    const owner = $$$(tpl).tryGetOwningComponent();
+    if (
+      !isCodeComponent(actualTpl.component) ||
+      // VariantTplMgr throws for owners without a frame in this ctx
+      (owner &&
+        !viewCtx.componentStackFrames().some((f) => f.component === owner))
+    ) {
+      return componentPropValues;
+    }
+    const linkedProps = getLinkedCodeProps(tpl.component);
+    const effectiveVs = viewCtx.effectiveCurrentVariantSetting(tpl);
+    const env = viewCtx.getCanvasEnvForTpl(tpl) ?? {};
+    const exprCtx = {
+      projectFlags: viewCtx.projectFlags(),
+      component: viewCtx.currentComponent(),
+      inStudio: true,
+    };
+    for (const prop of tpl.component.params) {
+      const [propTpl, targetProp] = linkedProps.get(prop.variable.name) ?? [
+        tpl,
+        prop,
+      ];
+      const expr =
+        effectiveVs.args.find((arg) => arg.param === prop)?.expr ??
+        prop.defaultExpr;
+      if (propTpl !== actualTpl || !expr) {
+        continue;
+      }
+      componentPropValues[targetProp.variable.name] = switchType(expr)
+        .when(StyleExpr, () =>
+          effectiveVs.variantSettings
+            .map((vs) => vs.args.find((arg) => arg.param === prop)?.expr)
+            .filter(isKnownStyleExpr)
+            .map(makeStyleExprClassName)
+            .join(" "),
+        )
+        .when(StyleTokenRef, ({ token }) =>
+          isKnownColorPropType(prop.type) && prop.type.noDeref
+            ? mkTokenRef(token)
+            : makeTokenValueResolver(viewCtx.site)(
+                toFinalToken(token, viewCtx.site),
+                new VariantedStylesHelper(viewCtx.site, [
+                  ...viewCtx.variantTplMgr().getActivatedVariantsForNode(tpl),
+                ]),
+              ),
+        )
+        .elseUnsafe(
+          () =>
+            swallow(() =>
+              tryEvalExpr(
+                getRawCode(expr, exprCtx),
+                env,
+                viewCtx.canvasCtx.win(),
+              ),
+            )?.val,
+        );
+    }
+    return componentPropValues;
+  },
+);
