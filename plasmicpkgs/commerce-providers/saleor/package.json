@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce-saleor",
-  "version": "0.0.228",
+  "version": "0.0.229",
   "description": "Saleor provider for Plasmic commerce components.",
   "homepage": "https://www.plasmic.app",
   "repository": {

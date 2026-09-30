@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce-commercetools",
-  "version": "0.0.212",
+  "version": "0.0.213",
   "description": "commercetools provider for Plasmic commerce components.",
   "homepage": "https://www.plasmic.app",
   "repository": {
