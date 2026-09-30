@@ -734,7 +734,7 @@ export function makeSqlCondition(
   };
 
   return {
-    condition: buildFilterClause(condition),
+    condition: `(${buildFilterClause(condition)})`,
     params: valParams,
   };
 }

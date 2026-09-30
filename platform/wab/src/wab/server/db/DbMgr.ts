@@ -1531,22 +1531,16 @@ export class DbMgr implements MigrationDbMgr {
    */
   async getAffiliatedTeams() {
     const userId = this.checkNormalUser();
+    const permissions = await this.permissions().find({
+      select: ["teamId"],
+      where: { userId, ...excludeDeleted() },
+    });
+    const teamIds = _.uniq(withoutNils(permissions.map((p) => p.teamId)));
+    if (teamIds.length === 0) {
+      return [];
+    }
     return this._queryTeams({}, false)
-      .innerJoin(
-        Permission,
-        "perm",
-        "perm.teamId = t.id or perm.teamId = pt.id",
-      )
-      .andWhere(
-        `
-          t.deletedAt is null
-          and
-          perm.userId = :userId
-          and
-          perm.deletedAt is null
-          `,
-        { userId },
-      )
+      .andWhere([{ id: In(teamIds) }, { parentTeamId: In(teamIds) }])
       .getMany();
   }
 
@@ -2479,30 +2473,31 @@ export class DbMgr implements MigrationDbMgr {
    */
   async getAffiliatedWorkspaces(teamId?: TeamId, userId?: UserId) {
     userId = userId ?? this.checkNormalUser();
-    let qb = this._queryWorkspaces({})
-      .innerJoin(
-        Permission,
-        "perm",
-        `
-          perm.workspaceId = w.id
-          or
-          perm.teamId = w.teamId
-          or
-          perm.teamId = t.parentTeamId
-        `,
-      )
-      .andWhere(
-        `
-          w.deletedAt is null
-          and
-          perm.userId = :userId
-          and
-          perm.accessLevel <> 'blocked'
-          and
-          perm.deletedAt is null
-          `,
-        { userId },
-      );
+    const permissions = await this.permissions().find({
+      select: ["workspaceId", "teamId"],
+      where: { userId, accessLevel: Not("blocked"), ...excludeDeleted() },
+    });
+    const workspaceIds = _.uniq(
+      withoutNils(permissions.map((p) => p.workspaceId)),
+    );
+    const teamIds = _.uniq(withoutNils(permissions.map((p) => p.teamId)));
+    const childTeams = teamIds.length
+      ? await this.teams().find({
+          select: ["id"],
+          where: { parentTeamId: In(teamIds) },
+        })
+      : [];
+    const affiliatedTeamIds = _.uniq([
+      ...teamIds,
+      ...childTeams.map((t) => t.id),
+    ]);
+    if (workspaceIds.length === 0 && affiliatedTeamIds.length === 0) {
+      return [];
+    }
+    let qb = this._queryWorkspaces({}).andWhere([
+      { id: In(workspaceIds) },
+      { teamId: In(affiliatedTeamIds) },
+    ]);
     if (teamId) {
       qb = qb.andWhere(`w.teamId = :teamId`).setParameters({ teamId: teamId });
     }
@@ -3032,28 +3027,19 @@ export class DbMgr implements MigrationDbMgr {
     // filter by it, than to do a giant join between permission, workspace,
     // project, and team.
     const workspaces = await this.getAffiliatedWorkspaces(undefined, userId);
+    const permissions = await this.permissions().find({
+      select: ["projectId"],
+      where: { userId, accessLevel: Not("blocked"), ...excludeDeleted() },
+    });
+    const projectIds = _.uniq(withoutNils(permissions.map((p) => p.projectId)));
+    if (workspaces.length === 0 && projectIds.length === 0) {
+      return [];
+    }
     return this._queryProjects({})
-      .leftJoin(Permission, "perm", "perm.projectId = p.id")
-      .andWhere(
-        `
-          (
-            p.workspaceId IN (:...workspaceIds) OR
-            (
-              perm.userId = :userId
-              and
-              perm.accessLevel <> 'blocked'
-              and
-              perm.deletedAt is null
-            )
-          )
-        `,
-        {
-          userId,
-          // We append an invalid 'x' value so we don't end up with an empty list
-          // (resulting in invalid SQL).
-          workspaceIds: [...workspaces.map((w) => w.id), "x"],
-        },
-      )
+      .andWhere([
+        { workspaceId: In(workspaces.map((w) => w.id)) },
+        { id: In(projectIds) },
+      ])
       .getMany();
   }
 
@@ -4597,10 +4583,41 @@ export class DbMgr implements MigrationDbMgr {
     pkgId: string,
     versionRange?: string,
     tag?: string,
+    opts: { prefilledOnly?: boolean; branchId?: BranchId } = {},
+  ) {
+    return this.tryGetPkgVersionInternal(pkgId, versionRange, tag, opts, false);
+  }
+
+  /** Resolves the latest published version without fetching its potentially large model. */
+  async getLatestPkgVersionNumber(
+    pkgId: string,
+    tag: string | undefined,
+    opts: { prefilledOnly?: boolean } = {},
+  ): Promise<string> {
+    const pkgVersion = await this.tryGetPkgVersionInternal(
+      pkgId,
+      "latest",
+      tag,
+      opts,
+      true,
+    );
+    return ensureFound(
+      pkgVersion,
+      `PkgVersion for pkgId=${pkgId}, version=latest${
+        tag ? ", tag=" + tag : ""
+      }`,
+    ).version;
+  }
+
+  private async tryGetPkgVersionInternal(
+    pkgId: string,
+    versionRange: string | undefined,
+    tag: string | undefined,
     {
       prefilledOnly = false,
       branchId,
-    }: { prefilledOnly?: boolean; branchId?: BranchId } = {},
+    }: { prefilledOnly?: boolean; branchId?: BranchId },
+    versionOnly: boolean,
   ) {
     await this.checkPkgPerms(pkgId, "viewer", "get");
     if (branchId) {
@@ -4636,7 +4653,18 @@ export class DbMgr implements MigrationDbMgr {
       ]);
       const chain = getCommitChainFromBranch(graph, branchId);
       if (chain[0]) {
-        return await this.getPkgVersionById(chain[0]);
+        if (!versionOnly) {
+          return this.getPkgVersionById(chain[0]);
+        }
+        const pkgVersion = ensureFound(
+          await this.pkgVersions().findOne({
+            select: ["id", "pkgId", "version"],
+            where: { id: chain[0], ...excludeDeleted() },
+          }),
+          `Pkg Version ${chain[0]}`,
+        );
+        await this.checkPkgPerms(pkgVersion.pkgId, "viewer", "get");
+        return pkgVersion;
       }
       // A branch without published pkgVersions has no head in the commit graph.
       return undefined;
@@ -4681,19 +4709,21 @@ export class DbMgr implements MigrationDbMgr {
       return;
     }
 
-    return getOneOrFailIfTooMany(
-      this.pkgVersions()
-        .createQueryBuilder("pkgVersion")
-        .leftJoinAndSelect("pkgVersion.pkg", "pkg")
-        .where("pkgVersion.pkgId = :pkgId", { pkgId })
-        .andWhere(
-          "(:branchId::text is null AND pkgVersion.branchId is null OR pkgVersion.branchId = :branchId::text)",
-          { branchId },
-        )
-        .andWhere("pkgVersion.version = :version", { version })
-        .andWhere("pkgVersion.deletedAt is null")
-        .printSql(),
-    );
+    const pkgVersionQuery = this.pkgVersions()
+      .createQueryBuilder("pkgVersion")
+      .where("pkgVersion.pkgId = :pkgId", { pkgId })
+      .andWhere(
+        "(:branchId::text IS NULL AND pkgVersion.branchId IS NULL OR pkgVersion.branchId = :branchId::text)",
+        { branchId },
+      )
+      .andWhere("pkgVersion.version = :version", { version })
+      .andWhere("pkgVersion.deletedAt IS NULL");
+    if (versionOnly) {
+      pkgVersionQuery.select(["pkgVersion.id", "pkgVersion.version"]);
+    } else {
+      pkgVersionQuery.leftJoinAndSelect("pkgVersion.pkg", "pkg");
+    }
+    return getOneOrFailIfTooMany(pkgVersionQuery.printSql());
   }
 
   /**

@@ -12,7 +12,12 @@ import {
   withBranch,
   withTokens,
 } from "@/wab/server/__testonly__/branching-utils";
-import { DbMgr, SUPER_USER, normalActor } from "@/wab/server/db/DbMgr";
+import {
+  DbMgr,
+  NotFoundError,
+  SUPER_USER,
+  normalActor,
+} from "@/wab/server/db/DbMgr";
 import {
   BranchId,
   MainBranchId,
@@ -250,6 +255,12 @@ describe("branching", () => {
       expect(latestMainCommit).toMatchObject({
         version: "1.0.0",
       });
+      expect(await db1().getLatestPkgVersionNumber(pkg.id, undefined)).toBe(
+        latestMainCommit.version,
+      );
+      expect(await db1().getLatestPkgVersionNumber(pkg.id, branch.name)).toBe(
+        latestBranchCommit.version,
+      );
     }));
 
   it("shares the same permissions as the main branch", () =>
@@ -329,6 +340,9 @@ describe("branching", () => {
             branchId: branch.id as BranchId,
           }),
         ).toBeUndefined();
+        await expect(
+          db1().getLatestPkgVersionNumber(pkg.id, branch.name),
+        ).rejects.toThrow(NotFoundError);
 
         // /revs/unpublished: listProjectRevisions still returns the saved revisions.
         const revisions = await db1().listProjectRevisions(project.id, {
@@ -373,6 +387,9 @@ describe("branching", () => {
           { branchId: branch.id as BranchId },
         );
         expect(latest?.id).toBe(branchPkg.id);
+        expect(await db1().getLatestPkgVersionNumber(pkg.id, branch.name)).toBe(
+          branchPkg.version,
+        );
 
         // Confirm the recreated graph persisted to extraData.
         const repaired = await sudo.getProjectById(project.id);

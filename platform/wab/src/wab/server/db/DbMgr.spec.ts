@@ -23,6 +23,7 @@ import { createTeam as createTeamRoute } from "@/wab/server/routes/teams";
 import {
   CmsMetaType,
   CmsTableId,
+  CmsTableSchema,
   CommentId,
   CommentThreadId,
   ProjectAndBranchId,
@@ -558,6 +559,81 @@ describe("DbMgr.CMS", () => {
       expect(count).toEqual(expected.length);
     }
   };
+
+  it("keeps OR filters inside the CMS table and published row boundaries", () =>
+    withDb(async (_sudo, _users, [db1]) => {
+      const { workspace } = await getTeamAndWorkspace(db1());
+      const database = await db1().createCmsDatabase({
+        name: "Filter boundaries",
+        workspaceId: workspace.id,
+      });
+      const schema: CmsTableSchema = {
+        fields: [
+          {
+            identifier: "title",
+            name: "Title",
+            type: CmsMetaType.TEXT,
+            helperText: "",
+            required: false,
+            hidden: false,
+            localized: false,
+            unique: false,
+            defaultValueByLocale: {},
+          },
+        ],
+      };
+      const table = await db1().createCmsTable({
+        databaseId: database.id,
+        identifier: "target",
+        name: "Target",
+        schema,
+      });
+      const other = await db1().createCmsTable({
+        databaseId: database.id,
+        identifier: "other",
+        name: "Other",
+        schema,
+      });
+      const first = await db1().createCmsRow(table.id, {
+        identifier: "first",
+        data: { "": { title: "first" } },
+      });
+      const second = await db1().createCmsRow(table.id, {
+        identifier: "second",
+        data: { "": { title: "second" } },
+      });
+      await db1().createCmsRow(other.id, {
+        identifier: "outside",
+        data: { "": { title: "second" } },
+      });
+      const deleted = await db1().createCmsRow(table.id, {
+        identifier: "deleted",
+        data: { "": { title: "second" } },
+      });
+      await db1().deleteCmsRow(deleted.id);
+      await db1().createCmsRow(table.id, {
+        identifier: "draft",
+        draftData: { "": { title: "second" } },
+      });
+      await expectCmsRows(
+        db1(),
+        table.id,
+        {
+          where: { $or: [{ title: "first" }, { title: "second" }] },
+        },
+        [first, second],
+        false,
+      );
+      await expectCmsRows(
+        db1(),
+        table.id,
+        {
+          where: { $or: [{}, { title: "second" }] },
+        },
+        [first, second],
+        false,
+      );
+    }));
 
   it("can query for rows", () =>
     withDb(async (sudo, [user1], [db1]) => {
@@ -1763,6 +1839,100 @@ describe("DbMgr", () => {
 });
 
 describe("DbMgr.user", () => {
+  it("respects direct, team and parent team permissions and revocations", () =>
+    withDb(async (sudo, [_owner, member], [ownerMgr, memberMgr], project) => {
+      const { team, workspace } = await getTeamAndWorkspace(ownerMgr());
+      const extraWorkspace = await ownerMgr().createWorkspace({
+        name: "Second workspace",
+        description: "",
+        teamId: team.id,
+      });
+      const childTeam = await ownerMgr().createTeam("Child team");
+      await sudo.sudoUpdateTeam({
+        id: childTeam.id,
+        parentTeamId: team.id,
+      });
+      const childWorkspace = await ownerMgr().createWorkspace({
+        name: "Child workspace",
+        description: "",
+        teamId: childTeam.id,
+      });
+
+      await ownerMgr().grantProjectPermissionByEmail(
+        project.id,
+        member.email,
+        "viewer",
+      );
+      expect(
+        (await memberMgr().listProjectsForSelf()).map((p) => p.id),
+      ).toContain(project.id);
+      await ownerMgr().revokeProjectPermissionsByEmails(project.id, [
+        member.email,
+      ]);
+      expect(
+        (await memberMgr().listProjectsForSelf()).map((p) => p.id),
+      ).not.toContain(project.id);
+
+      await ownerMgr().grantWorkspacePermissionByEmail(
+        workspace.id,
+        member.email,
+        "editor",
+      );
+      expect(
+        (await memberMgr().getAffiliatedWorkspaces()).map((w) => w.id),
+      ).toContain(workspace.id);
+
+      await ownerMgr().grantTeamPermissionByEmail(
+        team.id,
+        member.email,
+        "editor",
+      );
+      const affiliated = await memberMgr().getAffiliatedWorkspaces();
+      expect(
+        (await memberMgr().listProjectsForSelf()).map((p) => p.id),
+      ).toContain(project.id);
+      expect(affiliated.map((w) => w.id)).toEqual(
+        expect.arrayContaining([
+          workspace.id,
+          extraWorkspace.id,
+          childWorkspace.id,
+        ]),
+      );
+      expect(
+        (await memberMgr().getAffiliatedWorkspaces(team.id)).map((w) => w.id),
+      ).toEqual(expect.arrayContaining([workspace.id, extraWorkspace.id]));
+      expect(
+        (await memberMgr().getAffiliatedWorkspaces(childTeam.id)).map(
+          (w) => w.id,
+        ),
+      ).toEqual([childWorkspace.id]);
+      const teams = await memberMgr().getAffiliatedTeams();
+      expect(teams.map((t) => t.id)).toEqual(
+        expect.arrayContaining([team.id, childTeam.id]),
+      );
+
+      await ownerMgr().revokeTeamPermissionsByEmails(team.id, [member.email]);
+      expect(await memberMgr().getAffiliatedWorkspaces(childTeam.id)).toEqual(
+        [],
+      );
+      expect(
+        (await memberMgr().getAffiliatedWorkspaces(team.id)).map((w) => w.id),
+      ).toEqual([workspace.id]);
+      expect(
+        (await memberMgr().getAffiliatedTeams()).map((t) => t.id),
+      ).not.toContain(childTeam.id);
+      expect(
+        (await memberMgr().listProjectsForSelf()).map((p) => p.id),
+      ).toContain(project.id);
+      await ownerMgr().revokeWorkspacePermissionsByEmails(workspace.id, [
+        member.email,
+      ]);
+      expect(await memberMgr().getAffiliatedWorkspaces(team.id)).toEqual([]);
+      expect(
+        (await memberMgr().listProjectsForSelf()).map((p) => p.id),
+      ).not.toContain(project.id);
+    }));
+
   it("creates user with 2 teams/workspaces if needsTeamCreationPrompt: false", async () => {
     await withDb(async (sudo, _users, _dbs, _project, em) => {
       const user = await sudo.createUser({

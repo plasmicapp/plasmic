@@ -198,7 +198,7 @@ const TEST_TABLE = {
 describe("makeSqlCondition", () => {
   it("considers empty clauses as TRUE", () => {
     expect(makeSqlCondition(TEST_TABLE, {}, { useDraft: false })).toEqual({
-      condition: "TRUE",
+      condition: "(TRUE)",
       params: {},
     });
   });
@@ -214,7 +214,7 @@ describe("makeSqlCondition", () => {
       ),
     ).toEqual({
       condition:
-        "((CASE WHEN r.draftData IS NOT NULL THEN r.draftData ELSE r.data END)->''->>'textField')::text = :val0",
+        "(((CASE WHEN r.draftData IS NOT NULL THEN r.draftData ELSE r.data END)->''->>'textField')::text = :val0)",
       params: {
         val0: "foo",
       },
@@ -231,7 +231,7 @@ describe("makeSqlCondition", () => {
         { useDraft: false },
       ),
     ).toEqual({
-      condition: "r.id = :val0",
+      condition: "(r.id = :val0)",
       params: {
         val0: "123456",
       },
@@ -254,7 +254,7 @@ describe("makeSqlCondition", () => {
       ),
     ).toEqual({
       condition:
-        "(r.createdAt > :val0) AND (r.createdAt < :val1) AND (r.updatedAt >= :val2) AND (r.updatedAt <= :val3)",
+        "((r.createdAt > :val0) AND (r.createdAt < :val1) AND (r.updatedAt >= :val2) AND (r.updatedAt <= :val3))",
       params: {
         val0: "2025-01-01T00:00:00Z",
         val1: "2025-12-31T23:59:59Z",
@@ -274,7 +274,7 @@ describe("makeSqlCondition", () => {
         { useDraft: false },
       ),
     ).toEqual({
-      condition: "(r.data->''->'objectField'->>'enumField')::text = :val0",
+      condition: "((r.data->''->'objectField'->>'enumField')::text = :val0)",
       params: {
         val0: "enumValue",
       },
@@ -291,7 +291,7 @@ describe("makeSqlCondition", () => {
         { useDraft: false },
       ),
     ).toEqual({
-      condition: "(r.data->''->>'textField')::text = :val0",
+      condition: "((r.data->''->>'textField')::text = :val0)",
       params: {
         val0: "foo",
       },
@@ -305,7 +305,7 @@ describe("makeSqlCondition", () => {
         { useDraft: false },
       ),
     ).toEqual({
-      condition: "(r.data->''->>'datetimeField')::timestamp = :val0",
+      condition: "((r.data->''->>'datetimeField')::timestamp = :val0)",
       params: {
         val0: "2025-01-01T00:00:00Z",
       },
@@ -319,7 +319,7 @@ describe("makeSqlCondition", () => {
         { useDraft: false },
       ),
     ).toEqual({
-      condition: "(r.data->''->>'numberField')::numeric = :val0",
+      condition: "((r.data->''->>'numberField')::numeric = :val0)",
       params: {
         val0: 42,
       },
@@ -333,7 +333,7 @@ describe("makeSqlCondition", () => {
         { useDraft: false },
       ),
     ).toEqual({
-      condition: "(r.data->''->>'booleanField')::boolean = :val0",
+      condition: "((r.data->''->>'booleanField')::boolean = :val0)",
       params: {
         val0: true,
       },
@@ -351,7 +351,7 @@ describe("makeSqlCondition", () => {
       ),
     ).toEqual({
       condition:
-        "((r.data->''->>'booleanField')::boolean = :val0 OR (r.data->''->>'booleanField')::boolean IS NULL)",
+        "(((r.data->''->>'booleanField')::boolean = :val0 OR (r.data->''->>'booleanField')::boolean IS NULL))",
       params: {
         val0: false,
       },
@@ -368,7 +368,7 @@ describe("makeSqlCondition", () => {
         { useDraft: false },
       ),
     ).toEqual({
-      condition: "(r.data->''->>'datetimeField')::timestamp > :val0",
+      condition: "((r.data->''->>'datetimeField')::timestamp > :val0)",
       params: {
         val0: "2025-01-01T00:00:00Z",
       },
@@ -385,7 +385,7 @@ describe("makeSqlCondition", () => {
         { useDraft: false },
       ),
     ).toEqual({
-      condition: "(r.data->''->>'numberField')::numeric >= :val0",
+      condition: "((r.data->''->>'numberField')::numeric >= :val0)",
       params: {
         val0: 42,
       },
@@ -402,7 +402,7 @@ describe("makeSqlCondition", () => {
         { useDraft: false },
       ),
     ).toEqual({
-      condition: "(r.data->''->>'numberField')::numeric < :val0",
+      condition: "((r.data->''->>'numberField')::numeric < :val0)",
       params: {
         val0: 42,
       },
@@ -419,7 +419,7 @@ describe("makeSqlCondition", () => {
         { useDraft: false },
       ),
     ).toEqual({
-      condition: "(r.data->''->>'datetimeField')::timestamp <= :val0",
+      condition: "((r.data->''->>'datetimeField')::timestamp <= :val0)",
       params: {
         val0: "2025-01-01T00:00:00Z",
       },
@@ -436,7 +436,7 @@ describe("makeSqlCondition", () => {
         { useDraft: false },
       ),
     ).toEqual({
-      condition: "(r.data->''->>'textField')::text IN (:...val0)",
+      condition: "((r.data->''->>'textField')::text IN (:...val0))",
       params: {
         val0: ["value1", "value2", "value3"],
       },
@@ -453,7 +453,7 @@ describe("makeSqlCondition", () => {
         { useDraft: false },
       ),
     ).toEqual({
-      condition: "FALSE",
+      condition: "(FALSE)",
       params: {},
     });
   });
@@ -468,7 +468,7 @@ describe("makeSqlCondition", () => {
         { useDraft: false },
       ),
     ).toEqual({
-      condition: "(r.data->''->>'textField')::text ~* :val0",
+      condition: "((r.data->''->>'textField')::text ~* :val0)",
       params: {
         val0: "^test",
       },
@@ -487,7 +487,7 @@ describe("makeSqlCondition", () => {
       ),
     ).toEqual({
       condition:
-        "((r.data->''->>'textField')::text = :val0) AND ((r.data->''->>'numberField')::numeric = :val1)",
+        "(((r.data->''->>'textField')::text = :val0) AND ((r.data->''->>'numberField')::numeric = :val1))",
       params: {
         val0: "foo",
         val1: 42,
@@ -506,7 +506,7 @@ describe("makeSqlCondition", () => {
       ),
     ).toEqual({
       condition:
-        "((r.data->''->>'textField')::text = :val0) AND ((r.data->''->>'numberField')::numeric = :val1)",
+        "(((r.data->''->>'textField')::text = :val0) AND ((r.data->''->>'numberField')::numeric = :val1))",
       params: {
         val0: "foo",
         val1: 42,
@@ -525,7 +525,7 @@ describe("makeSqlCondition", () => {
       ),
     ).toEqual({
       condition:
-        "((r.data->''->>'textField')::text = :val0) OR ((r.data->''->>'numberField')::numeric = :val1)",
+        "(((r.data->''->>'textField')::text = :val0) OR ((r.data->''->>'numberField')::numeric = :val1))",
       params: {
         val0: "foo",
         val1: 42,
@@ -545,7 +545,7 @@ describe("makeSqlCondition", () => {
         { useDraft: false },
       ),
     ).toEqual({
-      condition: "NOT ((r.data->''->>'textField')::text = :val0)",
+      condition: "(NOT ((r.data->''->>'textField')::text = :val0))",
       params: {
         val0: "foo",
       },
@@ -585,12 +585,12 @@ describe("makeSqlCondition", () => {
       ),
     ).toEqual({
       condition:
-        "((r.data->''->>'booleanField')::boolean = :val0) " + // 1
+        "(((r.data->''->>'booleanField')::boolean = :val0) " + // 1
         "AND (" +
         ("(((r.data->''->>'textField')::text ~* :val1) AND ((r.data->''->>'numberField')::numeric > :val2) AND ((r.data->''->>'numberField')::numeric < :val3)) " + // 2
           "OR (NOT ((r.id = :val4) AND (((r.data->''->>'datetimeField')::timestamp >= :val5) AND ((r.data->''->>'datetimeField')::timestamp <= :val6) AND (TRUE)))) " + // 3
           "OR ((r.data->''->'objectField'->>'enumField')::text IN (:...val7))") + // 4
-        ")",
+        "))",
       params: {
         val0: true,
         val1: "^bar",

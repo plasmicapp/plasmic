@@ -23,6 +23,16 @@ export function mkVersionToSync(
   };
 }
 
+async function getPkgByProjectOrThrow(dbMgr: DbMgr, projectId: string) {
+  const pkg = await dbMgr.getPkgByProjectId(projectId);
+  if (!pkg) {
+    throw new BadRequestError(
+      `Project ${projectId} has not been published yet.`,
+    );
+  }
+  return pkg;
+}
+
 async function getPkgVersionByProject(
   dbMgr: DbMgr,
   projectId: string,
@@ -30,12 +40,7 @@ async function getPkgVersionByProject(
   tag?: string,
   opts: { prefilledOnly: boolean } = { prefilledOnly: false },
 ) {
-  const pkg = await dbMgr.getPkgByProjectId(projectId);
-  if (!pkg) {
-    throw new BadRequestError(
-      `Project ${projectId} has not been published yet.`,
-    );
-  }
+  const pkg = await getPkgByProjectOrThrow(dbMgr, projectId);
   const pkgVersion = await dbMgr.getPkgVersion(pkg.id, versionRange, tag, opts);
   return { pkg, pkgVersion };
 }
@@ -80,21 +85,16 @@ export async function resolveLatestProjectVersions(
     `resolveLatestProjectVersions-${projectIdsAndTags.length}`,
     async () => {
       const pkgVersions = await Promise.all(
-        projectIdsAndTags.map((projectIdAndTag) =>
-          getPkgVersionByProject(
-            dbMgr,
-            projectIdAndTag.projectId,
-            undefined,
-            projectIdAndTag.tag,
-            opts,
-          ),
-        ),
+        projectIdsAndTags.map(async ({ projectId, tag }) => {
+          const pkg = await getPkgByProjectOrThrow(dbMgr, projectId);
+          return {
+            projectId,
+            version: await dbMgr.getLatestPkgVersionNumber(pkg.id, tag, opts),
+          };
+        }),
       );
       return Object.fromEntries(
-        pkgVersions.map(({ pkg, pkgVersion }) => [
-          pkg.projectId,
-          pkgVersion.version,
-        ]),
+        pkgVersions.map(({ projectId, version }) => [projectId, version]),
       );
     },
   );
