@@ -108,42 +108,49 @@ export function animationResultSchema() {
   ]);
 }
 
-export function projectSchema() {
+/** Resources a project owns, keyed by section. */
+function projectResourcesSchema() {
   return z.object({
-    __type: z.literal("Project"),
-    id: z.string().describe("Project id."),
     components: z
       .array(componentSummarySchema())
       .optional()
-      .describe("All components (own + imported), when requested."),
-    screenBreakpoints: z
-      .array(screenBreakpointSchema())
-      .optional()
-      .describe("Active screen breakpoints, when requested."),
+      .describe("Components, when requested."),
     globalVariantGroups: z
       .array(globalVariantGroupSchema())
       .optional()
-      .describe("Global variant groups (own + imported), when requested."),
+      .describe("Global variant groups, when requested."),
     tokens: z
       .array(tokenSchema())
       .optional()
-      .describe("Style tokens (own + imported), when requested."),
+      .describe("Style tokens, when requested."),
     dataTokens: z
       .array(dataTokenSchema())
       .optional()
-      .describe("Data tokens (own + imported), when requested."),
+      .describe("Data tokens, when requested."),
     mixins: z
       .array(mixinSchema())
       .optional()
-      .describe("Mixins / style presets (own + imported), when requested."),
+      .describe("Mixins / style presets, when requested."),
     animations: z
       .array(animationSummarySchema())
       .optional()
-      .describe("Animation sequences (own + imported), when requested."),
+      .describe("Animation sequences, when requested."),
     themes: z
       .array(themeSchema())
       .optional()
       .describe("Themes / default styles (active or all), when requested."),
+  });
+}
+
+export function projectSchema() {
+  return z.object({
+    __type: z.literal("Project"),
+    id: z.string().describe("Project id."),
+    screenBreakpoints: z
+      .array(screenBreakpointSchema())
+      .optional()
+      .describe("Active screen breakpoints, when requested."),
+    ...projectResourcesSchema().shape,
     dataQueryFunctions: dataQueryFunctionsSchema()
       .optional()
       .describe(
@@ -151,7 +158,9 @@ export function projectSchema() {
       ),
     importedProjects: z
       .array(importedProjectSchema())
-      .describe("Imported (direct dependency) projects; always included."),
+      .describe(
+        "Imported (direct dependency) projects; always included. Each lists its own resources under the same keys as this project.",
+      ),
   });
 }
 export type ProjectJson = z.infer<ReturnType<typeof projectSchema>>;
@@ -703,10 +712,6 @@ export function tokenSchema() {
     type: z
       .enum(tokenTypes)
       .describe("Token type, determining which CSS properties it applies to."),
-    fromProject: z
-      .string()
-      .optional()
-      .describe("Imported project id, present only for imported tokens."),
     value: tokenValuesSchema().describe(
       "Token values: base value (+ resolved alias) and per-variant values.",
     ),
@@ -794,10 +799,6 @@ function mixinSchema() {
     __type: z.literal("Mixin"),
     name: z.string().describe("Mixin name."),
     uuid: z.string().describe("Mixin UUID."),
-    fromProject: z
-      .string()
-      .optional()
-      .describe("Imported project id, present only for imported mixins."),
     styles: z
       .record(z.string(), z.string())
       .describe("Base CSS properties, keyed by CSS property name."),
@@ -881,10 +882,6 @@ export function animationSchema() {
     __type: z.literal("Animation"),
     name: z.string().describe("Animation name."),
     uuid: z.string().describe("Animation UUID."),
-    fromProject: z
-      .string()
-      .optional()
-      .describe("Imported project id, present only for imported animations."),
     keyframesRule: z
       .string()
       .optional()
@@ -1053,10 +1050,6 @@ export function globalVariantGroupSchema() {
     __type: z.literal("GlobalVariantGroup"),
     name: z.string().describe("Global variant group name."),
     uuid: z.string().describe("Global variant group UUID."),
-    fromProject: z
-      .string()
-      .optional()
-      .describe("Imported project id, present only for imported groups."),
     variants: z.array(variantSchema()).describe("Variants in this group."),
   });
 }
@@ -1074,12 +1067,13 @@ export function variantSchema() {
 }
 export type VariantJson = z.infer<ReturnType<typeof variantSchema>>;
 
-/** A reference to an imported (direct dependency) project. */
+/** An imported (direct dependency) project and its resources. */
 export function importedProjectSchema() {
   return z.object({
     __type: z.literal("ImportedProject"),
     id: z.string().describe("Imported project id."),
     name: z.string().describe("Imported project name."),
+    ...projectResourcesSchema().shape,
   });
 }
 export type ImportedProjectJson = z.infer<

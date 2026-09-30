@@ -17,7 +17,7 @@ describe("Project Serialization", () => {
     };
 
     // A single serialization covers the project and its imported projects,
-    // since each section is a flattened view including dependency resources.
+    // which list their own resources under importedProjects.
     const project = buildProjectResource(site, undefined, {
       projectId: "testProjectId",
       ...filters,

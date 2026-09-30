@@ -4,16 +4,16 @@ import {
 } from "@/wab/commons/DataToken";
 import { derefTokenRefs, isTokenRef } from "@/wab/commons/StyleToken";
 import { ProjectId } from "@/wab/shared/ApiSchema";
+import { isScreenVariantGroup } from "@/wab/shared/Variants";
 import { makeShortProjectId, toVarName } from "@/wab/shared/codegen/util";
+import { withoutUndefinedFields } from "@/wab/shared/common";
 import { isPageComponent } from "@/wab/shared/core/components";
-import { siteDataTokensDirectDeps } from "@/wab/shared/core/site-data-tokens";
-import {
-  siteFinalStyleTokensAllDeps,
-  siteFinalStyleTokensDirectDeps,
-} from "@/wab/shared/core/site-style-tokens";
-import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
+import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import { generateKeyframesRule } from "@/wab/shared/core/styles";
-import { getSelectableThemes } from "@/wab/shared/core/theme-styles";
+import {
+  getSelectableThemes,
+  type SelectableTheme,
+} from "@/wab/shared/core/theme-styles";
 import { FinalToken, toFinalToken } from "@/wab/shared/core/tokens";
 import { parseScreenSpec } from "@/wab/shared/css-size";
 import { makeDataTokenIdentifier } from "@/wab/shared/eval/expression-parser";
@@ -23,10 +23,12 @@ import {
   Component,
   DataToken,
   Mixin,
+  ProjectDependency,
   Site,
   StyleToken,
   StyleTokenOverride,
   Theme,
+  VariantGroup,
 } from "@/wab/shared/model/classes";
 import { getStylesFromRuleSet } from "@/wab/shared/web-exporter/component-exporter";
 import {
@@ -48,10 +50,9 @@ import {
 } from "@/wab/shared/web-exporter/schema";
 
 /**
- * Build the canonical JSON model for project-level information. Produces a
- * flattened view: each requested key lists the project's own resources plus
- * those of every imported (direct dependency) project; imported resources carry
- * a `fromProject` id.
+ * Build the canonical JSON model for project-level information. Each requested key lists
+ * the project's own resources, and each imported (direct dependency) project in
+ * `importedProjects` lists its resources under the same keys.
  *
  * `customFunctions` is pre-built by the caller, since it requires StudioCtx.
  */
@@ -70,145 +71,29 @@ export function buildProjectResource(
     themes?: "active" | "all";
   },
 ): ProjectJson {
-  let components: ComponentSummaryJson[] | undefined;
-  if (opts.components) {
-    const toComponentSummary = (
-      comp: Component,
-      fromProject?: string,
-    ): ComponentSummaryJson => {
-      const path =
-        isPageComponent(comp) && comp.pageMeta.path
-          ? comp.pageMeta.path
-          : undefined;
-      return {
-        __type: "Component",
-        name: comp.name,
-        uuid: comp.uuid,
-        type: comp.type,
-        ...(path ? { pageMeta: { __type: "PageMeta", path } } : {}),
-        ...(fromProject ? { fromProject } : {}),
-      };
-    };
-    components = [
-      ...site.components.map((comp) => toComponentSummary(comp)),
-      ...site.projectDependencies.flatMap((dep) =>
-        dep.site.components.map((comp) =>
-          toComponentSummary(comp, dep.projectId),
-        ),
-      ),
-    ];
-  }
+  const screenBreakpoints = opts.screenBreakpoints
+    ? site.activeScreenVariantGroup?.variants.map(
+        (variant): ScreenBreakpointJson => {
+          const spec = variant.mediaQuery
+            ? parseScreenSpec(variant.mediaQuery)
+            : undefined;
+          return {
+            __type: "ScreenBreakpoint",
+            name: variant.name,
+            uuid: variant.uuid,
+            ...(spec?.minWidth ? { minWidth: spec.minWidth } : {}),
+            ...(spec?.maxWidth ? { maxWidth: spec.maxWidth } : {}),
+          };
+        },
+      )
+    : undefined;
 
-  let screenBreakpoints: ScreenBreakpointJson[] | undefined;
-  const screenGroup = site.activeScreenVariantGroup;
-  if (opts.screenBreakpoints && screenGroup) {
-    screenBreakpoints = screenGroup.variants.map((variant) => {
-      const breakpoint: ScreenBreakpointJson = {
-        __type: "ScreenBreakpoint",
-        name: variant.name,
-        uuid: variant.uuid,
-      };
-      if (variant.mediaQuery) {
-        const spec = parseScreenSpec(variant.mediaQuery);
-        if (spec.minWidth) {
-          breakpoint.minWidth = spec.minWidth;
-        }
-        if (spec.maxWidth) {
-          breakpoint.maxWidth = spec.maxWidth;
-        }
-      }
-      return breakpoint;
-    });
-  }
+  const allFinalTokens = opts.tokens ? siteFinalStyleTokensAllDeps(site) : [];
 
-  let globalVariantGroups: GlobalVariantGroupJson[] | undefined;
-  if (opts.globalVariants) {
-    const groupToDepProjectId = new Map(
-      site.projectDependencies.flatMap((dep) =>
-        dep.site.globalVariantGroups.map(
-          (group) => [group, dep.projectId] as const,
-        ),
-      ),
-    );
-    globalVariantGroups = allGlobalVariantGroups(site, {
-      includeDeps: "direct",
-      excludeInactiveScreenVariants: true,
-    }).map((group): GlobalVariantGroupJson => {
-      const fromProject = groupToDepProjectId.get(group);
-      return {
-        __type: "GlobalVariantGroup",
-        name: group.param.variable.name,
-        uuid: group.uuid,
-        ...(fromProject ? { fromProject } : {}),
-        variants: group.variants.map((variant) => ({
-          __type: "Variant",
-          name: variant.name,
-          uuid: variant.uuid,
-        })),
-      };
-    });
-  }
-
-  let tokens: TokenJson[] | undefined;
-  if (opts.tokens) {
-    const allFinalTokens = siteFinalStyleTokensAllDeps(site);
-    const tokenToDepProjectId = new Map(
-      site.projectDependencies.flatMap((dep) =>
-        dep.site.styleTokens.map((token) => [token, dep.projectId] as const),
-      ),
-    );
-    tokens = siteFinalStyleTokensDirectDeps(site).map((finalToken) =>
-      buildTokenModel(finalToken.base, allFinalTokens, {
-        override: finalToken.override,
-        fromProject: tokenToDepProjectId.get(finalToken.base),
-      }),
-    );
-  }
-
-  let dataTokens: DataTokenJson[] | undefined;
-  if (opts.dataTokens) {
-    dataTokens = siteDataTokensDirectDeps(site).map((token) =>
-      buildDataTokenResource(token, { site, projectId: opts.projectId }),
-    );
-  }
-
-  let mixins: MixinJson[] | undefined;
-  if (opts.mixins) {
-    mixins = [
-      ...site.mixins.map((mixin) => buildMixinResource(mixin)),
-      ...site.projectDependencies.flatMap((dep) =>
-        dep.site.mixins.map((mixin) =>
-          buildMixinResource(mixin, { fromProject: dep.projectId }),
-        ),
-      ),
-    ];
-  }
-
-  let animations: AnimationSummaryJson[] | undefined;
-  if (opts.animations) {
-    const toAnimationSummary = (
-      sequence: AnimationSequence,
-      fromProject?: string,
-    ): AnimationSummaryJson => ({
-      __type: "Animation",
-      name: sequence.name,
-      uuid: sequence.uuid,
-      ...(fromProject ? { fromProject } : {}),
-    });
-    animations = [
-      ...site.animationSequences.map((seq) => toAnimationSummary(seq)),
-      ...site.projectDependencies.flatMap((dep) =>
-        dep.site.animationSequences.map((seq) =>
-          toAnimationSummary(seq, dep.projectId),
-        ),
-      ),
-    ];
-  }
-
-  let themes: ThemeJson[] | undefined;
+  let themes: SelectableTheme[] | undefined;
   if (opts.themes) {
     const selectable = getSelectableThemes(site);
-    const included =
+    themes =
       opts.themes === "all"
         ? [...selectable]
         : selectable.filter((st) => st.theme === site.activeTheme);
@@ -216,36 +101,104 @@ export function buildProjectResource(
     // dependency.
     if (
       site.activeTheme &&
-      !included.some((st) => st.theme === site.activeTheme)
+      !themes.some((st) => st.theme === site.activeTheme)
     ) {
-      included.push({ theme: site.activeTheme });
+      themes.push({ theme: site.activeTheme });
     }
-    themes = included.map(({ theme, fromProject }) =>
-      buildThemeResource(theme, {
-        active: theme === site.activeTheme,
-        fromProject,
-      }),
-    );
+  }
+
+  // Resources owned by `dep`, or by `site` itself when `dep` is omitted. An imported
+  // project omits the sections it has nothing in.
+  function buildSections(dep?: ProjectDependency) {
+    const owner = dep?.site ?? site;
+    const list = <T, R>(
+      items: readonly T[] | false | undefined,
+      build: (item: T) => R,
+    ) =>
+      items && (!dep || items.length > 0)
+        ? items.map((item) => build(item))
+        : undefined;
+    return withoutUndefinedFields({
+      components: list(
+        opts.components && owner.components,
+        buildComponentSummary,
+      ),
+      globalVariantGroups: list(
+        opts.globalVariants &&
+          owner.globalVariantGroups.filter(
+            (group) =>
+              !isScreenVariantGroup(group) ||
+              group === site.activeScreenVariantGroup,
+          ),
+        buildGlobalVariantGroupSummary,
+      ),
+      tokens: list(opts.tokens && owner.styleTokens, (token) =>
+        buildTokenModel(token, site, allFinalTokens),
+      ),
+      dataTokens: list(opts.dataTokens && owner.dataTokens, (token) =>
+        buildDataTokenResource(token, {
+          site: owner,
+          projectId: dep?.projectId ?? opts.projectId,
+        }),
+      ),
+      mixins: list(opts.mixins && owner.mixins, buildMixinResource),
+      animations: list(
+        opts.animations && owner.animationSequences,
+        buildAnimationSummary,
+      ),
+      themes: list(
+        themes?.filter((st) => st.fromProject === dep?.projectId),
+        ({ theme }) =>
+          buildThemeResource(theme, { active: theme === site.activeTheme }),
+      ),
+    });
   }
 
   return {
     __type: "Project",
     id: opts.projectId,
-    ...(components ? { components } : {}),
     ...(screenBreakpoints ? { screenBreakpoints } : {}),
-    ...(globalVariantGroups ? { globalVariantGroups } : {}),
-    ...(tokens ? { tokens } : {}),
-    ...(dataTokens ? { dataTokens } : {}),
-    ...(mixins ? { mixins } : {}),
-    ...(animations ? { animations } : {}),
-    ...(themes ? { themes } : {}),
+    ...buildSections(),
     ...(customFunctions ? { dataQueryFunctions: customFunctions } : {}),
     importedProjects: site.projectDependencies.map((dep) => ({
       __type: "ImportedProject",
       id: dep.projectId,
       name: dep.name,
+      ...buildSections(dep),
     })),
   };
+}
+
+function buildComponentSummary(comp: Component): ComponentSummaryJson {
+  const path = isPageComponent(comp) ? comp.pageMeta.path : undefined;
+  return {
+    __type: "Component",
+    name: comp.name,
+    uuid: comp.uuid,
+    type: comp.type,
+    ...(path ? { pageMeta: { __type: "PageMeta", path } } : {}),
+  };
+}
+
+function buildGlobalVariantGroupSummary(
+  group: VariantGroup,
+): GlobalVariantGroupJson {
+  return {
+    __type: "GlobalVariantGroup",
+    name: group.param.variable.name,
+    uuid: group.uuid,
+    variants: group.variants.map((variant) => ({
+      __type: "Variant",
+      name: variant.name,
+      uuid: variant.uuid,
+    })),
+  };
+}
+
+function buildAnimationSummary(
+  sequence: AnimationSequence,
+): AnimationSummaryJson {
+  return { __type: "Animation", name: sequence.name, uuid: sequence.uuid };
 }
 
 export function buildThemeResource(
@@ -255,15 +208,11 @@ export function buildThemeResource(
   const toThemeStyleModel = (
     selector: string,
     mixin: Mixin,
-  ): ThemeStyleJson => {
-    const variantedStyles = buildVariantedStylesModel(mixin);
-    return {
-      __type: "ThemeStyle",
-      selector,
-      styles: getStylesFromRuleSet(mixin.rs),
-      ...(variantedStyles.length > 0 ? { variantedStyles } : {}),
-    };
-  };
+  ): ThemeStyleJson => ({
+    __type: "ThemeStyle",
+    selector,
+    ...buildStylesModel(mixin),
+  });
   return {
     __type: "Theme",
     uuid: theme.defaultStyle.uuid,
@@ -281,28 +230,30 @@ export function buildTokenResource(
   token: StyleToken,
   opts: { site: Site },
 ): TokenJson {
-  const allFinalTokens = siteFinalStyleTokensAllDeps(opts.site);
-  const override = toFinalToken(token, opts.site).override;
-  return buildTokenModel(token, allFinalTokens, { override });
+  return buildTokenModel(
+    token,
+    opts.site,
+    siteFinalStyleTokensAllDeps(opts.site),
+  );
 }
 
 function buildTokenModel(
   token: StyleToken,
+  site: Site,
   allFinalTokens: ReadonlyArray<FinalToken<StyleToken>>,
-  opts: { override?: StyleTokenOverride | null; fromProject?: string } = {},
 ): TokenJson {
+  const override = toFinalToken(token, site).override;
   return {
     __type: "Token",
     name: token.name,
     uuid: token.uuid,
     type: token.type,
-    ...(opts.fromProject ? { fromProject: opts.fromProject } : {}),
     value: buildTokenValuesModel(token, allFinalTokens),
-    ...(opts.override
+    ...(override
       ? {
           override: {
             __type: "TokenOverride" as const,
-            value: buildTokenValuesModel(opts.override, allFinalTokens),
+            value: buildTokenValuesModel(override, allFinalTokens),
           },
         }
       : {}),
@@ -373,30 +324,26 @@ export function buildDataTokenResource(
   };
 }
 
-export function buildMixinResource(
-  mixin: Mixin,
-  opts: { fromProject?: string } = {},
-): MixinJson {
-  const variantedStyles = buildVariantedStylesModel(mixin);
+export function buildMixinResource(mixin: Mixin): MixinJson {
   return {
     __type: "Mixin",
     name: mixin.name,
     uuid: mixin.uuid,
-    ...(opts.fromProject ? { fromProject: opts.fromProject } : {}),
-    styles: getStylesFromRuleSet(mixin.rs),
     ...(mixin.preview ? { preview: mixin.preview } : {}),
-    ...(variantedStyles.length > 0 ? { variantedStyles } : {}),
+    ...buildStylesModel(mixin),
   };
 }
 
-function buildVariantedStylesModel(mixin: Mixin): VariantedStyleJson[] {
-  return mixin.variantedRs.map(
-    (vRs): VariantedStyleJson => ({
-      __type: "VariantedStyle",
-      variantUuids: vRs.variants.map((v) => v.uuid),
-      styles: getStylesFromRuleSet(vRs.rs),
-    }),
-  );
+function buildStylesModel(mixin: Mixin) {
+  const variantedStyles = mixin.variantedRs.map((vRs): VariantedStyleJson => ({
+    __type: "VariantedStyle",
+    variantUuids: vRs.variants.map((v) => v.uuid),
+    styles: getStylesFromRuleSet(vRs.rs),
+  }));
+  return {
+    styles: getStylesFromRuleSet(mixin.rs),
+    ...(variantedStyles.length > 0 ? { variantedStyles } : {}),
+  };
 }
 
 /** Build the canonical JSON model for an animation sequence. */

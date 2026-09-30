@@ -49,8 +49,10 @@ import { z } from "zod";
  * Description of copilot's dynamic-value input format, `{{ jsExpr }}` interpolation.
  * Content is static by default and a `{{ }}`-wrapped JS expression makes it dynamic.
  * `read` serializes exprs back in the same form (`exprToInterpolatedString`).
+ * Kept short since it's repeated on every dynamic field; the chat system prompt and the
+ * plasmic-designer skill explain the format.
  */
-export const interpolatedStringFormatDescription = `Values are static by default (plain text is NOT quoted). Wrap JS in {{ }} to bind it to runtime data (e.g. "{{ currentItem.name }}") or to pass a non-string literal (e.g. "{{ 5 }}").`;
+export const interpolatedStringFormatDescription = `Static unless JS is wrapped in {{ }} (runtime data, or a non-string literal like "{{ 5 }}"); plain text is not quoted.`;
 
 /**
  * Converts `{{ jsExpr }}` interpolated string to `Expr`. A string with no `{{ }}`,
@@ -163,10 +165,7 @@ export function isObjectOrArrayLiteralInput(input: string): boolean {
 
 /** A JSON tree whose leaves may also be dynamic `Expr`s. */
 type ValueOrExpr =
-  | JsonValue
-  | Expr
-  | ValueOrExpr[]
-  | { [key: string]: ValueOrExpr };
+  JsonValue | Expr | ValueOrExpr[] | { [key: string]: ValueOrExpr };
 
 /** Replaces `{{ }}` string leaves in a JSON tree with dynamic `Expr`s. */
 function jsonToValueOrExpr(value: JsonValue): ValueOrExpr {

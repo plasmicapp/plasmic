@@ -257,7 +257,7 @@ class ModelSwitcher<RemainingInput, Result = never> {
   >;
   when<
     Cases extends Array<Constructor<RemainingInput>>,
-    Case extends Cases extends Array<Constructor<infer R>> ? R : never,
+    Case extends (Cases extends Array<Constructor<infer R>> ? R : never),
     NewResult,
   >(
     types: Cases,
@@ -608,6 +608,13 @@ export const withoutNils = <T>(xs: Array<T | undefined | null>): T[] =>
 
 export const withoutFalsy = <T>(xs: Array<T | Falsy>): T[] =>
   xs.filter((x): x is T => !!x);
+
+export const withoutUndefinedFields = <T extends object>(
+  obj: T,
+): { [K in keyof T]?: Exclude<T[K], undefined> } =>
+  Object.fromEntries(
+    Object.entries(obj).filter(([, v]) => v !== undefined),
+  ) as { [K in keyof T]?: Exclude<T[K], undefined> };
 
 export const withoutNilTuples = <K, V>(
   tups: Array<[K, V | undefined | null]>,
@@ -1204,8 +1211,7 @@ export const iterator = (xs) => xs[Symbol.iterator]();
 export const jsonClone = <T>(x: T): T => JSON.parse(JSON.stringify(x));
 
 type Result<T, U> =
-  | { type: "Success"; value: T }
-  | { type: "Failure"; value: U };
+  { type: "Success"; value: T } | { type: "Failure"; value: U };
 
 /**
  * Implementation of Python's try/catch/else.
