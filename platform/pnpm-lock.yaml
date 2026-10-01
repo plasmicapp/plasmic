@@ -13405,6 +13405,9 @@ packages:
   perfect-cursors@1.0.5:
     resolution: {integrity: sha512-LgQJj6QtF6VzYODurlhF9Ayt2liiadJZBocK98brcCC6D/dRtZlSU/r0mXWDoCdGPiO24oJB1+PZKz4p9hblWg==}
 
+  pg-cloudflare@1.4.0:
+    resolution: {integrity: sha512-Vo7z/6rrQYxpNRylp4Tlob2elzbh+N/MOQbxFVWCxS7oEx6jF53GTJFxK2WWpKuBRkmiin4Mt+xofFDjx09R0A==}
+
   pg-connection-string@2.14.0:
     resolution: {integrity: sha512-XwWDGcLRGCXAR8F/AM5bG7Q+A3Wm2s6QeEjlOKZLlH3UYcguiqCWKyWXVag5TLTIjR7oOJUY8kcADaZgWPyLeg==}
 
@@ -31113,6 +31116,9 @@ snapshots:
     dependencies:
       '@tldraw/vec': 1.9.2
 
+  pg-cloudflare@1.4.0:
+    optional: true
+
   pg-connection-string@2.14.0: {}
 
   pg-connection-string@2.6.2: {}
@@ -31140,6 +31146,8 @@ snapshots:
       pg-protocol: 1.15.0
       pg-types: 2.2.0
       pgpass: 1.0.5
+    optionalDependencies:
+      pg-cloudflare: 1.4.0
 
   pgpass@1.0.5:
     dependencies:
