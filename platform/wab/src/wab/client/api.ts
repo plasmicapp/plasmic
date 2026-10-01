@@ -498,7 +498,6 @@ export function filteredApi(
     "readNavigatorClipboard",
     "uploadImageFile",
     "queryCopilot",
-    "queryUiCopilot",
     "sendCopilotFeedback",
     "addReactionToComment",
     "removeReactionFromComment",

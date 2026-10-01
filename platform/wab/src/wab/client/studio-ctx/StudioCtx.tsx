@@ -143,7 +143,6 @@ import {
   CopilotImage,
   CopilotInteractionId,
   MainBranchId,
-  QueryCopilotUiResponse,
   TemplateSpec,
   UpdatePlayerViewRequest,
 } from "@/wab/shared/ApiSchema";
@@ -194,10 +193,7 @@ import {
 } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import type { ServerToClientEvents } from "@/wab/shared/api/socket";
-import {
-  canUseChatCopilot,
-  checkIsTeamOnPaidTier,
-} from "@/wab/shared/billing/billing-util";
+import { canUseChatCopilot } from "@/wab/shared/billing/billing-util";
 import { BoundedCache } from "@/wab/shared/bounded-cache";
 import {
   Bundle,
@@ -3093,20 +3089,10 @@ export class StudioCtx extends WithDbCtx {
     this._showCommentsPanel.set(!this.showCommentsPanel);
   }
 
-  private _showUiCopilot = observable.box(false);
-
-  get showUiCopilot() {
-    return this._showUiCopilot.get();
-  }
-
   private _isCopilotChatOpen = observable.box(false);
 
   get isCopilotChatOpen() {
     return this._isCopilotChatOpen.get();
-  }
-
-  openUiCopilotDialog(isOpen: boolean) {
-    this._showUiCopilot.set(isOpen);
   }
 
   private _preferredAiOutputFormat = observable.box<AiOutputFormat>("json");
@@ -3524,22 +3510,6 @@ export class StudioCtx extends WithDbCtx {
   //
   // Copilot
   //
-  uiCopilotEnabled(): boolean {
-    if (!this.canEditProject()) {
-      return false;
-    }
-
-    if (this.appCtx.appConfig.enableChatCopilot) {
-      return false;
-    }
-
-    const team = this.appCtx.teams.find((t) => t.id === this.siteInfo.teamId);
-    return (
-      this.appCtx.appConfig.enableUiCopilot ||
-      (!!team && checkIsTeamOnPaidTier(team))
-    );
-  }
-
   chatCopilotEnabled(): boolean {
     if (!this.canEditProject() || !this.appCtx.appConfig.enableChatCopilot) {
       return false;
@@ -7356,10 +7326,6 @@ export class StudioCtx extends WithDbCtx {
   private _copilotHistory = observable.map<CopilotType, CopilotInteraction[]>();
 
   addToCopilotHistory(
-    type: "ui",
-    copilotInteraction: CopilotInteraction<QueryCopilotUiResponse["data"]>,
-  ): void;
-  addToCopilotHistory(
     type: "code" | "sql",
     copilotInteraction: CopilotInteraction<string>,
   ): void;
@@ -7377,9 +7343,6 @@ export class StudioCtx extends WithDbCtx {
     ]);
   }
 
-  getCopilotHistory(
-    type: "ui",
-  ): CopilotInteraction<QueryCopilotUiResponse["data"]>[];
   getCopilotHistory(type: "code" | "sql"): CopilotInteraction<string>[];
   getCopilotHistory(type: CopilotType): CopilotInteraction<unknown>[];
   getCopilotHistory(type: CopilotType): CopilotInteraction<unknown>[] {
@@ -7846,7 +7809,7 @@ export class StudioCtx extends WithDbCtx {
   };
 }
 
-export type CopilotType = "ui" | "code" | "sql";
+export type CopilotType = "code" | "sql";
 
 export type CopilotPrompt = {
   prompt: string;

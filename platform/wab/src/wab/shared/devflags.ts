@@ -436,14 +436,8 @@ const DEFAULT_DEVFLAGS = {
     | undefined,
   hiddenQuickstartPlatforms: ensureType<string[]>([]),
   showCopilot: true,
-  enableUiCopilot: false,
   enableChatCopilot: false,
   enableQueryMigrationCopilot: false,
-  uiCopilotModelProviderOpts: {
-    provider: "VertexAnthropic",
-    modelName: "claude-haiku-4-5",
-    maxTokens: 32000,
-  } as ModelProviderOpts,
   chatCopilotModelProviderOpts: {
     provider: "VertexAnthropic",
     modelName: "claude-sonnet-5",
@@ -617,7 +611,6 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     hiddenDataSources: [] as string[],
     insertTemplatesIntoMainContentSlots: true,
     previewSteps: true,
-    enableUiCopilot: true,
     enableChatCopilot: true,
     enableQueryMigrationCopilot: true,
     cmsUniqueFields: true,

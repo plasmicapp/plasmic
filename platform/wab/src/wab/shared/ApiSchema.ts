@@ -7,9 +7,6 @@ import { Bundle } from "@/wab/shared/bundles";
 import { Dict } from "@/wab/shared/collections";
 import {
   CopilotChat,
-  CopilotUiActions,
-  CopilotUiProps,
-  CopilotUiResponse,
   WholeChatCompletionResponse,
 } from "@/wab/shared/copilot/prompt-utils";
 import { ModelProviderOpts } from "@/wab/shared/copilot/provider";
@@ -2059,20 +2056,6 @@ export type CopilotImage = {
   base64: string;
 };
 
-export type CopilotToken = {
-  name: string;
-  type: StyleTokenType;
-  uuid: string;
-  value: string;
-};
-
-export type QueryCopilotUiRequest = {
-  type: "ui";
-  projectId: ProjectId;
-  modelProviderOverride?: ModelProviderOpts;
-  copilotSystemPromptOverride?: string;
-} & CopilotUiProps;
-
 export const copilotChatModes = ["query-migration", "starter"] as const;
 
 /** Special chat modes. `undefined` is general chat. */
@@ -2102,12 +2085,6 @@ export interface QueryCopilotResponse {
   response: string;
   typeDebug?: string;
 }
-
-export type QueryCopilotUiResponse = {
-  data: CopilotUiActions;
-  response: CopilotUiResponse;
-  copilotInteractionId: CopilotInteractionId;
-};
 
 export type CopilotResponseData = {
   data: WholeChatCompletionResponse;

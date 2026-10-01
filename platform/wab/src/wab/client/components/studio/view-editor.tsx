@@ -25,7 +25,6 @@ import { closestTaggedNonTextDomElt } from "@/wab/client/components/canvas/studi
 import { getMergedTextArg } from "@/wab/client/components/canvas/view-ops";
 import { CommentsDialogs } from "@/wab/client/components/comments/CommentsDialogs";
 import CommentsTab from "@/wab/client/components/comments/CommentsTab";
-import { CopilotUiPrompt } from "@/wab/client/components/copilot/CopilotUiPrompt";
 import { DevContainer } from "@/wab/client/components/dev";
 import { ComponentPresetsModal } from "@/wab/client/components/insert-panel/ComponentPresetsModal";
 import InsertPanelWrapper from "@/wab/client/components/insert-panel/InsertPanelWrapper";
@@ -1861,7 +1860,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                   hexColor={watchedPlayer.color}
                 />
               )}
-              {studioCtx.showUiCopilot ? <CopilotUiPrompt /> : null}
               {studioCtx.showDevControls && (
                 <div className="canvas-editor__top-pane">
                   <div className="canvas-editor__top-pane__floating-elements-container">

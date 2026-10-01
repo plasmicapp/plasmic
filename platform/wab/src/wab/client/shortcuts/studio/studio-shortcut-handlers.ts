@@ -193,11 +193,9 @@ export function bindStudioShortcutHandlers(studioCtx: StudioCtx) {
           }
         });
       },
-      TOGGLE_UI_COPILOT: async () => {
+      TOGGLE_COPILOT_CHAT: async () => {
         if (studioCtx.chatCopilotEnabled()) {
           await studioCtx.appCtx.topFrameApi?.toggleCopilotChat();
-        } else if (studioCtx.uiCopilotEnabled()) {
-          studioCtx.openUiCopilotDialog(!studioCtx.showUiCopilot);
         }
       },
       SWITCH_TO_TREE_TAB: async () => {

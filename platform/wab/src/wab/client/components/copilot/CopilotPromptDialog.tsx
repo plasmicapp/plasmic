@@ -3,25 +3,17 @@ import {
   DefaultCopilotPromptDialogProps,
   PlasmicCopilotPromptDialog,
 } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotPromptDialog";
-import { Tooltip, notification } from "antd";
+import { Tooltip } from "antd";
 import * as React from "react";
 import { FocusScope } from "react-aria";
 
-import { CopilotPromptImage } from "@/wab/client/components/copilot/CopilotPromptImage";
 import {
   CopilotData,
   useCopilot,
 } from "@/wab/client/components/copilot/useCopilot";
-import { useCopilotImageUpload } from "@/wab/client/components/copilot/useCopilotImageUpload";
 import { useAutoFocus } from "@/wab/client/hooks/useAutoFocus";
 import { isSubmitKeyCombo } from "@/wab/client/shortcuts/shortcut";
-import {
-  CopilotPrompt,
-  CopilotType,
-  useStudioCtx,
-} from "@/wab/client/studio-ctx/StudioCtx";
-import { uniqueKey } from "@/wab/shared/common";
-import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
+import { CopilotPrompt, CopilotType } from "@/wab/client/studio-ctx/StudioCtx";
 import cn from "classnames";
 import defer = setTimeout;
 
@@ -30,7 +22,6 @@ export interface CopilotPromptDialogProps<
 > extends DefaultCopilotPromptDialogProps {
   type: CopilotType;
   maxLength?: number;
-  showImageUpload?: boolean;
   dialogOpen: boolean;
   onDialogOpenChange: (open: boolean) => void;
   onCopilotSubmit: (args: CopilotPrompt) => Promise<CopilotData<Response>>;
@@ -43,7 +34,6 @@ function CopilotPromptDialog<Response>({
   className,
   dialogOpen,
   onDialogOpenChange,
-  showImageUpload,
   maxLength,
   onCopilotSubmit,
 }: CopilotPromptDialogProps<Response>) {
@@ -51,11 +41,7 @@ function CopilotPromptDialog<Response>({
   const [copilotPrompt, setCopilotPrompt] = React.useState<CopilotPrompt>({
     prompt: "",
     images: [],
-    modelProviderOverride: "",
-    copilotSystemPromptOverride: "",
   });
-  const studioCtx = useStudioCtx();
-  const appCtx = studioCtx.appCtx;
 
   const promptInputRef = React.useRef<HTMLTextAreaElement>(null);
   const applyBtnRef: React.Ref<HTMLDivElement> =
@@ -84,21 +70,7 @@ function CopilotPromptDialog<Response>({
     });
   }, [response]);
 
-  const { fileInput, openFilePicker, isUploading } = useCopilotImageUpload({
-    onUpload: (image) =>
-      setCopilotPrompt((prev) => ({
-        ...prev,
-        images: [...prev.images, image],
-      })),
-    onUploadError: (file, uploadError) =>
-      notification.error({
-        message: `Error uploading ${file.name}`,
-        description: uploadError.message,
-      }),
-  });
-
-  const isValidPrompt =
-    copilotPrompt.prompt.trim() && state !== "loading" && !isUploading;
+  const isValidPrompt = copilotPrompt.prompt.trim() && state !== "loading";
 
   const applyResponse = (historyResponse: Response) => {
     onCopilotApply(historyResponse);
@@ -110,54 +82,8 @@ function CopilotPromptDialog<Response>({
     <PlasmicCopilotPromptDialog
       type={type}
       promptInput={{
-        withAdminOverrides:
-          type === "ui" &&
-          isAdminTeamEmail(appCtx.selfInfo?.email, appCtx.appConfig),
-        modelOverrideInput: {
-          onChange: (value) =>
-            setCopilotPrompt({
-              ...copilotPrompt,
-              modelProviderOverride: value,
-            }),
-        },
-        systemPromptInput: {
-          onChange: (value) =>
-            setCopilotPrompt({
-              ...copilotPrompt,
-              copilotSystemPromptOverride: value,
-            }),
-        },
-        imageUploadIcon: showImageUpload
-          ? {
-              props: {
-                tooltip: "Attach image",
-                onClick: openFilePicker,
-              },
-              wrap: (button) => (
-                <>
-                  {button}
-                  {fileInput}
-                </>
-              ),
-            }
-          : { render: () => null },
-        imageUploadContainer: showImageUpload
-          ? {
-              wrapChildren: () =>
-                copilotPrompt.images.map((image) => (
-                  <CopilotPromptImage
-                    key={uniqueKey(image)}
-                    image={image}
-                    onDelete={() =>
-                      setCopilotPrompt((prev) => ({
-                        ...prev,
-                        images: prev.images.filter((img) => img !== image),
-                      }))
-                    }
-                  />
-                )),
-            }
-          : { render: () => null },
+        imageUploadIcon: { render: () => null },
+        imageUploadContainer: { render: () => null },
         runPromptBtn: {
           props: {
             onClick: () => submitPrompt(copilotPrompt),
