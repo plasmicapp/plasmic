@@ -142,7 +142,14 @@ export function absorbLinkClick(
   let cur = e.target as HTMLElement | null;
   while (cur) {
     if (cur.tagName.toLowerCase() === "a" && cur.attributes["href"]?.value) {
-      onAnchorClick && onAnchorClick(cur.attributes["href"].value || "");
+      const href: string = cur.attributes["href"].value;
+      if (href === "#") {
+        // A bare "#" goes nowhere, it's the usual placeholder on a link whose
+        // behavior is its onClick. Let the click through to that handler.
+        e.preventDefault();
+        return;
+      }
+      onAnchorClick && onAnchorClick(href);
       e.preventDefault();
       e.stopPropagation();
       return;
