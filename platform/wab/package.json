@@ -318,7 +318,7 @@
     "passport-strategy": "^1.0.0",
     "path-to-regexp": "8.4.2",
     "perfect-cursors": "^1.0.5",
-    "pg": "8.5.1",
+    "pg": "8.21.0",
     "pg-connection-string": "2.6.2",
     "pgsql-ast-parser": "^11.2.0",
     "pino": "^9.14.0",

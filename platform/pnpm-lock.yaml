@@ -1334,7 +1334,7 @@ importers:
         version: 11.1.0
       connect-typeorm:
         specifier: ^1.1.4
-        version: 1.1.4(typeorm@0.2.45(pg@8.5.1))
+        version: 1.1.4(typeorm@0.2.45(pg@8.21.0))
       constate:
         specifier: ^3.3.3
         version: 3.3.3(react@18.3.1)
@@ -1585,8 +1585,8 @@ importers:
         specifier: ^1.0.5
         version: 1.0.5
       pg:
-        specifier: 8.5.1
-        version: 8.5.1
+        specifier: 8.21.0
+        version: 8.21.0
       pg-connection-string:
         specifier: 2.6.2
         version: 2.6.2
@@ -1790,7 +1790,7 @@ importers:
         version: 0.1.2(@types/react@18.3.18)(immer@10.2.0)(react@18.3.1)
       typeorm:
         specifier: 0.2.45
-        version: 0.2.45(pg@8.5.1)
+        version: 0.2.45(pg@8.21.0)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -9260,10 +9260,6 @@ packages:
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
 
-  buffer-writer@2.0.0:
-    resolution: {integrity: sha512-a7ZpuTZU1TRtnwyCNW3I5dc0wWNC3VR9S++Ewyk2HHZdrO3CQJqSpd+95Us590V6AL7JqUAH2IwZ/398PmNFgw==}
-    engines: {node: '>=4'}
-
   buffer@5.6.0:
     resolution: {integrity: sha512-/gDYp/UtU0eA1ys8bOs9J6a+E/KWIY+DZ+Q2WESNUA0jFRsJOc0SNUO6xJ5SGA1xueg3NL65W6s+NY5l9cunuw==}
 
@@ -13221,9 +13217,6 @@ packages:
   package-json-from-dist@1.0.1:
     resolution: {integrity: sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==}
 
-  packet-reader@1.0.0:
-    resolution: {integrity: sha512-HAKu/fG3HpHFO0AA8WE8q2g+gBJaZ9MG7fcKk+IJPLTGAD6Psw4443l+9DGRbOIh3/aXr7Phy0TjilYivJo5XQ==}
-
   packrattle@4.1.0:
     resolution: {integrity: sha512-Bn8SKuv09sBDOm474JNAOeUcsf9lJ7qBOfLcn+qulkst3EZYERULc0a5Dr/R+xCS9DLJ+yKuiy8pVGuwYkqeBA==}
 
@@ -13434,11 +13427,11 @@ packages:
     resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}
     engines: {node: '>=4'}
 
-  pg@8.5.1:
-    resolution: {integrity: sha512-9wm3yX9lCfjvA98ybCyw2pADUivyNWT/yIP4ZcDVpMN0og70BUWYEGXPCTAQdGTAqnytfRADb7NERrY1qxhIqw==}
-    engines: {node: '>= 8.0.0'}
+  pg@8.21.0:
+    resolution: {integrity: sha512-AUP1EYJuHraQGsVoCQVIcM7TEJVGtDzxWtGFZd8rds9d+CCXlU5Js1rYgfLNvxy9iJrpHjGrRjoi/3BT9fRyiA==}
+    engines: {node: '>= 16.0.0'}
     peerDependencies:
-      pg-native: '>=2.0.0'
+      pg-native: '>=3.0.1'
     peerDependenciesMeta:
       pg-native:
         optional: true
@@ -26326,8 +26319,6 @@ snapshots:
 
   buffer-from@1.1.2: {}
 
-  buffer-writer@2.0.0: {}
-
   buffer@5.6.0:
     dependencies:
       base64-js: 1.5.1
@@ -26688,13 +26679,13 @@ snapshots:
       tree-kill: 1.2.2
       yargs: 13.3.2
 
-  connect-typeorm@1.1.4(typeorm@0.2.45(pg@8.5.1)):
+  connect-typeorm@1.1.4(typeorm@0.2.45(pg@8.21.0)):
     dependencies:
       '@types/debug': 0.0.31
       '@types/express-session': 1.19.0
       debug: 4.4.3
       express-session: 1.19.0
-      typeorm: 0.2.45(pg@8.5.1)
+      typeorm: 0.2.45(pg@8.21.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -30956,8 +30947,6 @@ snapshots:
 
   package-json-from-dist@1.0.1: {}
 
-  packet-reader@1.0.0: {}
-
   packrattle@4.1.0: {}
 
   pako@1.0.11: {}
@@ -31130,9 +31119,9 @@ snapshots:
 
   pg-int8@1.0.1: {}
 
-  pg-pool@3.14.0(pg@8.5.1):
+  pg-pool@3.14.0(pg@8.21.0):
     dependencies:
-      pg: 8.5.1
+      pg: 8.21.0
 
   pg-protocol@1.15.0: {}
 
@@ -31144,12 +31133,10 @@ snapshots:
       postgres-date: 1.0.7
       postgres-interval: 1.2.0
 
-  pg@8.5.1:
+  pg@8.21.0:
     dependencies:
-      buffer-writer: 2.0.0
-      packet-reader: 1.0.0
       pg-connection-string: 2.14.0
-      pg-pool: 3.14.0(pg@8.5.1)
+      pg-pool: 3.14.0(pg@8.21.0)
       pg-protocol: 1.15.0
       pg-types: 2.2.0
       pgpass: 1.0.5
@@ -34723,7 +34710,7 @@ snapshots:
     dependencies:
       is-typedarray: 1.0.0
 
-  typeorm@0.2.45(pg@8.5.1):
+  typeorm@0.2.45(pg@8.21.0):
     dependencies:
       '@sqltools/formatter': 1.2.5
       app-root-path: 3.1.0
@@ -34743,7 +34730,7 @@ snapshots:
       yargs: 17.7.2
       zen-observable-ts: 1.1.0
     optionalDependencies:
-      pg: 8.5.1
+      pg: 8.21.0
     transitivePeerDependencies:
       - supports-color
 
