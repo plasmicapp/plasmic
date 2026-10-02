@@ -1,4 +1,4 @@
-FROM node:24.4.0
+FROM node:24.20.0
 
 # The published CLI searches ancestors for an `app` directory to detect the
 # Next.js App Router. A top-level /app would misclassify Pages Router fixtures.
