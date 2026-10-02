@@ -14,21 +14,51 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  StrictProps,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import CopilotLikeDislike from "../../components/CopilotLikeDislike"; // plasmic-import: -LDNJojbDZD/component
-import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
+import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -36,6 +66,10 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicCopilotMsg.module.css"; // plasmic-import: CdMYaSGMjG/css
 
+import SearchSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
+import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import CheckCircleIcon from "../plasmic_kit/PlasmicIcon__CheckCircle"; // plasmic-import: gU-8UYs9RllyJ/icon
 
 createPlasmicElementProxy;
@@ -103,7 +137,7 @@ function PlasmicCopilotMsg__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -116,21 +150,20 @@ function PlasmicCopilotMsg__RenderFunc(props: {
         path: "userPrompt",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.userPrompt,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.userPrompt
       },
       {
         path: "rightMargin",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.rightMargin,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.rightMargin
       },
       {
         path: "feedback",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.feedback,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.feedback
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -140,7 +173,7 @@ function PlasmicCopilotMsg__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -175,7 +208,7 @@ function PlasmicCopilotMsg__RenderFunc(props: {
             "rightMargin",
             "rightMargin"
           ),
-          [sty.rootuserPrompt]: hasVariant($state, "userPrompt", "userPrompt"),
+          [sty.rootuserPrompt]: hasVariant($state, "userPrompt", "userPrompt")
         }
       )}
     >
@@ -200,7 +233,7 @@ function PlasmicCopilotMsg__RenderFunc(props: {
             $state,
             "userPrompt",
             "userPrompt"
-          ),
+          )
         })}
       >
         <div
@@ -214,18 +247,19 @@ function PlasmicCopilotMsg__RenderFunc(props: {
               $state,
               "userPrompt",
               "userPrompt"
-            ),
+            )
           })}
         >
           <div
             data-plasmic-name={"code"}
             data-plasmic-override={overrides.code}
+
             className={classNames("all", "__wab_text", sty.code, {
               [sty.codeuserPrompt]: hasVariant(
                 $state,
                 "userPrompt",
                 "userPrompt"
-              ),
+              )
             })}
           >
             {hasVariant($state, "userPrompt", "userPrompt")
@@ -236,12 +270,13 @@ function PlasmicCopilotMsg__RenderFunc(props: {
             <div
               data-plasmic-name={"prompt"}
               data-plasmic-override={overrides.prompt}
+
               className={classNames("all", "__wab_text", sty.prompt, {
                 [sty.promptuserPrompt]: hasVariant(
                   $state,
                   "userPrompt",
                   "userPrompt"
-                ),
+                )
               })}
             >
               {hasVariant($state, "userPrompt", "userPrompt")
@@ -272,12 +307,13 @@ function PlasmicCopilotMsg__RenderFunc(props: {
                 $state,
                 "userPrompt",
                 "userPrompt"
-              ),
+              )
             })}
           >
             <CopilotLikeDislike
               data-plasmic-name={"copilotLikeDislike"}
               data-plasmic-override={overrides.copilotLikeDislike}
+
               className={classNames("__wab_instance", sty.copilotLikeDislike, {
                 [sty.copilotLikeDislikefeedback_submit]: hasVariant(
                   $state,
@@ -293,13 +329,14 @@ function PlasmicCopilotMsg__RenderFunc(props: {
                   $state,
                   "userPrompt",
                   "userPrompt"
-                ),
+                )
               })}
             />
 
             <div
               data-plasmic-name={"applyBtn"}
               data-plasmic-override={overrides.applyBtn}
+
               className={classNames("all", "__wab_text", sty.applyBtn, {
                 [sty.applyBtnfeedback_submitted]: hasVariant(
                   $state,
@@ -315,7 +352,7 @@ function PlasmicCopilotMsg__RenderFunc(props: {
                   $state,
                   "userPrompt",
                   "userPrompt"
-                ),
+                )
               })}
               tabIndex={0}
             >
@@ -328,12 +365,13 @@ function PlasmicCopilotMsg__RenderFunc(props: {
         hasVariant($state, "feedback", "submitting")
           ? true
           : hasVariant($state, "feedback", "submit")
-          ? true
-          : false
+            ? true
+            : false
       ) ? (
         <Textbox
           data-plasmic-name={"feedbackTextbox"}
           data-plasmic-override={overrides.feedbackTextbox}
+
           className={classNames("__wab_instance", sty.feedbackTextbox, {
             [sty.feedbackTextboxfeedback_submit]: hasVariant(
               $state,
@@ -344,7 +382,7 @@ function PlasmicCopilotMsg__RenderFunc(props: {
               $state,
               "feedback",
               "submitting"
-            ),
+            )
           })}
           disabled={
             hasVariant($state, "feedback", "submitting") ? true : undefined
@@ -358,12 +396,13 @@ function PlasmicCopilotMsg__RenderFunc(props: {
         hasVariant($state, "feedback", "submitting")
           ? true
           : hasVariant($state, "feedback", "submit")
-          ? true
-          : false
+            ? true
+            : false
       ) ? (
         <Button
           data-plasmic-name={"submitFeedbackBtn"}
           data-plasmic-override={overrides.submitFeedbackBtn}
+
           caption={"Caption"}
           className={classNames("__wab_instance", sty.submitFeedbackBtn, {
             [sty.submitFeedbackBtnfeedback_submit]: hasVariant(
@@ -375,7 +414,7 @@ function PlasmicCopilotMsg__RenderFunc(props: {
               $state,
               "feedback",
               "submitting"
-            ),
+            )
           })}
           disabled={
             hasVariant($state, "feedback", "submitting") ? true : undefined
@@ -392,7 +431,7 @@ function PlasmicCopilotMsg__RenderFunc(props: {
                 $state,
                 "feedback",
                 "submitting"
-              ),
+              )
             })}
           >
             {hasVariant($state, "feedback", "submitting")
@@ -405,23 +444,25 @@ function PlasmicCopilotMsg__RenderFunc(props: {
         <div
           data-plasmic-name={"feedbackSubmittedContainer"}
           data-plasmic-override={overrides.feedbackSubmittedContainer}
+
           className={classNames("all", sty.feedbackSubmittedContainer, {
             [sty.feedbackSubmittedContainerfeedback_submitted]: hasVariant(
               $state,
               "feedback",
               "submitted"
-            ),
+            )
           })}
         >
           <CheckCircleIcon
             data-plasmic-name={"svg"}
             data-plasmic-override={overrides.svg}
+
             className={classNames("all", sty.svg, {
               [sty.svgfeedback_submitted]: hasVariant(
                 $state,
                 "feedback",
                 "submitted"
-              ),
+              )
             })}
             role={"img"}
           />
@@ -432,7 +473,7 @@ function PlasmicCopilotMsg__RenderFunc(props: {
                 $state,
                 "feedback",
                 "submitted"
-              ),
+              )
             })}
           >
             {"Your feedback has been received!\nThank you for your help."}
@@ -453,7 +494,7 @@ const PlasmicDescendants = {
     "feedbackTextbox",
     "submitFeedbackBtn",
     "feedbackSubmittedContainer",
-    "svg",
+    "svg"
   ],
   code: ["code"],
   prompt: ["prompt"],
@@ -462,7 +503,7 @@ const PlasmicDescendants = {
   feedbackTextbox: ["feedbackTextbox"],
   submitFeedbackBtn: ["submitFeedbackBtn"],
   feedbackSubmittedContainer: ["feedbackSubmittedContainer", "svg"],
-  svg: ["svg"],
+  svg: ["svg"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -490,8 +531,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCopilotMsg__VariantsArgs;
     args?: PlasmicCopilotMsg__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicCopilotMsg__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicCopilotMsg__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCopilotMsg__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -516,7 +558,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCopilotMsg__ArgProps,
-          internalVariantPropNames: PlasmicCopilotMsg__VariantProps,
+          internalVariantPropNames: PlasmicCopilotMsg__VariantProps
         }),
       [props, nodeName]
     );
@@ -524,7 +566,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -551,7 +593,7 @@ export const PlasmicCopilotMsg = Object.assign(
 
     // Metadata about props expected for PlasmicCopilotMsg
     internalVariantProps: PlasmicCopilotMsg__VariantProps,
-    internalArgProps: PlasmicCopilotMsg__ArgProps,
+    internalArgProps: PlasmicCopilotMsg__ArgProps
   }
 );
 

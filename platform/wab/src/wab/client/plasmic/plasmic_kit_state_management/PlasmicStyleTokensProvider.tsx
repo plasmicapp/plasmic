@@ -16,7 +16,7 @@ import "./plasmic_plasmic_kit_state_management.css"; // plasmic-import: frhoorZk
 
 const data = {
   base: `${"plasmic_tokens_frhoorZk3bxNXU73uUyvHm"} ${"plasmic_tokens_tXkSR39sgCDWSitZxC5xFV"} ${"plasmic_tokens_95xp9cYcv7HrNWpFWWhbcv"} ${"plasmic_tokens_gYEVvAzCcLMHDVPvuYxkFh"}`,
-  varianted: [],
+  varianted: []
 };
 
 export const _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);

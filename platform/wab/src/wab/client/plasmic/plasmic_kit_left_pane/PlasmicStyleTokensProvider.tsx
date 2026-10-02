@@ -16,7 +16,7 @@ import "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.css"; // p
 
 const data = {
   base: `${"plasmic_tokens_aukbrhkegRkQ6KizvhdUPT"} ${"plasmic_tokens_tXkSR39sgCDWSitZxC5xFV"} ${"plasmic_tokens_95xp9cYcv7HrNWpFWWhbcv"} ${"plasmic_tokens_gYEVvAzCcLMHDVPvuYxkFh"}`,
-  varianted: [],
+  varianted: []
 };
 
 export const _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);

@@ -12,5 +12,5 @@ import { useEnvironment } from "./PlasmicGlobalVariant__Environment"; // plasmic
 
 export const _useGlobalVariants = createUseGlobalVariants({
   environment: useEnvironment,
-  screen: useScreenVariantspbV7Vw3AiD6M,
+  screen: useScreenVariantspbV7Vw3AiD6M
 });

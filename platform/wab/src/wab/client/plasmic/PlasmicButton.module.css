@@ -58,7 +58,8 @@
   column-gap: 0px;
 }
 .roottype_switchOn {
-  box-shadow: 0px 2px 4px 0px var(--token-JrjdlBU-a5Ju),
+  box-shadow:
+    0px 2px 4px 0px var(--token-JrjdlBU-a5Ju),
     0px 0px 0px 0px var(--token-zBV3PmIqbJ9F);
   background: var(--token-iR8SeEwQZ);
   padding-top: 6px;

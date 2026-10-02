@@ -19,9 +19,9 @@ const data = {
     {
       className: "global_environment_website",
       groupName: "environment",
-      variant: "website",
-    },
-  ],
+      variant: "website"
+    }
+  ]
 };
 
 export const _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);

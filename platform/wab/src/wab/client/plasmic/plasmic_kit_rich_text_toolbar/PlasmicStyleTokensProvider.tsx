@@ -15,7 +15,7 @@ import "./plasmic_plasmic_kit_rich_text_toolbar.css"; // plasmic-import: uLddf5f
 
 const data = {
   base: `${"plasmic_tokens_uLddf5fC1aQbF7tmV1WQ1a"} ${"plasmic_tokens_95xp9cYcv7HrNWpFWWhbcv"} ${"plasmic_tokens_tXkSR39sgCDWSitZxC5xFV"}`,
-  varianted: [],
+  varianted: []
 };
 
 export const _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);

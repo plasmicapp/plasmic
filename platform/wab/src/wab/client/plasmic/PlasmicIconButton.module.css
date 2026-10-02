@@ -76,11 +76,13 @@
   border-color: var(--token-eBt2ZgqRUCz);
 }
 .roottype_gray {
-  background: linear-gradient(var(--token-O4S7RMTqZ3), var(--token-O4S7RMTqZ3)),
+  background:
+    linear-gradient(var(--token-O4S7RMTqZ3), var(--token-O4S7RMTqZ3)),
     var(--token-brSQU2ryS);
 }
 .roottype_switchOn {
-  box-shadow: 0px 2px 4px 0px var(--token-JrjdlBU-a5Ju),
+  box-shadow:
+    0px 2px 4px 0px var(--token-JrjdlBU-a5Ju),
     0px 0px 0px 0px var(--token-zBV3PmIqbJ9F);
   width: auto;
   min-height: 1.75rem;
@@ -93,31 +95,23 @@
   border-width: 0px;
 }
 .roottype_red {
-  background: linear-gradient(
-      var(--token-qYuX4XAEbRt),
-      var(--token-qYuX4XAEbRt)
-    ),
+  background:
+    linear-gradient(var(--token-qYuX4XAEbRt), var(--token-qYuX4XAEbRt)),
     var(--token-brSQU2ryS);
 }
 .roottype_green {
-  background: linear-gradient(
-      var(--token-h-5XbcO2WhcA),
-      var(--token-h-5XbcO2WhcA)
-    ),
+  background:
+    linear-gradient(var(--token-h-5XbcO2WhcA), var(--token-h-5XbcO2WhcA)),
     var(--token-brSQU2ryS);
 }
 .roottype_blue {
-  background: linear-gradient(
-      var(--token-yqAf_E0HIjU),
-      var(--token-yqAf_E0HIjU)
-    ),
+  background:
+    linear-gradient(var(--token-yqAf_E0HIjU), var(--token-yqAf_E0HIjU)),
     var(--token-brSQU2ryS);
 }
 .roottype_purple {
-  background: linear-gradient(
-      var(--token-Cr1odk81N3Y),
-      var(--token-Cr1odk81N3Y)
-    ),
+  background:
+    linear-gradient(var(--token-Cr1odk81N3Y), var(--token-Cr1odk81N3Y)),
     var(--token-brSQU2ryS);
 }
 .roottype_secondary {
@@ -134,14 +128,16 @@
   row-gap: 0px;
 }
 .rootshadow_extraSmall {
-  box-shadow: 0px 2px 4px 0px var(--token-JrjdlBU-a5Ju),
+  box-shadow:
+    0px 2px 4px 0px var(--token-JrjdlBU-a5Ju),
     0px 0px 0px 0px var(--token-zBV3PmIqbJ9F);
 }
 .rootshadow_small {
   box-shadow: 0px 4px 8px 1px var(--token-zBV3PmIqbJ9F);
 }
 .rootshadow_medium {
-  box-shadow: 0px 8px 32px -8px var(--token-XeFw4MGauXBT),
+  box-shadow:
+    0px 8px 32px -8px var(--token-XeFw4MGauXBT),
     0px 8px 20px -16px var(--token-JrjdlBU-a5Ju);
 }
 .roottype_primary_type_dividedRight {
@@ -204,59 +200,43 @@
   background: var(--token-hoA5qaM-91G);
 }
 .roottype_red:hover:hover {
-  background: linear-gradient(
-      var(--token-HKVCQ5ZKovK),
-      var(--token-HKVCQ5ZKovK)
-    ),
+  background:
+    linear-gradient(var(--token-HKVCQ5ZKovK), var(--token-HKVCQ5ZKovK)),
     var(--token-brSQU2ryS);
 }
 .roottype_red:active:active {
-  background: linear-gradient(
-      var(--token-5kjtdCiiOPB),
-      var(--token-5kjtdCiiOPB)
-    ),
+  background:
+    linear-gradient(var(--token-5kjtdCiiOPB), var(--token-5kjtdCiiOPB)),
     var(--token-brSQU2ryS);
 }
 .roottype_green:hover:hover {
-  background: linear-gradient(
-      var(--token-dv0BWWyaHl7H),
-      var(--token-dv0BWWyaHl7H)
-    ),
+  background:
+    linear-gradient(var(--token-dv0BWWyaHl7H), var(--token-dv0BWWyaHl7H)),
     var(--token-brSQU2ryS);
 }
 .roottype_green:active:active {
-  background: linear-gradient(
-      var(--token-3AptjBfMqvPS),
-      var(--token-3AptjBfMqvPS)
-    ),
+  background:
+    linear-gradient(var(--token-3AptjBfMqvPS), var(--token-3AptjBfMqvPS)),
     var(--token-brSQU2ryS);
 }
 .roottype_blue:hover:hover {
-  background: linear-gradient(
-      var(--token-dqEx_KxIoYV),
-      var(--token-dqEx_KxIoYV)
-    ),
+  background:
+    linear-gradient(var(--token-dqEx_KxIoYV), var(--token-dqEx_KxIoYV)),
     var(--token-brSQU2ryS);
 }
 .roottype_blue:active:active {
-  background: linear-gradient(
-      var(--token-RhvOnhv_xIi),
-      var(--token-RhvOnhv_xIi)
-    ),
+  background:
+    linear-gradient(var(--token-RhvOnhv_xIi), var(--token-RhvOnhv_xIi)),
     var(--token-brSQU2ryS);
 }
 .roottype_purple:hover:hover {
-  background: linear-gradient(
-      var(--token-oPrqrxbKHqk),
-      var(--token-oPrqrxbKHqk)
-    ),
+  background:
+    linear-gradient(var(--token-oPrqrxbKHqk), var(--token-oPrqrxbKHqk)),
     var(--token-brSQU2ryS);
 }
 .roottype_purple:active:active {
-  background: linear-gradient(
-      var(--token-I2zAJ678hbp),
-      var(--token-I2zAJ678hbp)
-    ),
+  background:
+    linear-gradient(var(--token-I2zAJ678hbp), var(--token-I2zAJ678hbp)),
     var(--token-brSQU2ryS);
 }
 .rootisActive:hover:hover {

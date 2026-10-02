@@ -13,7 +13,7 @@ import "./plasmic_plasmic_embed_css.css"; // plasmic-import: 8PtdGodUbexNYgkuyBU
 
 const data = {
   base: `${"plasmic_tokens_8PtdGodUbexNYgkuyBUcWu"}`,
-  varianted: [],
+  varianted: []
 };
 
 export const _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);

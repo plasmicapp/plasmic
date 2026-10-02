@@ -15,7 +15,7 @@ import "./plasmic_plasmic_kit_comments.css"; // plasmic-import: BP7V3EkXPURJVwwM
 
 const data = {
   base: `${"plasmic_tokens_BP7V3EkXPURJVwwMyWoHn"} ${"plasmic_tokens_tXkSR39sgCDWSitZxC5xFV"} ${"plasmic_tokens_95xp9cYcv7HrNWpFWWhbcv"}`,
-  varianted: [],
+  varianted: []
 };
 
 export const _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);

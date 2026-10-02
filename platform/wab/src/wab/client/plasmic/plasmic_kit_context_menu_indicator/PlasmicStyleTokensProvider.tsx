@@ -14,7 +14,7 @@ import "./plasmic_plasmic_kit_context_menu_indicator.css"; // plasmic-import: fu
 
 const data = {
   base: `${"plasmic_tokens_fuzE93KTc4ZKNBYf3LAfy"} ${"plasmic_tokens_95xp9cYcv7HrNWpFWWhbcv"}`,
-  varianted: [],
+  varianted: []
 };
 
 export const _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);

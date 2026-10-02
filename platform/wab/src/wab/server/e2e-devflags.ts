@@ -17,7 +17,7 @@ const E2E_DEVFLAGS: Partial<DevFlagsType> = {
 
   branching: true,
 
-  // copilot-mentions.spec.ts — the mentions UI is gated behind this.
+  // copilot-chat.spec.ts — the chat UI is gated behind this.
   enableChatCopilot: true,
   // Backstop behind the `noCopilotApi` fixture: if a request ever escapes,
   // it must not reach a real model. Deliberately invalid.

@@ -10,5 +10,5 @@ import { createUseGlobalVariants } from "@plasmicapp/react-web";
 import { useCodegenType } from "./PlasmicGlobalVariant__CodegenType"; // plasmic-import: IFgLgWglLv/globalVariant
 
 export const _useGlobalVariants = createUseGlobalVariants({
-  codegenType: useCodegenType,
+  codegenType: useCodegenType
 });

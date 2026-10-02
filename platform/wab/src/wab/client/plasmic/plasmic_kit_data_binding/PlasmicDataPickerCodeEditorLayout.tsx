@@ -14,20 +14,49 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import { CopilotCodePrompt } from "../../components/copilot/CopilotCodePrompt"; // plasmic-import: SdMPiPjcB9G/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -108,7 +137,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -121,21 +150,20 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
         path: "hidePreview",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.hidePreview,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hidePreview
       },
       {
         path: "envPanel",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.envPanel,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.envPanel
       },
       {
         path: "copilot",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.copilot,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.copilot
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -145,7 +173,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -167,7 +195,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
           [sty.rootcopilot]: hasVariant($state, "copilot", "copilot"),
           [sty.rootcopilot_envPanel_collapsed]:
             hasVariant($state, "copilot", "copilot") &&
-            hasVariant($state, "envPanel", "collapsed"),
+            hasVariant($state, "envPanel", "collapsed")
         }
       )}
     >
@@ -175,6 +203,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
         <div
           data-plasmic-name={"envLabel"}
           data-plasmic-override={overrides.envLabel}
+
           className={classNames("all", sty.envLabel, {
             [sty.envLabelenvPanel_collapsed]: hasVariant(
               $state,
@@ -190,7 +219,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
               $state,
               "hidePreview",
               "hidePreview"
-            ),
+            )
           })}
         >
           <ChevronDownSvgIcon
@@ -199,7 +228,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
                 $state,
                 "envPanel",
                 "collapsed"
-              ),
+              )
             })}
             role={"img"}
           />
@@ -210,7 +239,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
                 $state,
                 "hidePreview",
                 "hidePreview"
-              ),
+              )
             })}
             role={"img"}
           />
@@ -218,12 +247,13 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
           <div
             data-plasmic-name={"envLabelText"}
             data-plasmic-override={overrides.envLabelText}
+
             className={classNames("all", "__wab_text", sty.envLabelText, {
               [sty.envLabelTextenvPanel_hidden]: hasVariant(
                 $state,
                 "envPanel",
                 "hidden"
-              ),
+              )
             })}
           >
             {"Data context"}
@@ -234,6 +264,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
         <div
           data-plasmic-name={"envPanelContainer"}
           data-plasmic-override={overrides.envPanelContainer}
+
           className={classNames("all", sty.envPanelContainer, {
             [sty.envPanelContainerenvPanel_collapsed]: hasVariant(
               $state,
@@ -249,12 +280,13 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
               $state,
               "hidePreview",
               "hidePreview"
-            ),
+            )
           })}
         >
           <button
             data-plasmic-name={"envToggleButton"}
             data-plasmic-override={overrides.envToggleButton}
+
             aria-label={"Toggle data context preview"}
             className={classNames(
               "all",
@@ -266,18 +298,20 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
                   $state,
                   "envPanel",
                   "collapsed"
-                ),
+                )
               }
             )}
-            ref={(ref) => {
+            ref={ref => {
               $refs["envToggleButton"] = ref;
             }}
+            type={"button"}
           />
 
           {(hasVariant($state, "envPanel", "collapsed") ? false : true) ? (
             <div
               data-plasmic-name={"envPreviewContainer"}
               data-plasmic-override={overrides.envPreviewContainer}
+
               className={classNames("all", sty.envPreviewContainer, {
                 [sty.envPreviewContainercopilot]: hasVariant(
                   $state,
@@ -293,7 +327,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
                   $state,
                   "hidePreview",
                   "hidePreview"
-                ),
+                )
               })}
             >
               {renderPlasmicSlot({
@@ -304,7 +338,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
                     {"Env preview here..."}
                   </div>
                 ),
-                value: args.env,
+                value: args.env
               })}
             </div>
           ) : null}
@@ -313,6 +347,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
       <div
         data-plasmic-name={"codePanel"}
         data-plasmic-override={overrides.codePanel}
+
         className={classNames("all", sty.codePanel, {
           [sty.codePanelcopilot]: hasVariant($state, "copilot", "copilot"),
           [sty.codePanelcopilot_envPanel_collapsed]:
@@ -322,7 +357,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
             $state,
             "hidePreview",
             "hidePreview"
-          ),
+          )
         })}
       >
         {renderPlasmicSlot({
@@ -331,12 +366,13 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
               {"Monaco Editor here"}
             </div>
           ),
-          value: args.codeEditor,
+          value: args.codeEditor
         })}
         {(hasVariant($state, "copilot", "copilot") ? true : false) ? (
           <CopilotCodePrompt
             data-plasmic-name={"copilotCodePrompt"}
             data-plasmic-override={overrides.copilotCodePrompt}
+
             className={classNames("__wab_instance", sty.copilotCodePrompt, {
               [sty.copilotCodePromptcopilot]: hasVariant(
                 $state,
@@ -345,7 +381,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
               ),
               [sty.copilotCodePromptcopilot_envPanel_collapsed]:
                 hasVariant($state, "copilot", "copilot") &&
-                hasVariant($state, "envPanel", "collapsed"),
+                hasVariant($state, "envPanel", "collapsed")
             })}
           />
         ) : null}
@@ -354,6 +390,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
         <div
           data-plasmic-name={"previewPanel"}
           data-plasmic-override={overrides.previewPanel}
+
           className={classNames("all", sty.previewPanel, {
             [sty.previewPanelcopilot]: hasVariant($state, "copilot", "copilot"),
             [sty.previewPanelcopilot_envPanel_collapsed]:
@@ -363,7 +400,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
               $state,
               "hidePreview",
               "hidePreview"
-            ),
+            )
           })}
         >
           {renderPlasmicSlot({
@@ -374,7 +411,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
                 {'"Value Preview Here..."'}
               </div>
             ),
-            value: args.codePreview,
+            value: args.codePreview
           })}
         </div>
       ) : null}
@@ -392,20 +429,20 @@ const PlasmicDescendants = {
     "envPreviewContainer",
     "codePanel",
     "copilotCodePrompt",
-    "previewPanel",
+    "previewPanel"
   ],
   envLabel: ["envLabel", "envLabelText"],
   envLabelText: ["envLabelText"],
   envPanelContainer: [
     "envPanelContainer",
     "envToggleButton",
-    "envPreviewContainer",
+    "envPreviewContainer"
   ],
   envToggleButton: ["envToggleButton"],
   envPreviewContainer: ["envPreviewContainer"],
   codePanel: ["codePanel", "copilotCodePrompt"],
   copilotCodePrompt: ["copilotCodePrompt"],
-  previewPanel: ["previewPanel"],
+  previewPanel: ["previewPanel"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -433,8 +470,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDataPickerCodeEditorLayout__VariantsArgs;
     args?: PlasmicDataPickerCodeEditorLayout__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicDataPickerCodeEditorLayout__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicDataPickerCodeEditorLayout__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDataPickerCodeEditorLayout__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -460,7 +498,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicDataPickerCodeEditorLayout__ArgProps,
           internalVariantPropNames:
-            PlasmicDataPickerCodeEditorLayout__VariantProps,
+            PlasmicDataPickerCodeEditorLayout__VariantProps
         }),
       [props, nodeName]
     );
@@ -468,7 +506,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -495,7 +533,7 @@ export const PlasmicDataPickerCodeEditorLayout = Object.assign(
 
     // Metadata about props expected for PlasmicDataPickerCodeEditorLayout
     internalVariantProps: PlasmicDataPickerCodeEditorLayout__VariantProps,
-    internalArgProps: PlasmicDataPickerCodeEditorLayout__ArgProps,
+    internalArgProps: PlasmicDataPickerCodeEditorLayout__ArgProps
   }
 );
 

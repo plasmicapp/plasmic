@@ -14,20 +14,50 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  SingleBooleanChoiceArg,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import DataPickerColumnItem from "../../components/sidebar-tabs/DataBinding/DataPickerColumnItem"; // plasmic-import: fa3uzsyXr0/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import DataPickerColumnItem from "../../components/sidebar-tabs/DataBinding/DataPickerColumnItem"; // plasmic-import: fa3uzsyXr0/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -36,6 +66,7 @@ import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2
 import sty from "./PlasmicDataPickerColumn.module.css"; // plasmic-import: xmF37LmWYE/css
 
 import PlaySvgIcon from "../plasmic_kit/PlasmicIcon__PlaySvg"; // plasmic-import: j39GoLwZnf7-v/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -97,7 +128,7 @@ function PlasmicDataPickerColumn__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -110,15 +141,15 @@ function PlasmicDataPickerColumn__RenderFunc(props: {
         path: "isWide",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isWide,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isWide
       },
       {
         path: "previewSteps",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.previewSteps,
-      },
+          $props.previewSteps
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -128,7 +159,7 @@ function PlasmicDataPickerColumn__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -152,24 +183,26 @@ function PlasmicDataPickerColumn__RenderFunc(props: {
             $state,
             "previewSteps",
             "previewSteps"
-          ),
+          )
         }
       )}
     >
       <Button
         data-plasmic-name={"runAllSteps"}
         data-plasmic-override={overrides.runAllSteps}
+
         className={classNames("__wab_instance", sty.runAllSteps, {
           [sty.runAllStepspreviewSteps]: hasVariant(
             $state,
             "previewSteps",
             "previewSteps"
-          ),
+          )
         })}
         startIcon={
           <PlaySvgIcon
             data-plasmic-name={"svg"}
             data-plasmic-override={overrides.svg}
+
             className={classNames("all", sty.svg)}
             role={"img"}
           />
@@ -180,6 +213,7 @@ function PlasmicDataPickerColumn__RenderFunc(props: {
         <div
           data-plasmic-name={"text"}
           data-plasmic-override={overrides.text}
+
           className={classNames("all", "__wab_text", sty.text)}
         >
           {"Run all previous steps"}
@@ -188,13 +222,14 @@ function PlasmicDataPickerColumn__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
+
         className={classNames("all", sty.freeBox, {
           [sty.freeBoxisWide]: hasVariant($state, "isWide", "isWide"),
           [sty.freeBoxpreviewSteps]: hasVariant(
             $state,
             "previewSteps",
             "previewSteps"
-          ),
+          )
         })}
       >
         {renderPlasmicSlot({
@@ -241,7 +276,7 @@ function PlasmicDataPickerColumn__RenderFunc(props: {
               />
             </React.Fragment>
           ),
-          value: args.children,
+          value: args.children
         })}
       </div>
     </div>
@@ -253,7 +288,7 @@ const PlasmicDescendants = {
   runAllSteps: ["runAllSteps", "svg", "text"],
   svg: ["svg"],
   text: ["text"],
-  freeBox: ["freeBox"],
+  freeBox: ["freeBox"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -277,8 +312,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDataPickerColumn__VariantsArgs;
     args?: PlasmicDataPickerColumn__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicDataPickerColumn__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicDataPickerColumn__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDataPickerColumn__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -303,7 +339,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicDataPickerColumn__ArgProps,
-          internalVariantPropNames: PlasmicDataPickerColumn__VariantProps,
+          internalVariantPropNames: PlasmicDataPickerColumn__VariantProps
         }),
       [props, nodeName]
     );
@@ -311,7 +347,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -334,7 +370,7 @@ export const PlasmicDataPickerColumn = Object.assign(
 
     // Metadata about props expected for PlasmicDataPickerColumn
     internalVariantProps: PlasmicDataPickerColumn__VariantProps,
-    internalArgProps: PlasmicDataPickerColumn__ArgProps,
+    internalArgProps: PlasmicDataPickerColumn__ArgProps
   }
 );
 

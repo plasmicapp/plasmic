@@ -14,7 +14,7 @@ import "../q_4_text_mixins_product/plasmic_q_4_text_mixins_product.css"; // plas
 
 const data = {
   base: `${"plasmic_tokens_sDniSX4oPUZFyk2sXXb3nh"} ${"plasmic_tokens_95xp9cYcv7HrNWpFWWhbcv"}`,
-  varianted: [],
+  varianted: []
 };
 
 export const _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);

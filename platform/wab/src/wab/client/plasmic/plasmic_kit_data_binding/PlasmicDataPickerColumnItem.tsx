@@ -14,21 +14,49 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  PlasmicIcon as PlasmicIcon__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  StrictProps,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
   useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -36,24 +64,19 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicDataPickerColumnItem.module.css"; // plasmic-import: fa3uzsyXr0/css
 
+import TextSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__TextSvg"; // plasmic-import: e3P4cMPJR/icon
 import OpenIcon from "../plasmic_kit/PlasmicIcon__Open"; // plasmic-import: 7D0GDLdF72udM/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import PlaySvgIcon from "../plasmic_kit/PlasmicIcon__PlaySvg"; // plasmic-import: j39GoLwZnf7-v/icon
 import ResetIcon from "../plasmic_kit/PlasmicIcon__Reset"; // plasmic-import: Dj3u-HuPv94sN/icon
 import ChevronRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronRightSvg"; // plasmic-import: HBGx-zeiX/icon
-import TextSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__TextSvg"; // plasmic-import: e3P4cMPJR/icon
 
 createPlasmicElementProxy;
 
 export type PlasmicDataPickerColumnItem__VariantMembers = {
   step: "notPlayed" | "played";
   variableType:
-    | "string"
-    | "number"
-    | "boolean"
-    | "object"
-    | "array"
-    | "undefined"
-    | "func";
+    "string" | "number" | "boolean" | "object" | "array" | "undefined" | "func";
   isSelected: "isSelected";
   hasLink: "hasLink";
 };
@@ -116,7 +139,7 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -130,26 +153,26 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.variableType,
+          $props.variableType
       },
       {
         path: "isSelected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isSelected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isSelected
       },
       {
         path: "step",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.step,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.step
       },
       {
         path: "hasLink",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hasLink,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hasLink
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -159,12 +182,12 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const [isRootHover, triggerRootHoverProps] = useTrigger("useHover", {});
   const triggers = {
-    hover_root: isRootHover,
+    hover_root: isRootHover
   };
 
   const styleTokensClassNames = _useStyleTokens();
@@ -236,7 +259,7 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
             $state,
             "variableType",
             "undefined"
-          ),
+          )
         }
       )}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
@@ -272,12 +295,13 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
             $state,
             "variableType",
             "string"
-          ),
+          )
         })}
       >
         <TextSvgIcon
           data-plasmic-name={"icon"}
           data-plasmic-override={overrides.icon}
+
           className={classNames("all", sty.icon)}
           role={"img"}
         />
@@ -293,7 +317,7 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
               $state,
               "variableType",
               "object"
-            ),
+            )
           })}
         >
           <div
@@ -322,12 +346,13 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
                 $state,
                 "variableType",
                 "array"
-              ),
+              )
             })}
           >
             <div
               data-plasmic-name={"itemName"}
               data-plasmic-override={overrides.itemName}
+
               className={classNames("all", "__wab_text", sty.itemName, {
                 [sty.itemNameisSelected]: hasVariant(
                   $state,
@@ -359,7 +384,7 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
                   $state,
                   "variableType",
                   "string"
-                ),
+                )
               })}
             >
               {"Name"}
@@ -368,6 +393,7 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
           <div
             data-plasmic-name={"previewValue"}
             data-plasmic-override={overrides.previewValue}
+
             className={classNames("all", "__wab_text", sty.previewValue, {
               [sty.previewValueisSelected_variableType_array]:
                 hasVariant($state, "isSelected", "isSelected") &&
@@ -420,24 +446,24 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
                 $state,
                 "variableType",
                 "undefined"
-              ),
+              )
             })}
           >
             {hasVariant($state, "variableType", "func")
               ? "function"
               : hasVariant($state, "variableType", "undefined")
-              ? "undefined"
-              : hasVariant($state, "variableType", "array")
-              ? "3 items"
-              : hasVariant($state, "variableType", "object")
-              ? "object"
-              : hasVariant($state, "variableType", "boolean")
-              ? "true"
-              : hasVariant($state, "variableType", "number")
-              ? "123"
-              : hasVariant($state, "step", "notPlayed")
-              ? "Not executed"
-              : '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'}
+                ? "undefined"
+                : hasVariant($state, "variableType", "array")
+                  ? "3 items"
+                  : hasVariant($state, "variableType", "object")
+                    ? "object"
+                    : hasVariant($state, "variableType", "boolean")
+                      ? "true"
+                      : hasVariant($state, "variableType", "number")
+                        ? "123"
+                        : hasVariant($state, "step", "notPlayed")
+                          ? "Not executed"
+                          : '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'}
           </div>
         </div>
       </div>
@@ -465,19 +491,20 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
             $state,
             "variableType",
             "object"
-          ),
+          )
         })}
       >
         <IconButton
           data-plasmic-name={"link"}
           data-plasmic-override={overrides.link}
+
           className={classNames("__wab_instance", sty.link, {
             [sty.linkhasLink]: hasVariant($state, "hasLink", "hasLink"),
             [sty.linkvariableType_object]: hasVariant(
               $state,
               "variableType",
               "object"
-            ),
+            )
           })}
           size={"small"}
         >
@@ -502,7 +529,7 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
                 $state,
                 "variableType",
                 "object"
-              ),
+              )
             })}
             role={"img"}
           />
@@ -510,6 +537,7 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
         <IconButton
           data-plasmic-name={"play"}
           data-plasmic-override={overrides.play}
+
           children2={
             <svg
               className={classNames("all", sty.svg__n3XOl, {
@@ -517,7 +545,7 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
                   $state,
                   "step",
                   "notPlayed"
-                ),
+                )
               })}
               role={"img"}
             />
@@ -527,7 +555,7 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
             [sty.playstep_notPlayed_variableType_number]:
               hasVariant($state, "variableType", "number") &&
               hasVariant($state, "step", "notPlayed"),
-            [sty.playstep_played]: hasVariant($state, "step", "played"),
+            [sty.playstep_played]: hasVariant($state, "step", "played")
           })}
           size={"small"}
         >
@@ -553,7 +581,7 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
                 $state,
                 "step",
                 "played"
-              ),
+              )
             })}
             role={"img"}
           />
@@ -561,6 +589,7 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
         <IconButton
           data-plasmic-name={"iconButton"}
           data-plasmic-override={overrides.iconButton}
+
           className={classNames("__wab_instance", sty.iconButton, {
             [sty.iconButtonvariableType_array]: hasVariant(
               $state,
@@ -571,7 +600,7 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
               $state,
               "variableType",
               "object"
-            ),
+            )
           })}
           size={"small"}
         >
@@ -596,7 +625,7 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
                 $state,
                 "variableType",
                 "object"
-              ),
+              )
             })}
             role={"img"}
           />
@@ -614,14 +643,14 @@ const PlasmicDescendants = {
     "previewValue",
     "link",
     "play",
-    "iconButton",
+    "iconButton"
   ],
   icon: ["icon"],
   itemName: ["itemName"],
   previewValue: ["previewValue"],
   link: ["link"],
   play: ["play"],
-  iconButton: ["iconButton"],
+  iconButton: ["iconButton"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -647,8 +676,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDataPickerColumnItem__VariantsArgs;
     args?: PlasmicDataPickerColumnItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicDataPickerColumnItem__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicDataPickerColumnItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDataPickerColumnItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -673,7 +703,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicDataPickerColumnItem__ArgProps,
-          internalVariantPropNames: PlasmicDataPickerColumnItem__VariantProps,
+          internalVariantPropNames: PlasmicDataPickerColumnItem__VariantProps
         }),
       [props, nodeName]
     );
@@ -681,7 +711,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -706,7 +736,7 @@ export const PlasmicDataPickerColumnItem = Object.assign(
 
     // Metadata about props expected for PlasmicDataPickerColumnItem
     internalVariantProps: PlasmicDataPickerColumnItem__VariantProps,
-    internalArgProps: PlasmicDataPickerColumnItem__ArgProps,
+    internalArgProps: PlasmicDataPickerColumnItem__ArgProps
   }
 );
 

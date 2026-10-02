@@ -14,18 +14,52 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
-  StrictProps,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import { CopilotPromptInput } from "../../components/copilot/CopilotPromptInput"; // plasmic-import: pnV7KLVDUyoz/component
 import { Dialog } from "../../components/widgets/Dialog"; // plasmic-import: en2IIw2C3_aI/component
 import DialogHeader from "../../components/widgets/DialogHeader"; // plasmic-import: 5TapYEMkYCfR/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { CopilotPromptInput } from "../../components/copilot/CopilotPromptInput"; // plasmic-import: pnV7KLVDUyoz/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -33,9 +67,10 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicCopilotChatDialog.module.css"; // plasmic-import: zXJ41ZVTz7ne/css
 
-import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
-import ArrowDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowDownSvg"; // plasmic-import: G2ToiXzCf/icon
 import SparklesSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SparklesSvg"; // plasmic-import: 9Z0Cu-c5J/icon
+import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowDownSvg"; // plasmic-import: G2ToiXzCf/icon
 
 createPlasmicElementProxy;
 
@@ -86,7 +121,7 @@ function PlasmicCopilotChatDialog__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -107,6 +142,7 @@ function PlasmicCopilotChatDialog__RenderFunc(props: {
           <div
             data-plasmic-name={"chatContent"}
             data-plasmic-override={overrides.chatContent}
+
             className={classNames("all", sty.chatContent)}
           />
 
@@ -114,6 +150,7 @@ function PlasmicCopilotChatDialog__RenderFunc(props: {
             <IconButton
               data-plasmic-name={"scrollToBottomButton"}
               data-plasmic-override={overrides.scrollToBottomButton}
+
               className={classNames("__wab_instance", sty.scrollToBottomButton)}
               shadow={"extraSmall"}
               size={"medium"}
@@ -132,6 +169,7 @@ function PlasmicCopilotChatDialog__RenderFunc(props: {
           <CopilotPromptInput
             data-plasmic-name={"copilotPromptInput"}
             data-plasmic-override={overrides.copilotPromptInput}
+
             placeholder={"What can I build for you today?"}
           />
         </div>
@@ -140,10 +178,12 @@ function PlasmicCopilotChatDialog__RenderFunc(props: {
         <DialogHeader
           data-plasmic-name={"dialogHeader"}
           data-plasmic-override={overrides.dialogHeader}
+
           actions={
             <IconButton
               data-plasmic-name={"closeBtn"}
               data-plasmic-override={overrides.closeBtn}
+
               className={classNames("__wab_instance", sty.closeBtn)}
               withBackgroundHover={true}
             >
@@ -164,6 +204,7 @@ function PlasmicCopilotChatDialog__RenderFunc(props: {
               <div
                 data-plasmic-name={"text"}
                 data-plasmic-override={overrides.text}
+
                 className={classNames("all", "__wab_text", sty.text)}
               >
                 {"Plasmic AI"}
@@ -186,14 +227,14 @@ const PlasmicDescendants = {
     "closeBtn",
     "chatContent",
     "scrollToBottomButton",
-    "copilotPromptInput",
+    "copilotPromptInput"
   ],
   dialogHeader: ["dialogHeader", "text", "closeBtn"],
   text: ["text"],
   closeBtn: ["closeBtn"],
   chatContent: ["chatContent"],
   scrollToBottomButton: ["scrollToBottomButton"],
-  copilotPromptInput: ["copilotPromptInput"],
+  copilotPromptInput: ["copilotPromptInput"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -219,7 +260,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCopilotChatDialog__VariantsArgs;
     args?: PlasmicCopilotChatDialog__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCopilotChatDialog__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicCopilotChatDialog__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCopilotChatDialog__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -244,7 +287,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCopilotChatDialog__ArgProps,
-          internalVariantPropNames: PlasmicCopilotChatDialog__VariantProps,
+          internalVariantPropNames: PlasmicCopilotChatDialog__VariantProps
         }),
       [props, nodeName]
     );
@@ -252,7 +295,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -277,7 +320,7 @@ export const PlasmicCopilotChatDialog = Object.assign(
 
     // Metadata about props expected for PlasmicCopilotChatDialog
     internalVariantProps: PlasmicCopilotChatDialog__VariantProps,
-    internalArgProps: PlasmicCopilotChatDialog__ArgProps,
+    internalArgProps: PlasmicCopilotChatDialog__ArgProps
   }
 );
 

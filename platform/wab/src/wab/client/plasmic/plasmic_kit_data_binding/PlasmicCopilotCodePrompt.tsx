@@ -14,15 +14,49 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
-  StrictProps,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -30,7 +64,9 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicCopilotCodePrompt.module.css"; // plasmic-import: SdMPiPjcB9G/css
 
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
 import Sparkles3Icon from "./icons/PlasmicIcon__Sparkles3"; // plasmic-import: udef47udLQ/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -79,7 +115,7 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -106,6 +142,7 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
       <Button
         data-plasmic-name={"openCopilotBtn"}
         data-plasmic-override={overrides.openCopilotBtn}
+
         caption={"Caption"}
         className={classNames("__wab_instance", sty.openCopilotBtn)}
         size={"small"}
@@ -114,11 +151,13 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
         <div
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
+
           className={classNames("all", sty.freeBox)}
         >
           <div
             data-plasmic-name={"text"}
             data-plasmic-override={overrides.text}
+
             className={classNames("all", "__wab_text", sty.text)}
           >
             {"Generate design"}
@@ -126,6 +165,7 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
           <Sparkles3Icon
             data-plasmic-name={"svg"}
             data-plasmic-override={overrides.svg}
+
             className={classNames("all", sty.svg)}
             role={"img"}
           />
@@ -140,7 +180,7 @@ const PlasmicDescendants = {
   openCopilotBtn: ["openCopilotBtn", "freeBox", "text", "svg"],
   freeBox: ["freeBox", "text", "svg"],
   text: ["text"],
-  svg: ["svg"],
+  svg: ["svg"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -164,8 +204,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCopilotCodePrompt__VariantsArgs;
     args?: PlasmicCopilotCodePrompt__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicCopilotCodePrompt__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicCopilotCodePrompt__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCopilotCodePrompt__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -190,7 +231,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCopilotCodePrompt__ArgProps,
-          internalVariantPropNames: PlasmicCopilotCodePrompt__VariantProps,
+          internalVariantPropNames: PlasmicCopilotCodePrompt__VariantProps
         }),
       [props, nodeName]
     );
@@ -198,7 +239,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -221,7 +262,7 @@ export const PlasmicCopilotCodePrompt = Object.assign(
 
     // Metadata about props expected for PlasmicCopilotCodePrompt
     internalVariantProps: PlasmicCopilotCodePrompt__VariantProps,
-    internalArgProps: PlasmicCopilotCodePrompt__ArgProps,
+    internalArgProps: PlasmicCopilotCodePrompt__ArgProps
   }
 );
 

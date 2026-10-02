@@ -13,7 +13,7 @@ import "./plasmic_plasmic_kit_responsive_breakpoints.css"; // plasmic-import: 28
 
 const data = {
   base: `${"plasmic_tokens_28e27syQUKgfkErJT9mxWA"}`,
-  varianted: [],
+  varianted: []
 };
 
 export const _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);

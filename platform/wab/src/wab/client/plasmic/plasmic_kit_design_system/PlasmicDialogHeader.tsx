@@ -14,19 +14,49 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  SingleBooleanChoiceArg,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -35,6 +65,7 @@ import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSit
 import sty from "./PlasmicDialogHeader.module.css"; // plasmic-import: 5TapYEMkYCfR/css
 
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -97,7 +128,7 @@ function PlasmicDialogHeader__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -110,8 +141,8 @@ function PlasmicDialogHeader__RenderFunc(props: {
         path: "grabbable",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.grabbable,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.grabbable
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -121,7 +152,7 @@ function PlasmicDialogHeader__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -145,6 +176,7 @@ function PlasmicDialogHeader__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
+
         className={classNames("all", sty.freeBox)}
       >
         {renderPlasmicSlot({
@@ -154,7 +186,7 @@ function PlasmicDialogHeader__RenderFunc(props: {
             </div>
           ),
           value: args.heading,
-          className: classNames(sty.slotTargetHeading),
+          className: classNames(sty.slotTargetHeading)
         })}
         {renderPlasmicSlot({
           defaultContents: (
@@ -165,12 +197,18 @@ function PlasmicDialogHeader__RenderFunc(props: {
             </div>
           ),
           value: args.subheading,
-          className: classNames(sty.slotTargetSubheading),
+          className: classNames(sty.slotTargetSubheading)
         })}
       </div>
       {renderPlasmicSlot({
         defaultContents: (
           <IconButton
+            children2={
+              <ChevronDownSvgIcon
+                className={classNames("all", sty.svg__xhmv)}
+                role={"img"}
+              />
+            }
             className={classNames("__wab_instance", sty.iconButton__kZb4U)}
             withBackgroundHover={true}
           >
@@ -180,7 +218,7 @@ function PlasmicDialogHeader__RenderFunc(props: {
             />
           </IconButton>
         ),
-        value: args.actions,
+        value: args.actions
       })}
     </div>
   ) as React.ReactElement | null;
@@ -188,7 +226,7 @@ function PlasmicDialogHeader__RenderFunc(props: {
 
 const PlasmicDescendants = {
   root: ["root", "freeBox"],
-  freeBox: ["freeBox"],
+  freeBox: ["freeBox"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -209,8 +247,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDialogHeader__VariantsArgs;
     args?: PlasmicDialogHeader__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicDialogHeader__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicDialogHeader__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDialogHeader__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -235,7 +274,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicDialogHeader__ArgProps,
-          internalVariantPropNames: PlasmicDialogHeader__VariantProps,
+          internalVariantPropNames: PlasmicDialogHeader__VariantProps
         }),
       [props, nodeName]
     );
@@ -243,7 +282,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -263,7 +302,7 @@ export const PlasmicDialogHeader = Object.assign(
 
     // Metadata about props expected for PlasmicDialogHeader
     internalVariantProps: PlasmicDialogHeader__VariantProps,
-    internalArgProps: PlasmicDialogHeader__ArgProps,
+    internalArgProps: PlasmicDialogHeader__ArgProps
   }
 );
 

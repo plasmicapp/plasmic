@@ -15,7 +15,7 @@ import "./plasmic.css"; // plasmic-import: kTSMroKPFv65RRTb44SCtk/projectcss
 
 const data = {
   base: `${"plasmic_tokens_kTSMroKPFv65RRTb44SCtk"} ${"plasmic_tokens_tXkSR39sgCDWSitZxC5xFV"} ${"plasmic_tokens_95xp9cYcv7HrNWpFWWhbcv"}`,
-  varianted: [],
+  varianted: []
 };
 
 export const _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);

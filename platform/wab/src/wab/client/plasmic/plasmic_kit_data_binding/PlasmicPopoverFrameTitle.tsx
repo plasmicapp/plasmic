@@ -14,16 +14,49 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -32,6 +65,7 @@ import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2
 import sty from "./PlasmicPopoverFrameTitle.module.css"; // plasmic-import: _qAXa8aqLB77/css
 
 import ArrowLeftSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowLeftSvg"; // plasmic-import: -d8Kjj4sp/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
 
 createPlasmicElementProxy;
@@ -79,7 +113,7 @@ function PlasmicPopoverFrameTitle__RenderFunc(props: {
     () =>
       Object.assign(
         {
-          showBack: false,
+          showBack: false
         },
         Object.fromEntries(
           Object.entries(props.args).filter(([_, v]) => v !== undefined)
@@ -90,7 +124,7 @@ function PlasmicPopoverFrameTitle__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -130,6 +164,7 @@ function PlasmicPopoverFrameTitle__RenderFunc(props: {
         <IconButton
           data-plasmic-name={"back"}
           data-plasmic-override={overrides.back}
+
           className={classNames("__wab_instance", sty.back)}
         >
           <ArrowLeftSvgIcon
@@ -141,17 +176,19 @@ function PlasmicPopoverFrameTitle__RenderFunc(props: {
       <div
         data-plasmic-name={"titleWrap"}
         data-plasmic-override={overrides.titleWrap}
+
         className={classNames("all", sty.titleWrap)}
       >
         {renderPlasmicSlot({
           defaultContents: "Edit Object",
           value: args.title,
-          className: classNames(sty.slotTargetTitle),
+          className: classNames(sty.slotTargetTitle)
         })}
       </div>
       <IconButton
         data-plasmic-name={"close"}
         data-plasmic-override={overrides.close}
+
         className={classNames("__wab_instance", sty.close)}
       >
         <CloseSvgIcon
@@ -167,7 +204,7 @@ const PlasmicDescendants = {
   popoverFrameTitle: ["popoverFrameTitle", "back", "titleWrap", "close"],
   back: ["back"],
   titleWrap: ["titleWrap"],
-  close: ["close"],
+  close: ["close"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -190,8 +227,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPopoverFrameTitle__VariantsArgs;
     args?: PlasmicPopoverFrameTitle__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicPopoverFrameTitle__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicPopoverFrameTitle__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicPopoverFrameTitle__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -216,7 +254,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPopoverFrameTitle__ArgProps,
-          internalVariantPropNames: PlasmicPopoverFrameTitle__VariantProps,
+          internalVariantPropNames: PlasmicPopoverFrameTitle__VariantProps
         }),
       [props, nodeName]
     );
@@ -224,7 +262,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "popoverFrameTitle") {
@@ -246,7 +284,7 @@ export const PlasmicPopoverFrameTitle = Object.assign(
 
     // Metadata about props expected for PlasmicPopoverFrameTitle
     internalVariantProps: PlasmicPopoverFrameTitle__VariantProps,
-    internalArgProps: PlasmicPopoverFrameTitle__ArgProps,
+    internalArgProps: PlasmicPopoverFrameTitle__ArgProps
   }
 );
 

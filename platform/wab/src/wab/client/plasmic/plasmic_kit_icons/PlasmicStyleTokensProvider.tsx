@@ -13,7 +13,7 @@ import "./plasmic_q_4_icons.css"; // plasmic-import: oT38tGyqov9SPWHpf3Y2Rf/proj
 
 const data = {
   base: `${"plasmic_tokens_oT38tGyqov9SPWHpf3Y2Rf"}`,
-  varianted: [],
+  varianted: []
 };
 
 export const _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);

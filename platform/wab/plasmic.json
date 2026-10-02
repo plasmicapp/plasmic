@@ -8233,6 +8233,11 @@
           "id": "f0RrtBrXp",
           "name": "CheckSvgIcon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CheckSvg.tsx"
+        },
+        {
+          "id": "zBYekuxyqPaj",
+          "name": "StopCircleIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__StopCircle.tsx"
         }
       ],
       "images": [],
@@ -11546,6 +11551,6 @@
     "scheme": "theo",
     "tokensFilePath": "wab/styles/plasmic-tokens.theo.json"
   },
-  "cliVersion": "0.1.379",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.379/dist/plasmic.schema.json"
+  "cliVersion": "0.1.381",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.381/dist/plasmic.schema.json"
 }

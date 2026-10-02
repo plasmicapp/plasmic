@@ -6,29 +6,29 @@ const PAGE_NAME = "MentionsPage";
 const ELEMENT_NAME = "MentionsHeader";
 const SECOND_ELEMENT_NAME = "MentionsFooter";
 
+let projectId: string;
+
+test.beforeEach(async ({ apiClient, page }) => {
+  projectId = await apiClient.setupNewProject({
+    name: "copilot-chat",
+    workspaceId: await apiClient.setupPaidWorkspace(),
+  });
+  await goToProject(page, `/projects/${projectId}`);
+});
+
+test.afterEach(async ({ apiClient }) => {
+  await apiClient.removeProjectAfterTest(
+    projectId,
+    "user2@example.com",
+    "!53kr3tz!",
+  );
+});
+
 /**
  * The `@`-mention flow in copilot chat. Never submits a prompt — see the
  * `noCopilotApi` fixture, which fails the test if any copilot request escapes.
  */
 test.describe("copilot mentions", () => {
-  let projectId: string;
-
-  test.beforeEach(async ({ apiClient, page }) => {
-    projectId = await apiClient.setupNewProject({
-      name: "copilot-mentions",
-      workspaceId: await apiClient.setupPaidWorkspace(),
-    });
-    await goToProject(page, `/projects/${projectId}`);
-  });
-
-  test.afterEach(async ({ apiClient }) => {
-    await apiClient.removeProjectAfterTest(
-      projectId,
-      "user2@example.com",
-      "!53kr3tz!",
-    );
-  });
-
   /** A page with one named element, so the canvas has something to mention. */
   async function addPageWithElement(models: PageModels) {
     await models.studio.createNewPage(PAGE_NAME);
@@ -131,5 +131,59 @@ test.describe("copilot mentions", () => {
     ).toBeVisible();
     await expect(popover.getByText("Current element")).toHaveCount(0);
     await expect(popover.getByText("Current page")).toHaveCount(0);
+  });
+});
+
+test.describe("copilot stop button", () => {
+  test("stops a queued send or an in-flight response", async ({ page }) => {
+    let requestCount = 0;
+    let releaseRequest = () => {};
+    const requestHeld = new Promise<void>((resolve) => {
+      releaseRequest = resolve;
+    });
+    // Holds any request open, like a slow model, until the test ends.
+    await page.route("**/api/v1/copilot/chat", async (route) => {
+      requestCount++;
+      await requestHeld;
+      await route.abort("failed").catch(() => undefined);
+    });
+
+    await page.keyboard.press("ControlOrMeta+k");
+    const prompt = page.locator('[data-test-id="copilot-chat-prompt-editor"]');
+    await expect(prompt).toBeVisible();
+    await prompt.click();
+    await page.keyboard.type("add a hero");
+
+    const chat = page.getByLabel("Plasmic AI chat");
+    const sendBtn = chat.getByRole("button", { name: "Send" });
+    const stopBtn = chat.getByRole("button", { name: "Stop" });
+    await expect(stopBtn).toBeHidden();
+    await expect(sendBtn).toBeVisible();
+
+    // Send, then stop inside the send delay. The prompt reads as sent right
+    // away, but nothing has left the browser, so the draft comes back.
+    await sendBtn.click();
+    await expect(stopBtn).toBeVisible();
+    await expect(prompt).not.toContainText("add a hero");
+    await page.keyboard.press("Escape");
+    await expect(sendBtn).toBeVisible();
+    await expect(stopBtn).toBeHidden();
+    await expect(prompt).toContainText("add a hero");
+    expect(requestCount).toBe(0);
+
+    // Send again and let the request leave, then stop it in flight.
+    const request = page.waitForRequest("**/api/v1/copilot/chat");
+    await sendBtn.click();
+    await request;
+    await expect(stopBtn).toBeVisible();
+    await expect(sendBtn).toBeHidden();
+
+    await stopBtn.click();
+    await expect(sendBtn).toBeVisible();
+    await expect(stopBtn).toBeHidden();
+    await expect(page.getByRole("alert")).toBeHidden();
+    expect(requestCount).toBe(1);
+
+    releaseRequest();
   });
 });

@@ -15,7 +15,7 @@ import "./plasmic_plasmic_kit_multiplayer_ui.css"; // plasmic-import: eyjDfHaWPk
 
 const data = {
   base: `${"plasmic_tokens_eyjDfHaWPk4awNJAqhg4Cb"} ${"plasmic_tokens_95xp9cYcv7HrNWpFWWhbcv"} ${"plasmic_tokens_tXkSR39sgCDWSitZxC5xFV"}`,
-  varianted: [],
+  varianted: []
 };
 
 export const _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);

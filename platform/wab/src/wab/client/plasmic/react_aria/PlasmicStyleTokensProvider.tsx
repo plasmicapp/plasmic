@@ -13,7 +13,7 @@ import "./plasmic.css"; // plasmic-import: gmeH6XgPaBtkt51HunAo4g/projectcss
 
 const data = {
   base: `${"plasmic_tokens_gmeH6XgPaBtkt51HunAo4g"}`,
-  varianted: [],
+  varianted: []
 };
 
 export const _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);

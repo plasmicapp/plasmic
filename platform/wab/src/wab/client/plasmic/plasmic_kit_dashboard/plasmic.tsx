@@ -12,5 +12,5 @@ import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Env
 
 export const _useGlobalVariants = createUseGlobalVariants({
   screen: useScreenVariants_2DzYbdw5Xtx,
-  environment: useEnvironment,
+  environment: useEnvironment
 });

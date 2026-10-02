@@ -16,7 +16,7 @@ import "./plasmic_plasmic_kit_end_user_management.css"; // plasmic-import: 2dMe7
 
 const data = {
   base: `${"plasmic_tokens_2dMe7XWUq916KsPnra5vYj"} ${"plasmic_tokens_95xp9cYcv7HrNWpFWWhbcv"} ${"plasmic_tokens_tXkSR39sgCDWSitZxC5xFV"} ${"plasmic_tokens_gYEVvAzCcLMHDVPvuYxkFh"}`,
-  varianted: [],
+  varianted: []
 };
 
 export const _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);

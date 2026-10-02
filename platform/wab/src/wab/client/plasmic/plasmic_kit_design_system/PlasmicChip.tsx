@@ -14,19 +14,48 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -91,7 +120,7 @@ function PlasmicChip__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -104,14 +133,14 @@ function PlasmicChip__RenderFunc(props: {
         path: "deletable",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.deletable,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.deletable
       },
       {
         path: "size",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.size,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.size
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -121,7 +150,7 @@ function PlasmicChip__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -147,9 +176,10 @@ function PlasmicChip__RenderFunc(props: {
             $state,
             "size",
             "normalControl"
-          ),
+          )
         }
       )}
+      type={"button"}
     >
       {renderPlasmicSlot({
         defaultContents: (
@@ -168,19 +198,20 @@ function PlasmicChip__RenderFunc(props: {
             $state,
             "size",
             "normalControl"
-          ),
-        }),
+          )
+        })
       })}
       {(hasVariant($state, "deletable", "deletable") ? true : false) ? (
         <CloseSvgIcon
           data-plasmic-name={"closeIcon"}
           data-plasmic-override={overrides.closeIcon}
+
           className={classNames("all", sty.closeIcon, {
             [sty.closeIcondeletable]: hasVariant(
               $state,
               "deletable",
               "deletable"
-            ),
+            )
           })}
           role={"img"}
         />
@@ -191,7 +222,7 @@ function PlasmicChip__RenderFunc(props: {
 
 const PlasmicDescendants = {
   root: ["root", "closeIcon"],
-  closeIcon: ["closeIcon"],
+  closeIcon: ["closeIcon"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -212,8 +243,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicChip__VariantsArgs;
     args?: PlasmicChip__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicChip__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicChip__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicChip__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -238,7 +270,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicChip__ArgProps,
-          internalVariantPropNames: PlasmicChip__VariantProps,
+          internalVariantPropNames: PlasmicChip__VariantProps
         }),
       [props, nodeName]
     );
@@ -246,7 +278,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -266,7 +298,7 @@ export const PlasmicChip = Object.assign(
 
     // Metadata about props expected for PlasmicChip
     internalVariantProps: PlasmicChip__VariantProps,
-    internalArgProps: PlasmicChip__ArgProps,
+    internalArgProps: PlasmicChip__ArgProps
   }
 );
 

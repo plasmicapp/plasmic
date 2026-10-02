@@ -14,18 +14,49 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  SingleChoiceArg,
-  StrictProps,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -33,8 +64,9 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "./plasmic_plasmic_kit_data_binding.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicCopilotLikeDislike.module.css"; // plasmic-import: -LDNJojbDZD/css
 
-import ThumbsDownIcon from "./icons/PlasmicIcon__ThumbsDown"; // plasmic-import: mPucsZbX6V/icon
 import ThumbsUpIcon from "./icons/PlasmicIcon__ThumbsUp"; // plasmic-import: ZTW8iKylgI/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ThumbsDownIcon from "./icons/PlasmicIcon__ThumbsDown"; // plasmic-import: mPucsZbX6V/icon
 
 createPlasmicElementProxy;
 
@@ -86,7 +118,7 @@ function PlasmicCopilotLikeDislike__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -99,8 +131,8 @@ function PlasmicCopilotLikeDislike__RenderFunc(props: {
         path: "state",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.state,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.state
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -110,7 +142,7 @@ function PlasmicCopilotLikeDislike__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -134,9 +166,10 @@ function PlasmicCopilotLikeDislike__RenderFunc(props: {
       <IconButton
         data-plasmic-name={"likeBtn"}
         data-plasmic-override={overrides.likeBtn}
+
         className={classNames("__wab_instance", sty.likeBtn, {
           [sty.likeBtnstate_dislike]: hasVariant($state, "state", "dislike"),
-          [sty.likeBtnstate_like]: hasVariant($state, "state", "like"),
+          [sty.likeBtnstate_like]: hasVariant($state, "state", "like")
         })}
         disabled={hasVariant($state, "state", "dislike") ? true : undefined}
         size={"small"}
@@ -148,7 +181,7 @@ function PlasmicCopilotLikeDislike__RenderFunc(props: {
               "state",
               "dislike"
             ),
-            [sty.svgstate_like__tYoHlYkBI]: hasVariant($state, "state", "like"),
+            [sty.svgstate_like__tYoHlYkBI]: hasVariant($state, "state", "like")
           })}
           role={"img"}
         />
@@ -156,9 +189,10 @@ function PlasmicCopilotLikeDislike__RenderFunc(props: {
       <IconButton
         data-plasmic-name={"dislikeBtn"}
         data-plasmic-override={overrides.dislikeBtn}
+
         className={classNames("__wab_instance", sty.dislikeBtn, {
           [sty.dislikeBtnstate_dislike]: hasVariant($state, "state", "dislike"),
-          [sty.dislikeBtnstate_like]: hasVariant($state, "state", "like"),
+          [sty.dislikeBtnstate_like]: hasVariant($state, "state", "like")
         })}
         disabled={hasVariant($state, "state", "like") ? true : undefined}
         size={"small"}
@@ -170,7 +204,7 @@ function PlasmicCopilotLikeDislike__RenderFunc(props: {
               "state",
               "dislike"
             ),
-            [sty.svgstate_like__uQuhxYkBI]: hasVariant($state, "state", "like"),
+            [sty.svgstate_like__uQuhxYkBI]: hasVariant($state, "state", "like")
           })}
           role={"img"}
         />
@@ -182,7 +216,7 @@ function PlasmicCopilotLikeDislike__RenderFunc(props: {
 const PlasmicDescendants = {
   root: ["root", "likeBtn", "dislikeBtn"],
   likeBtn: ["likeBtn"],
-  dislikeBtn: ["dislikeBtn"],
+  dislikeBtn: ["dislikeBtn"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -204,8 +238,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCopilotLikeDislike__VariantsArgs;
     args?: PlasmicCopilotLikeDislike__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicCopilotLikeDislike__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicCopilotLikeDislike__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCopilotLikeDislike__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -230,7 +265,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCopilotLikeDislike__ArgProps,
-          internalVariantPropNames: PlasmicCopilotLikeDislike__VariantProps,
+          internalVariantPropNames: PlasmicCopilotLikeDislike__VariantProps
         }),
       [props, nodeName]
     );
@@ -238,7 +273,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -259,7 +294,7 @@ export const PlasmicCopilotLikeDislike = Object.assign(
 
     // Metadata about props expected for PlasmicCopilotLikeDislike
     internalVariantProps: PlasmicCopilotLikeDislike__VariantProps,
-    internalArgProps: PlasmicCopilotLikeDislike__ArgProps,
+    internalArgProps: PlasmicCopilotLikeDislike__ArgProps
   }
 );
 
