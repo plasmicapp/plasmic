@@ -527,7 +527,7 @@ function throwMissingReference(
   );
 }
 
-function makeImportPath(
+export function makeImportPath(
   context: PlasmicContext,
   fromPath: string,
   toPath: string,
@@ -567,6 +567,120 @@ export function isLocalModulePath(modulePath: string) {
   // modulePath doesn't start with "@" (like an alias by convention, or scoped npm
   // package). This is not a reliable way to detect scoped npm package, but :shrug:
   return !!path.extname(modulePath) && !modulePath.startsWith("@");
+}
+
+/**
+ * Rewrites a skeleton file so it follows its component to a new name: the
+ * import of the render module is pointed at the new file, and every identifier
+ * derived from the old component name (`PlasmicOld`, `DefaultOldProps`,
+ * `OldProps`, `Old`, `Old_`, `PlasmicOld__*`, `PlasmicOldServer`) is renamed.
+ * Anything else in the file is left as the user wrote it.
+ */
+export async function renameSkeletonComponent(
+  context: PlasmicContext,
+  code: string,
+  opts: {
+    oldName: string;
+    newName: string;
+    oldSkeletonPath: string;
+    newSkeletonPath: string;
+    oldRenderModulePath: string;
+    newRenderModulePath: string;
+  }
+): Promise<string> {
+  const {
+    oldName,
+    newName,
+    oldSkeletonPath,
+    newSkeletonPath,
+    oldRenderModulePath,
+    newRenderModulePath,
+  } = opts;
+
+  const exactRenames = new Map([
+    [oldName, newName],
+    [`${oldName}_`, `${newName}_`],
+    [`${oldName}Props`, `${newName}Props`],
+    [`Default${oldName}Props`, `Default${newName}Props`],
+    [`Plasmic${oldName}`, `Plasmic${newName}`],
+    [`Plasmic${oldName}Server`, `Plasmic${newName}Server`],
+  ]);
+  const renderModuleExportsPrefix = `Plasmic${oldName}__`;
+  const renameIdentifier = (name: string) => {
+    const exact = exactRenames.get(name);
+    if (exact) {
+      return exact;
+    }
+    if (name.startsWith(renderModuleExportsPrefix)) {
+      return `Plasmic${newName}__${name.slice(
+        renderModuleExportsPrefix.length
+      )}`;
+    }
+    return undefined;
+  };
+
+  const file = parser.parse(code, {
+    strictMode: true,
+    sourceType: "module",
+    plugins: ["jsx", "typescript", "classProperties"],
+  });
+
+  const oldRenderModuleImport = stripExtension(oldRenderModulePath);
+  traverse(file, {
+    ImportDeclaration(p) {
+      const source = p.node.source.value;
+      if (!source.startsWith(".")) {
+        return;
+      }
+      const resolved = stripExtension(
+        path.join(path.dirname(oldSkeletonPath), source)
+      );
+      if (resolved === oldRenderModuleImport) {
+        p.node.source.value = makeImportPath(
+          context,
+          newSkeletonPath,
+          newRenderModulePath,
+          true
+        );
+      }
+    },
+    Identifier(p) {
+      // `foo.Button` is a property of something else, not our component
+      if (
+        (p.parent.type === "MemberExpression" ||
+          p.parent.type === "OptionalMemberExpression") &&
+        p.parent.property === p.node &&
+        !p.parent.computed
+      ) {
+        return;
+      }
+      const renamed = renameIdentifier(p.node.name);
+      if (renamed) {
+        p.node.name = renamed;
+      }
+    },
+    JSXIdentifier(p) {
+      const renamed = renameIdentifier(p.node.name);
+      if (renamed) {
+        p.node.name = renamed;
+      }
+    },
+  });
+
+  // The generated skeleton talks about its own names in comments too
+  const commentPattern = new RegExp(
+    `\\b(?:Plasmic${oldName}(?:Server|__[\\w$]+)?|Default${oldName}Props|${oldName}(?:Props|_)?)\\b`,
+    "g"
+  );
+  for (const comment of file.comments ?? []) {
+    comment.value = comment.value.replace(
+      commentPattern,
+      (name) => renameIdentifier(name) ?? name
+    );
+  }
+
+  const generated = generate(file, { retainLines: true }).code;
+  return formatAsLocal(generated, newSkeletonPath);
 }
 
 export interface ComponentUpdateSummary {
