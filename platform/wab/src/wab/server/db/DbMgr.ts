@@ -2195,6 +2195,59 @@ export class DbMgr implements MigrationDbMgr {
       .execute();
   }
 
+  async deleteExpiredSessionsBatch(
+    cutoff: number,
+    batchSize: number,
+    expiredAtOrAfter?: number,
+  ) {
+    this.checkSuperUser();
+    assert(
+      Number.isSafeInteger(cutoff) && cutoff >= 0,
+      "Invalid session expiration cutoff",
+    );
+    assert(
+      Number.isSafeInteger(batchSize) && batchSize > 0,
+      "Invalid session pruning batch size",
+    );
+    assert(
+      expiredAtOrAfter === undefined ||
+        (Number.isSafeInteger(expiredAtOrAfter) && expiredAtOrAfter <= cutoff),
+      "Invalid session pruning cursor",
+    );
+
+    const query = this.sessions()
+      .createQueryBuilder("session")
+      .select(["session.id", "session.expiredAt"])
+      .where("session.expiredAt <= :cutoff", { cutoff })
+      .orderBy("session.expiredAt", "ASC")
+      .limit(batchSize);
+    if (expiredAtOrAfter !== undefined) {
+      query.andWhere("session.expiredAt >= :expiredAtOrAfter", {
+        expiredAtOrAfter,
+      });
+    }
+    const sessions = await query.getMany();
+
+    if (sessions.length === 0) {
+      return { selected: 0, deleted: 0, lastExpiredAt: undefined };
+    }
+
+    const lastExpiredAt = Number(
+      ensure(last(sessions), "Missing selected session").expiredAt,
+    );
+    const result = await this.sessions()
+      .createQueryBuilder()
+      .delete()
+      .whereInIds(sessions.map((session) => session.id))
+      .andWhere('"expiredAt" <= :cutoff', { cutoff })
+      .execute();
+    return {
+      selected: sessions.length,
+      deleted: ensure(result.affected, "Missing deleted session count"),
+      lastExpiredAt,
+    };
+  }
+
   //
   // Password methods.
   //
