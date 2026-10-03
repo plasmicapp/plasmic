@@ -8,6 +8,8 @@ import { once } from "node:events";
 import { createServer, get } from "node:http";
 import { afterEach, expect, it, vi } from "vitest";
 
+const { sentEvents } = vi.hoisted(() => ({ sentEvents: [] as Sentry.Event[] }));
+
 vi.mock("@sentry/node", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@sentry/node")>();
   return {
@@ -17,6 +19,15 @@ vi.mock("@sentry/node", async (importOriginal) => {
         ...options,
         registerEsmLoaderHooks: false,
         sendClientReports: false,
+        beforeSend: async (event, hint) => {
+          const processed = options.beforeSend
+            ? await options.beforeSend(event, hint)
+            : event;
+          if (processed) {
+            sentEvents.push(processed);
+          }
+          return processed;
+        },
         transport: () => ({ send: async () => ({}), flush: async () => true }),
       }),
   };
@@ -24,6 +35,7 @@ vi.mock("@sentry/node", async (importOriginal) => {
 
 afterEach(async () => {
   await Sentry.close(1000);
+  sentEvents.length = 0;
   Sentry.getCurrentScope().setClient(undefined);
   Sentry.getCurrentScope().clear();
   Sentry.getIsolationScope().clear();
@@ -34,14 +46,10 @@ afterEach(async () => {
   vi.restoreAllMocks();
 });
 
-it("keeps WAB Sentry tags and users isolated across concurrent HTTP requests", async () => {
+it("keeps WAB Sentry tags, users, and error contexts isolated", async () => {
   vi.stubEnv("SENTRY_DSN", "http://public@127.0.0.1/1");
-  await import("@/wab/server/sentry");
-  const events: Sentry.Event[] = [];
-  Sentry.getClient()?.addEventProcessor((event) => {
-    events.push(event);
-    return event;
-  });
+  const { setSentryErrorContext } = await import("@/wab/server/sentry");
+  const events = sentEvents;
   expect(Sentry.getClient()?.getOptions()).toMatchObject({
     skipOpenTelemetrySetup: true,
   });
@@ -65,7 +73,14 @@ it("keeps WAB Sentry tags and users isolated across concurrent HTTP requests", a
         }
         await bothStarted;
       }
-      Sentry.captureException(new Error(id));
+      const error = new Error(id);
+      if (id === "a") {
+        setSentryErrorContext(error, "htmlBuild", { exitCode: 1 });
+      }
+      Sentry.captureException(error);
+      if (id === "a") {
+        Sentry.captureException(new Error("later-in-a"));
+      }
       res.end(id);
     };
     void respond().catch((error) => {
@@ -95,7 +110,7 @@ it("keeps WAB Sentry tags and users isolated across concurrent HTTP requests", a
     expect(await Promise.all([request("a"), request("b")])).toEqual(["a", "b"]);
     expect(await request("untagged")).toBe("untagged");
     expect(await Sentry.flush(1000)).toBe(true);
-    expect(events).toHaveLength(3);
+    expect(events).toHaveLength(4);
     expect(scopes.get("a")).not.toBe(scopes.get("b"));
     for (const id of ["a", "b", "untagged"]) {
       const event = events.find((e) => e.exception?.values?.[0]?.value === id);
@@ -103,6 +118,16 @@ it("keeps WAB Sentry tags and users isolated across concurrent HTTP requests", a
       expect(event?.request?.url).toBe(`${origin}/${id}`);
       expect(event?.tags?.requestId).toBe(id === "untagged" ? undefined : id);
       expect(event?.user?.id).toBe(id === "untagged" ? undefined : id);
+    }
+    expect(
+      events.find((event) => event.exception?.values?.[0]?.value === "a")
+        ?.contexts?.htmlBuild,
+    ).toEqual({ exitCode: 1 });
+    for (const id of ["later-in-a", "b", "untagged"]) {
+      expect(
+        events.find((event) => event.exception?.values?.[0]?.value === id)
+          ?.contexts?.htmlBuild,
+      ).toBeUndefined();
     }
     expect(
       Sentry.getIsolationScope().getScopeData().tags.requestId,

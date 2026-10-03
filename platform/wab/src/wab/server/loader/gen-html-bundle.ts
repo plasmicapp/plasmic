@@ -10,6 +10,7 @@ import {
 } from "@plasmicapp/loader-react";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
+import { inspect } from "util";
 
 export async function genLoaderHtmlBundle(opts: {
   projectId: string;
@@ -128,8 +129,14 @@ async function main(argv = process.argv) {
     // once stdout is flushed to avoid leaving the subprocess alive.
     process.stdout.write(html, () => process.exit(0));
   } catch (e) {
-    process.stderr.write("" + e.stack);
-    process.exit(1);
+    process.stderr.write(
+      inspect(e, {
+        depth: 5,
+        maxStringLength: 4096,
+        maxArrayLength: 50,
+      }).slice(0, 8192),
+      () => process.exit(1),
+    );
   }
 }
 

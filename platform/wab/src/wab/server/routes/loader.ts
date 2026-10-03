@@ -25,6 +25,7 @@ import {
 } from "@/wab/server/loader/resolve-projects";
 import { logger } from "@/wab/server/observability";
 import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
+import { setSentryErrorContext } from "@/wab/server/sentry";
 import { TraceCarrier, withSpan } from "@/wab/server/util/apm-util";
 import { makeS3Client } from "@/wab/server/util/s3-util";
 import { prefillCloudfront } from "@/wab/server/workers/prefill-cloudfront";
@@ -675,30 +676,49 @@ export async function genLoaderHtmlBundleSandboxed(
 
     bwrapArgs.push("--chdir", process.cwd(), ...cmd, payload);
 
-    const { stdout, stderr, exitCode } =
+    const result =
       process.env.DISABLE_BWRAP === "1"
         ? await execa(cmd[0], [...cmd.slice(1), payload], {
             reject: false,
             env: { ...process.env, ...profilerEnv },
           })
         : await execa("bwrap", bwrapArgs, { reject: false });
-    if (stderr.trim().length > 0 && exitCode === 0) {
-      logger().error(
-        `Sandboxed loader subprocess succeeded with exit code 0 but got unexpected stderr ${stderr}`,
-      );
-    } else if (exitCode !== 0) {
+    const { stdout, stderr, exitCode, signal, timedOut, failed } = result;
+    const hideProjectToken = (value: string) =>
+      args.projectToken
+        ? value.replaceAll(args.projectToken, "[redacted]")
+        : value;
+    const diagnostic = {
+      projectId: args.projectId,
+      component: args.component,
+      traceparent: traceCarrier.traceparent,
+      exitCode,
+      signal,
+      timedOut,
+      failed,
+      stdoutLength: stdout.length,
+      stderr: hideProjectToken(stderr).slice(0, 8192),
+      spawnError:
+        "originalMessage" in result
+          ? hideProjectToken(String(result.originalMessage)).slice(0, 8192)
+          : undefined,
+    };
+    if (failed || exitCode !== 0 || stdout.length === 0) {
       // This error comes from @plasmicapp/loader-react
       if (stderr.includes("Unable to find components")) {
-        // Split at the first new line to avoid returning the stack trace.
-        throw new NotFoundError(stderr.split("\n")[0]);
+        logger().info("Sandboxed loader component not found", diagnostic);
+        throw new NotFoundError(hideProjectToken(stderr.split("\n")[0]));
       }
-
-      logger().error(
-        `Sandboxed loader subprocess failed with exit code ${exitCode} with stderr: ${stderr}`,
-      );
+      logger().error("Sandboxed loader subprocess failed", diagnostic);
+      const error = new Error("Sandboxed loader subprocess failed");
+      setSentryErrorContext(error, "htmlBuild", diagnostic);
+      throw error;
     }
-    if (stdout.length === 0) {
-      throw new Error("Sandboxed loader subprocess returned no HTML");
+    if (stderr.trim().length > 0) {
+      logger().warn(
+        "Sandboxed loader subprocess succeeded with stderr",
+        diagnostic,
+      );
     }
     return { html: stdout };
   });

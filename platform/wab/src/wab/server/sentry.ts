@@ -1,6 +1,22 @@
 import { context } from "@opentelemetry/api";
 import * as Sentry from "@sentry/node";
 
+const errorContexts = new WeakMap<
+  Error,
+  Record<string, Record<string, unknown>>
+>();
+
+export function setSentryErrorContext(
+  error: Error,
+  name: string,
+  data: Record<string, unknown>,
+): void {
+  errorContexts.set(error, {
+    ...errorContexts.get(error),
+    [name]: data,
+  });
+}
+
 const ignoredErrorMessages = [
   "CSRF token mismatch",
   "Connection closed before response fulfilled",
@@ -27,10 +43,16 @@ function initSentry(): void {
     // We need beforeSend because errors don't necessarily make their way
     // through the Express pipeline - they can be thrown from anywhere, in
     // Express or outside (or from random async event loop iterations).
-    beforeSend(event) {
+    beforeSend(event, hint) {
       const msg = event.exception?.values?.[0]?.value;
       if (msg && shouldIgnoreErrorByMessage(msg)) {
         return null;
+      }
+      if (hint.originalException instanceof Error) {
+        const contexts = errorContexts.get(hint.originalException);
+        if (contexts) {
+          event.contexts = { ...event.contexts, ...contexts };
+        }
       }
       return event;
     },
