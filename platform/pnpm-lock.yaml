@@ -1056,6 +1056,9 @@ importers:
       pino:
         specifier: ^9.9.0
         version: 9.9.5
+      prom-client:
+        specifier: ^14.2.0
+        version: 14.2.0
       undici:
         specifier: ^7.2.0
         version: 7.29.1
