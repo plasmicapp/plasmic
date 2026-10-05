@@ -1,8 +1,23 @@
+import { mkDataToken } from "@/wab/commons/DataToken";
 import { mkStyleToken } from "@/wab/commons/StyleToken";
 import { mkVariant } from "@/wab/shared/Variants";
+import { ChangeRecorder } from "@/wab/shared/core/observable-model";
 import { createSite } from "@/wab/shared/core/sites";
-import { MutableToken, OverrideableToken } from "@/wab/shared/core/tokens";
-import { Site, StyleToken, VariantedValue } from "@/wab/shared/model/classes";
+import {
+  ImmutableToken,
+  MutableToken,
+  OverrideableToken,
+  setMembership,
+  toFinalToken,
+} from "@/wab/shared/core/tokens";
+import { instUtil } from "@/wab/shared/model/InstUtil";
+import {
+  ProjectDependency,
+  Site,
+  StyleToken,
+  VariantedValue,
+} from "@/wab/shared/model/classes";
+import { meta } from "@/wab/shared/model/classes-metas";
 
 describe("tokens", () => {
   it("Mutable tokens - setValue, setVariantedValue", () => {
@@ -348,5 +363,154 @@ describe("tokens", () => {
         expect(overridableToken.override).toBeNull();
       });
     });
+  });
+});
+
+describe("toFinalToken", () => {
+  function mkDep(site: Site, name: string) {
+    const dep = new ProjectDependency({
+      name,
+      projectId: `${name}-project`,
+      uuid: `${name}-uuid`,
+      pkgId: `${name}-pkg`,
+      version: "0.0.1",
+      site,
+    });
+    return dep;
+  }
+
+  function mkTokens() {
+    const transitiveSite = createSite();
+    const transitive = mkStyleToken({
+      name: "t",
+      type: "Color",
+      value: "#000",
+    });
+    transitiveSite.styleTokens.push(transitive);
+
+    const directSite = createSite();
+    const direct = mkStyleToken({ name: "d", type: "Color", value: "#111" });
+    directSite.styleTokens.push(direct);
+    directSite.projectDependencies.push(mkDep(transitiveSite, "transitive"));
+
+    const site = createSite();
+    site.projectDependencies.push(mkDep(directSite, "direct"));
+    const local = mkStyleToken({ name: "l", type: "Color", value: "#222" });
+    const registered = mkStyleToken({
+      name: "r",
+      type: "Color",
+      value: "#333",
+    });
+    registered.isRegistered = true;
+    const orphan = mkStyleToken({ name: "o", type: "Color", value: "#444" });
+    site.styleTokens.push(local, registered);
+
+    const localData = mkDataToken({ name: "ld", value: "a" });
+    const directData = mkDataToken({ name: "dd", value: "b" });
+    site.dataTokens.push(localData);
+    directSite.dataTokens.push(directData);
+    return {
+      site,
+      styleTokens: [local, registered, direct, transitive, orphan],
+      dataTokens: [localData, directData],
+    };
+  }
+
+  const describeFinal = (t: {
+    constructor: Function;
+    base: unknown;
+    isLocal: boolean;
+  }) => [t.constructor.name, t.base, t.isLocal];
+
+  function observed(site: Site) {
+    return new ChangeRecorder({
+      inst: site,
+      _instUtil: instUtil,
+      excludeFields: [meta.getFieldByName("ProjectDependency", "site")],
+      excludeClasses: [],
+      isExternalRef: () => false,
+      skipInitialObserveFields: [],
+      incremental: true,
+      quiet: true,
+    } as any);
+  }
+
+  describe.each([
+    ["a plain site", (_site: Site) => () => undefined],
+    [
+      "an observable site",
+      (site: Site) => {
+        const recorder = observed(site);
+        return () => recorder.dispose();
+      },
+    ],
+  ])("on %s", (_label, prepare) => {
+    it("classifies style tokens by where they live", () => {
+      const { site, styleTokens } = mkTokens();
+      const cleanup = prepare(site);
+      const [local, registered, direct, transitive, orphan] = styleTokens;
+      const finals = styleTokens.map((t) => toFinalToken(t, site));
+      expect(finals.map(describeFinal)).toEqual([
+        [MutableToken.name, local, true],
+        [OverrideableToken.name, registered, false],
+        [OverrideableToken.name, direct, false],
+        [ImmutableToken.name, transitive, false],
+        [ImmutableToken.name, orphan, false],
+      ]);
+      cleanup();
+    });
+
+    it("classifies style tokens the same with set membership as with scans", () => {
+      const { site, styleTokens } = mkTokens();
+      const cleanup = prepare(site);
+      const shuffled = [...styleTokens].reverse();
+      for (const tokens of [styleTokens, shuffled, [], [styleTokens[2]]]) {
+        const expected = tokens.map((t) => toFinalToken(t, site));
+        const isMember = setMembership();
+        const actual = tokens.map((t) => toFinalToken(t, site, isMember));
+        expect(actual.map(describeFinal)).toEqual(expected.map(describeFinal));
+        actual.forEach((t, i) => {
+          expect(t.constructor).toBe(expected[i].constructor);
+          expect(t.base).toBe(tokens[i]);
+        });
+      }
+      cleanup();
+    });
+
+    it("classifies data tokens the same with set membership as with scans", () => {
+      const { site, dataTokens } = mkTokens();
+      const cleanup = prepare(site);
+      const isMember = setMembership();
+      const actual = dataTokens.map((t) => toFinalToken(t, site, isMember));
+      expect(actual.map(describeFinal)).toEqual(
+        dataTokens.map((t) => describeFinal(toFinalToken(t, site))),
+      );
+      cleanup();
+    });
+
+    it("classifies data tokens by where they live", () => {
+      const { site, dataTokens } = mkTokens();
+      const cleanup = prepare(site);
+      const finals = dataTokens.map((t) => toFinalToken(t, site));
+      expect(finals.map(describeFinal)).toEqual([
+        [MutableToken.name, dataTokens[0], true],
+        [OverrideableToken.name, dataTokens[1], false],
+      ]);
+      cleanup();
+    });
+  });
+
+  it("stops at the first dependency that holds the token, like a scan", () => {
+    const { site, styleTokens } = mkTokens();
+    const direct = styleTokens[2];
+    const brokenDep = { site: undefined } as unknown as ProjectDependency;
+    site.projectDependencies.push(brokenDep);
+    expect(() => toFinalToken(direct, site)).not.toThrow();
+    expect(() => toFinalToken(direct, site, setMembership())).not.toThrow();
+    const orphan = styleTokens[4];
+    expect(() => toFinalToken(orphan, site)).toThrow(TypeError);
+    expect(() => toFinalToken(orphan, site, setMembership())).toThrow(
+      TypeError,
+    );
   });
 });
