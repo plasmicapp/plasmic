@@ -6,9 +6,8 @@ import {
   tuple,
 } from "@/wab/shared/common";
 import isObject from "lodash/isObject";
-import omit from "lodash/omit";
+import keysIn from "lodash/keysIn";
 import pick from "lodash/pick";
-import sortBy from "lodash/sortBy";
 import uniqBy from "lodash/uniqBy";
 
 export class Class {
@@ -364,12 +363,15 @@ export function withoutUids(
         }
         seen[uid] = counter++;
       }
-      return Object.fromEntries(
-        sortBy(
-          Object.entries(includeUids ? x : omit(x, "uid", "uuid")),
-          ([k, v]) => k,
-        ).map(([k, v]) => tuple(k, rec(v))),
-      );
+      // keysIn keeps inherited keys. Every value is read before uid and uuid
+      // are dropped, so a getter that throws still throws.
+      const entries = includeUids
+        ? Object.entries(x)
+        : keysIn(x)
+            .map((k) => tuple(k, x[k]))
+            .filter(([k]) => k !== "uid" && k !== "uuid");
+      entries.sort(([k1], [k2]) => (k1 < k2 ? -1 : k1 > k2 ? 1 : 0));
+      return Object.fromEntries(entries.map(([k, v]) => tuple(k, rec(v))));
     } else {
       return x;
     }
