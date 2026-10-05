@@ -10,7 +10,6 @@ import { instUtil } from "@/wab/shared/model/InstUtil";
 import { ObjInst, Site } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
 import { isWeakRefField } from "@/wab/shared/model/model-meta";
-import { zip } from "lodash";
 
 export function assertSameInstType(inst: ObjInst, ...others: ObjInst[]) {
   const cls = instUtil.getInstClass(inst);
@@ -34,33 +33,34 @@ export function areSameInstType(inst: any, ...others: any[]) {
 }
 
 export function walkModelTree(aCtx: NodeCtx, walked = new Array<ObjInst>()) {
-  const { node: inst, path: path } = aCtx;
+  const inst = aCtx.node;
   assert(inst, "inst must be defined");
+  walkInst(inst, walked);
+  return walked;
+}
+
+function walkInst(inst: ObjInst, walked: ObjInst[]) {
   const cls = instUtil.getInstClass(inst);
   walked.push(inst);
   for (const field of meta.allFields(cls)) {
-    if (isWeakRefField(field)) {
-      continue;
+    if (!isWeakRefField(field)) {
+      walkFieldValue(inst[field.name], walked);
     }
-    const rec = (_aCtx: NodeCtx) => {
-      const { node: origVal } = _aCtx;
-
-      if (isPrimitive(origVal)) {
-        return;
-      } else if (Array.isArray(origVal)) {
-        return origVal.forEach((v, i) => rec(nextCtx(_aCtx, `${i}`)));
-      } else if (isLiteralObject(origVal)) {
-        const keys = [...Object.keys(origVal)];
-        return keys.forEach((k) => rec(nextCtx(_aCtx, k)));
-      } else if (instUtil.isObjInst(origVal)) {
-        return walkModelTree(_aCtx, walked);
-      } else {
-        unexpected();
-      }
-    };
-    rec(nextCtx(aCtx, field.name));
   }
-  return walked;
+}
+
+function walkFieldValue(val: any, walked: ObjInst[]): void {
+  if (isPrimitive(val)) {
+    return;
+  } else if (Array.isArray(val)) {
+    return val.forEach((_v, i) => walkFieldValue(val[i], walked));
+  } else if (isLiteralObject(val)) {
+    return Object.keys(val).forEach((k) => walkFieldValue(val[k], walked));
+  } else if (instUtil.isObjInst(val)) {
+    return walkInst(val, walked);
+  } else {
+    unexpected();
+  }
 }
 
 export function cowalkModelTrees(
@@ -148,11 +148,18 @@ export function nextCtx(
   field: string,
   key?: string,
 ): NodeFieldCtx {
+  const prevKeyPath = ctx.keyPath ?? [];
+  const len = Math.max(ctx.path.length, prevKeyPath.length);
+  const keyPath = new Array<string | undefined>(len + 1);
+  for (let i = 0; i < len; i++) {
+    keyPath[i] = prevKeyPath[i];
+  }
+  keyPath[len] = key;
   return {
     site: ctx.site,
     node: ctx.node?.[field],
     path: [...ctx.path, field],
-    keyPath: [...zip(ctx.path, ctx.keyPath ?? []).map(([a, b]) => b), key],
+    keyPath,
   };
 }
 
