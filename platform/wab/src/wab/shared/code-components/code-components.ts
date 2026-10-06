@@ -1198,11 +1198,17 @@ async function addNewRegisteredComponents(
                   createCodeComponent(ctx.site, r.meta.name, r.meta, fns),
                 ] as const,
             );
-            newComponents.forEach(([_meta, c]) =>
-              ctx.tplMgr().attachComponent(c),
+            const [newContexts, newCodeComponents] = partition(
+              newComponents.map(([_, c]) => c),
+              isContextCodeComponent,
             );
-            ctx.observeComponents(newComponents.map(([_, c]) => c));
-
+            // Attach code components before building params, because building
+            // params looks up other new code components by name in
+            // site.components (e.g. a slot's allowed components).
+            newCodeComponents.forEach((c) => ctx.tplMgr().attachComponent(c));
+            ctx.observeComponents(newCodeComponents);
+            // Fill in each new component's params, states, and slots from its
+            // registration meta.
             for (const [meta, c] of newComponents) {
               c.params = yield* componentMetaToComponentParams(ctx.site, meta);
               c.states = yield* metaToComponentStates(c, meta);
@@ -1212,6 +1218,12 @@ async function addNewRegisteredComponents(
               });
               attachRenderableTplSlots(c);
             }
+            // Attach contexts after their params are set. Attaching a context
+            // can take over the site's entry for the same name copied from a
+            // dependency, which keeps the entry's args by param name, so the
+            // params must exist first.
+            newContexts.forEach((c) => ctx.tplMgr().attachComponent(c));
+            ctx.observeComponents(newContexts);
             return ok();
           }),
         { noUndoRecord: true },
@@ -3085,8 +3097,7 @@ export function parseStyles(
 
   const layout = (styles["layout"] ??
     (LAYOUT_VALUES.includes(elementType) ? elementType : undefined)) as
-    | LayoutType
-    | undefined;
+    LayoutType | undefined;
 
   if (layout) {
     Object.assign(sanitized, layoutTypeToStyles(layout, opts));
@@ -4813,8 +4824,7 @@ async function upsertRegisteredFunctions(
         );
       }
       for (const param of functionReg.meta.params as (
-        | string
-        | ParamType<any, any>
+        string | ParamType<any, any>
       )[]) {
         if (isString(param)) {
           if (!isValidJsIdentifier(param)) {
@@ -5323,5 +5333,6 @@ export function appendCodeComponentMetaToModel(
 }
 
 export const _testonly = {
+  addNewRegisteredComponents,
   findDuplicateAriaParams,
 };

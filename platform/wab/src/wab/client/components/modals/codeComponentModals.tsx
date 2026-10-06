@@ -25,7 +25,6 @@ import {
   CodeComponentMetaDiffWithComponent,
   UnknownComponentError,
 } from "@/wab/shared/code-components/code-components";
-import { arrayRemove } from "@/wab/shared/collections";
 import { ensure, filterFalsy, spawn, withoutNils } from "@/wab/shared/common";
 import {
   CodeComponent,
@@ -209,10 +208,6 @@ export async function fixMissingCodeComponents(
     spawn(
       studioCtx.change(
         () => {
-          arrayRemove(
-            studioCtx.site.globalContexts,
-            studioCtx.site.globalContexts.find((tpl) => tpl.component === c),
-          );
           studioCtx.siteOps().tryRemoveComponent(c);
           return ok();
         },

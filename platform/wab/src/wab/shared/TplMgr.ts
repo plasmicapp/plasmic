@@ -139,6 +139,7 @@ import {
 } from "@/wab/shared/core/project-deps";
 import { serverQueryId } from "@/wab/shared/core/query-ids";
 import {
+  allComponents,
   ensureScreenVariantsOrderOnMatrices,
   getAllSiteFrames,
   getComponentArena,
@@ -253,6 +254,7 @@ import {
   isKnownEventHandler,
   isKnownImageAsset,
   isKnownMixin,
+  isKnownRenderExpr,
   isKnownStyleToken,
   isKnownTheme,
   isKnownTplNode,
@@ -1246,6 +1248,9 @@ export class TplMgr {
         )}`,
       );
       remove(this.site().components, comp);
+      if (isContextCodeComponent(comp)) {
+        this.detachGlobalContext(comp);
+      }
 
       // Remove dedicated arenas and focused frame arenas
       removeWhere(this.site().componentArenas, (it) => it.component === comp);
@@ -1525,10 +1530,75 @@ export class TplMgr {
     ensureComponentsObserved([component, ...getSubComponents(component)]);
 
     if (isContextCodeComponent(component)) {
-      this.site().globalContexts.push(
-        mkTplComponent(component, this.site().globalVariant),
-      );
+      this.attachGlobalContext(component);
     }
+  }
+
+  /**
+   * Points the site's global context entry for `component`'s name at
+   * `component`, adding an entry if there is none. The site keeps one entry per
+   * context name, so if the entry currently points at a dependency's context
+   * with the same name (copied in when the dependency was imported), the site's
+   * own context takes it over and keeps the args whose params still exist.
+   */
+  private attachGlobalContext(component: Component) {
+    const site = this.site();
+    const existing = site.globalContexts.find(
+      (tpl) => tpl.component.name === component.name,
+    );
+    if (!existing) {
+      site.globalContexts.push(mkTplComponent(component, site.globalVariant));
+    } else if (existing.component !== component) {
+      this.retargetGlobalContextTpl(existing, component);
+    }
+  }
+
+  /**
+   * Removes the site's global context entry for `component`. If a dependency
+   * still provides a context with the same name, the entry is pointed back at
+   * the dependency's context instead, keeping the args whose params still
+   * exist.
+   */
+  private detachGlobalContext(component: Component) {
+    const site = this.site();
+    const tpl = site.globalContexts.find((it) => it.component === component);
+    if (!tpl) {
+      return;
+    }
+    const depComponent = allComponents(site, { includeDeps: "all" }).find(
+      (c) =>
+        c !== component &&
+        c.name === component.name &&
+        isContextCodeComponent(c),
+    );
+    if (depComponent) {
+      this.retargetGlobalContextTpl(tpl, depComponent);
+    } else {
+      arrayRemove(site.globalContexts, tpl);
+    }
+  }
+
+  /**
+   * Points a global context tpl at `toComp`, matching args to params by name
+   * and dropping args that have no matching param.
+   */
+  private retargetGlobalContextTpl(tpl: TplComponent, toComp: Component) {
+    for (const vs of tpl.vsettings) {
+      for (const arg of [...vs.args]) {
+        const toParam = toComp.params.find(
+          (p) => p.variable.name === arg.param.variable.name,
+        );
+        if (toParam) {
+          arg.param = toParam;
+        } else {
+          if (isKnownRenderExpr(arg.expr)) {
+            $$$(arg.expr.tpl).remove({ deep: true });
+          }
+          arrayRemove(vs.args, arg);
+        }
+      }
+    }
+    tpl.component = toComp;
   }
 
   cloneComponent(component: Component, name: string, attachComponent: boolean) {
@@ -2075,10 +2145,7 @@ export class TplMgr {
     timingFunction: string = "ease",
     iterationCount: string = "1",
     direction:
-      | "normal"
-      | "reverse"
-      | "alternate"
-      | "alternate-reverse" = "normal",
+      "normal" | "reverse" | "alternate" | "alternate-reverse" = "normal",
     fillMode: "none" | "forwards" | "backwards" | "both" = "none",
     playState: "paused" | "running" = "running",
   ) {

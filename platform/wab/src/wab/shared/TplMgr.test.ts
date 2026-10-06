@@ -2,33 +2,44 @@ import { mkArenaFrame, mkMixedArena } from "@/wab/shared/Arenas";
 import { TplMgr, ensureBaseVariant, uniquePagePath } from "@/wab/shared/TplMgr";
 import { mkVariantSetting } from "@/wab/shared/Variants";
 import {
+  componentMetaToComponentParams,
+  mkCodeComponent,
+} from "@/wab/shared/code-components/code-components";
+import {
   mkComponentWithQueries,
   mkCustomCodeOp,
   mkCustomFunctionExpr,
   mkServerQuery,
 } from "@/wab/shared/codegen/react-p/server-queries/__testonly__/test-utils";
+import { ensure, only } from "@/wab/shared/common";
 import {
   ComponentType,
   PageComponent,
   mkComponent,
 } from "@/wab/shared/core/components";
+import { codeLit } from "@/wab/shared/core/exprs";
 import { mkVar } from "@/wab/shared/core/lang";
+import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
 import { createSite } from "@/wab/shared/core/sites";
 import { mkTplComponentX, mkTplTagX } from "@/wab/shared/core/tpls";
 import { ScreenSizeSpec } from "@/wab/shared/css-size";
 import {
   Arg,
+  Component,
   ComponentServerQuery,
   CustomCode,
   ObjectPath,
+  ProjectDependency,
   QueryInvalidationExpr,
   QueryRef,
+  Site,
   TplComponent,
   VarRef,
   VariantGroup,
   VariantsRef,
   ensureKnownTplTag,
 } from "@/wab/shared/model/classes";
+import { GlobalContextMeta } from "@plasmicapp/host";
 
 describe("uniquePagePath", () => {
   it("works", () => {
@@ -466,5 +477,102 @@ describe("TplMgr.changePagePath", () => {
     mgr.changePagePath(page, "/[a]/[[...rest]]");
 
     expect(Object.keys(page.pageMeta.params)).toEqual(["a", "...rest"]);
+  });
+});
+
+describe("TplMgr global contexts", () => {
+  function mkContext(site: Site, props: Record<string, "string">) {
+    const meta = {
+      name: "AuthContext",
+      importPath: "",
+      props,
+      __isContext: true,
+    } as unknown as GlobalContextMeta<any>;
+    const component = mkCodeComponent(meta.name, meta, {});
+    component.params = componentMetaToComponentParams(
+      site,
+      meta,
+    )._unsafeUnwrap();
+    return component;
+  }
+
+  function getParam(component: Component, name: string) {
+    return ensure(
+      component.params.find((p) => p.variable.name === name),
+      `Missing param ${name}`,
+    );
+  }
+
+  function setup() {
+    const depSite = createSite();
+    const depContext = mkContext(depSite, {
+      domain: "string",
+      scope: "string",
+    });
+    new TplMgr({ site: depSite }).attachComponent(depContext);
+    const dep = new ProjectDependency({
+      name: "Lib",
+      pkgId: "lib-pkg-id",
+      projectId: "lib-project-id",
+      version: "0.0.1",
+      uuid: "lib-uuid",
+      site: depSite,
+    });
+
+    const site = createSite({ projectDependencies: [dep] });
+    const tplMgr = new TplMgr({ site });
+    syncGlobalContexts(dep, site);
+    const tpl = only(site.globalContexts);
+    tplMgr.setArg(
+      tpl,
+      only(tpl.vsettings),
+      getParam(depContext, "domain").variable,
+      codeLit("example.com"),
+    );
+    tplMgr.setArg(
+      tpl,
+      only(tpl.vsettings),
+      getParam(depContext, "scope").variable,
+      codeLit("read"),
+    );
+    return { site, tplMgr, depContext, tpl };
+  }
+
+  it("takes over a dependency's entry with the same name", () => {
+    const { site, tplMgr, tpl } = setup();
+    const siteContext = mkContext(site, { domain: "string" });
+    tplMgr.attachComponent(siteContext);
+
+    expect(site.globalContexts).toEqual([tpl]);
+    expect(tpl.component).toBe(siteContext);
+    const args = only(tpl.vsettings).args;
+    expect(args.map((arg) => arg.param)).toEqual([
+      getParam(siteContext, "domain"),
+    ]);
+    expect(only(args).expr).toMatchObject({ code: '"example.com"' });
+  });
+
+  it("points the entry back at the dependency when removed", () => {
+    const { site, tplMgr, depContext, tpl } = setup();
+    const siteContext = mkContext(site, { domain: "string" });
+    tplMgr.attachComponent(siteContext);
+    tplMgr.removeComponent(siteContext);
+
+    expect(site.globalContexts).toEqual([tpl]);
+    expect(tpl.component).toBe(depContext);
+    expect(only(only(tpl.vsettings).args).param).toBe(
+      getParam(depContext, "domain"),
+    );
+  });
+
+  it("removes the entry when no dependency provides the context", () => {
+    const site = createSite();
+    const tplMgr = new TplMgr({ site });
+    const context = mkContext(site, { domain: "string" });
+    tplMgr.attachComponent(context);
+    expect(site.globalContexts.length).toBe(1);
+
+    tplMgr.removeComponent(context);
+    expect(site.globalContexts).toEqual([]);
   });
 });

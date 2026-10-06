@@ -1,26 +1,35 @@
 import { unwrap } from "@/wab/commons/neverthrow-utils";
 import { parseMasterPkg } from "@/wab/server/pkg-mgr";
+import { TplMgr } from "@/wab/shared/TplMgr";
 import { FastBundler } from "@/wab/shared/bundler";
 import {
+  CodeComponentsRegistry,
   _testonly,
+  componentMetaToComponentParams,
   getNewProps,
   makePlumeComponentMeta,
+  mkCodeComponent,
   parseStyles,
 } from "@/wab/shared/code-components/code-components";
 import { arrayRemove } from "@/wab/shared/collections";
+import { only, uncheckedCast } from "@/wab/shared/common";
 import { PlumeComponent } from "@/wab/shared/core/components";
+import { codeLit } from "@/wab/shared/core/exprs";
+import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
 import { createSite } from "@/wab/shared/core/sites";
 import { unbundleSite } from "@/wab/shared/core/tagged-unbundle";
 import {
   Component,
+  ProjectDependency,
   PropParam,
   Site,
   StateChangeHandlerParam,
   StateParam,
 } from "@/wab/shared/model/classes";
+import type { GlobalContextMeta } from "@plasmicapp/host";
 import type { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 
-const { findDuplicateAriaParams } = _testonly;
+const { addNewRegisteredComponents, findDuplicateAriaParams } = _testonly;
 
 describe("code-components", () => {
   // Unbundle plume-master-pkg.json and pick out TextInput
@@ -225,5 +234,95 @@ describe("parseStyles", () => {
       },
       warnings: [],
     });
+  });
+});
+
+describe("addNewRegisteredComponents", () => {
+  const meta = {
+    name: "AuthContext",
+    importPath: "",
+    props: { domain: "string" },
+    __isContext: true,
+  } as unknown as GlobalContextMeta<any>;
+
+  function mkCtx(
+    site: Site,
+    tplMgr: TplMgr,
+  ): Parameters<typeof addNewRegisteredComponents>[0] {
+    return {
+      site,
+      codeComponentsRegistry: new CodeComponentsRegistry(
+        uncheckedCast<Window>({
+          __PlasmicContextRegistry: [{ component: () => null, meta }],
+        }),
+        {},
+      ),
+      change: async (f) => f(),
+      observeComponents: () => true,
+      getRootSubReact: () => {
+        throw new Error("unused");
+      },
+      tplMgr: () => tplMgr,
+      getPlumeSite: () => undefined,
+    };
+  }
+
+  it("adds a global context entry for a new context", async () => {
+    const site = createSite();
+    const tplMgr = new TplMgr({ site });
+    const newComponents = (
+      await addNewRegisteredComponents(mkCtx(site, tplMgr), {} as any)
+    )._unsafeUnwrap();
+
+    const context = only(newComponents);
+    expect(site.components).toContain(context);
+    expect(context.params.map((p) => p.variable.name)).toContain("domain");
+    const tpl = only(site.globalContexts);
+    expect(tpl.component).toBe(context);
+    expect(only(tpl.vsettings).args).toEqual([]);
+  });
+
+  it("takes over a dependency's global context entry and keeps its args", async () => {
+    const depSite = createSite();
+    const depContext = mkCodeComponent(meta.name, meta, {});
+    depContext.params = componentMetaToComponentParams(
+      depSite,
+      meta,
+    )._unsafeUnwrap();
+    new TplMgr({ site: depSite }).attachComponent(depContext);
+    const dep = new ProjectDependency({
+      name: "Lib",
+      pkgId: "lib-pkg-id",
+      projectId: "lib-project-id",
+      version: "0.0.1",
+      uuid: "lib-uuid",
+      site: depSite,
+    });
+
+    const site = createSite({ projectDependencies: [dep] });
+    const tplMgr = new TplMgr({ site });
+    syncGlobalContexts(dep, site);
+    const tpl = only(site.globalContexts);
+    const domainParam = only(
+      depContext.params.filter((p) => p.variable.name === "domain"),
+    );
+    tplMgr.setArg(
+      tpl,
+      only(tpl.vsettings),
+      domainParam.variable,
+      codeLit("example.com"),
+    );
+
+    const newComponents = (
+      await addNewRegisteredComponents(mkCtx(site, tplMgr), {} as any)
+    )._unsafeUnwrap();
+
+    const siteContext = only(newComponents);
+    expect(site.globalContexts).toEqual([tpl]);
+    expect(tpl.component).toBe(siteContext);
+    const arg = only(only(tpl.vsettings).args);
+    expect(siteContext.params).toContain(arg.param);
+    expect(arg.param.variable.name).toBe("domain");
+    expect(arg.expr).toMatchObject({ code: '"example.com"' });
   });
 });

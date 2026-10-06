@@ -56,7 +56,8 @@ import { ok } from "neverthrow";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 
-type ComponentDependency = {
+type ContextRowData = {
+  tpl: TplComponent;
   component: Component;
   projectDependency: ProjectDependency | undefined;
 };
@@ -88,15 +89,15 @@ const LeftProjectSettingsPanel = observer(function LeftProjectSettingsPanel_() {
     (a, b) => a.name === b.name,
   );
 
-  const tplComponents = studioCtx.site.globalContexts;
-
-  const orderedContexts: ComponentDependency[] = [];
-  for (const tpl of tplComponents) {
-    orderedContexts.push({
-      component: ensure(
-        contexts.find((c) => c === tpl.component),
-        "Couldn't find context for component " + tpl.component.name,
-      ),
+  const rows: ContextRowData[] = [];
+  for (const tpl of studioCtx.site.globalContexts) {
+    const component = contexts.find((c) => c === tpl.component);
+    if (!component) {
+      continue;
+    }
+    rows.push({
+      tpl,
+      component,
       projectDependency: globalContextDependencies.find((dep) =>
         dep.globalContexts.find((c) => c === tpl.component),
       )?.dep,
@@ -118,12 +119,7 @@ const LeftProjectSettingsPanel = observer(function LeftProjectSettingsPanel_() {
         },
       }}
       content={
-        <ContextsList
-          studioCtx={studioCtx}
-          contexts={orderedContexts}
-          tplComponents={tplComponents}
-          matcher={matcher}
-        />
+        <ContextsList studioCtx={studioCtx} rows={rows} matcher={matcher} />
       }
     />
   );
@@ -131,54 +127,35 @@ const LeftProjectSettingsPanel = observer(function LeftProjectSettingsPanel_() {
 
 const ContextsList = observer(function ContextsList_(props: {
   studioCtx: StudioCtx;
-  contexts: ComponentDependency[];
-  tplComponents: TplComponent[];
+  rows: ContextRowData[];
   matcher: Matcher;
 }) {
-  const { studioCtx, matcher, contexts, tplComponents } = props;
+  const { studioCtx, matcher, rows } = props;
 
   const readOnly = studioCtx.getLeftTabPermission("settings") === "readable";
-  const filteredContexts = contexts.filter((c) =>
-    matcher.matches(getComponentDisplayName(c.component)),
-  );
-
-  const filteredTplComponents = props.tplComponents.filter((tpl) =>
-    matcher.matches(getComponentDisplayName(tpl.component)),
+  const filteredRows = rows.filter((row) =>
+    matcher.matches(getComponentDisplayName(row.component)),
   );
 
   return (
     <SimpleReorderableList
       onReordered={(fromIndex, toIndex) =>
         studioCtx.changeUnsafe(() => {
-          const moveIndexFromArray = (
-            firstIndex: number,
-            secondIndex: number,
-            realArray: any[],
-            array: any[],
-          ) => {
-            const fromRealIndex = realArray.indexOf(array[firstIndex]);
-
-            const toRealIndex = realArray.indexOf(array[secondIndex]);
-
-            moveIndex(realArray, fromRealIndex, toRealIndex);
-          };
-          moveIndexFromArray(fromIndex, toIndex, contexts, filteredContexts);
-          moveIndexFromArray(
-            fromIndex,
-            toIndex,
-            tplComponents,
-            filteredTplComponents,
+          const globalContexts = studioCtx.site.globalContexts;
+          moveIndex(
+            globalContexts,
+            globalContexts.indexOf(filteredRows[fromIndex].tpl),
+            globalContexts.indexOf(filteredRows[toIndex].tpl),
           );
         })
       }
       customDragHandle
     >
-      {filteredContexts.map((c, idx) => (
+      {filteredRows.map((row) => (
         <ContextRow
-          key={filteredTplComponents[idx].uuid}
+          key={row.tpl.uuid}
           studioCtx={studioCtx}
-          context={c}
-          tplComponent={filteredTplComponents[idx]}
+          context={row}
           matcher={matcher}
           readOnly={readOnly}
         />
@@ -189,22 +166,15 @@ const ContextsList = observer(function ContextsList_(props: {
 
 const ContextRow = observer(function ContextRow_(props: {
   studioCtx: StudioCtx;
-  context: ComponentDependency;
-  tplComponent: TplComponent;
+  context: ContextRowData;
   matcher: Matcher;
   isDragging?: boolean;
   dragHandleProps?: DraggableProvidedDragHandleProps;
   readOnly?: boolean;
 }) {
-  const {
-    studioCtx,
-    context,
-    tplComponent,
-    matcher,
-    isDragging,
-    dragHandleProps,
-    readOnly,
-  } = props;
+  const { studioCtx, context, matcher, isDragging, dragHandleProps, readOnly } =
+    props;
+  const tplComponent = context.tpl;
   const [isVisible, setIsVisible] = React.useState(false);
   const hasParams =
     getRealParams(tplComponent.component).filter(

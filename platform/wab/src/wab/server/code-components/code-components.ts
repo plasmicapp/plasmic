@@ -18,7 +18,6 @@ import {
   mkCodeComponent,
   syncCodeComponents,
 } from "@/wab/shared/code-components/code-components";
-import { arrayRemove } from "@/wab/shared/collections";
 import { assert, ensure } from "@/wab/shared/common";
 import {
   CodeComponent,
@@ -329,14 +328,6 @@ export async function updateHostlessPackage(
       (c) => importedComponentNames.has(c.name) || isBuiltinCodeComponent(c),
     );
     tplMgr.removeComponentGroup(toDeleteComponents);
-    toDeleteComponents.forEach((c) => {
-      if (site.globalContexts.some((tpl) => tpl.component === c)) {
-        arrayRemove(
-          site.globalContexts,
-          site.globalContexts.find((tpl) => tpl.component === c),
-        );
-      }
-    });
 
     site.components
       .filter(isCodeComponent)
