@@ -378,7 +378,7 @@
     "sqlstring": "^2.3.3",
     "strip-css-comments": "^4.1.0",
     "stripe": "22.6.0",
-    "svgo": "3.3.3",
+    "svgo": "4.1.0",
     "swr": "2.4.1",
     "temporal-polyfill": "0.3.0",
     "tinymce": "^6.8.6",

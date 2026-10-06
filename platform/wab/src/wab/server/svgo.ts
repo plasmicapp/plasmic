@@ -122,7 +122,7 @@ const pluginsData: PluginConfig[] = [
   { name: "removeTitle" },
   { name: "removeDesc" },
   { name: "removeStyleElement" },
-  { name: "removeScriptElement" },
+  { name: "removeScripts" },
   removeMarginStyle,
 ];
 

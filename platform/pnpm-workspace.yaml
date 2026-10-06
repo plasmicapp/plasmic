@@ -51,6 +51,9 @@ overrides:
   playwright-core: "catalog:"
   "vitest>vite": "catalog:"
   "@aws-sdk/core": 3.977.9
+  # Dedupe css-tree: csso 5 pins ~2.2.0, but its test suite passes on 3.2.1,
+  # so it can share svgo's copy. Remove once css/csso#492 is released.
+  "csso@5>css-tree": ^3.2.1
 
   react-aria-components: 1.9.0
   sha.js: ^2.4.12
