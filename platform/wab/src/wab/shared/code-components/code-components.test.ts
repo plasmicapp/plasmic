@@ -5,6 +5,7 @@ import {
   _testonly,
   getNewProps,
   makePlumeComponentMeta,
+  parseStyles,
 } from "@/wab/shared/code-components/code-components";
 import { arrayRemove } from "@/wab/shared/collections";
 import { PlumeComponent } from "@/wab/shared/core/components";
@@ -176,6 +177,53 @@ describe("code-components", () => {
           (p) => p.uid > plumeAriaLabelledByParam.uid,
         ),
       ).toBeTrue();
+    });
+  });
+});
+
+describe("parseStyles", () => {
+  it("cycles transition lists without rewriting timing functions", () => {
+    expect(
+      parseStyles(
+        {
+          transitionProperty: " opacity , transform, filter ",
+          transitionTimingFunction:
+            "cubic-bezier(0.1,  0.2, 0.3, 1), steps(4, jump-end)",
+          transitionDuration: "100ms, 200ms",
+        },
+        "component",
+        {},
+      ),
+    ).toEqual({
+      styles: {
+        "transition-property": "opacity, transform, filter",
+        "transition-timing-function":
+          "cubic-bezier(0.1,  0.2, 0.3, 1), steps(4, jump-end), cubic-bezier(0.1,  0.2, 0.3, 1)",
+        "transition-duration": "100ms, 200ms, 100ms",
+        "transition-delay": "0s, 0s, 0s",
+      },
+      warnings: [],
+    });
+  });
+
+  it("cycles background longhands across images with quoted commas", () => {
+    expect(
+      parseStyles(
+        {
+          backgroundImage:
+            'url("one, image.png"), url("two.png"), url("three.png")',
+          backgroundPosition: "left top, right bottom",
+          backgroundRepeat: "no-repeat",
+        },
+        "component",
+        {},
+      ),
+    ).toEqual({
+      styles: {
+        background:
+          'url("one, image.png") left top no-repeat, url("two.png") right bottom no-repeat, url("three.png") left top no-repeat',
+      },
+      warnings: [],
     });
   });
 });

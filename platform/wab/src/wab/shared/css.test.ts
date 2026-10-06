@@ -1,4 +1,12 @@
 import {
+  Background,
+  BackgroundLayer,
+  BoxShadows,
+  ColorFill,
+  ImageBackground,
+  LinearGradient,
+} from "@/wab/shared/core/bg-styles";
+import {
   expandGapProperty,
   parseCss,
   parseCssShorthand,

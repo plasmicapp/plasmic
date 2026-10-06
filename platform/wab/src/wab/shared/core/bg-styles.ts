@@ -41,13 +41,9 @@ type StringCSSProperties = {
   [p in keyof CSSProperties]: CSSProperties[p] & string;
 };
 
-// Hack: The extra * is intentional to avoid it being removed by `parseCssValue`
-// Should be in sync with cssPegParser.
-export const bgClipTextTag = `/* clip: text **/`;
-
-// To parse the bgClipTextTag properly, we are using css-tree parser onComment callback
-// which returns the comment without the surrounding /* and */ so we will just use the following value for comparison
-const bgClipTextWithoutCommentsTag = "clip: text *";
+// Additional "*" is retained for backward compatibility of this hard coded text.
+const bgClipTextComment = "clip: text *";
+export const bgClipTextTag = `/* ${bgClipTextComment}*/`;
 
 export class BackgroundLayerArgs {
   image:
@@ -91,7 +87,7 @@ export class BackgroundLayer extends BackgroundLayerArgs {
     const valueAst = parse(value, {
       context: "value",
       onComment: (comment) => {
-        if (comment.trim() === bgClipTextWithoutCommentsTag) {
+        if (comment.trim() === bgClipTextComment) {
           clip = bgClipTextTag;
         }
       },
@@ -372,7 +368,7 @@ export class ColorFillArgs {
 /**
  * This is a hack to provide background fill layers. CSS does not support
  * adding a background-image layer with just a color, so we create a
- * linear-gradient from ${color} to ${color} instead. Our PEG parser will
+ * linear-gradient from ${color} to ${color} instead. Our parser will
  * know the difference from ColorFill to LinearGradient because LinearGradient
  * always have an angle as the first parameter, while ColorFill has only
  * colors.

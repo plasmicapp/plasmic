@@ -301,7 +301,7 @@ function computeStylesFromWIRules(rules: WIRule[]) {
  * Sanitizes one declaration into the (camelCase) styles the importer writes;
  * an empty result means the prop is ignored.
  *
- * The underlying value parsers (peg-based parseCss, CssTransforms, css-tree etc)
+ * The underlying value parsers (parseCss, CssTransforms, css-tree etc)
  * could throw on values they can't handle; and a throw here is an expected domain failure,
  * so it's converted into an `invalid-style-declaration` Err for the caller to
  * drop-and-report rather than crashing the whole import.

@@ -101,7 +101,6 @@ import {
   changeTokenUsage,
   extractTokenUsages,
   mkRuleSet,
-  parseCssValue,
 } from "@/wab/shared/core/styles";
 import { toFinalToken } from "@/wab/shared/core/tokens";
 import {
@@ -129,6 +128,7 @@ import {
   parseCss,
   parseCssShorthand,
 } from "@/wab/shared/css";
+import { splitCssValue } from "@/wab/shared/css/parse";
 import { AddItemPrefs, getDefaultStyles } from "@/wab/shared/default-styles";
 import { standardCorners, standardSides } from "@/wab/shared/geom";
 import { convertSelfContainerType } from "@/wab/shared/layoututils";
@@ -3127,7 +3127,7 @@ export function parseStyles(
   const transitionStyles = Object.fromEntries<string[]>(
     [...transitionProps].map((prop) => [
       prop,
-      (styles[prop] && parseCssValue(prop, styles[prop])) || [],
+      (styles[prop] && splitCssValue(prop, styles[prop])) || [],
     ]),
   );
 
@@ -3203,7 +3203,7 @@ export function parseStyles(
   const bgStyles = Object.fromEntries<string[] | undefined>(
     ["background", ...bgAtomicProps].map((prop) => [
       prop,
-      styles[prop] ? parseCssValue(prop, styles[prop]) : [],
+      styles[prop] ? splitCssValue(prop, styles[prop]) : [],
     ]),
   );
 

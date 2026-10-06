@@ -1,4 +1,3 @@
-import * as cssPegParser from "@/wab/gen/cssPegParser";
 import {
   chunkPairs,
   ensure,
@@ -614,43 +613,32 @@ export function parseShorthandProperties(
   }
 }
 
-export function parseCss(
+type CssParsed = {
+  boxShadows: BoxShadows;
+  linearGradient: LinearGradient;
+  backgroundLayer: BackgroundLayer;
+  backgroundImage: BackgroundLayer["image"];
+  backgroundColor: ColorFill;
+  background: Background;
+};
+
+const cssParsers: {
+  [K in keyof CssParsed]: (v: string) => CssParsed[K] | null | undefined;
+} = {
+  boxShadows: (v) => BoxShadows.fromCss(v),
+  linearGradient: (v) => LinearGradient.fromCss(v),
+  backgroundLayer: (v) => BackgroundLayer.fromCss(v),
+  backgroundImage: (v) => BackgroundLayer.fromCss(v)?.image,
+  backgroundColor: (v) => ColorFill.fromCss(v),
+  background: (v) => Background.fromCss(v),
+};
+
+export function parseCss<R extends keyof CssParsed>(
   value: string,
-  opts: {
-    startRule:
-      | (string & {})
-      | "boxShadows"
-      | "backgroundColor"
-      | "backgroundImage"
-      | "background"
-      | "linearGradient";
-  },
-) {
-  if (opts.startRule === "boxShadows") {
-    return ensure(BoxShadows.fromCss(value), "Expected BoxShadow but got null");
-  } else if (opts.startRule === "linearGradient") {
-    return ensure(
-      LinearGradient.fromCss(value),
-      "Expected LinearGradient but got null",
-    );
-  } else if (opts.startRule === "backgroundLayer") {
-    return ensure(
-      BackgroundLayer.fromCss(value),
-      "Expected BackgroundLayer but got null",
-    );
-  } else if (opts.startRule === "backgroundImage") {
-    return ensure(
-      BackgroundLayer.fromCss(value)?.image,
-      "Expected BackgroundLayer image but got null",
-    );
-  } else if (opts.startRule === "backgroundColor") {
-    return ensure(ColorFill.fromCss(value), "Expected ColorFill but got null");
-  } else if (opts.startRule === "background") {
-    return ensure(
-      Background.fromCss(value),
-      "Expected BackgroundLayer image but got null",
-    );
-  } else {
-    return cssPegParser.parse(value, opts);
-  }
+  opts: { startRule: R },
+): CssParsed[R] {
+  return ensure(
+    cssParsers[opts.startRule](value),
+    `Expected ${opts.startRule}`,
+  );
 }

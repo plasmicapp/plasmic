@@ -3,7 +3,6 @@ all: \
 	src/wab/gen/funcTplParser.js \
 	src/wab/shared/model/classes.ts \
 	src/wab \
-	src/wab/gen/cssPegParser.js \
 	src/wab/gen/GridStyleParser.js \
 	public/static/img/custom-code.svg \
 	src/wab/styles/_tokens.sass \
@@ -28,13 +27,9 @@ src/wab/styles/css-variables.scss: src/wab/styles/css-variables.json
 	node src/wab/styles/css-variables.gen.js
 
 src/wab/gen/GridStyleParser.js: PEGJS_FLAGS = --allowed-start-rules axisTemplate,size,atomicSize,numSize,flexibleSize
-src/wab/gen/cssPegParser.js: PEGJS_FLAGS = --allowed-start-rules backgroundLayer,backgroundImage,boxShadows,boxShadow,commaSepValues,spaceSepValues
-# A grammar initializer can only reach a module by referencing it from PEGJS_PREAMBLE:
-# it runs inside the parser, where a require() would bypass the bundler's aliases.
-src/wab/gen/cssPegParser.js: PEGJS_PREAMBLE = import * as bgStylesMod from "@/wab/shared/core/bg-styles";
 
 # PEG.js 0.10 emits CommonJS at best, so rewrite its export into an ES module.
-WRAP_PEG_PARSER = { echo '/* eslint-disable */'; echo '$(PEGJS_PREAMBLE)'; sed 's/^module\.exports = {$$/const parser = {/' $@.tmp; echo 'export const { SyntaxError, parse } = parser;'; echo 'export default parser;'; } > $@ && rm $@.tmp
+WRAP_PEG_PARSER = { echo '/* eslint-disable */'; sed 's/^module\.exports = {$$/const parser = {/' $@.tmp; echo 'export const { SyntaxError, parse } = parser;'; echo 'export default parser;'; } > $@ && rm $@.tmp
 
 src/wab/gen/%.js: %.pegjs
 	./node_modules/.bin/pegjs -o $@.tmp $(PEGJS_FLAGS) $<

@@ -16,7 +16,6 @@ import {
   tryParseTokenRef,
 } from "@/wab/commons/StyleToken";
 import { DeepReadonly, DeepReadonlyArray } from "@/wab/commons/types";
-import * as cssPegParser from "@/wab/gen/cssPegParser";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { getArenaFrames } from "@/wab/shared/Arenas";
 import {
@@ -774,7 +773,7 @@ function postProcessStyles(
   // Usually RuleSet.values store valid css values. But for some props,
   // we store special encoding within the css values. So here we make
   // sure we transform them into the proper css values, using showCssValues.
-  // - filter and backdrop-filter may have "#hidden" tags
+  // - filter and backdrop-filter may have "hidden#" tags
   for (const prop of ["filter", "backdrop-filter"]) {
     if (m.has(prop)) {
       const val = m.get(prop)!;
@@ -944,17 +943,6 @@ export function preferShorthand(m: Map<string, string>): Map<string, string> {
 
   return res;
 }
-
-export const parseCssValue = (
-  prop: string | undefined,
-  input: /*TWZ*/ string,
-): string[] => {
-  // This regexp removes only comments without *. It is intended to be used
-  // only to remove comments generated for Plasmic tokens, which do not have
-  // *.
-  const withoutComments = input.replace(/\/\*[^*]*\*\//g, "").trim();
-  return cssPegParser.parse(withoutComments, { startRule: "commaSepValues" });
-};
 
 function showStyles(m: Map<string, string>) {
   if (m.size === 0) {

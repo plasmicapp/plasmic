@@ -348,10 +348,7 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
    */
   const [cachedValues] = React.useState({});
 
-  const updateImg = (
-    img: ImageBackground | ColorFill | LinearGradient | RadialGradient,
-    f: () => void,
-  ) => {
+  const updateImg = (img: BackgroundLayer["image"], f: () => void) => {
     f();
     layer.image = img;
     onUpdated(layer);

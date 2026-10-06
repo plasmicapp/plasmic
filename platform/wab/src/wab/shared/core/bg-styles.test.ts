@@ -1,8 +1,7 @@
-import { tuple } from "@/wab/shared/common";
+import { ensure, tuple } from "@/wab/shared/common";
 import {
   Background,
   BackgroundLayer,
-  bgClipTextTag,
   BoxShadow,
   BoxShadows,
   ColorFill,
@@ -11,8 +10,9 @@ import {
   LinearGradient,
   NoneBackground,
   RadialGradient,
-  Stop,
   STOP_DIM_MISSING_IDENTIFIER,
+  Stop,
+  bgClipTextTag,
 } from "@/wab/shared/core/bg-styles";
 
 describe("bg-styles", function () {
@@ -256,11 +256,13 @@ describe("bg-styles", function () {
       }),
     );
 
-    expect(
+    const colorLayer = ensure(
       BackgroundLayer.fromCss(
         "linear-gradient(rgb(0,0,0), rgb(0,0,0)) 0% 0% padding-box border-box",
       ),
-    ).toEqual(
+      "Expected a color fill layer",
+    );
+    expect(colorLayer).toEqual(
       new BackgroundLayer({
         image: new ColorFill({ color: "rgb(0,0,0)" }),
         position: "0% 0%",
@@ -268,6 +270,12 @@ describe("bg-styles", function () {
         clip: "border-box",
       }),
     );
+    expect(colorLayer.showCss()).toEqual(
+      "linear-gradient(rgb(0,0,0), rgb(0,0,0))",
+    );
+    // The last layer of a background renders its color fill as a plain color.
+    colorLayer.preferBackgroundColorOverColorFill = true;
+    expect(colorLayer.showCss()).toEqual("rgb(0,0,0)");
 
     const bgLayer = BackgroundLayer.fromCss(
       "linear-gradient(rgb(10,20,30), rgb(10,20,30))",
@@ -363,6 +371,45 @@ describe("bg-styles", function () {
         attachment: "local",
       }),
     );
+
+    expect(BackgroundLayer.fromCss("var(--image-hello)")?.image).toEqual(
+      new ImageBackground({ url: "var(--image-hello)" }),
+    );
+    expect(BackgroundLayer.fromCss("var(--token-abc)")?.image).toEqual(
+      new ColorFill({ color: "var(--token-abc)" }),
+    );
+
+    expect(
+      BackgroundLayer.fromCss(`url("img_tree.png") right top no-repeat`),
+    ).toEqual(
+      new BackgroundLayer({
+        image: new ImageBackground({ url: "img_tree.png" }),
+        position: "right top",
+        repeat: "no-repeat",
+      }),
+    );
+
+    expect(
+      BackgroundLayer.fromCss(`url("img_tree.png") repeat-y fixed`),
+    ).toEqual(
+      new BackgroundLayer({
+        image: new ImageBackground({ url: "img_tree.png" }),
+        repeat: "repeat-y",
+        attachment: "fixed",
+      }),
+    );
+
+    expect(
+      BackgroundLayer.fromCss(
+        `url("img_tree.png") top 50% left var(--token-OHjHiOT7v) / 100px 20%`,
+      ),
+    ).toEqual(
+      new BackgroundLayer({
+        image: new ImageBackground({ url: "img_tree.png" }),
+        position: "top 50% left var(--token-OHjHiOT7v)",
+        size: "100px 20%",
+      }),
+    );
   });
 
   it("should parse Background fromCss", function () {
@@ -408,6 +455,31 @@ describe("bg-styles", function () {
         ],
       }),
     );
+  });
+
+  it("should render parsed layers and gradients back to the same CSS", function () {
+    [
+      "none",
+      `url("img_tree.png") right top no-repeat`,
+      `url("img_tree.png") repeat-y fixed`,
+      `url("img_tree.png") 10% 15px / 100px 20% repeat padding-box border-box local`,
+      `url("img_tree.png") top 10% left 20% / 100px 20% repeat-x border-box ${bgClipTextTag} scroll`,
+    ].forEach((value) => {
+      expect(BackgroundLayer.fromCss(value)?.showCss()).toEqual(value);
+    });
+
+    [
+      "linear-gradient(90deg, black 50%, #fff 70%)",
+      "linear-gradient(10deg, #fff 50%)",
+      "repeating-linear-gradient(90deg, black 50%, #fff 70%)",
+      "repeating-linear-gradient(0deg, #fff 50%)",
+    ].forEach((value) => {
+      expect(LinearGradient.fromCss(value)?.showCss()).toEqual(value);
+    });
+
+    const radial =
+      "repeating-radial-gradient(ellipse 60% 40% at 20% 20%, #e66465 0%, #9198e5 100%)";
+    expect(RadialGradient.fromCss(radial)?.showCss()).toEqual(radial);
   });
 
   it("should parse Dim fromCss", function () {
