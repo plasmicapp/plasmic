@@ -1,7 +1,7 @@
 // This package is for bundling packages that should run in the canvas frames.
 // Those packages need to use the same React as the code components, provided by
 // artboardWindow.__Sub.React, so we bundle all those packages here taking
-// __Sub.React and __Sub.ReactDOM globals as parameters with rollup, and
+// __Sub.React and __Sub.ReactDOM globals as parameters with esbuild, and
 // evaluate the generated javascript when each frame loads (but we can fetch the
 // code only once when the project loads and store it as a string).
 
@@ -27,7 +27,7 @@ interface CanvasPkgs {
   slateReact: typeof slateReact;
   localElement?: typeof Element;
   createModal: (
-    props: Pick<ModalProps, InternalModalProps>
+    props: Pick<ModalProps, InternalModalProps>,
   ) => (restProps: Omit<ModalProps, InternalModalProps>) => JSX.Element;
   createThumbnail: (
     element: HTMLElement,
@@ -37,7 +37,7 @@ interface CanvasPkgs {
       quality?: number;
       filter?: (elem: HTMLElement) => boolean;
       includeQueryParams?: boolean;
-    }
+    },
   ) => Promise<string>;
 }
 
