@@ -117,7 +117,7 @@ export const selectMeta: CodeComponentMeta<SelectProps> = {
     },
     children: {
       type: "slot",
-      allowedComponents: ["AntdOption, AntdOptionGroup"],
+      allowedComponents: ["AntdOption", "AntdOptionGroup"],
       defaultValue: [
         {
           type: "component",
@@ -166,7 +166,7 @@ export const selectMeta: CodeComponentMeta<SelectProps> = {
 
 export function registerSelect(
   loader?: Registerable,
-  customSelectMeta?: CodeComponentMeta<SelectProps>
+  customSelectMeta?: CodeComponentMeta<SelectProps>,
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
