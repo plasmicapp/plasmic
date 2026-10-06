@@ -332,7 +332,14 @@ const csrfFreeStaticRoutes = [
   "/api/v1/cli/emit-token",
 ];
 
-const isCsrfFreeRoute = (pathname: string, config: Config) => {
+const isCsrfFreeRoute = (req: Request, config: Config) => {
+  const pathname = req.path;
+  if (
+    ["GET", "HEAD"].includes(req.method) &&
+    pathname !== "/api/v1/auth/csrf"
+  ) {
+    return true;
+  }
   return (
     csrfFreeStaticRoutes.includes(pathname) ||
     pathname.startsWith("/static/js/loader-hydrate") ||
@@ -599,10 +606,7 @@ function addMiddlewares(
   if (!opts?.skipSession) {
     const csrf = lusca.csrf();
     app.use((req, res, next) => {
-      if (
-        isCsrfFreeRoute(req.path, config) ||
-        authRoutes.isPublicApiRequest(req)
-      ) {
+      if (isCsrfFreeRoute(req, config) || authRoutes.isPublicApiRequest(req)) {
         // API requests also don't need csrf
         return next();
       } else {
@@ -2058,7 +2062,9 @@ export function makeExpressSessionMiddleware(config: Config) {
       // By not using a subquery, maybe less likely for deadlock
       limitSubquery: false,
       onError: () => {},
-      //ttl: 86400,
+      // Anonymous sessions are only for CSRF, expire them sooner.
+      ttl: (_store, sess) =>
+        sess.passport?.user ? Math.floor(sess.cookie.maxAge / 1000) : 86400,
     }).connect(getConnection().getRepository(ExpressSession)),
   });
 }
