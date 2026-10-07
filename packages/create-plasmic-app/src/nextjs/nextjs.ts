@@ -54,8 +54,11 @@ export const nextjsStrategy: CPAStrategy = {
     const createCommand =
       `npx create-next-app@16 ${projectPath} ${typescriptArg} ${experimentalAppArg} ${templateArg}` +
       ` --use-${packageManagerCommand(
-        packageManager
+        packageManager,
       )} --eslint --no-src-dir  --import-alias "@/*" --no-tailwind` +
+      // create-next-app 16.4+ enables Cache Components by default, which
+      // rejects the `revalidate` route segment config our templates use
+      " --no-cache-components" +
       // Berry must install into the project we set up below, not the default PnP one
       (isYarnBerry ? " --skip-install" : "");
 
@@ -109,7 +112,7 @@ export const nextjsStrategy: CPAStrategy = {
   reactStrictMode: true,
 };
 
-export default nextConfig;`
+export default nextConfig;`,
       );
     }
   },
@@ -160,7 +163,7 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
   // ./app/robots.ts
   await fs.writeFile(
     path.join(projectPath, "app", `robots.${jsOrTs}`),
-    makeRobots_app(jsOrTs)
+    makeRobots_app(jsOrTs),
   );
 
   if (scheme === "loader") {
@@ -169,47 +172,47 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
       path.join(projectPath, `plasmic-init.${jsOrTs}`),
       makePlasmicInit_app_loader(
         projectId,
-        ensure(projectApiToken, "Missing projectApiToken")
-      )
+        ensure(projectApiToken, "Missing projectApiToken"),
+      ),
     );
 
     // ./plasmic-init-client.ts
     await fs.writeFile(
       path.join(projectPath, `plasmic-init-client.${jsOrTs}x`),
-      makePlasmicInitClient_app_loader(jsOrTs)
+      makePlasmicInitClient_app_loader(jsOrTs),
     );
 
     // ./app/plasmic-host/page.tsx
     await fs.mkdir(path.join(projectPath, "app", "plasmic-host"));
     await fs.writeFile(
       path.join(projectPath, "app", "plasmic-host", `page.${jsOrTs}x`),
-      makePlasmicHostPage_app_loader()
+      makePlasmicHostPage_app_loader(),
     );
 
     // ./app/[[...catchall]]/page.tsx
     await fs.mkdir(path.join(projectPath, "app", "[[...catchall]]"));
     await fs.writeFile(
       path.join(projectPath, "app", "[[...catchall]]", `page.${jsOrTs}x`),
-      makeCatchallPage_app_loader(jsOrTs)
+      makeCatchallPage_app_loader(jsOrTs),
     );
 
     // ./app/sitemap.ts
     await fs.writeFile(
       path.join(projectPath, "app", `sitemap.${jsOrTs}`),
-      makeSitemap_app_loader(jsOrTs)
+      makeSitemap_app_loader(jsOrTs),
     );
   } else {
     // ./plasmic-init-client.tsx
     await fs.writeFile(
       path.join(projectPath, `plasmic-init-client.${jsOrTs}x`),
-      makePlasmicInitClient_app_codegen(jsOrTs)
+      makePlasmicInitClient_app_codegen(jsOrTs),
     );
 
     // ./app/plasmic-host/page.tsx
     await fs.mkdir(path.join(projectPath, "app", "plasmic-host"));
     await fs.writeFile(
       path.join(projectPath, "app", "plasmic-host", `page.${jsOrTs}x`),
-      makePlasmicHostPage_app_codegen()
+      makePlasmicHostPage_app_codegen(),
     );
 
     // This should generate
@@ -226,7 +229,7 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
     // ./app/sitemap.ts
     await fs.writeFile(
       path.join(projectPath, "app", `sitemap.${jsOrTs}`),
-      makeSitemap_app_codegen(jsOrTs)
+      makeSitemap_app_codegen(jsOrTs),
     );
 
     // Read plasmic.json so we can wire each top-level project's plasmic.css
@@ -245,18 +248,18 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
     // ./app/layout.tsx
     await fs.writeFile(
       path.join(projectPath, "app", `layout.${jsOrTs}x`),
-      makeLayout_app_codegen(jsOrTs, cssImports)
+      makeLayout_app_codegen(jsOrTs, cssImports),
     );
 
     // Make an index (/) page if the project didn't have one.
     const plasmicFiles = L.map(
       L.flatMap(config.projects, (p) => p.components),
-      (c) => c.importSpec.modulePath
+      (c) => c.importSpec.modulePath,
     );
     if (!plasmicFiles.find((f) => f.includes("app/page."))) {
       await fs.writeFile(
         path.join(projectPath, "app", `page.${jsOrTs}x`),
-        generateWelcomePage(config, "nextjs")
+        generateWelcomePage(config, "nextjs"),
       );
     }
   }
@@ -278,7 +281,7 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
   // ./pages/robots.txt.ts
   await fs.writeFile(
     path.join(projectPath, "pages", `robots.txt.${jsOrTs}`),
-    makeRobots_pages(jsOrTs)
+    makeRobots_pages(jsOrTs),
   );
 
   if (scheme === "loader") {
@@ -287,32 +290,32 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
       path.join(projectPath, `plasmic-init.${jsOrTs}`),
       makePlasmicInit_pages_loader(
         projectId,
-        ensure(projectApiToken, "Missing projectApiToken")
-      )
+        ensure(projectApiToken, "Missing projectApiToken"),
+      ),
     );
 
     // ./pages/plasmic-host.tsx
     await fs.writeFile(
       path.join(projectPath, "pages", `plasmic-host.${jsOrTs}x`),
-      makePlasmicHostPage_pages_loader()
+      makePlasmicHostPage_pages_loader(),
     );
 
     // ./pages/[[...catchall]].tsx
     await fs.writeFile(
       path.join(projectPath, "pages", `[[...catchall]].${jsOrTs}x`),
-      makeCatchallPage_pages_loader(jsOrTs)
+      makeCatchallPage_pages_loader(jsOrTs),
     );
 
     // ./pages/sitemap.xml.ts
     await fs.writeFile(
       path.join(projectPath, "pages", `sitemap.xml.${jsOrTs}`),
-      makeSitemap_pages_loader(jsOrTs)
+      makeSitemap_pages_loader(jsOrTs),
     );
   } else {
     // ./pages/plasmic-host.tsx
     await fs.writeFile(
       path.join(projectPath, "pages", `plasmic-host.${jsOrTs}x`),
-      makePlasmicHostPage_pages_codegen()
+      makePlasmicHostPage_pages_codegen(),
     );
 
     // This should generate
@@ -329,7 +332,7 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
     // ./pages/sitemap.xml.ts
     await fs.writeFile(
       path.join(projectPath, "pages", `sitemap.xml.${jsOrTs}`),
-      makeSitemap_pages_codegen(jsOrTs)
+      makeSitemap_pages_codegen(jsOrTs),
     );
 
     // Read plasmic.json so we can wire each top-level project's plasmic.css
@@ -345,18 +348,18 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
     // ./pages/_app.tsx
     await fs.writeFile(
       appAbsPath,
-      makeCustomApp_pages_codegen(jsOrTs, cssImports)
+      makeCustomApp_pages_codegen(jsOrTs, cssImports),
     );
 
     // Make an index page if the project didn't have one.
     const plasmicFiles = L.map(
       L.flatMap(config.projects, (p) => p.components),
-      (c) => c.importSpec.modulePath
+      (c) => c.importSpec.modulePath,
     );
     if (!plasmicFiles.find((f) => f.includes("/index."))) {
       await fs.writeFile(
         path.join(projectPath, "pages", `index.${jsOrTs}x`),
-        generateWelcomePage(config, "nextjs")
+        generateWelcomePage(config, "nextjs"),
       );
     }
   }
@@ -387,11 +390,11 @@ function getPlasmicCssImports(args: {
       const absoluteCssPath = path.join(
         projectPath,
         config.srcDir,
-        p.cssFilePath
+        p.cssFilePath,
       );
       let relPath = path.relative(
         path.dirname(rootFileAbsPath),
-        absoluteCssPath
+        absoluteCssPath,
       );
       if (!relPath.startsWith(".")) {
         relPath = `./${relPath}`;
