@@ -16,6 +16,7 @@ import { useHostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
 import {
   StudioAppUser,
   StudioCtx,
+  aiStudioCtx,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
@@ -34,7 +35,7 @@ import {
   spawn,
   withoutNils,
 } from "@/wab/shared/common";
-import type { AiOutputFormat } from "@/wab/shared/copilot/copilot-tool-types";
+import type { AiIdentity } from "@/wab/shared/copilot/copilot-tool-types";
 import {
   isFrameComponent,
   isPageComponent,
@@ -229,6 +230,7 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
       async executeCopilotToolCall(
         toolName: string,
         toolArgs: Record<string, unknown>,
+        identity: AiIdentity,
       ): Promise<CopilotToolCallResult> {
         const copilotTool = COPILOT_TOOLS[toolName];
 
@@ -243,7 +245,11 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
         }
 
         try {
-          const output = await copilotTool.execute(studioCtx, toolArgs);
+          const output = await copilotTool.execute(
+            aiStudioCtx(studioCtx, identity, copilotTool.title),
+            toolArgs,
+            { outputFormat: identity.outputFormat },
+          );
           return { success: true, output };
         } catch (err) {
           return {
@@ -254,9 +260,6 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
             },
           };
         }
-      },
-      async setPreferredAiOutputFormat(format: AiOutputFormat): Promise<void> {
-        studioCtx.setPreferredAiOutputFormat(format);
       },
       /**
        * List the project resources that can be `@`-mentioned in Copilot Chat.

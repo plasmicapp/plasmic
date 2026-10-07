@@ -1,4 +1,10 @@
+import { mockDeepAuto } from "@/wab/__testonly__/mock";
 import { fakeStudioCtx } from "@/wab/client/__testonly__/fake-init-ctx";
+import { createStyleTokensTool } from "@/wab/client/copilot/enterprise/tools/createStyleTokens";
+import { deleteStyleTokensTool } from "@/wab/client/copilot/enterprise/tools/deleteStyleTokens";
+import { navigateTool } from "@/wab/client/copilot/enterprise/tools/navigate";
+import { StudioCtx, aiStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   ApiFeatureTier,
@@ -11,6 +17,7 @@ import { getArenaFrames } from "@/wab/shared/Arenas";
 import { generateSiteFromBundle } from "@/wab/shared/__testonly__/site-tests-utils";
 import { Bundle } from "@/wab/shared/bundler";
 import { withoutNils } from "@/wab/shared/common";
+import { AiIdentity } from "@/wab/shared/copilot/copilot-tool-types";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import { ParamExportType, mkParam } from "@/wab/shared/core/lang";
 import { getDedicatedArena } from "@/wab/shared/core/sites";
@@ -310,5 +317,126 @@ describe("attachComponent", () => {
       expect.arrayContaining([select, option]),
     );
     expect(studioCtx.observeComponents([select, option])).toBe(false);
+  });
+});
+
+describe("aiStudioCtx", () => {
+  const chat: AiIdentity = {
+    client: "plasmic-ai",
+    model: "claude-sonnet-5",
+    outputFormat: "json",
+  };
+  const mcp: AiIdentity = {
+    client: "claude-code",
+    model: "claude-opus-5-5",
+    outputFormat: "xml",
+  };
+
+  const brandColor = {
+    tokens: [{ name: "Brand", type: "Color" as const, value: "#0a84ff" }],
+  };
+
+  function spyOnChangeOptions(studioCtx: StudioCtx) {
+    // Nothing reads a change's identity in our codebase yet,
+    // so we are just checking the opts each change starts with
+    // to ensure the aiStudioCtx overrides are working correctly.
+    const change = vi.spyOn(studioCtx, "_change");
+    return () => change.mock.calls.map(([, opts]) => opts);
+  }
+
+  describe("adds the AI's identity and the description", () => {
+    it("to changes the tool starts", async () => {
+      const { studioCtx } = fakeStudioCtx();
+      const changeOptions = spyOnChangeOptions(studioCtx);
+
+      await createStyleTokensTool.execute(
+        aiStudioCtx(studioCtx, mcp, "Create Style Tokens"),
+        brandColor,
+      );
+
+      expect(changeOptions()).toEqual([
+        { identity: mcp, description: "Create Style Tokens" },
+      ]);
+    });
+
+    it("to changes SiteOps starts for the tool", async () => {
+      const { studioCtx } = fakeStudioCtx();
+      await createStyleTokensTool.execute(studioCtx, brandColor);
+      const token = studioCtx.site.styleTokens.find((t) => t.name === "Brand")!;
+      const changeOptions = spyOnChangeOptions(studioCtx);
+
+      // The tool deletes through studioCtx.siteOps(), outside any change of its own.
+      await deleteStyleTokensTool.execute(
+        aiStudioCtx(studioCtx, mcp, "Delete Style Tokens"),
+        { tokenUuids: [token.uuid] },
+      );
+
+      expect(changeOptions()).toEqual([
+        { identity: mcp, description: "Delete Style Tokens" },
+      ]);
+    });
+
+    it("to changes StudioCtx methods start for the tool", async () => {
+      const { studioCtx } = fakeStudioCtx();
+      // Leaving an arena snapshots its viewport.
+      studioCtx.viewportCtx = mockDeepAuto<ViewportCtx>();
+      const pricing = studioCtx.addComponent("Pricing", {
+        type: ComponentType.Page,
+        noSwitchArena: true,
+      });
+      studioCtx.addComponent("Home", { type: ComponentType.Page });
+      const changeOptions = spyOnChangeOptions(studioCtx);
+
+      // getViewCtxForComponent switches the arena with its own this.change().
+      await navigateTool.execute(aiStudioCtx(studioCtx, mcp, "Navigate"), {
+        componentUuid: pricing.uuid,
+      });
+
+      // Switching arenas also changes the URL, and Studio reacts to the new URL
+      // with changes of its own (not the tool's), so we only check the first one.
+      expect(changeOptions()[0]).toEqual({
+        identity: mcp,
+        description: "Navigate",
+      });
+    });
+  });
+
+  it("keeps each tool call's identity when calls overlap", async () => {
+    const { studioCtx } = fakeStudioCtx();
+    const changeOptions = spyOnChangeOptions(studioCtx);
+    const chatCtx = aiStudioCtx(studioCtx, chat, "Insert HTML");
+    const mcpCtx = aiStudioCtx(studioCtx, mcp, "Change Element");
+
+    // The MCP tool's change lands between two of the chat tool's changes.
+    await Promise.all([
+      chatCtx.change(() => ok()),
+      mcpCtx.change(() => ok()),
+      chatCtx.change(() => ok()),
+    ]);
+
+    expect(changeOptions()).toEqual([
+      { identity: chat, description: "Insert HTML" },
+      { identity: mcp, description: "Change Element" },
+      { identity: chat, description: "Insert HTML" },
+    ]);
+  });
+
+  it("leaves changes made through the plain StudioCtx to the user", async () => {
+    const { studioCtx } = fakeStudioCtx();
+    const changeOptions = spyOnChangeOptions(studioCtx);
+    const chatCtx = aiStudioCtx(studioCtx, chat, "Insert HTML");
+
+    // The user's change lands between two of the tool's changes.
+    await Promise.all([
+      chatCtx.change(() => ok()),
+      studioCtx.change(() => ok()),
+      chatCtx.change(() => ok()),
+    ]);
+
+    expect(changeOptions()).toEqual([
+      { identity: chat, description: "Insert HTML" },
+      {},
+      { identity: chat, description: "Insert HTML" },
+    ]);
   });
 });

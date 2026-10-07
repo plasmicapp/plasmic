@@ -3,12 +3,12 @@ name: plasmic-designer
 description: Build and modify Plasmic Studio designs using copilot tools via Chrome DevTools MCP. First argument should be a project ID, followed by the design request. Use this skill whenever the user mentions Plasmic, Plasmic Studio, visual web builder, or asks to design, build, edit, or modify UI components, pages, sections, or layouts inside a Plasmic project. Also trigger when the user references a Plasmic project ID, wants to add/remove/restyle elements in a visual editor, or asks about Plasmic component props, variants, slots, or tokens — even if they don't say "Plasmic" explicitly but describe visual design work that implies it.
 allowed-tools: mcp__chrome-devtools__evaluate_script mcp__chrome-devtools__navigate_page mcp__chrome-devtools__take_screenshot mcp__chrome-devtools__list_pages
 metadata:
-  version: "1.3.2"
+  version: "1.3.3"
 ---
 
 # Plasmic Designer
 
-Skill Version: 1.3.2
+Skill Version: 1.3.3
 
 Control Plasmic Studio through Chrome DevTools MCP to build and modify production-ready interfaces.
 
@@ -35,7 +35,6 @@ The studio base URL is `https://studio.plasmic.app` by default. Only use `http:/
          return await window.PLASMIC_AI_TOOLS.identify({
            model: "<model>",
            client: "<client>",
-           skill: "<skill>",
            outputFormat: "<json|xml>",
          });
        }
@@ -52,7 +51,6 @@ The studio base URL is `https://studio.plasmic.app` by default. Only use `http:/
 
    - `model` — Model name as known to the agent (e.g. `claude-opus-4-7`, `anthropic/claude-sonnet-4-6`, `gpt-5.3-codex`).
    - `client` — AI client/CLI invoking the tool (e.g. `claude-code`, `claude-code@1.x`, `opencode`, `cursor`, `cline`).
-   - `skill` — Skill name and version being used (e.g. `plasmic-designer@1.3.2`, `unknown`).
    - `outputFormat` — Preferred format for tool output, `"json"` or `"xml"`.
 
    Pass `"unknown"` for any required string field you cannot reliably identify.

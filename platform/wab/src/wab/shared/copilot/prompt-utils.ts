@@ -104,6 +104,8 @@ export const copilotMessageMetadataSchema = z.object({
       componentUuids: z.array(z.string()),
     })
     .optional() satisfies z.ZodType<ArenaRef | undefined>,
+  /** The model that wrote an assistant message. The server picks it. */
+  model: z.string().optional(),
 });
 
 export type CopilotMessageMetadata = z.infer<

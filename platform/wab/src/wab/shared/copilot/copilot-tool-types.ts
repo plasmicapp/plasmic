@@ -4,7 +4,20 @@ import { zodSchema, type JSONSchema7 } from "ai";
 import { z } from "zod";
 
 /** Serialization format an AI agent prefers for copilot tool output. */
-export type AiOutputFormat = "json" | "xml";
+export const aiOutputFormatSchema = z.enum(["json", "xml"]);
+
+export type AiOutputFormat = z.infer<typeof aiOutputFormatSchema>;
+
+export const aiIdentitySchema = z.object({
+  /** The AI client, e.g. "plasmic-ai", "claude-code" or "cursor". */
+  client: z.string().trim().min(1),
+  /** The model name as the client knows it, or "unknown". */
+  model: z.string().trim().min(1),
+  /** Tool calls output format. */
+  outputFormat: aiOutputFormatSchema,
+});
+
+export type AiIdentity = z.infer<typeof aiIdentitySchema>;
 
 export type CopilotToolMeta<
   TInput extends JSONSchema7 | z.ZodObject<z.ZodRawShape> =
@@ -28,14 +41,15 @@ export type CopilotTool<
   TOutput extends z.ZodTypeAny = z.ZodTypeAny,
 > = CopilotToolMeta<TInput, TOutput> & {
   /**
-   * Execute the tool, returning the serialized output in the agent's preferred format.
-   * The wrapper validates raw input against `inputSchema`, running any transforms.
-   * Throws on error. `opts.prettify` indents the output for testing (default false).
+   * Execute the tool, returning the output serialized as `opts.outputFormat`
+   * (default "json"). The wrapper validates raw input against `inputSchema`,
+   * running any transforms. Throws on error. `opts.prettify` indents the output
+   * for testing (default false).
    */
   execute: (
     studioCtx: StudioCtx,
     input: z.input<TInput>,
-    opts?: { prettify?: boolean },
+    opts?: { outputFormat?: AiOutputFormat; prettify?: boolean },
   ) => Promise<string>;
 };
 
@@ -64,7 +78,7 @@ export function defineCopilotTool<
       const output = meta.outputSchema.parse(
         await execute(studioCtx, parsedInput),
       );
-      return studioCtx.preferredAiOutputFormat() === "xml"
+      return opts?.outputFormat === "xml"
         ? jsonToXml(output, prettify)
         : JSON.stringify(output, null, prettify ? 2 : undefined);
     },

@@ -252,7 +252,7 @@ import {
   getComponentArenaBaseFrame,
 } from "@/wab/shared/component-arenas";
 import { RootComponentVariantFrame } from "@/wab/shared/component-frame";
-import type { AiOutputFormat } from "@/wab/shared/copilot/copilot-tool-types";
+import type { AiIdentity } from "@/wab/shared/copilot/copilot-tool-types";
 import {
   CodeComponent,
   ComponentType,
@@ -552,6 +552,12 @@ export interface StudioChangeOpts {
   // - Reactions to other changes, such as fixes made by a resize observer;
   // - Fixes made to the data model when initializing Studio.
   noUndoRecord?: boolean;
+
+  // The AI agent identity that made the change.
+  identity?: AiIdentity;
+
+  // A short, human-readable summary of the change.
+  description?: string;
 }
 
 enum SaveResult {
@@ -1300,7 +1306,6 @@ export class StudioCtx extends WithDbCtx {
   private _isUndoing = false;
   private _isRestoring = false;
   private _isRefreshing = false;
-  private _changeOpts: StudioChangeOpts[] = [];
 
   isChanging() {
     return this._isChanging;
@@ -1376,7 +1381,6 @@ export class StudioCtx extends WithDbCtx {
         new Error("There shouldn't be nested calls of .change()"),
         "Nested changeFn"
       ); */
-      this._changeOpts.push(opts);
       const res = f();
       await drainQueue(this.modelChangeQueue);
       return res;
@@ -1459,7 +1463,6 @@ export class StudioCtx extends WithDbCtx {
         E
       > => {
         this._isChanging = true;
-        this._changeOpts = [opts];
         try {
           const maybeChanges = this.recorder.withRecording<E>(f);
           if (maybeChanges.isErr()) {
@@ -3093,20 +3096,6 @@ export class StudioCtx extends WithDbCtx {
 
   get isCopilotChatOpen() {
     return this._isCopilotChatOpen.get();
-  }
-
-  private _preferredAiOutputFormat = observable.box<AiOutputFormat>("json");
-
-  /**
-   * Serialization format an AI agent prefers for copilot tool output, declared
-   * via `window.PLASMIC_AI_TOOLS.identify`. Defaults to JSON.
-   */
-  preferredAiOutputFormat(): AiOutputFormat {
-    return this._preferredAiOutputFormat.get();
-  }
-
-  setPreferredAiOutputFormat(format: AiOutputFormat) {
-    this._preferredAiOutputFormat.set(format);
   }
 
   private _xLeftPaneWidth = observable.box(LEFT_PANE_INIT_WIDTH);
@@ -8151,4 +8140,21 @@ export async function addGetManyQuery({
     return query_;
   });
   return query;
+}
+
+/**
+ * Returns a StudioCtx for one AI tool call. Every change started through it
+ * gets the AI's identity and the description.
+ */
+export function aiStudioCtx(
+  studioCtx: StudioCtx,
+  identity: AiIdentity,
+  description: string,
+): StudioCtx {
+  const change: StudioCtx["_change"] = (f, opts) =>
+    studioCtx._change(f, { ...opts, identity, description });
+  return new Proxy(studioCtx, {
+    get: (target, prop, receiver) =>
+      prop === "_change" ? change : Reflect.get(target, prop, receiver),
+  });
 }
