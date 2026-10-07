@@ -73,14 +73,15 @@ export type KeysExtended<T, Extended> = {
 export type ModelConflictsMeta = {
   // For each class (each export that extends TypeStamped and isn't
   // an abstract class) we create an object describing the fields
-  [Cls in KeysExtended<
-    typeof classes,
-    TypeStamped<any> & (new (...args: any) => any)
-  >]: {
-    [P in KeysFiltered<
-      InstanceType<(typeof classes)[Cls]>,
-      "uid" | "typeTag"
-    >]: FieldConflictDescriptorMeta<InstanceType<(typeof classes)[Cls]>, P>;
+  [
+    Cls in KeysExtended<
+      typeof classes,
+      TypeStamped<any> & (new (...args: any) => any)
+    >
+  ]: {
+    [
+      P in KeysFiltered<InstanceType<(typeof classes)[Cls]>, "uid" | "typeTag">
+    ]: FieldConflictDescriptorMeta<InstanceType<(typeof classes)[Cls]>, P>;
   };
 };
 
@@ -111,66 +112,65 @@ export type FieldConflictDescriptorMeta<
       excludeFromClone: (v: Cls[P]) => boolean;
     }
   | (NonNullable<Cls[P]> extends Array<infer E>
-      ?
-          | { arrayType: "atomic" }
-          | ({
-              arrayType: "ordered" | "unordered";
-              contents?: boolean;
-            } & (
-              | { conflictType: "unexpected" }
-              | (E extends classes.ObjInst
-                  ? // `walkAndFixNames` expects array values to be `ObjInst`s
-                      | {
-                          conflictType: "rename";
-                          /** nameKey should never traverse WeakRefs */
-                          nameKey: Leaves<E>;
-                          customRenameFn?: (
-                            site: classes.Site,
-                            node: E,
-                            newName: string,
-                          ) => void;
-                          excludeFromRename?: (node: E, parent: Cls) => boolean;
-                        }
-                      | {
-                          conflictType: "special";
-                          forceRename: true;
-                          nameKey: Paths<E>;
-                          excludeFromRename?: (node: E, parent: Cls) => boolean;
-                          handler: MergeSpecialFieldHandler<Cls>;
-                        }
-                  : never)
-              | ({
-                  conflictType: "merge";
-                  excludeFromMerge?: (node: E) => boolean;
-                } & (
+      ? | { arrayType: "atomic" }
+        | ({
+            arrayType: "ordered" | "unordered";
+            contents?: boolean;
+          } & (
+            | { conflictType: "unexpected" }
+            | (E extends classes.ObjInst
+                ? // `walkAndFixNames` expects array values to be `ObjInst`s
                   | {
-                      mergeKey: Paths<E>;
-                      // When the merge key changes but the instance is
-                      // preserved, we must clone the instance to make sure the
-                      // merged site will see it as a new instance and clone all
-                      // field values.
-                      handleUpdatedValues: (
-                        newVals: E[],
-                        parent: Cls,
-                        bundler: Bundler,
-                      ) => E[];
+                      conflictType: "rename";
+                      /** nameKey should never traverse WeakRefs */
+                      nameKey: Leaves<E>;
+                      customRenameFn?: (
+                        site: classes.Site,
+                        node: E,
+                        newName: string,
+                      ) => void;
+                      excludeFromRename?: (node: E, parent: Cls) => boolean;
                     }
                   | {
-                      mergeKeyIsIdentity: true;
+                      conflictType: "special";
+                      forceRename: true;
+                      nameKey: Paths<E>;
+                      excludeFromRename?: (node: E, parent: Cls) => boolean;
+                      handler: MergeSpecialFieldHandler<Cls>;
                     }
-                  | {
-                      mergeKeyFn: (node: E) => any;
-                      handleUpdatedValues: (
-                        newVals: E[],
-                        parent: Cls,
-                        bundler: Bundler,
-                      ) => E[];
-                    }
-                ))
-            ))
-          | "generic"
-          | "contents"
-          | "special"
+                : never)
+            | ({
+                conflictType: "merge";
+                excludeFromMerge?: (node: E) => boolean;
+              } & (
+                | {
+                    mergeKey: Paths<E>;
+                    // When the merge key changes but the instance is
+                    // preserved, we must clone the instance to make sure the
+                    // merged site will see it as a new instance and clone all
+                    // field values.
+                    handleUpdatedValues: (
+                      newVals: E[],
+                      parent: Cls,
+                      bundler: Bundler,
+                    ) => E[];
+                  }
+                | {
+                    mergeKeyIsIdentity: true;
+                  }
+                | {
+                    mergeKeyFn: (node: E) => any;
+                    handleUpdatedValues: (
+                      newVals: E[],
+                      parent: Cls,
+                      bundler: Bundler,
+                    ) => E[];
+                  }
+              ))
+          ))
+        | "generic"
+        | "contents"
+        | "special"
       : "generic" | "contents" | "special");
 
 const immutableClass = <T>() =>
@@ -495,7 +495,6 @@ export const modelConflictsMeta: ModelConflictsMeta = {
       arrayType: "unordered",
       conflictType: "merge",
       mergeKeyIsIdentity: true,
-      contents: true,
     },
     codeLibraries: {
       arrayType: "unordered",

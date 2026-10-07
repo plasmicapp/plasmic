@@ -109,6 +109,10 @@ import {
   fixVirtualSlotArgs,
   inferUpdatedComponents,
 } from "@/wab/shared/site-diffs/merge-components";
+import {
+  fixDuplicatedCodeLibraries,
+  fixDuplicatedCustomFunctions,
+} from "@/wab/shared/site-diffs/merge-custom-functions";
 import { fixProjectDependencies } from "@/wab/shared/site-diffs/merge-deps";
 import { fixDuplicatedRegisteredTokens } from "@/wab/shared/site-diffs/merge-tokens";
 import {
@@ -1884,6 +1888,10 @@ function runMergeFnAndApplyFixes(
       fixDuplicatedCodeComponents(mergedSite);
 
       fixDuplicatedRegisteredTokens(mergedSite);
+
+      fixDuplicatedCustomFunctions(mergedSite);
+
+      fixDuplicatedCodeLibraries(mergedSite);
 
       fixSwappedTplComponents(ancestor, a, b, mergedSite);
 

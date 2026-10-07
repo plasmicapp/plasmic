@@ -18,6 +18,7 @@ import {
   ModelChange,
   RecordedChanges,
 } from "@/wab/shared/core/observable-model";
+import { serverQueryId } from "@/wab/shared/core/query-ids";
 import { toFinalToken } from "@/wab/shared/core/tokens";
 import {
   removeMarkersToTpl,
@@ -41,9 +42,12 @@ import {
   ComponentArena,
   ComponentDataQuery,
   ComponentInstance,
+  ComponentServerQuery,
   ComponentVariantGroup,
   CompositeExpr,
   CustomCode,
+  CustomFunction,
+  CustomFunctionExpr,
   DataSourceOpExpr,
   ensureKnownEventHandler,
   Expr,
@@ -56,6 +60,9 @@ import {
   isKnownArgType,
   isKnownComponent,
   isKnownComponentDataQuery,
+  isKnownComponentServerQuery,
+  isKnownCustomFunction,
+  isKnownCustomFunctionExpr,
   isKnownExpr,
   isKnownImageAsset,
   isKnownMixin,
@@ -129,8 +136,10 @@ export interface DeletedAssetsSummary {
   deletedStates: State[];
   deletedTplNodes: TplNode[];
   deletedComponentDataQueries: ComponentDataQuery[];
+  deletedComponentServerQueries: ComponentServerQuery[];
   deletedThemes: Theme[];
   deletedArgTypes: ArgType[];
+  deletedCustomFunctions: CustomFunction[];
   deletedExprs: Expr[];
 }
 
@@ -147,8 +156,10 @@ export function getEmptyDeletedAssetsSummary(): DeletedAssetsSummary {
     deletedStates: [],
     deletedTplNodes: [],
     deletedComponentDataQueries: [],
+    deletedComponentServerQueries: [],
     deletedThemes: [],
     deletedArgTypes: [],
+    deletedCustomFunctions: [],
     deletedExprs: [],
   };
 }
@@ -181,10 +192,14 @@ export function updateSummaryFromDeletedInstances(
       summary.deletedStates.push(inst);
     } else if (isKnownComponentDataQuery(inst)) {
       summary.deletedComponentDataQueries.push(inst);
+    } else if (isKnownComponentServerQuery(inst)) {
+      summary.deletedComponentServerQueries.push(inst);
     } else if (isKnownTheme(inst)) {
       summary.deletedThemes.push(inst);
     } else if (isKnownArgType(inst)) {
       summary.deletedArgTypes.push(inst);
+    } else if (isKnownCustomFunction(inst)) {
+      summary.deletedCustomFunctions.push(inst);
     } else if (opts?.includeTplNodesAndExprs && isKnownTplNode(inst)) {
       // We don't always include tpl nodes as it could affect multiplayer
       // performance and the only possible conflicts are really hard to happen, e.g.
@@ -213,8 +228,10 @@ function cloneDeletedAssetsSummary(
     deletedStates: [...summary.deletedStates],
     deletedTplNodes: [...summary.deletedTplNodes],
     deletedComponentDataQueries: [...summary.deletedComponentDataQueries],
+    deletedComponentServerQueries: [...summary.deletedComponentServerQueries],
     deletedThemes: [...summary.deletedThemes],
     deletedArgTypes: [...summary.deletedArgTypes],
+    deletedCustomFunctions: [...summary.deletedCustomFunctions],
     deletedExprs: [...summary.deletedExprs],
   };
 }
@@ -359,6 +376,26 @@ export function fixDanglingReferenceConflicts(
     const isInstDeleted = (inst: ObjInst) =>
       toBeDeleted.has(inst) || !recorder.getAnyPathToChild(inst);
 
+    // Finds the param that a `FunctionArg` of a deleted `ArgType` should point
+    // at instead: the function's current param with the same name and type.
+    // This happens when both sides of a merge re-synced the same registered
+    // function param, so each side has its own `ArgType` for it.
+    const findReplacementArgType = (
+      functionArg: FunctionArg,
+      argType: ArgType,
+    ) => {
+      const customFunctionExpr = recorder
+        .getRefsToInst(functionArg)
+        .find(isKnownCustomFunctionExpr);
+      return customFunctionExpr?.func.params.find(
+        (param) =>
+          param !== argType &&
+          param.argName === argType.argName &&
+          param.type.name === argType.type.name &&
+          !isInstDeleted(param),
+      );
+    };
+
     // Deletes `Expr`s containing WeakRefs
     const deleteExpr = (
       expr:
@@ -369,7 +406,8 @@ export function fixDanglingReferenceConflicts(
         | PageHref
         | FunctionArg
         | StrongFunctionArg
-        | FunctionExpr,
+        | FunctionExpr
+        | CustomFunctionExpr,
     ) =>
       recorder.getRefsToInst(expr).forEach((ref) =>
         switchType(ref)
@@ -410,6 +448,14 @@ export function fixDanglingReferenceConflicts(
             delete href.params[key];
           })
           .when(FunctionArg, (functionArg) => deleteExpr(functionArg))
+          .when(CustomFunctionExpr, (customFunctionExpr) =>
+            removeWhere(customFunctionExpr.args, (arg) => arg === expr),
+          )
+          .when(ComponentServerQuery, (query) => {
+            if (query.op === expr) {
+              query.op = null;
+            }
+          })
           .when(CollectionExpr, (collectionExpr) => {
             collectionExpr.exprs = collectionExpr.exprs.map((childExpr) =>
               childExpr === expr ? null : childExpr,
@@ -444,6 +490,23 @@ export function fixDanglingReferenceConflicts(
             }
           })
           .elseUnsafe(() => unexpectedRef(expr, ref)),
+      );
+
+    const deleteQueryRef = (queryRef: QueryRef) =>
+      recorder.getRefsToInst(queryRef).forEach((ref) =>
+        switchType(ref)
+          .when(DataSourceOpExpr, (dataSourceOpExpr) => {
+            if (dataSourceOpExpr.parent === queryRef) {
+              dataSourceOpExpr.parent = null;
+            }
+          })
+          .when(QueryInvalidationExpr, (queryInvalidationExpr) => {
+            queryInvalidationExpr.invalidationQueries =
+              queryInvalidationExpr.invalidationQueries.filter(
+                (invalidationQuery) => invalidationQuery !== queryRef,
+              );
+          })
+          .elseUnsafe(() => unexpectedRef(queryRef, ref)),
       );
 
     const deleteState = (state: State) =>
@@ -871,23 +934,7 @@ export function fixDanglingReferenceConflicts(
                   .elseUnsafe(() => unexpectedRef(marker, markerRef)),
               );
           })
-          .when(QueryRef, (q) => {
-            recorder.getRefsToInst(q).forEach((ref) =>
-              switchType(ref)
-                .when(DataSourceOpExpr, (dataSourceOpExpr) => {
-                  if (dataSourceOpExpr.parent === q) {
-                    dataSourceOpExpr.parent = null;
-                  }
-                })
-                .when(QueryInvalidationExpr, (queryInvalidationExpr) => {
-                  queryInvalidationExpr.invalidationQueries =
-                    queryInvalidationExpr.invalidationQueries.filter(
-                      (invalidationQuery) => invalidationQuery !== q,
-                    );
-                })
-                .elseUnsafe(() => unexpectedRef(q, ref)),
-            );
-          })
+          .when(QueryRef, (q) => deleteQueryRef(q))
           .elseUnsafe(() => unexpectedRef(tpl, tplRef)),
       );
     });
@@ -899,22 +946,36 @@ export function fixDanglingReferenceConflicts(
           .filter((inst) => !isInstDeleted(inst));
         refs.forEach((queryRef) =>
           switchType(queryRef)
+            .when(QueryRef, (q) => deleteQueryRef(q))
+            .elseUnsafe(() => unexpectedRef(query, queryRef)),
+        );
+      });
+
+    summary.deletedComponentServerQueries
+      .filter(isInstDeleted)
+      .forEach((query) => {
+        const id = serverQueryId(query);
+        // Similar check to TplMgr.fixReferencesToRemovedServerQueries to
+        // ensure QueryRef are moved to another surviving query.
+        const replacement = id
+          ? site.components
+              .flatMap((c) => c.serverQueries)
+              .find(
+                (q) =>
+                  q !== query && !isInstDeleted(q) && serverQueryId(q) === id,
+              )
+          : undefined;
+        const refs = recorder
+          .getRefsToInst(query)
+          .filter((inst) => !isInstDeleted(inst));
+        refs.forEach((queryRef) =>
+          switchType(queryRef)
             .when(QueryRef, (q) => {
-              recorder.getRefsToInst(q).forEach((ref) =>
-                switchType(ref)
-                  .when(DataSourceOpExpr, (dataSourceOpExpr) => {
-                    if (dataSourceOpExpr.parent === q) {
-                      dataSourceOpExpr.parent = null;
-                    }
-                  })
-                  .when(QueryInvalidationExpr, (queryInvalidationExpr) => {
-                    queryInvalidationExpr.invalidationQueries =
-                      queryInvalidationExpr.invalidationQueries.filter(
-                        (invalidationQuery) => invalidationQuery !== q,
-                      );
-                  })
-                  .elseUnsafe(() => unexpectedRef(q, ref)),
-              );
+              if (replacement) {
+                q.ref = replacement;
+              } else {
+                deleteQueryRef(q);
+              }
             })
             .elseUnsafe(() => unexpectedRef(query, queryRef)),
         );
@@ -933,13 +994,33 @@ export function fixDanglingReferenceConflicts(
           .elseUnsafe(() => unexpectedRef(theme, themeRef)),
       );
     });
+    summary.deletedCustomFunctions
+      .filter(isInstDeleted)
+      .forEach((customFunction) => {
+        const refs = recorder
+          .getRefsToInst(customFunction)
+          .filter((inst) => !isInstDeleted(inst));
+        refs.forEach((ref) =>
+          switchType(ref)
+            .when(CustomFunctionExpr, (expr) => deleteExpr(expr))
+            .elseUnsafe(() => unexpectedRef(customFunction, ref)),
+        );
+      });
     summary.deletedArgTypes.filter(isInstDeleted).forEach((argType) => {
       const refs = recorder
         .getRefsToInst(argType)
         .filter((inst) => !isInstDeleted(inst));
       refs.forEach((ref) =>
         switchType(ref)
-          .when([FunctionArg, StrongFunctionArg], (expr) => deleteExpr(expr))
+          .when(StrongFunctionArg, (expr) => deleteExpr(expr))
+          .when(FunctionArg, (functionArg) => {
+            const replacement = findReplacementArgType(functionArg, argType);
+            if (replacement) {
+              functionArg.argType = replacement;
+            } else {
+              deleteExpr(functionArg);
+            }
+          })
           .elseUnsafe(() => unexpectedRef(argType, ref)),
       );
     });
