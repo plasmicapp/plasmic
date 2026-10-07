@@ -3153,8 +3153,8 @@ importers:
   plasmicpkgs/rive:
     dependencies:
       '@rive-app/react-canvas':
-        specifier: ^4.35.0
-        version: 4.35.0(react@18.3.1)
+        specifier: ^4.36.0
+        version: 4.36.0(react@18.3.1)
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -7685,11 +7685,11 @@ packages:
   '@repeaterjs/repeater@3.1.0':
     resolution: {integrity: sha512-TaoVksZRSx2KWYYpyLQtMQXXeS98VsgZImzW65xmiVgbYhXLk+aEsmzPLirqVuE4/XuUapH2iMtxUzaBNDzdSQ==}
 
-  '@rive-app/canvas@2.43.1':
-    resolution: {integrity: sha512-GqENtpSOK5KOnF+kmzDQ70tfEQYksSOb39jcPPAV5vj5XDJ3vekPdbqTWuQdEyOFMhJUir4iBo3On9Gy2hghtQ==}
+  '@rive-app/canvas@2.44.0':
+    resolution: {integrity: sha512-ak0GGwCbuWubi6rP9qB5YPy5CxYuTY3AiuTV4i1Vi7GXhuK2XB+M+4WJMuGcYGfGLzojaVMKaxtunD5OjjGzOQ==}
 
-  '@rive-app/react-canvas@4.35.0':
-    resolution: {integrity: sha512-aPkFcsVf/aKSPYPj1sUJ2n5NkKeSQtEEWUPphejbhbcUbyyEzpIp4JRK4Ki7MTNvtCwu4p8tiSTZ1upC3oPRDA==}
+  '@rive-app/react-canvas@4.36.0':
+    resolution: {integrity: sha512-34YVFivIXqRyOVzCTiKrkFkpFeXUUske3Zt9M+QPX1sjqxtoOkzqIkCij37LNNxxZm6xxydedEvo0DAPPAt5Fw==}
     peerDependencies:
       react: 18.3.1
 
@@ -23984,11 +23984,11 @@ snapshots:
 
   '@repeaterjs/repeater@3.1.0': {}
 
-  '@rive-app/canvas@2.43.1': {}
+  '@rive-app/canvas@2.44.0': {}
 
-  '@rive-app/react-canvas@4.35.0(react@18.3.1)':
+  '@rive-app/react-canvas@4.36.0(react@18.3.1)':
     dependencies:
-      '@rive-app/canvas': 2.43.1
+      '@rive-app/canvas': 2.44.0
       react: 18.3.1
 
   '@rolldown/binding-android-arm64@1.1.5':
