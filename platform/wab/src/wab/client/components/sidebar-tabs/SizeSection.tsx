@@ -57,7 +57,7 @@ import {
   LENGTH_UNITS,
   NUMBER_UNITS,
 } from "@/wab/shared/css/types";
-import { parseDataUrl, SVG_MEDIA_TYPE } from "@/wab/shared/data-urls";
+import { isSvgDataUrl } from "@/wab/shared/data-urls";
 import { isContentLayoutTpl } from "@/wab/shared/layoututils";
 import { isKnownImageAssetRef } from "@/wab/shared/model/classes";
 import {
@@ -874,10 +874,9 @@ function isSvg(expsProvider: ExpsProvider) {
 
     const expr = effectiveVs.attrs["src"];
     if (isKnownImageAssetRef(expr) && expr.asset.dataUri) {
-      const parsed = parseDataUrl(expr.asset.dataUri);
       isSvgSrc =
         expr.asset.dataUri.search(/\.svg/) !== -1 ||
-        (parsed && parsed.mediaType === SVG_MEDIA_TYPE);
+        isSvgDataUrl(expr.asset.dataUri);
     }
   }
   return isSvgSrc;

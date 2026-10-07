@@ -134,7 +134,7 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                 "variantSettings": [
                   {
                     "safeStyles": {
-                      "color": "rgb(255, 245, 204)",
+                      "color": "rgb(255,245,204)",
                       "fontSize": "1.8rem",
                       "fontWeight": "bold",
                       "marginBottom": "0",
@@ -150,7 +150,7 @@ exports[`snapshot tests > parse landing page html properly 1`] = `
                     "unsafeStyles": {},
                     "unsanitizedStyles": {
                       "box-sizing": "border-box",
-                      "color": "rgb(255, 245, 204)",
+                      "color": "rgb(255,245,204)",
                       "font-size": "1.8rem",
                       "font-weight": "bold",
                       "margin": "0",

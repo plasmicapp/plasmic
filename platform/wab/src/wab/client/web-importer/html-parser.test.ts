@@ -25,6 +25,8 @@ const fixCSSValue = (key: string, value: string) =>
   fixCSSValueResult(key, value)._unsafeUnwrap();
 const renameTokenVarNameToUuid = (value: string, site: Site) =>
   _testOnlyUtils.renameTokenVarNameToUuid(value, site, []);
+const resolveBackground = (styles: Record<string, string>) =>
+  _testOnlyUtils.resolveBackgroundProperties(styles);
 
 describe("parseHtmlToWebImporterTree", () => {
   const site = createSite();
@@ -224,7 +226,7 @@ describe("parseHtmlToWebImporterTree", () => {
                 display: "flex",
                 "flex-direction": "row",
                 margin: "10px",
-                color: "rgb(0, 0, 255)",
+                color: "rgb(0,0,255)",
               },
               safeStyles: {
                 display: "flex",
@@ -233,7 +235,7 @@ describe("parseHtmlToWebImporterTree", () => {
                 marginBottom: "10px",
                 marginLeft: "10px",
                 marginRight: "10px",
-                color: "rgb(0, 0, 255)",
+                color: "rgb(0,0,255)",
               },
               unsafeStyles: {},
               variantCombo: [{ type: "base" }],
@@ -1305,8 +1307,8 @@ describe("fixCSSValue", () => {
   });
 
   it("transforms 'transparent' into rgba(0,0,0,0)", () => {
-    expect(fixCSSValue("background-color", "transparent")).toEqual({
-      background: "linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0))",
+    expect(fixCSSValue("color", "transparent")).toEqual({
+      color: "rgba(0, 0, 0, 0)",
     });
   });
 
@@ -1399,40 +1401,6 @@ describe("fixCSSValue", () => {
     });
   });
 
-  it("returns background gradient for backgroundColor with rgb or var or hex", () => {
-    const rgb = "rgb(10,20,30)";
-    expect(fixCSSValue("background-color", rgb)).toEqual({
-      background: `linear-gradient(${rgb}, ${rgb})`,
-    });
-
-    const token = "var(--token-abc)";
-    expect(fixCSSValue("background-color", token)).toEqual({
-      background: `linear-gradient(${token}, ${token})`,
-    });
-
-    expect(fixCSSValue("background-color", "#fff")).toEqual({
-      background: `linear-gradient(#fff, #fff)`,
-    });
-  });
-
-  it("returns background gradient for background with rgb or var", () => {
-    const rgb = "rgb(10,20,30)";
-    expect(fixCSSValue("background", rgb)).toEqual({
-      background: `linear-gradient(${rgb}, ${rgb})`,
-    });
-
-    const token = "var(--token-abc)";
-    expect(fixCSSValue("background", token)).toEqual({
-      background: `linear-gradient(${token}, ${token})`,
-    });
-  });
-
-  it("returns empty object for background when not rgb", () => {
-    expect(fixCSSValue("background", "url(image.png)")).toEqual({
-      background: `url("image.png")`,
-    });
-  });
-
   it("parse box-shadow value properly", () => {
     expect(fixCSSValue("box-shadow", "5px 10px rgba(0,0,0,0.5)")).toEqual({
       boxShadow: "5px 10px 0px 0px rgba(0,0,0,0.5)",
@@ -1509,6 +1477,130 @@ describe("fixCSSValue", () => {
       fontFamily: "Georgia",
     });
   });
+
+  it("passes valid background values through untouched", () => {
+    expect(fixCSSValue("background", "url(image.png)")).toEqual({
+      background: "url(image.png)",
+    });
+    expect(fixCSSValue("background-color", "rgb(10,20,30)")).toEqual({
+      backgroundColor: "rgb(10,20,30)",
+    });
+    expect(fixCSSValue("background-color", "var(--token-abc)")).toEqual({
+      backgroundColor: "var(--token-abc)",
+    });
+    for (const image of [
+      "url(x.png)",
+      "linear-gradient(red, blue)",
+      "url(a.png), url(b.png)",
+      "var(--image-abc)",
+      "none",
+    ]) {
+      expect(fixCSSValue("background-image", image)).toEqual({
+        backgroundImage: image,
+      });
+    }
+  });
+});
+
+describe("resolveBackgroundProperties", () => {
+  const IMG = 'url("data:image/png;base64,iVBORw0KGgo=")';
+  const A = 'url("data:image/png;base64,AAAA")';
+  const B = 'url("data:image/png;base64,BBBB")';
+
+  it("composes the image longhands in shorthand order", () => {
+    expect(
+      resolveBackground({
+        backgroundImage: IMG,
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+      }),
+    ).toEqual({ background: `${IMG} center / cover no-repeat` });
+  });
+
+  it("supplies a default position when only a size is given", () => {
+    // `<size>` is only valid after `<position> /`, so a position is filled in.
+    expect(
+      resolveBackground({ backgroundImage: IMG, backgroundSize: "cover" }),
+    ).toEqual({ background: `${IMG} 0% 0% / cover` });
+  });
+
+  it("turns background-color alone into a fill", () => {
+    expect(resolveBackground({ backgroundColor: "red" })).toEqual({
+      background: "linear-gradient(red, red)",
+    });
+  });
+
+  it("stacks an image over a color", () => {
+    expect(
+      resolveBackground({ backgroundImage: IMG, backgroundColor: "red" }),
+    ).toEqual({ background: `${IMG}, linear-gradient(red, red)` });
+    // A color written as the shorthand, image as a longhand — both survive.
+    expect(
+      resolveBackground({ background: "yellow", backgroundImage: IMG }),
+    ).toEqual({ background: `${IMG}, linear-gradient(yellow, yellow)` });
+  });
+
+  it("keeps a shorthand image and a color longhand together", () => {
+    expect(
+      resolveBackground({ background: "url(x)", backgroundColor: "red" }),
+    ).toEqual({ background: `url("x"), linear-gradient(red, red)` });
+  });
+
+  it("resolves a gradient background-image into the shorthand", () => {
+    expect(
+      resolveBackground({ backgroundImage: "linear-gradient(red, blue)" }),
+    ).toEqual({ background: "linear-gradient(180deg, red 0%, blue 100%)" });
+  });
+
+  it("folds multiple layers, zipping position and size onto each image", () => {
+    expect(
+      resolveBackground({
+        backgroundImage: `${A}, ${B}`,
+        backgroundPosition: "top left, bottom right",
+        backgroundSize: "contain, cover",
+      }),
+    ).toEqual({
+      background: `${A} top left / contain, ${B} bottom right / cover`,
+    });
+  });
+
+  it("repeats a shorter longhand list across the layers, as css does", () => {
+    expect(
+      resolveBackground({
+        backgroundImage: `${A}, ${B}`,
+        backgroundPosition: "center",
+      }),
+    ).toEqual({ background: `${A} center, ${B} center` });
+  });
+
+  it("folds origin, clip, and attachment onto the image layer", () => {
+    expect(
+      resolveBackground({
+        backgroundImage: IMG,
+        backgroundRepeat: "no-repeat",
+        backgroundOrigin: "padding-box",
+        backgroundClip: "content-box",
+        backgroundAttachment: "fixed",
+      }),
+    ).toEqual({
+      background: `${IMG} no-repeat padding-box content-box fixed`,
+    });
+  });
+
+  it("round-trips a text clip through its comment tag", () => {
+    // `background-clip: text` cannot sit in the shorthand literally, so the
+    // model carries it as a comment; setting clip also defaults origin.
+    expect(
+      resolveBackground({ backgroundImage: IMG, backgroundClip: "text" }),
+    ).toEqual({ background: `${IMG} padding-box /* clip: text **/` });
+  });
+
+  it("returns undefined when there is no background to resolve", () => {
+    expect(resolveBackground({ color: "red" })).toBeUndefined();
+    // A background-* longhand with no image/color/shorthand is not a background.
+    expect(resolveBackground({ backgroundClip: "text" })).toBeUndefined();
+  });
 });
 
 describe("processUnsanitizedStyles", () => {
@@ -1522,12 +1614,81 @@ describe("processUnsanitizedStyles", () => {
     });
   });
 
-  it("routes background with a relative or data: url() to unsafe styles", () => {
+  it("reports an invalid background value instead of resolving it to none", () => {
+    // An invalid value must not produce a `background` at all, or it would
+    // overwrite the background already on the element.
+    for (const prop of ["background", "background-color", "background-image"]) {
+      const { safe, unsafe, errors } = processUnsanitizedStyles({
+        [prop]: "5px",
+      });
+      expect(safe).toEqual({});
+      expect(unsafe).toEqual({});
+      expect(errors).toContainEqual(
+        expect.objectContaining({
+          code: "invalid-style-declaration",
+          prop,
+          value: "5px",
+        }),
+      );
+    }
+  });
+
+  it("keeps the images after a none layer in background-image", () => {
+    const { safe, errors } = processUnsanitizedStyles({
+      "background-image": "none, url(https://example.com/hero.png)",
+    });
+    expect(safe).toEqual({
+      background: 'none, url("https://example.com/hero.png")',
+    });
+    expect(errors).toEqual([]);
+  });
+
+  it("reports a background-image list with an invalid layer", () => {
+    // A browser ignores the whole declaration when any layer is invalid.
+    for (const value of [
+      "url(https://example.com/hero.png), 5px",
+      "5px, url(https://example.com/hero.png)",
+    ]) {
+      const { safe, errors } = processUnsanitizedStyles({
+        "background-image": value,
+      });
+      expect(safe).toEqual({});
+      expect(errors).toContainEqual(
+        expect.objectContaining({ prop: "background-image", value }),
+      );
+    }
+  });
+
+  it("reports an unparseable background value instead of throwing", () => {
+    for (const value of ["linear-gradient(", "url("]) {
+      const { safe, errors } = processUnsanitizedStyles({ background: value });
+      expect(safe).toEqual({});
+      expect(errors).toContainEqual(
+        expect.objectContaining({
+          code: "invalid-style-declaration",
+          prop: "background",
+          value,
+        }),
+      );
+    }
+  });
+
+  it("keeps the other background properties when one is invalid", () => {
+    const { safe, errors } = processUnsanitizedStyles({
+      "background-color": "red",
+      "background-image": "5px",
+    });
+    expect(safe).toEqual({ background: "linear-gradient(red, red)" });
+    expect(errors).toContainEqual(
+      expect.objectContaining({ prop: "background-image" }),
+    );
+  });
+
+  it("routes background with a relative url() to unsafe styles", () => {
     const invalidUrls = [
       "/images/hero.png",
       "./hero.png",
       "../assets/hero.png",
-      "data:image/png;base64,iVBORw0KGgo=",
     ];
     for (const url of invalidUrls) {
       expect(processUnsanitizedStyles({ background: `url(${url})` })).toEqual({
@@ -1537,6 +1698,18 @@ describe("processUnsanitizedStyles", () => {
         ignored: [],
       });
     }
+  });
+
+  it("keeps a background image data uri embedded in the css in safe styles", () => {
+    const PNG_DATA_URL = "data:image/png;base64,iVBORw0KGgo=";
+    expect(
+      processUnsanitizedStyles({ background: `url(${PNG_DATA_URL})` }),
+    ).toEqual({
+      safe: { background: `url("${PNG_DATA_URL}")` },
+      unsafe: {},
+      errors: [],
+      ignored: [],
+    });
   });
 
   it("reports declarations that yield no style as ignored", () => {
@@ -1554,6 +1727,53 @@ describe("processUnsanitizedStyles", () => {
       errors: [],
       ignored: ["transition", "pointer-events", "flex", "color"],
     });
+  });
+
+  const PNG_DATA_URL = "data:image/png;base64,iVBORw0KGgo=";
+
+  it("folds a background-image longhand into the safe background shorthand", () => {
+    expect(
+      processUnsanitizedStyles({ "background-image": `url(${PNG_DATA_URL})` }),
+    ).toEqual({
+      safe: { background: `url("${PNG_DATA_URL}")` },
+      unsafe: {},
+      errors: [],
+      ignored: [],
+    });
+  });
+
+  it("folds the whole background-* family into one shorthand", () => {
+    const { safe, unsafe } = processUnsanitizedStyles({
+      "background-image": `url(${PNG_DATA_URL})`,
+      "background-position": "center",
+      "background-size": "cover",
+      "background-repeat": "no-repeat",
+      "background-color": "blue",
+    });
+
+    expect(safe).toEqual({
+      background: `url("${PNG_DATA_URL}") center / cover no-repeat, linear-gradient(blue, blue)`,
+    });
+    expect(unsafe).toEqual({});
+  });
+
+  it("background family that has no image", () => {
+    expect(processUnsanitizedStyles({ "background-color": "blue" })).toEqual({
+      safe: { background: "linear-gradient(blue, blue)" },
+      unsafe: {},
+      errors: [],
+      ignored: [],
+    });
+  });
+
+  it("folds a multi-layer background-image longhand into safe styles", () => {
+    const { safe, unsafe } = processUnsanitizedStyles({
+      "background-image": `url(${PNG_DATA_URL}), url(${PNG_DATA_URL})`,
+    });
+    expect(safe).toEqual({
+      background: `url("${PNG_DATA_URL}"), url("${PNG_DATA_URL}")`,
+    });
+    expect(unsafe).toEqual({});
   });
 
   it("validates url() targets regardless of the function name casing", () => {
@@ -1933,12 +2153,12 @@ describe("error reporting", () => {
   });
 
   it("returns Err from fixCSSValue for unparseable values", () => {
-    const result = fixCSSValueResult("background-color", "5px");
+    const result = fixCSSValueResult("color", "not valid :::");
     expect(result.isErr()).toBe(true);
     expect(result._unsafeUnwrapErr()).toMatchObject({
       code: "invalid-style-declaration",
-      prop: "background-color",
-      value: "5px",
+      prop: "color",
+      value: "not valid :::",
     });
   });
 
@@ -1946,7 +2166,7 @@ describe("error reporting", () => {
     // Via a stylesheet (not a style attr) since the browser's own
     // CSSStyleDeclaration already filters invalid inline declarations.
     const html = `<style>
-      .a { color: red; background-color: 5px; }
+      .a { color: red; width: not valid :::; }
     </style><div class="a">Hi</div>`;
     const { wiTree, errors } = await parseHtml(html, site);
 
@@ -1966,7 +2186,7 @@ describe("error reporting", () => {
     expect(errors).toContainEqual(
       expect.objectContaining({
         code: "invalid-style-declaration",
-        prop: "background-color",
+        prop: "width",
       }),
     );
   });

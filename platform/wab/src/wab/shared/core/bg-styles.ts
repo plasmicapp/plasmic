@@ -308,6 +308,18 @@ export class Background extends BackgroundArgs {
   hasTextClip() {
     return this.layers.some((l) => l.hasTextClip());
   }
+
+  imageLayersCss(): string[] {
+    return this.layers
+      .filter((l) => !(l.image instanceof ColorFill) && !l.isNoneLayer())
+      .map((l) => l.showCss());
+  }
+
+  fillColorCss(): string | undefined {
+    return this.layers
+      .map((l) => l.image)
+      .find((image): image is ColorFill => image instanceof ColorFill)?.color;
+  }
   showCss() {
     return showCssValues(
       "background",

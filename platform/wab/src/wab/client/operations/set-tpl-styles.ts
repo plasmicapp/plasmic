@@ -5,6 +5,7 @@ import {
   useWrittenFont,
 } from "@/wab/client/operations/prepare-style-changes";
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { replaceImageDataUrisInStyles } from "@/wab/client/web-importer/images";
 import { RSH, ReadonlyIRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
 import type { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import type { VariantCombo } from "@/wab/shared/Variants";
@@ -42,11 +43,22 @@ export function applySanitizedTplStyles(opts: {
   );
   RSH(vs.rs, tpl).merge(valid);
 
-  if (Object.keys(unsafe).length > 0) {
-    vs.attrs["style"] = codeLit({
-      ...(styleAttrStyles(vs) ?? {}),
-      ...unsafe,
-    });
+  // A valid style that moved into the RuleSet must not stay in the style attr, since
+  // it's duplicated and the inline declaration wins over it.
+  const appliedProps = new Set(Object.keys(valid).map(normProp));
+  const existing = styleAttrStyles(vs);
+  const remaining = { ...existing };
+  for (const key of Object.keys(remaining)) {
+    if (appliedProps.has(normProp(key))) {
+      delete remaining[key];
+    }
+  }
+
+  const styleAttr = { ...remaining, ...unsafe };
+  if (Object.keys(styleAttr).length > 0) {
+    vs.attrs["style"] = codeLit(styleAttr);
+  } else if (existing) {
+    delete vs.attrs["style"];
   }
 
   return { applied: valid, invalid: Object.keys(invalid).map(normProp) };
@@ -67,6 +79,12 @@ export interface TplStylesOpts {
   studioCtx: StudioCtx;
   vtm: VariantTplMgr;
   variantCombo: VariantCombo;
+  /**
+   * Image assets already uploaded for the data uris embedded in these styles.
+   * Pass it whenever the styles may carry one, so the raw image is never
+   * written into the model.
+   */
+  imageAssetRefs?: Map<string, string>;
 }
 
 /**
@@ -79,7 +97,7 @@ export function setTplStyles(
   styles: Record<string, string | null>,
   opts: TplStylesOpts,
 ): Result<string[], GenericError> {
-  const { studioCtx, vtm, variantCombo } = opts;
+  const { studioCtx, vtm, variantCombo, imageAssetRefs } = opts;
   const vs = vtm.ensureVariantSetting(tpl, variantCombo);
 
   const existingUnsafe = styleAttrStyles(vs);
@@ -126,12 +144,16 @@ export function setTplStyles(
     }
   }
 
+  // An embedded image is stored as an image asset and referenced by it.
+  const safe = imageAssetRefs
+    ? replaceImageDataUrisInStyles(changes.set, imageAssetRefs)
+    : changes.set;
   const { applied, invalid } = applySanitizedTplStyles({
     tpl,
     vs,
     effectiveRsh,
     ccRegistry: studioCtx.codeComponentsRegistry,
-    safe: changes.set,
+    safe,
     unsafe: changes.unsafe,
   });
   if (invalid.length > 0) {

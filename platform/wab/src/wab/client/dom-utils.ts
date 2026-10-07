@@ -289,7 +289,7 @@ export async function readAndSanitizeFileAsImage(
     : await readUploadedFileAsDataUrl(fileOrDataUrl);
 
   const parsed = parseDataUrl(dataUrl);
-  if (parsed && parsed.mediaType === SVG_MEDIA_TYPE) {
+  if (parsed && parsed.contentType === SVG_MEDIA_TYPE) {
     return await readAndSanitizeSvgXmlAsImage(
       appCtx,
       getParsedDataUrlData(parsed),

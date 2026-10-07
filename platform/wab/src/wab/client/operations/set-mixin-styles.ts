@@ -8,6 +8,7 @@ import {
   type StyleChanges,
 } from "@/wab/client/operations/prepare-style-changes";
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { replaceImageDataUrisInStyles } from "@/wab/client/web-importer/images";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { validateGlobalVariantCombo } from "@/wab/shared/Variants";
 import { arrayRemove } from "@/wab/shared/collections";
@@ -33,14 +34,21 @@ export function setMixinStyles(
   rs: RuleSet,
   styles: Record<string, string | null>,
   studioCtx?: StudioCtx,
+  imageAssetRefs?: Map<string, string>,
 ): string[] {
-  return writeStyleChanges(rs, prepareStyleChanges(styles), studioCtx);
+  return writeStyleChanges(
+    rs,
+    prepareStyleChanges(styles),
+    studioCtx,
+    imageAssetRefs,
+  );
 }
 
 function writeStyleChanges(
   rs: RuleSet,
   changes: StyleChanges,
   studioCtx?: StudioCtx,
+  imageAssetRefs?: Map<string, string>,
 ): string[] {
   // The tag only affects reading CSS initial values, which this never does.
   const rsh = new RuleSetHelpers(rs, "div");
@@ -58,10 +66,13 @@ function writeStyleChanges(
     messages.push(notSetMessage(notSet));
   }
 
-  rsh.merge(changes.set);
+  const set = imageAssetRefs
+    ? replaceImageDataUrisInStyles(changes.set, imageAssetRefs)
+    : changes.set;
+  rsh.merge(set);
   messages.push(...unsafeStylesMessages(changes.unsafe));
   if (studioCtx) {
-    useWrittenFont(studioCtx, changes.set);
+    useWrittenFont(studioCtx, set);
   }
 
   return messages;
@@ -73,8 +84,9 @@ export function setMixinVariantedStyles(opts: {
   variants: Variant[];
   styles: Record<string, string | null> | null;
   studioCtx?: StudioCtx;
+  imageAssetRefs?: Map<string, string>;
 }): Result<string[], GenericError> {
-  const { mixin, styles, studioCtx } = opts;
+  const { mixin, styles, studioCtx, imageAssetRefs } = opts;
   // A repeated variant would create an override no later edit can match.
   const variants = uniq(opts.variants);
 
@@ -141,6 +153,7 @@ export function setMixinVariantedStyles(opts: {
       variantedRs.rs,
       prepareStyleChanges(applicable, { layoutContext }),
       studioCtx,
+      imageAssetRefs,
     ),
   );
   if (Object.keys(variantedRs.rs.values).length === 0) {

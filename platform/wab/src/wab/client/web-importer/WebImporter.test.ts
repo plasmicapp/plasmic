@@ -2,6 +2,7 @@ import { fakeStudioCtx } from "@/wab/client/__testonly__/fake-init-ctx";
 import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
 import {
   multiColorSvgData,
+  pngData,
   svgData,
 } from "@/wab/client/clipboard/__testonly__/clipboard-test-data";
 import { paste } from "@/wab/client/clipboard/paste";
@@ -163,6 +164,167 @@ describe("WebImporter", () => {
       ).toEqual(processedDataUri);
 
       expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
+    });
+
+    it("pastes an image embedded in the html as an image asset", async () => {
+      const { dataUri, width, height } = pngData();
+      api.uploadImageFile.mockImplementation(async () => ({
+        dataUri,
+        width,
+        height,
+      }));
+
+      const htmlStr = `<div><img src="${dataUri}" alt="a red dot" /></div>`;
+
+      pageViewCtx.selectNewTpl(page.tplTree);
+      expect(
+        await paste({
+          clipboard: htmlToClipboard(htmlStr),
+          studioCtx,
+          cursorClientPt: undefined,
+        }),
+      ).toBe(true);
+
+      const { pastedTpl } = getPastedTpl(page.tplTree);
+      const pastedTplChildren = Tpls.tplChildren(pastedTpl);
+      expect(pastedTplChildren).toHaveLength(1);
+
+      const imgTpl = pastedTplChildren[0];
+      expect(Tpls.getTagOrComponentName(imgTpl)).toEqual("img");
+      expect(Tpls.isTplImage(imgTpl)).toBe(true);
+
+      // The image is uploaded as an asset now.
+      expect(studioCtx.site.imageAssets).toHaveLength(1);
+      expect(
+        ImageAssets.getOnlyAssetRef(imgTpl as TplImageTag)?.dataUri,
+      ).toEqual(dataUri);
+    });
+
+    it("sanitizes a pasted svg image whose data uri media type has parameters", async () => {
+      const svgXml = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><image href="x" onerror="window.pwned=42"></image></svg>`;
+      const dataUri = `data:image/svg+xml;charset=utf-8;base64,${btoa(svgXml)}`;
+
+      const htmlStr = `<div><img src="${dataUri}" /></div>`;
+
+      pageViewCtx.selectNewTpl(page.tplTree);
+      expect(
+        await paste({
+          clipboard: htmlToClipboard(htmlStr),
+          studioCtx,
+          cursorClientPt: undefined,
+        }),
+      ).toBe(true);
+
+      // The svg went through the sanitizer, and whatever got stored carries
+      // no event handlers.
+      expect(api.processSvg).toHaveBeenCalled();
+      expect(studioCtx.site.imageAssets).toHaveLength(1);
+      expect(studioCtx.site.imageAssets[0].dataUri).not.toContain("onerror");
+    });
+
+    it("uploads an image embedded in a css background and points the style at it", async () => {
+      const { dataUri, width, height } = pngData();
+      api.uploadImageFile.mockImplementation(async () => ({
+        dataUri,
+        width,
+        height,
+      }));
+
+      const htmlStr = `<style>
+        .hero { background: url(${dataUri}) center / cover no-repeat; }
+      </style><div class="hero">Hero</div>`;
+
+      pageViewCtx.selectNewTpl(page.tplTree);
+      expect(
+        await paste({
+          clipboard: htmlToClipboard(htmlStr),
+          studioCtx,
+          cursorClientPt: undefined,
+        }),
+      ).toBe(true);
+
+      const { pastedTpl } = getPastedTpl(page.tplTree);
+
+      expect(studioCtx.site.imageAssets).toHaveLength(1);
+      const asset = studioCtx.site.imageAssets[0];
+      expect(asset.dataUri).toEqual(dataUri);
+
+      const baseVs = pageViewCtx
+        .variantTplMgr()
+        .ensureBaseVariantSetting(pastedTpl);
+      expect(baseVs.rs.values["background"]).toEqual(
+        `${ImageAssets.mkImageAssetRef(asset)} center / cover no-repeat`,
+      );
+      // Nothing was left behind in the inline style attribute.
+      expect(baseVs.attrs["style"]).toBeUndefined();
+    });
+
+    it("reuses one image asset when the same embedded image is used twice", async () => {
+      const { dataUri, width, height } = pngData();
+      api.uploadImageFile.mockImplementation(async () => ({
+        dataUri,
+        width,
+        height,
+      }));
+
+      const htmlStr = `<style>
+        .hero { background: url(${dataUri}); }
+      </style><div>
+        <img src="${dataUri}" />
+        <div class="hero">Hero</div>
+      </div>`;
+
+      pageViewCtx.selectNewTpl(page.tplTree);
+      expect(
+        await paste({
+          clipboard: htmlToClipboard(htmlStr),
+          studioCtx,
+          cursorClientPt: undefined,
+        }),
+      ).toBe(true);
+
+      const { pastedTpl } = getPastedTpl(page.tplTree);
+      const [imgTpl, bgTpl] = Tpls.tplChildren(pastedTpl);
+
+      expect(studioCtx.site.imageAssets).toHaveLength(1);
+      const asset = studioCtx.site.imageAssets[0];
+
+      expect(ImageAssets.getOnlyAssetRef(imgTpl as TplImageTag)).toBe(asset);
+      expect(
+        pageViewCtx.variantTplMgr().ensureBaseVariantSetting(bgTpl).rs.values[
+          "background"
+        ],
+      ).toEqual(ImageAssets.mkImageAssetRef(asset));
+    });
+
+    it("falls back to the image placeholder when the upload fails", async () => {
+      const { dataUri } = pngData();
+      api.uploadImageFile.mockImplementation(async () => {
+        throw new Error("upload failed");
+      });
+
+      const htmlStr = `<div><img src="${dataUri}" /></div>`;
+
+      pageViewCtx.selectNewTpl(page.tplTree);
+      expect(
+        await paste({
+          clipboard: htmlToClipboard(htmlStr),
+          studioCtx,
+          cursorClientPt: undefined,
+        }),
+      ).toBe(true);
+
+      const { pastedTpl } = getPastedTpl(page.tplTree);
+      const imgTpl = Tpls.tplChildren(pastedTpl)[0];
+      expect(Tpls.isTplImage(imgTpl)).toBe(true);
+
+      // No asset was created and no src is set: this is the same state as a
+      // freshly inserted Image, which the canvas renders as the placeholder.
+      expect(studioCtx.site.imageAssets).toHaveLength(0);
+      const baseVs = pageViewCtx
+        .variantTplMgr()
+        .ensureBaseVariantSetting(imgTpl);
+      expect(baseVs.attrs.src).toBeUndefined();
     });
 
     it("pastes text with font-family and extracts only first font", async () => {

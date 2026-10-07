@@ -1,10 +1,4 @@
 import { AppCtx } from "@/wab/client/app-ctx";
-import {
-  ImageAssetOpts,
-  maybeUploadImage,
-  readAndSanitizeSvgXmlAsImage,
-  ResizableImage,
-} from "@/wab/client/dom-utils";
 import { applySanitizedTplStyles } from "@/wab/client/operations/set-tpl-styles";
 import {
   WIError,
@@ -12,6 +6,14 @@ import {
   WITplRef,
 } from "@/wab/client/web-importer/errors";
 import { parseHtmlToWebImporterTree } from "@/wab/client/web-importer/html-parser";
+import {
+  collectImageDataUris,
+  getImgSrc,
+  mkImageAssetRefs,
+  replaceImageDataUrisInStyles,
+  UploadedAssetData,
+  uploadImageDataUris,
+} from "@/wab/client/web-importer/images";
 import {
   isWIBaseVariantSettings,
   WIAnimationSequence,
@@ -70,6 +72,7 @@ import {
   isAnimationProperty,
   parseCssAnimationsFromStyles,
 } from "@/wab/shared/css/animations";
+import { asSvgDataUrl, isImageDataUrl } from "@/wab/shared/data-urls";
 import { isDynamicValue } from "@/wab/shared/dynamic-bindings";
 import { EvaluationError } from "@/wab/shared/eval/expression-parser";
 import {
@@ -173,6 +176,15 @@ export async function htmlToTpl(
 
   const errors: WIError[] = [...parseErrors];
 
+  const dataUris = collectImageDataUris(wiTree);
+  const uploadedAssets = (await uploadImageDataUris(appCtx, dataUris)).match(
+    (uploaded) => uploaded,
+    ({ uploaded, errors: uploadErrors }) => {
+      errors.push(...uploadErrors);
+      return uploaded;
+    },
+  );
+
   const {
     tpls,
     tplImageAssetMap,
@@ -180,7 +192,13 @@ export async function htmlToTpl(
     tplRepeatData,
     tplVisibilityData,
     tplMixinsData,
-  } = await wiTreeToTpl(wiTree, { site, vtm, appCtx, errors, pageHrefs });
+  } = await wiTreeToTpl(wiTree, {
+    site,
+    vtm,
+    errors,
+    pageHrefs,
+    uploadedAssets,
+  });
 
   if (tpls.length === 0) {
     return err(
@@ -198,6 +216,11 @@ export async function htmlToTpl(
     finalize: (finalizeOpts) => {
       const htmlToTplErrors: WIError[] = [];
 
+      const imageAssetRefs = mkImageAssetRefs(
+        finalizeOpts.tplMgr,
+        uploadedAssets,
+      );
+
       // Process Animation Sequences (keyframes)
       upsertAnimationSequences(animationSequences, { site });
 
@@ -206,7 +229,11 @@ export async function htmlToTpl(
       // Process all variant settings data to apply styles
       for (const [tplNode, vsData] of tplVariantSettingsData.entries()) {
         for (const vs of vsData) {
-          const { variantCombo, safeStyles, unsafeStyles, wiAnimations } = vs;
+          const { variantCombo, unsafeStyles, wiAnimations } = vs;
+          const safeStyles = replaceImageDataUrisInStyles(
+            vs.safeStyles,
+            imageAssetRefs,
+          );
 
           let animations: Animation[] | null = null;
           if (wiAnimations) {
@@ -529,19 +556,13 @@ async function wiTreeToTpl(
   opts: {
     site: Site;
     vtm: VariantTplMgr;
-    appCtx: AppCtx;
     errors: WIError[];
+    uploadedAssets: Map<string, UploadedAssetData>;
     pageHrefs: boolean;
   },
 ) {
-  const { site, vtm, appCtx, errors, pageHrefs } = opts;
-  const tplImageAssetMap = new Map<
-    TplTag,
-    {
-      image: ResizableImage;
-      options: ImageAssetOpts;
-    }
-  >();
+  const { site, vtm, errors, uploadedAssets, pageHrefs } = opts;
+  const tplImageAssetMap = new Map<TplTag, UploadedAssetData>();
   const tplVariantSettingsData = new Map<TplNode, TplVariantSettingsData[]>();
   // Repetition (data-repeat), visibility (data-visibility / data-visible-if)
   // and mixins (data-mixins) are all applied in finalize.
@@ -776,44 +797,23 @@ async function wiTreeToTpl(
     }
 
     if (node.type === "svg") {
-      const svgImage = await readAndSanitizeSvgXmlAsImage(
-        appCtx,
-        node.outerHtml,
-      );
-
-      if (svgImage) {
-        const { imageResult, opts: imageOpts } = await maybeUploadImage(
-          appCtx,
-          svgImage,
-          undefined,
-          undefined,
-        );
-        if (!imageResult || !imageOpts) {
-          errors.push({ code: "svg-upload-failed", path: nodePath });
-          return [];
-        }
-
-        const tpl = vtm.mkTplImage({
-          type: imageOpts.type,
-          iconColor: imageOpts.iconColor,
-          name: tplName,
-        });
-        collectWIVariantData(node, tpl);
-        collectStructuralBindings(node, tpl);
-
-        // We will store each image to it's corresponding tpl so we can process it
-        // later to upload image and attach asset to this tpl in 'finalize',
-        // We cannot do that here because this function is expected to be called outside 'studioCtx.change' and
-        // creating an asset here would cause a model change to occur.
-        tplImageAssetMap.set(tpl, {
-          image: imageResult,
-          options: imageOpts,
-        });
-
-        return [tpl];
+      const uploaded = uploadedAssets.get(asSvgDataUrl(node.outerHtml));
+      if (!uploaded) {
+        return [];
       }
-      errors.push({ code: "svg-upload-failed", path: nodePath });
-      return [];
+
+      const tpl = vtm.mkTplImage({
+        type: uploaded.options.type,
+        iconColor: uploaded.options.iconColor,
+        name: tplName,
+      });
+      collectWIVariantData(node, tpl);
+      collectStructuralBindings(node, tpl);
+      // The asset is attached in finalize, which runs inside studioCtx.change;
+      // creating it here would mutate the model outside a change.
+      tplImageAssetMap.set(tpl, uploaded);
+
+      return [tpl];
     }
 
     if (node.type === "component") {
@@ -924,26 +924,28 @@ async function wiTreeToTpl(
     }
 
     if (node.tag === "img") {
-      const getSrc = () => {
-        if (node.attrs.srcset) {
-          const options = node.attrs.srcset.split("\n");
-          const src = options[options.length - 1].split(" ")[0];
-          return src;
-        }
-        return node.attrs.src;
-      };
+      const src = getImgSrc(node);
+      const uploaded = src ? uploadedAssets.get(src) : undefined;
 
-      const src = getSrc();
+      const srcAttr =
+        uploaded || src === undefined || isImageDataUrl(src)
+          ? undefined
+          : isDynamicValue(src)
+            ? interpolatedStringToExpr(src)
+            : src;
+
       const tpl = vtm.mkTplImage({
         attrs: {
           ...htmlAttrsToTplAttrs(node),
-          src: isDynamicValue(src)
-            ? interpolatedStringToExpr(src)
-            : code(JSON.stringify(src)),
+          ...(srcAttr ? { src: srcAttr } : {}),
         },
-        type: ImageAssetType.Picture,
+        type: uploaded?.options.type ?? ImageAssetType.Picture,
+        iconColor: uploaded?.options.iconColor,
         name: tplName,
       });
+      if (uploaded) {
+        tplImageAssetMap.set(tpl, uploaded);
+      }
       collectWIVariantData(node, tpl);
       collectStructuralBindings(node, tpl);
       return [tpl];
@@ -1006,7 +1008,11 @@ export function upsertAnimationSequences(
           // better way to display them in MixinControls/AnimationSequenceControls. We can have a new custom style attribute section
           // to store unsafe styles or arbitrary css. Since it doesn't exist yet.
           rs: mkRuleSet({
-            values: camelCssPropsToKebab(wiKeyframe.safeStyles),
+            // Studio only allows background color in keyframes, so we pass an empty
+            // assets set to discard the image data URIs.
+            values: camelCssPropsToKebab(
+              replaceImageDataUrisInStyles(wiKeyframe.safeStyles, new Map()),
+            ),
           }),
         }),
     );

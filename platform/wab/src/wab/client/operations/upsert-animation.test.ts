@@ -29,6 +29,23 @@ describe("upsertAnimation", () => {
     expect(animation.keyframes[1].rs.values).toEqual({ opacity: "1" });
   });
 
+  it("drops a keyframe background that embeds an image but keeps a color", () => {
+    const { site } = setup();
+    const result = upsertAnimation({
+      site,
+      keyframesRule:
+        "@keyframes glow { 0% { background: url(data:image/png;base64,iVBORw0KGgo=); opacity: 0 } 100% { background: red; opacity: 1 } }",
+    });
+
+    assert(result.isOk(), "expected success result");
+    const { animation } = result.value;
+    expect(animation.keyframes[0].rs.values).toEqual({ opacity: "0" });
+    expect(animation.keyframes[1].rs.values).toEqual({
+      background: "linear-gradient(red, red)",
+      opacity: "1",
+    });
+  });
+
   it("supports from/to selector syntax", () => {
     const { site } = setup();
     const result = upsertAnimation({

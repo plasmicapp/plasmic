@@ -62,7 +62,8 @@ export type WIError =
       path: string;
       reason: string;
     }
-  | { code: "svg-upload-failed"; path: string }
+  | { code: "svg-upload-failed"; path?: string }
+  | { code: "image-upload-failed"; path?: string }
   | { code: "invalid-href"; path: string; reason: string }
   | {
       code: "invalid-style-declaration";
@@ -142,6 +143,10 @@ export function formatWIError(error: WIError): string {
       return `Skipped slot content${pathAt(error.path)}: ${error.reason}.`;
     case "svg-upload-failed":
       return `Skipped SVG${pathAt(error.path)}: failed to process the image.`;
+    case "image-upload-failed":
+      return `Could not upload an embedded image${pathAt(
+        error.path,
+      )} as an image asset.`;
     case "invalid-href":
       return `Dropped href${pathAt(error.path)}: ${error.reason}.`;
     case "invalid-style-declaration":

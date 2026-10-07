@@ -31,6 +31,7 @@ import {
 } from "@/wab/client/web-importer/types";
 import { findTokenByNameOrUuid } from "@/wab/commons/StyleToken";
 import { ensure, ensureType, isOneOf, withoutNils } from "@/wab/shared/common";
+import { Background, NoneBackground } from "@/wab/shared/core/bg-styles";
 import {
   expandGapProperty,
   parseCss,
@@ -252,27 +253,23 @@ function addSelfStyleRule(_node: Node, errors: WIError[]) {
     return;
   }
 
-  const styles = cssText.split(";").reduce(
-    (acc, style) => {
-      if (!style.trim()) {
-        return acc;
-      }
-      const [key, value] = style.split(":");
-      if (!key || !value) {
-        errors.push({
-          code: "invalid-style-declaration",
-          prop: (key ?? style).trim(),
-          value: (value ?? "").trim(),
-          path: describeNodePath(_node as Element),
-          reason: "malformed inline style declaration",
-        });
-        return acc;
-      }
-      acc[key.trim()] = value.trim();
-      return acc;
+  const path = describeNodePath(_node as Element);
+  const declarationList = cssParse(cssText, {
+    context: "declarationList",
+    onParseError: (error) => {
+      errors.push({
+        code: "invalid-css",
+        message: `inline style at "${path}": ${error.message}`,
+      });
     },
-    {} as Record<string, string>,
-  );
+  });
+
+  const styles: Record<string, string> = {};
+  walk(declarationList, (declaration) => {
+    if (declaration.type === "Declaration") {
+      styles[declaration.property.trim()] = generate(declaration.value).trim();
+    }
+  });
 
   ensureNodeWiRulesContext(_node, BASE_VARIANT);
   (_node as any).__wi_rules.base.push({
@@ -389,22 +386,6 @@ function fixCSSValueUnsafe(key: string, value: string): Record<string, string> {
 
   if (fixedKey === "aspectRatio") {
     return parseAspectRatioFromValueNode(valueNode);
-  }
-
-  if (fixedKey === "backgroundColor") {
-    return {
-      background: parseCss(fixedValue, {
-        startRule: "backgroundColor",
-      }).showCss(),
-    };
-  }
-
-  if (fixedKey === "background") {
-    return {
-      background: parseCss(fixedValue, {
-        startRule: "background",
-      }).showCss(),
-    };
   }
 
   if (fixedKey === "boxShadow") {
@@ -681,7 +662,165 @@ export function processUnsanitizedStyles(
     Object.assign(newStyles, expandedGapProperties);
   }
 
+  // Drop and report a background value that holds no color or image.
+  for (const prop of ["background", "background-color", "background-image"]) {
+    const key = camelCase(prop);
+    const value = newStyles[key];
+    if (value !== undefined && !isValidBackgroundValue(prop, value)) {
+      errors.push({ code: "invalid-style-declaration", prop, value });
+      delete newStyles[key];
+    }
+  }
+
+  // Studio only recognizes the `background` shorthand, so merge every background-*
+  // properties into it.
+  const resolvedBackground = resolveBackgroundProperties(newStyles);
+  if (resolvedBackground) {
+    const keys = ["background", "backgroundColor", "backgroundImage"];
+    if (newStyles["backgroundImage"] !== undefined) {
+      // The `background-*` longhand properties for background-image
+      keys.push(
+        ...[
+          "backgroundPosition",
+          "backgroundSize",
+          "backgroundRepeat",
+          "backgroundOrigin",
+          "backgroundClip",
+          "backgroundAttachment",
+        ],
+      );
+    }
+    for (const key of keys) {
+      delete newStyles[key];
+    }
+    Object.assign(newStyles, resolvedBackground);
+  }
+
   return { ...splitStylesBySafety(newStyles), errors, ignored };
+}
+
+/** Whether a `background`, `background-color` or `background-image` value is usable. */
+function isValidBackgroundValue(prop: string, value: string): boolean {
+  try {
+    if (prop === "background-color") {
+      parseCss(value, { startRule: "backgroundColor" });
+      return true;
+    }
+    if (value.trim() === "none") {
+      return true;
+    }
+    if (prop === "background-image") {
+      return splitBackgroundLayers(value).every(
+        (layer) =>
+          layer.trim() === "none" ||
+          !(
+            parseCss(layer, { startRule: "backgroundImage" }) instanceof
+            NoneBackground
+          ),
+      );
+    }
+    // The shorthand parses anything into a Background, so a value that yields
+    // neither an image nor a color is not a background at all.
+    const background = parseCss(value, { startRule: "background" });
+    return (
+      background.imageLayersCss().length > 0 ||
+      background.fillColorCss() !== undefined
+    );
+  } catch {
+    return false;
+  }
+}
+
+function splitBackgroundLayers(value: string | undefined): string[] {
+  if (!value) {
+    return [];
+  }
+  try {
+    return splitCssValue("background", value);
+  } catch {
+    return [value];
+  }
+}
+
+/**
+ * Builds a `background` layer string for each `background-image`, pairing it
+ * with the position, size, repeat, origin, clip, and attachment for that layer.
+ * Empty when there is no `background-image`.
+ */
+function backgroundImageLayerStrings(styles: Record<string, string>): string[] {
+  const images = splitBackgroundLayers(styles["backgroundImage"]);
+  const positions = splitBackgroundLayers(styles["backgroundPosition"]);
+  const sizes = splitBackgroundLayers(styles["backgroundSize"]);
+  const repeats = splitBackgroundLayers(styles["backgroundRepeat"]);
+  const origins = splitBackgroundLayers(styles["backgroundOrigin"]);
+  const clips = splitBackgroundLayers(styles["backgroundClip"]);
+  const attachments = splitBackgroundLayers(styles["backgroundAttachment"]);
+
+  const at = (values: string[], i: number) =>
+    values.length ? values[i % values.length] : undefined;
+
+  return images.map((image, i) => {
+    const parts = [image];
+    const position = at(positions, i);
+    const size = at(sizes, i);
+    if (position) {
+      parts.push(position);
+    }
+    // A size must come right after the position, separated by a slash.
+    if (size) {
+      parts.push(`/ ${size}`);
+    }
+    for (const modifier of [
+      at(repeats, i),
+      at(origins, i),
+      at(clips, i),
+      at(attachments, i),
+    ]) {
+      if (modifier) {
+        parts.push(modifier);
+      }
+    }
+    return parts.join(" ");
+  });
+}
+
+/**
+ * Merges the `background` shorthand, `background-color`, and the
+ * `background-image` longhand properties into a single `background`, or undefined if there
+ * is no background.
+ */
+function resolveBackgroundProperties(
+  styles: Record<string, string>,
+): Record<string, string> | undefined {
+  const hasBackgroundCss =
+    styles["background"] !== undefined ||
+    styles["backgroundColor"] !== undefined ||
+    styles["backgroundImage"] !== undefined;
+  if (!hasBackgroundCss) {
+    return undefined;
+  }
+
+  const shorthandBackground = styles["background"]
+    ? Background.fromCss(styles["background"])
+    : undefined;
+
+  // Use the longhands when present, and fall back to the shorthand otherwise.
+  const longhandImageLayers = backgroundImageLayerStrings(styles);
+  const imageLayers =
+    longhandImageLayers.length > 0
+      ? longhandImageLayers
+      : shorthandBackground
+        ? shorthandBackground.imageLayersCss()
+        : [];
+
+  const color =
+    styles["backgroundColor"] ?? shorthandBackground?.fillColorCss();
+
+  const backgroundValue = [
+    ...imageLayers,
+    ...(color !== undefined ? [color] : []),
+  ].join(", ");
+  return { background: Background.fromCss(backgroundValue).showCss() };
 }
 
 function hasLayoutStyleKeys(variantSettings: WIVariantSettings[]): boolean {
@@ -1328,4 +1467,7 @@ export async function parseHtmlToWebImporterTree(
   });
 }
 
-export const _testOnlyUtils = { renameTokenVarNameToUuid };
+export const _testOnlyUtils = {
+  renameTokenVarNameToUuid,
+  resolveBackgroundProperties,
+};

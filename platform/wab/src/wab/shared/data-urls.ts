@@ -20,6 +20,16 @@ export const parseDataUrl: (dataUrl: string) => ParseDataUrlResult =
 
 export const SVG_MEDIA_TYPE = "image/svg+xml";
 
+export function isImageDataUrl(url: string): boolean {
+  const parsed = parseDataUrl(url);
+  return parsed && !!parsed.contentType?.startsWith("image/");
+}
+
+export function isSvgDataUrl(url: string): boolean {
+  const parsed = parseDataUrl(url);
+  return parsed && parsed.contentType === SVG_MEDIA_TYPE;
+}
+
 export function asDataUrl(
   content: string | Uint8Array,
   mediaType: string,
@@ -54,7 +64,7 @@ export function getParsedDataUrlData(parsed: ParseDataUrlResult) {
 export function parseDataUrlToSvgXml(dataUrl: string) {
   const parsed = parseDataUrl(dataUrl);
   assert(
-    parsed && parsed.mediaType === SVG_MEDIA_TYPE,
+    parsed && parsed.contentType === SVG_MEDIA_TYPE,
     `Unexpected mediaType for svg: ${parsed?.mediaType}`,
   );
   return getParsedDataUrlData(parsed);
