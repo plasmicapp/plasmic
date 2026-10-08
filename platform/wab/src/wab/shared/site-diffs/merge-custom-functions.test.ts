@@ -302,6 +302,34 @@ describe("merging registrations added on both branches", () => {
   });
 });
 
+describe("merging a site that already has duplicate registrations", () => {
+  it("keeps the last copy, the one codegen already uses", () => {
+    const ancestor = ancestorSite();
+    const current = only(ancestor.customFunctions);
+    ancestor.customFunctions.unshift(
+      new CustomFunction({
+        namespace: null,
+        importName: "getQuote",
+        importPath: "./old-quote",
+        displayName: null,
+        defaultExport: false,
+        params: [typeFactory.arg("id", typeFactory.text())],
+        isQuery: true,
+        isMutation: false,
+      }),
+    );
+    const result = testMerge({
+      ancestorSite: ancestor,
+      a: (site) => addRefresh(site, "quote"),
+      b: () => {},
+    });
+    expect(result).toMatchObject({ status: "merged" });
+    const fn = getFunction(result.mergedSite);
+    expect(fn.importPath).toBe(current.importPath);
+    expect(getQueryOp(result.mergedSite).func).toBe(fn);
+  });
+});
+
 describe("merging a function removed on one branch", () => {
   const ancestorWithFunction = () => {
     const site = ancestorSite({ withQuery: false });

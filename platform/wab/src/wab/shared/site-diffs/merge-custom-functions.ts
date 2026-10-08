@@ -10,19 +10,26 @@ import {
   createNodeCtx,
   walkModelTree,
 } from "@/wab/shared/model/model-tree-util";
-import { groupBy } from "lodash";
+import { groupBy, initial, last } from "lodash";
 
 /**
  * Each branch registers a new function on its own, so the merged site can have
- * two copies of the same registration. Like `fixDuplicatedCodeComponents`,
- * keeps the first copy, points usages of the others at it, and matches args to
- * params by name, dropping args that have no matching param.
+ * two copies of the same registration. Keeps the last copy, points usages of
+ * the others at it, and matches args to params by name, dropping args that have
+ * no matching param.
+ *
+ * The last copy, not the first: sites can already hold older copies of a
+ * registration (e.g. from before its importPath changed), and codegen resolves
+ * a function by id with the last copy winning. Keeping the first one would
+ * switch generated imports back to a stale importPath.
  */
 export function fixDuplicatedCustomFunctions(mergedSite: Site) {
   const toFunctions = new Map<CustomFunction, CustomFunction>();
   Object.values(groupBy(mergedSite.customFunctions, customFunctionId)).forEach(
-    ([toFunction, ...duplicatedFunctions]) =>
-      duplicatedFunctions.forEach((f) => toFunctions.set(f, toFunction)),
+    (copies) => {
+      const toFunction = last(copies)!;
+      initial(copies).forEach((f) => toFunctions.set(f, toFunction));
+    },
   );
   if (toFunctions.size === 0) {
     return;
