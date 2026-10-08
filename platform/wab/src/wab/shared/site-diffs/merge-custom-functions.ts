@@ -14,15 +14,17 @@ import { groupBy } from "lodash";
 
 /**
  * Each branch registers a new function on its own, so the merged site can have
- * two copies of the same registration. Like `fixDuplicatedCodeComponents`,
- * keeps the first copy, points usages of the others at it, and matches args to
- * params by name, dropping args that have no matching param.
+ * two copies of the same registration. Keeps the last copy, the one Studio's
+ * re-sync updates and codegen resolves by id, points usages of the others at
+ * it, and matches args to params by name, dropping args that have no matching
+ * param.
  */
 export function fixDuplicatedCustomFunctions(mergedSite: Site) {
   const toFunctions = new Map<CustomFunction, CustomFunction>();
-  Object.values(groupBy(mergedSite.customFunctions, customFunctionId)).forEach(
-    ([toFunction, ...duplicatedFunctions]) =>
-      duplicatedFunctions.forEach((f) => toFunctions.set(f, toFunction)),
+  Object.values(
+    groupBy([...mergedSite.customFunctions].reverse(), customFunctionId),
+  ).forEach(([toFunction, ...duplicatedFunctions]) =>
+    duplicatedFunctions.forEach((f) => toFunctions.set(f, toFunction)),
   );
   if (toFunctions.size === 0) {
     return;
@@ -34,8 +36,8 @@ export function fixDuplicatedCustomFunctions(mergedSite: Site) {
 }
 
 /**
- * Same as `fixDuplicatedCustomFunctions`, for registered libraries. Nothing
- * references a library instance, so the duplicates are just removed.
+ * Dedupes registered libraries by name. Nothing references a library instance,
+ * so the duplicates are just removed.
  */
 export function fixDuplicatedCodeLibraries(mergedSite: Site) {
   const names = new Set<string>();

@@ -32,11 +32,11 @@ beforeAll(async () => {
 });
 
 /** Registers `getQuote`, like `createCustomFunctionFromRegistration` does. */
-function registerFunction(site: Site) {
+function registerFunction(site: Site, importPath = "./quote") {
   const fn = new CustomFunction({
     namespace: null,
     importName: "getQuote",
-    importPath: "./quote",
+    importPath,
     displayName: null,
     defaultExport: false,
     params: [typeFactory.arg("id", typeFactory.text())],
@@ -299,6 +299,21 @@ describe("merging registrations added on both branches", () => {
     const op = getQueryOp(result.mergedSite);
     expect(op.func).toBe(fn);
     expect(only(op.args).argType).toBe(only(fn.params));
+  });
+});
+
+describe("merging a site that already has duplicate registrations", () => {
+  it("keeps the last copy, the one codegen already uses", () => {
+    const ancestor = ancestorSite({ withQuery: false });
+    registerFunction(ancestor, "./old-quote");
+    registerFunction(ancestor);
+    const result = testMerge({
+      ancestorSite: ancestor,
+      a: () => {},
+      b: () => {},
+    });
+    expect(result).toMatchObject({ status: "merged" });
+    expect(getFunction(result.mergedSite).importPath).toBe("./quote");
   });
 });
 
