@@ -9,7 +9,7 @@ import {
   DependencyWalkScope,
   walkDependencyTree,
 } from "@/wab/shared/core/project-deps";
-import { FinalToken, toFinalToken } from "@/wab/shared/core/tokens";
+import { FinalToken, mkToFinalToken } from "@/wab/shared/core/tokens";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import { DataToken, Site } from "@/wab/shared/model/classes";
 import keyBy from "lodash/keyBy";
@@ -55,17 +55,17 @@ export const siteDataTokensAllDepsDict = maybeComputedFn(
 
 export const siteFinalDataTokens = maybeComputedFn(
   (site: Site): ReadonlyArray<FinalToken<DataToken>> =>
-    siteDataTokens(site).map((token) => toFinalToken(token, site)),
+    siteDataTokens(site).map(mkToFinalToken(site)),
 );
 
 export const siteFinalDataTokensDirectDeps = maybeComputedFn(
   (site: Site): ReadonlyArray<FinalToken<DataToken>> =>
-    siteDataTokensDirectDeps(site).map((token) => toFinalToken(token, site)),
+    siteDataTokensDirectDeps(site).map(mkToFinalToken(site)),
 );
 
 export const siteFinalDataTokensAllDeps = maybeComputedFn(
   (site: Site): ReadonlyArray<FinalToken<DataToken>> =>
-    siteDataTokensAllDeps(site).map((token) => toFinalToken(token, site)),
+    siteDataTokensAllDeps(site).map(mkToFinalToken(site)),
 );
 
 export const siteFinalDataTokensOfType = maybeComputedFn(
@@ -112,7 +112,7 @@ export function finalDataTokensForDep(
   site: Site,
   depSite: Site,
 ): ReadonlyArray<FinalToken<DataToken>> {
-  return depSite.dataTokens.map((token) => toFinalToken(token, site));
+  return depSite.dataTokens.map(mkToFinalToken(site));
 }
 
 /**

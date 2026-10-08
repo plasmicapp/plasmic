@@ -6,6 +6,7 @@ import {
   switchType,
 } from "@/wab/shared/common";
 import { cloneVariantedValue } from "@/wab/shared/core/styles";
+import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
   DataToken,
   Site,
@@ -18,9 +19,7 @@ import {
 } from "@/wab/shared/model/classes";
 
 export type FinalToken<T extends Token> =
-  | MutableToken<T>
-  | OverrideableToken<T>
-  | ImmutableToken<T>;
+  MutableToken<T> | OverrideableToken<T> | ImmutableToken<T>;
 
 export abstract class BaseToken<T extends Token> {
   constructor(
@@ -277,6 +276,37 @@ export function cloneToken(token: Token): Token {
     .result();
 }
 
+// Observable sites invalidate these sets when token membership or dependencies change.
+// Plain server sites rebuild them; batch callers reuse them only for one traversal.
+const tokenMembership = maybeComputedFn(
+  (site: Site, type: "styleTokens" | "dataTokens") => ({
+    local: new Set<Token>(site[type]),
+    direct: new Set<Token>(
+      site.projectDependencies.flatMap((dep): Token[] => dep.site[type]),
+    ),
+  }),
+);
+
+/** A snapshot of token ownership for a single batch; do not retain across edits. */
+export function mkToFinalToken(site: Site) {
+  let styleMembership: ReturnType<typeof tokenMembership> | undefined;
+  let dataMembership: ReturnType<typeof tokenMembership> | undefined;
+  return <T extends Token>(token: T): FinalToken<T> => {
+    const base: Token = token;
+    const membership = isKnownStyleToken(base)
+      ? (styleMembership ??= tokenMembership(site, "styleTokens"))
+      : (dataMembership ??= tokenMembership(site, "dataTokens"));
+    const isLocal = membership.local.has(token);
+    if (isLocal && !token.isRegistered) {
+      return new MutableToken(token);
+    } else if (isLocal || membership.direct.has(token)) {
+      return new OverrideableToken(token, site);
+    } else {
+      return new ImmutableToken(token, isLocal);
+    }
+  };
+}
+
 export function toFinalToken(
   token: DataToken,
   site: Site,
@@ -286,23 +316,5 @@ export function toFinalToken(
   site: Site,
 ): FinalToken<StyleToken>;
 export function toFinalToken(token: Token, site: Site) {
-  const isLocal = isKnownStyleToken(token)
-    ? site.styleTokens.includes(token)
-    : site.dataTokens.includes(token);
-
-  if (isLocal && token.isRegistered) {
-    return new OverrideableToken(token, site);
-  } else if (isLocal) {
-    return new MutableToken(token);
-  } else if (
-    site.projectDependencies.some((dep) =>
-      isKnownStyleToken(token)
-        ? dep.site.styleTokens.includes(token)
-        : dep.site.dataTokens.includes(token),
-    )
-  ) {
-    return new OverrideableToken(token, site);
-  } else {
-    return new ImmutableToken(token, isLocal);
-  }
+  return mkToFinalToken(site)(token);
 }

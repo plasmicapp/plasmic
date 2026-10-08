@@ -384,6 +384,7 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
   const results: ChangeLogEntry[] = [];
 
   const projectFlags = computedProjectFlags(curr);
+  const tokenDicts: TokenDicts = new Map();
 
   // site.components
   results.push(
@@ -451,19 +452,29 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
               selector: (p, site) =>
                 `${
                   p.defaultExpr
-                    ? hashExpr(site, p.defaultExpr, {
-                        projectFlags,
-                        component: currComponent,
-                        inStudio: true,
-                      })
+                    ? hashExpr(
+                        site,
+                        p.defaultExpr,
+                        {
+                          projectFlags,
+                          component: currComponent,
+                          inStudio: true,
+                        },
+                        tokenDicts,
+                      )
                     : ""
                 }:${
                   p.previewExpr
-                    ? hashExpr(site, p.previewExpr, {
-                        projectFlags,
-                        component: currComponent,
-                        inStudio: true,
-                      })
+                    ? hashExpr(
+                        site,
+                        p.previewExpr,
+                        {
+                          projectFlags,
+                          component: currComponent,
+                          inStudio: true,
+                        },
+                        tokenDicts,
+                      )
                     : ""
                 }`,
               ...patchUpdateDiffSpecs,
@@ -509,11 +520,18 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
 
     // site.components[i].tplTree
     results.push(
-      ...checkTplNodes(prev, curr, prevComponent, currComponent, {
-        projectFlags,
-        component: currComponent,
-        inStudio: true,
-      }),
+      ...checkTplNodes(
+        prev,
+        curr,
+        prevComponent,
+        currComponent,
+        {
+          projectFlags,
+          component: currComponent,
+          inStudio: true,
+        },
+        tokenDicts,
+      ),
     );
   });
 
@@ -545,7 +563,7 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
           ...nameValueDiffSpecs,
         },
         {
-          selector: (m, site) => hashRuleSet(site, m.rs),
+          selector: (m, site) => hashRuleSet(site, m.rs, tokenDicts),
           ...patchUpdateDiffSpecs,
         },
       ],
@@ -832,6 +850,7 @@ function checkTplNodes(
   aComp: Component,
   bComp: Component,
   exprCtx: ExprCtx,
+  tokenDicts: TokenDicts,
 ): ChangeLogEntry[] {
   const results: ChangeLogEntry[] = [];
   const aNodes = flattenTpls(aComp.tplTree).filter(
@@ -891,8 +910,8 @@ function checkTplNodes(
       if (
         isTplVariantable(aNode) &&
         isTplVariantable(bNode) &&
-        hashVariantSettings(prev, aNode, exprCtx) !==
-          hashVariantSettings(curr, bNode, exprCtx)
+        hashVariantSettings(prev, aNode, exprCtx, tokenDicts) !==
+          hashVariantSettings(curr, bNode, exprCtx, tokenDicts)
       ) {
         // Style has been updated
         results.push({
@@ -1035,38 +1054,55 @@ const patchUpdateDiffSpecs = {
   valueChanged: { releaseType: "patch", description: "updated" },
 } as const;
 
-function hashVariantSettings(site: Site, tpl: TplNode, exprCtx: ExprCtx) {
+// Owned by one comparison (or standalone hashExpr call), never retained across edits.
+type TokenDicts = Map<Site, ReturnType<typeof siteFinalStyleTokensAllDepsDict>>;
+
+function hashVariantSettings(
+  site: Site,
+  tpl: TplNode,
+  exprCtx: ExprCtx,
+  tokenDicts: TokenDicts,
+) {
   return tpl.vsettings
-    .map((vs) => hashVariantSetting(site, vs, exprCtx))
+    .map((vs) => hashVariantSetting(site, vs, exprCtx, tokenDicts))
     .join("");
 }
 
-function hashVariantSetting(site: Site, vs: VariantSetting, exprCtx: ExprCtx) {
+function hashVariantSetting(
+  site: Site,
+  vs: VariantSetting,
+  exprCtx: ExprCtx,
+  tokenDicts: TokenDicts,
+) {
   return `
   ${vs.variants.map((v) => v.uuid).join("")}
   ${vs.args
     .map(
       (arg) =>
-        `${arg.param.variable.uuid}=${hashExpr(site, arg.expr, exprCtx)}`,
+        `${arg.param.variable.uuid}=${hashExpr(site, arg.expr, exprCtx, tokenDicts)}`,
     )
     .join("")}
   ${Object.entries(vs.attrs)
-    .map(([key, val]) => `${key}=${hashExpr(site, val, exprCtx)}`)
+    .map(([key, val]) => `${key}=${hashExpr(site, val, exprCtx, tokenDicts)}`)
     .join("")}
-  ${vs.dataCond ? hashExpr(site, vs.dataCond, exprCtx) : ""}
-  ${vs.text ? hashText(site, vs.text, exprCtx) : ""}
-  ${hashRuleSet(site, vs.rs)}
+  ${vs.dataCond ? hashExpr(site, vs.dataCond, exprCtx, tokenDicts) : ""}
+  ${vs.text ? hashText(site, vs.text, exprCtx, tokenDicts) : ""}
+  ${hashRuleSet(site, vs.rs, tokenDicts)}
   `;
 }
 
-function hashRuleSet(site: Site, rs: RuleSet) {
-  const allTokensDict = siteFinalStyleTokensAllDepsDict(site);
+function hashRuleSet(site: Site, rs: RuleSet, tokenDicts: TokenDicts) {
   const rsValues = Object.entries(rs.values)
     .sort((a, b) => a[0].localeCompare(b[0]))
     .map(([key, val]) => {
       const refTokenIds = extractAllReferencedTokenIds(val);
       if (refTokenIds.length === 0) {
         return [key, val];
+      }
+      let allTokensDict = tokenDicts.get(site);
+      if (!allTokensDict) {
+        allTokensDict = siteFinalStyleTokensAllDepsDict(site);
+        tokenDicts.set(site, allTokensDict);
       }
       const refTokens = withoutNils(refTokenIds.map((x) => allTokensDict[x]));
       return [key, refTokens.map((t) => t.value).join("")];
@@ -1075,18 +1111,25 @@ function hashRuleSet(site: Site, rs: RuleSet) {
     ${JSON.stringify(rsValues)}
     ${[...rs.mixins]
       .sort((a, b) => a.uuid.localeCompare(b.uuid))
-      .map((m) => hashRuleSet(site, m.rs))
+      .map((m) => hashRuleSet(site, m.rs, tokenDicts))
       .join("")}
   `;
 }
 
-export function hashExpr(site: Site, _expr: Expr, exprCtx: ExprCtx) {
+export function hashExpr(
+  site: Site,
+  _expr: Expr,
+  exprCtx: ExprCtx,
+  tokenDicts: TokenDicts = new Map(),
+) {
   return switchType(_expr)
     .when(
       CustomCode,
       (expr) =>
         expr.code +
-        (expr.fallback ? hashExpr(site, expr.fallback, exprCtx) : ""),
+        (expr.fallback
+          ? hashExpr(site, expr.fallback, exprCtx, tokenDicts)
+          : ""),
     )
     .when(RenderExpr, (expr) => expr.tpl.map((x) => x.uuid).join(""))
     .when(VarRef, (expr) => expr.variable.uuid)
@@ -1098,30 +1141,43 @@ export function hashExpr(site: Site, _expr: Expr, exprCtx: ExprCtx) {
         `${expr.page.uuid}` +
         `?encode=${expr.encode}` +
         Object.entries(expr.params)
-          .map(([key, val]) => `[${key}]=${hashExpr(site, val, exprCtx)}`)
+          .map(
+            ([key, val]) =>
+              `[${key}]=${hashExpr(site, val, exprCtx, tokenDicts)}`,
+          )
           .join("") +
         Object.entries(expr.query)
-          .map(([key, val]) => `&${key}=${hashExpr(site, val, exprCtx)}`)
+          .map(
+            ([key, val]) =>
+              `&${key}=${hashExpr(site, val, exprCtx, tokenDicts)}`,
+          )
           .join("") +
-        (expr.fragment ? `#${hashExpr(site, expr.fragment, exprCtx)}` : ""),
+        (expr.fragment
+          ? `#${hashExpr(site, expr.fragment, exprCtx, tokenDicts)}`
+          : ""),
     )
     .when(VariantsRef, (expr) => expr.variants.map((v) => v.uuid).join(""))
     .when(
       ObjectPath,
       (expr) =>
         expr.path.join(".") +
-        (expr.fallback ? hashExpr(site, expr.fallback, exprCtx) : ""),
+        (expr.fallback
+          ? hashExpr(site, expr.fallback, exprCtx, tokenDicts)
+          : ""),
     )
     .when(DataSourceOpExpr, (expr) => asCode(expr, exprCtx).code)
     .when(EventHandler, (expr) => expr.interactions.map((i) => i.uuid).join(""))
     .when(CollectionExpr, (collectionExpr) =>
       collectionExpr.exprs
-        .map((expr) => (expr ? hashExpr(site, expr, exprCtx) : "undefined"))
+        .map((expr) =>
+          expr ? hashExpr(site, expr, exprCtx, tokenDicts) : "undefined",
+        )
         .join("#"),
     )
     .when(MapExpr, (mapExpr) =>
       Object.entries(mapExpr.mapExpr).map(
-        ([name, expr]) => `{${name}}:{${hashExpr(site, expr, exprCtx)}}#`,
+        ([name, expr]) =>
+          `{${name}}:{${hashExpr(site, expr, exprCtx, tokenDicts)}}#`,
       ),
     )
     .when(FunctionArg, (functionArg) => functionArg.uuid)
@@ -1130,12 +1186,14 @@ export function hashExpr(site: Site, _expr: Expr, exprCtx: ExprCtx) {
       StyleExpr,
       (expr) =>
         `${expr.uuid}-${expr.styles.map(
-          (s) => `${s.selector}-${hashRuleSet(site, s.rs)}`,
+          (s) => `${s.selector}-${hashRuleSet(site, s.rs, tokenDicts)}`,
         )}`,
     )
     .when(TemplatedString, (templatedString) =>
       templatedString.text
-        .map((t) => (isString(t) ? t : `{{ ${hashExpr(site, t, exprCtx)} }} `))
+        .map((t) =>
+          isString(t) ? t : `{{ ${hashExpr(site, t, exprCtx, tokenDicts)} }} `,
+        )
         .join(""),
     )
     .when(TplRef, (ref) => `ref=${ref.tpl.uuid}`)
@@ -1147,7 +1205,7 @@ export function hashExpr(site: Site, _expr: Expr, exprCtx: ExprCtx) {
       JSON.stringify({
         hostLiteral: expr.hostLiteral,
         substitutions: mapValues(expr.substitutions, (subexpr) =>
-          hashExpr(site, subexpr, exprCtx),
+          hashExpr(site, subexpr, exprCtx, tokenDicts),
         ),
       }),
     )
@@ -1155,12 +1213,18 @@ export function hashExpr(site: Site, _expr: Expr, exprCtx: ExprCtx) {
     .result();
 }
 
-function hashText(site: Site, text: RichText, exprCtx: ExprCtx) {
+function hashText(
+  site: Site,
+  text: RichText,
+  exprCtx: ExprCtx,
+  tokenDicts: TokenDicts,
+) {
   function hashMarker(marker: Marker) {
     if (isKnownStyleMarker(marker)) {
       return `${marker.position}${marker.length}${hashRuleSet(
         site,
         marker.rs,
+        tokenDicts,
       )}`;
     } else if (isKnownNodeMarker(marker)) {
       return `${marker.tpl.uuid}${marker.position}${marker.length}`;
@@ -1172,7 +1236,7 @@ function hashText(site: Site, text: RichText, exprCtx: ExprCtx) {
   if (isKnownRawText(text)) {
     return `${text.text}${text.markers.map(hashMarker).join("")}`;
   } else if (isKnownExprText(text)) {
-    return hashExpr(site, text.expr, exprCtx);
+    return hashExpr(site, text.expr, exprCtx, tokenDicts);
   } else {
     throw new Error(`Unexpected text ${text}`);
   }

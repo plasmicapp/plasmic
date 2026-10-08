@@ -16,7 +16,7 @@ import {
   walkDependencyTree,
 } from "@/wab/shared/core/project-deps";
 import { expandRuleSets } from "@/wab/shared/core/styles";
-import { FinalToken, toFinalToken } from "@/wab/shared/core/tokens";
+import { FinalToken, mkToFinalToken } from "@/wab/shared/core/tokens";
 import { isTplVariantable } from "@/wab/shared/core/tpls";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
@@ -170,17 +170,17 @@ export const siteStyleTokensAllDepsDict = maybeComputedFn(
 
 export const siteFinalStyleTokens = maybeComputedFn(
   (site: Site): ReadonlyArray<FinalToken<StyleToken>> =>
-    siteStyleTokens(site).map((token) => toFinalToken(token, site)),
+    siteStyleTokens(site).map(mkToFinalToken(site)),
 );
 
 export const siteFinalStyleTokensDirectDeps = maybeComputedFn(
   (site: Site): ReadonlyArray<FinalToken<StyleToken>> =>
-    siteStyleTokensDirectDeps(site).map((token) => toFinalToken(token, site)),
+    siteStyleTokensDirectDeps(site).map(mkToFinalToken(site)),
 );
 
 export const siteFinalStyleTokensAllDeps = maybeComputedFn(
   (site: Site): ReadonlyArray<FinalToken<StyleToken>> =>
-    siteStyleTokensAllDeps(site).map((token) => toFinalToken(token, site)),
+    siteStyleTokensAllDeps(site).map(mkToFinalToken(site)),
 );
 
 export const siteFinalStyleTokensAllDepsDict = maybeComputedFn(
@@ -227,7 +227,7 @@ export function finalStyleTokensForDep(
   opts: { includeTransitiveDeps?: DependencyWalkScope } = {},
 ): FinalToken<StyleToken>[] {
   return styleTokens(depSite, { includeDeps: opts.includeTransitiveDeps }).map(
-    (t) => toFinalToken(t, site),
+    mkToFinalToken(site),
   );
 }
 
@@ -245,68 +245,84 @@ export const componentToUsedTokens = maybeComputedFn(
     component: Component,
   ): ReadonlyArray<StyleToken> {
     const usedTokens = new Set<StyleToken>();
+    const allTokensDict = siteFinalStyleTokensAllDepsDict(site);
     for (const tpl of flattenComponent(component)) {
       if (isTplVariantable(tpl)) {
-        xAddAll(usedTokens, tplToUsedTokens(site, tpl));
+        xAddAll(usedTokens, tplToUsedTokens(site, tpl, allTokensDict));
       }
     }
     return [...usedTokens.keys()];
   },
 );
 
-const tplToUsedTokens = maybeComputedFn(function tplToUsedTokens(
-  site: Site,
-  tpl: TplNode,
-): ReadonlyArray<StyleToken> {
-  const collector = new Set<StyleToken>();
-  for (const vs of tpl.vsettings) {
-    const rulesets = expandRuleSets([vs.rs]);
-    for (const rs of rulesets) {
-      xAddAll(collector, usedTokensForExp(site, rs, tpl));
-    }
-  }
-  return [...collector.keys()];
-});
-
-const usedTokensForExp = maybeComputedFn(function usedTokensForExp(
-  site: Site,
-  rs: DeepReadonly<RuleSet>,
-  tpl: TplNode,
-): ReadonlyArray<StyleToken> {
-  const exp = readonlyRSH(rs, tpl);
-  const allTokensDict = siteFinalStyleTokensAllDepsDict(site);
-  const collector = new Set<StyleToken>();
-  for (const prop of exp.props()) {
-    const val = exp.getRaw(prop);
-    if (val) {
-      const refTokenIds = extractAllReferencedTokenIds(val);
-      const refTokens = withoutNils(refTokenIds.map((x) => allTokensDict[x]));
-      xAddAll(
-        collector,
-        refTokens.map((t) => t.base),
-      );
-      for (const token of refTokens) {
-        xAddAll(collector, usedTokensForToken(site, allTokensDict[token.uuid]));
+// These caches live only while observed by componentToUsedTokens. Old token
+// dictionaries must be released after token membership changes.
+const tplToUsedTokens = maybeComputedFn(
+  function tplToUsedTokens(
+    site: Site,
+    tpl: TplNode,
+    allTokensDict: ReturnType<typeof siteFinalStyleTokensAllDepsDict>,
+  ): ReadonlyArray<StyleToken> {
+    const collector = new Set<StyleToken>();
+    for (const vs of tpl.vsettings) {
+      const rulesets = expandRuleSets([vs.rs]);
+      for (const rs of rulesets) {
+        xAddAll(collector, usedTokensForExp(site, rs, tpl, allTokensDict));
       }
     }
-  }
-  return [...collector.keys()];
-});
+    return [...collector.keys()];
+  },
+  { keepAlive: false },
+);
 
-const usedTokensForToken = maybeComputedFn(function collectUsedTokensForToken(
-  site: Site,
-  token: FinalToken<StyleToken>,
-): ReadonlyArray<StyleToken> {
-  const allTokensDict = siteFinalStyleTokensAllDepsDict(site);
-  const collector = new Set<StyleToken>();
-  let sub = tryParseTokenRef(token.value, allTokensDict);
-  while (sub) {
-    collector.add(sub.base);
-    if (sub.value) {
-      sub = tryParseTokenRef(sub.value, allTokensDict);
-    } else {
-      break;
+const usedTokensForExp = maybeComputedFn(
+  function usedTokensForExp(
+    site: Site,
+    rs: DeepReadonly<RuleSet>,
+    tpl: TplNode,
+    allTokensDict: ReturnType<typeof siteFinalStyleTokensAllDepsDict>,
+  ): ReadonlyArray<StyleToken> {
+    const exp = readonlyRSH(rs, tpl);
+    const collector = new Set<StyleToken>();
+    for (const prop of exp.props()) {
+      const val = exp.getRaw(prop);
+      if (val) {
+        const refTokenIds = extractAllReferencedTokenIds(val);
+        const refTokens = withoutNils(refTokenIds.map((x) => allTokensDict[x]));
+        xAddAll(
+          collector,
+          refTokens.map((t) => t.base),
+        );
+        for (const token of refTokens) {
+          xAddAll(
+            collector,
+            usedTokensForToken(site, allTokensDict[token.uuid], allTokensDict),
+          );
+        }
+      }
     }
-  }
-  return [...collector.keys()];
-});
+    return [...collector.keys()];
+  },
+  { keepAlive: false },
+);
+
+const usedTokensForToken = maybeComputedFn(
+  function collectUsedTokensForToken(
+    site: Site,
+    token: FinalToken<StyleToken>,
+    allTokensDict: ReturnType<typeof siteFinalStyleTokensAllDepsDict>,
+  ): ReadonlyArray<StyleToken> {
+    const collector = new Set<StyleToken>();
+    let sub = tryParseTokenRef(token.value, allTokensDict);
+    while (sub) {
+      collector.add(sub.base);
+      if (sub.value) {
+        sub = tryParseTokenRef(sub.value, allTokensDict);
+      } else {
+        break;
+      }
+    }
+    return [...collector.keys()];
+  },
+  { keepAlive: false },
+);

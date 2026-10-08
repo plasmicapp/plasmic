@@ -582,6 +582,30 @@ describe("compareSites / calculateSemVer", () => {
     return;
   });
 
+  it("refreshes token dictionaries between comparisons", () => {
+    const prev = sites[0];
+    const token = mkStyleToken({ name: "color", type: "Color", value: "red" });
+    prev.components.push(newComponent("component"));
+    const tpl = prev.components[0].tplTree;
+    ensureBaseVariantSetting(prev.components[0], tpl);
+    tpl.vsettings[0].rs.values.color = mkTokenRef(token);
+    const curr = nextSite();
+    expect(compareSites(prev, curr)).toEqual([]);
+    curr.styleTokens.push(token);
+    expect(
+      compareSites(prev, curr).some((entry) => entry.description === "updated"),
+    ).toBe(true);
+    curr.styleTokens.splice(0);
+    expect(compareSites(prev, curr)).toEqual([]);
+    curr.styleTokens.push(token);
+    prev.styleTokens.push(L.cloneDeep(token));
+    expect(compareSites(prev, curr)).toEqual([]);
+    token.value = "blue";
+    expect(
+      compareSites(prev, curr).some((entry) => entry.description === "updated"),
+    ).toBe(true);
+  });
+
   // site.styleTokenOverrides
   it("semver-styleTokensOverrides", () => {
     // - Add new override
