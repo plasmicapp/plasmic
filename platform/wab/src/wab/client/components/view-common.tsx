@@ -101,20 +101,38 @@ export function getTextWithScrolling(
 
   return result;
 }
+
+// In code, whitespace around symbols is just formatting (`${ a }` is the same
+// as `${a}`), so let it appear between any identifier and symbol in the word.
+function codeWordPattern(word: string) {
+  return (word.match(/[\w$]+|[^\w$]/g) ?? [])
+    .map((token) => L.escapeRegExp(token))
+    .join("\\s*");
+}
+
 export class Matcher {
   _query: /*TWZ*/ string;
   _typeaheadPatternGlobal: /*TWZ*/ RegExp;
   _typeaheadPatternOnce: /*TWZ*/ RegExp;
-  constructor(rawQuery: string, opts: { matchMiddleOfWord?: boolean } = {}) {
+  constructor(
+    rawQuery: string,
+    opts: { matchMiddleOfWord?: boolean; matchCode?: boolean } = {},
+  ) {
     const matchMiddleOfWord = opts.matchMiddleOfWord ?? true;
     this._query = rawQuery.trim();
     const patPrefix = matchMiddleOfWord ? "" : "\\b";
     const patternStr = [...simpleWords(this._query)]
-      .map((word: /*TWZ*/ string) => patPrefix + L.escapeRegExp(word))
+      .map(
+        (word: /*TWZ*/ string) =>
+          patPrefix +
+          (opts.matchCode ? codeWordPattern(word) : L.escapeRegExp(word)),
+      )
       .join(".*");
+    // Code can span several lines, and `.` only crosses them with the s flag.
+    const flags = opts.matchCode ? "is" : "i";
     // We use two here since RegExps are stateful if g flag is used.
-    this._typeaheadPatternGlobal = new RegExp(`${patternStr}`, "gi");
-    this._typeaheadPatternOnce = new RegExp(`${patternStr}`, "i");
+    this._typeaheadPatternGlobal = new RegExp(`${patternStr}`, `g${flags}`);
+    this._typeaheadPatternOnce = new RegExp(`${patternStr}`, flags);
   }
   matches(text: /*TWZ*/ string) {
     return !this.hasQuery() || this._typeaheadPatternOnce.test(text);
