@@ -32,30 +32,30 @@ export async function findConflictNames(em: EntityManager) {
   const numberOfProjects = await dbMgr.countAllProjects();
 
   const printData = () => {
-    logger().info(
+    logger.info(
       numberOfProjects === processedProjects
         ? "FINISHED"
         : `${((100 * processedProjects) / numberOfProjects).toFixed(2)}%`,
     );
-    logger().info(`# of projects to check: ${numberOfProjects}`);
-    logger().info(`# of processed projects: ${processedProjects}`);
-    logger().info(
+    logger.info(`# of projects to check: ${numberOfProjects}`);
+    logger.info(`# of processed projects: ${processedProjects}`);
+    logger.info(
       `# of projects with conflicts: ${projectsWithConflicts.length}`,
     );
-    logger().info(
+    logger.info(
       `Tpl node name and Slots = ${
         conflictCounter[CONFLICT_TYPE.NODE_AND_SLOT]
       }`,
     );
-    logger().info(
+    logger.info(
       `Tpl node name and Variants = ${
         conflictCounter[CONFLICT_TYPE.NODE_AND_VARIANT]
       }`,
     );
-    logger().info(
+    logger.info(
       `Tpl node name and Prop = ${conflictCounter[CONFLICT_TYPE.NODE_AND_PROP]}`,
     );
-    logger().info("Projects with conflicts:", {
+    logger.info("Projects with conflicts:", {
       projectsWithConflictsSummary: projectsWithConflicts,
     });
   };
@@ -88,7 +88,7 @@ export async function findConflictNames(em: EntityManager) {
 
           const addConflictFound = (conflictType: CONFLICT_TYPE) => {
             conflictCounter[conflictType]++;
-            logger().info(
+            logger.info(
               `${
                 conflictType === CONFLICT_TYPE.NODE_AND_PROP
                   ? "prop"
@@ -123,7 +123,7 @@ export async function findConflictNames(em: EntityManager) {
         printData();
       }
     } catch (e) {
-      logger().error(`Unbundle failed on project ${project.id}`, e as any);
+      logger.error(`Unbundle failed on project ${project.id}`, e as any);
     }
   }
   printData();

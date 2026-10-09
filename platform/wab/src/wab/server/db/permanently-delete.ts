@@ -31,12 +31,12 @@ async function main() {
     .opts();
 
   const days = opts.days ?? 28;
-  logger().info(
+  logger.info(
     `PERMANENTLY deleting things that have been soft-deleted since ${days} ago... Force: ${opts.force}`,
   );
 
   const ids = opts.id as string[] | undefined;
-  logger().info(`FILTERED TO ${ids}`);
+  logger.info(`FILTERED TO ${ids}`);
 
   const maybeFiltered = <T extends { id: string }>(items: T[]) =>
     !ids || ids.length === 0 ? items : items.filter((x) => ids.includes(x.id));
@@ -183,7 +183,7 @@ async function ensureYes(msg: string) {
 if (require.main === module) {
   spawn(
     main().catch((error) => {
-      logger().error("Unable to permanently delete things.", error);
+      logger.error("Unable to permanently delete things.", error);
       process.exit(1);
     }),
   );

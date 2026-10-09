@@ -22,6 +22,9 @@ const config: KnipConfig = {
       entry: ["src/index.ts"],
       project: ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
     },
+    "platform/shared/observability": {
+      project: ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
+    },
     "platform/wab": {
       entry: ["src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
       project: ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],

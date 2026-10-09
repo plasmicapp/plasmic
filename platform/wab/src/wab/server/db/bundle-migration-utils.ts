@@ -166,15 +166,15 @@ export async function upgradeHostlessProject(
 
 export const getHostlessData = (() => {
   const fn = async (db: MigrationDbMgr) => {
-    logger().info("Refreshing hostless data");
+    logger.info("Refreshing hostless data");
     await ensureDevFlags(db);
     if (!(db instanceof DbMgr)) {
-      logger().info("No real DbMgr - nothing to do");
+      logger.info("No real DbMgr - nothing to do");
       return undefined;
     }
     const workspaceId = DEVFLAGS.hostLessWorkspaceId;
     if (!workspaceId) {
-      logger().info("No hostless workspace - nothing to upgrade");
+      logger.info("No hostless workspace - nothing to upgrade");
       return undefined;
     }
     const hostlessProjects = await db.getProjectsByWorkspaces([workspaceId]);
@@ -293,7 +293,7 @@ export async function upgradeHostlessProjectForDev(
       bundle.version || "0-new-version",
     );
     newBundle.map[newBundle.root].version = newVersion;
-    logger().info(
+    logger.info(
       `Publishing new version of ${pkgVersion.pkgId}: ${pkgVersion.version} => ${newVersion}`,
     );
     const newPkgVersion = await db.insertPkgVersion(
@@ -304,9 +304,7 @@ export async function upgradeHostlessProjectForDev(
       "",
       0,
     );
-    logger().info(
-      `New PkgVersion: ${newPkgVersion.id}@${newPkgVersion.version}`,
-    );
+    logger.info(`New PkgVersion: ${newPkgVersion.id}@${newPkgVersion.version}`);
 
     // That's it; we don't need to touch `bundle`, as that `bundle` will retain the
     // same hostless metadata as the previous pkg version, and stamped with the new
@@ -338,7 +336,7 @@ export async function upgradeHostlessProjectForDev(
       }
     }
     if (updatedDeps.length > 0) {
-      logger().info(
+      logger.info(
         `\tUpgrading project deps for ${entity.id}: ${updatedDeps
           .map(
             ({ oldDep, newDep }) =>
@@ -356,7 +354,7 @@ export async function upgradeHostlessProjectForDev(
         entity.id,
         bundle.version || "0-new-version",
       );
-      logger().info(`New deps for ${entity.id}: ${newBundle.deps.join(", ")}`);
+      logger.info(`New deps for ${entity.id}: ${newBundle.deps.join(", ")}`);
       Object.assign(bundle, newBundle);
     }
   }

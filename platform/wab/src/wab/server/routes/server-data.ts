@@ -4,7 +4,7 @@ import {
   getOperationCurrentUserUsage,
 } from "@/wab/server/data-sources/data-source-utils";
 import { DbMgr } from "@/wab/server/db/DbMgr";
-import { logger } from "@/wab/server/observability";
+import { logger, withSpan } from "@/wab/server/observability";
 import {
   extractAppUserFromToken,
   trackAppUserActivity,
@@ -17,7 +17,6 @@ import {
 } from "@/wab/server/routes/end-user";
 import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import { asyncTimed } from "@/wab/server/timing-util";
-import { withSpan } from "@/wab/server/util/apm-util";
 import { GenericDataSource } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { OperationTemplate } from "@/wab/shared/data-sources-meta/data-sources";
 import { Request, Response } from "express-serve-static-core";
@@ -199,7 +198,7 @@ export function executeDataSourceOperationWithCurrentUserHandler(
     }
 
     if (!currentUserInfo.isAuthorized) {
-      logger().error(
+      logger.error(
         `App: ${currentUserInfo.appId} (User: ${currentUserInfo.appUserEmail}) (ExtId: ${currentUserInfo.appUserExternalId}) (RoleId: ${currentUserInfo.appRoleId}) is not authorized to perform operation requiring (RoleId: ${op.roleId})`,
       );
       res.status(401).json({

@@ -44,7 +44,7 @@ async function main() {
   await con.transaction(async (em) => {
     await initDb(em);
     await seedTestDb(em);
-    logger().info("done");
+    logger.info("done");
   });
 }
 
@@ -258,7 +258,7 @@ export async function seedTestUserAndProjects(
 
   const projects = await db.listProjectsForSelf();
 
-  logger().info(
+  logger.info(
     `Inserted user id=${user.id} email=${
       user.email
     } with projects ids=${projects.map((p) => p.id).join(",")}`,
@@ -284,7 +284,7 @@ async function seedTeam(
     parentTeamId: parentTeam?.id,
   });
 
-  logger().info(
+  logger.info(
     `Inserted team id=${team.id} name=${team.name} owned by user id=${user.id} email=${user.email} with feature tier id=${featureTier.id} name=${featureTier.name}`,
   );
 

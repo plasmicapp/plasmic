@@ -23,10 +23,9 @@ import {
   parseProjectIdSpec,
   resolveLatestProjectRevisions,
 } from "@/wab/server/loader/resolve-projects";
-import { logger } from "@/wab/server/observability";
+import { logger, withSpan } from "@/wab/server/observability";
+import { setSentryErrorContext } from "@/wab/server/observability/sentry-filters";
 import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
-import { setSentryErrorContext } from "@/wab/server/sentry";
-import { TraceCarrier, withSpan } from "@/wab/server/util/apm-util";
 import { makeS3Client } from "@/wab/server/util/s3-util";
 import { prefillCloudfront } from "@/wab/server/workers/prefill-cloudfront";
 import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
@@ -40,6 +39,7 @@ import { toJson } from "@/wab/shared/model/model-tree-util";
 import { getCodegenOriginUrl, getCodegenUrl } from "@/wab/shared/urls";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { context, propagation } from "@opentelemetry/api";
+import type { TraceCarrier } from "@plasmic-shared/observability";
 import execa from "execa";
 import { Request, Response } from "express-serve-static-core";
 import fs from "fs";
@@ -436,7 +436,7 @@ export async function getLoaderChunk(req: Request, res: Response) {
 
   const fileNamesSet = new Set(fileNames);
 
-  logger().info(`Loading S3 bundle from ${LOADER_ASSETS_BUCKET} ${bundleKey}`);
+  logger.info(`Loading S3 bundle from ${LOADER_ASSETS_BUCKET} ${bundleKey}`);
 
   const s3 = makeS3Client();
 
@@ -706,16 +706,16 @@ export async function genLoaderHtmlBundleSandboxed(
     if (failed || exitCode !== 0 || stdout.length === 0) {
       // This error comes from @plasmicapp/loader-react
       if (stderr.includes("Unable to find components")) {
-        logger().info("Sandboxed loader component not found", diagnostic);
+        logger.info("Sandboxed loader component not found", diagnostic);
         throw new NotFoundError(hideProjectToken(stderr.split("\n")[0]));
       }
-      logger().error("Sandboxed loader subprocess failed", diagnostic);
+      logger.error("Sandboxed loader subprocess failed", diagnostic);
       const error = new Error("Sandboxed loader subprocess failed");
       setSentryErrorContext(error, "htmlBuild", diagnostic);
       throw error;
     }
     if (stderr.trim().length > 0) {
-      logger().warn(
+      logger.warn(
         "Sandboxed loader subprocess succeeded with stderr",
         diagnostic,
       );
@@ -963,7 +963,7 @@ function setAsCacheableResource(res: Response, maxAge = 31536000) {
 
 export function checkEtagSkippable(req: Request, res: Response, etag: string) {
   if (req.devflags.disableETagCaching) {
-    logger().info("Etag mechanism is disabled");
+    logger.info("Etag mechanism is disabled");
     return false;
   }
 
@@ -985,12 +985,12 @@ export function checkEtagSkippable(req: Request, res: Response, etag: string) {
 
   if (req.headers["if-none-match"] === etag) {
     // We got a match!  We can skip codegen.
-    logger().info(`Preview request matched! ${etag}`);
+    logger.info(`Preview request matched! ${etag}`);
     res.status(304);
     res.send();
     return true;
   }
-  logger().info(
+  logger.info(
     `Preview request no match ${etag} ${req.headers["if-none-match"]}`,
   );
   return false;

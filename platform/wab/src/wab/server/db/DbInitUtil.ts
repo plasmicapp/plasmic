@@ -24,7 +24,7 @@ async function stampMigration(em: EntityManager) {
   );
   const qb = em.createQueryBuilder();
   for (const m of pendingMigrations) {
-    logger().info(`Stamping migration ${m.name}`);
+    logger.info(`Stamping migration ${m.name}`);
     await qb
       .insert()
       .into(tableName)

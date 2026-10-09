@@ -65,14 +65,14 @@ export function csrf(req: Request, res: Response, _next: NextFunction) {
   res.json({ csrf: res.locals._csrf });
 }
 export async function login(req: Request, res: Response, next: NextFunction) {
-  logger().info(`logging in as email: ${req.body.email}`);
+  logger.info(`logging in as email: ${req.body.email}`);
   await new Promise<void>((resolve) =>
     passport.authenticate(
       "local",
       (err: Error, user: User, _info: IVerifyOptions) =>
         (async () => {
           if (err || !user) {
-            logger().error(`could not log in ${user}, ${err}`);
+            logger.error(`could not log in ${user}, ${err}`);
             res.json(
               ensureType<LoginResponse>({
                 status: false,
@@ -84,7 +84,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
               if (err2) {
                 return next(err2);
               }
-              logger().info(
+              logger.info(
                 `logged in as ${
                   getUser(req, { allowUnverifiedEmail: true }).email
                 }`,
@@ -126,7 +126,7 @@ export async function createUserFull({
     throw new BadRequestError();
   }
   if (hasBlockedEmailDomain(parsedEmail)) {
-    logger().info(
+    logger.info(
       `Blocked signup from email domain ${parsedEmail.normalizedDomain}`,
     );
     throw new BadRequestError();
@@ -289,7 +289,7 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
 }
 
 export async function logout(req: Request, res: Response) {
-  logger().info(
+  logger.info(
     `logging out as ${getUser(req, { allowUnverifiedEmail: true }).email}`,
   );
   await doLogout(req, res);
@@ -299,7 +299,7 @@ export async function logout(req: Request, res: Response) {
 export async function self(req: Request, res: Response) {
   const dbMgr = userDbMgr(req, { allowUnverifiedEmail: true });
   const user = getUser(req, { allowUnverifiedEmail: true });
-  logger().info(`getting self info for ${user.email}`);
+  logger.info(`getting self info for ${user.email}`);
   const usesOauth = await dbMgr.isOauthUser(user.id);
   res.json(
     ensureType<SelfResponse>({
@@ -591,10 +591,10 @@ async function handleOauthCallback(
       strategy,
       async (err: Error, user: User, info: IVerifyOptions) =>
         (async () => {
-          logger().error(`${logPrefix} AUTH CALLBACK`, { err, user, info });
+          logger.error(`${logPrefix} AUTH CALLBACK`, { err, user, info });
           if (err || !user) {
             const errName = `${err}`;
-            logger().error(
+            logger.error(
               `${logPrefix} could not auth due to error: ${errName}`,
             );
             Sentry.captureException(err);
@@ -613,7 +613,7 @@ async function handleOauthCallback(
             if (err2) {
               return next(err2);
             }
-            logger().info(`${logPrefix} logged in as: ${user.email}`);
+            logger.info(`${logPrefix} logged in as: ${user.email}`);
             // Custom session time for specific sso configurations.
             if (
               !!ssoConfig &&
@@ -649,7 +649,7 @@ export async function googleCallback(
       // just to log in normally.
       const oauthToken = await mgr.tryGetOauthToken(user.id, "google");
       if (!oauthToken || !oauthToken.token.refreshToken) {
-        logger().info("auth: google: forcing consent...");
+        logger.info("auth: google: forcing consent...");
         // Annoyingly, there's no "clean" way to trigger a redirect directly to
         // the oauth provider, since passport.authenticate() reads req.query to
         // determine whether this .authenticate() call is the initial request or
@@ -912,10 +912,10 @@ export async function airtableCallback(
       "airtable",
       async (err: Error, row: { id: string }, info: IVerifyOptions) =>
         (async () => {
-          logger().error(`AUTH CALLBACK`, { err, row, info });
+          logger.error(`AUTH CALLBACK`, { err, row, info });
           if (err) {
             const errName = `${err}`;
-            logger().error(`could not airtable auth due to error: ${errName}`);
+            logger.error(`could not airtable auth due to error: ${errName}`);
             Sentry.captureException(err);
             res.send(callbackHtml(errName));
             return;
@@ -960,10 +960,10 @@ export async function googleSheetsCallback(
       "google-sheets",
       async (err: Error, row: { id: string }, info: IVerifyOptions) =>
         (async () => {
-          logger().error(`AUTH CALLBACK`, { err, row, info });
+          logger.error(`AUTH CALLBACK`, { err, row, info });
           if (err) {
             const errName = `${err}`;
-            logger().error(`could not google-sheets due to error: ${errName}`);
+            logger.error(`could not google-sheets due to error: ${errName}`);
             Sentry.captureException(err);
             res.send(callbackHtml(errName));
             return;

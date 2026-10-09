@@ -234,14 +234,12 @@ export class AirtableFetcher {
               type: "string",
               primaryKey: true,
             },
-            ...(table.fields as any[]).map(
-              (field): TableFieldSchema => ({
-                id: field.name,
-                label: field.name,
-                type: AIRTABLE_TYPE_TO_BUILDER_TYPE[field.type] ?? "unknown",
-                readOnly: AIRTABLE_READONLY_TYPES.includes(field.type),
-              }),
-            ),
+            ...(table.fields as any[]).map((field): TableFieldSchema => ({
+              id: field.name,
+              label: field.name,
+              type: AIRTABLE_TYPE_TO_BUILDER_TYPE[field.type] ?? "unknown",
+              readOnly: AIRTABLE_READONLY_TYPES.includes(field.type),
+            })),
           ],
         })),
       };
@@ -637,7 +635,7 @@ async function refreshAndUpdateToken(oauthTokenId: string, token: TokenData) {
         token.refreshToken,
         async (err, accessToken, refreshToken) => {
           if (err) {
-            logger().error("ERROR", err);
+            logger.error("ERROR", err);
             resolve(undefined);
             return;
           }

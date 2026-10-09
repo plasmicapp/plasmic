@@ -1,7 +1,7 @@
-import { pickTraceCarrier } from "@/wab/server/util/apm-util";
 import { maybeStartGoogleCloudProfiler } from "@/wab/server/util/profiler";
 import { getCodegenOriginUrl, getCodegenUrl } from "@/wab/shared/urls";
 import { context, propagation } from "@opentelemetry/api";
+import { flushTraces, pickTraceCarrier } from "@plasmic-shared/observability";
 import {
   GlobalVariantSpec,
   extractPlasmicQueryDataFromElement,
@@ -125,10 +125,12 @@ async function main(argv = process.argv) {
       propagation.extract(context.active(), pickTraceCarrier(process.env)),
       () => genLoaderHtmlBundle(args),
     );
+    await flushTraces();
     // The profiler keeps a long-poll open and can't be stopped, so force-exit
     // once stdout is flushed to avoid leaving the subprocess alive.
     process.stdout.write(html, () => process.exit(0));
   } catch (e) {
+    await flushTraces();
     process.stderr.write(
       inspect(e, {
         depth: 5,

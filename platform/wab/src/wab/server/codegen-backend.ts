@@ -1,5 +1,5 @@
 // tslint:disable:ordered-imports
-import "@/wab/server/sentry";
+import "@/wab/server/observability/setup";
 import { spawn } from "@/wab/shared/common";
 import { codegenBackendMain } from "@/wab/server/codegen-backend-real";
 import { maybeStartGoogleCloudProfiler } from "@/wab/server/util/profiler";

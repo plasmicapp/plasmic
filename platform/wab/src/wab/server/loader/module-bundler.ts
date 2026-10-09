@@ -4,8 +4,7 @@ import {
   uploadErrorFiles,
 } from "@/wab/server/loader/error-handler";
 import { makeGlobalContextsProviderFileName } from "@/wab/server/loader/module-writer";
-import { logger } from "@/wab/server/observability";
-import { withSpan } from "@/wab/server/util/apm-util";
+import { logger, withSpan } from "@/wab/server/observability";
 import {
   CachedCodegenOutputBundle,
   ComponentReference,
@@ -550,14 +549,14 @@ export async function bundleModules(
       );
     } catch (err) {
       const bundleErrorStr: string = err.toString();
-      logger().error(
+      logger.error(
         `Error bundling with esbuild: ${bundleErrorStr}: ${err.stack}`,
       );
       try {
         const errPrefix = await uploadErrorFiles(err, dir);
-        logger().error(`Errors uploaded: ${errPrefix}`);
+        logger.error(`Errors uploaded: ${errPrefix}`);
       } catch (err2) {
-        logger().error(`Error uploading error files: ${err2.toString()}`);
+        logger.error(`Error uploading error files: ${err2.toString()}`);
       }
 
       const transformedBundleErrorStr = transformBundlerErrors(
@@ -566,7 +565,7 @@ export async function bundleModules(
       );
 
       if (transformedBundleErrorStr) {
-        logger().error(`transformedError: ${transformedBundleErrorStr}`);
+        logger.error(`transformedError: ${transformedBundleErrorStr}`);
         throw new LoaderBundlingError(transformedBundleErrorStr);
       }
 

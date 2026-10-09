@@ -109,7 +109,7 @@ export class PostgresFetcher {
     // An idle client dropped by the database emits on the pool, an unhandled
     // 'error' event would take down the server.
     _pool.on("error", (err) =>
-      logger().warn(`Postgres data source pool error: ${err.message}`),
+      logger.warn(`Postgres data source pool error: ${err.message}`),
     );
     this.pool = Object.fromEntries(
       ["connect", "query"].map((op) => [
@@ -193,17 +193,15 @@ export class PostgresFetcher {
     //     .map(({ tableID, columnID }) => `(${tableID},${columnID})`)
     //     .join(",")}) AND c.contype = 'p';`
     // );
-    return result.fields.map(
-      (field): TableFieldSchema => ({
-        id: field.name,
-        type: typeIdToModelType[field.dataTypeID] ?? "unknown",
-        readOnly: false,
-        label: field.name,
-        primaryKey: primaryKeys.some(
-          (primaryKey) => primaryKey.id === field.name,
-        ),
-      }),
-    );
+    return result.fields.map((field): TableFieldSchema => ({
+      id: field.name,
+      type: typeIdToModelType[field.dataTypeID] ?? "unknown",
+      readOnly: false,
+      label: field.name,
+      primaryKey: primaryKeys.some(
+        (primaryKey) => primaryKey.id === field.name,
+      ),
+    }));
   }
 
   async getTableSchema({ resource }: { resource: string }) {

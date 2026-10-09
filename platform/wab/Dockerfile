@@ -3,12 +3,13 @@
 # Build context is the platform/ workspace root (not platform/wab), e.g.:
 #   docker build -f platform/wab/Dockerfile platform/
 #
-# wab, canvas-packages, loader-bundle-env and loader-html-hydrate share the pnpm
-# workspace rooted at platform/. wab's server reads loader-bundle-env and
-# loader-html-hydrate as sibling directories at runtime
+# wab, canvas-packages, loader-bundle-env, loader-html-hydrate and shared/*
+# share the pnpm workspace rooted at platform/. wab's server reads
+# loader-bundle-env and loader-html-hydrate as sibling directories at runtime
 # (process.cwd()/../loader-bundle-env/node_modules), so the runtime image keeps
-# the /platform/{wab,loader-bundle-env,loader-html-hydrate} peer layout together
-# with the workspace-root node_modules/.pnpm store their symlinks point into.
+# the /platform/{wab,loader-bundle-env,loader-html-hydrate,shared} peer
+# layout together with the workspace-root node_modules/.pnpm store their
+# symlinks point into.
 
 # See https://hub.docker.com/_/node/
 # Pinned to an exact patch (not the floating node:24-alpine tag) to avoid silently
@@ -76,15 +77,19 @@ WORKDIR /platform/wab
 RUN mkdir -p src/wab/gen && make
 
 # Re-resolve without devDependencies for the runtime image, and only for the
-# three packages that actually ship in it — this keeps canvas-packages',
+# packages that actually ship in it — this keeps canvas-packages',
 # analytics-rproxy's and mini-cache's prod deps out of the copied store.
 # NB: `pnpm deploy` would be tidier but flattens node_modules and breaks wab's
 # sibling-dir resolution (../loader-bundle-env/node_modules); see
 # https://github.com/pnpm/pnpm/issues/9283
 WORKDIR /platform
 RUN --mount=type=secret,id=npmrc,target=/root/.npmrc \
-    rm -rf node_modules wab/node_modules loader-bundle-env/node_modules \
-      loader-html-hydrate/node_modules canvas-packages/node_modules \
+    rm -rf node_modules \
+      wab/node_modules \
+      loader-bundle-env/node_modules \
+      loader-html-hydrate/node_modules \
+      canvas-packages/node_modules \
+      shared/*/node_modules \
     && pnpm install --frozen-lockfile --prefer-offline --prod \
       --filter "wab..." --filter "loader-bundle-env..." \
       --filter "@plasmicapp/loader-html-hydrate..." \
@@ -105,7 +110,7 @@ RUN corepack enable
 
 WORKDIR /platform
 
-# Workspace-root store plus manifests, then the three peer packages wab needs at
+# Workspace-root store plus manifests, then the peer packages wab needs at
 # runtime. Symlinks inside each package's node_modules point back into
 # /platform/node_modules/.pnpm, so both must be copied together.
 COPY --from=builder --chown=node:node /platform/node_modules ./node_modules

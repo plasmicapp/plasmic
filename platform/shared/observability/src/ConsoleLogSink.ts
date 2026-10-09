@@ -1,21 +1,12 @@
-import { Logger } from "@/wab/shared/observability/Logger";
-import {
-  mergeProperties,
-  Properties,
-} from "@/wab/shared/observability/Properties";
+import type { Logger } from "./Logger";
+import type { Properties } from "./Properties";
 
-export class ConsoleLogLogger implements Logger {
-  constructor(private readonly loggingContext?: Properties) {}
-
+export class ConsoleLogSink implements Logger {
   private log(
     level: "debug" | "info" | "warn" | "error",
     message: string,
     payload?: Properties,
   ) {
-    if (this.loggingContext) {
-      console[level](`[logger.child]`, this.loggingContext);
-    }
-
     const finalMessage = `[logger.${level}] ${message}`;
     if (payload) {
       console[level](finalMessage, payload);
@@ -36,11 +27,5 @@ export class ConsoleLogLogger implements Logger {
   }
   debug(message: string, payload?: Properties) {
     this.log("debug", message, payload);
-  }
-
-  child(loggingContext: Properties): Logger {
-    return new ConsoleLogLogger(
-      mergeProperties(this.loggingContext, loggingContext),
-    );
   }
 }

@@ -48,7 +48,9 @@ afterEach(async () => {
 
 it("keeps WAB Sentry tags, users, and error contexts isolated", async () => {
   vi.stubEnv("SENTRY_DSN", "http://public@127.0.0.1/1");
-  const { setSentryErrorContext } = await import("@/wab/server/sentry");
+  await import("@/wab/server/observability/setup");
+  const { setSentryErrorContext } =
+    await import("@/wab/server/observability/sentry-filters");
   const events = sentEvents;
   expect(Sentry.getClient()?.getOptions()).toMatchObject({
     skipOpenTelemetrySetup: true,

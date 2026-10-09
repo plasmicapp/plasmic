@@ -1,7 +1,7 @@
 import { toOpaque } from "@/wab/commons/types";
 import { uploadDataUriToS3 } from "@/wab/server/cdn/images";
 import { DbMgr } from "@/wab/server/db/DbMgr";
-import { TraceCarrier, withSpan } from "@/wab/server/util/apm-util";
+import { withSpan } from "@/wab/server/observability";
 import { md5 } from "@/wab/server/util/hash";
 import { getHostlessPackageNpmVersion } from "@/wab/server/util/hostless-pkg-util";
 import { makeS3Client } from "@/wab/server/util/s3-util";
@@ -59,6 +59,7 @@ import { Site } from "@/wab/shared/model/classes";
 import { isValidJsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { context, propagation } from "@opentelemetry/api";
+import type { TraceCarrier } from "@plasmic-shared/observability";
 import fs from "fs";
 import type { OverrideProperties, SetOptional } from "type-fest";
 import { ConnectionOptions } from "typeorm";

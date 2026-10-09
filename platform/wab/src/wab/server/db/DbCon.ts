@@ -108,22 +108,22 @@ export async function ensureDbConnection(
       const conn = connMgr.get(name);
       if (conn.isConnected) {
         if (!existingConnectionMatches(conn, dburi)) {
-          logger().info(
+          logger.info(
             `Closing typeorm connection pool for ${name} because its database URI changed`,
           );
           await conn.close();
         } else {
-          logger().info(`Reusing typeorm connection pool for ${name}`);
+          logger.info(`Reusing typeorm connection pool for ${name}`);
           return conn;
         }
       }
     } catch (error: unknown) {
-      logger().warn(error as any);
+      logger.warn(error as any);
       Sentry.captureException(error);
     }
   }
 
-  logger().info(`Creating typeorm connection pool for ${name}`);
+  logger.info(`Creating typeorm connection pool for ${name}`);
   let connOpts: ConnectionOptions;
   if (typeof dburi === "string") {
     const envPassword = process.env.WAB_DBPASSWORD;
@@ -241,7 +241,7 @@ async function withAdvisoryLock(
     );
 
     if (!wasLocked) {
-      logger().warn(
+      logger.warn(
         `Advisory lock was not locked: ${lockName[0]}, ${lockName[1]}`,
       );
     }
@@ -253,7 +253,7 @@ export async function maybeMigrateDatabase() {
   await withAdvisoryLock(conn, async () => {
     const migrations = await conn.runMigrations({ transaction: "all" });
     if (migrations.length > 0) {
-      logger().info(
+      logger.info(
         `Successfully ran ${migrations.length} migrations`,
         migrations,
       );
@@ -270,7 +270,7 @@ async function closeConnection(name?: string) {
   if (!conn.isConnected) {
     return;
   }
-  logger().info(`Closing typeorm connection pool for ${name}`);
+  logger.info(`Closing typeorm connection pool for ${name}`);
   await conn.close();
 }
 

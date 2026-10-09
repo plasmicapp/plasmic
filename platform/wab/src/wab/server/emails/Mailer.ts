@@ -56,7 +56,7 @@ class NodeMailer implements Mailer {
 
 class ConsoleMailer implements Mailer {
   async sendMail(mailOptions: SendMailOptions): Promise<void> {
-    logger().info(`SENDING MAIL TO CONSOLE`, mailOptions);
+    logger.info(`SENDING MAIL TO CONSOLE`, mailOptions);
 
     // Run verification during development
     if (typeof mailOptions.html === "string") {
@@ -65,7 +65,7 @@ class ConsoleMailer implements Mailer {
 
     // Delay to simulate sending
     await new Promise((resolve) => setTimeout(resolve, 5000));
-    logger().info(`MAIL SENT`);
+    logger.info(`MAIL SENT`);
   }
 }
 

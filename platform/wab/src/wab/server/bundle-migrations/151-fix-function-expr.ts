@@ -44,7 +44,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
         fallback: expr.fallback,
       });
     } else {
-      logger().info("error fixing expr", expr);
+      logger.info("error fixing expr", expr);
       unexpected();
     }
   };
@@ -76,10 +76,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
               expr.mapExpr["custom"].bodyExpr,
             );
           } else {
-            logger().info(
-              "function expr error: form rules",
-              expr.mapExpr.custom,
-            );
+            logger.info("function expr error: form rules", expr.mapExpr.custom);
             unexpected();
           }
         }
@@ -106,7 +103,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
             if (isKnownFunctionExpr(arg.expr)) {
               arg.expr.bodyExpr = fixFunctionExpr(arg.expr.bodyExpr);
             } else {
-              logger().info("function expr error: interaction", arg.expr);
+              logger.info("function expr error: interaction", arg.expr);
               unexpected();
             }
           }

@@ -1,8 +1,5 @@
 import type { TrackOptions } from "@/wab/shared/observability/Analytics";
-import {
-  mergeProperties,
-  Properties,
-} from "@/wab/shared/observability/Properties";
+import { mergeProperties, Properties } from "@plasmic-shared/observability";
 
 /**
  * For implementing a stateful Analytics implementation that keeps track of the

@@ -1,5 +1,4 @@
-import { logger } from "@/wab/server/observability";
-import { withSpan } from "@/wab/server/util/apm-util";
+import { logger, withSpan } from "@/wab/server/observability";
 import { ensure } from "@/wab/shared/common";
 import {
   GetObjectCommand,
@@ -45,7 +44,7 @@ export async function tryGetS3CacheEntry<T>(opts: {
       obj.Body,
       "Unexpected empty S3 cache entry body",
     ).transformToString("utf8");
-    logger().info(`S3 cache hit for ${bucket} ${key}`);
+    logger.info(`S3 cache hit for ${bucket} ${key}`);
     return deserialize(serialized);
   } catch (err) {
     if (err.name === "TimeoutError") {
@@ -69,7 +68,7 @@ export async function upsertS3CacheEntry<T>(opts: {
     return { data: cached, cacheHit: true };
   }
 
-  logger().info(`S3 cache miss for ${bucket} ${key}; computing`);
+  logger.info(`S3 cache miss for ${bucket} ${key}; computing`);
   const content = await withSpan("s3-cache-compute", async () => await f());
   if (shouldBypassS3()) {
     return { data: content, cacheHit: false };
@@ -88,7 +87,7 @@ export async function upsertS3CacheEntry<T>(opts: {
     if (process.env.NODE_ENV === "production") {
       throw e;
     }
-    logger().error("Unable to add content to S3", e as any);
+    logger.error("Unable to add content to S3", e as any);
   }
   return { data: content, cacheHit: false };
 }

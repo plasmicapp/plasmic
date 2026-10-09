@@ -49,7 +49,7 @@ export async function upgradeReferencedHostlessDeps(
       if (await publishHostlessProject(db, dep.projectId as ProjectId)) {
         const oldDep = dep;
         const pkgVersion = await db.getPkgVersion(dep.pkgId);
-        logger().info(
+        logger.info(
           `Upgrading ${dep.name} from ${oldDep.version} to ${pkgVersion.version}`,
         );
         const newDep = ensureKnownProjectDependency(

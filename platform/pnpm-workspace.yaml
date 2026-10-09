@@ -22,6 +22,7 @@ catalog:
   "@nats-io/kv": 3.3.1
   "@nats-io/nats-core": 3.3.1
   "@nats-io/transport-node": 3.3.1
+  "@opentelemetry/api": 1.9.0
   "@sentry/node": ^10.20.0
   esbuild: ^0.25
   hono: ^4.7.6
@@ -47,6 +48,9 @@ catalog:
 # same pins so the manifest matches what actually installs. If these are ever
 # upgraded, rebase patches/@react-aria__*.patch onto the new dist output.
 overrides:
+  # Context-manager registration requires the exact API version bundled in
+  # autoinstrumentation-nodejs:0.58.0, including Sentry's transitive dependency.
+  "@opentelemetry/api": "catalog:"
   playwright: "catalog:"
   playwright-core: "catalog:"
   "vitest>vite": "catalog:"

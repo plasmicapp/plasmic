@@ -1,15 +1,25 @@
 /** @vitest-environment node */
 import { logger } from "@/wab/server/observability";
+import { setSentryErrorContext } from "@/wab/server/observability/sentry-filters";
 import { genLoaderHtmlBundleSandboxed } from "@/wab/server/routes/loader";
-import { setSentryErrorContext } from "@/wab/server/sentry";
 import { NotFoundError } from "@/wab/shared/ApiErrors/errors";
 
 const { runSubprocess } = vi.hoisted(() => ({ runSubprocess: vi.fn() }));
 vi.mock("execa", () => ({ default: runSubprocess }));
-vi.mock("@/wab/server/sentry", () => ({ setSentryErrorContext: vi.fn() }));
-vi.mock("@/wab/server/observability", () => {
+vi.mock(
+  "@/wab/server/observability/sentry-filters",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("@/wab/server/observability/sentry-filters")
+    >()),
+    setSentryErrorContext: vi.fn(),
+  }),
+);
+vi.mock("@/wab/server/observability", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@/wab/server/observability")>();
   const log = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() };
-  return { logger: () => log };
+  return { ...actual, logger: log };
 });
 
 const args = {
@@ -33,7 +43,7 @@ it("returns successful HTML", async () => {
   await expect(genLoaderHtmlBundleSandboxed(args)).resolves.toEqual({
     html: success.stdout,
   });
-  expect(logger().error).not.toHaveBeenCalled();
+  expect(logger.error).not.toHaveBeenCalled();
   expect(setSentryErrorContext).not.toHaveBeenCalled();
 });
 
@@ -65,7 +75,7 @@ it.each([
       thrown = error;
     }
     expect(thrown).toBeInstanceOf(Error);
-    expect(logger().error).toHaveBeenCalledWith(
+    expect(logger.error).toHaveBeenCalledWith(
       "Sandboxed loader subprocess failed",
       expect.objectContaining({
         projectId: args.projectId,
@@ -99,7 +109,7 @@ it("caps the diagnostic after redacting the project token", async () => {
   await expect(genLoaderHtmlBundleSandboxed(args)).rejects.toThrow(
     "Sandboxed loader subprocess failed",
   );
-  expect(logger().error).toHaveBeenCalledWith(
+  expect(logger.error).toHaveBeenCalledWith(
     "Sandboxed loader subprocess failed",
     expect.objectContaining({
       stderr: ("[redacted]" + "x".repeat(20000)).slice(0, 8192),
@@ -138,7 +148,7 @@ it("logs spawn failures without the credential-bearing command", async () => {
   await expect(genLoaderHtmlBundleSandboxed(args)).rejects.toBeInstanceOf(
     Error,
   );
-  expect(logger().error).toHaveBeenCalledWith(
+  expect(logger.error).toHaveBeenCalledWith(
     "Sandboxed loader subprocess failed",
     expect.objectContaining({ spawnError: "spawn bwrap ENOENT" }),
   );
@@ -152,7 +162,7 @@ it("logs spawn failures without the credential-bearing command", async () => {
   expect(
     JSON.stringify(vi.mocked(setSentryErrorContext).mock.calls),
   ).not.toContain("secret-token");
-  expect(JSON.stringify(vi.mocked(logger().error).mock.calls)).not.toContain(
+  expect(JSON.stringify(vi.mocked(logger.error).mock.calls)).not.toContain(
     "secret-token",
   );
 });

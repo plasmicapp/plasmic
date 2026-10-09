@@ -166,7 +166,7 @@ export async function unbundleWithDeps(
   id: string,
   bundle: Bundle,
 ) {
-  logger().info(`Unbundling with deps ${id}`);
+  logger.info(`Unbundling with deps ${id}`);
   const deps = await loadDepPackagesWithBundles(
     dbMgr,
     bundle,

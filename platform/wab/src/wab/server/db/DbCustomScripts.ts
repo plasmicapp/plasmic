@@ -32,7 +32,7 @@ import { exit } from "process";
  */
 
 async function main() {
-  logger().info("Start script...");
+  logger.info("Start script...");
   const opts = new Command("custom-script")
     .option("-db, --dburi <dburi>", "Database uri", DEFAULT_DATABASE_URI)
     .option("-s, --script <script>", "Script to execute")
@@ -45,7 +45,7 @@ async function main() {
   });
   const conn = await getDefaultConnection();
 
-  logger().info(`Running ${opts.script}`);
+  logger.info(`Running ${opts.script}`);
 
   await conn.transaction(async (em) => {
     if (opts.script === "find-conflict-names") {

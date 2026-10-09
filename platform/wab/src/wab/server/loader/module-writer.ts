@@ -16,7 +16,7 @@ export async function writeCodeBundlesToDisk(
   const nodeModulesPath = path.resolve(
     path.join(process.cwd(), "..", "loader-bundle-env", "node_modules"),
   );
-  logger().info(`Using node_modules at ${nodeModulesPath}`);
+  logger.info(`Using node_modules at ${nodeModulesPath}`);
   await fs.symlink(nodeModulesPath, path.join(dir, "node_modules"));
 
   // Write the generated output

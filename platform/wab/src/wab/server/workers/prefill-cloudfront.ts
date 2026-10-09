@@ -4,9 +4,8 @@ import {
   getResolvedProjectVersions,
   mkVersionToSync,
 } from "@/wab/server/loader/resolve-projects";
-import { logger } from "@/wab/server/observability";
+import { logger, withSpan } from "@/wab/server/observability";
 import { makeGenPublishedLoaderCodeBundleOpts } from "@/wab/server/routes/loader";
-import { withSpan } from "@/wab/server/util/apm-util";
 import { PlasmicWorkerPool } from "@/wab/server/workers/pool";
 import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
 import { uniqBy } from "lodash";
@@ -34,7 +33,7 @@ export async function prefillCloudfront(
     ].join(","),
   );
 
-  logger().info(
+  logger.info(
     `Pre-filling ${projectId}@${pkgVersion.version} for combinations [${loaderPublishments.map(stringifyPublishment).join(", ")}]`,
   );
 
@@ -75,13 +74,13 @@ export async function prefillCloudfront(
         },
         label,
       );
-      logger().info(
+      logger.info(
         `Done pre-filling combo ${comboInfo} resolvedProjectIds=${JSON.stringify(resolvedProjectIdSpecs)}`,
       );
     } catch (err) {
       // Even if there was an error, continue with remaining combos and mark
       // as pre-filled at the end, else it'll never be pre-filled.
-      logger().error(`Error pre-filling combo ${comboInfo}`, err);
+      logger.error(`Error pre-filling combo ${comboInfo}`, err);
     }
   }
   await mgr.updatePkgVersion(

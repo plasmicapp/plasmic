@@ -1,5 +1,5 @@
 import { DbMgr } from "@/wab/server/db/DbMgr";
-import { TraceCarrier, withSpan } from "@/wab/server/util/apm-util";
+import { withSpan } from "@/wab/server/observability";
 import { getWorkerDbMgr } from "@/wab/server/workers/worker-utils";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
@@ -8,6 +8,7 @@ import {
   genLocalizationStringsForProject,
 } from "@/wab/shared/localization";
 import { context, propagation } from "@opentelemetry/api";
+import type { TraceCarrier } from "@plasmic-shared/observability";
 import { ConnectionOptions } from "typeorm";
 
 interface LocalizationStringsOpts {

@@ -2,7 +2,7 @@ import * as semver from "@/wab/commons/semver";
 import { loadDepPackages } from "@/wab/server/db/DbBundleLoader";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
-import { withSpan } from "@/wab/server/util/apm-util";
+import { withSpan } from "@/wab/server/observability";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { UnsafeBundle } from "@/wab/shared/bundles";

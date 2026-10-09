@@ -1,0 +1,30 @@
+{
+  "name": "@plasmic-shared/observability",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Shared logging, tracing and error-reporting helpers for platform/ services",
+  "packageManager": "pnpm@11.10.0",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./node": "./src/node.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc",
+    "test": "vitest",
+    "ci": "pnpm typecheck && pnpm test"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "catalog:",
+    "@sentry/node": "catalog:",
+    "pino": "^9.14.0"
+  },
+  "devDependencies": {
+    "@opentelemetry/context-async-hooks": "2.1.0",
+    "@opentelemetry/sdk-trace-base": "2.2.0",
+    "@types/node": "^22.19.19",
+    "otel-api-injected": "npm:@opentelemetry/api@1.9.0",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

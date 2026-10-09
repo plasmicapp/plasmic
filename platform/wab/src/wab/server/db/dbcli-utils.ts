@@ -7,7 +7,7 @@ import { createConnection } from "typeorm";
 export async function createDbConnection(dburi?: string) {
   dburi = dburi ?? DEFAULT_DATABASE_URI;
   const password = process.env.WAB_DBPASSWORD;
-  logger().info(
+  logger.info(
     `Connecting to ${dburi} ${
       password ? `with WAB_DBPASSWORD` : `without env password`
     }`,

@@ -5,8 +5,8 @@ import {
   parseProjectIdSpec,
   resolveProjectDeps,
 } from "@/wab/server/loader/resolve-projects";
+import { withSpan } from "@/wab/server/observability";
 import { userDbMgr } from "@/wab/server/routes/util";
-import { withSpan } from "@/wab/server/util/apm-util";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { ensureArray } from "@/wab/shared/common";

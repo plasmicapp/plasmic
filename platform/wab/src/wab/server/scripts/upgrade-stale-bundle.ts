@@ -48,7 +48,7 @@ async function migrate() {
 
   const bundles = Object.fromEntries(bundleArray);
 
-  logger().info(`Migrating to ${targetMigration}...`);
+  logger.info(`Migrating to ${targetMigration}...`);
 
   await execa.command(sh.quote`git checkout ${path}`, {
     shell: "bash",
@@ -146,7 +146,7 @@ async function migrate() {
       trailingComma: "none",
     }),
   );
-  logger().info("All done!");
+  logger.info("All done!");
   process.exit(0);
 }
 

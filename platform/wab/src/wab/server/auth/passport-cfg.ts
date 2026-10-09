@@ -152,7 +152,7 @@ export async function setupPassport(
 
           const row = await extractSsoConfig(req);
           profile.tenantId = row.tenantId;
-          logger().info("SSO profile", profile);
+          logger.info("SSO profile", profile);
           let user = await upsertOauthUser(
             req,
             row.provider,

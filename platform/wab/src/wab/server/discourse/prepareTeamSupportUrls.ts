@@ -91,14 +91,14 @@ export async function prepareTeamSupportUrls(
     await systemDiscourseClient.groupAddOwners(group.id, {
       usernames: discourseUser.username,
     });
-    logger().info(
+    logger.info(
       `Added ${discourseUser.username} as owner of group ${group.name}`,
     );
   } else if (!isMember) {
     await systemDiscourseClient.groupAddMembers(group.id, {
       usernames: discourseUser.username,
     });
-    logger().info(
+    logger.info(
       `Added ${discourseUser.username} as member of group ${group.name}`,
     );
   }

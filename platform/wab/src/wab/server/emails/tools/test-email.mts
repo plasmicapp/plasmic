@@ -203,7 +203,7 @@ const args = await yargs(hideBin(process.argv)).option("email", {
 
 const outputPath = `out/${TEMPLATE_NAME}.html`;
 await writeHtmlToFile(html, outputPath);
-logger().info(`HTML saved to ${outputPath}. Open in the browser to preview!`);
+logger.info(`HTML saved to ${outputPath}. Open in the browser to preview!`);
 
 if (args.email) {
   if (process.env.RESEND_API_KEY) {
@@ -216,9 +216,9 @@ if (args.email) {
       html,
     });
     if (error) {
-      logger().error("Error sending email", error);
+      logger.error("Error sending email", error);
     } else {
-      logger().info(`Email sent to ${args.email}. Email ID: ${data?.id}`);
+      logger.info(`Email sent to ${args.email}. Email ID: ${data?.id}`);
     }
   } else {
     const transporter = nodemailer.createTransport({
@@ -240,12 +240,10 @@ if (args.email) {
       },
       (err, info) => {
         if (err) {
-          logger().error("Error sending email", err);
+          logger.error("Error sending email", err);
           return;
         }
-        logger().info(
-          `Email sent to ${args.email}. Email ID: ${info.messageId}`,
-        );
+        logger.info(`Email sent to ${args.email}. Email ID: ${info.messageId}`);
       },
     );
   }

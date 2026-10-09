@@ -25,7 +25,7 @@ export const getHostlessPackageNpmVersion = memoize(
       );
       return packageJson.version;
     } catch (err) {
-      logger().error(
+      logger.error(
         `Error encountered while deriving hostless package npm version for ${pkg}`,
         err,
       );

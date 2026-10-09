@@ -6,7 +6,7 @@
 // This script is run automatically when we run `npm run email:sync`
 import { logger } from "@/wab/server/observability";
 
-logger().info("Removing all CSS imports from email templates...");
+logger.info("Removing all CSS imports from email templates...");
 
 import { promises as fs } from "fs";
 import * as path from "path";
@@ -25,7 +25,7 @@ async function processFile(filePath: string): Promise<void> {
 
   if (updatedContent !== content) {
     await fs.writeFile(filePath, updatedContent, "utf-8");
-    logger().info(`Updated: ${filePath}`);
+    logger.info(`Updated: ${filePath}`);
   }
 }
 
@@ -44,5 +44,5 @@ async function processFolder(folder: string): Promise<void> {
 }
 
 processFolder(folderPath)
-  .then(() => logger().info("Done removing CSS imports from email templates!"))
-  .catch((e) => logger().error("Error while processing folder", e));
+  .then(() => logger.info("Done removing CSS imports from email templates!"))
+  .catch((e) => logger.error("Error while processing folder", e));

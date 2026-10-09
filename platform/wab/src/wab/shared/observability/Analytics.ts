@@ -1,4 +1,4 @@
-import { Properties } from "@/wab/shared/observability/Properties";
+import type { Properties } from "@plasmic-shared/observability";
 
 export type TrackOptions = {
   /** Number between 0 and 1. 1 for always (default), 0 for never. */

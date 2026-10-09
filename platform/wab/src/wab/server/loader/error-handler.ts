@@ -125,7 +125,7 @@ export async function uploadErrorFiles(err: Error, dir: string) {
     try {
       return (await fs.readFile(filePath)).toString();
     } catch (err2) {
-      logger().error(`Error reading ${filePath}`, err2);
+      logger.error(`Error reading ${filePath}`, err2);
       return undefined;
     }
   };
@@ -146,7 +146,7 @@ export async function uploadErrorFiles(err: Error, dir: string) {
     files: filesDict,
   });
 
-  logger().error(
+  logger.error(
     `Error files: ${Object.keys(filesDict)
       .map(
         (f) =>

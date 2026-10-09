@@ -77,12 +77,10 @@ async function checkIfBundleIsFixed(bundle: Bundle, dbMgr: DbMgr) {
   for (const migration of migrations) {
     if (migration.type === "bundled") {
       await migration.migrate(bundle, { id: "id" } as
-        | PkgVersion
-        | ProjectRevision);
+        PkgVersion | ProjectRevision);
     } else {
       await migration.migrate(bundle, dbMgr, { id: "id" } as
-        | PkgVersion
-        | ProjectRevision);
+        PkgVersion | ProjectRevision);
     }
     bundle.version = migration.name;
   }
@@ -105,14 +103,14 @@ export async function findDanglingWeakRefs(em: EntityManager) {
           err instanceof Error &&
           err.message.includes("Unexpected Bundle dependencies")
         ) {
-          logger().info(`Trying to fix project ${project.id}...`);
+          logger.info(`Trying to fix project ${project.id}...`);
           try {
             const fixedBundle = fixBundle(parseBundle(rev) as Bundle);
             const throwAwayBundle = jsonClone(fixedBundle);
 
             // Check if bundle is fixed
             await checkIfBundleIsFixed(throwAwayBundle, dbMgr);
-            logger().info(
+            logger.info(
               `Successfully fixed project ${project.id}! Actually saving it...`,
             );
 
@@ -124,12 +122,12 @@ export async function findDanglingWeakRefs(em: EntityManager) {
             // await getMigratedBundle(rev);
             // console.log(`Successfully saved project ${project.id}`);
           } catch (err2) {
-            logger().error(`Failed to fix project ${project.id}`, err2 as any);
+            logger.error(`Failed to fix project ${project.id}`, err2 as any);
           }
         }
       }
     } catch (err) {
-      logger().error(`Error in project ${project.id}:`, err as any);
+      logger.error(`Error in project ${project.id}:`, err as any);
     }
   }
   for (const pkgVersionId of await dbMgr.listAllPkgVersionIds()) {
@@ -142,7 +140,7 @@ export async function findDanglingWeakRefs(em: EntityManager) {
           err instanceof Error &&
           err.message.includes("Unexpected Bundle dependencies")
         ) {
-          logger().info(`Trying to fix PkgVersion ${pkgVersionId}...`);
+          logger.info(`Trying to fix PkgVersion ${pkgVersionId}...`);
           try {
             const fixedBundle = fixBundle(parseBundle(pkgVersion) as Bundle);
             const throwAwayBundle = jsonClone(fixedBundle);
@@ -150,7 +148,7 @@ export async function findDanglingWeakRefs(em: EntityManager) {
             // Check if bundle is fixed
             await checkIfBundleIsFixed(throwAwayBundle, dbMgr);
 
-            logger().info(
+            logger.info(
               `Successfully fixed PkgVersion ${pkgVersionId}! Actually saving it...`,
             );
 
@@ -162,7 +160,7 @@ export async function findDanglingWeakRefs(em: EntityManager) {
             // await getMigratedBundle(pkgVersion);
             // console.log(`Successfully saved PkgVersion ${pkgVersionId}`);
           } catch (err2) {
-            logger().error(
+            logger.error(
               `Failed to fix PkgVersion ${pkgVersionId}`,
               err2 as any,
             );
@@ -170,7 +168,7 @@ export async function findDanglingWeakRefs(em: EntityManager) {
         }
       }
     } catch (err) {
-      logger().error(`Error in PkgVersion ${pkgVersionId}`, err as any);
+      logger.error(`Error in PkgVersion ${pkgVersionId}`, err as any);
     }
   }
 }

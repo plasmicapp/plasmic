@@ -172,7 +172,7 @@ function decodeUserToken(token: string) {
       appId: string;
       endUserId: string;
     };
-    logger().info(`Decoded app auth token to ${info.endUserId}`, info);
+    logger.info(`Decoded app auth token to ${info.endUserId}`, info);
     return info;
   } catch (err) {
     throw new Error("Invalid token");
@@ -287,7 +287,7 @@ export function trackAppUserActivity(
 export function extractAppUserFromToken(req: Request, skipError = false) {
   const token = req.headers["x-plasmic-data-user-auth-token"];
   if (!token || !isString(token)) {
-    logger().info(
+    logger.info(
       `[${req.id}] - Data source request without app auth token or with invalid token`,
     );
     if (skipError) {

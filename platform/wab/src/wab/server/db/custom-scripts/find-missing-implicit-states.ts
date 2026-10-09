@@ -13,17 +13,17 @@ export async function findMissingImplicitStates(em: EntityManager) {
   const numberOfProjects = await dbMgr.countAllProjects();
 
   const printData = () => {
-    logger().info(
+    logger.info(
       numberOfProjects === processedProjects
         ? "FINISHED"
         : `${((100 * processedProjects) / numberOfProjects).toFixed(2)}%`,
     );
-    logger().info(`# of projects to check ${numberOfProjects}`);
-    logger().info(`# of processed projects ${processedProjects}`);
-    logger().info(
+    logger.info(`# of projects to check ${numberOfProjects}`);
+    logger.info(`# of processed projects ${processedProjects}`);
+    logger.info(
       `# of projects with missing implicit states: ${badProjects.length}`,
     );
-    logger().info("Bad projects", { badProjectsSummary: badProjects });
+    logger.info("Bad projects", { badProjectsSummary: badProjects });
   };
 
   for (const project of await dbMgr.listAllProjects()) {
@@ -52,7 +52,7 @@ export async function findMissingImplicitStates(em: EntityManager) {
         printData();
       }
     } catch (e) {
-      logger().error(`Unbundle failed on project ${project.id}`, e as any);
+      logger.error(`Unbundle failed on project ${project.id}`, e as any);
     }
   }
   printData();

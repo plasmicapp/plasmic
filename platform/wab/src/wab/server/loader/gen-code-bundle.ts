@@ -7,12 +7,11 @@ import {
   resolveProjectDeps,
   VersionToSync,
 } from "@/wab/server/loader/resolve-projects";
-import { logger } from "@/wab/server/observability";
+import { logger, withSpan } from "@/wab/server/observability";
 import {
   loaderBundleCacheCounter,
   loaderCodegenCacheCounter,
 } from "@/wab/server/promstats";
-import { withSpan } from "@/wab/server/util/apm-util";
 import {
   tryGetS3CacheEntry,
   upsertS3CacheEntry,
@@ -251,7 +250,7 @@ async function genLoaderCodeBundleForProjectVersions(
                 source: opts.source,
               });
               if (!codegenCacheHit && opts.source === "live") {
-                logger().info(
+                logger.info(
                   `Loader codegen cache miss for live request: ${codegenKey}`,
                 );
               }
@@ -324,7 +323,7 @@ async function genLoaderCodeBundleForProjectVersions(
           source: opts.source,
         });
         if (!bundleCacheHit && opts.source === "live") {
-          logger().info(
+          logger.info(
             `Loader bundle cache miss for live request: ${bundleKey}`,
           );
         }

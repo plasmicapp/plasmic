@@ -1,0 +1,14 @@
+{
+  "name": "@plasmic-shared/hosting",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "test": "node --test tests/*.test.ts"
+  },
+  "type": "module"
+}

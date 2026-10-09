@@ -64,7 +64,7 @@ export async function main() {
         try {
           await checkPlumeVersion();
         } catch (err) {
-          logger().error("Error checking plume version", err);
+          logger.error("Error checking plume version", err);
           process.exit(1);
         }
       },

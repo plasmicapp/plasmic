@@ -89,7 +89,7 @@ export async function executeDataSourceOperation(
   // GenericDataSource is a union of real data sources and a fake data source.
   // The real data sources have "workspaceId" since they extend from DataSource.
   if ("workspaceId" in source) {
-    logger().info("executeDataSourceOperation", {
+    logger.info("executeDataSourceOperation", {
       source: source.source,
       sourceId: source.id,
       sourceName: source.name,
@@ -111,7 +111,7 @@ export async function executeDataSourceOperation(
     // Always return valid JSON
     return result ?? null;
   } catch (err) {
-    logger().error("Integration Error: ", err);
+    logger.error("Integration Error: ", err);
     throw stampIgnoreError(err);
   }
 }
@@ -382,7 +382,7 @@ async function updateDataSourceExprSourceId(
       } catch (err) {
         // We won't fail here, as this state of project even though it is not properly represeting
         // the expression, it may still be valid as a template
-        logger().error(
+        logger.error(
           `Error trying to issue dataSourceOpId user does not have permission to access data source ${sourceId}`,
         );
       }
@@ -488,7 +488,7 @@ export function normalizeOperationTemplate(
       normTemplate(op?.args[key], val),
     ),
   };
-  logger().info("NORMALIZED", normalized);
+  logger.info("NORMALIZED", normalized);
   return normalized;
 }
 
@@ -556,7 +556,7 @@ function normTemplate(argMeta: ArgMeta | undefined, template: any) {
           visit(parsed.tree);
           return mapped;
         } catch (err) {
-          logger().error(
+          logger.error(
             `Error parsing react-query-builder template: ${err}: ${substituted}`,
           );
           return undefined;

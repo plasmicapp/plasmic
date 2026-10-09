@@ -2,7 +2,7 @@ import { ENV } from "@/wab/client/env";
 import { spawn } from "@/wab/shared/common";
 import type { Analytics } from "@/wab/shared/observability/Analytics";
 import { BaseAnalytics } from "@/wab/shared/observability/BaseAnalytics";
-import { Properties } from "@/wab/shared/observability/Properties";
+import type { Properties } from "@plasmic-shared/observability";
 import { noop } from "lodash";
 import type { PostHog, PostHogConfig } from "posthog-js";
 

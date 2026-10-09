@@ -90,7 +90,7 @@ export async function uploadFileToS3(
       mimeType: mime,
     });
   } catch (e) {
-    logger().error(`Could not upload asset to S3.`, e);
+    logger.error(`Could not upload asset to S3.`, e);
     Sentry.captureMessage(`Could not upload asset to S3 (${e.message}).`);
     return err(e);
   }

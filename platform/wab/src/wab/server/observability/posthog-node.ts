@@ -1,7 +1,7 @@
 import { unexpected } from "@/wab/shared/common";
 import { Analytics } from "@/wab/shared/observability/Analytics";
 import { BaseAnalytics } from "@/wab/shared/observability/BaseAnalytics";
-import { Properties } from "@/wab/shared/observability/Properties";
+import type { Properties } from "@plasmic-shared/observability";
 import { PostHog } from "posthog-node";
 
 const ANONYMOUS_DISTINCT_ID = "panonymous";

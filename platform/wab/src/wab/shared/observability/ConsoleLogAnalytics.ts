@@ -3,7 +3,7 @@ import type {
   TrackOptions,
 } from "@/wab/shared/observability/Analytics";
 import { BaseAnalytics } from "@/wab/shared/observability/BaseAnalytics";
-import { Properties } from "@/wab/shared/observability/Properties";
+import type { Properties } from "@plasmic-shared/observability";
 
 export class ConsoleLogAnalytics extends BaseAnalytics implements Analytics {
   appendBaseEventProperties(newProperties: Properties): void {

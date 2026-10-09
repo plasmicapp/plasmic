@@ -276,10 +276,10 @@ export async function updateHostlessPackage(
       site.hostLessPackageInfo,
       () => "Expected hostless package",
     );
-    logger().info(`UPDATING ${pkgInfo.name}`);
+    logger.info(`UPDATING ${pkgInfo.name}`);
 
     for (const dep of pkgInfo.deps) {
-      logger().info(`Loading dependency ${dep}`);
+      logger.info(`Loading dependency ${dep}`);
       loadServerPackage(dep);
     }
 
@@ -290,10 +290,10 @@ export async function updateHostlessPackage(
       ].map(({ meta }: ComponentRegistration) => meta.name),
     );
 
-    logger().info(`Loading main package ${pkgInfo.name}`);
+    logger.info(`Loading main package ${pkgInfo.name}`);
     loadServerPackage(pkgInfo.name);
 
-    logger().info(
+    logger.info(
       `Registry has: ${globalThis.__PlasmicComponentRegistry
         .map(({ meta }) => meta.name)
         .join(",")}`,
@@ -333,7 +333,7 @@ export async function updateHostlessPackage(
       .filter(isCodeComponent)
       .forEach((c) => (c.codeComponentMeta.isHostLess = true));
 
-    logger().info(`Registered: ${site.components.map((c) => c.name)}`);
+    logger.info(`Registered: ${site.components.map((c) => c.name)}`);
 
     // Clear site default styles
     site.themes.forEach((theme) => {
@@ -445,7 +445,7 @@ function loadServerPackage(pkg: string) {
       `../../../../../canvas-packages/build-server/${pkg}.js`,
     ),
   );
-  logger().info(`Loading ${pkg} from ${pkgPath}`);
+  logger.info(`Loading ${pkg} from ${pkgPath}`);
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const pkgModule = require(pkgPath);

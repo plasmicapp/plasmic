@@ -123,7 +123,7 @@ async function migrate() {
         `The stale bundle should not be migrated here. Please use
           \`pnpm db:upgrade-stale-bundle\``,
     );
-    logger().info(`Migrating ${path}`);
+    logger.info(`Migrating ${path}`);
     // await execa.command(sh.quote`git checkout ${path}`, {
     //   shell: "bash",
     // });
@@ -131,7 +131,7 @@ async function migrate() {
     const migratedBundleJson = await migrateInMemory(bundleJson);
     fs.writeFileSync(path, migratedBundleJson);
   }
-  logger().info("All done!");
+  logger.info("All done!");
   process.exit(0);
 }
 
@@ -203,7 +203,7 @@ export async function migrateInMemory(bundleJson: string) {
 
     const migrations = await getMigrationsToExecute(bundle.version);
     for (const migration of migrations) {
-      logger().info(
+      logger.info(
         `\tMigrating ${bundleId} to ${migration.name}, with deps ${bundle.deps
           .map((d) => `${d}@${bundles[d].version}`)
           .join(", ")}`,
@@ -275,7 +275,7 @@ export async function migrateInMemory(bundleJson: string) {
 
   if (migratedSomething) {
     for (const [bundleId, bundle] of Object.entries(bundles)) {
-      logger().info(
+      logger.info(
         `\tTesting bundle ${bundleId}@${bundle.version}, with deps ${bundle.deps
           .map((b) => `${b}@${bundles[b].version}`)
           .join("; ")}`,

@@ -38,6 +38,7 @@ import { logger } from "@/wab/server/observability";
 import { REAL_PLUME_VERSION } from "@/wab/server/pkg-mgr/plume-pkg-mgr";
 
 import { getEntitledTeam } from "@/wab/server/freeTrial";
+import { withSpan } from "@/wab/server/observability";
 import { checkEtagSkippable } from "@/wab/server/routes/loader";
 import { moveBundleAssetsToS3 } from "@/wab/server/routes/moveAssetsToS3";
 import {
@@ -56,7 +57,6 @@ import {
   userDbMgr,
 } from "@/wab/server/routes/util";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
-import { withSpan } from "@/wab/server/util/apm-util";
 import {
   BadRequestError,
   BundleTypeError,
@@ -378,8 +378,7 @@ export async function importProject(req: Request, res: Response) {
   };
 
   const bundles = JSON.parse(data) as
-    | [string, Bundle][]
-    | ProjectFullDataResponse;
+    [string, Bundle][] | ProjectFullDataResponse;
   const mgr = userDbMgr(req);
 
   if (!Array.isArray(bundles)) {
@@ -773,7 +772,7 @@ export async function doImportProject(
       sourceIds as DataSourceId[],
     );
   } catch (err) {
-    logger().error(
+    logger.error(
       `Failed to allow project ${project.id} to data sources ${sourceIds.join(
         ",",
       )}`,
@@ -936,9 +935,9 @@ async function importFullProjectData(
     );
 
     // Fix data token references to use the new project IDs for all pkgVersions
-    logger().error(`FIXING ${[...oldToNewProjectId].length}`);
+    logger.error(`FIXING ${[...oldToNewProjectId].length}`);
     oldToNewProjectId.forEach((newDepId, oldDepId) => {
-      logger().error(`FIXING ${oldDepId}, ${newDepId}`);
+      logger.error(`FIXING ${oldDepId}, ${newDepId}`);
       fixDataTokenProjectRefs(projectDep.site, oldDepId, newDepId);
     });
 
@@ -1240,7 +1239,7 @@ async function ensureSchemaIsUpToDate(req: Request) {
     req.txMgr || req.noTxMgr,
   );
   if (req.body.modelVersion !== latestModelVersion) {
-    logger().info(
+    logger.info(
       `stale model version: ${req.body.modelVersion} !== ${latestModelVersion}`,
     );
     throw new SchemaMismatchError();
@@ -1520,7 +1519,7 @@ export async function getProjectRev(req: Request, res: Response) {
     : undefined;
   const revisionNum = req.query.revisionNum;
   if (revisionNum !== undefined) {
-    logger().info(`revisionNum is ${revisionNum}. ${isString(revisionNum)}`);
+    logger.info(`revisionNum is ${revisionNum}. ${isString(revisionNum)}`);
   }
   const dontMigrateProject =
     !!req.query.dontMigrateProject &&
@@ -1770,7 +1769,7 @@ export async function updateHostUrl(req: Request, res: Response) {
       `Unexpected hostUrl to be of type ${typeof data.hostUrl}`,
     );
   }
-  logger().info(`Updating project ${projectId} hostUrl ${data.hostUrl}`);
+  logger.info(`Updating project ${projectId} hostUrl ${data.hostUrl}`);
   if (data.branchId == null) {
     const project = await mgr.updateProject({
       id: projectId,
@@ -2072,7 +2071,7 @@ export async function prefillPkgVersion(
   pkgVersion: Pick<PkgVersion, "id" | "version" | "pkgId" | "branchId">,
 ) {
   // Take this opportunity to fire off a pre-fill request to codegen-origin
-  logger().info(
+  logger.info(
     `Pre-filling for ${projectId}@${pkgVersion.version} against ${req.devflags.codegenOriginHost}`,
   );
   try {
@@ -2087,7 +2086,7 @@ export async function prefillPkgVersion(
     }
   } catch (err) {
     await req.con.transaction(async (entMgr) => {
-      logger().error(
+      logger.error(
         `Error pre-filling ${projectId}@${pkgVersion.version}; marking as pre-filled anyway`,
         err,
       );
@@ -2115,7 +2114,7 @@ export async function publishProject(req: Request, res: Response) {
 
   const { commit, rollback } = await startTransaction(req, async () => {
     const mgr = userDbMgr(req);
-    logger().info(`Publishing project ${projectId}...`);
+    logger.info(`Publishing project ${projectId}...`);
     const { pkgVersion, usedSiteFeatures } = await mgr.publishProject(
       projectId,
       body.version,
@@ -2162,12 +2161,12 @@ export async function publishProject(req: Request, res: Response) {
   res.json(response);
 
   if (commit) {
-    logger().info(`Publishing project ${projectId}... done`);
+    logger.info(`Publishing project ${projectId}... done`);
 
     await prefillPkgVersion(req, projectId, commit.pkgVersion);
 
     // Broadcast to publish listeners
-    logger().info(
+    logger.info(
       `Broadcasting publish event for ${projectId}@${commit.pkgVersion.version}`,
     );
     await broadcastProjectsMessage({
@@ -2297,7 +2296,7 @@ export async function updatePkgVersion(req: Request, res: Response) {
     const projectId = (await userDbMgr(req).getPkgById(commit.pkgVersion.pkgId))
       .projectId;
 
-    logger().info(
+    logger.info(
       `Broadcasting publish event for ${projectId}@${commit.pkgVersion.version} because of tags change`,
     );
     await broadcastProjectsMessage({
@@ -2618,7 +2617,7 @@ export async function genCode(req: Request, res: Response) {
         : branchName
       : req.body.version;
 
-  logger().info(`Performing cli codegen for ${project.id}`);
+  logger.info(`Performing cli codegen for ${project.id}`);
   const { output, checksums } = await withSpan("cli-codegen", async () =>
     req.workerpool.exec("codegen", [
       {
@@ -2894,7 +2893,7 @@ export async function updateProjectData(req: Request, res: Response) {
 
     if (data.newComponents && data.newComponents.length > 0) {
       const components = data.newComponents.map((c) => c.name).join(", ");
-      logger().info(`Update project data: Creating components ${components}`);
+      logger.info(`Update project data: Creating components ${components}`);
       data.newComponents.forEach((c) => {
         upsertComponent(c, false);
       });
@@ -2902,7 +2901,7 @@ export async function updateProjectData(req: Request, res: Response) {
 
     if (data.updateComponents && data.updateComponents.length > 0) {
       const components = data.updateComponents.map((c) => c.name).join(", ");
-      logger().info(`Update project data: Updating components ${components}`);
+      logger.info(`Update project data: Updating components ${components}`);
       data.updateComponents.forEach((c) => {
         upsertComponent(c, true);
       });
@@ -2910,10 +2909,10 @@ export async function updateProjectData(req: Request, res: Response) {
 
     if (data.tokens && data.tokens.length > 0) {
       const tokens = data.tokens.map((c) => c.name).join(", ");
-      logger().info(`Update project data: Updating tokens ${tokens}`);
+      logger.info(`Update project data: Updating tokens ${tokens}`);
       addOrUpsertTokens(site, data.tokens);
     } else {
-      logger().info(
+      logger.info(
         `Update project data: no tokens to update (body.tokens = ${data.tokens})`,
       );
     }
@@ -2962,7 +2961,7 @@ export async function updateProjectData(req: Request, res: Response) {
   });
 
   if (commit.warnings.length > 0) {
-    logger().warn(
+    logger.warn(
       `Update project data - Warnings ${JSON.stringify(
         commit.warnings,
         undefined,

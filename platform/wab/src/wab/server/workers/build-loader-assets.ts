@@ -3,14 +3,14 @@ import {
   LoaderBundleOutput,
 } from "@/wab/server/loader/module-bundler";
 import { writeCodeBundlesToDisk } from "@/wab/server/loader/module-writer";
-import { logger } from "@/wab/server/observability";
-import { TraceCarrier, withSpan } from "@/wab/server/util/apm-util";
+import { logger, withSpan } from "@/wab/server/observability";
 import {
   CachedCodegenOutputBundle,
   ComponentReference,
 } from "@/wab/server/workers/codegen";
 import { spawnWrapper } from "@/wab/shared/common";
 import { context, propagation } from "@opentelemetry/api";
+import type { TraceCarrier } from "@plasmic-shared/observability";
 import tmp from "tmp";
 
 export async function workerBuildAssets(
@@ -42,7 +42,7 @@ export async function workerBuildAssets(
               reject(err);
             } else {
               try {
-                logger().info(`Building worker assets in ${dir}`);
+                logger.info(`Building worker assets in ${dir}`);
                 await writeCodeBundlesToDisk(dir, codegenOutputs);
                 const result = await bundleModules(
                   dir,
@@ -60,7 +60,7 @@ export async function workerBuildAssets(
                 cleanup();
               } catch (err2) {
                 // Don't clean up on error, to allow investigating
-                logger().error(`Error bundling in ${dir}:`, err2);
+                logger.error(`Error bundling in ${dir}:`, err2);
                 reject(err2);
               }
             }

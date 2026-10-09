@@ -1,3 +1,4 @@
+import { expressRequestContextMiddleware } from "@plasmic-shared/observability/node";
 import * as Sentry from "@sentry/node";
 import * as bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
@@ -28,7 +29,9 @@ import { getE2eDevFlags } from "@/wab/server/e2e-devflags";
 import { createMailer } from "@/wab/server/emails/Mailer";
 import { ExpressSession } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
-import { initAnalyticsFactory, logger } from "@/wab/server/observability";
+import { logger, withLogContext } from "@/wab/server/observability";
+import { initAnalyticsFactory } from "@/wab/server/observability/analytics";
+import { shouldIgnoreErrorByMessage } from "@/wab/server/observability/sentry-filters";
 import {
   DEFAULT_HISTOGRAM_BUCKETS,
   METRICS_PATH_ID_MASK,
@@ -279,7 +282,6 @@ import {
   getWorkspaces,
   updateWorkspace,
 } from "@/wab/server/routes/workspaces";
-import { shouldIgnoreErrorByMessage } from "@/wab/server/sentry";
 import { logError } from "@/wab/server/server-util";
 import {
   ASYNC_TIMING,
@@ -302,7 +304,7 @@ import {
 import { CAPTCHA_TOKEN_HEADER } from "@/wab/shared/ApiSchema";
 import { publicCmsReadsContract } from "@/wab/shared/api/cms";
 import { Bundler } from "@/wab/shared/bundler";
-import { mkShortId, safeCast, spawn } from "@/wab/shared/common";
+import { safeCast, spawn } from "@/wab/shared/common";
 import { DataSourceError } from "@/wab/shared/data-sources-meta/data-sources";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS, applyDevFlagOverridesToTarget } from "@/wab/shared/devflags";
@@ -366,7 +368,7 @@ function addSentry(app: express.Application) {
   if (!process.env.SENTRY_DSN) {
     return;
   }
-  logger().debug(`Sentry enabled with DSN: ${process.env.SENTRY_DSN}`);
+  logger.debug(`Sentry enabled with DSN: ${process.env.SENTRY_DSN}`);
 
   app.use((req, _res, next) => {
     // Some routes get project ID as a path param (e.g.
@@ -412,12 +414,7 @@ function addSentryError(app: express.Application) {
 }
 
 export function addLoggingMiddleware(app: express.Application) {
-  app.use(
-    safeCast<RequestHandler>(async (req: Request, res, next) => {
-      req.id = mkShortId();
-      next();
-    }),
-  );
+  app.use(expressRequestContextMiddleware(withLogContext));
   app.use((req: Request, res: any, next) => {
     const start = Date.now();
     res.on("finish", () => {
@@ -426,7 +423,7 @@ export function addLoggingMiddleware(app: express.Application) {
         endpoint: getTemplatedEndpointFromExpressRoutePath(req.route?.path),
         responseCode: res.statusCode,
       });
-      logger().info(
+      logger.info(
         `${req.method} ${req.originalUrl} ${res.statusCode} (${duration}ms)`,
         {
           requestMethod: req.method,
@@ -516,7 +513,7 @@ function addMiddlewares(
     app.use(passport.initialize());
     app.use(passport.session());
   } else {
-    logger().debug("Skipping session store setup...");
+    logger.debug("Skipping session store setup...");
   }
 
   const analyticsFactory = initAnalyticsFactory({
@@ -565,7 +562,7 @@ function addMiddlewares(
           );
         }
         if (timingStore.calls && timingStore.calls.length > 0) {
-          logger().debug("TIMING", {
+          logger.debug("TIMING", {
             method: req.method,
             path: req.path,
             callDurations: serializeCallDurations(timingStore.calls),
@@ -614,7 +611,7 @@ function addMiddlewares(
       }
     });
   } else {
-    logger().debug("Skipping CSRF setup...");
+    logger.debug("Skipping CSRF setup...");
   }
 
   app.use((req, _res, next) => {
@@ -1142,7 +1139,7 @@ export function addMainAppServerRoutes(
   });
 
   app.use((req, res, next) => {
-    logger().debug(req.ip);
+    logger.debug(req.ip);
     next();
   });
 
@@ -1844,9 +1841,9 @@ function addEndErrorHandlers(app: express.Application) {
         // at ERROR both buries real failures and dominates log volume; only an
         // unhandled error (no response, i.e. a 500) is ours to act on.
         if (!response || response.statusCode >= 500) {
-          logger().error("ERROR!", origErr);
+          logger.error("ERROR!", origErr);
         } else if (!(origErr instanceof AuthError)) {
-          logger().warn("Request failed", origErr);
+          logger.warn("Request failed", origErr);
         }
         if (res.headersSent || res.writableEnded) {
           logError(origErr, "Tried to edit closed response");
@@ -1963,13 +1960,13 @@ export async function createApp(
 
   // Prune old cache every 2 hours
   cron.schedule("0 */2 * * *", () => {
-    logger().info("Pruning cache");
+    logger.info("Pruning cache");
     pruneCache();
   });
 
   // Don't leak infra info
   app.disable("x-powered-by");
-  logger().info(
+  logger.info(
     `Starting server with heap memory ${
       v8.getHeapStatistics().total_available_size / 1024 / 1024
     }MB`,

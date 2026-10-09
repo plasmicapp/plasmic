@@ -28,7 +28,7 @@ async function publishHostlessProjects(em: EntityManager) {
   await ensureDevFlags(db);
   const hostLessWorkspaceId = DEVFLAGS.hostLessWorkspaceId;
   if (!hostLessWorkspaceId) {
-    logger().info("No hostless workspace ID");
+    logger.info("No hostless workspace ID");
     return;
   }
   const hostlessProjects = await db.getProjectsByWorkspaces([
@@ -44,10 +44,10 @@ async function publishHostlessProjects(em: EntityManager) {
 
   for (const project of hostlessProjects) {
     const projectId = project.id;
-    logger().info(`Updating project ${project.name} - ${projectId}`);
+    logger.info(`Updating project ${project.name} - ${projectId}`);
 
     if (DEVFLAGS.manuallyUpdatedHostLessProjectIds.includes(projectId)) {
-      logger().info(
+      logger.info(
         `Skipping project ${project.name} - ${projectId} (marked for manual updating)`,
       );
       updatedProjects.push(project.name);
@@ -55,10 +55,10 @@ async function publishHostlessProjects(em: EntityManager) {
     }
 
     if (await publishHostlessProject(db, projectId, { plumeSite })) {
-      logger().info("Project updated");
+      logger.info("Project updated");
       updatedProjects.push(project.name);
     } else {
-      logger().info("No changes detected");
+      logger.info("No changes detected");
     }
   }
 }
@@ -101,7 +101,7 @@ export async function publishHostlessProject(
 
   // Make sure the new bundle isn't broken
   assertSiteInvariants(site);
-  logger().info("Saving new version and publishing...");
+  logger.info("Saving new version and publishing...");
   // Make sure we're able to identify whether the project changed or not
   await updateHostlessPackage(site, project.name, plumeSite);
   const newBundle2 = bundler.bundle(
@@ -154,7 +154,7 @@ async function loadPlumeSite(db: DbMgr) {
 }
 
 async function main() {
-  logger().info("Start script...");
+  logger.info("Start script...");
   const opts = new Command("custom-script")
     .option("-db, --dburi <dburi>", "Database uri", DEFAULT_DATABASE_URI)
     .parse(process.argv)
@@ -172,7 +172,7 @@ async function main() {
 if (require.main === module) {
   spawn(
     main().catch((err) => {
-      logger().error(err);
+      logger.error(err);
       process.exit(1);
     }),
   );

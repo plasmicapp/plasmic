@@ -31,7 +31,7 @@ export async function main() {
   const migrationName = opts.migrationName;
   const checkBundles = !!opts.bundleChecks;
 
-  logger().info(
+  logger.info(
     `Reverting migration ${migrationName} (checkBundles: ${checkBundles})`,
   );
 
@@ -40,7 +40,7 @@ export async function main() {
 
     const entityIds =
       await db.getEntityIdsFromBundleBackupsByMigration(migrationName);
-    logger().info(`${entityIds.length} bundles to revert`);
+    logger.info(`${entityIds.length} bundles to revert`);
 
     for (const entityId of entityIds) {
       const entity =
@@ -48,7 +48,7 @@ export async function main() {
           ? await db.getLatestProjectRev(entityId.projectId)
           : await db.getPkgVersionById(entityId.pkgVersionId);
 
-      logger().info(
+      logger.info(
         `Reverting ${entity.constructor.name} ${entity.id}${
           entity instanceof ProjectRevision
             ? ` (projectId ${entity.projectId})`
@@ -63,7 +63,7 @@ export async function main() {
       if (checkBundles && currentVersion !== migrationName) {
         // If the bundle has already been reverted, don't overwrite it with the backup
         // again to avoid unnecessary data loss.
-        logger().info(
+        logger.info(
           `Skipping ${entity.constructor.name} ${entity.id} because it's current version is ${currentVersion}`,
         );
         continue;
@@ -119,7 +119,7 @@ export async function main() {
         });
       }
 
-      logger().info(
+      logger.info(
         `Reverted ${entity.constructor.name} ${entity.id} from version ${currentVersion} to ${newVersion}`,
       );
     }
@@ -129,7 +129,7 @@ export async function main() {
 if (require.main === module) {
   spawn(
     main().catch((error) => {
-      logger().error("Found an error reverting the migration.", error);
+      logger.error("Found an error reverting the migration.", error);
       process.exit(1);
     }),
   );

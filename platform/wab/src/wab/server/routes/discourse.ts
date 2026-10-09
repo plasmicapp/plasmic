@@ -64,7 +64,7 @@ export async function discourseConnect(req: Request, res: Response) {
   const discourseInfo = await dbMgr.getDiscourseInfosByTeamIds(teamIds);
   const groupsCommaDelimited = discourseInfo.map((info) => info.slug).join(",");
 
-  logger().info(
+  logger.info(
     `Signing in user ${user.id} with email ${user.email} with groups ${groupsCommaDelimited}`,
   );
   const responsePayload = omitNils({

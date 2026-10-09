@@ -178,7 +178,7 @@ export class ProjectsSocket {
       socket.request["sessionID"],
       "SessionID should not be undefined",
     );
-    logger().info(`Starting session ${sessionId}`);
+    logger.info(`Starting session ${sessionId}`);
 
     // First track the socket by session ID.
     // The socket starts unauthorized and hasn't joined any rooms yet.
@@ -225,7 +225,7 @@ export class ProjectsSocket {
         return;
       }
 
-      logger().info(
+      logger.info(
         `Subscribing user ${getSocketUserName(user)} to ${args.projectIds}`,
       );
       for (const projectId of args.projectIds) {
@@ -270,7 +270,7 @@ export class ProjectsSocket {
       selfPlayerId: playerId,
     };
     socket.emit("initServerInfo", initServerInfo);
-    logger().info(
+    logger.info(
       `Socket connected for ${getSocketUserName(
         ensure(socket.handshake["user"], "User should not be undefined"),
       )}`,
@@ -321,7 +321,7 @@ async function socketAuthMiddleware(socket: Socket, next: (err?: any) => any) {
   try {
     const user = await extractAuthUser(socket);
     if (!user) {
-      logger().info("Rejected unauthenticated socket connection");
+      logger.info("Rejected unauthenticated socket connection");
       return next(new Error("Invalid credentials."));
     }
     socket.handshake["user"] = user;
@@ -339,7 +339,7 @@ async function extractAuthUser(
   return await withDbMgr({ actor: SUPER_USER }, async (mgr) => {
     if (get(socket, "request.session.passport.user")) {
       // This is a user logged in with a passport cookie
-      logger().info(
+      logger.info(
         "Socket logged in via passport",
         // @ts-ignore
         request.session?.passport.user,

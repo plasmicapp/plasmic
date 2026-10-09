@@ -22,7 +22,7 @@ export class PkgMgr {
     private db: DbMgr,
     private sysname: InsertableId,
   ) {
-    logger().info(`created with sysname ${sysname}`);
+    logger.info(`created with sysname ${sysname}`);
   }
 
   async unbundleAndSave(
@@ -41,7 +41,7 @@ export class PkgMgr {
       // We want Plume and PLexus (and its dependencies) to have general read access, so that any other non-admin project can install them
       inviteOnly: false,
     });
-    logger().info(
+    logger.info(
       `Created ${this.sysname} ${name} project ${project.id} for user ${user.email}`,
     );
 
@@ -94,10 +94,10 @@ export class PkgMgr {
    * Updates the existing pkg to be the content of master-pkg.json
    */
   async upgradePkg() {
-    logger().info(`Upgrading ${this.sysname}...`);
+    logger.info(`Upgrading ${this.sysname}...`);
     const pkg = await this.tryGetPkg(this.sysname);
     if (!pkg) {
-      logger().info(`Creating ${this.sysname} pkg for the first time...`);
+      logger.info(`Creating ${this.sysname} pkg for the first time...`);
       await this.seedPkg();
       return;
     }
@@ -142,11 +142,9 @@ export class PkgMgr {
       .delete({
         pkgId: pkg.id,
       });
-    logger().info(
-      `Deleting existing versions (there are ${deleteRes.affected})`,
-    );
+    logger.info(`Deleting existing versions (there are ${deleteRes.affected})`);
 
-    logger().info(`Updating to ${this.sysname} package version ${dep.version}`);
+    logger.info(`Updating to ${this.sysname} package version ${dep.version}`);
     const newRev = await this.db.saveProjectRev({
       projectId: rev.projectId,
       data: JSON.stringify(
@@ -154,7 +152,7 @@ export class PkgMgr {
       ),
       revisionNum: rev.revision + 1,
     });
-    logger().info(`created a new revision ${newRev.revision}`);
+    logger.info(`created a new revision ${newRev.revision}`);
     // create the new pkg version with the same pkgId as in the master-pkg.json, because it will be used in the deps array
     const pkgVersion = await this.db.insertPkgVersion(
       pkg.id,
@@ -166,7 +164,7 @@ export class PkgMgr {
       undefined,
       pkgVersionId,
     );
-    logger().info(`inserted a pkg version ${pkgVersion.id}`);
+    logger.info(`inserted a pkg version ${pkgVersion.id}`);
   }
 
   private async tryGetPkg(sysname: InsertableId) {

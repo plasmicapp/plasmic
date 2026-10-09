@@ -92,7 +92,7 @@ export async function main() {
         }),
       spawnWrapper((args) =>
         checkBundleFiles(args).catch((err) => {
-          logger().error("Error on check list of bundle migrations", err);
+          logger.error("Error on check list of bundle migrations", err);
           process.exit(1);
         }),
       ),
@@ -105,7 +105,7 @@ export async function main() {
 if (require.main === module) {
   spawn(
     main().catch((err) => {
-      logger().error("Error on check-bundle-migrations", err);
+      logger.error("Error on check-bundle-migrations", err);
       process.exit(1);
     }),
   );

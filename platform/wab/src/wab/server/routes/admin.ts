@@ -233,7 +233,7 @@ export async function adminLoginAs(req: Request, res: Response) {
       }
     });
   });
-  logger().info(`admin logged in as ${getUser(req).email}`);
+  logger.info(`admin logged in as ${getUser(req).email}`);
   res.cookie("plasmic-observer", "true");
   res.json(ensureType<LoginResponse>({ status: true, user }));
 }
@@ -416,7 +416,7 @@ export async function getSsoByTeam(req: Request, res: Response) {
 export async function getTeamByWhiteLabelName(req: Request, res: Response) {
   const mgr = superDbMgr(req);
   const team = await mgr.getTeamByWhiteLabelName(req.query.name as string);
-  logger().info(`TEAM: ${req.query.name}`, team);
+  logger.info(`TEAM: ${req.query.name}`, team);
   res.json({ team: team });
 }
 

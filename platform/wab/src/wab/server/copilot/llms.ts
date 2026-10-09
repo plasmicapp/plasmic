@@ -46,7 +46,7 @@ export class OpenAIWrapper {
     options?: CreateChatCompletionRequestOptions,
   ) => {
     if (verbose) {
-      logger().debug(showCompletionRequest(createChatCompletionRequest));
+      logger.debug(showCompletionRequest(createChatCompletionRequest));
     }
     const key = hash(
       JSON.stringify([
@@ -99,7 +99,7 @@ export class AnthropicWrapper {
     options?: CreateChatCompletionRequestOptions,
   ) => {
     if (verbose) {
-      logger().info(showCompletionRequest(createChatCompletionRequest));
+      logger.info(showCompletionRequest(createChatCompletionRequest));
     }
     const key = hash(
       JSON.stringify([
@@ -171,7 +171,7 @@ export class AnthropicWrapper {
       await this.cache.put(key, value1);
       return JSON.parse(value1);
     } catch (error) {
-      logger().error("Error getting chat completions:", error);
+      logger.error("Error getting chat completions:", error);
       throw error;
     }
   };

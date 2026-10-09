@@ -76,7 +76,7 @@ export class MultiOAuth2Strategy extends AbstractStrategy {
   ): void {
     this.opts.getOAuth2Options(req, (err, res) => {
       if (err) {
-        logger().error("ERROR", err);
+        logger.error("ERROR", err);
         throw err;
       }
       const fullOptions = {

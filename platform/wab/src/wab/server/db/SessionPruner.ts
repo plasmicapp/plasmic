@@ -31,7 +31,7 @@ export async function pruneExpiredSessions(
   let reason: "deadline" | "exhausted" = "deadline";
   let expiredAtOrAfter: number | undefined;
 
-  logger().info("Start pruning expired sessions", {
+  logger.info("Start pruning expired sessions", {
     expiredAtOrBefore,
     batchSize: options.batchSize,
     pauseMs: options.pauseMs,
@@ -46,7 +46,7 @@ export async function pruneExpiredSessions(
     );
     batches++;
     deleted += batch.deleted;
-    logger().info("Pruned expired session batch", {
+    logger.info("Pruned expired session batch", {
       ...batch,
       totalDeleted: deleted,
       batches,
@@ -64,7 +64,7 @@ export async function pruneExpiredSessions(
     await delay(options.pauseMs);
   }
 
-  logger().info("Done pruning expired sessions", {
+  logger.info("Done pruning expired sessions", {
     deleted,
     batches,
     reason,
@@ -110,7 +110,7 @@ export async function main() {
 
 if (require.main === module) {
   main().catch((error: unknown) => {
-    logger().error("Session pruning failed", {
+    logger.error("Session pruning failed", {
       errorMessage: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
     });
