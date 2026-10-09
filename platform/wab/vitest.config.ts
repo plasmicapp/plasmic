@@ -117,6 +117,7 @@ export default defineConfig({
       COMMITHASH: "test",
       PUBLICPATH: "/",
       AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE: "1",
+      PLASMIC_SECRETS_FILE: path.join(__dirname, "no-secrets-in-tests.json"),
     },
     testTimeout: 60000,
     hookTimeout: 60000,
