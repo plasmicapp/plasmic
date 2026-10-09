@@ -147,17 +147,13 @@ export function getDynamoDbSecrets() {
 }
 
 export function loadSecrets(): Secrets {
-  const path = getSecretsFile();
-  if (!fs.existsSync(path)) {
+  const path =
+    process.env.PLASMIC_SECRETS_FILE || `${os.homedir()}/.plasmic/secrets.json`;
+  try {
+    return uncheckedCast<Secrets>(
+      JSON.parse(fs.readFileSync(path, { encoding: "utf8" })),
+    );
+  } catch {
     return {};
   }
-  return uncheckedCast<Secrets>(
-    JSON.parse(fs.readFileSync(path, { encoding: "utf8" })),
-  );
-}
-
-function getSecretsFile() {
-  return (
-    process.env.PLASMIC_SECRETS_FILE || `${os.homedir()}/.plasmic/secrets.json`
-  );
 }
