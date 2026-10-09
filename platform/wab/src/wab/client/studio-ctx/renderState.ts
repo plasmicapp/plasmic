@@ -2,7 +2,6 @@ import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { getRealClassNames } from "@/wab/client/components/canvas/styles-name";
 import { SubDeps } from "@/wab/client/components/canvas/subdeps";
 import { Fiber } from "@/wab/client/react-global-hook/fiber";
-import { globalHookCtx } from "@/wab/client/react-global-hook/globalHook";
 import {
   asArray,
   assert,
@@ -26,7 +25,7 @@ import { maxBy } from "lodash";
 
 // We only export the `RenderState` as a type
 class RenderStateImpl {
-  constructor() {}
+  constructor(private cachedValNodes: Map<string, WeakRef<ValNode>>) {}
 
   private _tpl2valKeys = new WeakMap<TplNode, Set<string>>();
   private _valKey2fullKeys = new Map<string, Set<string>>();
@@ -93,8 +92,6 @@ class RenderStateImpl {
     updateRegistry();
     this.recomputeCachedVal(val.fullKey);
   }
-
-  private cachedValNodes = new Map<string, WeakRef<ValNode>>();
 
   unregisterFromKey(fullKey: string) {
     this.cachedValNodes.delete(fullKey);
@@ -414,11 +411,15 @@ function getBestFullKey(
 
 export type RenderState = RenderStateImpl;
 
-export function getRenderState(frameUid: number): RenderState {
-  return xSetDefault(
-    globalHookCtx.frameUidToRenderState,
-    frameUid,
-    () => new RenderStateImpl(),
+const frameUidToCachedValNodes = new Map<
+  number,
+  Map<string, WeakRef<ValNode>>
+>();
+
+/** Creates an empty RenderState. Each canvas frame's `FrameState` owns one. */
+export function createRenderState(frameUid: number): RenderState {
+  return new RenderStateImpl(
+    xSetDefault(frameUidToCachedValNodes, frameUid, () => new Map()),
   );
 }
 

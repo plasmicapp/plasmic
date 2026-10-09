@@ -17,6 +17,8 @@ import { NodeAndOffset } from "@/wab/client/dom";
 import { scriptExec, upsertJQSelector } from "@/wab/client/dom-utils";
 import { ENV } from "@/wab/client/env";
 import { PlasmicWindowInternals } from "@/wab/client/frame-ctx/windows";
+import { globalHookCtx } from "@/wab/client/react-global-hook/globalHook";
+import { FrameState } from "@/wab/client/react-global-hook/types";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
@@ -35,8 +37,8 @@ import {
   withTimeout,
 } from "@/wab/shared/common";
 import { makeTokenRefResolver } from "@/wab/shared/core/site-style-tokens";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Box } from "@/wab/shared/geom";
+import { disposeOwnedComputedFns } from "@/wab/shared/mobx-util";
 import { ArenaFrame } from "@/wab/shared/model/classes";
 import { CodeLibraryRegistration } from "@/wab/shared/register-library";
 import { getStaticBaseUrl } from "@/wab/shared/urls";
@@ -68,6 +70,7 @@ export class CanvasCtx {
 
   _$viewport: /*TWZ*/ JQuery<HTMLIFrameElement>;
   _win: /*TWZ*/ typeof window;
+  private _frameState: FrameState | undefined;
   _$doc: /*TWZ*/ JQuery<HTMLDocument>;
   _controlStyleNode: HTMLStyleElement;
   _$html: /*TWZ*/ JQuery;
@@ -214,12 +217,15 @@ export class CanvasCtx {
     arenaFrame: ArenaFrame,
     sc: StudioCtx,
   ) {
-    this.installedHostLessPkgs.clear();
     this._$viewport = $viewport;
     this._win = ensure(
       $viewport.get(0).contentWindow as typeof window,
       "Failed to get contentWindow from canvas viewport",
     );
+    this._frameState = globalHookCtx.createFrameState({
+      uid: arenaFrame.uid,
+      objectPrototype: this._win.Object.prototype,
+    });
     this._win.addEventListener("error", (e: ErrorEvent) =>
       handleCanvasError(e.error),
     );
@@ -333,14 +339,8 @@ export class CanvasCtx {
       CANVAS_CTX_TIMEOUT_PERIOD,
     );
 
-    const hostWin = (DEVFLAGS.artboardEval ? this._win : window) as any;
-    const hostVersion = hostWin.__Sub.hostVersion;
-
-    // @plasmicapp/host <1.0.47 don't set hostVersion
-    // and also don't have @plasmicapp/data-sources.
-    let dataSources: SubDeps["dataSources"] = !hostVersion
-      ? undefined
-      : (this._win as any).__PlasmicDataSourcesBundle;
+    let dataSources: SubDeps["dataSources"] = (this._win as any)
+      .__PlasmicDataSourcesBundle;
     // Also need to check usePlasmicDataConfig() as usePlasmicInvalidate() and
     // usePlasmicQueries() depend on it, and usePlasmicDataConfig() is
     // actually re-exported from @plasmicapp/query, so just because
@@ -357,8 +357,8 @@ export class CanvasCtx {
     }
 
     this.Sub = {
-      ...hostWin.__Sub,
-      ...hostWin.__CanvasPkgs,
+      ...(this._win as any).__Sub,
+      ...(this._win as any).__CanvasPkgs,
       reactWeb: (this._win as any).__PlasmicReactWebBundle,
       dataSources,
       dataSourcesContext: (this._win as any).__PlasmicDataSourcesContextBundle,
@@ -578,6 +578,11 @@ export class CanvasCtx {
   win() {
     return this._win;
   }
+
+  get frameState() {
+    return ensure(this._frameState, "CanvasCtx hasn't been initialized");
+  }
+
   $doc() {
     return this._$doc;
   }
@@ -712,7 +717,30 @@ export class CanvasCtx {
 
     this.Sub.hostUtils.setPlasmicRootNode(node);
   }
+
+  private _isDisposed = false;
   dispose() {
+    if (this._isDisposed) {
+      return;
+    }
+    this._isDisposed = true;
+
+    if (this.Sub) {
+      // Unmount the canvas tree so the effects inside it are cleaned up, since
+      // they reference this frame. The frame may already be detached, and then
+      // its scheduler never runs, so render synchronously.
+      try {
+        this.Sub.ReactDOM.flushSync(() =>
+          this.Sub.hostUtils.setPlasmicRootNode(null),
+        );
+      } catch (err) {
+        console.error("Failed to unmount canvas", this._name, err);
+      }
+      disposeOwnedComputedFns(this.Sub);
+      disposeOwnedComputedFns(this.Sub.React);
+    }
+    this._frameState?.dispose();
+    this._frameState = undefined;
     this._resizeObserver?.disconnect();
     if (this.bridgeDispose) {
       this.bridgeDispose();

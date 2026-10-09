@@ -289,8 +289,3 @@ export function createValNode(opts: {
   }
   return valNode;
 }
-
-export const mkFrameValKeyToContextDataKey = (
-  frameUid: number,
-  valKey: string,
-) => `${frameUid}.${valKey}`;

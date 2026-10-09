@@ -4,7 +4,7 @@ and modified to support our specific use case, which contains multiple iframes.
 
 The modifications include:
 - Change in the signature of the function to receive the correct react and slateReact objects, from the canvas-packages.
-- Usage of the computedFn function from mobx-utils to memoize the functions that create the elements.
+- Usage of the ownedComputedFn function from mobx-util to memoize the functions that create the elements.
 - Usage of the react.createElement function to create the elements, instead of JSX.
 
 No change was made to the logic of the file, only to the way the elements are created.
@@ -17,7 +17,7 @@ elements are properly rendered/created in the right DOM. This seems to be a mixe
 issue with the way slate breaks the text combined with our elements handling.
 Also together with the check for a dom node by slate.
  */
-import { computedFn } from "mobx-utils";
+import { ownedComputedFn } from "@/wab/shared/mobx-util";
 import type React from "react";
 import { Editor, Element, Node, Path, Text } from "slate";
 import type SlateDom from "slate-dom";
@@ -26,7 +26,7 @@ import type SlateReact from "slate-react";
 /**
  * Leaf content strings.
  */
-export const mkSlateString = computedFn(
+export const mkSlateString = ownedComputedFn(
   (
     react: typeof React,
     slateDom: typeof SlateDom,
@@ -94,15 +94,12 @@ export const mkSlateString = computedFn(
         text: leaf.text,
       });
     },
-  {
-    keepAlive: true,
-  },
 );
 
 /**
  * Leaf strings with text in them.
  */
-export const mkTextString = computedFn(
+export const mkTextString = ownedComputedFn(
   (react: typeof React) =>
     function TextString(props: { text: string; isTrailing?: boolean }) {
       const { text, isTrailing = false } = props;
@@ -143,36 +140,29 @@ export const mkTextString = computedFn(
         children: initialText,
       });
     },
-  {
-    keepAlive: true,
-  },
 );
 
-const mkMemoizedText = computedFn(
-  (react: typeof React) =>
-    react.memo(
-      react.forwardRef<HTMLSpanElement, { children: string }>((props, ref) => {
-        // return (
-        //   <span data-slate-string ref={ref}>
-        //     {props.children}
-        //   </span>
-        // );
-        return react.createElement("span", {
-          "data-slate-string": true,
-          ref: ref,
-          children: props.children,
-        });
-      }),
-    ),
-  {
-    keepAlive: true,
-  },
+const mkMemoizedText = ownedComputedFn((react: typeof React) =>
+  react.memo(
+    react.forwardRef<HTMLSpanElement, { children: string }>((props, ref) => {
+      // return (
+      //   <span data-slate-string ref={ref}>
+      //     {props.children}
+      //   </span>
+      // );
+      return react.createElement("span", {
+        "data-slate-string": true,
+        ref: ref,
+        children: props.children,
+      });
+    }),
+  ),
 );
 
 /**
  * Leaf strings without text, render as zero-width strings.
  */
-const mkZeroWidthString = computedFn(
+const mkZeroWidthString = ownedComputedFn(
   (react: typeof React, slateDom: typeof SlateDom) =>
     function ZeroWidthString(props: {
       length?: number;
@@ -218,7 +208,4 @@ const mkZeroWidthString = computedFn(
         isLineBreak ? react.createElement("br") : null,
       ]);
     },
-  {
-    keepAlive: true,
-  },
 );

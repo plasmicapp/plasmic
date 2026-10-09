@@ -7,11 +7,13 @@ if (typeof window !== "undefined") {
   }
   if (!window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
     const renderers = new Map();
+    let lastRendererId = 0;
     window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
       supportsFiber: true,
       renderers,
       inject: (renderer) => {
-        renderers.set(renderers.size + 1, renderer);
+        renderers.set(++lastRendererId, renderer);
+        return lastRendererId;
       },
       onCommitFiberRoot: function () {},
       onCommitFiberUnmount: function () {},

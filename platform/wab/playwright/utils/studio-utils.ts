@@ -1,4 +1,4 @@
-import { FrameLocator, Page, expect } from "@playwright/test";
+import { Frame, FrameLocator, Page, expect } from "@playwright/test";
 import { E2E_DEVFLAGS_COOKIE_NAME } from "../../src/wab/shared/e2e";
 
 export interface ExpectedFormItem {
@@ -12,6 +12,22 @@ export function getStudioFrame(page: Page): FrameLocator {
   return page
     .frameLocator("iframe.studio-frame")
     .frameLocator("iframe.__wab_studio-frame");
+}
+
+/**
+ * Returns the studio's window frame, i.e. the one with `window.dbg.studioCtx`,
+ * for `evaluate` calls. Use `getStudioFrame` for locators.
+ */
+export async function getStudioWindowFrame(page: Page): Promise<Frame> {
+  for (const frame of page.frames()) {
+    const isStudio = await frame
+      .evaluate(() => !!(window as any).dbg?.studioCtx)
+      .catch(() => false);
+    if (isStudio) {
+      return frame;
+    }
+  }
+  throw new Error("Couldn't find the studio frame");
 }
 
 export async function waitForFrameToLoad(page: Page) {
@@ -70,24 +86,16 @@ export async function getComponentUuid(
   page: Page,
   componentName: string,
 ): Promise<string | null> {
-  for (const frame of page.frames()) {
-    const uuid = await frame
-      .evaluate((name: string) => {
-        const win = window as any;
-        if (win.dbg && win.dbg.studioCtx) {
-          const component = win.dbg.studioCtx.site.components.find(
-            (c: any) => c.name === name,
-          );
-          return component?.uuid ?? null;
-        }
-        return null;
-      }, componentName)
-      .catch(() => null);
-    if (uuid) {
-      return uuid;
-    }
+  const studio = await getStudioWindowFrame(page).catch(() => null);
+  if (!studio) {
+    return null;
   }
-  return null;
+  return studio.evaluate((name: string) => {
+    const component = (window as any).dbg.studioCtx.site.components.find(
+      (c: any) => c.name === name,
+    );
+    return component?.uuid ?? null;
+  }, componentName);
 }
 
 function escapeRegex(value: string) {

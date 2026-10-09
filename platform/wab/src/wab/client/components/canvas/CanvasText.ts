@@ -53,6 +53,7 @@ import {
   TextInlineTag,
   textInlineTags,
 } from "@/wab/shared/html";
+import { ownedComputedFn } from "@/wab/shared/mobx-util";
 import {
   CustomCode,
   ensureKnownRawText,
@@ -65,7 +66,6 @@ import {
 } from "@/wab/shared/model/classes";
 import isHotkey from "is-hotkey";
 import { camelCase, isEqual, kebabCase } from "lodash";
-import { computedFn } from "mobx-utils";
 import React, { CSSProperties } from "react";
 import type {
   Descendant,
@@ -292,7 +292,7 @@ export type CustomCssProps = {
   props: CSSProperties;
 };
 
-const mkRichTextShortcuts: (sub: SubDeps) => Shortcut[] = computedFn(
+const mkRichTextShortcuts: (sub: SubDeps) => Shortcut[] = ownedComputedFn(
   (sub: SubDeps) => [
     {
       action: "CUSTOM_CSS",
@@ -390,9 +390,6 @@ const mkRichTextShortcuts: (sub: SubDeps) => Shortcut[] = computedFn(
       },
     },
   ],
-  {
-    keepAlive: true,
-  },
 );
 
 const MARKDOWN_BLOCKS: Record<string, TagName | Array<TagName>> = {
@@ -891,7 +888,7 @@ function mkExprTextProps(
     : { children: content };
 }
 
-export const mkCanvasText = computedFn(
+export const mkCanvasText = ownedComputedFn(
   (react: typeof React) =>
     function CanvasText({
       node,
@@ -1321,19 +1318,15 @@ export const mkCanvasText = computedFn(
         });
       }, `mkCanvasText(${node.uuid})`);
     },
-  {
-    keepAlive: true,
-  },
 );
 
-const mkTextChild = computedFn(
+const mkTextChild = ownedComputedFn(
   (vc: ViewCtx) =>
     ({ node, ctx }: { node: TplNode; ctx: RenderingCtx }) =>
       mkUseCanvasObserver(vc.canvasCtx.Sub, vc)(
         () => renderTplNode(node, ctx),
         `mkTextChild(${node.uuid})`,
       ),
-  { keepAlive: true },
 );
 
 // Builds read-only React children for RawText. Unlike codegen, plain-text runs are wrapped
@@ -1374,7 +1367,7 @@ function renderRawTextChildren(
 
 // Read-only version of mkCanvasText: renders content as plain React elements.
 // mkRichText uses this when not editing to avoid initializing Slate
-export const mkReadOnlyCanvasText = computedFn(
+export const mkReadOnlyCanvasText = ownedComputedFn(
   (react: typeof React) =>
     function ReadOnlyCanvasText({
       node,
@@ -1424,7 +1417,6 @@ export const mkReadOnlyCanvasText = computedFn(
         `mkReadOnlyCanvasText(${node.uuid})`,
       );
     },
-  { keepAlive: true },
 );
 
 interface SlateChildrenProps {
@@ -1439,7 +1431,7 @@ interface SlateChildrenProps {
 // case we must simply render slate children to avoid having Slate instances
 // inside other Slate instances and to render the children that Slate
 // expects.
-export const mkSlateChildren = computedFn(
+export const mkSlateChildren = ownedComputedFn(
   (react: typeof React) =>
     function SlateChildren({
       node,
@@ -1496,9 +1488,6 @@ export const mkSlateChildren = computedFn(
         `mkSlateChildren(${node.uuid})`,
       );
     },
-  {
-    keepAlive: true,
-  },
 );
 
 function mkClassName(node: TplTag, inline: boolean): string {

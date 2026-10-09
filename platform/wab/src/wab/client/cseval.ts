@@ -8,11 +8,7 @@ import {
   ClientPinManager,
   makeVariantEvalState,
 } from "@/wab/client/components/variants/ClientPinManager";
-import { globalHookCtx } from "@/wab/client/react-global-hook/globalHook";
-import {
-  getRenderState,
-  RenderState,
-} from "@/wab/client/studio-ctx/renderState";
+import { FrameState } from "@/wab/client/react-global-hook/types";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ContextFactory } from "@/wab/shared/code-components/context-factory";
 import {
@@ -75,7 +71,6 @@ export abstract class BaseCliSvrEvaluator {
   _viewCtx: ViewCtx;
   private _postEvalTasks: (() => any)[] = [];
   private _contextFactory: ContextFactory;
-  private _renderState: RenderState;
 
   private _renderCount = observable.box(0);
   private incrementRenderCount() {
@@ -93,21 +88,19 @@ export abstract class BaseCliSvrEvaluator {
     return this._isFirstRenderComplete.get();
   }
 
-  constructor({ viewCtx }: { viewCtx: ViewCtx }) {
+  constructor({
+    viewCtx,
+    frameState,
+  }: {
+    viewCtx: ViewCtx;
+    frameState: FrameState;
+  }) {
     this._viewCtx = viewCtx;
 
     this._contextFactory = new ContextFactory(viewCtx.site);
 
-    if (!globalHookCtx.frameUidToValRoot.has(viewCtx.arenaFrame().uid)) {
-      globalHookCtx.frameUidToValRoot.set(viewCtx.arenaFrame().uid, null);
-    }
-
-    this._renderState = getRenderState(this._viewCtx.arenaFrame().uid);
-
     this.valRootDispose = autorun(() => {
-      this.valRoot = globalHookCtx.frameUidToValRoot.get(
-        viewCtx.arenaFrame().uid,
-      );
+      this.valRoot = frameState.valRoot.get();
       // New Val Tree - we might need to rerender the aartboard to get
       // the updated component stack
       defer(() => !viewCtx.isDisposed && viewCtx.flushRerenderQueue());
@@ -128,10 +121,6 @@ export abstract class BaseCliSvrEvaluator {
         }
       });
     });
-  }
-
-  get renderState() {
-    return this._renderState;
   }
 
   private valRootDispose: () => void;
@@ -164,7 +153,6 @@ export abstract class BaseCliSvrEvaluator {
   }
 
   dispose() {
-    this.renderState.dispose();
     this.valRootDispose();
     (this._viewCtx as any) = null;
   }

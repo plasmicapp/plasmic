@@ -11,7 +11,7 @@ import {
   getMostRecentFiberVersion,
   globalHookCtx,
 } from "@/wab/client/react-global-hook/globalHook";
-import { mkFrameValKeyToContextDataKey } from "@/wab/client/react-global-hook/utils";
+import { FrameState } from "@/wab/client/react-global-hook/types";
 import { requestIdleCallbackAsync } from "@/wab/client/requestidlecallback";
 import {
   FreestyleState,
@@ -21,7 +21,6 @@ import {
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
-import { getRenderState } from "@/wab/client/studio-ctx/renderState";
 import { trackEvent } from "@/wab/client/tracking";
 import { ViewStateSnapshot } from "@/wab/client/undo-log";
 import { mkTokenRef } from "@/wab/commons/StyleToken";
@@ -103,6 +102,7 @@ import {
 import { isDraggableSize } from "@/wab/shared/css-size";
 import { CanvasEnv, evalCodeWithEnv, tryEvalExpr } from "@/wab/shared/eval";
 import { Pt, rectsIntersect } from "@/wab/shared/geom";
+import { disposeOwnedComputedFns } from "@/wab/shared/mobx-util";
 import {
   ArenaFrame,
   Component,
@@ -333,38 +333,24 @@ export class ViewCtx extends WithDbCtx {
     return this.arenaFrame().container.component.tplTree;
   }
 
-  private _codeComponentValKeyToContextData = observable.map<string, any>(
-    undefined,
-    {
-      deep: false,
-    },
-  );
-
   getContextData(val: ValComponent) {
     if (!isCodeComponent(val.tpl.component)) {
       return null;
     }
-    if (!this._codeComponentValKeyToContextData.has(val.key)) {
-      this._codeComponentValKeyToContextData.set(val.key, null);
-    }
-    return this._codeComponentValKeyToContextData.get(val.key);
+    return this.frameState.contextData.get(val.key) ?? null;
   }
 
   getContextDataByValKey(valKey: string) {
-    return this._codeComponentValKeyToContextData.get(valKey);
+    return this.frameState.contextData.get(valKey);
   }
 
   createSetContextDataFn = computedFn((valKey: string) => {
     return (value: any) => {
-      const oldValue = this._codeComponentValKeyToContextData.get(valKey);
+      const oldValue = this.frameState.contextData.get(valKey);
       if (isEqual(oldValue, value)) {
         return;
       }
-      globalHookCtx.frameValKeyToContextData.set(
-        mkFrameValKeyToContextDataKey(this.arenaFrame().uid, valKey),
-        value,
-      );
-      this._codeComponentValKeyToContextData.set(valKey, value);
+      this.frameState.contextData.set(valKey, value);
     };
   });
 
@@ -641,8 +627,9 @@ export class ViewCtx extends WithDbCtx {
   }
 
   _viewState: { viewingCode?: boolean };
-  canvasCtx: CanvasCtx;
-  viewOps: ViewOps;
+  readonly canvasCtx: CanvasCtx;
+  readonly frameState: FrameState;
+  readonly viewOps: ViewOps;
   _componentStackFrames = observable.array<ComponentVariantFrame>([]);
 
   getViewOps() {
@@ -683,9 +670,11 @@ export class ViewCtx extends WithDbCtx {
       canvasCtx: this.canvasCtx,
       arenaFrame: this._arenaFrame,
     } = args);
+    this.frameState = this.canvasCtx.frameState;
     this.viewOps = new ViewOps({ viewCtx: this });
     this.csEvaluator = new DevCliSvrEvaluator({
       viewCtx: this,
+      frameState: this.frameState,
     });
     this._componentStackFrames.replace([
       new RootComponentVariantFrame(this.arenaFrame()),
@@ -734,10 +723,6 @@ export class ViewCtx extends WithDbCtx {
   /**
    * Disposes any mobx observers, and try to cut as many cyclic dependencies
    * as possible.
-   *
-   * TODO: it seems a disposed ViewCtx never really gets released from memory.
-   * Still yet to figure out why; at last check, requestIdleCallback may be
-   * holding on to an instance somehow?
    */
   dispose() {
     this.disposals.forEach((d) => d());
@@ -747,6 +732,7 @@ export class ViewCtx extends WithDbCtx {
       (reaction) => !reaction.isDisposed && reaction.dispose(),
     );
     this.canvasCtx.dispose();
+    disposeOwnedComputedFns(this);
     this.csEvaluator?.dispose();
     (this.csEvaluator as any) = null;
     this._isDisposed = true;
@@ -939,13 +925,7 @@ export class ViewCtx extends WithDbCtx {
   }
 
   get renderState() {
-    // dispose() nulls out csEvaluator to break cyclic references, but lingering mobx
-    // reactions and deferred canvas callbacks can still read renderState while a frame is
-    // being torn down (e.g. tpl-tree remap on a rich-text save). RenderState lives in a
-    // frame-keyed registry independent of csEvaluator, so fall back to it.
-    return (
-      this.csEvaluator?.renderState ?? getRenderState(this.arenaFrame().uid)
-    );
+    return this.frameState.renderState;
   }
 
   /**

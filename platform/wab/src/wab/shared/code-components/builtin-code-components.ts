@@ -19,25 +19,23 @@ interface Sub {
   dataSourcesContext: typeof PlasmicDataSourcesContext;
 }
 
-export const getBuiltinComponentRegistrations = memoize(
-  function getBuiltinComponentRegistrations(sub?: Sub) {
-    return {
-      PlasmicHead: {
-        component: sub?.reactWeb.PlasmicHead ?? PlasmicHead,
-        meta: sub?.reactWeb.plasmicHeadMeta ?? plasmicHeadMeta,
-      } as ComponentRegistration,
-      PlasmicFetcher: {
-        component: sub?.dataSources?.Fetcher ?? Fetcher,
-        // If we remove `as any` from the line below, TypeScript becomes
-        // super slow and VSCode becomes barely usable. There is something
-        // funky going on; while we don't find the root cause please keep
-        // `as any`. Slack thread:
-        // https://plasmic.slack.com/archives/CS173V5ND/p1670439564756629
-        meta: (sub?.dataSources?.FetcherMeta ?? FetcherMeta) as any,
-      } as ComponentRegistration,
-    };
-  },
-);
+export function getBuiltinComponentRegistrations(sub?: Sub) {
+  return {
+    PlasmicHead: {
+      component: sub?.reactWeb.PlasmicHead ?? PlasmicHead,
+      meta: sub?.reactWeb.plasmicHeadMeta ?? plasmicHeadMeta,
+    } as ComponentRegistration,
+    PlasmicFetcher: {
+      component: sub?.dataSources?.Fetcher ?? Fetcher,
+      // If we remove `as any` from the line below, TypeScript becomes
+      // super slow and VSCode becomes barely usable. There is something
+      // funky going on; while we don't find the root cause please keep
+      // `as any`. Slack thread:
+      // https://plasmic.slack.com/archives/CS173V5ND/p1670439564756629
+      meta: (sub?.dataSources?.FetcherMeta ?? FetcherMeta) as any,
+    } as ComponentRegistration,
+  };
+}
 
 const getBuiltinImportPaths = memoize(function getBuiltinImportPaths() {
   return Object.values(getBuiltinComponentRegistrations()).map(

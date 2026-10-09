@@ -2455,7 +2455,12 @@ const _structuralMergeArg: any[] = [undefined, undefined];
 export function structuralMerge2<T>(x: T, y: T) {
   _structuralMergeArg[0] = x;
   _structuralMergeArg[1] = y;
-  return structuralMerge(_structuralMergeArg) as T;
+  try {
+    return structuralMerge(_structuralMergeArg) as T;
+  } finally {
+    // Don't keep the arguments alive
+    _structuralMergeArg[0] = _structuralMergeArg[1] = undefined;
+  }
 }
 
 export function countPred<T>(array: T[], pred: (x: T) => boolean) {

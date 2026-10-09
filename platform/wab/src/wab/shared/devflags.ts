@@ -294,7 +294,6 @@ const production = process.env.NODE_ENV === "production";
 
 const DEFAULT_DEVFLAGS = {
   appContentBaseUrl: "https://docs.plasmic.app/app-content",
-  artboardEval: true,
   autoSave: true,
   brands: {
     "": {

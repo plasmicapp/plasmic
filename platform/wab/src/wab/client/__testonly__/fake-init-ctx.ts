@@ -4,6 +4,8 @@ import { AppCtx } from "@/wab/client/app-ctx";
 import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { App } from "@/wab/client/components/top-view";
 import { DbCtx } from "@/wab/client/db";
+import { globalHookCtx } from "@/wab/client/react-global-hook/globalHook";
+import { FrameState } from "@/wab/client/react-global-hook/types";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
@@ -149,10 +151,14 @@ export function fakeStudioCtx(opts?: {
       return existingViewCtx;
     }
 
+    const canvasCtx = mockDeepAuto<CanvasCtx>();
+    // A real hook state, so the frame has no val tree until something sets one
+    (canvasCtx as { frameState: FrameState }).frameState =
+      globalHookCtx.createFrameState({ uid: frame.uid, objectPrototype: {} });
     const newViewCtx = new ViewCtx({
       studioCtx,
       arenaFrame: frame,
-      canvasCtx: mockDeepAuto<CanvasCtx>(),
+      canvasCtx,
       viewportCtx: mockDeepAuto<ViewportCtx>(),
     });
     studioCtx.viewCtxs.push(newViewCtx);

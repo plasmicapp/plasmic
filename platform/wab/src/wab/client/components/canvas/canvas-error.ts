@@ -13,6 +13,7 @@ import {
 import { getExportedComponentName } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { summarizeTpl } from "@/wab/shared/core/tpls";
+import { ownedComputedFn } from "@/wab/shared/mobx-util";
 import {
   Component,
   isKnownComponent,
@@ -20,7 +21,6 @@ import {
 } from "@/wab/shared/model/classes";
 import { isPlasmicUndefinedDataErrorPromise } from "@plasmicapp/data-sources";
 import { debounce } from "lodash";
-import { computedFn } from "mobx-utils";
 import type React from "react";
 
 export interface CanvasErrorBoundaryProps {
@@ -34,8 +34,9 @@ interface CanvasErrorBoundaryState {
   error?: Error | null;
 }
 
-export const mkCanvasErrorBoundary = computedFn(
-  (react: typeof React, viewCtx: ViewCtx) => {
+export const mkCanvasErrorBoundary = ownedComputedFn(
+  // Owned by the ViewCtx rather than React, so it's released with the ViewCtx
+  (viewCtx: ViewCtx, react: typeof React) => {
     const ReactComponent = react.Component;
     return class CanvasErrorBoundary extends ReactComponent<
       CanvasErrorBoundaryProps,
@@ -138,7 +139,6 @@ export const mkCanvasErrorBoundary = computedFn(
       }
     };
   },
-  { keepAlive: true },
 );
 
 interface CanvasErrorDisplayProps {
@@ -191,39 +191,36 @@ export function withErrorDisplayFallback<T>(
   }
 }
 
-const mkCanvasErrorDisplay = computedFn(
-  (react: typeof React) => {
-    const ReactComponent = react.Component;
-    return class CanvasErrorDisplay extends ReactComponent<CanvasErrorDisplayProps> {
-      render() {
-        const { ctx, title, error } = this.props;
+const mkCanvasErrorDisplay = ownedComputedFn((react: typeof React) => {
+  const ReactComponent = react.Component;
+  return class CanvasErrorDisplay extends ReactComponent<CanvasErrorDisplayProps> {
+    render() {
+      const { ctx, title, error } = this.props;
 
-        const valKey = ctx.valKey;
-        const ownerKey = ctx.ownerKey;
-        const envId = getEnvId(ctx);
+      const valKey = ctx.valKey;
+      const ownerKey = ctx.ownerKey;
+      const envId = getEnvId(ctx);
 
-        const r = react.createElement;
-        return r(
+      const r = react.createElement;
+      return r(
+        "div",
+        {
+          className: "__wab_error-display",
+          [valKeyProp]: valKey,
+          [dataCanvasEnvsProp]: envId,
+          [valOwnerProp]: ownerKey,
+          [classNameProp]: "__wab_error-display",
+        },
+        r(
           "div",
-          {
-            className: "__wab_error-display",
-            [valKeyProp]: valKey,
-            [dataCanvasEnvsProp]: envId,
-            [valOwnerProp]: ownerKey,
-            [classNameProp]: "__wab_error-display",
-          },
-          r(
-            "div",
-            { className: "__wab_error-display__inner" },
-            r("div", { className: "__wab_error-display__heading" }, title),
-            r("div", { className: "__wab_error-display__code" }, `${error}`),
-          ),
-        );
-      }
-    };
-  },
-  { keepAlive: true },
-);
+          { className: "__wab_error-display__inner" },
+          r("div", { className: "__wab_error-display__heading" }, title),
+          r("div", { className: "__wab_error-display__code" }, `${error}`),
+        ),
+      );
+    }
+  };
+});
 
 function deriveOffendingElement(error: Error | null | undefined) {
   if (!error) {

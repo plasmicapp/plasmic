@@ -232,6 +232,7 @@ import { stampIgnoreError } from "@/wab/shared/error-handling";
 import { CanvasEnv, evalCodeWithEnv } from "@/wab/shared/eval";
 import { exprUsesCtxOrFreeVars } from "@/wab/shared/eval/expression-parser";
 import { ContainerType } from "@/wab/shared/layoututils";
+import { ownedComputedFn } from "@/wab/shared/mobx-util";
 import {
   CollectionExpr,
   Component,
@@ -401,7 +402,7 @@ interface CanvasComponentProps extends Partial<
   ref?: React.Ref<any>;
 }
 
-export const createCanvasComponent = computedFn(
+export const createCanvasComponent = ownedComputedFn(
   (
     viewCtx: ViewCtx,
     component: Component,
@@ -450,7 +451,7 @@ export const createCanvasComponent = computedFn(
       ) as React.ComponentType<CanvasComponentProps>) ?? CanvasComponent;
     const CanvasComponentWrapper = sub.React.forwardRef((props, ref) =>
       sub.React.createElement<CanvasErrorBoundaryProps>(
-        mkCanvasErrorBoundary(sub.React, viewCtx),
+        mkCanvasErrorBoundary(viewCtx, sub.React),
         {
           ctx: props[renderingCtxProp] ?? makeEmptyRenderingCtx(viewCtx, ""),
           nodeOrComponent: component,
@@ -470,9 +471,6 @@ export const createCanvasComponent = computedFn(
         : {}),
     });
     return CanvasComponentWrapper;
-  },
-  {
-    keepAlive: true,
   },
 );
 
@@ -711,83 +709,78 @@ function isSlotArgElement(v: React.ReactElement) {
   return !!props[slotArgCompKeyProp] && !!props[slotArgParamProp];
 }
 
-const mkTriggers = computedFn(
-  function mkTriggers(
-    sub: SubDeps,
-    viewCtx: ViewCtx,
-    // The number of hooks to be called depends on `reactHookSpec`, so we create
-    // a new component when the number of specs change.
-    _reactHookSpecsKey: string,
-  ) {
-    return function WithTriggers({
-      ctx,
-      component,
-      childrenFn,
-    }: {
-      ctx: RenderingCtx;
-      component: Component;
-      childrenFn: (newCtx: RenderingCtx) => React.ReactElement | null;
-    }): React.ReactElement | null {
-      return mkUseCanvasObserver(
-        sub,
-        viewCtx,
-      )(() => {
-        const isInteractive = ctx.viewCtx.studioCtx.isInteractiveMode;
+const mkTriggers = ownedComputedFn(function mkTriggers(
+  sub: SubDeps,
+  viewCtx: ViewCtx,
+  // The number of hooks to be called depends on `reactHookSpec`, so we create
+  // a new component when the number of specs change.
+  _reactHookSpecsKey: string,
+) {
+  return function WithTriggers({
+    ctx,
+    component,
+    childrenFn,
+  }: {
+    ctx: RenderingCtx;
+    component: Component;
+    childrenFn: (newCtx: RenderingCtx) => React.ReactElement | null;
+  }): React.ReactElement | null {
+    return mkUseCanvasObserver(
+      sub,
+      viewCtx,
+    )(() => {
+      const isInteractive = ctx.viewCtx.studioCtx.isInteractiveMode;
 
-        // triggers map is empty in non-interactive mode
-        const { triggers, triggerProps } = useTriggers(
-          ctx.viewCtx.canvasCtx,
-          ctx.reactHookSpecs,
-          isInteractive,
-        );
+      // triggers map is empty in non-interactive mode
+      const { triggers, triggerProps } = useTriggers(
+        ctx.viewCtx.canvasCtx,
+        ctx.reactHookSpecs,
+        isInteractive,
+      );
 
-        const newCtx: RenderingCtx = {
-          ...ctx,
-          triggerProps,
-          activeVariants: new Set([
-            ...ctx.activeVariants.keys(),
-            ...component.variants.filter((variant) => {
-              if (!isStyleOrCodeComponentVariant(variant)) {
-                return false;
-              }
-              // We include the style variants dynamically here to handle changes that require JS
-              // to be re-run. For handling changes that only require CSS, we generate the proper
-              // CSS classes in `genCanvasRules`. Those can only be applied in interactive mode,
-              // because we don't want the content to change when the user tries to edit rich text
-              // while in design mode.
+      const newCtx: RenderingCtx = {
+        ...ctx,
+        triggerProps,
+        activeVariants: new Set([
+          ...ctx.activeVariants.keys(),
+          ...component.variants.filter((variant) => {
+            if (!isStyleOrCodeComponentVariant(variant)) {
+              return false;
+            }
+            // We include the style variants dynamically here to handle changes that require JS
+            // to be re-run. For handling changes that only require CSS, we generate the proper
+            // CSS classes in `genCanvasRules`. Those can only be applied in interactive mode,
+            // because we don't want the content to change when the user tries to edit rich text
+            // while in design mode.
 
-              // Style variants of built-in components (like vertical stack's hover)
-              if (!isCodeComponentVariant(variant)) {
-                const hook = ctx.reactHookSpecs.find(
-                  (spec) => spec.sv === variant,
-                );
-                return hook && triggers[hook.hookName];
-              }
-
-              // Interactive registered variants (like a Button CC's hover) can not be applied in non-interactive mode
-              if (
-                isMaybeInteractiveCodeComponentVariant(variant) &&
-                !isInteractive
-              ) {
-                return false;
-              }
-
-              // Non-interactive registered variants (like Button CC's disabled) do no harm to rich-text editing and can be applied in non-interactive mode
-              return variant.codeComponentVariantKeys.reduce(
-                (prev, key) => prev && ctx.$ccVariants[key],
-                true,
+            // Style variants of built-in components (like vertical stack's hover)
+            if (!isCodeComponentVariant(variant)) {
+              const hook = ctx.reactHookSpecs.find(
+                (spec) => spec.sv === variant,
               );
-            }),
-          ]),
-        };
-        return childrenFn(newCtx);
-      });
-    };
-  },
-  {
-    keepAlive: true,
-  },
-);
+              return hook && triggers[hook.hookName];
+            }
+
+            // Interactive registered variants (like a Button CC's hover) can not be applied in non-interactive mode
+            if (
+              isMaybeInteractiveCodeComponentVariant(variant) &&
+              !isInteractive
+            ) {
+              return false;
+            }
+
+            // Non-interactive registered variants (like Button CC's disabled) do no harm to rich-text editing and can be applied in non-interactive mode
+            return variant.codeComponentVariantKeys.reduce(
+              (prev, key) => prev && ctx.$ccVariants[key],
+              true,
+            );
+          }),
+        ]),
+      };
+      return childrenFn(newCtx);
+    });
+  };
+});
 
 function useTriggers(
   canvasCtx: CanvasCtx,
@@ -1161,13 +1154,12 @@ interface ViewState {
   forceValComponentKeysWithDefaultSlotContents: Set<string>;
 }
 
-const createViewStateContext = computedFn(
+const createViewStateContext = ownedComputedFn(
   (viewCtx: ViewCtx) => {
     const sub = viewCtx.canvasCtx.Sub;
     return sub.React.createContext<ViewState | undefined>(undefined);
   },
   {
-    keepAlive: true,
     name: "createViewStateProvider",
   },
 );
@@ -1513,8 +1505,7 @@ function renderTplComponent(
   }
 
   let ComponentImpl:
-    | React.ComponentType<any>
-    | React.DetailedReactHTMLElement<any, any>;
+    React.ComponentType<any> | React.DetailedReactHTMLElement<any, any>;
 
   const meta = maybeGetCodeComponentMeta(ctx.viewCtx, node.component);
   if (
@@ -1827,7 +1818,7 @@ function renderTplComponent(
     // we know for sure that TplTags are not picky, so this is the easiest /
     // best we can do.
     elt = ctx.sub.React.createElement<CanvasErrorBoundaryProps>(
-      mkCanvasErrorBoundary(ctx.sub.React, ctx.viewCtx),
+      mkCanvasErrorBoundary(ctx.viewCtx, ctx.sub.React),
       {
         ctx,
         nodeOrComponent: node,
@@ -2973,7 +2964,7 @@ interface EmptyContainerPlaceholderProps {
   effectiveVs: EffectiveVariantSetting;
 }
 
-const mkEmptyContainerPlaceholder = computedFn(
+const mkEmptyContainerPlaceholder = ownedComputedFn(
   (sub: SubDeps) =>
     function EmptyContainerPlaceholder({
       node,
@@ -3046,9 +3037,6 @@ const mkEmptyContainerPlaceholder = computedFn(
         `mkEmptyContainerPlaceholder(${node.uuid})`,
       );
     },
-  {
-    keepAlive: true,
-  },
 );
 
 interface CanvasIconProps extends React.ComponentProps<"svg"> {
@@ -3056,7 +3044,7 @@ interface CanvasIconProps extends React.ComponentProps<"svg"> {
   placeholderUrl: string;
 }
 
-const mkCanvasIcon = computedFn(
+const mkCanvasIcon = ownedComputedFn(
   (react: typeof React) =>
     function CanvasIcon(props: CanvasIconProps) {
       const { outerHTML, className, placeholderUrl, ...restProps } = props;
@@ -3074,15 +3062,11 @@ const mkCanvasIcon = computedFn(
         });
       }
     },
-  {
-    keepAlive: true,
-  },
 );
 
-const mkRepeatedElement = computedFn(
+const mkRepeatedElement = ownedComputedFn(
   (react: typeof React) => genRepeatedElement(react),
   {
-    keepAlive: true,
     name: "mkRepeatedElement",
   },
 );
@@ -3095,138 +3079,134 @@ interface RichTextProps {
   tag: string | React.ElementType;
 }
 
-const mkRichText = computedFn(
-  (react: typeof React) =>
-    react.forwardRef(function RichText(
-      { ctx, node, attrs, tag, effectiveVs, ...rest }: RichTextProps,
-      ref,
-    ) {
-      return mkUseCanvasObserver(ctx.sub, ctx.viewCtx)(
-        () =>
-          withErrorDisplayFallback(
-            ctx.sub.React,
-            ctx,
-            node,
-            () => {
-              const eltRef = react.useRef<HTMLElement | null>(null);
+const mkRichText = ownedComputedFn((react: typeof React) =>
+  react.forwardRef(function RichText(
+    { ctx, node, attrs, tag, effectiveVs, ...rest }: RichTextProps,
+    ref,
+  ) {
+    return mkUseCanvasObserver(ctx.sub, ctx.viewCtx)(
+      () =>
+        withErrorDisplayFallback(
+          ctx.sub.React,
+          ctx,
+          node,
+          () => {
+            const eltRef = react.useRef<HTMLElement | null>(null);
 
-              const [isEditing, setEditing] = react.useState(() => false);
+            const [isEditing, setEditing] = react.useState(() => false);
 
-              // Use a computed() here so we don't re-render when the valRoot is set
-              const isTextEditable = computed(() => isEditable(node, ctx), {
-                name: `isRichTextEditable`,
-              }).get();
+            // Use a computed() here so we don't re-render when the valRoot is set
+            const isTextEditable = computed(() => isEditable(node, ctx), {
+              name: `isRichTextEditable`,
+            }).get();
 
-              const richTextHandle = {
-                enterEdit: () => {
-                  if (eltRef.current) {
-                    if (
-                      getComputedStyle(eltRef.current).visibility === "hidden"
-                    ) {
-                      return "Cannot edit the text on canvas because it is hidden. Please edit it on the right side bar.";
+            const richTextHandle = {
+              enterEdit: () => {
+                if (eltRef.current) {
+                  if (
+                    getComputedStyle(eltRef.current).visibility === "hidden"
+                  ) {
+                    return "Cannot edit the text on canvas because it is hidden. Please edit it on the right side bar.";
+                  }
+                  setEditing(true);
+                  return undefined;
+                }
+                return "Cannot edit the text on canvas because Plasmic is not ready";
+              },
+              exitEdit: () => {
+                setEditing(false);
+              },
+            };
+
+            const subOnChange = react.useCallback(
+              (text: string, markers: Marker[]) => {
+                const textCtx = ctx.viewCtx.editingTextContext();
+                if (textCtx) {
+                  textCtx.draftText = new RawTextLike(text, markers);
+                }
+              },
+              [ctx.viewCtx],
+            );
+
+            const subOnUpdateContext = react.useCallback(
+              (partialCtx: Partial<EditingTextContext>) => {
+                const textCtx = ctx.viewCtx.editingTextContext();
+                if (textCtx) {
+                  Object.assign(textCtx, partialCtx);
+                }
+              },
+              [ctx.viewCtx],
+            );
+
+            return ctx.sub.React.createElement(
+              mkCanvasErrorBoundary(ctx.viewCtx, ctx.sub.React),
+              {
+                ctx: ctx,
+                nodeOrComponent: node,
+                children: createPlasmicElementProxy(node, ctx, tag, {
+                  ...attrs,
+                  className: cx(attrs.className, [
+                    ...(isTextEditable
+                      ? [
+                          makeWabTextClassName({ targetEnv: "canvas" }),
+                          "__wab_editor",
+                        ]
+                      : []),
+                    isExprText(effectiveVs.text) &&
+                      effectiveVs.text.html &&
+                      makeWabHtmlTextClassName({ targetEnv: "canvas" }),
+                    isEditing && "__wab_editing",
+                  ]),
+                  [richTextProp]: {
+                    text: effectiveVs.text,
+                    handle: richTextHandle,
+                  },
+                  // This element may have been cloned to append data-plasmic-* props
+                  // (data-plasmic-index for dataRep, and data-plasmic-slot-* as slot args)
+                  // or arbitrary non-data-plasmic-* props from code components.
+                  // Since this RichText component is a renderless component, we pass on
+                  // those props to the actual element we are rendering, so they can be
+                  // read by globalHook
+                  ...rest,
+                  ref: (el: any) => {
+                    eltRef.current = el;
+                    if (typeof ref === "function") {
+                      ref(el);
+                    } else if (ref != null) {
+                      ref.current = el;
                     }
-                    setEditing(true);
-                    return undefined;
-                  }
-                  return "Cannot edit the text on canvas because Plasmic is not ready";
-                },
-                exitEdit: () => {
-                  setEditing(false);
-                },
-              };
-
-              const subOnChange = react.useCallback(
-                (text: string, markers: Marker[]) => {
-                  const textCtx = ctx.viewCtx.editingTextContext();
-                  if (textCtx) {
-                    textCtx.draftText = new RawTextLike(text, markers);
-                  }
-                },
-                [ctx.viewCtx],
-              );
-
-              const subOnUpdateContext = react.useCallback(
-                (partialCtx: Partial<EditingTextContext>) => {
-                  const textCtx = ctx.viewCtx.editingTextContext();
-                  if (textCtx) {
-                    Object.assign(textCtx, partialCtx);
-                  }
-                },
-                [ctx.viewCtx],
-              );
-
-              return ctx.sub.React.createElement(
-                mkCanvasErrorBoundary(ctx.sub.React, ctx.viewCtx),
-                {
-                  ctx: ctx,
-                  nodeOrComponent: node,
-                  children: createPlasmicElementProxy(node, ctx, tag, {
-                    ...attrs,
-                    className: cx(attrs.className, [
-                      ...(isTextEditable
-                        ? [
-                            makeWabTextClassName({ targetEnv: "canvas" }),
-                            "__wab_editor",
-                          ]
-                        : []),
-                      isExprText(effectiveVs.text) &&
-                        effectiveVs.text.html &&
-                        makeWabHtmlTextClassName({ targetEnv: "canvas" }),
-                      isEditing && "__wab_editing",
-                    ]),
-                    [richTextProp]: {
-                      text: effectiveVs.text,
-                      handle: richTextHandle,
-                    },
-                    // This element may have been cloned to append data-plasmic-* props
-                    // (data-plasmic-index for dataRep, and data-plasmic-slot-* as slot args)
-                    // or arbitrary non-data-plasmic-* props from code components.
-                    // Since this RichText component is a renderless component, we pass on
-                    // those props to the actual element we are rendering, so they can be
-                    // read by globalHook
-                    ...rest,
-                    ref: (el: any) => {
-                      eltRef.current = el;
-                      if (typeof ref === "function") {
-                        ref(el);
-                      } else if (ref != null) {
-                        ref.current = el;
-                      }
-                    },
-                    children:
-                      attrs.children ??
-                      (isEditing
-                        ? react.createElement(mkCanvasText(react), {
-                            node,
-                            readOnly: false,
-                            onChange: subOnChange,
-                            onUpdateContext: subOnUpdateContext,
-                            inline: !!ctx.inline,
-                            ctx,
-                            effectiveVs,
-                            key: "editing",
-                          })
-                        : react.createElement(mkReadOnlyCanvasText(react), {
-                            node,
-                            inline: !!ctx.inline,
-                            ctx,
-                            effectiveVs,
-                            key: "readonly",
-                          })),
-                  }),
-                },
-              );
-            },
-            {
-              hasLoadingBoundary: ctx.env.$ctx[hasLoadingBoundaryKey],
-            },
-          ),
-        `mkRichText(${node.uuid})`,
-      );
-    }),
-  {
-    keepAlive: true,
-  },
+                  },
+                  children:
+                    attrs.children ??
+                    (isEditing
+                      ? react.createElement(mkCanvasText(react), {
+                          node,
+                          readOnly: false,
+                          onChange: subOnChange,
+                          onUpdateContext: subOnUpdateContext,
+                          inline: !!ctx.inline,
+                          ctx,
+                          effectiveVs,
+                          key: "editing",
+                        })
+                      : react.createElement(mkReadOnlyCanvasText(react), {
+                          node,
+                          inline: !!ctx.inline,
+                          ctx,
+                          effectiveVs,
+                          key: "readonly",
+                        })),
+                }),
+              },
+            );
+          },
+          {
+            hasLoadingBoundary: ctx.env.$ctx[hasLoadingBoundaryKey],
+          },
+        ),
+      `mkRichText(${node.uuid})`,
+    );
+  }),
 );
 
 function isEditable(node: TplNode, ctx: RenderingCtx) {
@@ -3362,13 +3342,11 @@ function supressSlotPlaceholder(node: TplSlot, ctx: RenderingCtx) {
   return !(
     // We should show placeholder for this TplSlot if:
     // 1. This is a TplSlot of a component we are currently editing
-    (
-      (ctx.ownerKey && isKeyInEditableStack(ctx, ctx.ownerKey)) ||
-      // 2. This is a SlotSelection of a component instance that belongs
-      //    to the component we're currently editing
-      (ctx.ownersStack.length > 1 &&
-        isKeyInEditableStack(ctx, ctx.ownersStack[ctx.ownersStack.length - 2]))
-    )
+    (ctx.ownerKey && isKeyInEditableStack(ctx, ctx.ownerKey)) ||
+    // 2. This is a SlotSelection of a component instance that belongs
+    //    to the component we're currently editing
+    (ctx.ownersStack.length > 1 &&
+      isKeyInEditableStack(ctx, ctx.ownersStack[ctx.ownersStack.length - 2]))
   );
 }
 
@@ -3393,7 +3371,7 @@ interface CanvasSlotPlaceholderProps {
   slotSelectionKey: string;
 }
 
-const mkCanvasSlotPlaceholder = computedFn(
+const mkCanvasSlotPlaceholder = ownedComputedFn(
   (sub: SubDeps) =>
     function CanvasSlotPlaceholder({
       ctx,
@@ -3452,9 +3430,6 @@ const mkCanvasSlotPlaceholder = computedFn(
         `mkCanvasSlotPlaceholder(${component.name}.${param.variable.name})`,
       );
     },
-  {
-    keepAlive: true,
-  },
 );
 
 // Should keep in sync with `makeSlotSelectionKey` and parse it in globalHook.ts
@@ -3533,7 +3508,7 @@ export interface CanvasFrameInfo {
   defaultInitialPageFrameSize?: number;
 }
 
-export const mkCanvas = computedFn(
+export const mkCanvas = ownedComputedFn(
   (sub: SubDeps, vc: ViewCtx) =>
     (props: {
       children?: React.ReactNode;
@@ -3601,9 +3576,6 @@ export const mkCanvas = computedFn(
         forceUpdate,
       );
     },
-  {
-    keepAlive: true,
-  },
 );
 
 function computeFullKey(ctx: RenderingCtx) {

@@ -62,6 +62,18 @@ export function ensureComponentsObserved(components: Component[]) {
   return studioCtx?.observeComponents(components);
 }
 
+/**
+ * Like `computedFn(fn, { keepAlive: true, ...opts })`, except that:
+ *
+ * - it only caches when running in a browser and an argument is observable;
+ *   otherwise it calls `fn` directly
+ * - the cached values also depend on the global observable, so they're
+ *   recomputed when `maybeObserveComponents` starts observing a component's
+ *   `tplTree`, which earlier reads didn't track
+ *
+ * Like `computedFn`, a keepAlive value is never released, so prefer
+ * `ownedComputedFn` when an argument dies before the observables `fn` reads.
+ */
 export function maybeComputedFn<T extends (...args: any[]) => any>(
   fn: T,
   opts?: IComputedValueOptions<ReturnType<T>>,
@@ -142,4 +154,77 @@ export function clearKeyedComputedFns() {
 export function unobserveComputed(comp: IComputedValue<any>) {
   (comp as any).keepAlive_ = false;
   (comp as any).suspend_();
+}
+
+const ownerToDisposers = new WeakMap<object, (() => void)[]>();
+const ownedComputedLeaf = Symbol("ownedComputedLeaf");
+
+/**
+ * Like `computedFn(fn, { keepAlive: true })`, except that the values cached
+ * for an `owner` (the first argument) are released by
+ * `disposeOwnedComputedFns(owner)`.
+ *
+ * With `computedFn`, a keepAlive value is never released: it stays subscribed
+ * to the observables it read, so they keep it, and everything its arguments
+ * reference, alive. Use this instead when the owner dies before those
+ * observables, like a canvas frame's ViewCtx or SubDeps does before the site.
+ */
+export function ownedComputedFn<
+  Owner extends object,
+  Args extends unknown[],
+  Result,
+>(
+  fn: (owner: Owner, ...args: Args) => Result,
+  opts?: { name?: string },
+): (owner: Owner, ...args: Args) => Result {
+  // For each owner, a tree of maps keyed by the remaining args, with the
+  // computed at `ownedComputedLeaf`
+  const ownerToCache = new WeakMap<
+    Owner,
+    { tree: Map<unknown, any>; computeds: IComputedValue<Result>[] }
+  >();
+  return (owner: Owner, ...args: Args): Result => {
+    let cache = ownerToCache.get(owner);
+    if (!cache) {
+      const newCache = { tree: new Map<unknown, any>(), computeds: [] };
+      ownerToCache.set(owner, newCache);
+      const disposers = ownerToDisposers.get(owner) ?? [];
+      disposers.push(() => {
+        ownerToCache.delete(owner);
+        newCache.computeds.forEach(unobserveComputed);
+      });
+      ownerToDisposers.set(owner, disposers);
+      cache = newCache;
+    }
+
+    let node = cache.tree;
+    for (const arg of args) {
+      let next = node.get(arg);
+      if (!next) {
+        next = new Map<unknown, any>();
+        node.set(arg, next);
+      }
+      node = next;
+    }
+
+    let comp: IComputedValue<Result> | undefined = node.get(ownedComputedLeaf);
+    if (!comp) {
+      comp = mobx.computed(() => fn(owner, ...args), {
+        name: opts?.name ?? fn.name,
+        keepAlive: true,
+      });
+      node.set(ownedComputedLeaf, comp);
+      cache.computeds.push(comp);
+    }
+    return comp.get();
+  };
+}
+
+/** Releases the values cached for `owner` by every `ownedComputedFn`. */
+export function disposeOwnedComputedFns(owner: object) {
+  const disposers = ownerToDisposers.get(owner);
+  ownerToDisposers.delete(owner);
+  // In a batch, so that observables are notified at its end that they became
+  // unobserved
+  mobx.runInAction(() => disposers?.forEach((dispose) => dispose()));
 }

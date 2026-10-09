@@ -144,8 +144,7 @@ export const CanvasFrame = observer(function CanvasFrame({
       }
 
       const $viewport = $(viewport);
-      const vc = maybeViewCtx();
-      const ctx = vc ? vc.canvasCtx : createCanvasCtx($viewport, canvasName);
+      const ctx = createCanvasCtx($viewport, canvasName);
       try {
         for await (const initState_ of ctx.initViewPort(
           $viewport,
@@ -155,6 +154,7 @@ export const CanvasFrame = observer(function CanvasFrame({
           setInitState(initState_);
         }
       } catch (e: any) {
+        ctx.dispose();
         if (!toggleTrailingSlash && e?.name === "SecurityError") {
           console.log(
             "SecurityError while accessing artboard. Trying again...",
@@ -567,8 +567,8 @@ export const CanvasFrame = observer(function CanvasFrame({
                 new URL(studioCtx.getHostUrl()).pathname + `#${makeFrameHash()}`
               }");
               !function(){const n=window,i="__REACT_DEVTOOLS_GLOBAL_HOOK__",o="__PlasmicPreambleVersion",t=function(){};
-              if(void 0!==n){if(n.parent!==n)try{n[i]=n.parent[i]}catch(e){}if(!n[i]){const r=new Map
-              n[i]={supportsFiber:!0,renderers:r,inject:function(n){r.set(r.size+1,n)},onCommitFiberRoot:t,onCommitFiberUnmount:t}}n[i][o]||(n[i][o]="1")}}()
+              if(void 0!==n){if(n.parent!==n)try{n[i]=n.parent[i]}catch(e){}if(!n[i]){const r=new Map;let d=0
+              n[i]={supportsFiber:!0,renderers:r,inject:function(n){return r.set(++d,n),d},onCommitFiberRoot:t,onCommitFiberUnmount:t}}n[i][o]||(n[i][o]="1")}}()
               window.__PLASMIC_ARTBOARD = true;
             </script>
           `,

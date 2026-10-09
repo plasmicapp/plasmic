@@ -1768,7 +1768,10 @@ export class StudioCtx extends WithDbCtx {
     if (liveVcs.length !== this.viewCtxs.length) {
       const disposedVcs = this.viewCtxs.filter((vc) => !liveVcs.includes(vc));
       disposedVcs.forEach((vc) => vc.dispose());
-      console.log("PRUNING VCs", disposedVcs);
+      console.log(
+        "PRUNING VCs",
+        disposedVcs.map((vc) => vc.arenaFrame().uid),
+      );
       this.viewCtxs.replace(liveVcs);
     }
 

@@ -8,6 +8,7 @@ import {
   traverseUpdates,
 } from "@/wab/client/react-global-hook/traverseFiber";
 import {
+  FrameState,
   GlobalHook,
   GlobalHookCtx,
   SlotArgsData,
@@ -26,7 +27,7 @@ import {
   tryGetSlotPlaceholderKey,
   tryGetValKey,
 } from "@/wab/client/react-global-hook/utils";
-import { getRenderState } from "@/wab/client/studio-ctx/renderState";
+import { createRenderState } from "@/wab/client/studio-ctx/renderState";
 import {
   MAKE_EMPTY_OBJECT,
   arrayEq,
@@ -53,8 +54,7 @@ import { isString, omit } from "lodash";
 import { observable, runInAction } from "mobx";
 
 const officialHook = (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__ as
-  | GlobalHook
-  | undefined;
+  GlobalHook | undefined;
 
 let commitCount = 1;
 const fiberToCommitCount = new WeakMap<Fiber, number>();
@@ -120,11 +120,10 @@ if (officialHook) {
     fiberToSlotPlaceholderKeys: new WeakMap(),
     uuidToTplNode: new Map(),
     valKeyToOwnerKey: new Map(),
-    frameUidToValRoot: observable.map({}, { deep: false }),
-    frameUidToRenderState: new Map(),
     envIdToEnvs: new Map(),
     fullKeyToEnvId: new Map(),
-    frameValKeyToContextData: new Map(),
+    frames: new Map(),
+    createFrameState: (frame) => createFrameState(officialHook, frame),
     dispose: () => {
       // clear the custom functions
       for (const [key, value] of Object.entries(officialHookProps)) {
@@ -136,10 +135,19 @@ if (officialHook) {
     },
   };
 
+  const getFrameState = (frameUid: number) =>
+    ensure(
+      officialHook.plasmic.frames.get(frameUid),
+      () => `Canvas frame ${frameUid} has no state`,
+    );
+
   const deleteValInFiber = (node: Fiber) => {
     const maybeVal = fiberToNonCachedVal.get(node);
     if (maybeVal) {
-      getRenderState(maybeVal.frameUid).unregisterVal(maybeVal);
+      // Nothing to unregister from if the frame was already closed
+      officialHook.plasmic.frames
+        .get(maybeVal.frameUid)
+        ?.renderState.unregisterVal(maybeVal);
     }
     officialHook.plasmic.fiberToVal.delete(node);
     fiberToNonCachedVal.delete(node);
@@ -149,11 +157,13 @@ if (officialHook) {
     const placeholderData =
       officialHook.plasmic.fiberToSlotPlaceholderKeys.get(node);
     if (placeholderData != null) {
-      getRenderState(placeholderData.frameUid).unregisterSlotPlaceholder(
-        placeholderData.key,
-        placeholderData.fullKey,
-        node,
-      );
+      officialHook.plasmic.frames
+        .get(placeholderData.frameUid)
+        ?.renderState.unregisterSlotPlaceholder(
+          placeholderData.key,
+          placeholderData.fullKey,
+          node,
+        );
     }
     officialHook.plasmic.fiberToSlotPlaceholderKeys.delete(node);
   };
@@ -528,7 +538,8 @@ if (officialHook) {
 
                   const fakeNodeFullKey = computeFullKey(ownerKey);
 
-                  const renderState = getRenderState(currentFrameUid);
+                  const renderState =
+                    getFrameState(currentFrameUid).renderState;
 
                   // Since we will be creating a fake node, we don't want this node to be registered in the renderState
                   // along with any real nodes. So we will clean up everything for the full key of the fake node.
@@ -592,7 +603,9 @@ if (officialHook) {
                 });
 
                 const cachedValNode = ensure(
-                  getRenderState(valNode.frameUid).registerVal(valNode),
+                  getFrameState(currentFrameUid).renderState.registerVal(
+                    valNode,
+                  ),
                   () => `Should have at least one val node to merge`,
                 );
                 fiberToNonCachedVal.set(node, valNode);
@@ -625,8 +638,9 @@ if (officialHook) {
                   key: slotPlaceholderKey,
                   toSlotSelection: () => {
                     if (frameUid) {
-                      const valComp =
-                        getRenderState(frameUid).fullKey2val(tplCompFullKey);
+                      const valComp = officialHook.plasmic.frames
+                        .get(frameUid)
+                        ?.renderState.fullKey2val(tplCompFullKey);
                       if (valComp && valComp instanceof ValComponent) {
                         const param = valComp.tpl.component.params.find(
                           (p) => p.uuid === paramUuid,
@@ -642,7 +656,9 @@ if (officialHook) {
                     return undefined;
                   },
                 });
-                getRenderState(currentFrameUid).registerSlotPlaceholder(
+                getFrameState(
+                  currentFrameUid,
+                ).renderState.registerSlotPlaceholder(
                   slotPlaceholderKey,
                   slotPlaceholderFullkey,
                   node,
@@ -766,7 +782,8 @@ if (officialHook) {
              * versions of the Val Nodes, since the cached version is only a
              * merge of the non-cached versions.
              */
-            const renderState = getRenderState(cachedVal.frameUid);
+            const frameState = getFrameState(cachedVal.frameUid);
+            const renderState = frameState.renderState;
             try {
               valsInSubtree.forEach(({ nonCached }) => {
                 nonCached.parent = cachedVal;
@@ -892,17 +909,12 @@ if (officialHook) {
 
               // Finally, if this node is the root node corresponding to a frame,
               // set it as the frame ValRoot
-              const maybeFrameUid = tryGetFrameUid(node);
               if (
-                maybeFrameUid &&
-                cachedVal !==
-                  officialHook.plasmic.frameUidToValRoot.get(maybeFrameUid)
+                tryGetFrameUid(node) &&
+                cachedVal !== frameState.valRoot.get()
               ) {
                 // Root Node
-                officialHook.plasmic.frameUidToValRoot.set(
-                  maybeFrameUid,
-                  ensureInstance(cachedVal, ValComponent),
-                );
+                frameState.valRoot.set(ensureInstance(cachedVal, ValComponent));
               }
             } catch (err) {
               // Fail to process canvas data - clean up this node so the
@@ -1016,15 +1028,52 @@ if (officialHook) {
   }
 }
 
+function createFrameState(
+  hook: GlobalHook | undefined,
+  { uid, objectPrototype }: { uid: number; objectPrototype: object },
+): FrameState {
+  const frames = (hook?.plasmic ?? globalHookCtx).frames;
+  let isDisposed = false;
+  const state: FrameState = {
+    uid,
+    renderState: createRenderState(uid),
+    valRoot: observable.box(null, { deep: false }),
+    contextData: observable.map<string, any>(undefined, { deep: false }),
+    dispose: () => {
+      if (isDisposed) {
+        return;
+      }
+      isDisposed = true;
+
+      if (frames.get(uid) === state) {
+        frames.delete(uid);
+      }
+
+      if (hook?.renderers) {
+        for (const [id, renderer] of [...hook.renderers]) {
+          if (renderer && Object.getPrototypeOf(renderer) === objectPrototype) {
+            hook.renderers.delete(id);
+          }
+        }
+      }
+
+      state.renderState.dispose();
+      state.contextData.clear();
+      state.valRoot.set(null);
+    },
+  };
+  frames.set(uid, state);
+  return state;
+}
+
 export const globalHookCtx: GlobalHookCtx = officialHook?.plasmic ?? {
   uuidToTplNode: new Map(),
   valKeyToOwnerKey: new Map(),
   fiberToVal: new WeakMap(),
   fiberToSlotPlaceholderKeys: new WeakMap(),
-  frameUidToValRoot: new Map(),
-  frameUidToRenderState: new Map(),
   envIdToEnvs: new Map(),
   fullKeyToEnvId: new Map(),
-  frameValKeyToContextData: new Map(),
+  frames: new Map(),
+  createFrameState: (frame) => createFrameState(undefined, frame),
   dispose: () => {},
 };

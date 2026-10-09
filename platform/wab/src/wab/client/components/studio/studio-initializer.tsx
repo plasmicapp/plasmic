@@ -207,11 +207,6 @@ class StudioInitializer_ extends React.Component<
     }) => {
       const viewCtx = studioCtx.focusedViewCtx();
       const isFullPreviewMode = previewCtx.full && previewCtx.isLive;
-      console.log("Rendering Studio", {
-        viewCtx,
-        full: previewCtx.full,
-        isLive: previewCtx.isLive,
-      });
       return providesStudioCtx(studioCtx)(
         providesViewCtx(viewCtx)(
           providesPreviewCtx(previewCtx)(

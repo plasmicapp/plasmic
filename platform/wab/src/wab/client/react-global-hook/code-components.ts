@@ -1,5 +1,4 @@
 import { GlobalHookCtx } from "@/wab/client/react-global-hook/types";
-import { mkFrameValKeyToContextDataKey } from "@/wab/client/react-global-hook/utils";
 import {
   isPlainObjectPropType,
   maybePropTypeToDisplayName,
@@ -28,9 +27,7 @@ export function validateCodeComponentParams(opts: {
   ) {
     const meta = tplNode.component._meta;
     const ccContextData = frameUid
-      ? globalHookCtx.frameValKeyToContextData.get(
-          mkFrameValKeyToContextDataKey(frameUid, instanceKey),
-        )
+      ? globalHookCtx.frames.get(frameUid)?.contextData.get(instanceKey)
       : undefined;
     const invalidArgs: InvalidArgMeta[] = withoutNils(
       tplNode.component.params.map((p) => {
