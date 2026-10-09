@@ -2,7 +2,6 @@ import { AppCtx } from "@/wab/client/app-ctx";
 import { ConnectOAuthButton } from "@/wab/client/components/auth/ConnectOAuth";
 import styles from "@/wab/client/components/auth/ConnectOAuth.module.scss";
 import { reactPrompt } from "@/wab/client/components/quick-modals";
-import { SectionSeparator } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { ListBox, ListBoxItem } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
 import { Modal } from "@/wab/client/components/widgets/Modal";
@@ -487,7 +486,7 @@ export function DataSourceModal({
             />
           </Form.Item>
         )}
-        {sourceMeta && <SectionSeparator className="mb-xlg" />}
+        {sourceMeta && <div className="SectionSeparator mb-xlg" />}
         {sourceMeta && sourceMeta.id === "postgres" && (
           <PostgresConnectionStringImportButton
             form={form}

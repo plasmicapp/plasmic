@@ -6,6 +6,7 @@ import {
 } from "@/wab/client/api-hooks";
 import { APP_AUTH_TRACKING_EVENT } from "@/wab/client/app-auth/constants";
 import { AppCtx } from "@/wab/client/app-ctx";
+import PermissionRule from "@/wab/client/components/app-auth/PermissionRule";
 import {
   useAppAccessRules,
   useAppAuthConfig,
@@ -13,7 +14,6 @@ import {
   useDirectoryGroups,
   useMutateHostAppAuthData,
 } from "@/wab/client/components/app-auth/app-auth-contexts";
-import PermissionRule from "@/wab/client/components/app-auth/PermissionRule";
 import { Spinner } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
 import Chip from "@/wab/client/components/widgets/Chip";
@@ -21,16 +21,16 @@ import {
   DefaultPermissionsTabProps,
   PlasmicPermissionsTab,
 } from "@/wab/client/plasmic/plasmic_kit_end_user_management/PlasmicPermissionsTab";
-import { isUserProjectEditor } from "@/wab/client/studio-ctx/StudioCtx";
 import { trackEvent } from "@/wab/client/tracking";
 import { ApiAppEndUserAccessRule, ApiProject } from "@/wab/shared/ApiSchema";
 import { ensure, withoutFalsy, withoutNils } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { parseEmailAddress } from "@/wab/shared/email-address";
 import { DomainValidator } from "@/wab/shared/hosting";
+import { isUserProjectEditor } from "@/wab/shared/perms";
 import { prodUrlForProject } from "@/wab/shared/project-urls";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { notification, Select, Tag, Tooltip } from "antd";
+import { Select, Tag, Tooltip, notification } from "antd";
 import { uniqBy, without } from "lodash";
 import * as React from "react";
 import { useEffect, useState } from "react";

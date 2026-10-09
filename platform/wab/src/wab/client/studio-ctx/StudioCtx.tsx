@@ -367,7 +367,10 @@ import {
   summarizeChanges,
 } from "@/wab/shared/model/model-change-util";
 import { reorderPageArenaCols } from "@/wab/shared/page-arenas";
-import { getAccessLevelToResource } from "@/wab/shared/perms";
+import {
+  checkAccessLevelRank,
+  getAccessLevelToResource,
+} from "@/wab/shared/perms";
 import {
   APP_ROUTES,
   SEARCH_PROMPT,
@@ -7889,29 +7892,6 @@ function isContentEditor(user: ApiUser | null, project: SiteInfo) {
   return accessLevel === "content";
 }
 
-export function checkAccessLevelRank(
-  user: ApiUser | null,
-  project: ApiProject,
-  perms: ApiPermission[],
-  rank: AccessLevel,
-) {
-  if (!user) {
-    return false;
-  }
-  return (
-    accessLevelRank(
-      getAccessLevelToResource(
-        {
-          type: "project",
-          resource: project,
-        },
-        user,
-        perms,
-      ),
-    ) >= accessLevelRank(rank)
-  );
-}
-
 export function isUserProjectContentEditor(
   user: ApiUser | null,
   project: ApiProject,
@@ -7931,14 +7911,6 @@ export function canUpdateHistory(
     studioCtx.siteInfo.perms,
   );
   return isProjectContentEditor || appCtx.selfInfo?.id === thread.createdById;
-}
-
-export function isUserProjectEditor(
-  user: ApiUser | null,
-  project: ApiProject,
-  perms: ApiPermission[],
-) {
-  return checkAccessLevelRank(user, project, perms, "editor");
 }
 
 export function cssPropsForInvertTransform(

@@ -18,11 +18,7 @@ import {
   DefaultViewAsButtonProps,
   PlasmicViewAsButton,
 } from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicViewAsButton";
-import {
-  StudioAppUser,
-  isUserProjectEditor,
-  useStudioCtx,
-} from "@/wab/client/studio-ctx/StudioCtx";
+import { StudioAppUser, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { trackEvent } from "@/wab/client/tracking";
 import { ApiAppUser } from "@/wab/shared/ApiSchema";
 import { DATA_SOURCE_OPERATION_LOWER } from "@/wab/shared/Labels";
@@ -30,6 +26,7 @@ import { Bundle, FastBundler } from "@/wab/shared/bundler";
 import { ifEmpty, spawn } from "@/wab/shared/common";
 import { isValidCurrentUserPropsExpr } from "@/wab/shared/core/exprs";
 import { DataSourceOpExpr } from "@/wab/shared/model/classes";
+import { isUserProjectEditor } from "@/wab/shared/perms";
 import { Menu, notification } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";

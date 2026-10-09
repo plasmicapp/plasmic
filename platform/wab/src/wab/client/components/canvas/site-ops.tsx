@@ -1,8 +1,8 @@
-import { notifyReferencingNode } from "@/wab/client/ErrorNotifications";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { FrameClip } from "@/wab/client/clipboard/local";
 import { RenameArenaProps } from "@/wab/client/commands/arena/renameArena";
 import { toast } from "@/wab/client/components/Messages";
+import { notifyReferencingNode } from "@/wab/client/components/canvas/notify-referencing-node";
 import { promptRemapCodeComponent } from "@/wab/client/components/modals/codeComponentModals";
 import { confirm, reactConfirm } from "@/wab/client/components/quick-modals";
 import { notifyLinkedPropDrift } from "@/wab/client/components/sidebar-tabs/linked-prop-utils";

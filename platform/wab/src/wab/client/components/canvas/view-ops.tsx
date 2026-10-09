@@ -4,10 +4,7 @@ import {
   calcOffset,
   insertBySpec,
 } from "@/wab/client/Dnd";
-import {
-  notifyReferencingNode,
-  showError,
-} from "@/wab/client/ErrorNotifications";
+import { showError } from "@/wab/client/ErrorNotifications";
 import { readClipboardPlasmicData } from "@/wab/client/clipboard/common";
 import {
   AnimationClip,
@@ -21,6 +18,7 @@ import {
   isTplsClip,
 } from "@/wab/client/clipboard/local";
 import { toast } from "@/wab/client/components/Messages";
+import { notifyReferencingNode } from "@/wab/client/components/canvas/notify-referencing-node";
 import { closestTaggedNonTextDomElt } from "@/wab/client/components/canvas/studio-canvas-util";
 import { promptExtractComponent } from "@/wab/client/components/modals/ExtractComponentModal";
 import { promptWrapInComponent } from "@/wab/client/components/modals/WrapInComponentModal";

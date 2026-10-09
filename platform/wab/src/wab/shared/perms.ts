@@ -1,5 +1,6 @@
 import {
   ApiPermission,
+  ApiProject,
   ApiResource,
   ApiUser,
   TeamId,
@@ -124,6 +125,37 @@ export function getAccessLevelToResource(
       (level) => accessLevelRank(level),
     ) ?? "blocked"
   );
+}
+
+export function checkAccessLevelRank(
+  user: ApiUser | null,
+  project: ApiProject,
+  perms: ApiPermission[],
+  rank: AccessLevel,
+) {
+  if (!user) {
+    return false;
+  }
+  return (
+    accessLevelRank(
+      getAccessLevelToResource(
+        {
+          type: "project",
+          resource: project,
+        },
+        user,
+        perms,
+      ),
+    ) >= accessLevelRank(rank)
+  );
+}
+
+export function isUserProjectEditor(
+  user: ApiUser | null,
+  project: ApiProject,
+  perms: ApiPermission[],
+) {
+  return checkAccessLevelRank(user, project, perms, "editor");
 }
 
 export function getAccessLevelToParent(

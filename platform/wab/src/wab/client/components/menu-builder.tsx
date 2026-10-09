@@ -1,4 +1,4 @@
-import { comboToKeyLabels } from "@/wab/client/components/studio/Shortcuts";
+import { comboToKeyLabels } from "@/wab/client/components/studio/shortcut-keys";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { analytics } from "@/wab/client/observability";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
