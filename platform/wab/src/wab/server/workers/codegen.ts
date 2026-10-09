@@ -1,15 +1,11 @@
 import { toOpaque } from "@/wab/commons/types";
 import { uploadDataUriToS3 } from "@/wab/server/cdn/images";
-import {
-  ensureDbConnections,
-  getDefaultConnection,
-} from "@/wab/server/db/DbCon";
-import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { DbMgr } from "@/wab/server/db/DbMgr";
 import { TraceCarrier, withSpan } from "@/wab/server/util/apm-util";
 import { md5 } from "@/wab/server/util/hash";
 import { getHostlessPackageNpmVersion } from "@/wab/server/util/hostless-pkg-util";
 import { makeS3Client } from "@/wab/server/util/s3-util";
-import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
+import { getWorkerDbMgr } from "@/wab/server/workers/worker-utils";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
@@ -139,26 +135,12 @@ export async function workerGenCode(
     ? propagation.extract(context.active(), traceCarrier)
     : context.active();
 
-  return await context.with(ctx, async () => {
-    await ensureDbConnections(opts.connectionOptions);
-    const connection = await getDefaultConnection();
-    try {
-      return await withSpan("worker-codegen-db-transaction", async () => {
-        return await connection.transaction(async () => {
-          // Note that we are assuming SUPER_USER, so any permission
-          // checks should've already happened before this worker is
-          // invoked.
-          const mgr = new DbMgr(connection.createEntityManager(), SUPER_USER);
-          await ensureDevFlags(mgr);
-          return await doGenCode(mgr, opts);
-        });
-      });
-    } finally {
-      if (connection.isConnected) {
-        await connection.close();
-      }
-    }
-  });
+  return await context.with(ctx, () =>
+    withSpan("worker-codegen", async () => {
+      const mgr = await getWorkerDbMgr(opts.connectionOptions);
+      return await doGenCode(mgr, opts);
+    }),
+  );
 }
 
 export async function doGenCode(

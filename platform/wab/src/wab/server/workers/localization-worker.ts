@@ -1,10 +1,6 @@
-import {
-  ensureDbConnections,
-  getDefaultConnection,
-} from "@/wab/server/db/DbCon";
-import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { DbMgr } from "@/wab/server/db/DbMgr";
 import { TraceCarrier, withSpan } from "@/wab/server/util/apm-util";
-import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
+import { getWorkerDbMgr } from "@/wab/server/workers/worker-utils";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
 import {
@@ -30,31 +26,12 @@ export async function workerLocalizationStrings(
     ? propagation.extract(context.active(), traceCarrier)
     : context.active();
 
-  return await context.with(ctx, async () => {
-    await ensureDbConnections(opts.connectionOptions);
-    const connection = await withSpan(
-      "worker-localization-db-connect",
-      async () => {
-        return await getDefaultConnection();
-      },
-    );
-    try {
-      return await withSpan("worker-localization-db-transaction", async () => {
-        return await connection.transaction(async () => {
-          // Note that we are assuming SUPER_USER, so any permission
-          // checks should've already happened before this worker is
-          // invoked.
-          const mgr = new DbMgr(connection.createEntityManager(), SUPER_USER);
-          await ensureDevFlags(mgr);
-          return await doGenLocalizationStringsForProject(mgr, opts);
-        });
-      });
-    } finally {
-      if (connection.isConnected) {
-        await connection.close();
-      }
-    }
-  });
+  return await context.with(ctx, () =>
+    withSpan("worker-localization", async () => {
+      const mgr = await getWorkerDbMgr(opts.connectionOptions);
+      return await doGenLocalizationStringsForProject(mgr, opts);
+    }),
+  );
 }
 
 async function doGenLocalizationStringsForProject(

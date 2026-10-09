@@ -151,7 +151,10 @@ export async function ensureDbConnection(
           },
     );
   } else {
-    connOpts = dburi;
+    connOpts = {
+      ...dburi,
+      extra: { ...dburi.extra, max: maxConnections },
+    };
   }
 
   return await createConnection({
