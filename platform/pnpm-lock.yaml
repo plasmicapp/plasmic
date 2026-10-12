@@ -303,8 +303,8 @@ importers:
         specifier: ^0.0.276
         version: 0.0.276(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/antd':
-        specifier: ^2.0.184
-        version: 2.0.184(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^2.0.185
+        version: 2.0.185(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/antd5':
         specifier: ^0.0.377
         version: 0.0.377(@plasmicapp/data-sources@1.0.29(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -423,8 +423,8 @@ importers:
         specifier: ^7.13.266
         version: 7.13.266(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/rive':
-        specifier: ^0.0.51
-        version: 0.0.51(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.52
+        version: 0.0.52(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/strapi':
         specifier: ^0.0.41
         version: 0.0.41(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -694,8 +694,8 @@ importers:
         specifier: ^0.0.276
         version: 0.0.276(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/antd':
-        specifier: ^2.0.184
-        version: 2.0.184(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^2.0.185
+        version: 2.0.185(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/antd5':
         specifier: ^0.0.377
         version: 0.0.377(@plasmicapp/data-sources@1.0.29(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -814,8 +814,8 @@ importers:
         specifier: ^7.13.266
         version: 7.13.266(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/rive':
-        specifier: ^0.0.51
-        version: 0.0.51(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.52
+        version: 0.0.52(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/strapi':
         specifier: ^0.0.41
         version: 0.0.41(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -4917,8 +4917,8 @@ packages:
       '@plasmicapp/query': '>=0.1.0'
       react: '>=16.8.0'
 
-  '@plasmicpkgs/antd@2.0.184':
-    resolution: {integrity: sha512-7vP8wHdswDANqq4o3bWdyvXTnssdL56CBYU/4W9vu+6YtZXSLoNxRtMG+lFTWa5wqg5iEwiSoT9jiTkasX7Qng==}
+  '@plasmicpkgs/antd@2.0.185':
+    resolution: {integrity: sha512-qrFWaZSY3Vb8bl7bt4/UoyGs53Ibhm2MRTHhFZ8rMRIvDu7o8W2S2ah3POfLyEcsJ5uuk0dsM0FBt6fzZnK3PA==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       react: '>=16.8.0'
@@ -5181,8 +5181,8 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@plasmicpkgs/rive@0.0.51':
-    resolution: {integrity: sha512-Nb22w8d4dQa+BnWupeWFYrZzcelKu3iDaxXzxjEIesJRycPGkfCqlpRFIS0ccaA2kjHe1fNW2JJnBChBA2DKyg==}
+  '@plasmicpkgs/rive@0.0.52':
+    resolution: {integrity: sha512-JqTBmIFGNNt5ztAErmMHB8I78L4wfJmU6C2ppCTC546gN58QS/ESxTBLxMpLjgsd47Je2hAXhyKqAHhhE9GjQA==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
@@ -20542,7 +20542,7 @@ snapshots:
       - moment
       - react-dom
 
-  '@plasmicpkgs/antd@2.0.184(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/antd@2.0.185(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       antd: 4.19.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -20957,7 +20957,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@plasmicpkgs/rive@0.0.51(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/rive@0.0.52(@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@rive-app/react-canvas': 4.36.0(react@18.3.1)
@@ -21713,7 +21713,7 @@ snapshots:
 
   '@rc-component/async-validator@5.1.2':
     dependencies:
-      '@babel/runtime': 7.29.7
+      '@babel/runtime': 7.29.10
 
   '@rc-component/color-picker@1.5.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -22977,7 +22977,7 @@ snapshots:
 
   '@react-three/fiber@9.6.1(@types/react@18.3.18)(immer@10.2.0)(react-dom@18.3.1(react@18.3.1))(react-native@0.86.0(@babel/core@7.29.7)(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)(three@0.185.1)':
     dependencies:
-      '@babel/runtime': 7.29.7
+      '@babel/runtime': 7.29.10
       '@types/webxr': 0.5.24
       base64-js: 1.5.1
       buffer: 6.0.3
@@ -25645,7 +25645,7 @@ snapshots:
 
   babel-plugin-macros@3.1.0:
     dependencies:
-      '@babel/runtime': 7.29.7
+      '@babel/runtime': 7.29.10
       cosmiconfig: 7.1.0
       resolve: 1.22.12
 
@@ -29444,7 +29444,7 @@ snapshots:
 
   metro-runtime@0.84.6:
     dependencies:
-      '@babel/runtime': 7.29.7
+      '@babel/runtime': 7.29.10
       flow-enums-runtime: 0.0.6
 
   metro-source-map@0.84.6:
@@ -31196,7 +31196,7 @@ snapshots:
 
   rc-field-form@2.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@babel/runtime': 7.29.7
+      '@babel/runtime': 7.29.10
       '@rc-component/async-validator': 5.1.2
       rc-util: 5.44.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
