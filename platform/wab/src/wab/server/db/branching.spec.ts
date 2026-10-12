@@ -896,7 +896,9 @@ describe("updateCommitGraphForProject concurrency (PLA-13087)", () => {
         const db = new DbMgr(txEm, SUPER_USER);
         const origGetProjectById = db.getProjectById.bind(db);
         let barrierTripped = false;
-        (db as any).getProjectById = async (...args: any[]) => {
+        (db as any).getProjectById = async (
+          ...args: Parameters<typeof origGetProjectById>
+        ) => {
           const project = await origGetProjectById(...args);
           if (!barrierTripped) {
             barrierTripped = true;

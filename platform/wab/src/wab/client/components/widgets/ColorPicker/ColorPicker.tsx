@@ -364,12 +364,10 @@ function ColorPicker_({
           mode,
         );
 
+        const [h, s, l] = colorComponents.map((it) => it.value);
         const modifiedColorFormatted =
           mode === ColorMode.hsl
-            ? getShortenedHSL.call(
-                null,
-                ...colorComponents.map((it) => it.value),
-              )
+            ? getShortenedHSL(h, s, l)
             : getShortenedColor(modifiedColorRaw, mode);
 
         const editingComponent = getColorComponents(modifiedColorFormatted)[
