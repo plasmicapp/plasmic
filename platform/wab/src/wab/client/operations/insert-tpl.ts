@@ -39,7 +39,7 @@ import {
   typographyCssProps,
 } from "@/wab/shared/core/style-props";
 import * as Tpls from "@/wab/shared/core/tpls";
-import { asTpl } from "@/wab/shared/core/vals";
+import { asTpl, equivTplOrSlotSelection } from "@/wab/shared/core/vals";
 import { Pt } from "@/wab/shared/geom";
 import {
   ContainerLayoutType,
@@ -866,7 +866,12 @@ function adoptLayoutParentContainerStyle(
     .layoutParent({ includeSelf: false })
     .maybeOne();
 
-  if (layoutParent === curLayoutParent) {
+  if (
+    child.parent === parent ||
+    (layoutParent &&
+      curLayoutParent &&
+      equivTplOrSlotSelection(layoutParent, curLayoutParent))
+  ) {
     // If the layout parent hasn't changed, then we will preserve existing styles
     // instead of resetting them
     return;
@@ -882,7 +887,13 @@ function adoptLayoutParentContainerStyle(
   } else if (layoutParent instanceof SlotSelection) {
     for (const layoutChild of layoutChildren) {
       if (Tpls.isTplVariantable(layoutChild)) {
-        convertToSlotContent(layoutChild, ctx);
+        // A pasted or duplicated node has no parent yet and brings its own
+        // position, so a free one stays free.
+        convertToSlotContent(
+          layoutChild,
+          ctx,
+          !!opts.keepFree && !layoutChild.parent,
+        );
       }
     }
   }
@@ -932,16 +943,19 @@ export function adoptParentContainerStyle(
 function convertToSlotContent(
   child: TplNode,
   ctx: InsertTplCtx,
-  variantCombo?: VariantCombo,
+  keepFree: boolean,
 ) {
   const vtm = ctx.vtm;
-  const combos = variantCombo
-    ? [variantCombo]
-    : child.vsettings.map((vs) => vs.variants);
-
-  for (const combo of combos) {
-    // If adding to a slot, then slot children is always relatively positioned
+  const variantCombos = child.vsettings.map((vs) => vs.variants);
+  for (const combo of variantCombos) {
+    // Slot children are relatively positioned, unless kept free
     const effectiveExp = vtm.effectiveVariantSetting(child, combo).rsh();
+    if (
+      keepFree &&
+      getRshPositionType(effectiveExp) === PositionLayoutType.free
+    ) {
+      continue;
+    }
     if (
       getRshPositionType(effectiveExp) !== PositionLayoutType.auto ||
       ["left", "top", "bottom", "right"].some((prop) => effectiveExp.has(prop))
@@ -1020,7 +1034,16 @@ export function adoptParentContainerStyleForVariant(
       : "auto";
   if (newChildPosType === "free") {
     let offset: Pt | "current" | undefined = opts.parentOffset;
-    if (!offset) {
+    // A pasted or duplicated node has no parent yet; a free one keeps the
+    // offsets it was copied with unless a drop point says otherwise.
+    const keepsOwnOffsets =
+      !layoutChild.parent &&
+      childPositionType === PositionLayoutType.free &&
+      ["left", "top", "right", "bottom"].some(
+        (prop) =>
+          effectiveChildExp.has(prop) && effectiveChildExp.get(prop) !== "auto",
+      );
+    if (!offset && !keepsOwnOffsets) {
       if (layoutChild.parent === layoutParent) {
         // If this is the same parent, then by default when going to freely-positioned,
         // we use the current offset of the DOM

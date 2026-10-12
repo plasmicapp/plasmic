@@ -1,14 +1,22 @@
 import { setupComponentWithTplTree } from "@/wab/client/operations/__testonly__/utils";
+import { createVariantGroup } from "@/wab/client/operations/create-variant-group";
 import {
   canInsertTplAsChild,
   insertTplAsChild,
   insertTplAt,
 } from "@/wab/client/operations/insert-tpl";
+import { unwrap } from "@/wab/commons/neverthrow-utils";
+import { VariantOptionsType } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
 import { ensureVariantSetting, getBaseVariant } from "@/wab/shared/Variants";
 import { assert } from "@/wab/shared/common";
+import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import { mkParam } from "@/wab/shared/core/lang";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import * as Tpls from "@/wab/shared/core/tpls";
+import { Pt } from "@/wab/shared/geom";
 import {
+  CodeComponentMeta,
   ColumnsConfig,
   SlotParam,
   TplTag,
@@ -268,6 +276,233 @@ describe("insertTplAsChild", () => {
         expect(styles.get("top")).toBe("0px");
       },
     );
+  });
+
+  describe("an absolutely positioned element in a code component's slot", () => {
+    // A free-floating element holding a code component instance that fills it,
+    // with a marker placed in the instance's "children" slot by percentages.
+    // The marker has its own offsets in a second variant too. A second marker
+    // sits in the instance's "header" slot.
+    function setupMarkerInSlot() {
+      const outsider = Tpls.mkTplTagX("div", {});
+      const root = Tpls.mkTplTagX(
+        "div",
+        {},
+        Tpls.mkTplTagX("div", {}, outsider),
+      );
+      const { component, site, tplMgr, vtm, ctx } = setup(root);
+      vtm.ensureBaseVariantSetting(root).rs.values = { display: "block" };
+
+      const [childrenParam, headerParam] = ["children", "header"].map((name) =>
+        ensureKnownSlotParam(
+          mkParam({ name, type: typeFactory.renderable(), paramType: "slot" }),
+        ),
+      );
+      const panel = mkComponent({
+        name: "Panel",
+        type: ComponentType.Code,
+        tplTree: Tpls.mkTplTagX(
+          "div",
+          {},
+          Tpls.mkSlot(headerParam),
+          Tpls.mkSlot(childrenParam),
+        ),
+        params: [headerParam, childrenParam],
+        codeComponentMeta: {} as CodeComponentMeta,
+      });
+      site.components.push(panel);
+      const panelInstance = Tpls.mkTplComponentX({
+        component: panel,
+        baseVariant: getBaseVariant(component),
+      });
+      $$$(root).append(panelInstance);
+
+      const marker = Tpls.mkTplTagX("div", {});
+      $$$(panelInstance).append(marker);
+      const baseVs = vtm.ensureBaseVariantSetting(marker);
+      baseVs.rs.values = { position: "absolute", left: "48.66%", top: "63.4%" };
+
+      const mobile = unwrap(
+        createVariantGroup({
+          component,
+          tplMgr,
+          name: "mobile",
+          optionsType: VariantOptionsType.standalone,
+        }),
+      ).variants[0];
+      const mobileVs = ensureVariantSetting(marker, [mobile]);
+      mobileVs.rs.values = { left: "10%", top: "20%" };
+
+      const headerMarker = Tpls.mkTplTagX("div", {});
+      $$$(
+        new SlotSelection({ tpl: panelInstance, slotParam: headerParam }),
+      ).append(headerMarker);
+      vtm.ensureBaseVariantSetting(headerMarker).rs.values = {
+        position: "absolute",
+        left: "25%",
+        top: "10%",
+      };
+
+      return {
+        ctx,
+        panelInstance,
+        childrenParam,
+        headerParam,
+        headerMarker,
+        marker,
+        outsider,
+        mobile,
+        baseVs,
+        mobileVs,
+      };
+    }
+
+    // The canvas drops at a pixel point in the instance's box; it has already
+    // written the dragged offsets in the marker's own units by then.
+    const dropPoint = new Pt(214.5, 229.203125);
+
+    it("keeps its offsets when dropped back onto the same component instance", () => {
+      const { ctx, panelInstance, marker, baseVs, mobileVs } =
+        setupMarkerInSlot();
+
+      expect(
+        insertTplAsChild(marker, panelInstance, ctx, {
+          parentOffset: dropPoint,
+          forceFree: true,
+        }).isOk(),
+      ).toBe(true);
+
+      expect(marker.parent).toBe(panelInstance);
+      expect(baseVs.rs.values).toEqual({
+        position: "absolute",
+        left: "48.66%",
+        top: "63.4%",
+      });
+      expect(mobileVs.rs.values).toEqual({ left: "10%", top: "20%" });
+    });
+
+    it("keeps its offsets when dropped onto the same slot", () => {
+      const { ctx, panelInstance, childrenParam, marker, baseVs, mobileVs } =
+        setupMarkerInSlot();
+
+      expect(
+        insertTplAsChild(
+          marker,
+          new SlotSelection({ tpl: panelInstance, slotParam: childrenParam }),
+          ctx,
+          { parentOffset: dropPoint },
+        ).isOk(),
+      ).toBe(true);
+
+      expect(marker.parent).toBe(panelInstance);
+      expect(baseVs.rs.values).toEqual({
+        position: "absolute",
+        left: "48.66%",
+        top: "63.4%",
+      });
+      expect(mobileVs.rs.values).toEqual({ left: "10%", top: "20%" });
+    });
+
+    it("an element in another slot stays there with its offsets when dropped onto the instance", () => {
+      const { ctx, panelInstance, headerParam, headerMarker } =
+        setupMarkerInSlot();
+
+      expect(
+        insertTplAsChild(headerMarker, panelInstance, ctx, {
+          parentOffset: dropPoint,
+          forceFree: true,
+        }).isOk(),
+      ).toBe(true);
+
+      expect($$$(panelInstance).getArgContainingTpl(headerMarker).param).toBe(
+        headerParam,
+      );
+      expect(ctx.vtm.ensureBaseVariantSetting(headerMarker).rs.values).toEqual({
+        position: "absolute",
+        left: "25%",
+        top: "10%",
+      });
+    });
+
+    it("an element moved to another slot takes that slot's layout", () => {
+      const { ctx, panelInstance, childrenParam, headerMarker } =
+        setupMarkerInSlot();
+
+      expect(
+        insertTplAsChild(
+          headerMarker,
+          new SlotSelection({ tpl: panelInstance, slotParam: childrenParam }),
+          ctx,
+          { parentOffset: dropPoint },
+        ).isOk(),
+      ).toBe(true);
+
+      expect($$$(panelInstance).getArgContainingTpl(headerMarker).param).toBe(
+        childrenParam,
+      );
+      const styles = ctx.vtm.effectiveVariantSetting(headerMarker).rsh();
+      expect(styles.get("position")).toBe("relative");
+      expect(styles.get("left")).toBe("auto");
+      expect(styles.get("top")).toBe("auto");
+    });
+
+    it("an element moved in from another box lands at the drop point", () => {
+      const { ctx, panelInstance, outsider } = setupMarkerInSlot();
+
+      expect(
+        insertTplAsChild(outsider, panelInstance, ctx, {
+          parentOffset: dropPoint,
+          forceFree: true,
+        }).isOk(),
+      ).toBe(true);
+
+      expect(outsider.parent).toBe(panelInstance);
+      const styles = ctx.vtm.effectiveVariantSetting(outsider).rsh();
+      expect(styles.get("position")).toBe("absolute");
+      expect(styles.get("left")).toBe("214.5px");
+      expect(styles.get("top")).toBe("229.203125px");
+    });
+
+    // Duplicate and paste-after-copy insert a clone right after the original.
+    it("a duplicate keeps the original's position in every variant", () => {
+      const { ctx, panelInstance, marker, mobile } = setupMarkerInSlot();
+      const copy = Tpls.clone(marker);
+
+      expect(insertTplAt(copy, marker, "after", ctx).isOk()).toBe(true);
+
+      expect(copy.parent).toBe(panelInstance);
+      expect(ctx.vtm.ensureBaseVariantSetting(copy).rs.values).toEqual({
+        position: "absolute",
+        left: "48.66%",
+        top: "63.4%",
+      });
+      expect(ensureVariantSetting(copy, [mobile]).rs.values).toEqual({
+        left: "10%",
+        top: "20%",
+      });
+    });
+  });
+
+  it("a duplicate in a free box keeps the original's offsets", () => {
+    const marker = Tpls.mkTplTagX("div", {});
+    const root = Tpls.mkTplTagX("div", {}, marker);
+    const { ctx, vtm } = setup(root);
+    vtm.ensureBaseVariantSetting(root).rs.values = { display: "block" };
+    vtm.ensureBaseVariantSetting(marker).rs.values = {
+      position: "absolute",
+      left: "40%",
+      top: "40%",
+    };
+    const copy = Tpls.clone(marker);
+
+    expect(insertTplAt(copy, marker, "after", ctx).isOk()).toBe(true);
+
+    expect(root.children).toEqual([marker, copy]);
+    expect(vtm.ensureBaseVariantSetting(copy).rs.values).toEqual({
+      position: "absolute",
+      left: "40%",
+      top: "40%",
+    });
   });
 
   it("redistributes column sizes when a column is added to a columns container", () => {
