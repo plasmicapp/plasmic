@@ -6,7 +6,6 @@ import EditOverrideToggleButton from "@/wab/client/components/splits/EditOverrid
 import SliceControls from "@/wab/client/components/splits/SliceControls";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
 import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
-import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
 import {
   DefaultExperimentPanelProps,
   PlasmicExperimentPanel,
@@ -53,37 +52,6 @@ const getExperimentPanelSplitType = (split: Split) => {
   }
   return undefined;
 };
-
-const EditableVariantName = observer(function EditableVariantName(props: {
-  variant?: Variant;
-}) {
-  const { variant } = props;
-  const [editing, setEditing] = React.useState(false);
-  const studioCtx = useStudioCtx();
-  return (
-    <EditableLabel
-      value={variant?.name ?? "variation"}
-      editing={editing}
-      onAbort={() => setEditing?.(false)}
-      disabled={!variant}
-      onEdit={(newName: string) => {
-        if (variant) {
-          if (newName && newName !== variant?.name) {
-            spawn(
-              studioCtx.change(() => {
-                variant.name = newName;
-                return ok();
-              }),
-            );
-          }
-        }
-        setEditing(false);
-      }}
-    >
-      {variant?.name}
-    </EditableLabel>
-  );
-});
 
 function ExperimentPanel_(
   props: ExperimentPanelProps,

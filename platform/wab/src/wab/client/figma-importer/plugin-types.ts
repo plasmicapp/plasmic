@@ -20,13 +20,6 @@ interface Vector {
   readonly y: number;
 }
 
-interface Rect {
-  readonly x: number;
-  readonly y: number;
-  readonly width: number;
-  readonly height: number;
-}
-
 export interface RGB {
   readonly r: number;
   readonly g: number;
@@ -189,9 +182,7 @@ interface ExportSettingsPDF {
 }
 
 type ExportSettings =
-  | ExportSettingsImage
-  | ExportSettingsSVG
-  | ExportSettingsPDF;
+  ExportSettingsImage | ExportSettingsSVG | ExportSettingsPDF;
 
 type WindingRule = "NONZERO" | "EVENODD";
 
@@ -262,10 +253,6 @@ type BlendMode =
   | "SATURATION"
   | "COLOR"
   | "LUMINOSITY";
-
-interface Font {
-  fontName: FontName;
-}
 
 type Reaction = { action: Action; trigger: Trigger };
 
@@ -403,11 +390,7 @@ interface ContainerMixin {
 }
 
 type StrokeCap =
-  | "NONE"
-  | "ROUND"
-  | "SQUARE"
-  | "ARROW_LINES"
-  | "ARROW_EQUILATERAL";
+  "NONE" | "ROUND" | "SQUARE" | "ARROW_LINES" | "ARROW_EQUILATERAL";
 type StrokeJoin = "MITER" | "BEVEL" | "ROUND";
 type HandleMirroring = "NONE" | "ANGLE" | "ANGLE_AND_LENGTH";
 
@@ -553,11 +536,7 @@ interface PageNode extends BaseNodeMixin, ChildrenMixin, ExportMixin {
   backgrounds: ReadonlyArray<Paint>;
 
   readonly prototypeStartNode:
-    | FrameNode
-    | GroupNode
-    | ComponentNode
-    | InstanceNode
-    | null;
+    FrameNode | GroupNode | ComponentNode | InstanceNode | null;
 }
 
 export interface FrameNode extends DefaultFrameMixin {

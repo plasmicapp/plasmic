@@ -402,39 +402,6 @@ export async function buildFakeCurrentUser(
   };
 }
 
-function fakeRoleEmailFromRole(role: AppRole) {
-  return `${role.name.toLowerCase()}@fakeemail.com`;
-}
-
-export async function buildFakeCurrentUserFromRole(
-  mgr: DbMgr,
-  appId: string,
-  roleId: string | undefined,
-) {
-  if (!roleId) {
-    return {};
-  }
-
-  const roles = await mgr.listAppRoles(appId);
-  const role = roles.find((r) => r.id === roleId);
-
-  if (!role) {
-    return {};
-  }
-
-  const lowerRoles = roles.filter((r) => r.order <= role.order);
-
-  return {
-    email: fakeRoleEmailFromRole(role),
-    roleId: role.id,
-    roleName: role.name,
-    roleOrder: role.order,
-    roleIds: lowerRoles.map((r) => r.id),
-    roleNames: lowerRoles.map((r) => r.name),
-    properties: {},
-  };
-}
-
 export async function getAppAuthPubConfig(req: Request, res: Response) {
   const userEmail = req.user?.email;
   const mgr = superDbMgr(req);
@@ -607,7 +574,7 @@ export async function listRoles(req: Request, res: Response) {
 
 export async function updateAppRole(req: Request, res: Response) {
   const mgr = userDbMgr(req);
-  const { projectId, roleId } = req.params;
+  const { roleId } = req.params;
   const { name } = req.body;
   const role = await mgr.updateAppRole(roleId as string, name);
   res.json(mkApiAppRole(role));
@@ -615,7 +582,7 @@ export async function updateAppRole(req: Request, res: Response) {
 
 export async function deleteAppRole(req: Request, res: Response) {
   const mgr = userDbMgr(req);
-  const { projectId, roleId } = req.params;
+  const { roleId } = req.params;
   await mgr.deleteAppRole(roleId as string);
   res.json({});
 }
@@ -934,9 +901,8 @@ export async function listAppUsers(req: Request, res: Response) {
   );
 
   const appUsers = await Promise.all(
-    userEmails.map(
-      async (email): Promise<ApiAppUser | undefined> =>
-        buildCurrentUserFromEmail(req.con, mgr, projectId, email, roles),
+    userEmails.map(async (email): Promise<ApiAppUser | undefined> =>
+      buildCurrentUserFromEmail(req.con, mgr, projectId, email, roles),
     ),
   );
 
@@ -1133,13 +1099,11 @@ export async function getMatchingRolesForUser(
       matchedRoles.push(
         ...accessesByGroup
           .filter((a) => !!a.role)
-          .map(
-            (access): RoleMatchingInfo => ({
-              role: access.role!,
-              reason: "group",
-              accessId: access.id,
-            }),
-          ),
+          .map((access): RoleMatchingInfo => ({
+            role: access.role!,
+            reason: "group",
+            accessId: access.id,
+          })),
       );
     }
   }
@@ -1215,45 +1179,4 @@ export async function canCurrentUserExecuteOperation(
     // We double check that the operation role is in the list of roles the user has, this is to prevent a mismatch between the app and the operation
     currentUser.roleIds.includes(op.roleId)
   );
-}
-
-/**
- * This function should only be used during operations performed as role in the studio
- */
-export async function canRoleExecuteOperation(
-  mgr: DbMgr,
-  appId: string,
-  roleId: string,
-  op: OperationTemplate,
-) {
-  if (!op.roleId) {
-    // No role requirement, then the operation can be considered public
-    return true;
-  }
-
-  const appAuthConfig = await mgr.getPublicAppAuthConfig(appId);
-  if (!appAuthConfig) {
-    // If there is no auth config, we deny access, since a role is required by the operation
-    // This can happen if we have a mismatch between the app and the operation
-    return false;
-  }
-
-  const role = await mgr.getAppRole(appId, op.roleId);
-  if (!role) {
-    // Invalid role id, we deny access, this can happen if we have a mismatch between the app and the operation
-    return false;
-  }
-
-  // Anonymous always has order 0, so we can execute this operation
-  if (role.order === 0) {
-    return true;
-  }
-
-  const currentUserRole = await mgr.getAppRole(appId, roleId);
-  if (!currentUserRole) {
-    // User doesn't have a role
-    return false;
-  }
-
-  return currentUserRole.order >= role.order;
 }

@@ -5,7 +5,6 @@ import { HORIZ_CONTAINER_CAP, VERT_CONTAINER_CAP } from "@/wab/shared/Labels";
 import {
   IRuleSetHelpers,
   IRuleSetHelpersX,
-  RSH,
   ReadonlyIRuleSetHelpers,
   ReadonlyIRuleSetHelpersX,
 } from "@/wab/shared/RuleSetHelpers";
@@ -24,19 +23,10 @@ import {
   isTplVariantable,
 } from "@/wab/shared/core/tpls";
 import { CONTENT_LAYOUT_INITIALS } from "@/wab/shared/default-styles";
-import {
-  RuleSet,
-  TplNode,
-  TplTag,
-  VariantSetting,
-} from "@/wab/shared/model/classes";
+import { RuleSet, TplNode } from "@/wab/shared/model/classes";
 
 export type ContainerType =
-  | "free"
-  | "flex-row"
-  | "flex-column"
-  | "grid"
-  | "content-layout";
+  "free" | "flex-row" | "flex-column" | "grid" | "content-layout";
 
 export function ensureContainerType(x: string): ContainerType {
   return x === "free" ||
@@ -95,14 +85,6 @@ export function convertSelfContainerType(
   return true;
 }
 
-export function getTplContainerType(
-  tpl: TplTag,
-  vs: VariantSetting,
-): ContainerType {
-  const rsh = RSH(vs.rs, tpl);
-  return getRshContainerType(rsh);
-}
-
 export enum ContainerLayoutType {
   flexColumn = "flex-column",
   flexRow = "flex-row",
@@ -135,14 +117,6 @@ export function getRshContainerType(
   } else {
     return ContainerLayoutType.free;
   }
-}
-
-export function isFlexContainerRsh(rsh: ReadonlyIRuleSetHelpersX): boolean {
-  const containerType = getRshContainerType(rsh);
-  return (
-    containerType === ContainerLayoutType.flexColumn ||
-    containerType === ContainerLayoutType.flexRow
-  );
 }
 
 export function getContainerTypeName(type: ContainerType) {

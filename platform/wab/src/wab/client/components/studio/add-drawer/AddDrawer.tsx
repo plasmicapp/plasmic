@@ -78,7 +78,6 @@ import {
   sortComponentsByName,
 } from "@/wab/shared/core/components";
 import { codeLit } from "@/wab/shared/core/exprs";
-import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
 import { customFunctionId } from "@/wab/shared/core/query-ids";
 import { SlotSelection } from "@/wab/shared/core/slots";
@@ -417,8 +416,9 @@ export function createAddTplComponent(
           assert(
             info,
             () =>
-              `Template component with id ${component.templateInfo!
-                .componentId!} not found`,
+              `Template component with id ${
+                component.templateInfo!.componentId!
+              } not found`,
           );
           return {
             type: "clone",
@@ -982,32 +982,6 @@ async function installHostlessPkgs(sc: StudioCtx, projectIds: string[]) {
     return ok();
   });
   return { deps: projectDependencies, installed: true };
-}
-
-export function createAddInsertableIcon(icon: ImageAsset): AddTplItem {
-  return {
-    type: AddItemType.tpl as const,
-    key: `insertable-icon-${icon.uuid}`,
-    label: icon.name,
-    canWrap: false,
-    icon: (
-      <ImagePreview
-        style={{ width: 24, height: 24 }}
-        uri={ensure(icon.dataUri, "icon should have dataUri")}
-      />
-    ),
-    factory: (vc: ViewCtx) => {
-      const clonedIcon = vc.tplMgr().addImageAsset({
-        name: icon.name,
-        type: icon.type as ImageAssetType,
-        dataUri: icon.dataUri ?? undefined,
-        width: icon.width ?? undefined,
-        height: icon.height ?? undefined,
-        aspectRatio: icon.aspectRatio ?? undefined,
-      });
-      return vc.variantTplMgr().mkTplImage({ asset: clonedIcon });
-    },
-  };
 }
 
 export function isInsertable(

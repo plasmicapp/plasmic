@@ -251,10 +251,7 @@ export type MayTriggerPaywall<T> = MakeADT<
 >;
 
 export type PaywallDescription =
-  | "moreSeats"
-  | "moreWorkspaces"
-  | "splitContentAccess"
-  | "monthlyViewLimit";
+  "moreSeats" | "moreWorkspaces" | "splitContentAccess" | "monthlyViewLimit";
 
 /**
  * This is a superset of sections exposed in registerComponent(), as it also supports
@@ -355,8 +352,7 @@ export interface JoinTeamRequest {
 }
 
 export type JoinTeamResponse =
-  | { status: true }
-  | { status: false; reason: string };
+  { status: true } | { status: false; reason: string };
 
 export interface LoginRequest {
   email: string;
@@ -404,8 +400,7 @@ export interface ConfirmEmailRequest {
 }
 
 export type ConfirmEmailResponse =
-  | { status: true }
-  | { status: false; reason: string };
+  { status: true } | { status: false; reason: string };
 
 export interface ResetPasswordRequest {
   email: string;
@@ -414,8 +409,7 @@ export interface ResetPasswordRequest {
 }
 
 export type ResetPasswordResponse =
-  | { status: true }
-  | { status: false; reason: string };
+  { status: true } | { status: false; reason: string };
 
 export interface SelfResponse {
   user: ApiUser;
@@ -874,11 +868,6 @@ export interface GetModelsResponse {
   modelData: string;
 }
 
-export interface UpdateModelsRequest {
-  models: string;
-  modelData: string;
-}
-
 export interface GetModelsResponse {
   team: ApiTeam;
   members: TeamMember[];
@@ -1135,9 +1124,6 @@ export interface SurveyRequest {
   projectOption: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SurveyResponse {}
-
 export interface ResolveSyncRequest {
   projects: {
     projectId: string;
@@ -1157,10 +1143,6 @@ export interface ProjectIdAndToken {
 export interface CmsIdAndToken {
   databaseId: string;
   token: string;
-}
-
-export interface SetupGithubPagesRequest {
-  domain: string;
 }
 
 export interface NewGithubRepoRequest {
@@ -1492,19 +1474,6 @@ export interface ApiCmsTable extends ApiEntityBase<CmsTableId> {
   isArchived: boolean | null;
 }
 
-export interface ApiCmsRow extends ApiEntityBase<CmsRowId> {
-  tableId: string;
-  identifier: string | null;
-  data: Record<string, any>;
-}
-
-export interface ApiCmsWriteRow extends ApiEntityBase<CmsRowId> {
-  tableId: string;
-  identifier: string | null;
-  data: Record<string, any>;
-  draftData: Record<string, any>;
-}
-
 export interface ApiCmseRow extends ApiEntityBase<CmsRowId> {
   tableId: string;
   identifier: string | null;
@@ -1560,9 +1529,6 @@ export interface CheckDomainRequest {
 export interface CheckDomainResponse {
   status: CheckDomainStatus;
 }
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface GetCommentsRequest {}
 
 interface ModelAddr {
   uuid: string;
@@ -1639,10 +1605,6 @@ export interface PostCommentResponse {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DeleteCommentResponse {}
-
-export interface DomainsForProjectRequest {
-  projectId: string;
-}
 
 export interface DomainsForProjectResponse {
   domains: string[];
@@ -1728,9 +1690,7 @@ export type ApiAnalyticsConversionRateResult = {
 };
 
 export type ApiAnalyticsQueryType =
-  | "impressions"
-  | "conversions"
-  | "conversion_rate";
+  "impressions" | "conversions" | "conversion_rate";
 
 export type ApiAnalyticsImpressionResponse = {
   type: "impressions";
@@ -2008,15 +1968,6 @@ export interface ListAuthIntegrationsResponse {
     name: string;
     id: string;
   }[];
-}
-
-export type Role = "agent" | "user";
-
-export interface CopilotChatEntry {
-  role: Role;
-  msg: string;
-  currentComponent: string | undefined;
-  commandData?: any;
 }
 
 interface QueryCopilotResquestBase {

@@ -1,5 +1,4 @@
 import { spawn, unexpected } from "@/wab/shared/common";
-import { isArray, isPlainObject } from "lodash";
 
 export type BundledInst = {
   [field: string]: any;
@@ -101,25 +100,4 @@ export function getBundle(obj: HasBundle, expectedVersion: string): Bundle {
   );
 
   return bundle as Bundle;
-}
-
-export function swapXrefs(bundle: Bundle, mapping: Record<string, string>) {
-  const getXrefId = (id: string) => {
-    return mapping[id] ?? id;
-  };
-
-  const fixXref = (obj: any) => {
-    if (isArray(obj)) {
-      obj.forEach(fixXref);
-    } else if (isPlainObject(obj)) {
-      if (obj.__xref) {
-        obj.__xref.uuid = getXrefId(obj.__xref.uuid);
-      } else {
-        Object.values(obj).forEach(fixXref);
-      }
-    }
-  };
-
-  Object.values(bundle.map).forEach(fixXref);
-  bundle.deps = bundle.deps.map((x) => getXrefId(x));
 }

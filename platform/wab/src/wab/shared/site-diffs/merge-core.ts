@@ -1764,7 +1764,6 @@ function preFixTplNames(
   };
 
   const aTplMgr = new TplMgr({ site: a });
-  const bTplMgr = new TplMgr({ site: b });
   const ancestorComponents: Record<number, classes.Component> = {};
   for (const component of ancestor.components) {
     ancestorComponents[bundler.addrOfUnsafe(component).iid] = component;
@@ -1838,8 +1837,6 @@ export function keyPathGet(
     return rec(fieldVal, rest);
   }
 }
-
-export type DirectConflictPick = DirectConflict & { side: BranchSide };
 
 function runMergeFnAndApplyFixes(
   ancestor: Site,

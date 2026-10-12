@@ -254,8 +254,7 @@ export const ColumnsGapControls = observer(function ColumnsGapControls(props: {
   isDisabled?: boolean;
   includeRowGap?: boolean;
 }) {
-  const { expsProvider, studioCtx, isDisabled, includeRowGap } = props;
-  const exp = expsProvider.mergedExp();
+  const { expsProvider, isDisabled, includeRowGap } = props;
 
   return (
     <LabeledStyleItemRow label={"Gaps"} styleName={["column-gap", "row-gap"]}>

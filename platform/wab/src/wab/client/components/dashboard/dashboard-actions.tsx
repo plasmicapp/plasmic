@@ -16,7 +16,6 @@ import {
   ApiPermission,
   ApiTeam,
   ApiWorkspace,
-  CmsDatabaseId,
   TeamId,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
@@ -612,31 +611,6 @@ export async function promptNewDatabase(
   history.push(
     APP_ROUTES.cmsRoot.fill({
       databaseId: database.id,
-    }),
-  );
-}
-
-export async function promptNewTable(
-  appCtx: AppCtx,
-  history: History,
-  databaseId: CmsDatabaseId,
-) {
-  const name = await reactPrompt({
-    message: `Enter the name for your new CMS table`,
-    placeholder: "Table name",
-    actionText: "Add",
-  });
-  if (!name) {
-    return;
-  }
-  const table = await appCtx.api.createCmsTable(databaseId, {
-    name,
-    identifier: name,
-  });
-  history.push(
-    APP_ROUTES.model.fill({
-      databaseId,
-      tableId: table.id,
     }),
   );
 }

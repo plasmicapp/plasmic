@@ -64,41 +64,6 @@ export function OnClickAwayExcept(props: {
   return props.children;
 }
 
-export function useOnClickAwayIfNotAllowed(
-  isAllowed: (target: Element) => boolean,
-  callback: () => void,
-) {
-  const listener = React.useCallback(
-    (e: MouseEvent) => {
-      if (e.button !== 0) {
-        return;
-      }
-      const target = e.target as Element;
-      if (!isAllowed(target)) {
-        callback();
-      }
-    },
-    [isAllowed, callback],
-  );
-  useEvent("click", listener as EventListener, document);
-
-  React.useEffect(() => {
-    document.addEventListener(plasmicIFrameMouseDownEvent, callback);
-    return () => {
-      document.removeEventListener(plasmicIFrameMouseDownEvent, callback);
-    };
-  }, [callback]);
-}
-
-export function OnClickAwayIfNotAllowed(props: {
-  isAllowed: (target: Element) => boolean;
-  callback: () => void;
-  children: React.ReactElement;
-}) {
-  useOnClickAwayIfNotAllowed(props.isAllowed, props.callback);
-  return props.children;
-}
-
 export const INTERACT_OUTSIDE_EXCEPTION_SELECTORS = [
   ".ant-dropdown-menu-item",
   ".ant-modal-content",

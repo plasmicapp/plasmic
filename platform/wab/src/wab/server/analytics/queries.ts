@@ -5,12 +5,6 @@ import moment from "moment";
 
 export type Period = "day" | "month";
 
-const PERIOD_OPTIONS: Period[] = ["day", "month"];
-
-export function convertValueToPeriod(value: any): Period {
-  return PERIOD_OPTIONS.find((e) => e === value) ?? "month";
-}
-
 const STARTOF_FUNC: Record<Period, string> = {
   day: "toStartOfDay",
   month: "toStartOfMonth",
@@ -134,16 +128,7 @@ group by
 
 // You cannot have conversions based on Team or based on Components
 export function getConversionsQuery(opts: AnalyticsQueryOpts) {
-  const {
-    teamId,
-    from,
-    to,
-    timezone,
-    projectId,
-    componentId,
-    splitId,
-    period = "day",
-  } = opts;
+  const { from, to, timezone, projectId, splitId, period = "day" } = opts;
   return escapeQuery(`
 select
   ${selectTime(timezone, period)},

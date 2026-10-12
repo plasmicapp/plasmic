@@ -34,7 +34,7 @@ export function areSameInstType(inst: any, ...others: any[]) {
 }
 
 export function walkModelTree(aCtx: NodeCtx, walked = new Array<ObjInst>()) {
-  const { node: inst, path: path } = aCtx;
+  const { node: inst } = aCtx;
   assert(inst, "inst must be defined");
   const cls = instUtil.getInstClass(inst);
   walked.push(inst);
@@ -69,8 +69,8 @@ export function cowalkModelTrees(
   bundler: Bundler,
   updates = new Map<ObjInst, ObjInst>(),
 ): Map<ObjInst, ObjInst> {
-  const { node: origInst, path: origPath } = aCtx;
-  const { node: updatedInst, path: updatedPath } = bCtx;
+  const { node: origInst } = aCtx;
+  const { node: updatedInst } = bCtx;
 
   assert(origInst && updatedInst, "instances must exist");
   const cls = instUtil.getInstClass(origInst);

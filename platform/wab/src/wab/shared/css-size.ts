@@ -1,4 +1,4 @@
-import { check, ensure, precisionRound, unexpected } from "@/wab/shared/common";
+import { check, ensure } from "@/wab/shared/common";
 import { VALID_UNITS } from "@/wab/shared/css";
 import { validateDimCssFunction } from "@/wab/shared/css/css-tree-utils";
 import { CSS_UNITS, isDimCssFunction } from "@/wab/shared/css/types";
@@ -221,18 +221,6 @@ export function tryParseSize(text: string): Size | undefined {
   } else {
     return tryParseAtomicSize(text);
   }
-}
-
-export function ensureNumericSize(size: Size): NumericSize {
-  return size.type === "NumericSize" ? size : unexpected();
-}
-
-/**
- * Takes a percent (e.g. 87 for 87%, not 0.87) and rounds it to a reasonable
- * number of decimal places.
- */
-export function roundCssPct(pct: number) {
-  return precisionRound(pct, 4);
 }
 
 /**

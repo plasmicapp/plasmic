@@ -98,7 +98,6 @@ import {
   isTplColumns,
   isTplComponent,
   isTplContainer,
-  isTplIcon,
   isTplImage,
   isTplSlot,
   isTplTag,
@@ -369,7 +368,6 @@ function getRenderBySection(
   const isRoot = isComponentRoot(tpl);
   const component = viewCtx.currentComponent();
   const isTypographyTpl = isTypographyNode(tpl);
-  const isIcon = isTplIcon(tpl);
   const isAttachmentComp =
     isComponent &&
     isCodeComponent(tpl.component) &&
@@ -409,9 +407,7 @@ function getRenderBySection(
   };
 
   const enabledStyleSections = getEnabledStyleSections(tpl) as
-    | PublicStyleSection[]
-    | boolean
-    | undefined;
+    PublicStyleSection[] | boolean | undefined;
 
   const showSection = (section: Section) => {
     const setting = getSectionSetting(section);

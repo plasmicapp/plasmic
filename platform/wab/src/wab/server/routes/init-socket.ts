@@ -31,5 +31,3 @@ export class InitSocket {
     });
   }
 }
-
-export const initSocket = new InitSocket();

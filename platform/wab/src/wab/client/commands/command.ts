@@ -12,8 +12,6 @@ import { setTrapFocusCommand } from "@/wab/client/commands/component/settings/se
 import { renameCommand } from "@/wab/client/commands/element/rename";
 import { switchArenaCommand } from "@/wab/client/commands/navigation/switchArena";
 import { addTokenCommand } from "@/wab/client/commands/token/addToken";
-import { Command } from "@/wab/client/commands/types";
-import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 
 export const COMMANDS = {
   navigation: {
@@ -43,57 +41,3 @@ export const COMMANDS = {
     addToken: addTokenCommand,
   },
 };
-
-export const expandCommand = async <Args, Context, Result, Error>(
-  studioCtx: StudioCtx,
-  command: Command<Args, Context, Result, Error>,
-): Promise<Command<Args, Context, Result, Error>[]> => {
-  const commandContext = command.context(studioCtx);
-  if (!commandContext.length) {
-    return [];
-  }
-  return commandContext.map(
-    (context): Command<Args, Context, Result, Error> => ({
-      ...command,
-      context: () => [context],
-      meta: () => command.meta({ ...context, studioCtx }),
-      execute: (sc: StudioCtx, args: Args, c: Context) =>
-        command.execute(sc, args, c),
-    }),
-  );
-};
-
-export const getAvailableCommands = async (
-  studioCtx: StudioCtx,
-): Promise<Command[]> => {
-  const commandsList: Command[] = [];
-
-  const processCommands = async (obj: any) => {
-    for (const key in obj) {
-      const value = obj[key];
-      if (typeof value === "object" && !value.execute) {
-        await processCommands(value);
-        continue;
-      }
-      const command = value as Command;
-
-      const expandedCommands = await expandCommand(studioCtx, command);
-      commandsList.push(...(expandedCommands as Command[]));
-    }
-  };
-
-  await processCommands(COMMANDS);
-  return commandsList;
-};
-
-export async function findCommandByName(
-  name: string,
-  studioCtx: StudioCtx,
-): Promise<Command | undefined> {
-  const availableCommands = await getAvailableCommands(studioCtx);
-  const command = availableCommands.find((c) => {
-    const commandMeta = c.meta({ studioCtx });
-    return commandMeta.name === name;
-  });
-  return command;
-}

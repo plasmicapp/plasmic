@@ -38,12 +38,8 @@ import React, { useState } from "react";
 
 type FlexArrangement = "row" | "column";
 
-type AlignmentType = "with-axis" | "cross-axis" | "wrap-content";
 type AlignmentProp =
-  | "justify-content"
-  | "align-items"
-  | "align-content"
-  | "justify-items";
+  "justify-content" | "align-items" | "align-content" | "justify-items";
 
 type FlexAlignmentStyles = Partial<Record<AlignmentProp, FlexOptions>>;
 type FlexConfig = {
@@ -107,22 +103,6 @@ function isColumn(arrangement?: "row" | "column") {
   return arrangement === "column";
 }
 
-function getCrossAxisProp(wrap?: boolean) {
-  return wrap ? "alignContent" : "alignItems";
-}
-
-function getOppositeAlignmentIf(alignment: FlexOptions, invert?: boolean) {
-  if (invert) {
-    if (alignment === FlexOptions.flexStart) {
-      return FlexOptions.flexEnd;
-    }
-    if (alignment === FlexOptions.flexEnd) {
-      return FlexOptions.flexStart;
-    }
-  }
-  return alignment;
-}
-
 const itemSizes = ["25%", "30%", "20%", "15%", "23%"];
 
 function StackItems({
@@ -140,50 +120,6 @@ function StackItems({
           {i + 1}
         </div>
       ))}
-    </>
-  );
-}
-
-function PreviewStack({
-  dimmed,
-  arrangement,
-  hidden,
-  hovering,
-  reverse,
-  wrap,
-  wrapReverse,
-  alignment,
-}: {
-  dimmed?: boolean;
-  arrangement: FlexArrangement;
-  hidden?: boolean;
-  hovering?: boolean;
-  reverse?: boolean;
-  wrap?: boolean;
-  wrapReverse?: boolean;
-  alignment: FlexAlignmentStyles;
-}) {
-  return (
-    <>
-      <div
-        className={cn({
-          [S.stackHidden]: hidden,
-          [S.stackPreviewDimmed]: dimmed,
-          [S.horizontalStack]: isRow(arrangement),
-          [S.verticalStack]: isColumn(arrangement),
-          [S.stackReverse]: reverse,
-          [S.stackWrap]: wrap,
-          [S.stackWrapReverse]: wrapReverse,
-          [S.stackPreviewSimulated]: hovering,
-        })}
-        style={{
-          alignItems: alignment["align-items"],
-          alignContent: alignment["align-content"],
-          justifyContent: alignment["justify-content"],
-        }}
-      >
-        <StackItems wrap={wrap} arrangement={arrangement} />
-      </div>
     </>
   );
 }
@@ -491,146 +427,6 @@ function shouldReverseLabels(opts: {
   );
 }
 
-function Aligner(props: {
-  prop: AlignmentProp;
-  value: FlexOptions;
-  arrangement: FlexArrangement;
-  isReverse: boolean;
-  isWrap: boolean;
-  isWrapReverse: boolean;
-  onShowPreview: (value: FlexOptions) => void;
-  onSelect: (value: FlexOptions) => void;
-  definedIndicator?: DefinedIndicatorType;
-  contextMenu: () => React.ReactElement;
-}) {
-  const {
-    prop,
-    value,
-    arrangement,
-    isReverse,
-    isWrapReverse,
-    isWrap,
-    onShowPreview,
-    onSelect,
-    definedIndicator,
-    contextMenu,
-  } = props;
-  const alignmentType = getAlignmentType(prop);
-  const isCrossAxis =
-    alignmentType === "cross-axis" || alignmentType === "wrap-content";
-  const orientation =
-    (arrangement === "row" && isCrossAxis) ||
-    (arrangement === "column" && !isCrossAxis)
-      ? "vertical"
-      : "horizontal";
-  const flexOptions =
-    alignmentType === "with-axis"
-      ? withAxisAlignments
-      : alignmentType === "cross-axis"
-        ? crossAxisAlignments
-        : wrapContentAlignments;
-  const reverseLabels = shouldReverseLabels({
-    alignmentType,
-    isReverse,
-    isWrapReverse,
-  });
-  const isPerLine = isWrap && prop === "align-items";
-  const title = `Distribute ${
-    orientation === "horizontal" ? "horizontally" : "vertically"
-  }${
-    isPerLine
-      ? ` for each ${orientation === "horizontal" ? "column" : "row"}`
-      : ""
-  }`;
-  const contextMenuProps = useContextMenu({ menu: contextMenu });
-  const indicator = definedIndicator && (
-    <span
-      className={cn({
-        [S.verticalIndicator]: orientation === "vertical",
-        [S.horizontalIndicator]: orientation === "horizontal",
-      })}
-    >
-      <DefinedIndicator
-        label={title}
-        type={definedIndicator}
-        menu={contextMenu}
-      />
-    </span>
-  );
-  return (
-    <div
-      className={cn({
-        [S.aligner]: true,
-        [S.horizontalAligner]: orientation === "horizontal",
-        [S.verticalAligner]: orientation === "vertical",
-        [S.isLineAligner]: isWrap && prop === "align-items",
-      })}
-    >
-      {orientation === "horizontal" && indicator}
-      <DropdownTooltip
-        title={title}
-        overlay={() => {
-          return (
-            <Menu>
-              {flexOptions
-                .map((val) => ({
-                  value: val,
-                  label: getFlexLabel({
-                    value: val,
-                    direction: orientation,
-                    reverse: reverseLabels,
-                  }),
-                }))
-                .map(({ label, value: val }) => (
-                  <Menu.Item
-                    key={val}
-                    onMouseEnter={() => onShowPreview(val)}
-                    onClick={() => onSelect(val)}
-                  >
-                    {label}
-                  </Menu.Item>
-                ))}
-            </Menu>
-          );
-        }}
-        trigger={["click"]}
-        placement={orientation === "horizontal" ? "bottomLeft" : "topLeft"}
-      >
-        <button {...contextMenuProps} aria-label={title}>
-          <div className={S.iconWrapper}>
-            <Icon
-              icon={
-                orientation === "horizontal"
-                  ? ChevronLeftsvgIcon
-                  : ChevronUpsvgIcon
-              }
-            />
-          </div>
-          <div className={S.alignerTextWrapper}>
-            {isPerLine &&
-              `Each ${orientation === "horizontal" ? "col" : "row"}: `}
-            {getFlexLabel({
-              value,
-              direction: orientation,
-              reverse: reverseLabels,
-            })}
-          </div>
-          <div className={S.iconWrapper}>
-            <Icon
-              icon={
-                orientation === "horizontal"
-                  ? ChevronRightsvgIcon
-                  : ChevronDownsvgIcon
-              }
-            />
-          </div>
-        </button>
-      </DropdownTooltip>
-      {orientation === "vertical" && indicator}
-    </div>
-  );
-}
-
 function Aligner2(props: {
   value: FlexOptions;
   options: { value: FlexOptions; label: string }[];
@@ -752,7 +548,7 @@ function makeFlexAlignmentOptions(opts: {
   isReverse: boolean;
   isWrapReverse: boolean;
 }): AlignmentOption[] {
-  const { prop, arrangement, isWrap, isReverse, isWrapReverse } = opts;
+  const { prop, arrangement, isReverse, isWrapReverse } = opts;
   const alignmentType = getAlignmentType(prop);
   const reverse = shouldReverseLabels({
     alignmentType,

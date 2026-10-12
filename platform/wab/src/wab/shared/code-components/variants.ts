@@ -1,5 +1,5 @@
 import { TplMgr } from "@/wab/shared/TplMgr";
-import { VariantCombo, isCodeComponentVariant } from "@/wab/shared/Variants";
+import { isCodeComponentVariant } from "@/wab/shared/Variants";
 import { CodeComponent, isCodeComponent } from "@/wab/shared/core/components";
 import {
   TplCodeComponent,
@@ -26,10 +26,6 @@ export function getVariantMeta(
     return variantsMetas[key];
   }
   return null;
-}
-
-export function hasCodeComponentVariants(variantCombo: VariantCombo) {
-  return variantCombo.some(isCodeComponentVariant);
 }
 
 export function isCodeComponentWithVariants(component: Component) {

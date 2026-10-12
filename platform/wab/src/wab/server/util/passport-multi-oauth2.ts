@@ -1,6 +1,5 @@
 import { logger } from "@/wab/server/observability";
 import type * as express from "express";
-import { Profile } from "passport";
 import { _StrategyOptionsBase } from "passport-google-oauth20";
 import {
   StrategyOptions,
@@ -36,23 +35,6 @@ export type MultiOAuth2StrategyConfigWithoutRequest = Partial<StrategyOptions> &
 export type MultiOAuth2StrategyConfig =
   | MultiOAuth2StrategyConfigWithRequest
   | MultiOAuth2StrategyConfigWithoutRequest;
-
-export type VerifiedCallback = (
-  err: Error | null,
-  user?: Record<string, unknown>,
-  info?: Record<string, unknown>,
-) => void;
-
-export type VerifyWithRequest = (
-  req: express.Request,
-  profile: Profile | null,
-  done: VerifiedCallback,
-) => void;
-
-export type VerifyWithoutRequest = (
-  profile: Profile | null,
-  done: VerifiedCallback,
-) => void;
 
 export class MultiOAuth2Strategy extends AbstractStrategy {
   constructor(

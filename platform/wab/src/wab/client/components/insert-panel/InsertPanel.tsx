@@ -314,7 +314,7 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
   );
 
   const filterToTarget = studioCtx.showInlineAddDrawer();
-  const [selectedPlacementIndex, setSelectedPlacementIndex] = useState(0);
+  const [selectedPlacementIndex] = useState(0);
   const insertLoc =
     getPlacementOptions(studioCtx)[selectedPlacementIndex].insertLoc;
 

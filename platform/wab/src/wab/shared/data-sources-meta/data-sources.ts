@@ -401,8 +401,6 @@ export type FiltersLogic =
   | JsonLogicInString
   | JsonLogicInArray;
 
-export type FiltersLogicExpr = boolean | string | number | FiltersLogic;
-
 export interface Filters {
   /**
    * @deprecated Now we use `tree` instead

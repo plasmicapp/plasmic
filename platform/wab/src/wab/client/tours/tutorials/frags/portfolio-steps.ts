@@ -126,14 +126,3 @@ For a full list of SEO settings, you can use the gear icon to access the _Advanc
   placement: "left",
   nextButtonText: "Next",
 };
-
-export const PERSONAL_TOUCH_STEP: StudioTutorialStep = {
-  name: "free-edit",
-  content: `
-Now it's your turn, play around with the editor and add some personal touch to your page!
-
-Then click in Publish to learn how to deploy your changes to the web.`,
-  target: STUDIO_ELEMENTS_TARGETS.topBarPublishBtn,
-  nextButtonText: "Add your personal touch",
-  placement: "top",
-};

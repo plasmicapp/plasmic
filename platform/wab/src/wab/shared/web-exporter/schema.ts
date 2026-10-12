@@ -1065,7 +1065,6 @@ export function variantSchema() {
     uuid: z.string().describe("Variant UUID."),
   });
 }
-export type VariantJson = z.infer<ReturnType<typeof variantSchema>>;
 
 /** An imported (direct dependency) project and its resources. */
 export function importedProjectSchema() {
@@ -1076,9 +1075,6 @@ export function importedProjectSchema() {
     ...projectResourcesSchema().shape,
   });
 }
-export type ImportedProjectJson = z.infer<
-  ReturnType<typeof importedProjectSchema>
->;
 
 /** Custom functions usable in data queries: installed and installable. */
 export function dataQueryFunctionsSchema() {

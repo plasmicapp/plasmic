@@ -109,10 +109,6 @@ export class VariantedStylesHelper {
     return this.sortedActiveVariantedStyles(token) as VariantedValue[];
   }
 
-  sortedActiveVariantedRuleSet(mixin: Mixin) {
-    return this.sortedActiveVariantedStyles(mixin) as VariantedRuleSet[];
-  }
-
   private getVariantedStyleWithHighestPriority(
     style: FinalToken<StyleToken> | Mixin,
   ) {
@@ -124,14 +120,7 @@ export class VariantedStylesHelper {
 
   getVariantedValueWithHighestPriority(token: FinalToken<StyleToken>) {
     return this.getVariantedStyleWithHighestPriority(token) as
-      | VariantedValue
-      | undefined;
-  }
-
-  getVariantedRuleSetWithHighestPriority(mixin: Mixin) {
-    return this.getVariantedStyleWithHighestPriority(mixin) as
-      | VariantedRuleSet
-      | undefined;
+      VariantedValue | undefined;
   }
 
   /**

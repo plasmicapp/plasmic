@@ -185,7 +185,6 @@ import {
   SiteInfo,
 } from "@/wab/shared/SharedApi";
 import { isSlot, tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
-import { addEmptyQuery } from "@/wab/shared/TplMgr";
 import {
   VariantCombo,
   isScreenVariant,
@@ -315,12 +314,7 @@ import {
 } from "@/wab/shared/core/tpls";
 import { undoChanges } from "@/wab/shared/core/undo-util";
 import { ValComponent, ValNode } from "@/wab/shared/core/val-nodes";
-import {
-  ALL_QUERIES,
-  dataSourceTemplateToString,
-  mkDataSourceOpExpr,
-  mkDataSourceTemplate,
-} from "@/wab/shared/data-sources-meta/data-sources";
+import { ALL_QUERIES } from "@/wab/shared/data-sources-meta/data-sources";
 import { AddItemPrefs, getSimplifiedStyles } from "@/wab/shared/default-styles";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import {
@@ -338,17 +332,14 @@ import * as classes from "@/wab/shared/model/classes";
 import {
   Animation,
   Arena,
-  ArenaChild,
   ArenaFrame,
   Component,
   ComponentArena,
-  DataSourceTemplate,
   DataToken,
   ObjInst,
   PageArena,
   ProjectDependency,
   StyleToken,
-  TemplatedString,
   TplComponent,
   TplNode,
   TplSlot,
@@ -425,7 +416,6 @@ import {
   head,
   isNil,
   keyBy,
-  mapValues,
   maxBy,
   memoize,
   partition,
@@ -622,11 +612,6 @@ interface RedoModelChangeRequest {
 interface FetchModelUpdatesRequest {
   type: "fetchModelUpdates";
 }
-
-let nextPresetDrawerId = 1;
-export const genPresetDrawerId = () => {
-  return nextPresetDrawerId++;
-};
 
 class UnsupportedServerUpdate extends Error {
   name: "UnsupportedServerUpdate";
@@ -1092,10 +1077,6 @@ export class StudioCtx extends WithDbCtx {
     if (pkgs.some((pkg) => !this.installedHostLessPkgs.has(pkg))) {
       spawn(this.updateCcRegistry(pkgs));
     }
-  }
-
-  getHostLessComponentsMap() {
-    return this.hostLessRegistry.getRegisteredCodeComponentsMap();
   }
 
   getHostLessContextsMap() {
@@ -1622,6 +1603,7 @@ export class StudioCtx extends WithDbCtx {
     return !this.modelChangeQueue.idle();
   }
 
+  /** Used by playwright tests via `window.dbg.studioCtx.awaitEval()`. */
   async awaitEval() {
     await drainQueue(this.modelChangeQueue);
     await Promise.all(this.viewCtxs.map((vc) => vc.awaitSync()));
@@ -1889,11 +1871,6 @@ export class StudioCtx extends WithDbCtx {
       this.recentArenas = fixedRecentArenas;
     }
     this._currentArena.set(arena);
-  }
-
-  get previousArena() {
-    const recentLength = this.recentArenas.length;
-    return recentLength >= 2 ? this.recentArenas[recentLength - 1] : null;
   }
 
   get recentArenas() {
@@ -3278,19 +3255,6 @@ export class StudioCtx extends WithDbCtx {
     return this._showStackOfParents.get();
   }
 
-  shouldShowArenaFrame = (arenaChild: ArenaChild) => {
-    if (!this.isDevMode) {
-      return false;
-    }
-
-    if (!isKnownArenaFrame(arenaChild)) {
-      return false;
-    }
-
-    const currentArenaFrames = getArenaFrames(this.currentArena);
-    return currentArenaFrames?.includes(arenaChild);
-  };
-
   async getPreviewInitialViewCtx() {
     const arena = ensure(this.currentArena, "current arena must be non null");
     const focusedVc = this.focusedViewCtx();
@@ -3361,6 +3325,7 @@ export class StudioCtx extends WithDbCtx {
   isMetaDown = () => this.keyDown[StudioCtx.META];
   isCtrlDown = () => this.keyDown[StudioCtx.CTRL];
   isAltDown = () => this.keyDown[StudioCtx.ALT];
+
   isKeyDown = (which: number) => this.keyDown[which];
 
   tryUpdateKeyboardStatus = (e: MouseEvent) => {
@@ -3743,16 +3708,8 @@ export class StudioCtx extends WithDbCtx {
     return this._$canvasClipper()[0] as HTMLElement | undefined;
   }
 
-  private canvas() {
-    return ensureHTMLElt(this.maybeCanvas());
-  }
-
   private maybeCanvas() {
     return this._$canvas()[0];
-  }
-
-  private canvasScaler() {
-    return ensureHTMLElt(this.maybeCanvasScaler());
   }
 
   private maybeCanvasScaler() {
@@ -4021,9 +3978,6 @@ export class StudioCtx extends WithDbCtx {
   }
 
   private _traitRegistry = new TraitRegistry(window.parent);
-  get traitRegistry() {
-    return this._traitRegistry;
-  }
   getRegisteredTraits() {
     return this._traitRegistry.getRegisteredTraits();
   }
@@ -5153,8 +5107,6 @@ export class StudioCtx extends WithDbCtx {
   isTransformingObject() {
     return this._isTransformingObject.get();
   }
-
-  public splitsStatusChanges = new Map<string, string>();
 
   //
   // Dealing with generating CSS styles used by all frames
@@ -6385,28 +6337,6 @@ export class StudioCtx extends WithDbCtx {
       branchId,
       revisionNumGt,
     );
-  }
-
-  async hasChangesSinceLastPublish() {
-    if (this.releases.length <= 0) {
-      return true;
-    }
-
-    const latestRelease = ensure(
-      asOne(this.releases),
-      "should have at least one release",
-    );
-    const { rev: latestPublishedRev } =
-      await this.appCtx.api.getProjectRevWithoutData(
-        this.siteInfo.id,
-        ensure(
-          latestRelease.revisionId,
-          "latest release should have revisionId",
-        ),
-        latestRelease.branch?.id,
-      );
-
-    return latestPublishedRev.revision !== this.dbCtx().revisionNum;
   }
 
   async getLatestVersion(
@@ -8025,15 +7955,6 @@ function emptyChanges(recordedChanges: RecordedChanges) {
   return false;
 }
 
-export function studioCtxKey<
-  Method extends keyof StudioCtx,
-  Args extends (StudioCtx[Method] extends (..._args: any[]) => any
-    ? Parameters<StudioCtx[Method]>
-    : never),
->(method: Method, ...args: Args) {
-  return invalidationKey(method, ...args);
-}
-
 export function normalizeTemplateSpec(
   templateSpec: TemplateSpec[],
   isPageTemplatesGroup: boolean,
@@ -8060,61 +7981,6 @@ export function normalizeTemplateSpec(
       }),
     ),
   };
-}
-
-export async function addGetManyQuery({
-  component,
-  dataSourceId,
-  table,
-  templates,
-  studioCtx,
-  queryName,
-}: {
-  component: Component;
-  dataSourceId: string;
-  table: string;
-  templates?: { [p: string]: DataSourceTemplate };
-  studioCtx: StudioCtx;
-  queryName?: string;
-}) {
-  const getMany = mkDataSourceOpExpr({
-    sourceId: dataSourceId,
-    opId: "temporary-id",
-    opName: "getMany",
-    templates: {
-      resource: mkDataSourceTemplate({
-        fieldType: "table",
-        value: new TemplatedString({
-          text: [JSON.stringify(table)],
-        }),
-        bindings: null,
-      }),
-      ...templates,
-    },
-  });
-
-  const { opId } = await studioCtx.appCtx.app.withSpinner(
-    studioCtx.appCtx.api.getDataSourceOpId(
-      studioCtx.siteInfo.id,
-      dataSourceId,
-      {
-        name: "getMany",
-        templates: mapValues(getMany.templates, dataSourceTemplateToString),
-        roleId: undefined,
-      },
-    ),
-  );
-
-  const query = await studioCtx.changeUnsafe(() => {
-    const query_ = addEmptyQuery(component, queryName);
-
-    getMany.opId = opId;
-
-    query_.op = getMany;
-
-    return query_;
-  });
-  return query;
 }
 
 /**

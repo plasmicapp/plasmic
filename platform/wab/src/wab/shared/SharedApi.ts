@@ -18,7 +18,6 @@ import {
   ApiAppUserOpConfig,
   ApiBranch,
   ApiCmsDatabase,
-  ApiCmsDatabaseMeta,
   ApiCmseRow,
   ApiCmseRowRevision,
   ApiCmseRowRevisionMeta,
@@ -243,14 +242,6 @@ export interface SiteInfo {
   revisions: ProjectRevision[];
 }
 
-export interface SiteInstInfo {
-  created: string;
-  id: string;
-  modified: string;
-  siteId: string;
-  subdomain: string;
-}
-
 export interface RevInfo {
   projectId: string;
   data: string;
@@ -367,10 +358,6 @@ export abstract class SharedApi {
         ...(extraHeaders ?? {}),
       },
     });
-  }
-
-  getDefaultSiteId() {
-    return this.get("/debug/default-site-id");
   }
 
   async getSelfInfo(): Promise<SelfResponse> {
@@ -910,15 +897,6 @@ export abstract class SharedApi {
 
   async revokeTeamApiToken(teamId: string, token: string): Promise<void> {
     await this.delete(`/teams/${teamId}/tokens/${token}`);
-  }
-
-  async queryDataSource(url: string) {
-    assert(
-      new URL(url).origin === window.origin &&
-        url.startsWith(window.origin + "/api/v1/"),
-      "Unexpected URL " + url,
-    );
-    return this.get(url.substring((window.origin + "/api/v1/").length));
   }
 
   async getUsersById(ids: string[]): Promise<UsersResponse> {
@@ -1657,11 +1635,6 @@ export abstract class SharedApi {
     return res as ApiCmsDatabase;
   }
 
-  async getCmsDatabaseMeta(databaseId: CmsDatabaseId) {
-    const res = await this.get(`/cmse/databases-meta/${databaseId}`);
-    return res as ApiCmsDatabaseMeta;
-  }
-
   async listDatabasesMeta(): Promise<ListCmsDatabasesMetaResponse> {
     return this.get(`/cmse/databases-meta`);
   }
@@ -1889,22 +1862,6 @@ export abstract class SharedApi {
       `/plasmic-hosting/${projectId}`,
       opts,
     ) as Promise<PlasmicHostingSettings>;
-  }
-
-  /** Sets the text served at path (e.g. /robots.txt), or removes it with null. */
-  async setPlasmicHostingTextFile(
-    projectId: ProjectId,
-    path: string,
-    content: string | null,
-  ) {
-    const settings = await this.getPlasmicHostingSettings(projectId);
-    const textFiles = { ...settings.textFiles };
-    if (content === null) {
-      delete textFiles[path];
-    } else {
-      textFiles[path] = content;
-    }
-    return this.updatePlasmicHostingSettings(projectId, { textFiles });
   }
 
   async getComments(

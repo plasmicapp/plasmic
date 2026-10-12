@@ -22,32 +22,6 @@
       "cssFilePath": "wab/client/plasmic/PP__plasmickit_left_pane.css",
       "components": [
         {
-          "id": "kkbHZ8nmgGH",
-          "name": "ActivityFeedItem",
-          "type": "managed",
-          "projectId": "aukbrhkegRkQ6KizvhdUPT",
-          "renderModuleFilePath": "wab/client/components/widgets/plasmic/PlasmicActivityFeedItem.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/widgets/plasmic/ActivityFeedItem.tsx"
-          },
-          "cssFilePath": "wab/client/components/widgets/plasmic/PlasmicActivityFeedItem.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "DdZ3EM2HFAD",
-          "name": "ActivityFeed",
-          "type": "managed",
-          "projectId": "aukbrhkegRkQ6KizvhdUPT",
-          "renderModuleFilePath": "wab/client/components/widgets/plasmic/PlasmicActivityFeed.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/widgets/plasmic/ActivityFeed.tsx"
-          },
-          "cssFilePath": "wab/client/components/widgets/plasmic/PlasmicActivityFeed.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "XLa52PvduIy",
           "name": "LeftPaneHeader",
           "type": "managed",
@@ -170,19 +144,6 @@
           "componentType": "component"
         },
         {
-          "id": "yc4AfGXkNH",
-          "name": "LeftActivitiesPanel",
-          "type": "managed",
-          "projectId": "aukbrhkegRkQ6KizvhdUPT",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftActivitiesPanel.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/LeftActivitiesPanel.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftActivitiesPanel.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "bDbzY5jXLz",
           "name": "LeftGeneralTokensPanel",
           "type": "managed",
@@ -287,19 +248,6 @@
           "componentType": "component"
         },
         {
-          "id": "V25hk8i--ck",
-          "name": "PublishDialogContent",
-          "type": "managed",
-          "projectId": "aukbrhkegRkQ6KizvhdUPT",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicPublishDialogContent.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/PublishDialogContent.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicPublishDialogContent.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "EeT-6P6YTW",
           "name": "LeftSettingsPanel",
           "type": "managed",
@@ -326,19 +274,6 @@
           "componentType": "component"
         },
         {
-          "id": "bobcNPtaTq",
-          "name": "CollapseToggle",
-          "type": "managed",
-          "projectId": "aukbrhkegRkQ6KizvhdUPT",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicCollapseToggle.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/CollapseToggle.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicCollapseToggle.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "nmt_YiclQJk",
           "name": "DefaultStylesPanel",
           "type": "managed",
@@ -361,45 +296,6 @@
             "modulePath": "wab/client/components/sidebar/ThemeLayoutPanel.tsx"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicThemeLayoutPanel.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "neIW4UOiRU",
-          "name": "PresetsSelector",
-          "type": "managed",
-          "projectId": "aukbrhkegRkQ6KizvhdUPT",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicPresetsSelector.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/PresetsSelector.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicPresetsSelector.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "kZ3Ar3RnLt",
-          "name": "PresetGroup",
-          "type": "managed",
-          "projectId": "aukbrhkegRkQ6KizvhdUPT",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicPresetGroup.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/PresetGroup.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicPresetGroup.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "eS_Bw5U3wr",
-          "name": "Preset",
-          "type": "managed",
-          "projectId": "aukbrhkegRkQ6KizvhdUPT",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicPreset.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/Preset.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicPreset.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         },
@@ -989,71 +885,6 @@
           "componentType": "component"
         },
         {
-          "id": "CpePZH2ffI",
-          "name": "UpsellBanner",
-          "type": "managed",
-          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicUpsellBanner.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/widgets/UpsellBanner.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicUpsellBanner.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "54ykx6A8G6T",
-          "name": "CmsSection",
-          "type": "managed",
-          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicCmsSection.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/CmsSection.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicCmsSection.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "DEllwXrn27Q",
-          "name": "CmsListItem",
-          "type": "managed",
-          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicCmsListItem.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/CmsListItem.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicCmsListItem.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "F7n0gyM6hJ6",
-          "name": "CmsPage",
-          "type": "managed",
-          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicCmsPage.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/CmsPage.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicCmsPage.module.css",
-          "scheme": "blackbox",
-          "componentType": "page"
-        },
-        {
-          "id": "A4UIAN_FGs",
-          "name": "ContentPage",
-          "type": "managed",
-          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicContentPage.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/ContentPage.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicContentPage.module.css",
-          "scheme": "blackbox",
-          "componentType": "page"
-        },
-        {
           "id": "Ts79yZbRFG",
           "name": "MenuItem",
           "type": "managed",
@@ -1102,19 +933,6 @@
             "modulePath": "wab/client/components/dashboard/WorkspaceDataSources.tsx"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicWorkspaceDataSources.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "89XWXKZUx6q",
-          "name": "DataSourceOption",
-          "type": "managed",
-          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicDataSourceOption.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/dashboard/DataSourceOption.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicDataSourceOption.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         },
@@ -1536,19 +1354,6 @@
           "componentType": "component"
         },
         {
-          "id": "0NaTcyuAGK2dN",
-          "name": "PanelDivider",
-          "type": "managed",
-          "projectId": "tXkSR39sgCDWSitZxC5xFV",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit/PlasmicPanelDivider.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/PanelDivider.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit/PlasmicPanelDivider.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "v31d9_ANqk",
           "name": "ListItem",
           "type": "managed",
@@ -1811,19 +1616,6 @@
             "modulePath": "wab/client/components/FreeTrial.tsx"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicFreeTrial.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "j8LiUtkTBvsH",
-          "name": "Textarea",
-          "type": "managed",
-          "projectId": "tXkSR39sgCDWSitZxC5xFV",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicTextarea.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/widgets/Textarea.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicTextarea.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         },
@@ -3523,19 +3315,6 @@
           "componentType": "component"
         },
         {
-          "id": "ho6fjXelhV",
-          "name": "SplitRow",
-          "type": "managed",
-          "projectId": "gYEVvAzCcLMHDVPvuYxkFh",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_style_controls/PlasmicSplitRow.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/SplitRow.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_style_controls/PlasmicSplitRow.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "E0bKgamUEin",
           "name": "StyleSelect",
           "type": "managed",
@@ -3629,32 +3408,6 @@
             "modulePath": "wab/client/components/style-controls/ColorSwatch.tsx"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_style_controls/PlasmicColorSwatch.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "1OCmfT86EB3",
-          "name": "TextboxLike",
-          "type": "managed",
-          "projectId": "gYEVvAzCcLMHDVPvuYxkFh",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_style_controls/PlasmicTextboxLike.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/TextboxLike.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_style_controls/PlasmicTextboxLike.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "lzLkhV0UJA",
-          "name": "Tooltip",
-          "type": "managed",
-          "projectId": "gYEVvAzCcLMHDVPvuYxkFh",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_style_controls/PlasmicTooltip.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/widgets/Tooltip.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_style_controls/PlasmicTooltip.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         },
@@ -4327,19 +4080,6 @@
             "modulePath": "wab/client/components/webhooks/WebhookEvent.tsx"
           },
           "cssFilePath": "wab/client/components/webhooks/plasmic/plasmic_kit_continuous_deployment/PlasmicWebhookEvent.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "8dA5vGT9N9E",
-          "name": "ConsoleOutput",
-          "type": "managed",
-          "projectId": "fpbcKyXdMTvY59T4C5fjcC",
-          "renderModuleFilePath": "wab/client/components/github/plasmic/plasmic_kit_continuous_deployment/PlasmicConsoleOutput.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/github/ConsoleOutput.tsx"
-          },
-          "cssFilePath": "wab/client/components/github/plasmic/plasmic_kit_continuous_deployment/PlasmicConsoleOutput.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         },
@@ -8688,19 +8428,6 @@
           "componentType": "component"
         },
         {
-          "id": "ohFfsSdDUeCq",
-          "name": "SplitsContent",
-          "type": "managed",
-          "projectId": "gtUDvxG6cmBbSzqLikNzoP",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_optimize/PlasmicSplitsContent.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/splits/SplitsContent.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_optimize/PlasmicSplitsContent.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "fjdDZovo7S",
           "name": "ExperimentEvent",
           "type": "managed",
@@ -8749,19 +8476,6 @@
             "modulePath": "wab/client/components/splits/ExperimentEvents.tsx"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_optimize/PlasmicExperimentEvents.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "5hDgjGS3IR",
-          "name": "SegmentAddField",
-          "type": "managed",
-          "projectId": "gtUDvxG6cmBbSzqLikNzoP",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_optimize/PlasmicSegmentAddField.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/splits/SegmentAddField.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_optimize/PlasmicSegmentAddField.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         },
@@ -8976,19 +8690,6 @@
             "modulePath": "wab/client/components/sidebar-tabs/DataBinding/DataPickerSelectedItem.tsx"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerSelectedItem.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "EzMpPqn_cI",
-          "name": "DataPickerGlobalSearchField",
-          "type": "managed",
-          "projectId": "w2GXN278dkQ2gQTVQnPehW",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerGlobalSearchField.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/sidebar-tabs/DataBinding/DataPickerGlobalSearchField.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerGlobalSearchField.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         },
@@ -10019,19 +9720,6 @@
           "componentType": "component"
         },
         {
-          "id": "3Ao1xbz5MD",
-          "name": "QuickInsertItemOld",
-          "type": "managed",
-          "projectId": "4B48dRthR8uGgyaBYpWthR",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_insert_panel/PlasmicQuickInsertItemOld.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/insert-panel/QuickInsertItemOld.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_insert_panel/PlasmicQuickInsertItemOld.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "9mduXtTTjQe",
           "name": "QuickInsertItem",
           "type": "managed",
@@ -10745,19 +10433,6 @@
           "componentType": "component"
         },
         {
-          "id": "1lRaedKrFR",
-          "name": "AuthTabNavigation",
-          "type": "managed",
-          "projectId": "2dMe7XWUq916KsPnra5vYj",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_end_user_management/PlasmicAuthTabNavigation.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/app-auth/AuthTabNavigation.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_end_user_management/PlasmicAuthTabNavigation.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "jfBLn3a3U6",
           "name": "ActivityRow",
           "type": "managed",
@@ -10993,19 +10668,6 @@
             "modulePath": "wab/client/components/pricing/HoverableText.tsx"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_pricing/PlasmicHoverableText.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "OOKbAz_EJ7Rm",
-          "name": "ElevatedCard",
-          "type": "managed",
-          "projectId": "ehckhYnyDHgCBbV47m9bkf",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_pricing/PlasmicElevatedCard.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/pricing/ElevatedCard.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_pricing/PlasmicElevatedCard.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         },

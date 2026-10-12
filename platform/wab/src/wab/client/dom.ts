@@ -92,27 +92,6 @@ export function tag(x) {
   );
 }
 
-// Returns the caret (cursor) position of the specified text field.
-// Return value range is 0-elt.value.length.
-// From <http://stackoverflow.com/questions/2897155/get-cursor-position-within-an-text-input-field>
-export function getCaretPos(doc, elt) {
-  // IE support
-  if (doc.selection) {
-    // Set focus on the element
-    elt.focus();
-    // To get cursor position, get empty selection range
-    const sel = doc.selection.createRange();
-    // Move selection start to 0 position
-    sel.moveStart("character", -elt.value.length);
-    // The caret position is selection length
-    return sel.text.length;
-  } else if (elt.selectionStart || elt.selectionStart === "0") {
-    return elt.selectionStart;
-  } else {
-    throw new Error("cannot get caret pos in input");
-  }
-}
-
 /**
  * Whether something has any layout box.
  *
@@ -126,32 +105,6 @@ export function hasLayoutBox(elem: HTMLElement) {
     elem.offsetHeight ||
     elem.getClientRects().length
   );
-}
-
-export const positionedValues = new Set([
-  "absolute",
-  "fixed",
-  "relative",
-  "sticky",
-]);
-
-export const slottedPositionedValues = new Set(["static", "relative"]);
-
-/**
- * Returns a ClientRect but where the offsets are relative to the page and not
- * the viewport.
- */
-export function getRect(elt: Element): ClientRect {
-  const { width, height } = elt.getBoundingClientRect();
-  const { top, left } = ensure($(elt).offset());
-  return {
-    top,
-    left,
-    width,
-    height,
-    bottom: top + height,
-    right: left + width,
-  };
 }
 
 export const isWrappedFlexItem = (elt: Element) => {

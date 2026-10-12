@@ -26,10 +26,6 @@ export class InstUtil {
     return !!inst && !!this.tryGetInstClass(inst);
   }
 
-  getMetaClassForRealClass(cls: Function) {
-    return ensure(this.realClass2Class.get(cls));
-  }
-
   getInstClass(inst: classes.ObjInst) {
     return ensure(this.tryGetInstClass(inst));
   }
@@ -102,10 +98,6 @@ export class InstUtil {
       }
     };
     return rec(x, y);
-  }
-
-  shallowEquals(x: any, y: any, ignoreUuidsAndNils: boolean = false) {
-    return this._equals(x, y, true, ignoreUuidsAndNils);
   }
 
   deepEquals(x: any, y: any, ignoreUuidsAndNils: boolean = false) {

@@ -23,9 +23,3 @@ export interface VersionResolution {
   // Deprecated - to be removed in future CR (now computed on client)
   conflicts: ProjectVersionMeta[];
 }
-
-export class NoChangesError extends Error {
-  constructor(msg: string) {
-    super(msg);
-  }
-}

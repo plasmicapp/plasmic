@@ -14,17 +14,48 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  SingleBooleanChoiceArg,
-  StrictProps,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -83,7 +114,7 @@ function PlasmicReactionButton__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -97,8 +128,8 @@ function PlasmicReactionButton__RenderFunc(props: {
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.includesSelf,
-      },
+          $props.includesSelf
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -108,7 +139,7 @@ function PlasmicReactionButton__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -133,13 +164,15 @@ function PlasmicReactionButton__RenderFunc(props: {
             $state,
             "includesSelf",
             "includesSelf"
-          ),
+          )
         }
       )}
+      type={"button"}
     >
       <div
         data-plasmic-name={"emoji"}
         data-plasmic-override={overrides.emoji}
+
         className={classNames("all", "__wab_text", sty.emoji)}
       >
         {"\ud83d\udc4d"}
@@ -147,6 +180,7 @@ function PlasmicReactionButton__RenderFunc(props: {
       <div
         data-plasmic-name={"count"}
         data-plasmic-override={overrides.count}
+
         className={classNames("all", "__wab_text", sty.count)}
       >
         {"1"}
@@ -158,7 +192,7 @@ function PlasmicReactionButton__RenderFunc(props: {
 const PlasmicDescendants = {
   root: ["root", "emoji", "count"],
   emoji: ["emoji"],
-  count: ["count"],
+  count: ["count"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -180,8 +214,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicReactionButton__VariantsArgs;
     args?: PlasmicReactionButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicReactionButton__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicReactionButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicReactionButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -206,7 +241,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicReactionButton__ArgProps,
-          internalVariantPropNames: PlasmicReactionButton__VariantProps,
+          internalVariantPropNames: PlasmicReactionButton__VariantProps
         }),
       [props, nodeName]
     );
@@ -214,7 +249,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -235,7 +270,7 @@ export const PlasmicReactionButton = Object.assign(
 
     // Metadata about props expected for PlasmicReactionButton
     internalVariantProps: PlasmicReactionButton__VariantProps,
-    internalArgProps: PlasmicReactionButton__ArgProps,
+    internalArgProps: PlasmicReactionButton__ArgProps
   }
 );
 

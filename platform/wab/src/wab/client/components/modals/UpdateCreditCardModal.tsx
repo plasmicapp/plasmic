@@ -6,7 +6,6 @@ import { getStripePromise } from "@/wab/client/stripe";
 import { ApiTeam } from "@/wab/shared/ApiSchema";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { ensure } from "@/wab/shared/common";
-import { isUpgradableTier } from "@/wab/shared/pricing/pricing-utils";
 import {
   CardElement,
   Elements,
@@ -24,9 +23,6 @@ export const canIEditTeam = (appCtx: AppCtx, t: ApiTeam) =>
         p.userId === ensure(appCtx.selfInfo, "User must be authenticated").id,
     )?.accessLevel || "blocked",
   ) >= accessLevelRank("editor");
-
-export const canUpgradeTeam = (appCtx: AppCtx, t: ApiTeam) =>
-  canIEditTeam(appCtx, t) && (isUpgradableTier(t.featureTier) || t.onTrial);
 
 export interface PromptUpdateCcArgs {
   appCtx: AppCtx;

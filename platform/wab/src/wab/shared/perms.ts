@@ -67,19 +67,6 @@ export function pluralizeResourceId(
   }
 }
 
-export function explodeResourceIds(
-  taggedResourceIds: TaggedResourceIds,
-): TaggedResourceId[] {
-  switch (taggedResourceIds.type) {
-    case "project":
-      return taggedResourceIds.ids.map((id) => ({ type: "project", id }));
-    case "workspace":
-      return taggedResourceIds.ids.map((id) => ({ type: "workspace", id }));
-    case "team":
-      return taggedResourceIds.ids.map((id) => ({ type: "team", id }));
-  }
-}
-
 export function resourceTypeIdField(
   resourceType: "project" | "workspace" | "team",
 ) {

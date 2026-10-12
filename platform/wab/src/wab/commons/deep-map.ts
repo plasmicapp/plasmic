@@ -5,7 +5,7 @@ class DeepMapEntry<T> {
   isDisposed = false;
 
   constructor(
-    private base: Map<any, any>,
+    base: Map<any, any>,
     private args: any[],
   ) {
     let current: undefined | Map<any, any> = (this.closest = this.root = base);

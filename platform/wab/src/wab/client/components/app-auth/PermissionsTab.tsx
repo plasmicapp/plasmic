@@ -310,8 +310,6 @@ function PermissionsTab_(
 
   const anyEmails = invites.some((v) => !!parseEmailAddress(v));
 
-  const [selecting, setSelecting] = useState(false);
-
   useEffect(() => {
     setRoleId(roles[roles.length - 1]?.id);
   }, [loadingRoles]);
@@ -411,7 +409,6 @@ function PermissionsTab_(
               <Select<string[]>
                 disabled={submitting}
                 suffixIcon={null}
-                onDropdownVisibleChange={(open) => setSelecting(open)}
                 onKeyDown={async (e) => {
                   if (!search && e.key === "Enter") {
                     await handleSubmit();

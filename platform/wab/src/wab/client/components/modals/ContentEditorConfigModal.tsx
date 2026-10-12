@@ -308,7 +308,7 @@ function JsonControl(props: {
   value?: string;
   onChange?: (value: string) => void;
 }) {
-  const { label, defaultInitialValue, value, onChange } = props;
+  const { defaultInitialValue, value, onChange } = props;
   return (
     <>
       <Input.TextArea
@@ -367,8 +367,7 @@ function BooleanControl(props: {
  * If the value is BooleanOrDefault, the value applies to all string keys.
  */
 type BooleanOrDefaultRecord<T extends string> =
-  | BooleanOrDefault
-  | Record<T, BooleanOrDefault>;
+  BooleanOrDefault | Record<T, BooleanOrDefault>;
 
 function BooleanPreferencesControl<T extends string>(props: {
   label: string;

@@ -199,9 +199,6 @@ export type AddItem =
   | AddInstallableItem
   | AddCustomFunctionItem;
 
-export const isAddItem = (i: { type: string }): i is AddItem =>
-  L.values(AddItemType).includes(i.type as AddItemType);
-
 function mkListItem(vc: ViewCtx) {
   // We create a wrapper li to have display: "list-item" because
   // it is required to style the list correctly.

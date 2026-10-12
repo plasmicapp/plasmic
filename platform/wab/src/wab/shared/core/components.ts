@@ -1,5 +1,4 @@
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { DeepReadonly } from "@/wab/commons/types";
 import { removeVariantGroupFromArenas } from "@/wab/shared/Arenas";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import {
@@ -221,13 +220,6 @@ export interface CodeComponent extends Component {
   _meta?: ComponentRegistration<any> /* Unset when DEVFLAGS.ccStubs is set */;
 }
 
-export function groupComponents(components: Component[]) {
-  return {
-    components: components.filter((it) => !isPageComponent(it) && it.name),
-    pages: components.filter((it) => isPageComponent(it)),
-  };
-}
-
 export const defaultComponentKinds = {
   button: "Button",
   checkbox: "Checkbox",
@@ -254,11 +246,6 @@ export type DefaultComponentKind = keyof typeof defaultComponentKinds;
 export const isDefaultComponentKind = (
   kind: string,
 ): kind is DefaultComponentKind => kind in defaultComponentKinds;
-
-export const asDefaultComponentKind = (kind: string): DefaultComponentKind => {
-  assert(isDefaultComponentKind(kind), "Expecting a default component kind");
-  return kind;
-};
 
 export const getDefaultComponentLabel = (kind: string) =>
   defaultComponentKinds[kind] ?? kind;
@@ -1942,13 +1929,6 @@ export function attachNewSlotParamsToComponent(
   }
 }
 
-export function isVariantGroupParam(
-  component: Component,
-  param: DeepReadonly<Param>,
-) {
-  return component.variantGroups.some((g) => g.param === param);
-}
-
 export function removeComponentParam(
   site: Site,
   component: Component,
@@ -2139,13 +2119,6 @@ export function getComponentServerQueryByVarName(
 ) {
   name = toVarName(name);
   return component.serverQueries.find((q) => toVarName(q.name) === name);
-}
-
-export function getVariantGroupByVarName(component: Component, name: string) {
-  name = toVarName(name);
-  return component.variantGroups.find(
-    (g) => toVarName(g.param.variable.name) === name,
-  );
 }
 
 export function findVariantGroupForParam(component: Component, param: Param) {
@@ -2527,10 +2500,6 @@ export function getFolderComponentTrimmedName(component: Component) {
       ? component.codeComponentMeta.displayName
       : component.name;
   return getFolderTrimmed(componentName);
-}
-
-export function getCodeComponentDescription(component: CodeComponent) {
-  return component.codeComponentMeta.description ?? undefined;
 }
 
 export function getEffectiveVariantSettingOfDeepRootElement(

@@ -15,7 +15,6 @@ import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import StyleCheckbox from "@/wab/client/components/style-controls/StyleCheckbox";
 import {
   ExpsProvider,
-  FlexControlHelper,
   StyleComponent,
   StyleComponentProps,
   StylePanelSection,
@@ -94,26 +93,6 @@ class SizeSection_ extends StyleComponent<
     const vsh =
       this.props.vsh ??
       makeVariantedStylesHelperFromCurrentCtx(this.studioCtx());
-
-    const isMinMaxWidthSet = isSetOrInherited(
-      getValueSetState(...this.definedIndicators("min-width", "max-width")),
-    );
-
-    const isMinMaxHeightSet = isSetOrInherited(
-      getValueSetState(...this.definedIndicators("min-width", "max-width")),
-    );
-
-    const tpl =
-      this.props.expsProvider instanceof TplExpsProvider
-        ? this.props.expsProvider.tpl
-        : undefined;
-    const deepLayoutParent = tpl
-      ? $$$(tpl).layoutParent({ throughSlot: true }).maybeOneTpl()
-      : undefined;
-    const isDeepContentLayoutChild =
-      !!deepLayoutParent && isContentLayoutTpl(deepLayoutParent);
-    const isDeepContentLayout =
-      !!tpl && isContentLayoutTpl(tpl, { deep: true });
 
     return (
       <StylePanelSection
@@ -616,7 +595,6 @@ const FlexGrowControls = observer(function FlexGrowControls(props: {
   });
 
   const { expsProvider } = props;
-  const h = new FlexControlHelper(expsProvider);
 
   // We always show the flex shrink/grow controls for root or mixin.
   // Else, only auto-positioned flex children
@@ -627,8 +605,6 @@ const FlexGrowControls = observer(function FlexGrowControls(props: {
   // if (!h.isComponentRoot && !h.isMixin && !h.isAutoInFlexParent()) {
   //   return null;
   // }
-
-  const parentContainerType = h.getParentContainerType();
 
   const exp = () => expsProvider.mergedExp();
 
@@ -739,19 +715,6 @@ function toDisplay(val: string, stretchLabel: string, isRoot: boolean) {
   return val;
 }
 
-function fromDisplay(val: string, stretchLabel: string) {
-  if (val === "Hug content") {
-    val = "wrap";
-  } else if (val === "Full bleed") {
-    val = CONTENT_LAYOUT_FULL_BLEED;
-  } else if (val === "Wide width") {
-    val = CONTENT_LAYOUT_WIDE;
-  } else if (val === stretchLabel) {
-    val = "stretch";
-  }
-  return val;
-}
-
 export const PageSizePanelSection = observer(
   function PageSizePanelSection(props: { expsProvider: ExpsProvider }) {
     const { expsProvider } = props;
@@ -830,35 +793,6 @@ export const PageSizePanelSection = observer(
             </StyleCheckbox>
           </LabeledItemRow>
         )}
-      </SidebarSection>
-    );
-  },
-);
-
-export const StretchyComponentSizePanelSection = observer(
-  function StretchyComponentSizePanelSection(props: {
-    expsProvider: ExpsProvider;
-  }) {
-    const { expsProvider } = props;
-    assert(
-      expsProvider instanceof TplExpsProvider,
-      "ExpsProvider should be TplExpsProvider",
-    );
-
-    return (
-      <SidebarSection title="Size">
-        <div>Stretchy components take up the entire artboard.</div>
-        <FullRow>
-          <SizeControl
-            prop="width"
-            expsProvider={props.expsProvider}
-            isDisabled={true}
-            disabledTooltip={"Cannot modify width in stretch view mode"}
-          />
-        </FullRow>
-        <FullRow>
-          <SizeControl prop="height" expsProvider={props.expsProvider} />
-        </FullRow>
       </SidebarSection>
     );
   },

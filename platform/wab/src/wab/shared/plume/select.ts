@@ -42,8 +42,6 @@ import {
 } from "@/wab/shared/plume/plume-utils";
 import type { SelectRef } from "@plasmicapp/react-web";
 import { omit, pick } from "lodash";
-import { computedFn } from "mobx-utils";
-import type React from "react";
 
 const RESERVED_PROPS = [
   "isOpen",
@@ -68,22 +66,6 @@ const selectConfig = {
   overlay: "overlay",
   optionsContainer: "optionsContainer",
 } as const;
-
-interface CanvasSelectedValueState {
-  selectedValue: string;
-}
-
-export const mkCanvasSelectedValueState = computedFn(
-  function mkCanvasSelectState(react: typeof React) {
-    return react.createContext<undefined | CanvasSelectedValueState>(undefined);
-  },
-);
-
-export const mkCanvasIsFirstGroupState = computedFn(
-  function mkCanvasSelectState(react: typeof React) {
-    return react.createContext<boolean>(false);
-  },
-);
 
 export const SelectPlugin: PlumePlugin = {
   // PlumeCanvasPlugin

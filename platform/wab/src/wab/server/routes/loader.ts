@@ -779,7 +779,7 @@ async function genReprV2(
   res: Response,
   props: ProjectLoaderProps,
 ) {
-  const { projectId, project } = props;
+  const { projectId } = props;
 
   const mgr = superDbMgr(req);
 

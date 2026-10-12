@@ -32,7 +32,6 @@ import { POSTGRES_META } from "@/wab/shared/data-sources-meta/postgres-meta";
 import { DATA_SOURCE_CAP, DATA_SOURCE_LOWER } from "@/wab/shared/Labels";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { Alert, Form, FormInstance, Input, notification } from "antd";
-import { jsonrepair } from "jsonrepair";
 import { isEqual, noop } from "lodash";
 import React from "react";
 import useSWR, { useSWRConfig } from "swr";
@@ -574,41 +573,6 @@ function CredentialsAndSettingsSection(props: {
   const { mutate } = useSWRConfig();
   const api = useApi();
 
-  const trySaveJson = (val: string) => {
-    const strSizeLimit = 500 * 1024; // 500KB
-    if (val.length > strSizeLimit) {
-      notification.error({
-        message: "Value is too long",
-        description: "Please provide a value up to 500KB characters long",
-      });
-      return;
-    }
-
-    try {
-      val = jsonrepair(val);
-    } catch {}
-
-    if (val[0] !== "{") {
-      notification.warning({
-        message: "Invalid JSON object",
-        description: "Only JSON objects (wrapped in {}) are supported.",
-      });
-      return;
-    }
-
-    try {
-      const jsonObj = JSON.parse(val);
-      form.setFieldsValue({
-        credentials: { credentials: jsonObj },
-      });
-    } catch (err) {
-      notification.warning({
-        message: "Invalid JSON",
-        description: `${err}`,
-      });
-    }
-  };
-
   const renderFormItem = (
     key: string,
     settingMeta: SettingFieldMeta,
@@ -792,7 +756,7 @@ function GoogleSheetsSignInButton(props: {
   disabled?: boolean;
 }) {
   // Must adhere to Google branding guidelines
-  const { onStart, onSuccess, onFailure, children, disabled } = props;
+  const { onStart, onSuccess, onFailure, disabled } = props;
   return (
     <ConnectOAuthButton
       onStart={onStart}

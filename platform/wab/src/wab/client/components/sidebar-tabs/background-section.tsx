@@ -416,7 +416,7 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
             value={`${lin.angle}deg`}
             onChange={(val) => {
               updateImg(lin, () => {
-                const { num, units } = ensure(
+                const { num } = ensure(
                   css.parseCssNumericNew(val || "0"),
                   "Must be a valid numeric value",
                 );

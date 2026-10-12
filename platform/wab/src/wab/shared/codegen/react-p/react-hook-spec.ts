@@ -49,13 +49,6 @@ export class ReactHookSpec {
     );
   }
 
-  isComponentHook = () => {
-    return (
-      this.triggerNode === this.component.tplTree &&
-      !isPrivateStyleVariant(this.sv)
-    );
-  };
-
   /**
    * Returns a list of js statements installing React hooks for all the
    * interaction triggers for this spec.  For each trigger, defines both
@@ -69,12 +62,6 @@ export class ReactHookSpec {
         ensure(opt.trigger, "Trigger condition is expected to be not null"),
       )};`;
     });
-  };
-
-  getTriggerHooksVarNames = () => {
-    return getTriggerableSelectors(this.sv).flatMap((opt) =>
-      this.getTriggerOptVarName(opt),
-    );
   };
 
   private serializeHookCall = (trigger: TriggerCondition) => {
@@ -144,15 +131,6 @@ export class ReactHookSpec {
     );
     const nodeName = nodeNamer(triggerNode);
     return [stateName, nodeName ? nodeName : `${triggerNode.uid}`].join("_");
-  };
-
-  getReactHookDefaultValue = () => {
-    return getTriggerableSelectors(this.sv).every((opt) =>
-      ensure(opt.trigger, "Trigger condition is expected to be not null")
-        .isOpposite
-        ? true
-        : false,
-    );
   };
 
   serializeIsTriggeredCheck = (triggersRef: string) => {

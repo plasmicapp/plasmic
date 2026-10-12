@@ -55,7 +55,7 @@ export async function seedTestDb(em: EntityManager) {
   // (see `isCoreTeamEmail`), meaning it will receive elevated privileges and
   // doesn't behave like normal accounts.
   // AVOID TESTING WITH THIS ACCOUNT.
-  const { user: adminUser } = await seedTestUserAndProjects(em, {
+  await seedTestUserAndProjects(em, {
     email: "admin@admin.example.com",
     firstName: "Plasmic",
     lastName: "Admin",

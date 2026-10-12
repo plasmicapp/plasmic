@@ -3,9 +3,6 @@ import { notification } from "antd";
 import L from "lodash";
 import React, { ReactNode } from "react";
 
-export const READ_ONLY_EXPLANATION =
-  "Someone else has edited the project, so you are now viewing a stale read-only version.";
-
 export const FORBIDDEN_EXPLANATION =
   "You do not have permissions to edit this project.";
 
@@ -25,29 +22,6 @@ export function showForbiddenError() {
     message: "Error",
     description: (
       <span>Changes could not be saved. {FORBIDDEN_EXPLANATION}</span>
-    ),
-    duration: 0,
-  });
-}
-
-export function showReloadNotice() {
-  const key = L.uniqueId();
-  notification.info({
-    key,
-    message: "Info",
-    description: (
-      <span>
-        {RELOAD_EXPLANATION}{" "}
-        <a
-          onClick={() => {
-            notification.destroy(key);
-            reload();
-          }}
-        >
-          Reload project
-        </a>{" "}
-        to edit.
-      </span>
     ),
     duration: 0,
   });

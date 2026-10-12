@@ -27,7 +27,6 @@ import { useCurrentRecordingTarget } from "@/wab/client/hooks/useCurrentRecordin
 import SlotIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Slot";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { isDedicatedArena } from "@/wab/shared/Arenas";
 import { MIXINS_CAP, PRIVATE_STYLE_VARIANTS_CAP } from "@/wab/shared/Labels";
 import {
   getAncestorTplSlot,
@@ -82,9 +81,7 @@ export const StyleTabContext = createContext<StyleTabFilter>("all");
  * - "selector": Animation on a private style variant with the given CSS selector
  */
 export type NewAnimation =
-  | { type: "base" }
-  | { type: "selector"; cssSelector: string }
-  | null;
+  { type: "base" } | { type: "selector"; cssSelector: string } | null;
 
 interface NewAnimationContextValue {
   newAnimation: NewAnimation;
@@ -308,19 +305,6 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
     </NewAnimationContext.Provider>,
   );
 });
-
-/** Get the focused component, either from the ViewCtx (focused arena frame), or from the arena itself (so, even if you have nothing selected but are on a dedicated page/component arena. */
-export function getFocusedComponentFromViewCtxOrArena(
-  studioCtx: StudioCtx,
-  viewCtx: ViewCtx | undefined,
-) {
-  const arena = studioCtx.currentArena;
-
-  return (
-    viewCtx?.currentComponent() ??
-    (isDedicatedArena(arena) ? arena.component : undefined)
-  );
-}
 
 export const ComponentOrPageTab = observer(function ComponentOrPageTab(props: {
   studioCtx: StudioCtx;

@@ -27,15 +27,7 @@ import {
 import { RuleSet } from "@/wab/shared/model/classes";
 import CssInitials from "css-initials";
 import { Value, generate, parse } from "css-tree";
-import {
-  camelCase,
-  flatten,
-  isString,
-  kebabCase,
-  mapKeys,
-  mapValues,
-  uniq,
-} from "lodash";
+import { camelCase, flatten, isString, kebabCase, mapKeys, uniq } from "lodash";
 import memoizeOne from "memoize-one";
 import { CSSProperties } from "react";
 
@@ -410,10 +402,6 @@ export const showBgPos = (sides: EdgePos) => {
     .map(([side, value]) => `${side} ${value}`)
     .join(" ");
 };
-
-export function markAllImportant(props: CSSProperties): CSSProperties {
-  return mapValues(props, (str) => `${str} !important`) as any;
-}
 
 export function splitCssValueIntoParts(val: string): string[] {
   let ast: Value;

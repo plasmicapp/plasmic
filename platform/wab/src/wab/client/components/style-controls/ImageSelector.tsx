@@ -150,10 +150,6 @@ type ImgInfoProps = {
   imagePreview?: React.ReactNode;
   extended?: boolean;
 };
-interface ImgInfoState {
-  img: HTMLImageElement | undefined;
-}
-
 function useImageSize(url: string) {
   const promiseRef = React.useRef<Cancelable<any> | null>(null);
   const [size, setSize] = React.useState<

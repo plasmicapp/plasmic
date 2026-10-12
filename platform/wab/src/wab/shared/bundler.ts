@@ -28,7 +28,7 @@ import {
   toTs,
 } from "@/wab/shared/model/model-meta";
 import { conformsToType } from "@/wab/shared/model/model-util";
-import { flatten, isArray, isEmpty, isNil, isObject, uniq } from "lodash";
+import { isArray, isEmpty, isNil, isObject, uniq } from "lodash";
 import { Result, err, ok } from "neverthrow";
 
 export type { Bundle, BundledInst };
@@ -54,7 +54,6 @@ const key2Addr = (key: string): Addr => {
   const vals = key.split(" ");
   return { uuid: vals[0], iid: vals[1] };
 };
-export const addrSlug = (xref: Addr) => `${xref.uuid}-${xref.iid}`;
 
 type Ref = { __ref: string } | { __xref: Addr };
 
@@ -554,26 +553,6 @@ export class Bundler {
 
   allUuids() {
     return [...this._uuid2root.keys()].sort();
-  }
-
-  // Extract the required bundle UUIDs.
-  extractDependencies(bundle: Bundle) {
-    return flatten(
-      Object.keys(bundle.map || {}).map((iid) => {
-        const json = bundle.map[iid];
-
-        return [
-          ...(function* () {
-            for (const field in json) {
-              const val = json[field];
-              if (isXref(val)) {
-                yield val.__xref.uuid;
-              }
-            }
-          })(),
-        ];
-      }),
-    );
   }
 
   /**

@@ -27,7 +27,6 @@ import {
 import {
   ensureValidCombo,
   getOrderedScreenVariants,
-  getPartitionedScreenVariants,
   isBaseVariant,
   isComponentStyleVariant,
   isGlobalVariant,
@@ -46,10 +45,6 @@ export type VariantPinState =
   | "pinned-false"
   | "evaluated-true"
   | "evaluated-false";
-
-export function isActiveVariantPinState(vstate: VariantPinState | undefined) {
-  return !!vstate && (vstate.includes("selected") || vstate.includes("true"));
-}
 
 export interface PinState {
   targetVariants: Variant[];
@@ -242,20 +237,6 @@ export class PinStateManager {
         state = this.activateVariant(state, v);
       });
     }
-    return state;
-  }
-
-  updateScreenVariants(state: PinState, newWidth: number) {
-    const [activeVariants, inactiveVariants] = getPartitionedScreenVariants(
-      this.site,
-      newWidth,
-    );
-    activeVariants.forEach(
-      (variant) => (state = this.activateVariant(state, variant)),
-    );
-    inactiveVariants.forEach(
-      (variant) => (state = this.deactivateVariant(state, variant)),
-    );
     return state;
   }
 
@@ -480,18 +461,6 @@ export abstract class PinManager {
     this.setPinState({
       targetVariants: [],
       pinnedVariants: new Map(),
-    });
-  }
-
-  clearAllButScreen() {
-    const cur = this.getPinState();
-    this.setPinState({
-      targetVariants: cur.targetVariants.filter((v) => isScreenVariant(v)),
-      pinnedVariants: new Map(
-        Array.from(cur.pinnedVariants.entries()).filter(([variant, _pin]) =>
-          isScreenVariant(variant),
-        ),
-      ),
     });
   }
 

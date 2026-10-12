@@ -6,7 +6,6 @@ import {
   isPrivateStyleVariant,
   tryGetVariantSetting,
 } from "@/wab/shared/Variants";
-import { betweenInclusive, ensureString } from "@/wab/shared/common";
 import { gridChildProps } from "@/wab/shared/core/style-props";
 import {
   NumericSize,
@@ -21,11 +20,9 @@ import {
   getRshPositionType,
 } from "@/wab/shared/layoututils";
 import { TplNode, TplTag } from "@/wab/shared/model/classes";
-import * as L from "lodash";
 import { CSSProperties } from "react";
 
 export type Axis = "rows" | "cols";
-export const axes: ["rows", "cols"] = ["rows", "cols"];
 
 export interface Track {
   readonly size: Size;
@@ -125,47 +122,9 @@ export interface Area {
   readonly cols: TrackRange;
 }
 
-export function withinArea(
-  rowNum: number,
-  colNum: number,
-  area: Area,
-): boolean {
-  return (
-    betweenInclusive(rowNum, area.rows.start, area.rows.end) &&
-    betweenInclusive(colNum, area.cols.start, area.cols.end)
-  );
-}
-
-export interface Child {
+interface Child {
   readonly id: string;
   readonly area: Area;
-}
-
-/**
- * Simply converts line number specs to track specs.  Any `auto` become 0.
- */
-export function parseGridChildAreaCss(
-  props: CSSProperties | CSSStyleDeclaration,
-): Area {
-  const [rowStart, rowEnd] = L.words(ensureString(props.gridRow));
-  const [colStart, colEnd] = L.words(ensureString(props.gridColumn));
-  return {
-    rows: {
-      start: +rowStart - 1 || 0,
-      end: +rowEnd - 2 || 0,
-    },
-    cols: {
-      start: +colStart - 1 || 0,
-      end: +colEnd - 2 || 0,
-    },
-  };
-}
-
-export function showGridChildCss(child: Child): CSSProperties {
-  return {
-    gridRow: `${child.area.rows.start + 1} / ${child.area.rows.end + 2}`,
-    gridColumn: `${child.area.cols.start + 1} / ${child.area.cols.end + 2}`,
-  };
 }
 
 function convertToGridChildren(parent: TplNode, variantCombo: VariantCombo) {
@@ -210,12 +169,4 @@ export function removeAllGridChildProps(parent: TplNode) {
       removeGridChildProps(tag, vs.variants);
     });
   });
-}
-
-export function getAxisLabel(axis: Axis) {
-  return axis === "rows" ? "row" : "column";
-}
-
-export function getAxisAbbrevLabel(axis: Axis) {
-  return axis === "rows" ? "row" : "col";
 }

@@ -54,8 +54,7 @@ import { isString, omit } from "lodash";
 import { observable, runInAction } from "mobx";
 
 const officialHook = (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__ as
-  | GlobalHook
-  | undefined;
+  GlobalHook | undefined;
 
 let commitCount = 1;
 const fiberToCommitCount = new WeakMap<Fiber, number>();

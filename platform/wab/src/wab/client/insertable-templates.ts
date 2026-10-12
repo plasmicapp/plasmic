@@ -433,8 +433,7 @@ export async function buildCopyStateExtraInfo(
   studioCtx: StudioCtx,
   state: CopyState,
 ): Promise<CopyStateExtraInfo> {
-  const { projectId, componentUuid, componentName, references, bundleRef } =
-    state;
+  const { projectId, componentUuid, componentName, references } = state;
 
   const site = await studioCtx.app.withSpinner(
     (async () => {

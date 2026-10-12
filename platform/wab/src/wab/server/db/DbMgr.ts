@@ -61,7 +61,6 @@ import {
   OauthToken,
   OauthTokenBase,
   OauthTokenProvider,
-  Org,
   PairNamespace,
   PartialRevisionCache,
   Permission,
@@ -86,9 +85,6 @@ import {
   TrustedHost,
   User,
   Workspace,
-  WorkspaceApiToken,
-  WorkspaceAuthConfig,
-  WorkspaceUser,
 } from "@/wab/server/entities/Entities";
 import { isPaidTeam } from "@/wab/server/freeTrial";
 import { logger } from "@/wab/server/observability";
@@ -193,7 +189,6 @@ import {
   isUuidV4,
   jsonClone,
   last,
-  maybe,
   maybeOne,
   mergeSane,
   mkShortId,
@@ -259,7 +254,6 @@ import {
   MergeStep,
   tryMerge,
 } from "@/wab/shared/site-diffs/merge-core";
-import * as Sentry from "@sentry/node";
 import { LanguageModelRequestMetadata } from "ai";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
@@ -404,11 +398,6 @@ export type UpdatableBranchFields = Pick<
 
 export const updatableProjectRepositoryFields = ["cachedCname"] as const;
 
-export type UpdatableProjectRepositoryFields = Pick<
-  ProjectRepository,
-  (typeof updatableProjectRepositoryFields)[number]
->;
-
 export class DbMgrError extends Error {}
 
 export class ProjectRevisionError extends DbMgrError {
@@ -421,10 +410,6 @@ export class NotFoundError extends DbMgrError {
 
 export class ForbiddenError extends DbMgrError {
   name = "ForbiddenError";
-}
-
-export class UnsupportedImportError extends DbMgrError {
-  name = "UnsupportedImportError";
 }
 
 export class WeakPasswordError extends DbMgrError {
@@ -765,12 +750,6 @@ export class DbMgr implements MigrationDbMgr {
     }
   }
 
-  private async tryGetNormalActorUser() {
-    return maybe(this.tryGetNormalActorId(), (userId) =>
-      this.getUserById(userId),
-    );
-  }
-
   private async getNormalActorUser() {
     return this.actor.type === "NormalUser"
       ? this.getUserById(this.actor.userId)
@@ -847,10 +826,6 @@ export class DbMgr implements MigrationDbMgr {
 
   private featureTiers() {
     return this.entMgr.getRepository(FeatureTier);
-  }
-
-  private orgs() {
-    return this.entMgr.getRepository(Org);
   }
 
   private teams() {
@@ -985,14 +960,6 @@ export class DbMgr implements MigrationDbMgr {
     return this.entMgr.getRepository(Branch);
   }
 
-  private workspaceApiTokens() {
-    return this.entMgr.getRepository(WorkspaceApiToken);
-  }
-
-  private workspaceAuthConfigs() {
-    return this.entMgr.getRepository(WorkspaceAuthConfig);
-  }
-
   private hostlessVersions() {
     return this.entMgr.getRepository(HostlessVersion);
   }
@@ -1011,10 +978,6 @@ export class DbMgr implements MigrationDbMgr {
 
   private commentReactions() {
     return this.entMgr.getRepository(CommentReaction);
-  }
-
-  private workspaceUsers() {
-    return this.entMgr.getRepository(WorkspaceUser);
   }
 
   private endUserDirectories() {
@@ -1293,17 +1256,6 @@ export class DbMgr implements MigrationDbMgr {
     }
     const teamOwner = await this.getUserById(ownerId);
     return [teamOwner];
-  }
-
-  async getTeamsByParentId(ids: TeamId[]) {
-    await this._checkResourcesPerms(
-      { type: "team", ids: ids },
-      "viewer",
-      "get",
-      false,
-    );
-
-    return this._queryTeams({ parentTeamId: In(ids) }).getMany();
   }
 
   async getParentTeamIds(ids: TeamId[]): Promise<TeamId[]> {
@@ -2333,21 +2285,6 @@ export class DbMgr implements MigrationDbMgr {
     });
     await this.entMgr.insert(ResetPassword, newPasswordReset);
     return secret;
-  }
-
-  async deleteResetPasswordForUser(user: User) {
-    this.checkSuperUser();
-    const existingPasswordReset = await this.entMgr.find(ResetPassword, {
-      forUser: user,
-      used: false,
-      ...excludeDeleted(),
-    });
-    if (existingPasswordReset.length > 0) {
-      const deletedAt = new Date();
-      existingPasswordReset.forEach((p) => (p.deletedAt = deletedAt));
-      await this.entMgr.save(existingPasswordReset);
-    }
-    return existingPasswordReset.length;
   }
 
   async getResetPassword(
@@ -4150,22 +4087,6 @@ export class DbMgr implements MigrationDbMgr {
       .execute();
   }
 
-  async updateProjectSyncMetadata(
-    projectId: string,
-    revision: number,
-    projectRevId: string,
-    data: string,
-  ) {
-    this.allowAnyone();
-    return await this.projectSyncMetadata()
-      .createQueryBuilder()
-      .update()
-      .set({ data: data })
-      .where(`"projectRevId" = :projectRevId`)
-      .setParameter("projectRevId", projectRevId)
-      .execute();
-  }
-
   /**
    * We do not add permission for the current user. E.g. the project may just be
    * a template project that is being cloned using the Get Started section of
@@ -4570,11 +4491,6 @@ export class DbMgr implements MigrationDbMgr {
   async listAllPkgs() {
     this.checkSuperUser();
     return this.pkgs().find();
-  }
-
-  async listAllPkgVersions() {
-    this.checkSuperUser();
-    return this.pkgVersions().find();
   }
 
   async listAllPkgVersionIds() {
@@ -6961,12 +6877,6 @@ export class DbMgr implements MigrationDbMgr {
     });
   }
 
-  private async getAllValuesForKey(namespace: KeyValueNamespace, key: string) {
-    return (await this.getAllKeyValuesForKey(namespace, key)).map(
-      (kv) => kv.value,
-    );
-  }
-
   private async getAllKeyValuesForKey(
     namespace: KeyValueNamespace,
     key: string,
@@ -6986,15 +6896,6 @@ export class DbMgr implements MigrationDbMgr {
         value,
       });
     mergeSane(keyValue, this.stampUpdate(), { value });
-    await this.entMgr.save([keyValue]);
-  }
-
-  async deleteKeyValue(namespace: KeyValueNamespace, key: string) {
-    const keyValue = ensure(
-      await this.tryGetKeyValue(namespace, key),
-      "You can't delete a key value that doesn't exist",
-    );
-    mergeSane(keyValue, this.stampDelete());
     await this.entMgr.save([keyValue]);
   }
 
@@ -7880,23 +7781,6 @@ export class DbMgr implements MigrationDbMgr {
     return await this.entMgr.save(copiedRow);
   }
 
-  async getPublishedRows(tableId: CmsTableId) {
-    const publishedRows = await this.entMgr.find(CmsRow, {
-      tableId: tableId,
-      data: Not(IsNull()),
-      deletedAt: IsNull(),
-    });
-    if (publishedRows.length > 500) {
-      Sentry.captureEvent({
-        message: "The result of the db query contains more than 500 rows.",
-        extra: {
-          tableId: tableId,
-        },
-      });
-    }
-    return publishedRows;
-  }
-
   // TODO We are always querying just the default locale.
   async queryCmsRows(
     tableId: CmsTableId,
@@ -8597,7 +8481,6 @@ export class DbMgr implements MigrationDbMgr {
       "change main branch protection",
     );
 
-    const project = await this.getProjectById(projectId);
     await this.updateProject({
       id: projectId,
       isMainBranchProtected: protected_,
@@ -8991,79 +8874,6 @@ export class DbMgr implements MigrationDbMgr {
     };
   }
 
-  async getWorkspaceToken(workspaceId: WorkspaceId): Promise<string> {
-    await this.checkWorkspacePerms(
-      workspaceId,
-      "viewer",
-      "get workspace token",
-    );
-
-    let workspaceApiToken = await this.workspaceApiTokens().findOne({
-      workspaceId,
-      ...excludeDeleted(),
-    });
-
-    if (!workspaceApiToken) {
-      const token = generateSomeApiToken();
-      workspaceApiToken = this.workspaceApiTokens().create({
-        ...this.stampNew(),
-        workspaceId,
-        token,
-      });
-      await this.workspaceApiTokens().save(workspaceApiToken);
-    }
-
-    return workspaceApiToken.token;
-  }
-
-  async listWorkspaceUsers(workspaceId: WorkspaceId) {
-    await this.checkWorkspacePerms(workspaceId, "viewer", "list users");
-    return this.workspaceUsers().find({
-      workspaceId,
-      ...excludeDeleted(),
-    });
-  }
-
-  async editWorkspaceUser(
-    workspaceId: WorkspaceId,
-    userId: string,
-    roles: string[],
-    properties: any,
-  ) {
-    await this.checkWorkspacePerms(workspaceId, "editor", "edit user");
-    const workspaceUser = await findExactlyOne(this.workspaceUsers(), {
-      id: userId,
-    });
-    workspaceUser.roles = roles;
-    workspaceUser.properties = properties;
-    await this.workspaceUsers().save(workspaceUser);
-    return workspaceUser;
-  }
-
-  async createWorkspaceAuthConfig(
-    workspaceId: WorkspaceId,
-    provider: string | undefined,
-    config: any,
-  ) {
-    await this.checkWorkspacePerms(workspaceId, "editor", "create auth config");
-    const workspaceAuthConfig = this.workspaceAuthConfigs().create({
-      ...this.stampNew(),
-      workspaceId,
-      provider,
-      config,
-    });
-    await this.workspaceAuthConfigs().save(workspaceAuthConfig);
-    return workspaceAuthConfig;
-  }
-
-  async getWorkspaceAuthConfig(workspaceId: WorkspaceId) {
-    await this.checkWorkspacePerms(workspaceId, "viewer", "get auth config");
-    return this.workspaceAuthConfigs().findOne({
-      workspaceId,
-      ...excludeDeleted(),
-    });
-  }
-
   async createEndUserDirectory(teamId: TeamId, name?: string) {
     await this.checkTeamPerms(teamId, "editor", "create end user directory");
     const endUserDirectory = this.endUserDirectories().create({
@@ -9313,14 +9123,6 @@ export class DbMgr implements MigrationDbMgr {
     endUser.properties = properties;
     await this.endUsers().save(endUser);
     return endUser;
-  }
-
-  async getUserDirectoryByToken(token: string) {
-    const endUserDirectory = await findExactlyOne(this.endUserDirectories(), {
-      token,
-      ...excludeDeleted(),
-    });
-    return endUserDirectory;
   }
 
   async existsIssuedCode(code: string): Promise<boolean> {
@@ -9729,22 +9531,6 @@ export class DbMgr implements MigrationDbMgr {
       },
     });
     return endUsers;
-  }
-
-  async getAppEndUserAccess(appEndUserAccessId: string) {
-    const appEndUserAccess = await findExactlyOne(this.appEndUserAccess(), {
-      where: {
-        id: appEndUserAccessId,
-        ...excludeDeleted(),
-      },
-      relations: ["role"],
-    });
-    await this.checkProjectPerms(
-      appEndUserAccess.projectId,
-      "viewer",
-      "get app end user access",
-    );
-    return appEndUserAccess;
   }
 
   async checkDirectoryPerms(
@@ -10616,20 +10402,6 @@ export class DbMgr implements MigrationDbMgr {
       .execute();
 
     return comment;
-  }
-
-  async getFirstCommentInThread(
-    threadId: CommentThreadId,
-  ): Promise<Comment | undefined> {
-    return await this.comments().findOne({
-      where: {
-        threadId,
-        ...excludeDeleted(),
-      },
-      order: {
-        createdAt: "ASC",
-      },
-    });
   }
 
   async deleteThreadInProject(

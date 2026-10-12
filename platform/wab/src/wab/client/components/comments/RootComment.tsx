@@ -11,7 +11,6 @@ export default observer(function RootComment({
 }) {
   const studioCtx = useStudioCtx();
   const [comment] = commentThread.comments;
-  const threadId = commentThread.id;
 
   return (
     <CommentPost

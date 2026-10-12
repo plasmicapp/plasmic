@@ -75,12 +75,7 @@ import {
 } from "@/wab/shared/core/site-style-tokens";
 import { isTplAttachedToSite } from "@/wab/shared/core/sites";
 import { SlotSelection, isSlotSelection } from "@/wab/shared/core/slots";
-import {
-  StateVariableType,
-  getStateOnChangePropName,
-  getStateValuePropName,
-  getStateVarName,
-} from "@/wab/shared/core/states";
+import { getStateVarName } from "@/wab/shared/core/states";
 import { makeStyleExprClassName } from "@/wab/shared/core/styles";
 import { toFinalToken } from "@/wab/shared/core/tokens";
 import * as Tpls from "@/wab/shared/core/tpls";
@@ -89,7 +84,6 @@ import {
   ComponentEvalContext,
   ValComponent,
   ValNode,
-  ValTag,
   ValTextTag,
   bestValForTpl,
 } from "@/wab/shared/core/val-nodes";
@@ -100,7 +94,7 @@ import {
   tplFromSelectable,
 } from "@/wab/shared/core/vals";
 import { isDraggableSize } from "@/wab/shared/css-size";
-import { CanvasEnv, evalCodeWithEnv, tryEvalExpr } from "@/wab/shared/eval";
+import { CanvasEnv, tryEvalExpr } from "@/wab/shared/eval";
 import { Pt, rectsIntersect } from "@/wab/shared/geom";
 import { disposeOwnedComputedFns } from "@/wab/shared/mobx-util";
 import {
@@ -116,7 +110,6 @@ import {
   StyleTokenRef,
   TplComponent,
   TplNode,
-  TplSlot,
   TplTag,
   Variant,
   VariantSetting,
@@ -128,7 +121,6 @@ import { isTplResizable } from "@/wab/shared/sizingutils";
 import {
   generateStateOnChangeProp,
   generateStateValueProp,
-  useDollarState,
 } from "@plasmicapp/react-web";
 import asynclib from "async";
 import $ from "jquery";
@@ -329,19 +321,11 @@ export class ViewCtx extends WithDbCtx {
     return this._arenaFrame;
   }
 
-  arenaFrameRoot() {
-    return this.arenaFrame().container.component.tplTree;
-  }
-
   getContextData(val: ValComponent) {
     if (!isCodeComponent(val.tpl.component)) {
       return null;
     }
     return this.frameState.contextData.get(val.key) ?? null;
-  }
-
-  getContextDataByValKey(valKey: string) {
-    return this.frameState.contextData.get(valKey);
   }
 
   createSetContextDataFn = computedFn((valKey: string) => {
@@ -382,17 +366,6 @@ export class ViewCtx extends WithDbCtx {
 
   refreshFetchedDataFromPlasmicQuery(invalidateKey?: string) {
     this.canvasCtx.refreshFetchedDataFromPlasmicQuery(invalidateKey);
-  }
-
-  private _dndDraggedNode = observable.box<ValTag | ValComponent | undefined>(
-    undefined,
-    { name: "ViewCtx.dndDraggedNode" },
-  );
-  getDndDraggedNode() {
-    this._dndDraggedNode.get();
-  }
-  setDndDraggedNode(node?: ValTag | ValComponent) {
-    this._dndDraggedNode.set(node);
   }
 
   // focusedTpl: TplNode | null;
@@ -1780,9 +1753,6 @@ export class ViewCtx extends WithDbCtx {
   viewState() {
     return this._viewState;
   }
-  setViewState(viewState: any) {
-    this._viewState = viewState;
-  }
   stopUnlogged() {
     this.studioCtx.stopUnlogged();
   }
@@ -1842,17 +1812,6 @@ export class ViewCtx extends WithDbCtx {
    */
   effectiveCurrentVariantSetting(tpl: TplNode) {
     return this.variantTplMgr().effectiveVariantSetting(tpl);
-  }
-
-  currentVariantSettingForFocus() {
-    const tpl = ensureInstance(
-      this.focusedTpl(true),
-      TplTag,
-      TplComponent,
-      TplSlot,
-    );
-    const vs = this.currentVariantSetting(tpl);
-    return vs;
   }
 
   private strictComponent() {
@@ -2137,20 +2096,6 @@ export class ViewCtx extends WithDbCtx {
         f();
       }
     });
-  }
-
-  private _dndMgr: any;
-  _unsafeDndMgr() {
-    return this._dndMgr;
-  }
-  _unsafeSetDndMgr(dndMgr: any) {
-    this._dndMgr = dndMgr;
-  }
-
-  bundleAllForTransport() {
-    const allBundle = this.studioCtx.bundleSite() as any;
-    allBundle.siteId = this.siteInfo.id;
-    return allBundle;
   }
 
   eltFinder = (val: ValNode) => {
@@ -2474,6 +2419,7 @@ export class ViewCtx extends WithDbCtx {
   dom2tpl<T extends object = HTMLElement>($dom: JQuery<T>) {
     return ensure(this.dom2val($dom), "Couldn't find ValNode from DOM").tpl;
   }
+
   dom2focusObj<T extends object = HTMLElement>(
     $dom: /*TWZ*/ JQuery<T>,
   ): ValNode | SlotSelection | undefined {
@@ -2556,39 +2502,6 @@ export class ViewCtx extends WithDbCtx {
       initialNode = false;
     }
     return undefined;
-  }
-
-  use$StateForRoot() {
-    const component = this.currentComponent();
-    const canvasEnv = this.getCanvasEnvForTpl(component.tplTree);
-    const stateSpecs = component.states.map((state) => ({
-      path: getStateVarName(state),
-      type: state.accessType as "private" | "readonly" | "writable",
-      ...(state.param.defaultExpr
-        ? {
-            initFunc: evalCodeWithEnv(
-              `($props, $state, $ctx) => (${getRawCode(
-                state.param.defaultExpr,
-                {
-                  projectFlags: this.projectFlags(),
-                  component,
-                  inStudio: true,
-                },
-              )})`,
-              {},
-              this.canvasCtx.win(),
-            ),
-          }
-        : {}),
-      ...(state.accessType !== "private"
-        ? { onChangeProp: getStateOnChangePropName(state) }
-        : {}),
-      ...(state.accessType === "writable"
-        ? { valueProp: getStateValuePropName(state) }
-        : {}),
-      variableType: state.variableType as StateVariableType,
-    }));
-    return useDollarState(stateSpecs, canvasEnv?.$props ?? {});
   }
 }
 
@@ -2701,15 +2614,6 @@ export abstract class ViewComponentBase<P = {}, S = {}> extends React.Component<
 
   valState() {
     return this.viewCtx().valState();
-  }
-}
-
-export class ViewComponent<
-  P extends ViewComponentProps = ViewComponentProps,
-  S = {},
-> extends ViewComponentBase<P, S> {
-  viewCtx() {
-    return this.props.viewCtx;
   }
 }
 

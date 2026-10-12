@@ -1,41 +1,8 @@
-import { ValueViewer } from "@/wab/client/components/coding/ValueViewer";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { cx } from "@/wab/shared/common";
 import { summarizeVal } from "@/wab/shared/core/vals";
-import { isKnownRenderExpr, isKnownTplNode } from "@/wab/shared/model/classes";
 import { Tooltip } from "antd";
-import L from "lodash";
 import * as React from "react";
-import * as US from "underscore.string";
-
-export const richSummarizeVal = function (val) {
-  if (val == null) {
-    return "(nothing)";
-  } else if (L.isString(val)) {
-    return US.quote(val);
-  } else if (L.isNumber(val) || L.isDate(val) || L.isBoolean(val)) {
-    return `${val}`;
-  } else if (
-    isKnownRenderExpr(val) ||
-    isKnownTplNode(val) ||
-    (Array.isArray(val) && val.length > 0 && isKnownTplNode(val[0]))
-  ) {
-    return "(renderable)";
-  } else if (Array.isArray(val)) {
-    if (val.length === 0) {
-      return "(empty collection)";
-    } else {
-      return <ValueViewer value={val} />;
-    }
-  } else if (L.isError(val)) {
-    // L.isError handles cross-frame Errors
-    return `ERROR: ${val}`;
-  } else if (L.isObject(val)) {
-    return <ValueViewer value={val} />;
-  } else {
-    throw new Error(`unknown value of type ${val.constructor.name}`);
-  }
-};
 
 type ValuePreviewProps = {
   appearsEditable?: boolean;

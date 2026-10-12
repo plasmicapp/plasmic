@@ -42,8 +42,6 @@ import { ok } from "neverthrow";
 import React from "react";
 import useSWR from "swr";
 
-export const outlineModes = ["blocks", "inlines", "all"];
-
 interface TopBarProps {
   preview?: boolean;
 }

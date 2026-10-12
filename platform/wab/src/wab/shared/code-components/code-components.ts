@@ -405,16 +405,6 @@ export type HrefPropType<P> = PropTypeBase<ComponentControlContext<P>> & {
   type: "href";
 };
 
-export type DateStringPropType<P> = PropTypeBase<ComponentControlContext<P>> & {
-  type: "dateString";
-};
-
-export type DateRangeStringsPropType<P> = PropTypeBase<
-  ComponentControlContext<P>
-> & {
-  type: "dateRangeStrings";
-};
-
 export type TargetPropType<P> = PropTypeBase<ComponentControlContext<P>> & {
   type: "target";
 };

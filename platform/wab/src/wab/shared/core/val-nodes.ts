@@ -21,7 +21,7 @@ import {
   createRuleSetMerger,
   expandRuleSets,
 } from "@/wab/shared/core/styles";
-import { TplTagType, TplTextTag, ancestors } from "@/wab/shared/core/tpls";
+import { TplTextTag, ancestors } from "@/wab/shared/core/tpls";
 import { CanvasEnv } from "@/wab/shared/eval";
 import { SlotInfo, ValState } from "@/wab/shared/eval/val-state";
 import mobx from "@/wab/shared/import-mobx";
@@ -35,7 +35,6 @@ import {
   TplTag,
 } from "@/wab/shared/model/classes";
 import L, { uniq } from "lodash";
-import type React from "react";
 
 // Remove `readonly` modifier so the global hook can update the node's children.
 // Should only be called when updating the React tree nodes.
@@ -543,13 +542,11 @@ function bestValForTplInternal(
     valIndex = nextValIndex;
     tplIndex = nextTplIndex;
   }
-  if (
-    !(
-      valPath[valIndex] &&
-      tplPath[tplIndex] &&
-      valPath[valIndex].tpl === tplPath[tplIndex]
-    )
-  ) {
+  if (!(
+    valPath[valIndex] &&
+    tplPath[tplIndex] &&
+    valPath[valIndex].tpl === tplPath[tplIndex]
+  )) {
     return undefined;
   }
 
@@ -605,30 +602,12 @@ export function bestValForTpl(
     .result();
 }
 
-export function isScrollableVal(val: ValTag) {
-  return getComputedStyleForVal(val).get("overflow") === "auto";
-}
-
 export function getValTagForValNode(val: ValTag | ValComponent): ValTag {
   return val instanceof ValTag
     ? val
     : getValTagForValNode(
         ensureInstance(val.contents?.[0], ValTag, ValComponent),
       );
-}
-
-export function isValText(val: ValNode) {
-  if (!(val instanceof ValTag)) {
-    return false;
-  }
-  return val.tpl.type === TplTagType.Text;
-}
-
-export function isValImage(val: ValNode) {
-  if (!(val instanceof ValTag)) {
-    return false;
-  }
-  return val.tpl.type === TplTagType.Image;
 }
 
 export function getComputedStyleForVal(val: ValTag | ValComponent) {
@@ -657,10 +636,6 @@ export function getComputedStyleForVal(val: ValTag | ValComponent) {
 
 export function isValTagOrComponent(val: any): val is ValTag | ValComponent {
   return val instanceof ValTag || val instanceof ValComponent;
-}
-
-export function isValTag(val: any): val is ValTag {
-  return val instanceof ValTag;
 }
 
 export function isValComponent(val: any): val is ValComponent {
@@ -694,11 +669,5 @@ export function getLayoutContents(val: ValNode): ValNode[] {
 }
 
 export function slotContentValNode(child: ValNode) {
-  return child;
-}
-
-export function slotContentValNodeOrReactElement(
-  child: ValNode | React.ReactElement,
-) {
   return child;
 }

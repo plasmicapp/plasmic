@@ -1,6 +1,5 @@
 import { useCmsDatabase } from "@/wab/client/components/cms/cms-contexts";
 import { Spinner } from "@/wab/client/components/widgets";
-import { useApi } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultCmsRootProps,
   PlasmicCmsRoot,
@@ -18,7 +17,6 @@ export interface CmsRootProps extends DefaultCmsRootProps {
 
 function CmsRoot_(props: CmsRootProps, ref: HTMLElementRefOf<"div">) {
   const { databaseId, ...rest } = props;
-  const api = useApi();
   const database = useCmsDatabase(databaseId);
   if (!database) {
     return <Spinner />;

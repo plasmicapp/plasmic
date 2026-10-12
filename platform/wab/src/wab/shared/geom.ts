@@ -383,9 +383,6 @@ export class Box implements Transformable<Box> {
   withSizeOfPt(size: Pt) {
     return this.withSize(size.x, size.y);
   }
-  withSizeOfRect({ width, height }: Rect) {
-    return this.withSize(width, height);
-  }
   withSizeOfBox(other: Box) {
     return this.withSize(other.width(), other.height());
   }
@@ -623,11 +620,6 @@ export const dimProps: ReadonlyArray<DimProp> = [
   "right",
   "bottom",
 ];
-
-export interface Size {
-  width: number;
-  height: number;
-}
 
 export function rectTopLeft(rect: Rect) {
   return new Pt(rect.left, rect.top);

@@ -377,21 +377,6 @@ export function makeChildrenStr(serializedChildren: string[]) {
 }
 
 /**
- * Receives a tag name as argument and returns whether that name is
- * a React component or a plain HTML tag. An element is considered to
- * be a React component if it has a dot (because HTML tags have no dots
- * but @plasmicapp/react-web components do) or starts with an uppercase
- * letter.
- */
-export function isReactComponent(elementType: string): boolean {
-  if (elementType.includes(".")) {
-    return true;
-  }
-
-  return elementType.charAt(0).toUpperCase() === elementType.charAt(0);
-}
-
-/**
  * Returns a version of `name` that we can set as property on the primary
  * export -- the functional component.  `name` must already be a valid js
  * identifier.

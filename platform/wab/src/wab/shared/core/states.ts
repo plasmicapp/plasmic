@@ -41,7 +41,7 @@ import {
 } from "@/wab/shared/core/exprs";
 import * as Lang from "@/wab/shared/core/lang";
 import { ParamExportType } from "@/wab/shared/core/lang";
-import { extractComponentUsages, writeable } from "@/wab/shared/core/sites";
+import { writeable } from "@/wab/shared/core/sites";
 import * as Tpls from "@/wab/shared/core/tpls";
 import { isTplComponent } from "@/wab/shared/core/tpls";
 import { DevFlagsType } from "@/wab/shared/devflags";
@@ -635,19 +635,6 @@ export function addImplicitStates(site: Site, component: Component) {
       }
       ensureCorrectImplicitStates(site, referencedComponent, tpl);
     },
-  );
-}
-
-export function findImplicitStates(
-  site: Site,
-  component: Component,
-  state: State,
-) {
-  return extractComponentUsages(site, component).components.flatMap(
-    (refComponent) =>
-      refComponent.states
-        .filter((refState) => refState.implicitState === state)
-        .map((refState) => ({ component: refComponent, state: refState })),
   );
 }
 

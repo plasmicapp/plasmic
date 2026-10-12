@@ -139,7 +139,6 @@ import {
   findExprsInComponent,
   findExprsInNode,
   flattenTpls,
-  isTplSlot,
   isTplVariantable,
   replaceTplTreeByEmptyBox,
 } from "@/wab/shared/core/tpls";
@@ -189,11 +188,6 @@ import {
   frameSizeGroups,
 } from "@/wab/shared/responsiveness";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import {
-  TplVisibility,
-  getVariantSettingVisibility,
-  setTplVisibility,
-} from "@/wab/shared/visibility-utils";
 import { notification } from "antd";
 import L from "lodash";
 import { err, ok } from "neverthrow";
@@ -1590,24 +1584,6 @@ export class SiteOps {
     );
   }
 
-  convertNonRenderedToInvisible() {
-    for (const comp of this.studioCtx.site.components) {
-      for (const tpl of flattenTpls(comp.tplTree)) {
-        for (const vs of tpl.vsettings) {
-          const visibility = getVariantSettingVisibility(vs);
-          if (isTplSlot(tpl) && visibility === TplVisibility.DisplayNone) {
-            // Slots should always be "Not Rendered" and not DisplayNone; this was a mistake
-            setTplVisibility(tpl, vs.variants, TplVisibility.NotRendered);
-          }
-          if (!isTplSlot(tpl) && visibility === TplVisibility.NotRendered) {
-            // everything else getting converted to DisplayNone from NotRendered
-            setTplVisibility(tpl, vs.variants, TplVisibility.DisplayNone);
-          }
-        }
-      }
-    }
-  }
-
   rebuildDedicatedArenas() {
     this.tplMgr.rebuildDedicatedArenas();
     this.studioCtx.pruneInvalidViewCtxs();
@@ -1883,30 +1859,6 @@ export async function uploadSvgImage(
     name,
   );
   return { imageResult, opts };
-}
-
-export async function addSvgImageAsset(
-  xml: string,
-  useSvgSize: boolean,
-  width: number,
-  height: number,
-  siteOps: SiteOps,
-  appCtx: AppCtx,
-  name?: string,
-) {
-  const { imageResult, opts } = await uploadSvgImage(
-    xml,
-    useSvgSize,
-    width,
-    height,
-    appCtx,
-    name,
-  );
-  if (!imageResult || !opts) {
-    return {};
-  }
-  const asset = siteOps.createImageAsset(imageResult, opts);
-  return { img: imageResult, asset: asset };
 }
 
 function makeComponentName(site: Site, comp: Component) {

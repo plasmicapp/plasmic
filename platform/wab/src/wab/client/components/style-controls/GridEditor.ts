@@ -1,22 +1,11 @@
 import styles from "@/wab/client/components/style-controls/GridEditor.module.scss";
-import { getRect } from "@/wab/client/dom";
 import { Axis, Offset } from "@/wab/shared/Grids";
 import { Dict } from "@/wab/shared/collections";
 import { ensure, parsePx, zipWithIndex } from "@/wab/shared/common";
 import { px } from "@/wab/shared/core/styles";
 import { ClientRect } from "@/wab/shared/geom";
 import $ from "jquery";
-import L from "lodash";
 import { CSSProperties } from "react";
-
-function ensureValues<T>(x: Dict<T | null | undefined>): Dict<T> {
-  for (const k in x) {
-    if (!x[k]) {
-      throw new Error();
-    }
-  }
-  return x as Dict<T>;
-}
 
 interface MeasuredAxis {
   readonly tracks: ReadonlyArray<number>;
@@ -137,50 +126,6 @@ export function adjustGridStyleForCurZoom(curZoom: number) {
     }
     $e.css(style);
   });
-}
-
-export function measureGrid(subj: HTMLElement) {
-  const computed = ensureValues(
-    L.pick(
-      getComputedStyle(subj),
-      "gridTemplateRows",
-      "gridTemplateColumns",
-      "gridRowGap",
-      "gridColumnGap",
-      "width",
-      "height",
-      "display",
-    ),
-  );
-  const getTrackPixels = (axis: string) =>
-    axis.split(" ").map((word) => parsePx(word));
-
-  const rect = getRect(subj);
-  const pageRect = getRect(
-    ensure(subj.ownerDocument, () => `ownerDocument is nullish`)
-      .documentElement,
-  );
-  const isAtLeft = rect.left < 40;
-  const isAtTop = rect.top < 40;
-  const isAtRight = pageRect.right - rect.right < 40;
-  const isAtBottom = pageRect.bottom - rect.bottom < 40;
-  const measured = {
-    rect: rect,
-    style: computed,
-    rows: {
-      gap: parsePx(computed.gridRowGap),
-      tracks: getTrackPixels(computed.gridTemplateRows),
-      isAtEnd: isAtLeft && !isAtRight,
-      isInset: isAtLeft && isAtRight,
-    },
-    cols: {
-      gap: parsePx(computed.gridColumnGap),
-      tracks: getTrackPixels(computed.gridTemplateColumns),
-      isAtEnd: isAtTop && !isAtBottom,
-      isInset: isAtTop && isAtBottom,
-    },
-  };
-  return measured;
 }
 
 interface MousePos {

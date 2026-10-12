@@ -29,14 +29,6 @@ export function frameToScalerRect(rect: Rect, vc: ViewCtx): Rect {
   return Box.fromRect(rect).moveBy(frameOffset.left, frameOffset.top).rect();
 }
 
-export function scalerToFrameRect(rect: Rect, vc: ViewCtx, round = true): Rect {
-  return clientToFrameRect(
-    vc.viewportCtx.scalerToClient(Box.fromRect(rect)).rect(),
-    vc,
-    round,
-  );
-}
-
 export function frameToClientPt(pt: Pt, vc: ViewCtx): Pt {
   return rectTopLeft(frameToClientRect(pt.toZeroBox().rect(), vc));
 }

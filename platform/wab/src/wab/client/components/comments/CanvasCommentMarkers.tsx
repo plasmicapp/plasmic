@@ -15,11 +15,7 @@ import {
 } from "@/wab/client/studio-ctx/view-ctx";
 import { AnyArena } from "@/wab/shared/Arenas";
 import { ensure, ensureString, withoutNils } from "@/wab/shared/common";
-import {
-  isTplNamable,
-  isTplVariantable,
-  tryGetTplOwnerComponent,
-} from "@/wab/shared/core/tpls";
+import { isTplNamable, tryGetTplOwnerComponent } from "@/wab/shared/core/tpls";
 import { ArenaFrame, ObjInst, TplNode } from "@/wab/shared/model/classes";
 import { mkSemVerSiteElement } from "@/wab/shared/site-diffs";
 import { Popover, Tooltip } from "antd";
@@ -305,10 +301,6 @@ export const CanvasCommentOverlay = observer(function CanvasCommentOverlay({
   if (!$elt || $elt.length === 0) {
     return null;
   }
-
-  const isTargetingSomeNonBaseVariant =
-    isTplVariantable(tpl) &&
-    viewCtx.variantTplMgr().isTargetingNonBaseVariant(tpl);
 
   return createPortal(
     <CanvasTransformedBox

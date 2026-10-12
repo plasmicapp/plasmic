@@ -15,20 +15,54 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
-
 import {
-  EmailContainer,
-  EmailImage,
-  EmailLink,
-} from "@/wab/server/emails/components.tsx"; // plasmic-import: oy2tNUrSNuyD/codeComponent
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
+
+import { EmailContainer } from "@/wab/server/emails/components.tsx"; // plasmic-import: oy2tNUrSNuyD/codeComponent
+import { EmailLink } from "@/wab/server/emails/components.tsx"; // plasmic-import: 7zgaUp0DUGtR/codeComponent
+import { EmailImage } from "@/wab/server/emails/components.tsx"; // plasmic-import: BfZldbVXl9VI/codeComponent
 import Footer from "../../Footer"; // plasmic-import: XGWqRhmEjwRw/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/styleTokensProvider
+
+
 
 createPlasmicElementProxy;
 
@@ -76,12 +110,14 @@ function PlasmicLayout__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <EmailContainer
@@ -94,24 +130,26 @@ function PlasmicLayout__RenderFunc(props: {
         "root_reset_taNK5uwsoPrzfpYmBVwUwX",
         "plasmic_default_styles",
         "plasmic_mixins",
-        "plasmic_tokens",
+        styleTokensClassNames,
         "Layout__root__ndSek"
       )}
       style={{
         backgroundColor: "#ffffff",
         borderRadius: "8px",
-        padding: "24px",
+        padding: "24px"
       }}
     >
       <EmailLink
         data-plasmic-name={"emailLink"}
         data-plasmic-override={overrides.emailLink}
+
         className={classNames("__wab_instance", "Layout__emailLink___23HjL")}
         href={"https://plasmic.app"}
         image={
           <EmailImage
             data-plasmic-name={"emailImage"}
             data-plasmic-override={overrides.emailImage}
+
             className={classNames(
               "__wab_instance",
               "Layout__emailImage__fhmjg"
@@ -127,11 +165,12 @@ function PlasmicLayout__RenderFunc(props: {
 
       {renderPlasmicSlot({
         defaultContents: null,
-        value: args.children,
+        value: args.children
       })}
       <Footer
         data-plasmic-name={"footer"}
         data-plasmic-override={overrides.footer}
+
         className={classNames("__wab_instance", "Layout__footer___9WflH")}
       />
     </EmailContainer>
@@ -142,7 +181,7 @@ const PlasmicDescendants = {
   root: ["root", "emailLink", "emailImage", "footer"],
   emailLink: ["emailLink", "emailImage"],
   emailImage: ["emailImage"],
-  footer: ["footer"],
+  footer: ["footer"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -165,7 +204,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLayout__VariantsArgs;
     args?: PlasmicLayout__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLayout__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicLayout__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLayout__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -190,7 +231,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLayout__ArgProps,
-          internalVariantPropNames: PlasmicLayout__VariantProps,
+          internalVariantPropNames: PlasmicLayout__VariantProps
         }),
       [props, nodeName]
     );
@@ -198,7 +239,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -220,7 +261,7 @@ export const PlasmicLayout = Object.assign(
 
     // Metadata about props expected for PlasmicLayout
     internalVariantProps: PlasmicLayout__VariantProps,
-    internalArgProps: PlasmicLayout__ArgProps,
+    internalArgProps: PlasmicLayout__ArgProps
   }
 );
 

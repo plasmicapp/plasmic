@@ -1,6 +1,5 @@
 import { isCodeComponent } from "@/wab/shared/core/components";
-import { TplCodeComponent, isTplComponent } from "@/wab/shared/core/tpls";
-import { Component, TplNode } from "@/wab/shared/model/classes";
+import { Component } from "@/wab/shared/model/classes";
 import type * as PlasmicDataSourcesContext from "@plasmicapp/data-sources-context";
 import type { ComponentRegistration } from "@plasmicapp/host";
 import type * as ReactWeb from "@plasmicapp/react-web";
@@ -62,12 +61,4 @@ export function isBuiltinCodeComponent(c: Component) {
 
 export function isBuiltinCodeComponentName(name: string) {
   return getBuiltinComponentNames().includes(name);
-}
-
-export function isTplDataFetcher(tpl: TplNode): tpl is TplCodeComponent {
-  return (
-    isTplComponent(tpl) &&
-    tpl.component.name ===
-      getBuiltinComponentRegistrations().PlasmicFetcher.meta.name
-  );
 }

@@ -12,15 +12,8 @@ import {
 } from "@/wab/shared/common";
 import L from "lodash";
 import * as React from "react";
-import {
-  CSSProperties,
-  DetailedHTMLProps,
-  ReactElement,
-  SyntheticEvent,
-} from "react";
+import { CSSProperties, DetailedHTMLProps, ReactElement } from "react";
 import * as ReactDOM from "react-dom";
-
-type EventBase = JQuery.EventBase;
 
 export function truncate(str: string, end: number): string {
   return str.substring(0, end) + "...";
@@ -244,15 +237,6 @@ export function uncontrollable<
   };
   return newClass;
 }
-export function absorb<T, This>(
-  fn: (this: This, e: Event | SyntheticEvent | EventBase) => T,
-) {
-  return function (this: This, e: Event | SyntheticEvent | EventBase) {
-    e.stopPropagation();
-    return fn.call(this, e);
-  };
-}
-
 export function findDOMElt(x: any): Element | null {
   const res = ReactDOM.findDOMNode(x) as Element | null;
   check(!res || L.isElement(res));

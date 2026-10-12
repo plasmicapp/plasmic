@@ -7,30 +7,6 @@ import useSWR from "swr";
 
 const REFRESH_INTERVAL = 30000;
 
-export function useTeamAnalytics(
-  teamId: string,
-  opts: {
-    from: string;
-    to: string;
-  },
-) {
-  const api = useApi();
-  const search = new URLSearchParams(opts);
-  const { data: teamAnalytics } = useSWR(
-    `team-analytics/${teamId}/${search.toString()}`,
-    async () => {
-      const result = await api.getTeamAnalytics(teamId, {
-        ...opts,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      });
-      return result;
-    },
-    { refreshInterval: REFRESH_INTERVAL },
-  );
-
-  return teamAnalytics;
-}
-
 export function useAnalyticsData(opts: {
   teamId: string;
   projectId?: string;

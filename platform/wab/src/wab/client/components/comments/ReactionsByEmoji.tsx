@@ -17,8 +17,6 @@ import * as React from "react";
 function ReactionsPopover(props: { commentId: CommentId }) {
   const { commentId } = props;
   const studioCtx = useStudioCtx();
-  const appCtx = studioCtx.appCtx;
-  const api = appCtx.api;
 
   const commentsCtx = studioCtx.commentsCtx;
   const [showPicker, setShowPicker] = React.useState(false);
@@ -72,7 +70,6 @@ export function ReactionsByEmoji(props: {
 
   const studioCtx = useStudioCtx();
   const appCtx = studioCtx.appCtx;
-  const api = appCtx.api;
 
   const commentsCtx = studioCtx.commentsCtx;
 

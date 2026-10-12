@@ -26,11 +26,7 @@ const LazyPasswordStrengthBar = React.lazy(
 );
 
 type Mode =
-  | "sign in"
-  | "sign up"
-  | "forgot password"
-  | "reset password"
-  | "sso";
+  "sign in" | "sign up" | "forgot password" | "reset password" | "sso";
 
 interface AuthFormProps {
   mode: "sign in" | "sign up";
@@ -183,7 +179,6 @@ export function AuthForm({ mode, onLoggedIn }: AuthFormProps) {
     nonAuthCtx,
     appCtx,
     submitting,
-    setSubmitting,
     currentPassword,
     setCurrentPassword,
     oauthFeedback,

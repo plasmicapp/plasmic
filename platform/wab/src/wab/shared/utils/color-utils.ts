@@ -36,10 +36,4 @@ Object.assign(Chroma, mapValues(chromajs, adjustChromaFunction), {
       : Chroma(colorValue).hex();
   },
 });
-
-export function getShortenedRgb(color: string) {
-  return `rgba(${Chroma(color).rgb().join(", ")})`;
-}
-
-export const chroma = Chroma;
 export default Chroma;

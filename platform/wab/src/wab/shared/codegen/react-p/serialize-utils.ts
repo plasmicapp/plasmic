@@ -48,8 +48,6 @@ import {
 } from "@/wab/shared/model/classes";
 import L, { lowerFirst } from "lodash";
 import type { SetRequired } from "type-fest";
-
-export const globalStyleCssImportName = "globalcss";
 export const projectStyleCssImportName = "projectcss";
 export const defaultStyleCssImportName = "defaultcss";
 
@@ -679,20 +677,12 @@ export function makeOverridesTypeName(component: Component) {
   return `Plasmic${getExportedComponentName(component)}__OverridesType`;
 }
 
-export function makeGlobalVariantsTypeName(component: Component) {
-  return `Plasmic${getExportedComponentName(component)}__GlobalVariantsType`;
-}
-
 export function makeVariantPropsName(component: Component) {
   return `Plasmic${getExportedComponentName(component)}__VariantProps`;
 }
 
 export function makeArgPropsName(component: Component) {
   return `Plasmic${getExportedComponentName(component)}__ArgProps`;
-}
-
-export function makeTriggerStateTypeName(component: Component) {
-  return `Plasmic${getExportedComponentName(component)}__TriggerStateType`;
 }
 
 export function makePlasmicModulePrelude(projectId: string) {

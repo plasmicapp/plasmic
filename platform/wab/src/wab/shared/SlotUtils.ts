@@ -95,14 +95,6 @@ export function getSlotArg(comp: TplComponent, param: Param) {
   return vs.args.find((arg) => arg.param === param);
 }
 
-export function getSlotArgContent(tpl: TplComponent, name: string) {
-  const arg = getSlotArgs(tpl).find((a) => a.param.variable.name === name);
-  if (arg && isKnownRenderExpr(arg.expr)) {
-    return arg.expr.tpl;
-  }
-  return undefined;
-}
-
 export const getTplSlots = maybeComputedFn(function getTplSlots(
   component: Component,
 ) {
@@ -262,15 +254,6 @@ function isPlainTextArg(arg: Arg) {
   );
 }
 
-export function isTextBlockArg(arg: Arg | undefined) {
-  return (
-    !!arg &&
-    isKnownRenderExpr(arg.expr) &&
-    arg.expr.tpl.length === 1 &&
-    isTplTextBlock(arg.expr.tpl[0])
-  );
-}
-
 export function getSingleTextBlockFromArg(arg: Arg | undefined) {
   if (
     arg &&
@@ -310,20 +293,6 @@ export function isTextArgNodeOfSlot(node: TplNode): node is TplTextTag {
 
 export function isCodeComponentSlot(tpl: TplNode) {
   return isTplSlot(tpl) && !!tpl.parent && isCodeComponentRoot(tpl.parent);
-}
-
-export function getContainingArgSlot(node: TplNode) {
-  if (isTplComponent(node.parent)) {
-    const arg = $$$(node.parent).getArgContainingTpl(node);
-    if (arg) {
-      const component = node.parent.component;
-      const slot = getTplSlot(node.parent.component, arg.param.variable);
-      if (slot) {
-        return { component, arg, slot };
-      }
-    }
-  }
-  return undefined;
 }
 
 export function getSlotSelectionContainingTpl(tpl: TplNode) {

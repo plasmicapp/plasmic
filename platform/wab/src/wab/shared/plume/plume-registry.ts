@@ -266,10 +266,6 @@ export function getPlumeDocsPlugin(component: Component) {
   return getPlumePlugin(component) as PlumeDocsPlugin | undefined;
 }
 
-export function getPlumeEditorPluginByType(plumeType: string) {
-  return getPlumePluginByType(plumeType) as PlumeEditorPlugin | undefined;
-}
-
 function getPlumePlugin(component: Component) {
   if (component.plumeInfo) {
     return getPlumePluginByType(component.plumeInfo.type);

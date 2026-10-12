@@ -379,9 +379,6 @@ export class SiteApi {
   uploadUrl() {
     return fullApiPath(`/upload/${this._siteId}`);
   }
-  nodeOp(data) {
-    return this._api.post("/node-op", data);
-  }
 }
 
 interface QueryMap {
@@ -691,9 +688,9 @@ export function invalidationKey(method: string, ...args: any[]) {
 
 export function apiKey<
   Method extends keyof Api,
-  Args extends Api[Method] extends (..._args: any[]) => any
+  Args extends (Api[Method] extends (..._args: any[]) => any
     ? Parameters<Api[Method]>
-    : never,
+    : never),
 >(method: Method, ...args: Args) {
   return invalidationKey(method, ...args);
 }

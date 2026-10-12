@@ -7,9 +7,7 @@ import {
   RuleSetHelpers,
   readonlyRSH,
 } from "@/wab/shared/RuleSetHelpers";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { VariantCombo } from "@/wab/shared/Variants";
-import { ensure, withoutNils, xAddAll } from "@/wab/shared/common";
+import { withoutNils, xAddAll } from "@/wab/shared/common";
 import {
   makeTokenValueResolver,
   siteFinalStyleTokens,
@@ -29,7 +27,6 @@ import {
   isKnownStyleExpr,
   isKnownStyleTokenRef,
 } from "@/wab/shared/model/classes";
-import L from "lodash";
 
 export interface TheoToken {
   name: string;
@@ -87,23 +84,6 @@ function serializeStyleToken(
       id: token.uuid,
     },
   };
-}
-
-export function extractUsedGlobalVariantCombosForTokens(
-  site: Site,
-  tokens: Set<StyleToken>,
-) {
-  const usedGlobalVariantCombos: Set<VariantCombo> = new Set();
-  xAddAll(
-    usedGlobalVariantCombos,
-    L.uniqBy(
-      Array.from(tokens)
-        .flatMap((t) => t.variantedValues)
-        .map((v) => new VariantedStylesHelper(site, v.variants)),
-      (el) => el.key(),
-    ).map((vsh) => ensure(vsh.globalVariants(), "must be global variants")),
-  );
-  return usedGlobalVariantCombos;
 }
 
 export function extractUsedGlobalVariantsForTokens(

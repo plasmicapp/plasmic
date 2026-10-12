@@ -188,7 +188,7 @@ export async function updateProjectOwner(req: Request, res: Response) {
 
 export async function restoreProject(req: Request, res: Response) {
   const mgr = superDbMgr(req);
-  const users = await mgr.restoreProject(req.body.id);
+  await mgr.restoreProject(req.body.id);
   res.json({});
 }
 

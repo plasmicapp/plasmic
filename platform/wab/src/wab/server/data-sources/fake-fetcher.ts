@@ -79,7 +79,7 @@ function filterRow(row: Record<string, any>, filters?: Filters): boolean {
 
 export class FakeFetcher {
   private database: Record<string, any>;
-  constructor(private source: FakeDataSource) {
+  constructor(source: FakeDataSource) {
     this.database = getFakeDatabase(source.id);
   }
 
@@ -88,15 +88,13 @@ export class FakeFetcher {
       tables: Object.entries(fakeSchema).map(
         ([tableId, tableFields]): TableSchema => ({
           id: tableId,
-          fields: tableFields.map(
-            (field): TableFieldSchema => ({
-              id: field.name,
-              label: field.name,
-              type: field.type,
-              readOnly: false,
-              primaryKey: field.primaryKey,
-            }),
-          ),
+          fields: tableFields.map((field): TableFieldSchema => ({
+            id: field.name,
+            label: field.name,
+            type: field.type,
+            readOnly: false,
+            primaryKey: field.primaryKey,
+          })),
         }),
       ),
     };

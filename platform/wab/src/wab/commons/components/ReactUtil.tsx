@@ -1,13 +1,6 @@
-import { ReadablePromise } from "@/wab/commons/control";
-import {
-  cx,
-  filterFalsy,
-  spawn,
-  tuple,
-  withoutNils,
-} from "@/wab/shared/common";
+import { cx, filterFalsy, tuple, withoutNils } from "@/wab/shared/common";
 import { assignIn, groupBy, isFunction, isNil } from "lodash";
-import React, { SyntheticEvent, useState } from "react";
+import React, { SyntheticEvent } from "react";
 
 export interface KeyModifiers {
   alt?: boolean;
@@ -236,10 +229,4 @@ export function combineProps(...propss: { [prop: string]: any }[]) {
     className: cx(withoutNils(propss.map((props) => props.className))),
     style: assignIn({}, ...propss.map((props) => props.style || {})),
   });
-}
-
-export function useReadablePromise<T, E = Error>(rp: ReadablePromise<T, E>) {
-  const [result, setResult] = useState(rp.result);
-  spawn(rp.promise.then(() => setResult(rp.result)));
-  return result;
 }

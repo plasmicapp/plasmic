@@ -1,4 +1,3 @@
-import { isVariantSettingEmpty } from "@/wab/shared/Variants";
 import {
   extractUsedIconAssetsForComponents,
   extractUsedPictureAssetsForComponents,
@@ -20,8 +19,4 @@ export function pruneUnusedImageAssets(site: Site) {
 
   removeWhere(site.imageAssets, (x) => unusedAssets.has(x));
   return unusedAssets;
-}
-
-export function pruneUnusedVariantSettings(site: Site) {
-  isVariantSettingEmpty;
 }

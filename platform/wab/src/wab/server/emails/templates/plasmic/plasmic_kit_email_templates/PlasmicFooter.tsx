@@ -15,14 +15,52 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import { EmailLink, EmailSection } from "@/wab/server/emails/components.tsx"; // plasmic-import: ccI_uNhThjcT/codeComponent
+import { EmailSection } from "@/wab/server/emails/components.tsx"; // plasmic-import: ccI_uNhThjcT/codeComponent
+import { EmailLink } from "@/wab/server/emails/components.tsx"; // plasmic-import: 7zgaUp0DUGtR/codeComponent
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/styleTokensProvider
+
+
 
 createPlasmicElementProxy;
 
@@ -67,12 +105,14 @@ function PlasmicFooter__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <EmailSection
@@ -85,13 +125,14 @@ function PlasmicFooter__RenderFunc(props: {
         "root_reset_taNK5uwsoPrzfpYmBVwUwX",
         "plasmic_default_styles",
         "plasmic_mixins",
-        "plasmic_tokens",
+        styleTokensClassNames,
         "Footer__root__snXjv"
       )}
     >
       <EmailLink
         data-plasmic-name={"emailLink"}
         data-plasmic-override={overrides.emailLink}
+
         className={classNames("__wab_instance", "Footer__emailLink___1Iod")}
         href={"https://plasmic.app"}
         style={{
@@ -99,7 +140,7 @@ function PlasmicFooter__RenderFunc(props: {
           fontSize: 11,
           margin: "16px 0 32px 0px",
           display: "block",
-          textAlign: "center",
+          textAlign: "center"
         }}
         text={"Plasmic, Inc."}
         type={"text"}
@@ -110,7 +151,7 @@ function PlasmicFooter__RenderFunc(props: {
 
 const PlasmicDescendants = {
   root: ["root", "emailLink"],
-  emailLink: ["emailLink"],
+  emailLink: ["emailLink"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -131,7 +172,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicFooter__VariantsArgs;
     args?: PlasmicFooter__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicFooter__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicFooter__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicFooter__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -156,7 +199,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicFooter__ArgProps,
-          internalVariantPropNames: PlasmicFooter__VariantProps,
+          internalVariantPropNames: PlasmicFooter__VariantProps
         }),
       [props, nodeName]
     );
@@ -164,7 +207,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -184,7 +227,7 @@ export const PlasmicFooter = Object.assign(
 
     // Metadata about props expected for PlasmicFooter
     internalVariantProps: PlasmicFooter__VariantProps,
-    internalArgProps: PlasmicFooter__ArgProps,
+    internalArgProps: PlasmicFooter__ArgProps
   }
 );
 

@@ -249,10 +249,6 @@ export const hasTokenRefs = (str: string) => {
   return !!str.match(RE_TOKENREF_ALL);
 };
 
-export function hasTokenRef(str: string, token: StyleToken) {
-  return str.includes(mkTokenRef(token));
-}
-
 export const resolveAllTokenRefs = (
   str: string,
   tokens:
@@ -298,14 +294,6 @@ export function tryParseAllTokenRefs(
     }),
   );
 }
-
-export const extractAllReferencedTokens = (
-  str: string,
-  tokens: StyleToken[],
-) => {
-  const tokenIds = extractAllReferencedTokenIds(str);
-  return withoutNils(tokenIds.map((m) => tokens.find((t) => t.uuid === m)));
-};
 
 export function extractAllReferencedTokenIds(str: string) {
   return [...str.matchAll(RE_TOKENREF_ALL)].map((r) => r[1]);

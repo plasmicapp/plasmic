@@ -422,13 +422,6 @@ export function getTplComponentDefaultSizeByActiveVariants(
   ]);
 }
 
-export function getFrameComponentDefaultSize(
-  vtm: VariantTplMgr,
-  component: Component,
-) {
-  return getComponentDefaultSize(component, vtm.getRootVariantCombo());
-}
-
 export function isStretchyComponent(
   component: Component,
   variants: Variant[] = [],

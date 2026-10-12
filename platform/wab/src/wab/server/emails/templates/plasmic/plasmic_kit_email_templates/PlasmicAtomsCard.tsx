@@ -15,15 +15,52 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import { EmailSection, EmailText } from "@/wab/server/emails/components.tsx"; // plasmic-import: ccI_uNhThjcT/codeComponent
+import { EmailSection } from "@/wab/server/emails/components.tsx"; // plasmic-import: ccI_uNhThjcT/codeComponent
+import { EmailText } from "@/wab/server/emails/components.tsx"; // plasmic-import: 7eMX-ae3z_Os/codeComponent
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/styleTokensProvider
+
+
 
 createPlasmicElementProxy;
 
@@ -68,12 +105,14 @@ function PlasmicAtomsCard__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <EmailSection
@@ -86,7 +125,7 @@ function PlasmicAtomsCard__RenderFunc(props: {
         "root_reset_taNK5uwsoPrzfpYmBVwUwX",
         "plasmic_default_styles",
         "plasmic_mixins",
-        "plasmic_tokens",
+        styleTokensClassNames,
         "AtomsCard__root__v5KzG"
       )}
       style={{ borderRadius: 18, padding: 24, border: "1px solid #00002F26" }}
@@ -102,14 +141,14 @@ function PlasmicAtomsCard__RenderFunc(props: {
           />
         ),
 
-        value: args.children,
+        value: args.children
       })}
     </EmailSection>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root"],
+  root: ["root"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -129,7 +168,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicAtomsCard__VariantsArgs;
     args?: PlasmicAtomsCard__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicAtomsCard__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicAtomsCard__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicAtomsCard__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -154,7 +195,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicAtomsCard__ArgProps,
-          internalVariantPropNames: PlasmicAtomsCard__VariantProps,
+          internalVariantPropNames: PlasmicAtomsCard__VariantProps
         }),
       [props, nodeName]
     );
@@ -162,7 +203,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -181,7 +222,7 @@ export const PlasmicAtomsCard = Object.assign(
 
     // Metadata about props expected for PlasmicAtomsCard
     internalVariantProps: PlasmicAtomsCard__VariantProps,
-    internalArgProps: PlasmicAtomsCard__ArgProps,
+    internalArgProps: PlasmicAtomsCard__ArgProps
   }
 );
 

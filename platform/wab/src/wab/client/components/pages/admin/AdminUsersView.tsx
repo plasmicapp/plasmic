@@ -175,7 +175,7 @@ function DeactivateUserView() {
       <Form
         onFinish={async (event) => {
           try {
-            const res = await nonAuthCtx.api.deactivateUserAsAdmin(event.email);
+            await nonAuthCtx.api.deactivateUserAsAdmin(event.email);
             notification.success({
               message: "User deactivated",
             });

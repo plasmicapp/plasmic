@@ -37,6 +37,6 @@ async function runAppServer(config: Config) {
 }
 
 export async function serverDataBackendMain() {
-  const { opts, config } = setupServerCli();
+  const { config } = setupServerCli();
   await runAppServer(config);
 }

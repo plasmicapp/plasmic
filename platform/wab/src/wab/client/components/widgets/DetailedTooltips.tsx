@@ -200,20 +200,6 @@ export function ElementVariantsTooltip() {
   );
 }
 
-export function ProjectDependenciesTooltip() {
-  return (
-    <div>
-      <p className={"tooltip-title"}>Project Dependencies</p>
-      <p>
-        You can import other Plasmic projects as a dependency. The imported
-        components are labeled as <em>imported components</em>, in the
-        Components tab. Imported components are read-only. In order to edit
-        these components, please visit their home project.
-      </p>
-    </div>
-  );
-}
-
 export function AttributesTooltip() {
   return (
     <div>
@@ -314,22 +300,6 @@ export function RepeaterPropsTooltip() {
         This section shows props for the parent Repeater component. You can use
         it to customize the elements which are being repeated.
       </p>
-    </div>
-  );
-}
-
-export function PageParamsTooltip() {
-  return (
-    <div>
-      <p className={"tooltip-title"}>Preview parameters</p>
-      <p>{`
-        This section shows URL parameters defined in page path using brackets
-        (e.g. [param]). In production, such parameters are defined based in
-        the URL, but in studio you can customize what preview value they
-        should have. For example, if your page path is /products/[slug] you
-        can see how the page looks like and customize its styles using
-        different "slug" values.
-      `}</p>
     </div>
   );
 }

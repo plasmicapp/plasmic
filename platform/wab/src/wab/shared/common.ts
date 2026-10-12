@@ -40,7 +40,6 @@ import {
   zip,
 } from "lodash";
 import { nanoid } from "nanoid";
-import { Key } from "react";
 import ShortUuid, { constants } from "short-uuid";
 import {
   validate as UuidValidate,
@@ -398,8 +397,6 @@ export class AssertionError extends CustomError {
     super(msg);
   }
 }
-export class KeyError extends CustomError {}
-export class AbstractMethodError extends CustomError {}
 export class InvalidCodePathError extends CustomError {}
 export class NullOrUndefinedValueError extends CustomError {}
 export class FalsyValueError extends CustomError {}
@@ -565,18 +562,6 @@ export function asOne<T>(xs: T | T[] | undefined): T | undefined {
   }
 }
 
-export function assertAtMostOne<T>(
-  xs: T | T[] | undefined | null,
-): T | undefined {
-  if (xs === undefined || xs === null) {
-    return undefined;
-  } else if (Array.isArray(xs)) {
-    return maybeOne(xs);
-  } else {
-    return xs;
-  }
-}
-
 export function firstWhere<T>(
   xs: T[],
   f: (x: T, i: number) => boolean,
@@ -595,7 +580,6 @@ export function lastWhere<T>(
   f: (x: T, i: number) => boolean,
 ): [null | T, number] {
   for (let i = xs.length - 1; i >= 0; i--) {
-    const x = xs[i];
     if (f(xs[i], i)) {
       return tuple(xs[i], i);
     }
@@ -684,10 +668,6 @@ export function shortZip<A, B>(xs: ReadonlyArray<A>, ys: ReadonlyArray<B>) {
   return range(0, minLen, false).map((i) => tuple(xs[i], ys[i]));
 }
 
-export function literalToEnum<Enum extends string>(v: `${Enum}`) {
-  return v as Enum;
-}
-
 /**
  * Interleave two arrays, returning [xs[0], ys[0], xs[1], ys[1], ...].
  *
@@ -766,30 +746,6 @@ export function swallow<T>(
   }
 }
 
-export function maybeSwallow<T>(cond: boolean, fn: () => T): T | null {
-  if (cond) {
-    return swallow(fn);
-  } else {
-    return fn();
-  }
-}
-
-export function maybeTry<T, U>(
-  cond: boolean,
-  fn: () => T,
-  catcher: (error: any) => U,
-): T | U | null {
-  if (cond) {
-    try {
-      return fn();
-    } catch (e) {
-      return catcher(e);
-    }
-  } else {
-    return fn();
-  }
-}
-
 /**
  * NOTE this returns undefined, unlike the null from swallow()!
  */
@@ -837,16 +793,6 @@ export function parsePx(x: string) {
   return +ensure(/^(-?[0-9.]+)px$/.exec(x), `${x} is not a valid px value`)[1];
 }
 
-export function get<T>(map: { [k: string]: T }, key: string) {
-  if (!(key in map)) {
-    throw new KeyError(`key not found in map: ${key}`);
-  }
-  return map[key];
-}
-
-export const pushAll = <T>(xs: T[], ys: T[]) =>
-  xs.splice(xs.length, 0, ...[...ys]);
-
 export function replace<T>(xs: T[], q: T, r: T) {
   xs[xs.indexOf(q)] = r;
   return xs;
@@ -859,32 +805,6 @@ export function replaceMultiple<T>(xs: T[], q: T, rs: T[]) {
 
 export function replaceAll<T>(xs: T[], ys: T[]) {
   return xs.splice(0, xs.length, ...[...ys]);
-}
-
-export function replaceSet<T>(target: Set<T>, source: Set<T>) {
-  for (const key of source.keys()) {
-    if (!target.has(key)) {
-      target.add(key);
-    }
-  }
-  for (const key of target.keys()) {
-    if (!source.has(key)) {
-      target.delete(key);
-    }
-  }
-}
-
-export function replaceMap<K, V>(target: Map<K, V>, source: Map<K, V>) {
-  for (const [k, v] of source.entries()) {
-    if (target.get(k) !== v) {
-      target.set(k, v);
-    }
-  }
-  for (const key of target.keys()) {
-    if (!source.has(key)) {
-      target.delete(key);
-    }
-  }
 }
 
 /**
@@ -1049,9 +969,6 @@ export function uniqueName(
   return attempt;
 }
 
-export const xInvert = <K, V>(map: Map<K, V>) =>
-  new Map([...map.entries()].map(([k, v]) => tuple(v, k)));
-
 export const xKeyBy = <K, V>(xs: V[], keyfn: (x: V) => K): Map<K, V> =>
   new Map(xs.map((x) => tuple(keyfn(x), x)));
 
@@ -1205,8 +1122,6 @@ export function ensureNonEmpty<T>(xs: T[]): T[] {
 export function strictFind<T>(xs: T[], pred: (cc: T) => boolean) {
   return ensure(xs.find(pred), "Failed to find");
 }
-
-export const iterator = (xs) => xs[Symbol.iterator]();
 
 export const jsonClone = <T>(x: T): T => JSON.parse(JSON.stringify(x));
 
@@ -1364,23 +1279,6 @@ export function groupConsecBy<T, K>(
   return groups;
 }
 
-export function rMaybe<T, U>(
-  f: (y: T) => U,
-  x: T | null | undefined,
-): U | undefined {
-  return maybe(x, f);
-}
-
-// From <https://stackoverflow.com/questions/5202085/javascript-equivalent-of-pythons-rsplit>
-export function rsplit(str: string, sep: string, maxsplit: number) {
-  const res = str.split(sep);
-  if (maxsplit) {
-    return [res.slice(0, -maxsplit).join(sep)].concat(res.slice(-maxsplit));
-  } else {
-    return res;
-  }
-}
-
 export function ensureArray<T>(x: T | T[] | undefined): T[] {
   if (x == null) {
     return [];
@@ -1398,13 +1296,6 @@ export function maybeArray<T, U>(xs: T[] | T, f: (ys: T[]) => U[]): U[] | U {
     return f(xs);
   } else {
     return f([xs])[0];
-  }
-}
-export function trySingularize<T>(xs: T[]): T | T[] {
-  if (xs.length === 1) {
-    return xs[0];
-  } else {
-    return xs;
   }
 }
 
@@ -1432,21 +1323,6 @@ export const generateWith = <T, V>(
 
 export function generate<T>(gen: () => IterableIterator<T>) {
   return [...gen()];
-}
-
-export function* maxGenerator<T>(gen: Generator<T>, max?: number) {
-  if (max === 0) {
-    return;
-  }
-  for (const element of gen) {
-    yield element;
-    if (max !== undefined) {
-      max -= 1;
-    }
-    if (max === 0) {
-      return;
-    }
-  }
 }
 
 export function tryParseNumLit(text: string): number | undefined {
@@ -1489,15 +1365,6 @@ export function simpleWords(text: string) {
 
 export const tuple = <T extends any[]>(...args: T): T => args;
 
-export async function asyncFilter<T>(
-  arr: T[],
-  predicate: (item: T) => Promise<boolean>,
-): Promise<T[]> {
-  return Promise.all(arr.map(predicate)).then((results) =>
-    arr.filter((_v, index) => results[index]),
-  );
-}
-
 export function filterMapTruthy<T, U>(
   xs: T[],
   f: (x: T, i: number) => U | Falsy,
@@ -1516,20 +1383,12 @@ export function nullToUndefined<T>(x: T | undefined | null): T | undefined {
   return isNil(x) ? undefined : x;
 }
 
-export function undefinedToNull<T>(x: T | undefined | null): T | null {
-  return isNil(x) ? null : x;
-}
-
 export function xIntersect<T>(a: Set<T>, b: Set<T>): Set<T> {
   return new Set([...a].filter((x) => b.has(x)));
 }
 
 export function xUnion<T>(a: Set<T>, b: Set<T>): Set<T> {
   return new Set([...b, ...a]);
-}
-
-export function xSubtract<T>(a: Set<T>, b: Set<T>): Set<T> {
-  return new Set([...a].filter((x) => !b.has(x)));
 }
 
 export function xAddAll<T>(a: Set<T>, b: Iterable<T>) {
@@ -1574,11 +1433,6 @@ export function stableJsonStringify(x: any, exclude: Set<string>): string {
   );
 }
 
-export function ensureInstanceAbstract<T>(x: any, type: Function): T {
-  check(x instanceof type, () => mkUnexpectedTypeMsg([type], x));
-  return x as T;
-}
-
 export function eagerCoalesce<T>(...attempts: (T | null | undefined)[]): T {
   for (const attempt of attempts) {
     if (attempt !== null && attempt !== undefined) {
@@ -1597,10 +1451,6 @@ export function coalesce<T extends {}, U>(
   return x !== null && x !== undefined ? x : fallback();
 }
 
-export function filterFalse<T>(xs: ReadonlyArray<T | false>): T[] {
-  return xs.filter((x): x is T => x !== false);
-}
-
 export function filterFalsy<T>(xs: ReadonlyArray<T | Falsy>): T[] {
   return xs.filter(isTruthy);
 }
@@ -1614,8 +1464,6 @@ export function spawnWrapper<T extends (...args: any[]) => Promise<any>>(
 }
 
 export function spawn(_promise: PromiseLike<any> | void) {}
-
-export function spawnPromise(_promise: Promise<any>) {}
 
 export function delay(ms: number) {
   return new Promise<void>((resolve) => setTimeout(resolve, ms));
@@ -1661,14 +1509,6 @@ export function isHTMLElt(x: any): x is HTMLElement {
 export function ensureHTMLElt(x: any): HTMLElement {
   // This `as` is due to https://github.com/Microsoft/TypeScript/issues/21568.
   check(isHTMLElt(x));
-  return x;
-}
-
-/**
- * Like `ensureInstance(..., Element)`, but works cross-frame.
- */
-export function ensureElt(x: any): HTMLElement {
-  check(isElement(x));
   return x;
 }
 
@@ -1746,18 +1586,6 @@ export function precisionRound(num: number, prec: number): number {
   return Math.round(num * factor) / factor;
 }
 
-export function betweenInclusive(x: number, a: number, b: number) {
-  return a <= x && x <= b;
-}
-
-export function betweenExclusive(x: number, a: number, b: number) {
-  return a < x && x < b;
-}
-
-export function betweenRange(x: number, a: number, b: number) {
-  return a <= x && x < b;
-}
-
 export function restrictBetweenInclusive(x: number, min: number, max: number) {
   if (x < min) {
     return min;
@@ -1765,14 +1593,6 @@ export function restrictBetweenInclusive(x: number, min: number, max: number) {
     return max;
   } else {
     return x;
-  }
-}
-
-export function* cumsum(xs: number[]) {
-  let sum = 0;
-  for (const x of xs) {
-    sum += x;
-    yield sum;
   }
 }
 
@@ -1806,10 +1626,6 @@ export function maybes<T>(x: T | null | undefined): Maybe<T> {
         ? maybes<U>(f(x))
         : maybes<U>(undefined);
   };
-}
-
-export function isReactKey(x: unknown): x is Key {
-  return isString(x) || isNumber(x);
 }
 
 export function strict(
@@ -1968,14 +1784,6 @@ export function withDefaultFunc<K extends string | number | symbol, V>(
 }
 
 export const MAKE_EMPTY_OBJECT = () => ({});
-export const MAKE_EMPTY_ARRAY = () => [];
-
-export function invertRecord<
-  K extends string | number | symbol,
-  V extends string | number | symbol,
->(xs: Record<K, V>): Record<V, K> {
-  return Object.fromEntries(Object.entries(xs).map(([k, v]) => [v, k]));
-}
 
 export function filterMapKeys<K, V>(map: Map<K, V>, pred: (k: K) => boolean) {
   return new Map([...map.entries()].filter(([k, _v]) => pred(k)));
@@ -2026,14 +1834,6 @@ export function chunkPairs<T>(xs: ReadonlyArray<T>): [T, T][] {
   return safeCast(lodashChunk(xs, 2) as [T, T][]);
 }
 
-export function ensureKey(x: any): Key {
-  if (isString(x) || isNumber(x)) {
-    return x;
-  } else {
-    throw new Error("not a valid React key (string/number)");
-  }
-}
-
 export function last<Arr extends ReadonlyArray<any>>(xs: Arr): Last<Arr> {
   check(xs.length > 0, "Expected non-empty array");
   return xs[xs.length - 1] as Last<Arr>;
@@ -2048,13 +1848,6 @@ export function spanLast<Arr extends ReadonlyArray<any>>(
 ): [ButLast<Arr>, Last<Arr>] {
   check(xs.length > 0, "Expected non-empty array");
   return [butLast(xs), last(xs)];
-}
-
-export function first<T>(xs: ReadonlyArray<T>): T {
-  return ensure(
-    xs[0],
-    "Unexpected nullish value in array of length " + xs.length,
-  );
 }
 
 export function maybeFirst<T>(xs: ReadonlyArray<T>): T | undefined {
@@ -2269,17 +2062,6 @@ export function hasKey<K extends string>(v: any, key: K): v is Record<K, any> {
 
 export function isJsonScalar(v: any): v is string | number | boolean | null {
   return isString(v) || isNumber(v) || isBoolean(v) || v === null;
-}
-
-export function ordinal(v: number) {
-  if (v % 10 == 1 && v % 100 != 11) {
-    return v + "st";
-  } else if (v % 10 == 2 && v % 100 != 12) {
-    return v + "nd";
-  } else if (v % 10 == 3 && v % 100 != 13) {
-    return v + "rd";
-  }
-  return v + "th";
 }
 
 /**

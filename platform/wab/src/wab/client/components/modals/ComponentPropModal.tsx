@@ -155,10 +155,6 @@ export function ComponentPropModal(props: ComponentPropModalProps) {
     isKnownPropParam(existingParam) ? existingParam.advanced : false,
   );
 
-  const exprStrVal = (expr: Expr | undefined): string | undefined => {
-    return exprDisplayVal(expr, paramTypeData)?.toString();
-  };
-
   const onChangeChoices = (values: ChoiceOptions) => {
     // Update the default and preview values if the corresponding allowed value changes
     const oldItem = choices.find(

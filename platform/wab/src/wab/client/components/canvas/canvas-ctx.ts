@@ -13,7 +13,6 @@ import {
   getVersionForCanvasPackages,
 } from "@/wab/client/components/studio/studio-bundles";
 import * as domMod from "@/wab/client/dom";
-import { NodeAndOffset } from "@/wab/client/dom";
 import { scriptExec, upsertJQSelector } from "@/wab/client/dom-utils";
 import { ENV } from "@/wab/client/env";
 import { PlasmicWindowInternals } from "@/wab/client/frame-ctx/windows";
@@ -37,7 +36,6 @@ import {
   withTimeout,
 } from "@/wab/shared/common";
 import { makeTokenRefResolver } from "@/wab/shared/core/site-style-tokens";
-import { Box } from "@/wab/shared/geom";
 import { disposeOwnedComputedFns } from "@/wab/shared/mobx-util";
 import { ArenaFrame } from "@/wab/shared/model/classes";
 import { CodeLibraryRegistration } from "@/wab/shared/register-library";
@@ -77,7 +75,6 @@ export class CanvasCtx {
   _$head: /*TWZ*/ JQuery;
   _$userBody: /*TWZ*/ JQuery;
   _$body: JQuery;
-  _keyAdjustment: null | ((key: string) => string);
   _name: string;
 
   Sub: SubDeps;
@@ -103,7 +100,6 @@ export class CanvasCtx {
   }) {
     this._$viewport = $viewport;
     this._name = name;
-    this._keyAdjustment = null;
   }
 
   private _updatingCcRegistryCount = observable.box(0);
@@ -549,20 +545,6 @@ export class CanvasCtx {
       left: viewportContainer.offsetLeft,
     };
   }
-  // Get the bounding box of the frame, which includes everything in the
-  // FrameContainer. Currently it includes the iframe and the frame label.
-  contentAreaBB() {
-    const viewportContainer = this.viewportContainer();
-    let bb = Box.fromRect(viewportContainer.getBoundingClientRect());
-    $(viewportContainer)
-      .children()
-      .each((index, elem) => {
-        if (getComputedStyle(elem).position === "absolute") {
-          bb = bb.merge(elem.getBoundingClientRect());
-        }
-      });
-    return bb.rect();
-  }
   viewportContainer() {
     return ensure(
       this.viewport().parentElement,
@@ -607,14 +589,8 @@ export class CanvasCtx {
   getRange(..._args) {
     return domMod.range(this.doc());
   }
-  setRange(start?: NodeAndOffset, end?: NodeAndOffset) {
-    return domMod.range(this.doc(), start, end);
-  }
   clearRange(..._args) {
     return domMod.clearRange(this.doc());
-  }
-  setKeyAdjustment(_keyAdjustment) {
-    this._keyAdjustment = _keyAdjustment;
   }
 
   refreshFetchedDataFromPlasmicQuery(invalidateKey?: string) {

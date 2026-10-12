@@ -80,9 +80,6 @@ export class ValState {
   isSysVal(val: ValNode) {
     return val === this.maybeValSysRoot();
   }
-  isUserVal(val: ValNode) {
-    return this.valAncestors(val).includes(this.valUserRoot());
-  }
   // valUserRoot is the root that the user is able to see/interact with.
   maybeValUserRoot() {
     const sysRoot = this.maybeValSysRoot();

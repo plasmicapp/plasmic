@@ -23,9 +23,6 @@ export interface Issue {
 export const mdCode = (content: string, lang: string) =>
   "```" + lang + "\n" + content + "\n```";
 export const humanJson = (x: any) => mdCode(JSON.stringify(x, null, 2), "");
-export const json = (x: any) => mdCode(JSON.stringify(x), "");
-export const nakedJson = (x: any) => JSON.stringify(x, null, 2);
-export const typescript = (x: string) => mdCode(x, "ts");
 
 export type CreateChatCompletionRequest =
   ChatCompletionCreateParamsNonStreaming;

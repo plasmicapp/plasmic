@@ -53,7 +53,6 @@ import {
   cloneVariantGroup,
   fixArgForCloneComponent,
   getComponentDisplayName,
-  getEffectiveVariantSettingOfDeepRootElement,
   getSuperComponentVariantGroupToComponent,
   getSuperComponentVariantToComponent,
   isCodeComponent,
@@ -104,7 +103,6 @@ import {
   transformDataTokensInExpr,
 } from "@/wab/shared/eval/expression-parser";
 import { makeTplAnimationsFixer } from "@/wab/shared/insertable-templates/fixers";
-import { getRshContainerType } from "@/wab/shared/layoututils";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
   Arena,
@@ -1380,49 +1378,8 @@ export function getAllOpExprSourceIdsUsedInSite(site: Site) {
   return [...sourceIds];
 }
 
-export function fixOpExprSourceIdRefs(
-  site: Site,
-  oldToNewSourceIds: Record<string, string>,
-) {
-  let reevaluateOpIds = false;
-
-  const fixExpr = (expr?: DataSourceOpExpr | null) => {
-    if (expr && expr.sourceId) {
-      if (oldToNewSourceIds[expr.sourceId]) {
-        expr.sourceId = oldToNewSourceIds[expr.sourceId];
-        reevaluateOpIds = true;
-      }
-    }
-  };
-
-  site.components.forEach((component) => {
-    findAllDataSourceOpExprForComponent(component).forEach((opExpr) => {
-      fixExpr(opExpr);
-    });
-  });
-
-  return {
-    site,
-    reevaluateOpIds,
-  };
-}
-
 export function getArenaFrameActiveVariants(frame: ArenaFrame) {
   return [...frame.targetVariants, ...frame.targetGlobalVariants];
-}
-
-export function getFrameContainerType(frame: ArenaFrame) {
-  const component = frame.container.component;
-  const activeVariants = getArenaFrameActiveVariants(frame);
-
-  const rootEffectiveVS = getEffectiveVariantSettingOfDeepRootElement(
-    component,
-    activeVariants,
-  );
-
-  return rootEffectiveVS
-    ? getRshContainerType(rootEffectiveVS.rsh())
-    : undefined;
 }
 
 export const getFrameRootTplComponents = maybeComputedFn(

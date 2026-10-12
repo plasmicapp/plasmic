@@ -15,20 +15,50 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
+import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import ErrorFeedback from "../../components/github/ErrorFeedback"; // plasmic-import: 6ztKJ9-EG9Y/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -36,10 +66,10 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicDomainCard.module.css"; // plasmic-import: eqF_n5a1-6b/css
 
-import CheckCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CheckCircleSvg"; // plasmic-import: h7sB2KeL-/icon
-import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import RefreshSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__RefreshSvg"; // plasmic-import: PEaq_S7gQ/icon
 import ShareSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ShareSvg"; // plasmic-import: vRB2dtcKk/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import CheckCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CheckCircleSvg"; // plasmic-import: h7sB2KeL-/icon
+import RefreshSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__RefreshSvg"; // plasmic-import: PEaq_S7gQ/icon
 import Trash2SvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__Trash2Svg"; // plasmic-import: nS4_I75qv/icon
 
 createPlasmicElementProxy;
@@ -112,7 +142,7 @@ function PlasmicDomainCard__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -125,20 +155,20 @@ function PlasmicDomainCard__RenderFunc(props: {
         path: "refreshing",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.refreshing,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.refreshing
       },
       {
         path: "error",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.error,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.error
       },
       {
         path: "secondary",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.secondary,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.secondary
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -148,7 +178,7 @@ function PlasmicDomainCard__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -170,7 +200,7 @@ function PlasmicDomainCard__RenderFunc(props: {
           [sty.rooterror_apex]: hasVariant($state, "error", "apex"),
           [sty.rooterror_cname]: hasVariant($state, "error", "cname"),
           [sty.rooterror_error]: hasVariant($state, "error", "error"),
-          [sty.rootrefreshing]: hasVariant($state, "refreshing", "refreshing"),
+          [sty.rootrefreshing]: hasVariant($state, "refreshing", "refreshing")
         }
       )}
     >
@@ -183,14 +213,15 @@ function PlasmicDomainCard__RenderFunc(props: {
             $state,
             "secondary",
             "secondary"
-          ),
+          )
         })}
       >
         <div
           data-plasmic-name={"label"}
           data-plasmic-override={overrides.label}
+
           className={classNames("all", "__wab_text", sty.label, {
-            [sty.labelerror_apex]: hasVariant($state, "error", "apex"),
+            [sty.labelerror_apex]: hasVariant($state, "error", "apex")
           })}
         >
           {"Custom domain"}
@@ -199,6 +230,7 @@ function PlasmicDomainCard__RenderFunc(props: {
           <div
             data-plasmic-name={"customDomainLabel"}
             data-plasmic-override={overrides.customDomainLabel}
+
             className={classNames("all", "__wab_text", sty.customDomainLabel, {
               [sty.customDomainLabelerror_success]: hasVariant(
                 $state,
@@ -209,7 +241,7 @@ function PlasmicDomainCard__RenderFunc(props: {
                 $state,
                 "refreshing",
                 "refreshing"
-              ),
+              )
             })}
           >
             {"www.foobarfoobarfoobarfoobar.com"}
@@ -217,12 +249,13 @@ function PlasmicDomainCard__RenderFunc(props: {
           <IconButton
             data-plasmic-name={"openButton"}
             data-plasmic-override={overrides.openButton}
+
             className={classNames("__wab_instance", sty.openButton, {
               [sty.openButtonerror_success]: hasVariant(
                 $state,
                 "error",
                 "success"
-              ),
+              )
             })}
             withBackgroundHover={true}
           >
@@ -259,12 +292,13 @@ function PlasmicDomainCard__RenderFunc(props: {
             $state,
             "refreshing",
             "refreshing"
-          ),
+          )
         })}
       >
         <ErrorFeedback
           data-plasmic-name={"errorFeedback"}
           data-plasmic-override={overrides.errorFeedback}
+
           className={classNames("__wab_instance", sty.errorFeedback, {
             [sty.errorFeedbackerror_apex]: hasVariant($state, "error", "apex"),
             [sty.errorFeedbackerror_cname]: hasVariant(
@@ -272,16 +306,13 @@ function PlasmicDomainCard__RenderFunc(props: {
               "error",
               "cname"
             ),
-            [sty.errorFeedbackerror_error]: hasVariant(
-              $state,
-              "error",
-              "error"
-            ),
+            [sty.errorFeedbackerror_error]: hasVariant($state, "error", "error")
           })}
         >
           <div
             data-plasmic-name={"domainErrorMessage4"}
             data-plasmic-override={overrides.domainErrorMessage4}
+
             className={classNames(
               "all",
               "__wab_text",
@@ -301,7 +332,7 @@ function PlasmicDomainCard__RenderFunc(props: {
                   $state,
                   "error",
                   "error"
-                ),
+                )
               }
             )}
           >
@@ -345,7 +376,7 @@ function PlasmicDomainCard__RenderFunc(props: {
               $state,
               "error",
               "success"
-            ),
+            )
           })}
         >
           <CheckCircleSvgIcon
@@ -359,7 +390,7 @@ function PlasmicDomainCard__RenderFunc(props: {
                 $state,
                 "error",
                 "cname"
-              ),
+              )
             })}
           >
             {"Correctly configured!"}
@@ -376,12 +407,13 @@ function PlasmicDomainCard__RenderFunc(props: {
               $state,
               "error",
               "success"
-            ),
+            )
           })}
         >
           <Button
             data-plasmic-name={"refreshButton"}
             data-plasmic-override={overrides.refreshButton}
+
             caption={"Caption"}
             className={classNames("__wab_instance", sty.refreshButton, {
               [sty.refreshButtonerror_success]: hasVariant(
@@ -393,7 +425,7 @@ function PlasmicDomainCard__RenderFunc(props: {
                 $state,
                 "refreshing",
                 "refreshing"
-              ),
+              )
             })}
             disabled={
               hasVariant($state, "refreshing", "refreshing") ? true : undefined
@@ -417,7 +449,7 @@ function PlasmicDomainCard__RenderFunc(props: {
                     $state,
                     "refreshing",
                     "refreshing"
-                  ),
+                  )
                 })}
                 role={"img"}
               />
@@ -432,6 +464,7 @@ function PlasmicDomainCard__RenderFunc(props: {
           <Button
             data-plasmic-name={"removeButton"}
             data-plasmic-override={overrides.removeButton}
+
             caption={"Caption"}
             color={"red"}
             endIcon={
@@ -477,7 +510,7 @@ function PlasmicDomainCard__RenderFunc(props: {
             $state,
             "error",
             "success"
-          ),
+          )
         })}
       >
         <div
@@ -506,7 +539,7 @@ function PlasmicDomainCard__RenderFunc(props: {
               $state,
               "secondary",
               "secondary"
-            ),
+            )
           })}
         >
           {"Set the following records on your DNS provider to continue:"}
@@ -515,6 +548,7 @@ function PlasmicDomainCard__RenderFunc(props: {
           <button
             data-plasmic-name={"cnameTab"}
             data-plasmic-override={overrides.cnameTab}
+
             className={classNames(
               "all",
               "button",
@@ -523,12 +557,13 @@ function PlasmicDomainCard__RenderFunc(props: {
               sty.cnameTab,
               {
                 [sty.cnameTaberror_apex]: hasVariant($state, "error", "apex"),
-                [sty.cnameTaberror_cname]: hasVariant($state, "error", "cname"),
+                [sty.cnameTaberror_cname]: hasVariant($state, "error", "cname")
               }
             )}
-            ref={(ref) => {
+            ref={ref => {
               $refs["cnameTab"] = ref;
             }}
+            type={"button"}
           >
             <React.Fragment>
               <React.Fragment>{"CNAME Record "}</React.Fragment>
@@ -545,6 +580,7 @@ function PlasmicDomainCard__RenderFunc(props: {
           <button
             data-plasmic-name={"apexTab"}
             data-plasmic-override={overrides.apexTab}
+
             className={classNames(
               "all",
               "button",
@@ -553,12 +589,13 @@ function PlasmicDomainCard__RenderFunc(props: {
               sty.apexTab,
               {
                 [sty.apexTaberror_apex]: hasVariant($state, "error", "apex"),
-                [sty.apexTaberror_cname]: hasVariant($state, "error", "cname"),
+                [sty.apexTaberror_cname]: hasVariant($state, "error", "cname")
               }
             )}
-            ref={(ref) => {
+            ref={ref => {
               $refs["apexTab"] = ref;
             }}
+            type={"button"}
           >
             <React.Fragment>
               <React.Fragment>{"A Record "}</React.Fragment>
@@ -592,7 +629,7 @@ function PlasmicDomainCard__RenderFunc(props: {
               $state,
               "error",
               "error"
-            ),
+            )
           })}
         >
           <div
@@ -606,7 +643,7 @@ function PlasmicDomainCard__RenderFunc(props: {
                 $state,
                 "error",
                 "cname"
-              ),
+              )
             })}
           >
             <div
@@ -615,7 +652,7 @@ function PlasmicDomainCard__RenderFunc(props: {
                   $state,
                   "error",
                   "cname"
-                ),
+                )
               })}
             >
               {"Type"}
@@ -630,13 +667,14 @@ function PlasmicDomainCard__RenderFunc(props: {
           <div
             data-plasmic-name={"apexRow"}
             data-plasmic-override={overrides.apexRow}
+
             className={classNames("all", sty.apexRow, {
               [sty.apexRowerror_apex]: hasVariant($state, "error", "apex"),
               [sty.apexRowerror_apex_secondary]:
                 hasVariant($state, "secondary", "secondary") &&
                 hasVariant($state, "error", "apex"),
               [sty.apexRowerror_cname]: hasVariant($state, "error", "cname"),
-              [sty.apexRowerror_error]: hasVariant($state, "error", "error"),
+              [sty.apexRowerror_error]: hasVariant($state, "error", "error")
             })}
           >
             <div
@@ -645,7 +683,7 @@ function PlasmicDomainCard__RenderFunc(props: {
                   $state,
                   "error",
                   "apex"
-                ),
+                )
               })}
             >
               {hasVariant($state, "error", "apex") ? "A" : "CNAME"}
@@ -653,9 +691,10 @@ function PlasmicDomainCard__RenderFunc(props: {
             <div
               data-plasmic-name={"name"}
               data-plasmic-override={overrides.name}
+
               className={classNames("all", "__wab_text", sty.name, {
                 [sty.nameerror_apex]: hasVariant($state, "error", "apex"),
-                [sty.nameerror_cname]: hasVariant($state, "error", "cname"),
+                [sty.nameerror_cname]: hasVariant($state, "error", "cname")
               })}
             >
               {hasVariant($state, "error", "apex") ? "@" : "www"}
@@ -663,9 +702,10 @@ function PlasmicDomainCard__RenderFunc(props: {
             <div
               data-plasmic-name={"value"}
               data-plasmic-override={overrides.value}
+
               className={classNames("all", "__wab_text", sty.value, {
                 [sty.valueerror_apex]: hasVariant($state, "error", "apex"),
-                [sty.valueerror_cname]: hasVariant($state, "error", "cname"),
+                [sty.valueerror_cname]: hasVariant($state, "error", "cname")
               })}
             >
               {hasVariant($state, "error", "apex")
@@ -676,10 +716,11 @@ function PlasmicDomainCard__RenderFunc(props: {
           <div
             data-plasmic-name={"cnameRow"}
             data-plasmic-override={overrides.cnameRow}
+
             className={classNames("all", sty.cnameRow, {
               [sty.cnameRowerror_apex]: hasVariant($state, "error", "apex"),
               [sty.cnameRowerror_cname]: hasVariant($state, "error", "cname"),
-              [sty.cnameRowerror_error]: hasVariant($state, "error", "error"),
+              [sty.cnameRowerror_error]: hasVariant($state, "error", "error")
             })}
           >
             <div
@@ -696,7 +737,7 @@ function PlasmicDomainCard__RenderFunc(props: {
                   $state,
                   "error",
                   "cname"
-                ),
+                )
               })}
             >
               {hasVariant($state, "error", "apex") ? "A" : "APEX"}
@@ -712,7 +753,7 @@ function PlasmicDomainCard__RenderFunc(props: {
                   $state,
                   "error",
                   "cname"
-                ),
+                )
               })}
             >
               {hasVariant($state, "error", "apex") ? "@" : "@"}
@@ -728,7 +769,7 @@ function PlasmicDomainCard__RenderFunc(props: {
                   $state,
                   "error",
                   "cname"
-                ),
+                )
               })}
             >
               {hasVariant($state, "error", "apex")
@@ -757,7 +798,7 @@ const PlasmicDescendants = {
     "apexRow",
     "name",
     "value",
-    "cnameRow",
+    "cnameRow"
   ],
   label: ["label"],
   customDomainLabel: ["customDomainLabel"],
@@ -771,7 +812,7 @@ const PlasmicDescendants = {
   apexRow: ["apexRow", "name", "value"],
   name: ["name"],
   value: ["value"],
-  cnameRow: ["cnameRow"],
+  cnameRow: ["cnameRow"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -804,8 +845,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDomainCard__VariantsArgs;
     args?: PlasmicDomainCard__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicDomainCard__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicDomainCard__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDomainCard__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -830,7 +872,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicDomainCard__ArgProps,
-          internalVariantPropNames: PlasmicDomainCard__VariantProps,
+          internalVariantPropNames: PlasmicDomainCard__VariantProps
         }),
       [props, nodeName]
     );
@@ -838,7 +880,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -870,7 +912,7 @@ export const PlasmicDomainCard = Object.assign(
 
     // Metadata about props expected for PlasmicDomainCard
     internalVariantProps: PlasmicDomainCard__VariantProps,
-    internalArgProps: PlasmicDomainCard__ArgProps,
+    internalArgProps: PlasmicDomainCard__ArgProps
   }
 );
 

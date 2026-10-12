@@ -75,8 +75,7 @@ export interface SubsectionMeta {
 
 interface PublishFlowDialogProps extends DefaultPublishFlowDialogProps {
   latestPublishedVersionData:
-    | { revisionId: string; version: string }
-    | undefined;
+    { revisionId: string; version: string } | undefined;
   appCtx: AppCtx;
   project: ApiProject;
   refreshProjectAndPerms: () => void;
@@ -144,9 +143,6 @@ function PublishFlowDialog(props: PublishFlowDialogProps) {
       })(),
     );
   }, [hostFrameApi, view, loadingVersion]);
-
-  // Push and deploy (Git)
-  const projectRepository = subsectionMeta.pushDeploy.setup.projectRepository;
 
   // Webhooks
   const fetchWebhooks = useAsyncFnStrict(async () => {

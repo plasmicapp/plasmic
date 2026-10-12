@@ -2,7 +2,6 @@ import {
   assert,
   ensure,
   ensureArray,
-  ensureArrayOfInstances,
   only,
   switchType,
 } from "@/wab/shared/common";
@@ -384,13 +383,6 @@ export class SelQuery {
         )
         .result(),
     );
-  }
-
-  /**
-   * Returns owners bottom-up as a raw array.
-   */
-  ownersArrayUp() {
-    return ensureArrayOfInstances(this.owners().toArray(), ValComponent);
   }
 
   frameNum() {

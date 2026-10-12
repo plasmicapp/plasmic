@@ -560,7 +560,7 @@ export async function doImportProject(
   // Extract project IDs from all bundles and create projects to build
   // the complete oldToNewProjectId mapping before fixing data token refs.
   if (!opts?.keepProjectIdsAndNames) {
-    for (const [i, [id, dep]] of depBundles.entries()) {
+    for (const [i, [, dep]] of depBundles.entries()) {
       // Extract projectId directly from the bundle structure to avoid unbundling
       const rootObj = dep.map[dep.root];
       if (rootObj.__type !== "ProjectDependency") {

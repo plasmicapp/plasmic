@@ -8,7 +8,7 @@ import * as React from "react";
 type CheckboxProps = DefaultCheckboxProps;
 
 function Checkbox_(props: CheckboxProps, ref: CheckboxRef) {
-  const { plasmicProps, state } = PlasmicCheckbox.useBehavior<CheckboxProps>(
+  const { plasmicProps } = PlasmicCheckbox.useBehavior<CheckboxProps>(
     props,
     ref,
   );

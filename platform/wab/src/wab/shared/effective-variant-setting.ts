@@ -21,11 +21,9 @@ import {
   VariantCombo,
   isBaseVariant,
   isGlobalVariant,
-  tryGetVariantSetting,
 } from "@/wab/shared/Variants";
 import { arrayReversed } from "@/wab/shared/collections";
 import {
-  arrayEq,
   arrayEqIgnoreOrder,
   assert,
   ensure,
@@ -836,19 +834,6 @@ export class EffectiveVariantSetting {
     return sources.length > 0 ? sources : undefined;
   }
 
-  // Return whether the given variantCombo has the highest priority. Maybe not
-  // be the target variantCombo. For example, you may target `base`, but a
-  // non-base variant is pinned.
-  comboHasHighestPriority(variantCombo: VariantCombo) {
-    return arrayEq(
-      ensure(
-        L.last(this.variantSettings),
-        "variantSettings should not be empty",
-      ).variants,
-      variantCombo,
-    );
-  }
-
   /**
    *  Rich text node merged across all VariantSettings.
    */
@@ -938,35 +923,6 @@ export function getEffectiveVariantSetting(
   } else {
     // This is a top-level frame root TplComponent.  There's only ever one vsetting,
     // and it's always active.
-    return new EffectiveVariantSetting(tpl, tpl.vsettings);
-  }
-}
-
-/**
- * Like getEffectiveVariantSetting, but without the VariantSetting
- * actually corresponding to the argument combo
- */
-export function getEffectiveVariantSettingExcept(
-  tpl: TplNode,
-  variantCombo: VariantCombo,
-) {
-  const component = $$$(tpl).tryGetOwningComponent();
-  if (component) {
-    const vs = tryGetVariantSetting(tpl, variantCombo);
-    const site = getOwnerSite(component);
-    const vsettings = sortedVariantSettingStack(
-      tpl.vsettings,
-      variantCombo,
-      makeVariantComboSorter(site, component),
-    );
-    return new EffectiveVariantSetting(
-      tpl,
-      vsettings.filter((vss) => vss !== vs),
-      site,
-      variantCombo,
-    );
-  } else {
-    // This is a top-level frame root TplComponent
     return new EffectiveVariantSetting(tpl, tpl.vsettings);
   }
 }

@@ -14,7 +14,6 @@ import {
   isFrameComponent,
   isReusableComponent,
 } from "@/wab/shared/core/components";
-import { isIcon } from "@/wab/shared/core/image-assets";
 import {
   ImportableObject,
   extractTransitiveDepsFromComponentDefaultSlots,
@@ -31,14 +30,12 @@ import {
   trackComponentRoot,
   trackComponentSite,
 } from "@/wab/shared/core/tpls";
-import { InsertableIconsGroup } from "@/wab/shared/devflags";
 import {
   inlineMixins,
   inlineTokens,
 } from "@/wab/shared/insertable-templates/inliners";
 import {
   Component,
-  ImageAsset,
   ProjectDependency,
   Site,
   Variant,
@@ -216,16 +213,6 @@ export class ProjectDependencyManager {
     return this._sc.site.projectDependencies.some(
       (d) => d.projectId === projectId,
     );
-  }
-
-  /**
-   * Look for the package in the full dependency tree and return
-   * the version we're currently using.
-   * @param pkgId
-   */
-  public getVersionByPkgId(pkgId: string): string | undefined {
-    const depMap = this._buildDependencyMap(this._sc.site);
-    return depMap[pkgId] ? depMap[pkgId].version : undefined;
   }
 
   // mobx computed value of direct dependencies
@@ -600,22 +587,6 @@ export class ProjectDependencyManager {
           component,
           site,
         };
-  }
-
-  /**
-   * Fetch all icons from the project
-   * @param meta
-   * @returns
-   */
-  getInsertableIcons(meta: InsertableIconsGroup): ImageAsset[] {
-    const projectId = meta.projectId;
-    if (!this.insertableSites[projectId]) {
-      return [];
-    }
-
-    const site = this.insertableSites[projectId];
-    const icons = site.imageAssets.filter((i) => isIcon(i));
-    return icons;
   }
 
   getNiceDepName(dep: ProjectDependency) {

@@ -9,9 +9,9 @@ import { createUseStyleTokens } from "@plasmicapp/react-web";
 
 import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 783YKJdyRRPxZbx3qiNi5Q/projectModule
 
+import "./plasmic_plasmic_kit_component_props_section.css"; // plasmic-import: 783YKJdyRRPxZbx3qiNi5Q/projectcss
 import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import "./plasmic_plasmic_kit_component_props_section.css"; // plasmic-import: 783YKJdyRRPxZbx3qiNi5Q/projectcss
 
 const data = {
   base: `${"plasmic_tokens_783YKJdyRRPxZbx3qiNi5Q"} ${"plasmic_tokens_tXkSR39sgCDWSitZxC5xFV"} ${"plasmic_tokens_95xp9cYcv7HrNWpFWWhbcv"}`,

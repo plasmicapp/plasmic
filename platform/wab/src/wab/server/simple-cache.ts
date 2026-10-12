@@ -1,4 +1,3 @@
-import { DbMgr } from "@/wab/server/db/DbMgr";
 import {
   DynamoDBClient,
   GetItemCommand,
@@ -33,18 +32,5 @@ export class DynamoDbCache implements SimpleCache {
       Item: { key: { S: key }, "my-value": { S: value } },
     });
     await this.client.send(command);
-  }
-}
-
-export class DbMgrCache implements SimpleCache {
-  constructor(private dbMgr: DbMgr) {}
-
-  async get(key: string) {
-    const entry = await this.dbMgr.tryGetKeyValue("copilot-cache", key);
-    return entry?.value;
-  }
-
-  put(key: string, value: string) {
-    return this.dbMgr.setKeyValue("copilot-cache", key, value);
   }
 }

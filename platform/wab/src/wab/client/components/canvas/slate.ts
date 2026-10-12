@@ -50,8 +50,6 @@ type CustomText = { text: string } & CSSProperties;
 export type TplTagElement = Record<"type", "TplTag"> & TplTagAttributes;
 export type ParagraphElement = Record<"type", "paragraph"> &
   ParagraphAttributes;
-export type TplTagExprTextElement = Record<"type", "TplTagExprText"> &
-  TplTagExprTextAttributes;
 export type MentionElement = Record<"type", "mention"> & MentionAttributes;
 
 declare module "slate" {

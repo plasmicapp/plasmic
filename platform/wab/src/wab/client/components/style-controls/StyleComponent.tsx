@@ -242,10 +242,6 @@ export const SidebarPopupSettingContext = React.createContext<
 export const providesSidebarPopupSetting = withProvider(
   SidebarPopupSettingContext.Provider,
 );
-export const withSidebarPopupSetting = withConsumer(
-  SidebarPopupSettingContext.Consumer,
-  "sidebarPopupSetting",
-);
 export function useSidebarPopupSetting() {
   const context = React.useContext(SidebarPopupSettingContext);
   return context;
@@ -1023,10 +1019,6 @@ export class FlexControlHelper {
         : undefined;
   }
 
-  getParentIsCodeComponent() {
-    return this.parentIsCodeComponent;
-  }
-
   getEffectivePosition() {
     return this.effectivePosition;
   }
@@ -1041,19 +1033,6 @@ export class FlexControlHelper {
 
   isAutoInFlexParent() {
     return this.parentContainerType?.includes("flex") && this.isAuto;
-  }
-
-  getParentFlexProps() {
-    if (this.parentContainerType?.includes("flex")) {
-      return {
-        flexDir: this.parentContainerType.split("-")[1],
-      };
-    }
-    return undefined;
-  }
-
-  getParentGridProps() {
-    return this.parentContainerType === "grid" ? {} : undefined;
   }
 
   get isComponentRoot() {

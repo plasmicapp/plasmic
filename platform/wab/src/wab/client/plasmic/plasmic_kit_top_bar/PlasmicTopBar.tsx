@@ -14,42 +14,68 @@
 import * as React from "react";
 
 import {
-  classNames,
-  createPlasmicElementProxy,
-  deriveRenderOpts,
   Flex as Flex__,
-  generateStateOnChangeProp,
-  generateStateValueProp,
-  hasVariant,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
   PlasmicIcon as PlasmicIcon__,
   PlasmicImg as PlasmicImg__,
   PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
+  deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
   useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import AiButton from "../../components/AiButton"; // plasmic-import: BqSsxlQdj2F0/component
-import ViewAsButton from "../../components/app-auth/ViewAsButton"; // plasmic-import: MJoB9g7giNL/component
-import CommentButton from "../../components/CommentButton"; // plasmic-import: JnxWw8hitac/component
-import FreeTrial from "../../components/FreeTrial"; // plasmic-import: p3GgKAlaQe/component
-import ArenaSwitcher from "../../components/top-bar/ArenaSwitcher"; // plasmic-import: OAMl2pw5C9W/component
-import BranchSwitcher from "../../components/top-bar/BranchSwitcher"; // plasmic-import: IQWpmX8J3t/component
-import CodeButton from "../../components/top-bar/CodeButton"; // plasmic-import: FCNHcPh1ZR/component
-import LivePopOutButton from "../../components/top-bar/LivePopOutButton"; // plasmic-import: ND5ZuEZMUe/component
-import PublishButton from "../../components/top-bar/PublishButton"; // plasmic-import: yXRcEjTceQ/component
-import SaveIndicator from "../../components/top-bar/SaveIndicator"; // plasmic-import: HYPZr2nWSgs/component
-import ShareButton from "../../components/top-bar/ShareButton"; // plasmic-import: mnPFthIw2I/component
-import VariantsComboSelect from "../../components/top-bar/VariantsComboSelect"; // plasmic-import: I6gjdy639O/component
-import ViewButton from "../../components/top-bar/ViewButton"; // plasmic-import: -r2DBYss6/component
-import ZoomButton from "../../components/top-bar/ZoomButton"; // plasmic-import: UsJCR-Jtn5/component
-import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
+import SaveIndicator from "../../components/top-bar/SaveIndicator"; // plasmic-import: HYPZr2nWSgs/component
+import BranchSwitcher from "../../components/top-bar/BranchSwitcher"; // plasmic-import: IQWpmX8J3t/component
+import ArenaSwitcher from "../../components/top-bar/ArenaSwitcher"; // plasmic-import: OAMl2pw5C9W/component
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
+import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
+import Select__OptionGroup from "../../components/widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
+import VariantsComboSelect from "../../components/top-bar/VariantsComboSelect"; // plasmic-import: I6gjdy639O/component
+import FreeTrial from "../../components/FreeTrial"; // plasmic-import: p3GgKAlaQe/component
+import ViewAsButton from "../../components/app-auth/ViewAsButton"; // plasmic-import: MJoB9g7giNL/component
+import ZoomButton from "../../components/top-bar/ZoomButton"; // plasmic-import: UsJCR-Jtn5/component
+import ViewButton from "../../components/top-bar/ViewButton"; // plasmic-import: -r2DBYss6/component
+import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import LivePopOutButton from "../../components/top-bar/LivePopOutButton"; // plasmic-import: ND5ZuEZMUe/component
+import CommentButton from "../../components/CommentButton"; // plasmic-import: JnxWw8hitac/component
+import AiButton from "../../components/AiButton"; // plasmic-import: BqSsxlQdj2F0/component
+import CodeButton from "../../components/top-bar/CodeButton"; // plasmic-import: FCNHcPh1ZR/component
+import ShareButton from "../../components/top-bar/ShareButton"; // plasmic-import: mnPFthIw2I/component
+import PublishButton from "../../components/top-bar/PublishButton"; // plasmic-import: yXRcEjTceQ/component
+import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -57,14 +83,14 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicTopBar.module.css"; // plasmic-import: tNBvs5bIAy/css
 
-import InfoIcon from "../plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
 import MarkIcon from "../plasmic_kit_design_system/PlasmicIcon__Mark"; // plasmic-import: a6KJVu0om/icon
 import MarkFullColorIcon from "../plasmic_kit_design_system/PlasmicIcon__MarkFullColor"; // plasmic-import: l_n_OBLJg/icon
-import ArrowLeftSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowLeftSvg"; // plasmic-import: -d8Kjj4sp/icon
-import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
-import IconIcon from "./icons/PlasmicIcon__Icon"; // plasmic-import: jnoWwmZ86t/icon
 import SegmentSeparatorIcon from "./icons/PlasmicIcon__SegmentSeparator"; // plasmic-import: yzguJQZL37/icon
+import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import InfoIcon from "../plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
+import IconIcon from "./icons/PlasmicIcon__Icon"; // plasmic-import: jnoWwmZ86t/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowLeftSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowLeftSvg"; // plasmic-import: -d8Kjj4sp/icon
 import imageAy93RhuWbc from "./images/image.svg"; // plasmic-import: ay93RhuWbc/picture
 
 createPlasmicElementProxy;
@@ -157,7 +183,7 @@ function PlasmicTopBar__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -170,33 +196,33 @@ function PlasmicTopBar__RenderFunc(props: {
         path: "mode",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.mode,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.mode
       },
       {
         path: "arenaType",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.arenaType,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.arenaType
       },
       {
         path: "hideAvatar",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hideAvatar,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hideAvatar
       },
       {
         path: "previewSelect.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
       },
       {
         path: "plasmicAdminMode",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.plasmicAdminMode,
-      },
+          $props.plasmicAdminMode
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -206,15 +232,15 @@ function PlasmicTopBar__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
-  const [isN3650307Hover, triggerN3650307HoverProps] = useTrigger(
+  const [isN83873812Hover, triggerN83873812HoverProps] = useTrigger(
     "useHover",
     {}
   );
   const triggers = {
-    hover_3650307: isN3650307Hover,
+    hover_83873812: isN83873812Hover
   };
 
   const styleTokensClassNames = _useStyleTokens();
@@ -246,13 +272,14 @@ function PlasmicTopBar__RenderFunc(props: {
             $state,
             "plasmicAdminMode",
             "plasmicAdminMode"
-          ),
+          )
         }
       )}
     >
       <div
         data-plasmic-name={"left"}
         data-plasmic-override={overrides.left}
+
         className={classNames("all", sty.left, {
           [sty.leftarenaType_page]: hasVariant($state, "arenaType", "page"),
           [sty.leftmode_preview]: hasVariant($state, "mode", "preview"),
@@ -260,48 +287,51 @@ function PlasmicTopBar__RenderFunc(props: {
             $state,
             "plasmicAdminMode",
             "plasmicAdminMode"
-          ),
+          )
         })}
       >
         <div className={classNames("all", sty.freeBox___7MgoJ)}>
           <PlasmicLink__
             data-plasmic-name={"logoLink"}
             data-plasmic-override={overrides.logoLink}
+
             className={classNames("all", "a", "a__6Crqk", sty.logoLink, {
-              [sty.logoLinkmode_preview]: hasVariant($state, "mode", "preview"),
+              [sty.logoLinkmode_preview]: hasVariant($state, "mode", "preview")
             })}
             platform={"react"}
           >
             <PlasmicIcon__
               PlasmicIconType={
-                triggers.hover_3650307 ? MarkFullColorIcon : MarkIcon
+                triggers.hover_83873812 ? MarkFullColorIcon : MarkIcon
               }
               className={classNames("all", sty.svg__jQrU5, {
                 [sty.svgmode_preview__jQrU5QMfAz]: hasVariant(
                   $state,
                   "mode",
                   "preview"
-                ),
+                )
               })}
               role={"img"}
-              data-plasmic-trigger-props={[triggerN3650307HoverProps]}
+              data-plasmic-trigger-props={[triggerN83873812HoverProps]}
             />
           </PlasmicLink__>
         </div>
         <div
           data-plasmic-name={"titleSegment"}
           data-plasmic-override={overrides.titleSegment}
+
           className={classNames("all", sty.titleSegment)}
         >
           <div
             data-plasmic-name={"projectTitle"}
             data-plasmic-override={overrides.projectTitle}
+
             className={classNames("all", "__wab_text", sty.projectTitle, {
               [sty.projectTitlemode_preview]: hasVariant(
                 $state,
                 "mode",
                 "preview"
-              ),
+              )
             })}
           >
             {"Project Name"}
@@ -309,18 +339,21 @@ function PlasmicTopBar__RenderFunc(props: {
           <MenuButton
             data-plasmic-name={"projectMenu"}
             data-plasmic-override={overrides.projectMenu}
+
             className={classNames("__wab_instance", sty.projectMenu)}
           />
 
           <SaveIndicator
             data-plasmic-name={"saveIndicator"}
             data-plasmic-override={overrides.saveIndicator}
+
             className={classNames("__wab_instance", sty.saveIndicator)}
           />
         </div>
         <SegmentSeparatorIcon
           data-plasmic-name={"branchSeparator"}
           data-plasmic-override={overrides.branchSeparator}
+
           className={classNames("all", sty.branchSeparator)}
           role={"img"}
         />
@@ -328,17 +361,20 @@ function PlasmicTopBar__RenderFunc(props: {
         <div
           data-plasmic-name={"branchSegment"}
           data-plasmic-override={overrides.branchSegment}
+
           className={classNames("all", sty.branchSegment)}
         >
           <BranchSwitcher
             data-plasmic-name={"branchSwitcher"}
             data-plasmic-override={overrides.branchSwitcher}
+
             className={classNames("__wab_instance", sty.branchSwitcher)}
           />
         </div>
         <SegmentSeparatorIcon
           data-plasmic-name={"arenaSeparator"}
           data-plasmic-override={overrides.arenaSeparator}
+
           className={classNames("all", sty.arenaSeparator)}
           role={"img"}
         />
@@ -347,23 +383,25 @@ function PlasmicTopBar__RenderFunc(props: {
           <div
             data-plasmic-name={"arenaSegment"}
             data-plasmic-override={overrides.arenaSegment}
+
             className={classNames("all", sty.arenaSegment, {
               [sty.arenaSegmentmode_preview]: hasVariant(
                 $state,
                 "mode",
                 "preview"
-              ),
+              )
             })}
           >
             <ArenaSwitcher
               data-plasmic-name={"arenaSwitcher"}
               data-plasmic-override={overrides.arenaSwitcher}
+
               className={classNames("__wab_instance", sty.arenaSwitcher, {
                 [sty.arenaSwitchermode_preview]: hasVariant(
                   $state,
                   "mode",
                   "preview"
-                ),
+                )
               })}
             />
           </div>
@@ -372,12 +410,13 @@ function PlasmicTopBar__RenderFunc(props: {
           <Select
             data-plasmic-name={"previewSelect"}
             data-plasmic-override={overrides.previewSelect}
+
             className={classNames("__wab_instance", sty.previewSelect, {
               [sty.previewSelectmode_preview]: hasVariant(
                 $state,
                 "mode",
                 "preview"
-              ),
+              )
             })}
             font={["bold"]}
             icon={
@@ -416,7 +455,7 @@ function PlasmicTopBar__RenderFunc(props: {
                 $state,
                 "mode",
                 "preview"
-              ),
+              )
             })}
             role={"img"}
           />
@@ -425,12 +464,13 @@ function PlasmicTopBar__RenderFunc(props: {
           <VariantsComboSelect
             data-plasmic-name={"variantsComboSelect"}
             data-plasmic-override={overrides.variantsComboSelect}
+
             className={classNames("__wab_instance", sty.variantsComboSelect, {
               [sty.variantsComboSelectmode_preview]: hasVariant(
                 $state,
                 "mode",
                 "preview"
-              ),
+              )
             })}
           >
             {"Base"}
@@ -443,7 +483,7 @@ function PlasmicTopBar__RenderFunc(props: {
             $state,
             "plasmicAdminMode",
             "plasmicAdminMode"
-          ),
+          )
         })}
       >
         <div className={classNames("all", "__wab_text", sty.text__g59UJ)}>
@@ -464,31 +504,34 @@ function PlasmicTopBar__RenderFunc(props: {
         <div
           data-plasmic-name={"centerLive"}
           data-plasmic-override={overrides.centerLive}
+
           className={classNames("all", sty.centerLive, {
             [sty.centerLivemode_preview]: hasVariant($state, "mode", "preview"),
             [sty.centerLiveplasmicAdminMode]: hasVariant(
               $state,
               "plasmicAdminMode",
               "plasmicAdminMode"
-            ),
+            )
           })}
         />
       ) : null}
       <div
         data-plasmic-name={"right"}
         data-plasmic-override={overrides.right}
+
         className={classNames("all", sty.right, {
           [sty.rightmode_preview]: hasVariant($state, "mode", "preview"),
           [sty.rightplasmicAdminMode]: hasVariant(
             $state,
             "plasmicAdminMode",
             "plasmicAdminMode"
-          ),
+          )
         })}
       >
         <FreeTrial
           data-plasmic-name={"freeTrial"}
           data-plasmic-override={overrides.freeTrial}
+
           className={classNames("__wab_instance", sty.freeTrial)}
           freeTrialTimeRemaining={"0 days left"}
           topBar={true}
@@ -500,7 +543,7 @@ function PlasmicTopBar__RenderFunc(props: {
               $state,
               "plasmicAdminMode",
               "plasmicAdminMode"
-            ),
+            )
           })}
           role={"img"}
         />
@@ -508,6 +551,7 @@ function PlasmicTopBar__RenderFunc(props: {
         <ViewAsButton
           data-plasmic-name={"viewAsButton"}
           data-plasmic-override={overrides.viewAsButton}
+
           className={classNames("__wab_instance", sty.viewAsButton)}
         />
 
@@ -515,12 +559,13 @@ function PlasmicTopBar__RenderFunc(props: {
           <ZoomButton
             data-plasmic-name={"zoomButton"}
             data-plasmic-override={overrides.zoomButton}
+
             className={classNames("__wab_instance", sty.zoomButton, {
               [sty.zoomButtonmode_preview]: hasVariant(
                 $state,
                 "mode",
                 "preview"
-              ),
+              )
             })}
           />
         ) : null}
@@ -528,12 +573,13 @@ function PlasmicTopBar__RenderFunc(props: {
           <ViewButton
             data-plasmic-name={"viewButton"}
             data-plasmic-override={overrides.viewButton}
+
             className={classNames("__wab_instance", sty.viewButton, {
               [sty.viewButtonmode_preview]: hasVariant(
                 $state,
                 "mode",
                 "preview"
-              ),
+              )
             })}
             mode={hasVariant($state, "mode", "preview") ? "live" : undefined}
           />
@@ -544,13 +590,14 @@ function PlasmicTopBar__RenderFunc(props: {
               $state,
               "mode",
               "preview"
-            ),
+            )
           })}
         >
           {(hasVariant($state, "mode", "preview") ? false : true) ? (
             <IconButton
               data-plasmic-name={"play"}
               data-plasmic-override={overrides.play}
+
               children2={
                 <ChevronDownSvgIcon
                   className={classNames("all", sty.svg__erE2Y)}
@@ -558,7 +605,7 @@ function PlasmicTopBar__RenderFunc(props: {
                 />
               }
               className={classNames("__wab_instance", sty.play, {
-                [sty.playmode_preview]: hasVariant($state, "mode", "preview"),
+                [sty.playmode_preview]: hasVariant($state, "mode", "preview")
               })}
               size={"medium"}
               withGreenBackgroundHover={true}
@@ -569,7 +616,7 @@ function PlasmicTopBar__RenderFunc(props: {
                     $state,
                     "mode",
                     "preview"
-                  ),
+                  )
                 })}
                 role={"img"}
               />
@@ -578,12 +625,13 @@ function PlasmicTopBar__RenderFunc(props: {
           <LivePopOutButton
             data-plasmic-name={"livePopOutButton"}
             data-plasmic-override={overrides.livePopOutButton}
+
             className={classNames("__wab_instance", sty.livePopOutButton, {
               [sty.livePopOutButtonmode_preview]: hasVariant(
                 $state,
                 "mode",
                 "preview"
-              ),
+              )
             })}
           />
 
@@ -593,30 +641,32 @@ function PlasmicTopBar__RenderFunc(props: {
                 $state,
                 "mode",
                 "preview"
-              ),
+              )
             })}
           >
             <CommentButton
               data-plasmic-name={"commentButton"}
               data-plasmic-override={overrides.commentButton}
+
               className={classNames("__wab_instance", sty.commentButton, {
                 [sty.commentButtonmode_preview]: hasVariant(
                   $state,
                   "mode",
                   "preview"
-                ),
+                )
               })}
             />
 
             <AiButton
               data-plasmic-name={"aiButton"}
               data-plasmic-override={overrides.aiButton}
+
               className={classNames("__wab_instance", sty.aiButton, {
                 [sty.aiButtonmode_preview]: hasVariant(
                   $state,
                   "mode",
                   "preview"
-                ),
+                )
               })}
             />
           </div>
@@ -625,12 +675,13 @@ function PlasmicTopBar__RenderFunc(props: {
           <CodeButton
             data-plasmic-name={"codeButton"}
             data-plasmic-override={overrides.codeButton}
+
             className={classNames("__wab_instance", {
               [sty.codeButtonmode_preview]: hasVariant(
                 $state,
                 "mode",
                 "preview"
-              ),
+              )
             })}
           />
 
@@ -638,12 +689,13 @@ function PlasmicTopBar__RenderFunc(props: {
             <ShareButton
               data-plasmic-name={"shareButton"}
               data-plasmic-override={overrides.shareButton}
+
               className={classNames("__wab_instance", sty.shareButton, {
                 [sty.shareButtonmode_preview]: hasVariant(
                   $state,
                   "mode",
                   "preview"
-                ),
+                )
               })}
             />
           ) : null}
@@ -651,6 +703,7 @@ function PlasmicTopBar__RenderFunc(props: {
             <PublishButton
               data-plasmic-name={"publishButton"}
               data-plasmic-override={overrides.publishButton}
+
               className={classNames("__wab_instance", sty.publishButton, {
                 [sty.publishButtonhideAvatar]: hasVariant(
                   $state,
@@ -661,7 +714,7 @@ function PlasmicTopBar__RenderFunc(props: {
                   $state,
                   "mode",
                   "preview"
-                ),
+                )
               })}
             />
           ) : null}
@@ -670,8 +723,9 @@ function PlasmicTopBar__RenderFunc(props: {
           <Button
             data-plasmic-name={"stop"}
             data-plasmic-override={overrides.stop}
+
             className={classNames("__wab_instance", sty.stop, {
-              [sty.stopmode_preview]: hasVariant($state, "mode", "preview"),
+              [sty.stopmode_preview]: hasVariant($state, "mode", "preview")
             })}
             endIcon={
               <ChevronDownSvgIcon
@@ -692,7 +746,7 @@ function PlasmicTopBar__RenderFunc(props: {
                     $state,
                     "mode",
                     "preview"
-                  ),
+                  )
                 })}
                 role={"img"}
               />
@@ -709,12 +763,13 @@ function PlasmicTopBar__RenderFunc(props: {
           hasVariant($state, "hideAvatar", "hideAvatar")
             ? false
             : hasVariant($state, "mode", "preview")
-            ? false
-            : true
+              ? false
+              : true
         ) ? (
           <PlasmicImg__
             data-plasmic-name={"avatar"}
             data-plasmic-override={overrides.avatar}
+
             alt={""}
             className={classNames(sty.avatar, {
               [sty.avatararenaType_page]: hasVariant(
@@ -727,7 +782,7 @@ function PlasmicTopBar__RenderFunc(props: {
                 "hideAvatar",
                 "hideAvatar"
               ),
-              [sty.avatarmode_preview]: hasVariant($state, "mode", "preview"),
+              [sty.avatarmode_preview]: hasVariant($state, "mode", "preview")
             })}
             displayHeight={"1.5rem"}
             displayMaxHeight={"none"}
@@ -739,7 +794,7 @@ function PlasmicTopBar__RenderFunc(props: {
               src: imageAy93RhuWbc,
               fullWidth: 150,
               fullHeight: 150,
-              aspectRatio: 1,
+              aspectRatio: 1
             }}
           />
         ) : null}
@@ -779,7 +834,7 @@ const PlasmicDescendants = {
     "shareButton",
     "publishButton",
     "stop",
-    "avatar",
+    "avatar"
   ],
   left: [
     "left",
@@ -795,14 +850,14 @@ const PlasmicDescendants = {
     "arenaSegment",
     "arenaSwitcher",
     "previewSelect",
-    "variantsComboSelect",
+    "variantsComboSelect"
   ],
   logoLink: ["logoLink"],
   titleSegment: [
     "titleSegment",
     "projectTitle",
     "projectMenu",
-    "saveIndicator",
+    "saveIndicator"
   ],
   projectTitle: ["projectTitle"],
   projectMenu: ["projectMenu"],
@@ -830,7 +885,7 @@ const PlasmicDescendants = {
     "shareButton",
     "publishButton",
     "stop",
-    "avatar",
+    "avatar"
   ],
   freeTrial: ["freeTrial"],
   viewAsButton: ["viewAsButton"],
@@ -844,7 +899,7 @@ const PlasmicDescendants = {
   shareButton: ["shareButton"],
   publishButton: ["publishButton"],
   stop: ["stop"],
-  avatar: ["avatar"],
+  avatar: ["avatar"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -893,7 +948,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTopBar__VariantsArgs;
     args?: PlasmicTopBar__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicTopBar__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicTopBar__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTopBar__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -918,7 +975,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicTopBar__ArgProps,
-          internalVariantPropNames: PlasmicTopBar__VariantProps,
+          internalVariantPropNames: PlasmicTopBar__VariantProps
         }),
       [props, nodeName]
     );
@@ -926,7 +983,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -974,7 +1031,7 @@ export const PlasmicTopBar = Object.assign(
 
     // Metadata about props expected for PlasmicTopBar
     internalVariantProps: PlasmicTopBar__VariantProps,
-    internalArgProps: PlasmicTopBar__ArgProps,
+    internalArgProps: PlasmicTopBar__ArgProps
   }
 );
 

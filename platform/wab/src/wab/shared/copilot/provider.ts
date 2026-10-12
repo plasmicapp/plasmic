@@ -21,5 +21,3 @@ export type ModelProviderOpts =
       provider: "VertexModelGarden";
       location: string;
     });
-
-export type Provider = ModelProviderOpts["provider"];

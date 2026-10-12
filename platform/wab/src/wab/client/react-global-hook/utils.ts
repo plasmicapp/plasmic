@@ -1,7 +1,4 @@
-import {
-  ExtraSlotCanvasEnvData,
-  RenderingCtx,
-} from "@/wab/client/components/canvas/canvas-rendering";
+import { ExtraSlotCanvasEnvData } from "@/wab/client/components/canvas/canvas-rendering";
 import { Fiber } from "@/wab/client/react-global-hook/fiber";
 import {
   GlobalHookCtx,
@@ -12,7 +9,6 @@ import {
   dataCanvasEnvsProp,
   frameUidProp,
   plasmicClonedIndex,
-  renderingCtxProp,
   richTextProp,
   slotArgCompKeyProp,
   slotArgParamProp,
@@ -96,13 +92,6 @@ export const tryGetSlotPlaceholderKey = (node: Fiber): string | undefined =>
 export const tryGetFrameUid = (node: Fiber): number | undefined => {
   if (hasKey(node.memoizedProps, frameUidProp)) {
     return node.memoizedProps[frameUidProp] as number;
-  }
-  return undefined;
-};
-
-export const tryGetRenderingCtx = (node: Fiber): RenderingCtx | undefined => {
-  if (hasKey(node.memoizedProps, renderingCtxProp)) {
-    return node.memoizedProps[renderingCtxProp] as RenderingCtx;
   }
   return undefined;
 };

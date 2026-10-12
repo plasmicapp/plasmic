@@ -583,17 +583,3 @@ export function makePictureImports(
     )
     .join("\n");
 }
-
-export function getImageFilename(asset: ImageAsset) {
-  if (!asset.dataUri) {
-    return asset.name;
-  }
-  let { contentType } = parseDataUrl(asset.dataUri);
-
-  if (contentType === "image/jpg") {
-    contentType = "image/jpeg";
-  }
-
-  const extension = mime.getExtension(contentType);
-  return `${asset.name}.${extension}`;
-}

@@ -465,16 +465,6 @@ export const PosControls2 = observer(function PosControls2(props: {
   );
 });
 
-let nextId = 1;
-const genPopoverId = () => {
-  return nextId++;
-};
-
-const usePopoverId = () => {
-  const [id] = React.useState(genPopoverId());
-  return `__wab-pop-over-${id}`;
-};
-
 const Popover = React.forwardRef(function Popover(
   props: {
     onClose?: () => void;

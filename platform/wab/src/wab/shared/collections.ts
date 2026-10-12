@@ -14,26 +14,6 @@ export function mkIdMap<T extends HasId>(xs: ReadonlyArray<T>): Map<string, T> {
   return new Map(xs.map((x) => tuple(x.id, x) as [string, T]));
 }
 
-export interface HasUid {
-  uid: number;
-}
-
-export function mkUidMap<T extends HasUid>(
-  xs: ReadonlyArray<T>,
-): Map<number, T> {
-  return new Map(xs.map((x) => tuple(x.uid, x)));
-}
-
-export interface HasName {
-  name: string;
-}
-
-export function mkNameMap<T extends HasName>(
-  xs: ReadonlyArray<T>,
-): Map<string, T> {
-  return new Map(xs.map((x) => tuple(x.name, x)));
-}
-
 /**
  * Reorders an array to match the order in another array, where items are
  * matched using the key function.
@@ -112,29 +92,6 @@ export function unzip3<A, B, C>(xs: [A, B, C][]): [A[], B[], C[]] {
   );
 }
 
-/**
- * This is a better alternative to both:
- *
- *   key in obj
- *
- * and
- *
- *   obj[key]
- *
- * Say you accidentally passed in this:
- *
- *   commitId in commitDag
- *
- * instead of:
- *
- *   commitId in commitDag.parents
- *
- * This adds a bit of additional type-checking.
- */
-export function safeGet<D extends object>(dict: D, key: keyof D) {
-  return dict[key];
-}
-
 export function safeHas<D extends object>(dict: D, key: keyof D) {
   return key in dict;
 }
@@ -174,7 +131,7 @@ export function arrayInsert<T>(xs: T[], x: T, index?: number) {
 }
 
 export function arrayRemoveAll<T>(xs: T[], x: T) {
-  for (let i = xs.length; i--; ) {
+  for (let i = xs.length; i--;) {
     if (xs[i] === x) {
       xs.splice(i, 1);
     }
@@ -194,41 +151,8 @@ export function arrayReversed<T>(xs: ReadonlyArray<T>) {
   return xs.slice().reverse();
 }
 
-export function filterObject<T extends Dict<any>>(
-  xs: T,
-  f: (entry: [k: string & keyof T, v: T[keyof T]]) => boolean,
-): Record<string, T[keyof T]> {
-  return Object.fromEntries(Object.entries(xs).filter(f)) as any;
-}
-
-export function flatMapObject<T extends Dict<any>, K, U>(
-  xs: T,
-  f: (entry: [k: string & keyof T, v: T[keyof T]]) => [K, U][],
-) {
-  return Object.fromEntries(Object.entries(xs).flatMap(f));
-}
-
-/** Return undefined if array or object is empty. */
-export function emptyToUndefined<T extends any[] | object>(
-  x: T,
-): T | undefined {
-  if (Array.isArray(x)) {
-    return x.length === 0 ? undefined : x;
-  } else {
-    return Object.keys(x).length === 0 ? undefined : x;
-  }
-}
-
-export function isReadonlyMap<K, V>(v: any): v is ReadonlyMap<K, V> {
-  return v instanceof Map;
-}
-
 export function createMapFromObject<T extends object>(
   obj: T,
 ): Map<keyof T, T[keyof T]> {
   return new Map(Object.entries(obj) as any);
-}
-
-export function reverseMap<K, V>(map: Map<K, V>): Map<V, K> {
-  return new Map(Array.from(map.entries()).map(([k, v]) => tuple(v, k)));
 }

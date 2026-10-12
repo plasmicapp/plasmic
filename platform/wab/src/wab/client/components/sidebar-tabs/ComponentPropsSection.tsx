@@ -118,7 +118,7 @@ import {
 import { wabToTsType } from "@/wab/shared/model/model-util";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { Dropdown, Input, Menu, Tooltip, notification } from "antd";
-import L, { defer, isArray, sortBy } from "lodash";
+import L, { defer, sortBy } from "lodash";
 import { autorun } from "mobx";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
@@ -859,71 +859,6 @@ export const DataSourceEditor = observer(function DataSourceEditor({
     />
   );
 });
-
-export const DataSelectorEditor = (props: {
-  value?: string[] | null;
-  data?: object;
-  onChange?: (value: string[] | null | undefined) => void;
-}) => {
-  const { value, data, onChange } = props;
-
-  const dataSelector: {
-    data: any;
-    selectedField?: string;
-  }[] = [];
-
-  let curData = data;
-  if (value) {
-    for (let i = 0; i < value.length; i++) {
-      dataSelector.push({
-        data: curData,
-        selectedField: value[i],
-      });
-      curData = L.get(curData, value[i]);
-    }
-  }
-  if (typeof curData === "object") {
-    dataSelector.push({
-      data: curData,
-      selectedField: undefined,
-    });
-  }
-
-  const handleChange = (newSelector: string, i: number) => {
-    onChange?.([
-      ...(value ?? []).slice(0, i),
-      ...(newSelector !== "none" ? [newSelector] : []),
-    ]);
-  };
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-      }}
-      className={"form-control text-right"}
-    >
-      {dataSelector.map(({ data: _data, selectedField }, i) => (
-        <StyleSelect
-          className={"form-control text-right"}
-          value={selectedField ?? "none"}
-          onChange={(val) => val && handleChange(val, i)}
-          key={i}
-        >
-          <StyleSelect.Option key={`${i}_select`} value={"none"}>
-            Select {!isArray(_data) ? "a field" : "an index"}...
-          </StyleSelect.Option>
-          {Object.keys(_data ?? {}).map((option, j) => (
-            <StyleSelect.Option key={`${j}_${option}`} value={option}>
-              {option}
-            </StyleSelect.Option>
-          ))}
-        </StyleSelect>
-      ))}
-    </div>
-  );
-};
 
 export const FallbackEditor = observer(function FallbackEditor_(props: {
   children: React.ReactNode;

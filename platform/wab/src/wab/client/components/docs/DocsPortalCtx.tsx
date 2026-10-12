@@ -222,10 +222,6 @@ export class DocsPortalCtx {
     return this.focusedIcon.get();
   }
 
-  getFocusedIcon() {
-    return ensure(this.focusedIcon.get(), "missing focusedIcon");
-  }
-
   setFocusedIcon(icon: ImageAsset) {
     this.focusedIcon.set(icon);
     this.focusedElement.set(undefined);

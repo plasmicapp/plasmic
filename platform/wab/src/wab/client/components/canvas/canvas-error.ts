@@ -2,7 +2,6 @@ import {
   getEnvId,
   RenderingCtx,
 } from "@/wab/client/components/canvas/canvas-rendering";
-import { handleError } from "@/wab/client/ErrorNotifications";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   classNameProp,
@@ -20,7 +19,6 @@ import {
   TplNode,
 } from "@/wab/shared/model/classes";
 import { isPlasmicUndefinedDataErrorPromise } from "@plasmicapp/data-sources";
-import { debounce } from "lodash";
 import type React from "react";
 
 export interface CanvasErrorBoundaryProps {
@@ -229,6 +227,3 @@ function deriveOffendingElement(error: Error | null | undefined) {
   const match = error.stack?.match(/at (\w+)/);
   return match?.[1] ?? undefined;
 }
-
-// Only for detecting errors in e2e tests
-const handleCanvasError = debounce(handleError, 500, { leading: true });

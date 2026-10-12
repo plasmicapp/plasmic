@@ -3,7 +3,6 @@ import {
   withProvider,
 } from "@/wab/commons/components/ContextUtil";
 import { ScreenDimmer } from "@/wab/commons/components/ScreenDimmer";
-import { ensure } from "@/wab/shared/common";
 import { Spin } from "antd";
 import cx from "classnames";
 import * as React from "react";
@@ -79,5 +78,3 @@ export class AppView extends React.Component<AppViewProps, AppViewState> {
 export const AppContext = React.createContext<App | undefined>(undefined);
 export const withAppContext = withConsumer(AppContext.Consumer, "app");
 export const providesAppContext = withProvider(AppContext.Provider);
-export const useApp = () =>
-  ensure(React.useContext(AppContext), "AppContext must exist");

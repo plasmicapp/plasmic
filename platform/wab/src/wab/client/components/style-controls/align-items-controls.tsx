@@ -30,7 +30,7 @@ export const AlignItemsControls = observer(
     }
   > {
     render() {
-      const { prop, dir, includeAuto, label, isFlex } = this.props;
+      const { prop, dir, includeAuto, label } = this.props;
       const options = [
         ...(includeAuto ? ["auto"] : []),
         "flex-start",

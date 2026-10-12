@@ -1,5 +1,4 @@
 import { Values } from "@/wab/commons/types";
-import { StudioPropType } from "@/wab/shared/code-components/code-components";
 import { jsLiteral } from "@/wab/shared/codegen/util";
 import {
   assert,
@@ -43,7 +42,6 @@ import {
   isKnownMultiChoice,
   isKnownNum,
   isKnownPlumeInstance,
-  isKnownQueryData,
   isKnownRenderableType,
   isKnownRenderFuncType,
   isKnownStyleScopeClassNamePropType,
@@ -64,14 +62,7 @@ import {
 import { instUtil as defaultInstUtil } from "@/wab/shared/model/InstUtil";
 import { Type as ModelType } from "@/wab/shared/model/model-meta";
 import { ChoiceOptions, ChoiceValue } from "@plasmicapp/host";
-import L, {
-  isArray,
-  isBoolean,
-  isEqual,
-  isNil,
-  isNumber,
-  isString,
-} from "lodash";
+import { isArray, isBoolean, isEqual, isNil, isNumber, isString } from "lodash";
 
 export const typeFactory = {
   text: () => new Text({ name: "text" }),
@@ -227,13 +218,6 @@ export function isImageType(type: Type): type is Img {
   return isKnownImg(type) && type.name === "img";
 }
 
-export function isQueryDataType(type: Type): type is QueryData {
-  return isKnownQueryData(type) && type.name === "queryData";
-}
-
-export const isFuncType = (type: Type): type is FunctionType =>
-  isKnownFunctionType(type) && L.startsWith(type.name, "func");
-
 export const wabToTsTypeMap = {
   text: "string",
   num: "number",
@@ -333,26 +317,6 @@ export function convertVariableTypeToWabType(variableType: StateVariableType) {
     typeFactory[STATE_VARIABLE_TYPE_TO_WAB_TYPE_KEY[variableType]]?.() ||
     typeFactory.any()
   );
-}
-
-export const STATE_VARIABLE_TYPE_TO_PROP_TYPE: Record<
-  StateVariableType,
-  StudioPropType<any>
-> = {
-  text: "string",
-  number: "number",
-  boolean: "boolean",
-  array: { type: "array" },
-  object: { type: "object" },
-  dateString: { type: "dateString" },
-  dateRangeStrings: { type: "dateRangeStrings" },
-  variant: { type: "variant" },
-};
-
-export function convertVariableTypeToPropType(
-  variableType: StateVariableType,
-): StudioPropType<any> {
-  return STATE_VARIABLE_TYPE_TO_PROP_TYPE[variableType];
 }
 
 export function typeDisplayName(type: Type, shortDescription?: boolean) {

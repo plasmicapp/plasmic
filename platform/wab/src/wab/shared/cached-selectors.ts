@@ -242,14 +242,6 @@ export const usedGlobalVariantGroups = maybeComputedFn(
   },
 );
 
-export const usedScreenVariantGroups = maybeComputedFn(
-  function usedScreenVariantGroups(site: Site, component: Component) {
-    return usedGlobalVariantGroups(site, component).filter(
-      (g) => g === site.activeScreenVariantGroup,
-    );
-  },
-);
-
 export const componentToElementNames = maybeComputedFn(
   (component: Component) => {
     const nodeNamer = computedNodeNamer(component);

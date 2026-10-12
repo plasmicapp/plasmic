@@ -12,10 +12,6 @@
   "images": {
     "scheme": "cdn"
   },
-  "tokens": {
-    "scheme": "theo",
-    "tokensFilePath": "plasmic-tokens.theo.json"
-  },
   "srcDir": ".",
   "defaultPlasmicDir": "./plasmic",
   "projects": [
@@ -27,19 +23,6 @@
       "cssFilePath": "plasmic/plasmic_kit_email_templates/plasmic.css",
       "components": [
         {
-          "id": "1YzUicnY5mUG",
-          "name": "TemplateTestEmail",
-          "type": "managed",
-          "projectId": "taNK5uwsoPrzfpYmBVwUwX",
-          "renderModuleFilePath": "plasmic/plasmic_kit_email_templates/PlasmicTemplateTestEmail.tsx",
-          "importSpec": {
-            "modulePath": "TemplateTestEmail.tsx"
-          },
-          "cssFilePath": "plasmic/plasmic_kit_email_templates/PlasmicTemplateTestEmail.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "coNtjSHoDNSq",
           "name": "Layout",
           "type": "managed",
@@ -49,45 +32,6 @@
             "modulePath": "Layout.tsx"
           },
           "cssFilePath": "plasmic/plasmic_kit_email_templates/PlasmicLayout.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "iVIFERpAtmin",
-          "name": "FooterSocialIcons",
-          "type": "managed",
-          "projectId": "taNK5uwsoPrzfpYmBVwUwX",
-          "renderModuleFilePath": "plasmic/plasmic_kit_email_templates/PlasmicFooterSocialIcons.tsx",
-          "importSpec": {
-            "modulePath": "FooterSocialIcons.tsx"
-          },
-          "cssFilePath": "plasmic/plasmic_kit_email_templates/PlasmicFooterSocialIcons.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "8Wh2IAEsoffQ",
-          "name": "FooterSocialIcon",
-          "type": "managed",
-          "projectId": "taNK5uwsoPrzfpYmBVwUwX",
-          "renderModuleFilePath": "plasmic/plasmic_kit_email_templates/PlasmicFooterSocialIcon.tsx",
-          "importSpec": {
-            "modulePath": "FooterSocialIcon.tsx"
-          },
-          "cssFilePath": "plasmic/plasmic_kit_email_templates/PlasmicFooterSocialIcon.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "q0dOUzxbuGpk",
-          "name": "FooterText",
-          "type": "managed",
-          "projectId": "taNK5uwsoPrzfpYmBVwUwX",
-          "renderModuleFilePath": "plasmic/plasmic_kit_email_templates/PlasmicFooterText.tsx",
-          "importSpec": {
-            "modulePath": "FooterText.tsx"
-          },
-          "cssFilePath": "plasmic/plasmic_kit_email_templates/PlasmicFooterText.css",
           "scheme": "blackbox",
           "componentType": "component"
         },
@@ -114,19 +58,6 @@
             "modulePath": "AtomsButtonOutline.tsx"
           },
           "cssFilePath": "plasmic/plasmic_kit_email_templates/PlasmicAtomsButtonOutline.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "5PPvgjCI8WyM",
-          "name": "AtomsButtonSolid",
-          "type": "managed",
-          "projectId": "taNK5uwsoPrzfpYmBVwUwX",
-          "renderModuleFilePath": "plasmic/plasmic_kit_email_templates/PlasmicAtomsButtonSolid.tsx",
-          "importSpec": {
-            "modulePath": "AtomsButtonSolid.tsx"
-          },
-          "cssFilePath": "plasmic/plasmic_kit_email_templates/PlasmicAtomsButtonSolid.css",
           "scheme": "blackbox",
           "componentType": "component"
         },
@@ -333,13 +264,21 @@
           "componentImportPath": "@/wab/server/emails/components.tsx"
         }
       ],
-      "customFunctions": []
+      "customFunctions": [],
+      "styleTokensProviderFilePath": "plasmic/plasmic_kit_email_templates/PlasmicStyleTokensProvider.tsx",
+      "projectModuleFilePath": "plasmic/plasmic_kit_email_templates/plasmic.tsx",
+      "dataTokensFilePath": ""
     }
   ],
   "globalVariants": {
     "variantGroups": []
   },
   "wrapPagesWithGlobalContexts": true,
-  "cliVersion": "0.1.340",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.340/dist/plasmic.schema.json"
+  "preserveJsImportExtensions": false,
+  "tokens": {
+    "scheme": "theo",
+    "tokensFilePath": "plasmic-tokens.theo.json"
+  },
+  "cliVersion": "0.1.381",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.381/dist/plasmic.schema.json"
 }

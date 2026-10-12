@@ -236,7 +236,7 @@ export const makeVariantComboSorter = maybeComputedFn(
       const [
         privateStyleVariants,
         compStyleVariants,
-        codeComponentVariants,
+        _codeComponentVariants,
         compVariants,
         globalVariants,
       ] = partitionVariants(component, combo, true);

@@ -1,24 +1,5 @@
-import { assert, tuple } from "@/wab/shared/common";
+import { tuple } from "@/wab/shared/common";
 import * as _ from "lodash";
-const memoizeOne = ((m: any) => m.default || m)(require("memoize-one"));
-
-export function insertArray<T>(
-  array: ReadonlyArray<T>,
-  item: T,
-  index?: number,
-) {
-  if (index === undefined) {
-    return array.concat([item]);
-  } else {
-    return _.slice(array, 0, index)
-      .concat([item])
-      .concat(_.slice(array, index));
-  }
-}
-
-export function withoutArrayIndex<T>(array: ReadonlyArray<T>, index: number) {
-  return array.slice(0, index).concat(array.slice(index + 1));
-}
 
 export function merged<T>(obj1: T, obj2: Partial<T>): T {
   return Object.assign({ __proto__: (obj1 as any).__proto__ }, obj1, obj2);
@@ -60,31 +41,6 @@ export function deepMerged<T>(obj1: T, obj2: DeepMergeable<T>): T {
     ) as unknown as T;
   } else {
     return obj2 as any;
-  }
-}
-
-export function insertAt<T>(xs: T[], x: T, index?: number) {
-  if (index === undefined) {
-    xs.push(x);
-  } else {
-    xs.splice(index, 0, x);
-  }
-}
-
-export function removeAllFromArray<T>(xs: T[], x: T) {
-  for (let i = xs.length; i--; ) {
-    if (xs[i] === x) {
-      xs.splice(i, 1);
-    }
-  }
-}
-
-export function removeFromArray<T>(xs: T[], x: T) {
-  const i = xs.indexOf(x);
-  if (i !== -1) {
-    xs.splice(i, 1);
-  } else {
-    assert(false, "Could not find element in array to remove");
   }
 }
 

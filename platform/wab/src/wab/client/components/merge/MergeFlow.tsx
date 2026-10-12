@@ -77,8 +77,7 @@ interface MergeModalWrapperProps {
   project: ApiProject;
   editorPerm: boolean;
   latestPublishedVersionData:
-    | { revisionId: string; version: string }
-    | undefined;
+    { revisionId: string; version: string } | undefined;
   revisionNum: number;
   mergeModalContext: MergeModalContext | undefined;
   setMergeModalContext: (val: MergeModalContext | undefined) => Promise<void>;
@@ -283,14 +282,10 @@ function MergeFlow_(
   }
 
   const {
-    ancestorPkgVersion,
     bundler,
     branches,
-    fromSiteResponse,
-    toSiteResponse,
     pretendMergeResult,
     mergeStep,
-    commitGraph,
     ancestorSite,
     fromSite,
     toSite,

@@ -1284,20 +1284,6 @@ export class TreeDndManager {
     });
   }
 
-  isDraggedNode = computedFn((item: TplNode | SlotSelection) => {
-    if (item instanceof SlotSelection) {
-      return false;
-    }
-    return this.draggedItems.find((draggedItem) => draggedItem.node === item);
-  });
-
-  isDropTarget = computedFn((item: TplNode | SlotSelection) => {
-    if (!this.target) {
-      return false;
-    }
-    return this.target.outcome.item === item;
-  });
-
   getInsertionMarker = computedFn((item: TplNode | SlotSelection) => {
     if (!this.target) {
       return undefined;
@@ -1912,16 +1898,8 @@ const TplVisibilityToggle = observer(function TplVisibilityToggle(props: {
   takeSpace: boolean;
   canvasEnv?: CanvasEnv;
 }) {
-  const {
-    tpl,
-    viewCtx,
-    visibility,
-    isHidden,
-    ancestorHidden,
-    takeSpace,
-    visibilityDataCond,
-    canvasEnv,
-  } = props;
+  const { tpl, viewCtx, visibility, isHidden, ancestorHidden, takeSpace } =
+    props;
   const [menuShown, setMenuShown] = React.useState(false);
   const elt = (
     <Tooltip title={isHidden ? "Unhide" : "Hide"}>

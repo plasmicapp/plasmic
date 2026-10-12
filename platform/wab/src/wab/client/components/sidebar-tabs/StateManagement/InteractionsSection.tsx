@@ -37,7 +37,7 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { DefaultInteractionsSectionProps } from "@/wab/client/plasmic/plasmic_kit_state_management/PlasmicInteractionsSection";
 import { mkDefaultInteraction } from "@/wab/client/state-management/interactions-meta";
-import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
 import {
@@ -259,7 +259,6 @@ const AddHandlerFunctionButton = observer(
     useOnIFrameMouseDown(() => {
       setShowing(false);
     });
-    const sc = useStudioCtx();
     return (
       <Popover
         trigger={["click"]}

@@ -29,10 +29,9 @@ import { observer } from "mobx-react";
 import { ok } from "neverthrow";
 import React from "react";
 
-export const GridControls = observer(function GridControls(props: {
+export const GridControls = observer(function GridControls(_props: {
   expsProvider: ExpsProvider;
 }) {
-  const { expsProvider } = props;
   const sc = useStyleComponent();
   const studioCtx = sc.studioCtx();
   const { site } = studioCtx;

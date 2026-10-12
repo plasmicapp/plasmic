@@ -69,14 +69,6 @@ export const ColumnsAlignControls = observer(function ColumnsAlignControls(
     }
   };
 
-  const isBreakpointFlexReverse = () => {
-    const flexDir = RSH(
-      viewCtx.effectiveCurrentVariantSetting(tpl).rs,
-      tpl,
-    ).get("flex-direction");
-    return flexDir.endsWith("-reverse");
-  };
-
   const createToolip = (content: string) => {
     return (
       <Popover content={content} placement="rightTop">

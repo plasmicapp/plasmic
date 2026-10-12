@@ -327,9 +327,8 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     excludeInactiveScreenVariants: true,
   });
 
-  const [screenGlobalVariants, contextGlobalVariants] = partition(
-    availableTargets,
-    (v) => isScreenVariant(v),
+  const [, contextGlobalVariants] = partition(availableTargets, (v) =>
+    isScreenVariant(v),
   );
 
   const handleGlobalVariantChange = (variantId) => {

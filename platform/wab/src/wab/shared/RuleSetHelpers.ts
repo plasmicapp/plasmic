@@ -13,7 +13,7 @@ import {
   makeSizeAwareExpProxy,
 } from "@/wab/shared/sizingutils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import L, { memoize } from "lodash";
+import { memoize } from "lodash";
 import { CSSProperties } from "react";
 
 /** Helper for handling rulesets. */
@@ -107,10 +107,6 @@ export const getCssDefault = memoize(
   },
   (prop, tag) => prop + tag,
 );
-
-export function setDefaults(exp: IRuleSetHelpersX, defaults: CSSProperties) {
-  exp.merge(L.pickBy(defaults, (val, prop) => !exp.has(prop)));
-}
 
 export function RSH(rs: RuleSet, tpl: TplNode) {
   const forTag = isKnownTplTag(tpl) ? tpl.tag : "div";

@@ -22,13 +22,11 @@ import {
   MaybeWrap,
   createFakeEvent,
   swallowClick,
-  useReadablePromise,
 } from "@/wab/commons/components/ReactUtil";
 import {
   XDraggable,
   XDraggableEventHandler,
 } from "@/wab/commons/components/XDraggable";
-import { ReadablePromise } from "@/wab/commons/control";
 import {
   cx,
   ensure,
@@ -42,7 +40,7 @@ import { isKeyHotkey } from "is-hotkey";
 import L from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { CSSProperties, ReactElement, ReactNode } from "react";
+import { CSSProperties, ReactNode } from "react";
 import {
   DragDropContext,
   Draggable,
@@ -118,19 +116,6 @@ export function IconLinkButton(props: PlainLinkButtonProps) {
   );
 }
 
-type ModalProps = {
-  className?: string;
-  children: ReactNode;
-};
-export class Modal extends React.Component<ModalProps, {}> {
-  render() {
-    return (
-      <div className={cx("modal", this.props.className)}>
-        {this.props.children}
-      </div>
-    );
-  }
-}
 export class Spinner extends React.Component<{}, {}> {
   render() {
     return (
@@ -186,24 +171,6 @@ export class Loadable<T> extends React.Component<
       return this.props.loadingContents();
     }
   }
-}
-
-export function ReadablePromiseLoadable<T, E>({
-  rp,
-  contents,
-  failureContents = () => null,
-  loadingContents = () => <Spinner />,
-}: {
-  rp: ReadablePromise<T, E>;
-  loadingContents?: () => ReactElement | null;
-  contents: (x: T) => ReactElement | null;
-  failureContents?: (x: E) => ReactElement | null;
-}) {
-  const result = useReadablePromise(rp);
-  if (!result) {
-    return loadingContents();
-  }
-  return result.match(contents, failureContents);
 }
 
 export const ObserverLoadable = observer(Loadable);

@@ -65,7 +65,7 @@ import {
 } from "@/wab/shared/Variants";
 import { findNonEmptyCombos } from "@/wab/shared/cached-selectors";
 import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
-import { ensure, ensureInstance, partitions, spawn } from "@/wab/shared/common";
+import { ensure, partitions, spawn } from "@/wab/shared/common";
 import {
   allComponentStyleOrCodeComponentVariants,
   getSuperComponents,
@@ -83,8 +83,6 @@ import {
   ComponentVariantGroup,
   ObjectPath,
   ProjectDependency,
-  TplComponent,
-  TplTag,
   Variant,
   VariantGroup,
   isKnownTplTag,
@@ -246,8 +244,6 @@ export const VariantsPanel = observer(
         return ok();
       });
     };
-
-    const root = ensureInstance(component.tplTree, TplTag, TplComponent);
 
     const maybeReorderableVariants = (
       group: VariantGroup,

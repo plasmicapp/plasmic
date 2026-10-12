@@ -15,14 +15,51 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import { EmailButton } from "@/wab/server/emails/components.tsx"; // plasmic-import: ni9IJwUvaPYp/codeComponent
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/styleTokensProvider
+
+
 
 createPlasmicElementProxy;
 
@@ -67,7 +104,7 @@ function PlasmicAtomsButtonOutline__RenderFunc(props: {
       Object.assign(
         {
           text: "Button",
-          href: "https://plasmic.app",
+          href: "https://plasmic.app"
         },
         Object.fromEntries(
           Object.entries(props.args).filter(([_, v]) => v !== undefined)
@@ -78,12 +115,14 @@ function PlasmicAtomsButtonOutline__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <EmailButton
@@ -97,7 +136,7 @@ function PlasmicAtomsButtonOutline__RenderFunc(props: {
         "root_reset_taNK5uwsoPrzfpYmBVwUwX",
         "plasmic_default_styles",
         "plasmic_mixins",
-        "plasmic_tokens",
+        styleTokensClassNames,
         "AtomsButtonOutline__root___0QqL1"
       )}
       href={args.href}
@@ -107,14 +146,14 @@ function PlasmicAtomsButtonOutline__RenderFunc(props: {
         borderRadius: 8,
         padding: 10,
         textAlign: "center",
-        border: "1px solid #0084E6A1",
+        border: "1px solid #0084E6A1"
       }}
     />
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root"],
+  root: ["root"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -134,7 +173,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicAtomsButtonOutline__VariantsArgs;
     args?: PlasmicAtomsButtonOutline__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicAtomsButtonOutline__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicAtomsButtonOutline__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicAtomsButtonOutline__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -159,7 +200,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicAtomsButtonOutline__ArgProps,
-          internalVariantPropNames: PlasmicAtomsButtonOutline__VariantProps,
+          internalVariantPropNames: PlasmicAtomsButtonOutline__VariantProps
         }),
       [props, nodeName]
     );
@@ -167,7 +208,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -186,7 +227,7 @@ export const PlasmicAtomsButtonOutline = Object.assign(
 
     // Metadata about props expected for PlasmicAtomsButtonOutline
     internalVariantProps: PlasmicAtomsButtonOutline__VariantProps,
-    internalArgProps: PlasmicAtomsButtonOutline__ArgProps,
+    internalArgProps: PlasmicAtomsButtonOutline__ArgProps
   }
 );
 

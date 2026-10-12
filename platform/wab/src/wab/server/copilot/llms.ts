@@ -23,8 +23,6 @@ import { createHash } from "crypto";
 import OpenAI from "openai";
 import { stringify } from "safe-stable-stringify";
 
-export const chatGptDefaultPrompt = `You are ChatGPT, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown.`;
-
 const openaiApiKey = getOpenaiApiKey();
 
 const anthropicApiKey = getAnthropicApiKey();

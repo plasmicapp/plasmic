@@ -5,7 +5,6 @@ import {
   DefinedIndicator,
   mergedIndicatorSource,
 } from "@/wab/client/components/style-controls/DefinedIndicator";
-import StyleCheckbox from "@/wab/client/components/style-controls/StyleCheckbox";
 import {
   ExpsProvider,
   createStyleContextMenu,
@@ -19,10 +18,8 @@ import {
   DimValueOpts,
 } from "@/wab/client/components/widgets/DimTokenSelector";
 import { FontFamilySelector } from "@/wab/client/components/widgets/FontFamilySelector";
-import { Icon } from "@/wab/client/components/widgets/Icon";
 import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
 import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
-import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
 import { PlasmicStyleToggleButtonGroup__VariantsArgs } from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicStyleToggleButtonGroup";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { UiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
@@ -48,7 +45,7 @@ import {
   DefinedIndicatorType,
   getTargetBlockingCombo,
 } from "@/wab/shared/defined-indicator";
-import { Select, Tooltip } from "antd";
+import { Tooltip } from "antd";
 import cn from "classnames";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
@@ -94,7 +91,6 @@ export function LabeledItem(props: {
     alignment = "baseline",
     autoWidth,
     indentLabel,
-    noMenuButton,
     contentAlignment,
     icon,
     noContent,
@@ -625,89 +621,6 @@ export const LabeledStyleSelectItem = observer(function LabeledStyleSelectItem(
   );
 });
 
-export const LabeledStyleComboBoxItem = observer(
-  function LabeledStyleComboBoxItem(
-    props: Omit<React.ComponentProps<typeof LabeledStyleItem>, "children"> & {
-      textRight?: boolean;
-      selectOpts: {
-        value?: string;
-        onChange?: (val: string) => void;
-        showSearch?: boolean;
-        options: {
-          value: string;
-          label: React.ReactNode;
-          searchText?: string;
-        }[];
-      };
-      "data-test-id"?: string;
-    },
-  ) {
-    const { selectOpts, textRight = true, ...rest } = props;
-    const { labelProps, fieldProps } = useLabel(props);
-    const sc = useStyleComponent();
-    const styleName = ensureArray(props.styleName);
-    const indicators = ensureArray(
-      props.definedIndicator || sc.definedIndicators(...styleName),
-    );
-    const { isDisabled, disabledTooltip } = shouldBeDisabled({
-      props,
-      label: rest.label,
-      indicators,
-    });
-    const value =
-      styleName.length > 1 || "value" in selectOpts
-        ? selectOpts.value
-        : sc.exp().get(styleName[0]);
-    const onChange =
-      styleName.length > 1 || selectOpts.onChange
-        ? ensure(selectOpts.onChange, "Should have onChange handler")
-        : (val) => sc.change(() => sc.exp().set(styleName[0], val));
-    return (
-      <LabeledStyleItem
-        {...rest}
-        labelAriaProps={labelProps}
-        definedIndicator={indicators}
-        isDisabled={isDisabled}
-      >
-        <MaybeWrap
-          cond={!!isDisabled && !!disabledTooltip}
-          wrapper={(elt) => <Tooltip title={disabledTooltip}>{elt}</Tooltip>}
-        >
-          <Select
-            className={cx({
-              "flex-fill textboxlike": true,
-              "text-right": textRight,
-              "textbox--unset":
-                !mergedIndicatorSource(indicators).includes("set"),
-            })}
-            value={value}
-            onChange={onChange}
-            showSearch={selectOpts.showSearch}
-            filterOption={(val, opt) =>
-              !!(
-                opt &&
-                (
-                  opt.searchText ||
-                  (opt.label as string) ||
-                  (opt.value as string)
-                )
-                  .toLowerCase()
-                  .includes(val.toLowerCase())
-              )
-            }
-            suffixIcon={<Icon icon={TriangleBottomIcon} />}
-            options={selectOpts.options}
-            popupClassName=""
-            data-test-id={props["data-test-id"]}
-            {...(fieldProps ?? {})}
-            disabled={isDisabled}
-          />
-        </MaybeWrap>
-      </LabeledStyleItem>
-    );
-  },
-);
-
 export const LabeledFontFamilySelector = observer(
   function LabeledFontFamilySelector(
     props: Omit<React.ComponentProps<typeof LabeledStyleItem>, "children"> & {
@@ -762,47 +675,6 @@ export const LabeledFontFamilySelector = observer(
             data-test-id={dataTestId}
           />
         </MaybeWrap>
-      </LabeledStyleItem>
-    );
-  },
-);
-
-export const LabeledStyleCheckboxItem = observer(
-  function LabeledStyleCheckboxItem(
-    props: Omit<React.ComponentProps<typeof LabeledStyleItem>, "children"> & {
-      value: boolean;
-      onChange: (isSelected: boolean) => void;
-      "data-plasmic-prop"?: string;
-    },
-  ) {
-    const { label, value, onChange, tooltip, ...rest } = props;
-    const sc = useStyleComponent();
-    const styleName = ensureArray(props.styleName);
-    const indicators = ensureArray(
-      props.definedIndicator || sc.definedIndicators(...styleName),
-    );
-    const { isDisabled, disabledTooltip } = shouldBeDisabled({
-      props,
-      label: props.label,
-      indicators,
-    });
-    return (
-      <LabeledStyleItem
-        {...rest}
-        definedIndicator={indicators}
-        isDisabled={isDisabled}
-      >
-        <StyleCheckbox
-          isChecked={value}
-          onChange={onChange}
-          valueSetState={getValueSetState(...indicators)}
-          tooltip={tooltip}
-          isDisabled={isDisabled}
-          disabledTooltip={disabledTooltip}
-          data-plasmic-prop={props["data-plasmic-prop"]}
-        >
-          {label}
-        </StyleCheckbox>
       </LabeledStyleItem>
     );
   },
@@ -1089,16 +961,6 @@ export function LabeledStyleSelectItemRow(
   return (
     <FullRow>
       <LabeledStyleSelectItem {...props} />
-    </FullRow>
-  );
-}
-
-export function LabeledStyleCheckboxItemRow(
-  props: React.ComponentProps<typeof LabeledStyleCheckboxItem>,
-) {
-  return (
-    <FullRow>
-      <LabeledStyleCheckboxItem {...props} />
     </FullRow>
   );
 }

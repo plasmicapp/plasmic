@@ -15,18 +15,10 @@ import { TplNode } from "@/wab/shared/model/classes";
 import { isEqual, uniq } from "lodash";
 import {
   IComputedValue,
-  IComputedValueOptions,
   _isComputingDerivation,
   computed,
   onBecomeUnobserved,
 } from "mobx";
-
-export type IComputedFnOptions<F extends (...args: any[]) => any> = {
-  onCleanup?: (
-    result: ReturnType<F> | undefined,
-    ...args: Parameters<F>
-  ) => void;
-} & IComputedValueOptions<ReturnType<F>>;
 
 export function reactHookSpecsToKey(reactHookSpecs: ReactHookSpec[]) {
   return JSON.stringify(

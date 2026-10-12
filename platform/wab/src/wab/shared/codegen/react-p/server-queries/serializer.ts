@@ -8,11 +8,7 @@ import {
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import { getReactWebPackageName } from "@/wab/shared/codegen/react-p/utils";
 import { ExportOpts } from "@/wab/shared/codegen/types";
-import { ExprCtx, asCode, stripParens } from "@/wab/shared/core/exprs";
-import { Component, CustomFunctionExpr } from "@/wab/shared/model/classes";
-import { groupBy } from "lodash";
-
-export const SERVER_QUERIES_VAR_NAME = "$serverQueries";
+import { Component } from "@/wab/shared/model/classes";
 
 export const MK_PATH_FROM_ROUTE_AND_PARAMS_SER = `
 function mkPathFromRouteAndParams(route: string, params: ParamsRecord) {
@@ -75,23 +71,6 @@ export function makeDataSourcesServerQueryImports() {
   return `import { executePlasmicQueries } from "${getDataSourcesPackageName()}";`;
 }
 
-export function serializeServerQueryCustomFunctionArgs(
-  op: CustomFunctionExpr,
-  exprCtx: ExprCtx,
-) {
-  const argsMap = groupBy(op.args, (arg) => arg.argType.argName);
-  return op.func.params
-    .map((param) => {
-      const mappedArg = argsMap[param.argName];
-      if (!mappedArg) {
-        return "undefined";
-      }
-
-      return stripParens(asCode(mappedArg[0].expr, exprCtx).code);
-    })
-    .join(", ");
-}
-
 export function makeComponentTypeImport(
   exportOpts: ExportOpts,
   component: Component,
@@ -149,25 +128,4 @@ export async function makeAppRouterPageCtx({ params, searchParams }: PlasmicPage
   };
   return ctx;
 }`;
-}
-
-export function makeServerQueryImports(
-  ctx: SerializerBaseContext,
-  componentName: string,
-) {
-  const { component, exportOpts } = ctx;
-
-  const importNames = ["makeAppRouterPageCtx", "generateDynamicMetadata"];
-  if (ctx.hasServerQueries) {
-    importNames.push("serverQueryTree");
-  }
-  const imports = makeTaggedPlasmicImport(
-    importNames,
-    `${exportOpts.relPathFromImplToManagedDir}/${
-      ctx.useRSC ? makePlasmicServerRscComponentName(component) : componentName
-    }`,
-    component.uuid,
-    ctx.useRSC ? "rscServer" : "render",
-  );
-  return imports;
 }

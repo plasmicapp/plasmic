@@ -15,16 +15,54 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import { EmailRow, EmailSection } from "@/wab/server/emails/components.tsx"; // plasmic-import: ccI_uNhThjcT/codeComponent
+import { EmailSection } from "@/wab/server/emails/components.tsx"; // plasmic-import: ccI_uNhThjcT/codeComponent
+import { EmailRow } from "@/wab/server/emails/components.tsx"; // plasmic-import: xWkqfjbn8oyX/codeComponent
 import AtomsCard from "../../AtomsCard"; // plasmic-import: 2cidd9ockVoM/component
 import CommentsComment from "../../CommentsComment"; // plasmic-import: NUaRKxTU3gYx/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/styleTokensProvider
+
+
 
 createPlasmicElementProxy;
 
@@ -81,7 +119,7 @@ function PlasmicCommentsReactions__RenderFunc(props: {
       Object.assign(
         {
           projectUrl: "https://plasmic.app",
-          link: "https://studio.plasmic.app/",
+          link: "https://studio.plasmic.app/"
         },
         Object.fromEntries(
           Object.entries(props.args).filter(([_, v]) => v !== undefined)
@@ -92,12 +130,14 @@ function PlasmicCommentsReactions__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <EmailSection
@@ -110,7 +150,7 @@ function PlasmicCommentsReactions__RenderFunc(props: {
         "root_reset_taNK5uwsoPrzfpYmBVwUwX",
         "plasmic_default_styles",
         "plasmic_mixins",
-        "plasmic_tokens",
+        styleTokensClassNames,
         "CommentsReactions__root___1OJn"
       )}
       style={{ marginBottom: 16 }}
@@ -118,6 +158,7 @@ function PlasmicCommentsReactions__RenderFunc(props: {
       <EmailRow
         data-plasmic-name={"emailRow"}
         data-plasmic-override={overrides.emailRow}
+
         className={classNames(
           "__wab_instance",
           "CommentsReactions__emailRow__u657R"
@@ -126,6 +167,7 @@ function PlasmicCommentsReactions__RenderFunc(props: {
         <AtomsCard
           data-plasmic-name={"atomsCard"}
           data-plasmic-override={overrides.atomsCard}
+
           className={classNames(
             "__wab_instance",
             "CommentsReactions__atomsCard__muswf"
@@ -134,18 +176,15 @@ function PlasmicCommentsReactions__RenderFunc(props: {
           <CommentsComment
             data-plasmic-name={"commentsComment"}
             data-plasmic-override={overrides.commentsComment}
+
             aboutCommentText={(() => {
               try {
                 return (() => {
                   const participants = [
-                    ...new Set($props.reactions.map((r) => r.name)),
+                    ...new Set($props.reactions.map(r => r.name))
                   ];
                   const singular = participants.length === 1;
-                  return `${$props.reactions[0].name}${
-                    singular
-                      ? ""
-                      : " and " + (participants.length - 1) + " others"
-                  } reacted to your comment`;
+                  return `${$props.reactions[0].name}${singular ? "" : " and " + (participants.length - 1) + " others"} reacted to your comment`;
                 })();
               } catch (e) {
                 if (
@@ -201,7 +240,7 @@ const PlasmicDescendants = {
   root: ["root", "emailRow", "atomsCard", "commentsComment"],
   emailRow: ["emailRow", "atomsCard", "commentsComment"],
   atomsCard: ["atomsCard", "commentsComment"],
-  commentsComment: ["commentsComment"],
+  commentsComment: ["commentsComment"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -224,7 +263,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCommentsReactions__VariantsArgs;
     args?: PlasmicCommentsReactions__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCommentsReactions__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicCommentsReactions__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCommentsReactions__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -249,7 +290,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCommentsReactions__ArgProps,
-          internalVariantPropNames: PlasmicCommentsReactions__VariantProps,
+          internalVariantPropNames: PlasmicCommentsReactions__VariantProps
         }),
       [props, nodeName]
     );
@@ -257,7 +298,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -279,7 +320,7 @@ export const PlasmicCommentsReactions = Object.assign(
 
     // Metadata about props expected for PlasmicCommentsReactions
     internalVariantProps: PlasmicCommentsReactions__VariantProps,
-    internalArgProps: PlasmicCommentsReactions__ArgProps,
+    internalArgProps: PlasmicCommentsReactions__ArgProps
   }
 );
 

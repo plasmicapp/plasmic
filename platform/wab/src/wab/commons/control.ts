@@ -1,37 +1,4 @@
 import { hackyCast, spanLast } from "@/wab/shared/common";
-import { Result, err, ok } from "neverthrow";
-
-export interface WriteablePromise<T, E = Error> {
-  promise: Promise<T>;
-  result?: Result<T, E>;
-}
-
-export type ReadablePromise<T, E = Error> = Readonly<WriteablePromise<T, E>>;
-
-/**
- * Turns a Promise into a ReadablePromise, which is a promise paired with its
- * resulting value or error (synchronously readable).
- *
- * Plays well with PLazy (will only lazily trigger the PLazy).
- */
-export function asReadablePromise<T, E = Error>(
-  promise: Promise<T>,
-): ReadablePromise<T, E> {
-  const rp: WriteablePromise<T, E> = {
-    promise: promise.then(
-      (value) => {
-        rp.result = ok(value);
-        return value;
-      },
-      (error) => {
-        rp.result = err(error);
-        throw error;
-      },
-    ),
-    result: undefined,
-  };
-  return rp;
-}
 
 /**
  * Wrap a Promise based async function as a node style callback function.

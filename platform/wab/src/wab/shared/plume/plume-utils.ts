@@ -51,17 +51,6 @@ export function createDefaultSlotContentsStub(sub: SubDeps) {
   }, {});
 }
 
-export function convertToDefaultProp(
-  attrs: Record<string, string>,
-  prop: string,
-  defaultProp: string,
-) {
-  if (prop in attrs && !(defaultProp in attrs) && attrs[prop]) {
-    attrs[defaultProp] = attrs[prop];
-  }
-  delete attrs[prop];
-}
-
 export function fixupForPlume(summary: ChangeSummary, viewCtx?: ViewCtx) {
   for (const tree of summary.newTrees) {
     for (const tpl of flattenTpls(tree)) {

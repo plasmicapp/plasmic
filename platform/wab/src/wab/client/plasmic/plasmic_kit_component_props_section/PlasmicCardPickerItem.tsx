@@ -14,19 +14,48 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  SingleBooleanChoiceArg,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
   useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 783YKJdyRRPxZbx3qiNi5Q/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 783YKJdyRRPxZbx3qiNi5Q/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -100,7 +129,7 @@ function PlasmicCardPickerItem__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -113,14 +142,14 @@ function PlasmicCardPickerItem__RenderFunc(props: {
         path: "isSelected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isSelected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isSelected
       },
       {
         path: "large",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.large,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.large
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -130,12 +159,12 @@ function PlasmicCardPickerItem__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const [isRootFocus, triggerRootFocusProps] = useTrigger("useFocused", {});
   const triggers = {
-    focus_root: isRootFocus,
+    focus_root: isRootFocus
   };
 
   const styleTokensClassNames = _useStyleTokens();
@@ -157,9 +186,10 @@ function PlasmicCardPickerItem__RenderFunc(props: {
         sty.root,
         {
           [sty.rootisSelected]: hasVariant($state, "isSelected", "isSelected"),
-          [sty.rootlarge]: hasVariant($state, "large", "large"),
+          [sty.rootlarge]: hasVariant($state, "large", "large")
         }
       )}
+      type={"button"}
       data-plasmic-trigger-props={[triggerRootFocusProps]}
     >
       <div
@@ -169,12 +199,12 @@ function PlasmicCardPickerItem__RenderFunc(props: {
             "isSelected",
             "isSelected"
           ),
-          [sty.freeBoxlarge__mWjoKeGuqC]: hasVariant($state, "large", "large"),
+          [sty.freeBoxlarge__mWjoKeGuqC]: hasVariant($state, "large", "large")
         })}
       >
         {renderPlasmicSlot({
           defaultContents: null,
-          value: args.image,
+          value: args.image
         })}
       </div>
       <div
@@ -183,7 +213,7 @@ function PlasmicCardPickerItem__RenderFunc(props: {
             $state,
             "isSelected",
             "isSelected"
-          ),
+          )
         })}
       >
         {renderPlasmicSlot({
@@ -194,8 +224,8 @@ function PlasmicCardPickerItem__RenderFunc(props: {
               $state,
               "isSelected",
               "isSelected"
-            ),
-          }),
+            )
+          })
         })}
         {false
           ? renderPlasmicSlot({
@@ -206,7 +236,7 @@ function PlasmicCardPickerItem__RenderFunc(props: {
                 />
               ),
 
-              value: args.controls,
+              value: args.controls
             })
           : null}
       </div>
@@ -218,7 +248,7 @@ function PlasmicCardPickerItem__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root"],
+  root: ["root"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -238,7 +268,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCardPickerItem__VariantsArgs;
     args?: PlasmicCardPickerItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCardPickerItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicCardPickerItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCardPickerItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -263,7 +295,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCardPickerItem__ArgProps,
-          internalVariantPropNames: PlasmicCardPickerItem__VariantProps,
+          internalVariantPropNames: PlasmicCardPickerItem__VariantProps
         }),
       [props, nodeName]
     );
@@ -271,7 +303,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -290,7 +322,7 @@ export const PlasmicCardPickerItem = Object.assign(
 
     // Metadata about props expected for PlasmicCardPickerItem
     internalVariantProps: PlasmicCardPickerItem__VariantProps,
-    internalArgProps: PlasmicCardPickerItem__ArgProps,
+    internalArgProps: PlasmicCardPickerItem__ArgProps
   }
 );
 

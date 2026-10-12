@@ -453,10 +453,6 @@ export function hasScreenVariant(variantCombo: Variant[]) {
   return variantCombo.some((v) => isScreenVariant(v));
 }
 
-export function hasNonScreenGlobalVariant(variantCombo: Variant[]) {
-  return variantCombo.some((v) => !isScreenVariant(v));
-}
-
 /**
  * Styles under these combos would be unreachable: CSS gets one media query
  * per rule, and single-choice variants are never active together.

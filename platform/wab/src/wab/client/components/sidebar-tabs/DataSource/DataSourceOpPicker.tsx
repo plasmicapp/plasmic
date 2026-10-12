@@ -713,62 +713,6 @@ export function getMissingRequiredArgsFromDraft(
   );
 }
 
-export async function mkDataSourceOpExprFromDraft(
-  draft: DataSourceOpDraftValue,
-  studioCtx: StudioCtx,
-  sourceSchemaData: DataSourceSchema,
-  exprCtx: ExprCtx,
-  parent?: ComponentDataQuery | TplNode,
-) {
-  if (!draft.sourceId || !draft.opName || !draft.opMeta) {
-    return undefined;
-  }
-  const missingRequiredArgs = getMissingRequiredArgsFromDraft(
-    draft,
-    sourceSchemaData,
-    exprCtx,
-  );
-  if (missingRequiredArgs.length > 0) {
-    return undefined;
-  }
-
-  const { opId } = await studioCtx.appCtx.api.getDataSourceOpId(
-    studioCtx.siteInfo.id,
-    draft.sourceId,
-    {
-      name: draft.opName,
-      templates: mapValues(draft.templates, (v) =>
-        dataSourceTemplateToString(
-          mkDataSourceTemplate({
-            fieldType: v.type,
-            value: v.value,
-            bindings: v.bindings,
-          }),
-          exprCtx,
-        ),
-      ),
-      roleId: draft.roleId,
-    },
-  );
-  return new DataSourceOpExpr({
-    sourceId: draft.sourceId,
-    opId,
-    opName: draft.opName,
-    templates: mapValues(draft.templates, (v) =>
-      mkDataSourceTemplate({
-        fieldType: v.type,
-        value: v.value,
-        bindings: v.bindings,
-      }),
-    ),
-    roleId: draft.roleId,
-    cacheKey: draft.opMeta.type === "read" ? draft.cacheKey : undefined,
-    queryInvalidation:
-      draft.opMeta.type === "write" ? draft.queryInvalidation : undefined,
-    parent: parent !== undefined ? new QueryRef({ ref: parent }) : undefined,
-  });
-}
-
 type ExecuteDataOperationQueueItem = {
   opExpr: DataSourceOpExpr;
   source: ApiDataSource | undefined;
@@ -2746,7 +2690,6 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
         <ListBox>
           {[...Object.entries(fields)].map(([fieldName, field], idx) => {
             const val = value?.[fieldName] ?? undefined;
-            const fieldSettings = field.fieldSettings ?? {};
             const fieldType = field.type === "enum" ? "select" : field.type;
             const setValue = (
               newVal: string | number | boolean | undefined,
@@ -3622,7 +3565,7 @@ function GraphqlQueryFieldInner(props: {
 
   // We need GraphqlQueryFieldInner because @graphiql/react hooks
   // need to be in a component inside <GraphiQLProvider/>
-  const { theme } = useTheme("light");
+  useTheme("light");
   const prettify = usePrettifyEditors();
 
   return (

@@ -106,7 +106,6 @@ import {
   getSlotParams,
   getTplSlotDescendants,
   isPlainTextTplSlot,
-  isTextBlockArg,
 } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
@@ -122,7 +121,6 @@ import {
   isPrivateStyleVariant,
 } from "@/wab/shared/Variants";
 import { AddItemKey, WrapItemKey } from "@/wab/shared/add-item-keys";
-import { toVarName } from "@/wab/shared/codegen/util";
 import {
   hasMaxWidthVariant,
   hasNonResponsiveColumnsStyle,
@@ -235,7 +233,6 @@ import {
   Param,
   RawText,
   RichText,
-  StyleToken,
   TplComponent,
   TplNode,
   TplSlot,
@@ -567,55 +564,6 @@ export class ViewOps {
           return;
       }
     }
-  }
-
-  /**
-   * Performs a quick frame rect change, without
-   * enforcing the reevaluation of the tpl tree
-   *
-   * @param rect
-   */
-  quicklyChangeFrameRect(
-    frame: ArenaFrame,
-    rect: {
-      width: number;
-      height: number;
-      top: number;
-      left: number;
-    },
-  ) {
-    // Even though the following styles will react to
-    // changes made to frame's top and left props,
-    // to make sure we have a smooth resizing,
-    // we directly update them here
-    if (this.studioCtx().isPositionManagedFrame(frame)) {
-      const domElt = this.viewCtx().canvasCtx.viewportContainer();
-      domElt.style.setProperty("width", `${rect.width}px`);
-      domElt.style.setProperty("height", `${rect.height}px`);
-
-      domElt.style.setProperty("top", `${rect.top}px`);
-      domElt.style.setProperty("left", `${rect.left}px`);
-    }
-
-    window.requestAnimationFrame(() => {
-      this.change(() => {
-        if (this.studioCtx().isPositionManagedFrame(frame)) {
-          frame.top = rect.top;
-          frame.left = rect.left;
-        }
-
-        this.studioCtx().changeFrameSize({
-          frame,
-          dim: "width",
-          amount: rect.width,
-        });
-        this.studioCtx().changeFrameSize({
-          frame,
-          dim: "height",
-          amount: rect.height,
-        });
-      });
-    });
   }
 
   nudgeSize(dim: "width" | "height", grow: boolean, large = false) {
@@ -1099,17 +1047,6 @@ export class ViewOps {
     });
     if (result.isErr()) {
       notification.error({ message: result.error.message });
-    }
-  }
-
-  renameToken(name: string, token: StyleToken) {
-    name = name.trim();
-    if (name) {
-      const existingNames = this.site().styleTokens.map((t) => t.name);
-      name = common.uniqueName(existingNames, name, {
-        normalize: toVarName,
-      });
-      token.name = name;
     }
   }
 
@@ -2384,36 +2321,6 @@ export class ViewOps {
 
   copyBgImageStyle(tpl?: TplNode) {
     this.copyStyle(tpl, ["background"]);
-  }
-
-  tryStartSavingPreset(maybeTpl?: TplNode) {
-    if (this.studioCtx().freestyleState() || !this.studioCtx().isDevMode) {
-      return;
-    }
-    const tpl = maybeTpl ?? this.focusedTpl();
-    if (!tpl) {
-      return;
-    }
-    if (!Tpls.isTplComponent(tpl)) {
-      return;
-    }
-
-    const clip = this.createTplClip(tpl);
-    const presetTpl = this.adaptTplForPaste(clip, [this.site().globalVariant]);
-    if (presetTpl && Tpls.isTplComponent(presetTpl)) {
-      assert(
-        Tpls.isTplVariantable(presetTpl),
-        "If presetTpl is TplComponent it is also a TplNode",
-      );
-      const dom = this.viewCtx().focusedDomElt()?.get(0);
-      if (this.studioCtx().prepareSavingPresets(!!dom)) {
-        this.studioCtx().saveAsPresetState = {
-          tpl: presetTpl,
-          vc: this.viewCtx(),
-          dom,
-        };
-      }
-    }
   }
 
   adaptTplNodeForPaste = (
@@ -3949,16 +3856,6 @@ export class ViewOps {
   }
 
   /**
-   * Returns true if TplNode is visible for current target variants
-   **/
-  getTargetTplVisibility = (tpl: TplNode) => {
-    const combo = this.viewCtx()
-      .variantTplMgr()
-      .getTargetVariantComboForNode(tpl);
-    return getEffectiveTplVisibility(tpl, combo);
-  };
-
-  /**
    * Returns true if TplNode is visible for current active variants
    **/
   getEffectiveTplVisibility = (tpl: TplNode) => {
@@ -4017,18 +3914,6 @@ export class ViewOps {
     const vs = ensureVariantSetting(tpl, combo);
     vs.dataCond = cond;
   };
-
-  private getFocusedTplOrError() {
-    const tpl = this.viewCtx().focusedTpl(true);
-    if (!tpl) {
-      // Can make this more descriptive.
-      notification.error({
-        message: "Cannot insert into the selected element.",
-        description: "Choose a container to insert in.",
-      });
-    }
-    return tpl;
-  }
 
   tryInsertInsertableSpec<T>(
     spec: {
@@ -4161,12 +4046,6 @@ export class ViewOps {
       type,
       action: "extract-frame-to-component",
     });
-  }
-
-  clearTargetVariants() {
-    const viewCtx = this.viewCtx();
-    viewCtx.currentComponentStackFrame().setTargetVariants([]);
-    viewCtx.globalFrame.setTargetVariants([]);
   }
 
   private studioCtx() {
@@ -4387,23 +4266,4 @@ export function getMergedTextArg(tpl: TplComponent) {
     }
     return slotParams[0][1];
   }
-}
-
-export function getOnlyVisibleTextArg(viewCtx: ViewCtx, tpl: TplNode) {
-  const slotParams =
-    isTplComponent(tpl) && getSlotParams((tpl as TplComponent).component);
-  const visibleSlotParams =
-    slotParams &&
-    slotParams.filter(
-      (p) =>
-        getTreeNodeVisibility(
-          viewCtx,
-          new SlotSelection({ tpl: tpl as TplComponent, slotParam: p }),
-        ) === TplVisibility.Visible,
-    );
-  const arg =
-    visibleSlotParams &&
-    visibleSlotParams.length === 1 &&
-    $$$(tpl).getSlotArg(visibleSlotParams[0].variable.name);
-  return arg && isTextBlockArg(arg) ? arg : undefined;
 }

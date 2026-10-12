@@ -14,6 +14,6 @@ async function runAppServer(config: Config) {
 }
 
 export async function codegenBackendMain() {
-  const { opts, config } = setupServerCli();
+  const { config } = setupServerCli();
   await runAppServer(config);
 }

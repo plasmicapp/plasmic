@@ -143,5 +143,5 @@ async function main(argv = process.argv) {
 }
 
 if (require.main === module) {
-  const res = main();
+  void main();
 }

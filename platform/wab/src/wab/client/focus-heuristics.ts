@@ -34,7 +34,7 @@ import L from "lodash";
 
 export class FocusHeuristics {
   constructor(
-    private site: Site,
+    _site: Site,
     private tplMgr: TplMgr,
     private valState: ValState,
     private currentComponentCtx: ComponentCtx | null,

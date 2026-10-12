@@ -82,16 +82,13 @@ import {
   TplSlot,
   TplTag,
   Type,
-  Var,
   Variant,
   VariantSetting,
-  VarRef,
 } from "@/wab/shared/model/classes";
 /* eslint-disable
     no-fallthrough,
 */
 import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { DeepReadonly } from "@/wab/commons/types";
 import {
   TAG_TO_HTML_ATTRIBUTES,
   TAG_TO_HTML_INTERFACE,
@@ -107,7 +104,6 @@ import {
   ensureArray,
   ensureType,
   flexFlatten,
-  InvalidCodePathError,
   isArrayOfLiterals,
   isNonNil,
   isOneOf,
@@ -128,7 +124,6 @@ import {
   getComponentDisplayName,
   getParamDisplayName,
   isCodeComponent,
-  isHostLessCodeComponent,
   isPlumeComponent,
 } from "@/wab/shared/core/components";
 import * as Exprs from "@/wab/shared/core/exprs";
@@ -136,7 +131,6 @@ import {
   flattenTemplatedStringToString,
   isRealCodeExpr,
   isRealCodeExprEnsuringType,
-  tryExtractJson,
 } from "@/wab/shared/core/exprs";
 import { mkVar } from "@/wab/shared/core/lang";
 import { metaSvc } from "@/wab/shared/core/metas";
@@ -207,7 +201,7 @@ import {
   tryGetBaseVariantSetting,
   VariantCombo,
 } from "@/wab/shared/Variants";
-import L, { reverse, uniq, uniqBy } from "lodash";
+import L, { reverse, uniqBy } from "lodash";
 import * as US from "underscore.string";
 
 /**
@@ -913,147 +907,6 @@ export function clone(tpl: TplNode, keepTplUuid?: boolean): TplNode {
   );
 }
 
-export class ExprLocationWithinTpl {
-  _nameOrBinding: /*TWZ*/ Arg | Rep | string;
-  constructor(_nameOrBinding) {
-    this._nameOrBinding = _nameOrBinding;
-  }
-  key() {
-    if (L.isString(this._nameOrBinding)) {
-      return this._nameOrBinding;
-    } else {
-      return this._nameOrBinding.uid;
-    }
-  }
-  nameOrBinding() {
-    return this._nameOrBinding;
-  }
-  toString() {
-    if (L.isString(this._nameOrBinding)) {
-      switch (this._nameOrBinding) {
-        case "dataText":
-          return "text expression";
-        case "dataCond":
-          return "conditional expression";
-        default:
-          throw new InvalidCodePathError();
-      }
-    } else {
-      return switchType(this._nameOrBinding)
-        .when(Rep, (binding) => binding.element.name)
-        .when(Arg, (binding) => binding.param.variable.name)
-        .result();
-    }
-  }
-}
-
-// Analyze a single Tpl
-export function analyzeExprsInTpl(
-  {
-    tpl,
-    startingExpr = undefined,
-    readExpr,
-    defVar,
-    rec,
-  }: {
-    tpl: TplNode;
-    startingExpr?: Expr;
-    readExpr: (expr: Expr, loc: ExprLocationWithinTpl) => void;
-    defVar: (v: Var) => void;
-    rec: any;
-  }, // /*TWZ*/{ defVar: (v: any) => any, readExpr: (expr: any,loc: any) => any, rec: (node: any) => any, startingExpr: null, tpl: TplTag }|{ defVar: (v: any) => any, readExpr: (expr: any,loc: any) => any, rec: (node: any) => any, startingExpr: null, tpl: TplText }|{ defVar: (v: any) => any, readExpr: (expr: any,location: any) => any, rec: (child: any) => any, startingExpr: undefined, tpl: TplTag }|{ defVar: (v: any) => any, readExpr: (expr: any,location: any) => any, rec: (child: any) => any, startingExpr: undefined, tpl: TplText }|{ defVar: (v: any) => any, readExpr: (expr: any,locationInTpl: any) => any, rec: (child: any) => any, startingExpr: null, tpl: TplTag }|{ defVar: (v: any) => any, readExpr: (expr: any,locationInTpl: any) => any, rec: (child: any) => any, startingExpr: null, tpl: TplText }|{ defVar: (variable: any) => any, readExpr: (expr: any,loc: any) => any, rec: () => any, startingExpr: undefined, tpl: TplComponent }|{ defVar: (variable: any) => any, readExpr: (expr: any,loc: any) => any, rec: () => any, startingExpr: undefined, tpl: TplTag }
-) {
-  let started = startingExpr == null;
-  function _readExpr(
-    expr: Expr | null | undefined,
-    location: ExprLocationWithinTpl,
-  ) {
-    if (expr != null) {
-      if (startingExpr === expr) {
-        started = true;
-      }
-      if (started) {
-        return readExpr(expr, location);
-      }
-    }
-  }
-  function _defVar(v: /*TWZ*/ Var | Var | null | undefined) {
-    if (started && v != null) {
-      return defVar(v);
-    }
-  }
-
-  function processTplData(_tpl: TplTag | TplComponent) {
-    for (const vs of _tpl.vsettings) {
-      _readExpr(vs.dataCond, new ExprLocationWithinTpl("dataCond"));
-      _readExpr(
-        vs.dataRep != null ? vs.dataRep.collection : undefined,
-        new ExprLocationWithinTpl(vs.dataRep),
-      );
-      _defVar(vs.dataRep != null ? vs.dataRep.element : undefined);
-      _defVar(vs.dataRep != null ? vs.dataRep.index : undefined);
-      if (isKnownTplTag(_tpl)) {
-        for (const [attr, expr] of Object.entries(vs.attrs)) {
-          _readExpr(expr, new ExprLocationWithinTpl(`attr ${attr}`));
-        }
-      } else if (isKnownTplComponent(_tpl)) {
-        for (const arg of vs.args) {
-          _readExpr(arg.expr, new ExprLocationWithinTpl(arg));
-        }
-      } else {
-        unexpected();
-      }
-    }
-  }
-
-  switchType(tpl)
-    .when(TplTag, (_tpl) => {
-      processTplData(_tpl);
-    })
-    .when(TplComponent, (_tpl) => {
-      processTplData(_tpl);
-    })
-    .when(TplSlot, (_tpl) => {})
-    .result();
-  tplChildren(tpl).map((child) => rec(child));
-}
-
-export function hasNonTrivialCodeExprs(tplRoot: TplNode) {
-  let found = false;
-  const rec = (tpl: TplNode) =>
-    analyzeExprsInTpl({
-      tpl,
-      readExpr(expr, _locationInTpl) {
-        if (isKnownCustomCode(expr) && tryExtractJson(expr) === undefined) {
-          found = true;
-        }
-      },
-      defVar(_v) {},
-      rec(child: TplNode) {
-        return rec(child);
-      },
-    });
-  rec(tplRoot);
-  return found;
-}
-
-export function findVarDefs(tplRoot: TplNode) {
-  const found: Var[] = [];
-  const rec = (tpl: TplNode) =>
-    analyzeExprsInTpl({
-      tpl,
-      readExpr(_expr, _locationInTpl) {},
-      defVar(v) {
-        found.push(v);
-      },
-      rec(child: TplNode) {
-        return rec(child);
-      },
-    });
-  rec(tplRoot);
-  return found;
-}
-
 /**
  * Currently, this simply ensures the parent and child pointers are consistent.
  */
@@ -1743,40 +1596,8 @@ export function* findVariantSettingsUnderTpl(
   }
 }
 
-export function* findVariantSettingsUnderComponents(
-  components: Component[],
-  orderProvider?: {
-    site: Site;
-  },
-) {
-  const seen = new Set<Component>();
-  function* findVariantSettingsUnderComponent(component: Component) {
-    if (seen.has(component)) {
-      return;
-    }
-    seen.add(component);
-    for (const [vs, tpl] of findVariantSettingsUnderTpl(
-      component.tplTree,
-      orderProvider ? { site: orderProvider.site, component } : undefined,
-    )) {
-      if (isTplComponent(tpl)) {
-        yield* findVariantSettingsUnderComponent(tpl.component);
-      }
-      yield tuple(vs, tpl);
-    }
-  }
-
-  for (const component of components) {
-    yield* findVariantSettingsUnderComponent(component);
-  }
-}
-
 export function isTplTag(tplNode: any): tplNode is TplTag {
   return isKnownTplTag(tplNode);
-}
-
-export function canHaveChildren(tpl: TplTag) {
-  return canTagHaveChildren(tpl.tag);
 }
 
 export function canTagHaveChildren(tag: string) {
@@ -1819,10 +1640,6 @@ export interface TplCodeComponent extends TplComponent {
 
 export function isTplCodeComponent(tplNode: any): tplNode is TplCodeComponent {
   return isKnownTplComponent(tplNode) && isCodeComponent(tplNode.component);
-}
-
-export function isNamedTplComponent(tplNode: TplNode) {
-  return isTplComponent(tplNode) && tplNode.component.name;
 }
 
 export function isTplSlot(tplNode: any): tplNode is TplSlot {
@@ -2207,15 +2024,6 @@ export function tryGetTplByUuid(
   return flattenTpls(component.tplTree).find((t) => t.uuid === uuid);
 }
 
-export function tryGetTplByName(
-  component: Component,
-  name: string,
-): TplNode | undefined {
-  return flattenTpls(component.tplTree)
-    .filter(isTplNamable)
-    .find((t) => t.name === name);
-}
-
 export function trackComponentRoot(component: Component) {
   TPLROOT_TO_COMPONENT.set(component.tplTree, component);
 }
@@ -2472,16 +2280,6 @@ export function isCodeComponentRoot(tpl: TplNode) {
   return !!component && isCodeComponent(component);
 }
 
-export function deriveDataCond(dataCond?: DeepReadonly<Expr> | null) {
-  if (dataCond) {
-    const val = Exprs.tryExtractLit(dataCond);
-    if (val === false) {
-      return "hidden";
-    }
-  }
-  return "visible";
-}
-
 function markerPointsToTpl(marker: Marker, tpl: TplNode) {
   return isKnownNodeMarker(marker) && marker.tpl === tpl;
 }
@@ -2553,19 +2351,6 @@ export type ExprReference = {
   node?: TplNode;
   expr: Expr;
 };
-
-export function listHostLessComponentsInTplTree(tplTree: TplNode) {
-  const hostLessComponents: string[] = [];
-  walkTpls(tplTree, {
-    pre: (tpl) => {
-      if (isTplComponent(tpl) && isHostLessCodeComponent(tpl.component)) {
-        hostLessComponents.push(tpl.component.name);
-      }
-      return true;
-    },
-  });
-  return uniq(hostLessComponents);
-}
 
 export function pushExprs(exprs: Expr[], expr: Expr | null | undefined) {
   if (!expr) {
@@ -3112,9 +2897,7 @@ export interface GenericEventHandler {
 }
 
 export type EventHandlerKeyType =
-  | ParamEventHandler
-  | AttrEventHandler
-  | GenericEventHandler;
+  ParamEventHandler | AttrEventHandler | GenericEventHandler;
 
 export const isEventHandlerKeyForAttr = (
   eventHandlerKey: EventHandlerKeyType,
@@ -3164,24 +2947,6 @@ export function getNameOfEventHandlerKey(
 
 export function isAttrEventHandler(attr: string) {
   return attr.startsWith("on");
-}
-
-function derefEventHandlerValue(
-  component: Component,
-  expr: EventHandler | VarRef | CustomCode | ObjectPath,
-) {
-  if (!isKnownVarRef(expr)) {
-    return expr;
-  }
-  const param = Exprs.extractReferencedParam(component, expr);
-  assert(
-    param &&
-      (isKnownEventHandler(param.defaultExpr) ||
-        isRealCodeExpr(param.defaultExpr) ||
-        param.defaultExpr == null),
-    "only eventHandler expr is supported for functionType param",
-  );
-  return param?.defaultExpr ?? undefined;
 }
 
 export function getEventHandlerByEventKey(

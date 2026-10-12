@@ -15,7 +15,6 @@ import {
   ensureActivatedScreenVariantsForComponentArena,
   ensureActivatedScreenVariantsForCustomCell,
   ensureComponentArenaFrameSizeForTargetScreenVariant,
-  getCellKeyForFrame,
   getComponentArenaBaseFrameViewMode,
   getComponentArenaRowLabel,
   getCustomFrameForActivatedVariants,
@@ -82,11 +81,10 @@ import {
   getClosestSatisfyingWidth,
   getDisplayVariants,
   getPartitionedScreenVariants,
-  getPartitionedScreenVariantsByTargetVariant,
   isScreenVariant,
   VariantCombo,
 } from "@/wab/shared/Variants";
-import { has, isArray, isEmpty, keyBy, orderBy, uniq } from "lodash";
+import { has, isEmpty, keyBy, orderBy, uniq } from "lodash";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { IObservableValue, observable } from "mobx";
 
@@ -708,30 +706,6 @@ export function ensureActivatedScreenVariantsForFrameByWidth(
   }
 }
 
-export function getDerivedScreenVariantsForFrame(
-  site: Site,
-  arena: AnyArena,
-  frame: ArenaFrame,
-) {
-  if (isComponentArena(arena)) {
-    const cellKey = getCellKeyForFrame(arena, frame);
-    if (isKnownVariant(cellKey) && isScreenVariant(cellKey)) {
-      return getPartitionedScreenVariantsByTargetVariant(site, cellKey);
-    } else if (isArray(cellKey)) {
-      const screenVariants = cellKey.filter(isScreenVariant);
-      if (screenVariants.length > 0) {
-        return getPartitionedScreenVariantsByTargetVariant(
-          site,
-          screenVariants[0],
-        );
-      }
-    }
-    return [];
-  }
-
-  return getPartitionedScreenVariants(site, frame.width);
-}
-
 export function syncArenaFrameSize(
   site: Site,
   arena: AnyArena,
@@ -998,10 +972,6 @@ export function getGridRowLabels(arena: AnyArena | null | undefined): string[] {
   }
 
   return [];
-}
-
-export function hasScreenVariantArenaFrame(frame: ArenaFrame) {
-  return frame.targetGlobalVariants.some((v) => isScreenVariant(v));
 }
 
 export function doesFrameVariantMatch(

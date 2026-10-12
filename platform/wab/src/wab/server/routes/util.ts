@@ -50,10 +50,6 @@ export type CompatRequest = Omit<
   "query" | "setTimeout" | keyof Readable
 >;
 
-export function hasUser(req: CompatRequest) {
-  return !!req.user;
-}
-
 export function getUser(
   req: CompatRequest,
   opts?: { allowUnverifiedEmail: boolean },
@@ -261,8 +257,7 @@ function isTransactionRollback<T>(x: unknown): x is TransactionRollback<T> {
 }
 
 export type TransactionEnd<TCommit, TRollback> =
-  | TransactionCommit<TCommit>
-  | TransactionRollback<TRollback>;
+  TransactionCommit<TCommit> | TransactionRollback<TRollback>;
 
 export function commitTransaction(): TransactionCommit<undefined>;
 export function commitTransaction<T>(data: T): TransactionCommit<T>;

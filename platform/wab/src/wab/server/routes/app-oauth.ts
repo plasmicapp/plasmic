@@ -59,7 +59,6 @@ export async function issueOauthCode(req: Request, res: Response) {
 
   const {
     client_id: clientId, // clientId is the appId
-    scope: scope,
     state: state,
     response_type: responseType,
     code_challenge: codeChallenge,

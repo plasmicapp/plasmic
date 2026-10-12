@@ -33,7 +33,6 @@ import { isTplTag } from "@/wab/shared/core/tpls";
 import { Box } from "@/wab/shared/geom";
 import { Variant, isKnownArenaFrame } from "@/wab/shared/model/classes";
 import { Dropdown } from "antd";
-import defer from "lodash/defer";
 import last from "lodash/lodash";
 import { observer } from "mobx-react";
 import React, {

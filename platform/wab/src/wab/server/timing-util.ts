@@ -65,11 +65,6 @@ export function asyncTimed<T extends (...args: any[]) => any>(
   }) as T;
 }
 
-export function asyncTimedExec<R>(name: string, func: () => R) {
-  const timedFunc = asyncTimed(name, func);
-  return timedFunc();
-}
-
 function isPromiseLike(x: any) {
   return (
     x != null && typeof x === "object" && x.then && typeof x.then === "function"

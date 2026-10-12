@@ -14,25 +14,53 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
   generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  PlasmicImg as PlasmicImg__,
-  SingleBooleanChoiceArg,
-  StrictProps,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
+import Switch from "../../components/merge/Switch"; // plasmic-import: AJepyKzS-T-/component
 import Conflict from "../../components/merge/Conflict"; // plasmic-import: RM-Ya_c-mv/component
 import LineItem from "../../components/merge/LineItem"; // plasmic-import: VgvN9iOqwZ/component
-import Switch from "../../components/merge/Switch"; // plasmic-import: AJepyKzS-T-/component
-import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
+import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -40,12 +68,15 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "./plasmic_plasmic_kit_merge_flow.css"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/projectcss
 import sty from "./PlasmicMergeFlow.module.css"; // plasmic-import: A4VINgKjc8/css
 
-import ArrowRightIcon from "./icons/PlasmicIcon__ArrowRight"; // plasmic-import: b32FQsRIZF/icon
+import FramePlusIcon from "./icons/PlasmicIcon__FramePlus"; // plasmic-import: 9_qXsh2_0/icon
 import ChevronDownIcon from "./icons/PlasmicIcon__ChevronDown"; // plasmic-import: eV4_yyuiy3/icon
 import CloseIcon from "./icons/PlasmicIcon__Close"; // plasmic-import: YCOFZmA9Gr/icon
-import FramePlusIcon from "./icons/PlasmicIcon__FramePlus"; // plasmic-import: 9_qXsh2_0/icon
-import plusCnRm3QpPqQ from "./images/plus.svg"; // plasmic-import: CnRm3QPPqQ/picture
+import ArrowRightIcon from "./icons/PlasmicIcon__ArrowRight"; // plasmic-import: b32FQsRIZF/icon
+import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import treeV2EVpmODo from "./images/tree.svg"; // plasmic-import: v2eVPM-oDO/picture
+import plusCnRm3QpPqQ from "./images/plus.svg"; // plasmic-import: CnRm3QPPqQ/picture
 
 createPlasmicElementProxy;
 
@@ -123,7 +154,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -136,32 +167,32 @@ function PlasmicMergeFlow__RenderFunc(props: {
         path: "empty",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.empty,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.empty
       },
       {
         path: "loading",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.loading,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.loading
       },
       {
         path: "showAllSwitch.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
       },
       {
         path: "blocked",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.blocked,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.blocked
       },
       {
         path: "description.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "",
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => ""
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -171,7 +202,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -192,7 +223,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
         {
           [sty.rootblocked]: hasVariant($state, "blocked", "blocked"),
           [sty.rootempty]: hasVariant($state, "empty", "empty"),
-          [sty.rootloading]: hasVariant($state, "loading", "loading"),
+          [sty.rootloading]: hasVariant($state, "loading", "loading")
         }
       )}
     >
@@ -207,7 +238,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
             $state,
             "loading",
             "loading"
-          ),
+          )
         })}
       >
         <div
@@ -221,7 +252,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
               $state,
               "loading",
               "loading"
-            ),
+            )
           })}
         >
           <div
@@ -235,7 +266,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 $state,
                 "loading",
                 "loading"
-              ),
+              )
             })}
           >
             <div className={classNames("all", sty.freeBox__d9Waw)}>
@@ -296,7 +327,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         src: treeV2EVpmODo,
                         fullWidth: 20,
                         fullHeight: 20,
-                        aspectRatio: 1,
+                        aspectRatio: 1
                       }}
                     />
                   </div>
@@ -359,7 +390,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         src: plusCnRm3QpPqQ,
                         fullWidth: 20,
                         fullHeight: 20,
-                        aspectRatio: 1,
+                        aspectRatio: 1
                       }}
                     />
                   </div>
@@ -372,12 +403,13 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   $state,
                   "blocked",
                   "blocked"
-                ),
+                )
               })}
             >
               <button
                 data-plasmic-name={"sourceBranchChanges"}
                 data-plasmic-override={overrides.sourceBranchChanges}
+
                 className={classNames(
                   "all",
                   "button",
@@ -388,12 +420,13 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       $state,
                       "blocked",
                       "blocked"
-                    ),
+                    )
                   }
                 )}
-                ref={(ref) => {
+                ref={ref => {
                   $refs["sourceBranchChanges"] = ref;
                 }}
+                type={"button"}
               >
                 {false ? (
                   <div className={classNames("all", sty.freeBox___5Fo1K)}>
@@ -445,15 +478,17 @@ function PlasmicMergeFlow__RenderFunc(props: {
               <button
                 data-plasmic-name={"destinationBranchChanges"}
                 data-plasmic-override={overrides.destinationBranchChanges}
+
                 className={classNames(
                   "all",
                   "button",
                   "button__p8FkK",
                   sty.destinationBranchChanges
                 )}
-                ref={(ref) => {
+                ref={ref => {
                   $refs["destinationBranchChanges"] = ref;
                 }}
+                type={"button"}
               >
                 {false ? (
                   <div className={classNames("all", sty.freeBox__iWcvc)}>
@@ -490,6 +525,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     <div
                       data-plasmic-name={"labelIconsContainer4"}
                       data-plasmic-override={overrides.labelIconsContainer4}
+
                       className={classNames("all", sty.labelIconsContainer4)}
                     >
                       <ChevronDownIcon
@@ -514,7 +550,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 $state,
                 "blocked",
                 "blocked"
-              ),
+              )
             })}
           >
             <div className={classNames("all", sty.freeBox__omzv8)} />
@@ -525,7 +561,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 $state,
                 "blocked",
                 "blocked"
-              ),
+              )
             })}
           >
             <div className={classNames("all", sty.freeBox__bsiUw)}>
@@ -584,7 +620,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         src: treeV2EVpmODo,
                         fullWidth: 20,
                         fullHeight: 20,
-                        aspectRatio: 1,
+                        aspectRatio: 1
                       }}
                     />
                   </div>
@@ -593,24 +629,26 @@ function PlasmicMergeFlow__RenderFunc(props: {
               <div
                 data-plasmic-name={"showAllSwitchContainer"}
                 data-plasmic-override={overrides.showAllSwitchContainer}
+
                 className={classNames("all", sty.showAllSwitchContainer)}
               >
                 <div className={classNames("all", sty.freeBox__e62Vb)}>
                   <Switch
                     data-plasmic-name={"showAllSwitch"}
                     data-plasmic-override={overrides.showAllSwitch}
+
                     className={classNames("__wab_instance", sty.showAllSwitch)}
                     isChecked={
                       generateStateValueProp($state, [
                         "showAllSwitch",
-                        "isChecked",
+                        "isChecked"
                       ]) ?? false
                     }
                     onChange={async (...eventArgs: any) => {
                       ((...eventArgs) => {
                         generateStateOnChangeProp($state, [
                           "showAllSwitch",
-                          "isChecked",
+                          "isChecked"
                         ])(eventArgs[0]);
                       }).apply(null, eventArgs);
 
@@ -642,7 +680,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   $state,
                   "empty",
                   "empty"
-                ),
+                )
               })}
             >
               <div
@@ -651,7 +689,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     $state,
                     "empty",
                     "empty"
-                  ),
+                  )
                 })}
               >
                 <div
@@ -660,7 +698,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       $state,
                       "blocked",
                       "blocked"
-                    ),
+                    )
                   })}
                 >
                   {false ? (
@@ -719,7 +757,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                           src: treeV2EVpmODo,
                           fullWidth: 20,
                           fullHeight: 20,
-                          aspectRatio: 1,
+                          aspectRatio: 1
                         }}
                       />
                     </div>
@@ -783,7 +821,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                             src: treeV2EVpmODo,
                             fullWidth: 20,
                             fullHeight: 20,
-                            aspectRatio: 1,
+                            aspectRatio: 1
                           }}
                         />
                       </div>
@@ -846,7 +884,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                             src: treeV2EVpmODo,
                             fullWidth: 20,
                             fullHeight: 20,
-                            aspectRatio: 1,
+                            aspectRatio: 1
                           }}
                         />
                       </div>
@@ -860,12 +898,9 @@ function PlasmicMergeFlow__RenderFunc(props: {
               <div
                 data-plasmic-name={"pairedChanges"}
                 data-plasmic-override={overrides.pairedChanges}
+
                 className={classNames("all", sty.pairedChanges, {
-                  [sty.pairedChangesempty]: hasVariant(
-                    $state,
-                    "empty",
-                    "empty"
-                  ),
+                  [sty.pairedChangesempty]: hasVariant($state, "empty", "empty")
                 })}
               >
                 <Conflict
@@ -874,7 +909,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       $state,
                       "empty",
                       "empty"
-                    ),
+                    )
                   })}
                   name={"Homepage"}
                   subtext={"Some changes were auto merged"}
@@ -900,7 +935,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       $state,
                       "empty",
                       "empty"
-                    ),
+                    )
                   })}
                   merged={true}
                   name={"Homepage"}
@@ -913,7 +948,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     $state,
                     "empty",
                     "empty"
-                  ),
+                  )
                 })}
               >
                 {"No conflicting changes!"}
@@ -926,7 +961,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 $state,
                 "blocked",
                 "blocked"
-              ),
+              )
             })}
           >
             <div
@@ -935,13 +970,14 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   $state,
                   "empty",
                   "empty"
-                ),
+                )
               })}
             />
           </div>
           <div
             data-plasmic-name={"reconciliationsContainer"}
             data-plasmic-override={overrides.reconciliationsContainer}
+
             className={classNames("all", sty.reconciliationsContainer, {
               [sty.reconciliationsContainerblocked]: hasVariant(
                 $state,
@@ -952,7 +988,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 $state,
                 "empty",
                 "empty"
-              ),
+              )
             })}
           >
             <div className={classNames("all", sty.freeBox__pBIaG)}>
@@ -961,6 +997,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   <div
                     data-plasmic-name={"startIconsContainer13"}
                     data-plasmic-override={overrides.startIconsContainer13}
+
                     className={classNames("all", sty.startIconsContainer13)}
                   >
                     <FramePlusIcon
@@ -996,6 +1033,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     <div
                       data-plasmic-name={"labelIconsContainer13"}
                       data-plasmic-override={overrides.labelIconsContainer13}
+
                       className={classNames("all", sty.labelIconsContainer13)}
                     >
                       <ChevronDownIcon
@@ -1009,6 +1047,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   <div
                     data-plasmic-name={"endIconsContainer13"}
                     data-plasmic-override={overrides.endIconsContainer13}
+
                     className={classNames("all", sty.endIconsContainer13)}
                   >
                     <PlasmicImg__
@@ -1025,7 +1064,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         src: treeV2EVpmODo,
                         fullWidth: 20,
                         fullHeight: 20,
-                        aspectRatio: 1,
+                        aspectRatio: 1
                       }}
                     />
                   </div>
@@ -1035,6 +1074,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
             <div
               data-plasmic-name={"reconciliations"}
               data-plasmic-override={overrides.reconciliations}
+
               className={classNames("all", sty.reconciliations)}
             >
               <LineItem
@@ -1043,7 +1083,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     $state,
                     "empty",
                     "empty"
-                  ),
+                  )
                 })}
               >
                 {
@@ -1063,12 +1103,13 @@ function PlasmicMergeFlow__RenderFunc(props: {
             hasVariant($state, "blocked", "blocked")
               ? true
               : hasVariant($state, "loading", "loading")
-              ? true
-              : false
+                ? true
+                : false
           ) ? (
             <div
               data-plasmic-name={"blockedContainer"}
               data-plasmic-override={overrides.blockedContainer}
+
               className={classNames("all", sty.blockedContainer, {
                 [sty.blockedContainerblocked]: hasVariant(
                   $state,
@@ -1079,12 +1120,13 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   $state,
                   "loading",
                   "loading"
-                ),
+                )
               })}
             >
               <div
                 data-plasmic-name={"mergeBlockedTitle"}
                 data-plasmic-override={overrides.mergeBlockedTitle}
+
                 className={classNames("all", sty.mergeBlockedTitle, {
                   [sty.mergeBlockedTitleblocked]: hasVariant(
                     $state,
@@ -1095,7 +1137,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     $state,
                     "loading",
                     "loading"
-                  ),
+                  )
                 })}
               >
                 <div
@@ -1109,7 +1151,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       $state,
                       "loading",
                       "loading"
-                    ),
+                    )
                   })}
                 >
                   {"Cannot merge branches"}
@@ -1118,6 +1160,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
               <div
                 data-plasmic-name={"mergeBlockedMsg"}
                 data-plasmic-override={overrides.mergeBlockedMsg}
+
                 className={classNames("all", sty.mergeBlockedMsg, {
                   [sty.mergeBlockedMsgblocked]: hasVariant(
                     $state,
@@ -1128,7 +1171,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     $state,
                     "loading",
                     "loading"
-                  ),
+                  )
                 })}
               >
                 <div
@@ -1137,7 +1180,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       $state,
                       "blocked",
                       "blocked"
-                    ),
+                    )
                   })}
                 >
                   {
@@ -1157,7 +1200,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   $state,
                   "blocked",
                   "blocked"
-                ),
+                )
               })}
             >
               <div className={classNames("all", "__wab_text", sty.text__tPwaU)}>
@@ -1175,7 +1218,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   $state,
                   "blocked",
                   "blocked"
-                ),
+                )
               })}
             >
               <div
@@ -1184,7 +1227,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     $state,
                     "blocked",
                     "blocked"
-                  ),
+                  )
                 })}
               >
                 {"Description"}
@@ -1192,6 +1235,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
               <textarea
                 data-plasmic-name={"description"}
                 data-plasmic-override={overrides.description}
+
                 className={classNames(
                   "all",
                   "textarea",
@@ -1199,14 +1243,14 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   sty.description
                 )}
                 onChange={async (...eventArgs: any) => {
-                  ((e) => {
+                  (e => {
                     generateStateOnChangeProp($state, ["description", "value"])(
                       e.target.value
                     );
                   }).apply(null, eventArgs);
                 }}
                 placeholder={"Enter description here (optional)…"}
-                ref={(ref) => {
+                ref={ref => {
                   $refs["description"] = ref;
                 }}
                 rows={2}
@@ -1221,7 +1265,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   $state,
                   "blocked",
                   "blocked"
-                ),
+                )
               })}
             >
               <div className={classNames("all", "__wab_text", sty.text__dd2Qx)}>
@@ -1230,6 +1274,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
               <Select
                 data-plasmic-name={"tagsSelector"}
                 data-plasmic-override={overrides.tagsSelector}
+
                 className={classNames("__wab_instance", sty.tagsSelector)}
                 type={"bordered"}
               />
@@ -1240,12 +1285,13 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   $state,
                   "empty",
                   "empty"
-                ),
+                )
               })}
             >
               <Button
                 data-plasmic-name={"cancelButton"}
                 data-plasmic-override={overrides.cancelButton}
+
                 caption={"Caption"}
                 className={classNames("__wab_instance", sty.cancelButton)}
               >
@@ -1254,13 +1300,14 @@ function PlasmicMergeFlow__RenderFunc(props: {
               <Button
                 data-plasmic-name={"finishButton"}
                 data-plasmic-override={overrides.finishButton}
+
                 caption={"Caption"}
                 className={classNames("__wab_instance", sty.finishButton, {
                   [sty.finishButtonblocked]: hasVariant(
                     $state,
                     "blocked",
                     "blocked"
-                  ),
+                  )
                 })}
                 disabled={
                   hasVariant($state, "blocked", "blocked") ? true : undefined
@@ -1285,7 +1332,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
             $state,
             "loading",
             "loading"
-          ),
+          )
         })}
       >
         <div
@@ -1299,7 +1346,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
               $state,
               "loading",
               "loading"
-            ),
+            )
           })}
         >
           {"Please wait, determining conflicting changes..."}
@@ -1307,6 +1354,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
         <div
           data-plasmic-name={"spinnerContainer"}
           data-plasmic-override={overrides.spinnerContainer}
+
           className={classNames("all", sty.spinnerContainer, {
             [sty.spinnerContainerblocked]: hasVariant(
               $state,
@@ -1317,7 +1365,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
               $state,
               "loading",
               "loading"
-            ),
+            )
           })}
         />
       </div>
@@ -1346,12 +1394,12 @@ const PlasmicDescendants = {
     "tagsSelector",
     "cancelButton",
     "finishButton",
-    "spinnerContainer",
+    "spinnerContainer"
   ],
   sourceBranchChanges: ["sourceBranchChanges"],
   destinationBranchChanges: [
     "destinationBranchChanges",
-    "labelIconsContainer4",
+    "labelIconsContainer4"
   ],
   labelIconsContainer4: ["labelIconsContainer4"],
   showAllSwitchContainer: ["showAllSwitchContainer", "showAllSwitch"],
@@ -1362,7 +1410,7 @@ const PlasmicDescendants = {
     "startIconsContainer13",
     "labelIconsContainer13",
     "endIconsContainer13",
-    "reconciliations",
+    "reconciliations"
   ],
   startIconsContainer13: ["startIconsContainer13"],
   labelIconsContainer13: ["labelIconsContainer13"],
@@ -1371,7 +1419,7 @@ const PlasmicDescendants = {
   blockedContainer: [
     "blockedContainer",
     "mergeBlockedTitle",
-    "mergeBlockedMsg",
+    "mergeBlockedMsg"
   ],
   mergeBlockedTitle: ["mergeBlockedTitle"],
   mergeBlockedMsg: ["mergeBlockedMsg"],
@@ -1379,7 +1427,7 @@ const PlasmicDescendants = {
   tagsSelector: ["tagsSelector"],
   cancelButton: ["cancelButton"],
   finishButton: ["finishButton"],
-  spinnerContainer: ["spinnerContainer"],
+  spinnerContainer: ["spinnerContainer"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -1418,8 +1466,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicMergeFlow__VariantsArgs;
     args?: PlasmicMergeFlow__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicMergeFlow__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicMergeFlow__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicMergeFlow__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -1444,7 +1493,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicMergeFlow__ArgProps,
-          internalVariantPropNames: PlasmicMergeFlow__VariantProps,
+          internalVariantPropNames: PlasmicMergeFlow__VariantProps
         }),
       [props, nodeName]
     );
@@ -1452,7 +1501,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -1490,7 +1539,7 @@ export const PlasmicMergeFlow = Object.assign(
 
     // Metadata about props expected for PlasmicMergeFlow
     internalVariantProps: PlasmicMergeFlow__VariantProps,
-    internalArgProps: PlasmicMergeFlow__ArgProps,
+    internalArgProps: PlasmicMergeFlow__ArgProps
   }
 );
 

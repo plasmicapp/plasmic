@@ -54,7 +54,6 @@ import {
   isStandaloneVariantGroup,
   isStyleOrCodeComponentVariant,
   isStyleVariant,
-  isVariantSettingEmpty,
   mkBaseVariant,
   mkComponentVariantGroup,
   mkGlobalVariantGroup,
@@ -74,7 +73,6 @@ import {
   ensure,
   ensureArray,
   ensureArrayOfInstances,
-  isSubList,
   leftZip,
   maybe,
   maybeInstance,
@@ -190,7 +188,6 @@ import {
   isTplComponent,
   isTplNamable,
   isTplSlot,
-  isTplTag,
   isTplTagOrComponent,
   isTplTextBlock,
   isTplVariantable,
@@ -286,7 +283,7 @@ import {
   isInvisible,
   setTplVisibility,
 } from "@/wab/shared/visibility-utils";
-import L, { isString, memoize, pickBy, uniqBy } from "lodash";
+import L, { isString, pickBy, uniqBy } from "lodash";
 import flatten from "lodash/flatten";
 import has from "lodash/has";
 import kebabCase from "lodash/kebabCase";
@@ -454,8 +451,6 @@ export class TplMgr {
           : undefined,
       );
     }
-
-    // yield* findVariantSettingsUnderComponents(this.site().components, ordered ? {site: this._site} : undefined);
   }
 
   findComponentContainingBaseVariant(variant: Variant) {
@@ -625,18 +620,6 @@ export class TplMgr {
     });
     this.site().styleTokenOverrides.forEach((styleTokenOverride) => {
       removeFromVariantedValue(styleTokenOverride.variantedValues);
-    });
-  }
-
-  findReferencingTplsWithNonEmptySetting(tpl: TplNode, variants: Variant[]) {
-    return flattenTpls(tpl).filter((_tpl) => {
-      if (!isTplVariantable(_tpl)) {
-        return false;
-      }
-
-      return _tpl.vsettings.some(
-        (vs) => isSubList(vs.variants, variants) && !isVariantSettingEmpty(vs),
-      );
     });
   }
 
@@ -1872,24 +1855,6 @@ export class TplMgr {
     );
   }
 
-  clonePage(page: Component, name: string, attachComponent: boolean) {
-    const res = cloneComponent(page, name);
-    const meta = ensure(
-      page.pageMeta,
-      "Expected page component to have page meta",
-    );
-
-    const newPageMeta = clonePageMeta(meta);
-    newPageMeta.path = this.getUniquePagePath(meta.path);
-    res.component.pageMeta = newPageMeta;
-
-    if (attachComponent) {
-      this.attachComponent(res.component);
-    }
-
-    return res;
-  }
-
   /**
    * Normalize given name using kebab case and prepending slash.
    *
@@ -1911,10 +1876,6 @@ export class TplMgr {
     );
   }
 
-  tryGetPageByPath(path: string): PageComponent | undefined {
-    return this.getPageComponents().find((p) => p.pageMeta.path === path);
-  }
-
   getPageComponents() {
     return this.site().components.filter(isPageComponent);
   }
@@ -1933,6 +1894,7 @@ export class TplMgr {
     return uniquePagePath(path, existingPaths);
   }
 
+  /** Used by playwright tests via `vc.tplMgr().debugDumpTree(...)`. */
   debugDumpTree(tpl: TplNode) {
     const indent = (amt: number, text: string) => `${repeat("  ", amt)}${text}`;
     const lines: string[] = [];
@@ -2097,20 +2059,6 @@ export class TplMgr {
       this.renameAnimationSequence(newSequence, name);
     }
     return newSequence;
-  }
-
-  removeAnimationSequence(sequence: AnimationSequence) {
-    // Remove sequence from all RuleSets that reference it
-    this.site().components.forEach((c) =>
-      [...findVariantSettingsUnderTpl(c.tplTree)].forEach(([vs]) => {
-        if (vs.rs.animations) {
-          vs.rs.animations = vs.rs.animations.filter(
-            (anim) => anim.sequence !== sequence,
-          );
-        }
-      }),
-    );
-    arrayRemove(this.site().animationSequences, sequence);
   }
 
   renameAnimationSequence(sequence: AnimationSequence, name: string) {
@@ -3094,58 +3042,6 @@ export class TplMgr {
       changesByComponent: xGroupBy(changes, (c) => c.component),
       total: changes.length,
     };
-  }
-
-  findNestedLinks() {
-    const result: {
-      component: Component;
-      baseLink: TplNode;
-      tpl: TplNode;
-    }[] = [];
-
-    const isTplWithLink = (tpl: TplNode) =>
-      (isTplTag(tpl) && tpl.tag === "a") ||
-      (isTplComponent(tpl) && componentHasLink(tpl.component));
-
-    const componentHasLink = memoize((component: Component) =>
-      flattenTpls(component.tplTree).some(isTplWithLink),
-    );
-
-    const walkNestedLink = (component: Component, baseLink: TplNode) =>
-      walkTpls(baseLink, {
-        pre(tpl) {
-          if (tpl !== baseLink && isTplWithLink(tpl)) {
-            result.push({ component, baseLink, tpl });
-          }
-          return true;
-        },
-      });
-    this.site().components.forEach((c) => {
-      walkTpls(c.tplTree, {
-        pre(tpl) {
-          if (isTplTag(tpl) && tpl.tag === "a") {
-            walkNestedLink(c, tpl);
-            return false;
-          }
-          return true;
-        },
-      });
-    });
-    return result;
-  }
-
-  fixDuplicateTplIds() {
-    for (const component of this.site().components) {
-      const seen = new Map<string, TplNode>();
-      for (const tpl of flattenComponent(component)) {
-        if (seen.has(tpl.uuid)) {
-          const prev = seen.get(tpl.uuid)!;
-          console.log("Found existing tpl uuid", { component, prev, tpl });
-          (tpl as any).uuid = mkShortId();
-        }
-        seen.set(tpl.uuid, tpl);
-      }
-    }
   }
 
   findInteractionByUuid(interactionUuid: string) {
