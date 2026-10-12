@@ -5,6 +5,7 @@ import { Fiber } from "@/wab/client/react-global-hook/fiber";
 import {
   asArray,
   assert,
+  ensure,
   ensureInstance,
   maybe,
   removeWhere,
@@ -30,6 +31,10 @@ class RenderStateImpl {
   private _tpl2valKeys = new WeakMap<TplNode, Set<string>>();
   private _valKey2fullKeys = new Map<string, Set<string>>();
   private _fullKey2vals = new Map<string, Set<ValNode>>();
+  // Full keys whose cached val no longer matches their registered vals.
+  // Recomputing a cached val merges every val registered under its full key,
+  // and many vals can share one full key.
+  private _staleFullKeys = new Set<string>();
 
   registerVal(val: ValNode) {
     const updateRegistry = () => {
@@ -55,8 +60,8 @@ class RenderStateImpl {
       }
     };
     updateRegistry();
-    this.recomputeCachedVal(val.fullKey);
-    return this.fullKey2val(val.fullKey);
+    this._staleFullKeys.add(val.fullKey);
+    return this.ensureCachedVal(val.fullKey);
   }
 
   unregisterVal(val: ValNode) {
@@ -90,16 +95,52 @@ class RenderStateImpl {
       this._tpl2valKeys.delete(val.tpl);
     };
     updateRegistry();
-    this.recomputeCachedVal(val.fullKey);
+    this._staleFullKeys.add(val.fullKey);
   }
 
   unregisterFromKey(fullKey: string) {
     this.cachedValNodes.delete(fullKey);
     this._valKey2fullKeys.delete(fullKey);
     this._fullKey2vals.delete(fullKey);
+    this._staleFullKeys.delete(fullKey);
   }
 
-  recomputeCachedVal(fullKey: string): ValNode | undefined {
+  /**
+   * Marks the cached val for `fullKey` as out of date, after one of its
+   * registered vals changed. It is rebuilt by `flushStaleVals`, or when read
+   * through `fullKey2val`.
+   */
+  invalidateCachedVal(fullKey: string) {
+    this._staleFullKeys.add(fullKey);
+  }
+
+  /** Rebuilds every cached val invalidated since the last flush. */
+  flushStaleVals() {
+    for (const fullKey of this._staleFullKeys) {
+      this.recomputeCachedVal(fullKey);
+    }
+    this._staleFullKeys.clear();
+  }
+
+  /**
+   * Returns the cached val for `fullKey` without rebuilding it, creating it
+   * from the first registered val if there is none yet, so callers can hold
+   * on to it before the next flush fills it in.
+   */
+  private ensureCachedVal(fullKey: string): ValNode {
+    const firstVal = ensure<ValNode>(
+      this._fullKey2vals.get(fullKey)?.values().next().value,
+      () => `No val registered for ${fullKey}`,
+    );
+    let cachedValNode = this.cachedValNodes.get(fullKey)?.deref();
+    if (!cachedValNode || cachedValNode.constructor !== firstVal.constructor) {
+      cachedValNode = cloneValNode(firstVal);
+      this.cachedValNodes.set(fullKey, new WeakRef(cachedValNode));
+    }
+    return cachedValNode;
+  }
+
+  private recomputeCachedVal(fullKey: string): ValNode | undefined {
     const registeredValsSet = this._fullKey2vals.get(fullKey);
     if (!registeredValsSet || registeredValsSet.size === 0) {
       return undefined;
@@ -300,6 +341,9 @@ class RenderStateImpl {
   }
 
   fullKey2val(fullKey: string): ValNode | undefined {
+    if (this._staleFullKeys.delete(fullKey)) {
+      this.recomputeCachedVal(fullKey);
+    }
     const registeredVals = this._fullKey2vals.get(fullKey);
     const cachedVal = this.cachedValNodes.get(fullKey)?.deref();
     if (cachedVal && registeredVals && registeredVals.size > 0) {
@@ -363,6 +407,7 @@ class RenderStateImpl {
     this._fullSlotPlaceholderKey2fiber.clear();
     this._slotPlaceholderKey2fullKeys.clear();
     this._valKey2fullKeys.clear();
+    this._staleFullKeys.clear();
   }
 }
 

@@ -47,7 +47,7 @@ export type UpdateableVal<T extends ValNode = ValNode> = {
  * that it's stable). This cached version is always computed by merging the data
  * in each of the non-cached versions, therefore it should never be mutated
  * directly. We can, instead, modify the non-cached version and call
- * `renderState.recomputeCachedVal` so the cached version gets updated.
+ * `renderState.invalidateCachedVal` so the cached version gets updated.
  * For that reason, only `nonCached` is `UpdateableVal`.
  */
 export type SlotArgsData = Record<

@@ -54,7 +54,8 @@ import { isString, omit } from "lodash";
 import { observable, runInAction } from "mobx";
 
 const officialHook = (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__ as
-  GlobalHook | undefined;
+  | GlobalHook
+  | undefined;
 
 let commitCount = 1;
 const fiberToCommitCount = new WeakMap<Fiber, number>();
@@ -602,12 +603,10 @@ if (officialHook) {
                   frameUid: currentFrameUid,
                 });
 
-                const cachedValNode = ensure(
+                const cachedValNode =
                   getFrameState(currentFrameUid).renderState.registerVal(
                     valNode,
-                  ),
-                  () => `Should have at least one val node to merge`,
-                );
+                  );
                 fiberToNonCachedVal.set(node, valNode);
                 officialHook.plasmic.fiberToVal.set(node, cachedValNode);
                 valStack.push({ node, val: cachedValNode });
@@ -787,7 +786,7 @@ if (officialHook) {
             try {
               valsInSubtree.forEach(({ nonCached }) => {
                 nonCached.parent = cachedVal;
-                renderState.recomputeCachedVal(nonCached.fullKey);
+                renderState.invalidateCachedVal(nonCached.fullKey);
               });
               switchTypeUnsafe(cachedVal)
                 .when(ValComponent, (valComp: ValComponent) => {
@@ -831,7 +830,7 @@ if (officialHook) {
                               : undefined,
                             valComp,
                           );
-                          renderState.recomputeCachedVal(v.fullKey);
+                          renderState.invalidateCachedVal(v.fullKey);
                         });
                       }
                     });
@@ -877,7 +876,7 @@ if (officialHook) {
                   );
                 })
                 .result();
-              renderState.recomputeCachedVal(cachedVal.fullKey);
+              renderState.invalidateCachedVal(cachedVal.fullKey);
 
               // Time to propagate these new val nodes upwards! First, the
               // fiberToValSubtrees. This is so its parent fiber will see that this
@@ -955,28 +954,41 @@ if (officialHook) {
             rootNode.alternate.memoizedState.element != null;
 
           runInAction(() => {
-            if (!knownRoots.has(fiberRoot) || !wasMounted) {
-              // New tree, traverse it entirely
-              knownRoots.add(fiberRoot);
-              traverseTree(rootNode, enterNodeSubtree, leaveNodeSubtree, false);
-            } else {
-              if (rootNode.alternate) {
-                traverseUpdates(
-                  rootNode,
-                  rootNode.alternate,
-                  enterNodeSubtree,
-                  leaveNodeSubtree,
-                  rmNode,
-                  enterUnchangedNode,
-                );
-              } else {
-                // New tree
+            try {
+              if (!knownRoots.has(fiberRoot) || !wasMounted) {
+                // New tree, traverse it entirely
+                knownRoots.add(fiberRoot);
                 traverseTree(
                   rootNode,
                   enterNodeSubtree,
                   leaveNodeSubtree,
                   false,
                 );
+              } else {
+                if (rootNode.alternate) {
+                  traverseUpdates(
+                    rootNode,
+                    rootNode.alternate,
+                    enterNodeSubtree,
+                    leaveNodeSubtree,
+                    rmNode,
+                    enterUnchangedNode,
+                  );
+                } else {
+                  // New tree
+                  traverseTree(
+                    rootNode,
+                    enterNodeSubtree,
+                    leaveNodeSubtree,
+                    false,
+                  );
+                }
+              }
+            } finally {
+              // Recompute the cached vals touched by this commit (including
+              // unmounts reported just before it) before reactions run.
+              for (const frame of officialHook.plasmic.frames.values()) {
+                frame.renderState.flushStaleVals();
               }
             }
           });
