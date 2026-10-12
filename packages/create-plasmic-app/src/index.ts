@@ -27,7 +27,7 @@ const createPlasmicAppVersion = updateNotify();
 const argv = yargs
   .command(
     "$0 [projectName]",
-    "Create a Plasmic app with Next.js, Gatsby, or React (Vite)",
+    "Create a Plasmic app with Next.js, Gatsby, TanStack Start, or React (Vite)",
     (yargs2) => {
       yargs2
         .usage("Usage: $0 [projectName] [options]")
@@ -35,7 +35,7 @@ const argv = yargs
           describe: "Project and NPM package name",
           string: true,
         });
-    }
+    },
   )
   .option("platform", {
     describe: "Target platform",
@@ -58,7 +58,7 @@ const argv = yargs
     string: true,
   })
   .option("typescript", {
-    describe: "Use Typescript?",
+    describe: "Use TypeScript?",
     boolean: true,
   })
   .option("appDir", {
@@ -99,7 +99,7 @@ Sentry.configureScope((scope) => {
  * @returns
  */
 async function maybePrompt<T>(
-  question: DistinctQuestion<Record<string, unknown>>
+  question: DistinctQuestion<Record<string, unknown>>,
 ): Promise<T> {
   const name = ensure(question.name, "Question name required");
   const message = ensure(question.message, "Question message required");
@@ -173,23 +173,23 @@ async function run(): Promise<void> {
     platform === "tanstack"
       ? "ts"
       : (await maybePrompt({
-          name: "typescript",
-          message: "What language do you want to use?",
-          type: "list",
-          choices: () => [
-            {
-              name: "TypeScript",
-              value: true,
-            },
-            {
-              name: "JavaScript",
-              value: false,
-            },
-          ],
-          default: true,
-        }))
-      ? "ts"
-      : "js";
+            name: "typescript",
+            message: "What language do you want to use?",
+            type: "list",
+            choices: () => [
+              {
+                name: "TypeScript",
+                value: true,
+              },
+              {
+                name: "JavaScript",
+                value: false,
+              },
+            ],
+            default: true,
+          }))
+        ? "ts"
+        : "js";
 
   // Scheme to use for Plasmic integration
   // - loader only available for gatsby/next.js
@@ -262,8 +262,7 @@ What is the URL of your project?`,
   const template = argv["template"];
   const projectApiToken = argv["projectApiToken"];
   const packageManager = (argv["packageManager"] || undefined) as
-    | PackageManagerType
-    | undefined;
+    PackageManagerType | undefined;
 
   // Set the metadata environment variable to tag the future Segment codegen event
   setMetadataEnv({

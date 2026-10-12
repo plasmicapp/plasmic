@@ -52,10 +52,10 @@ export const nextjsStrategy: CPAStrategy = {
     const isYarnBerry = packageManager === "yarn2";
     // NOTE: Not using create-next-app@latest to keep major version bumps deliberate
     const createCommand =
-      `npx create-next-app@16 ${projectPath} ${typescriptArg} ${experimentalAppArg} ${templateArg}` +
+      `npx create-next-app@16 ${projectPath} ${typescriptArg} ${experimentalAppArg}${templateArg}` +
       ` --use-${packageManagerCommand(
         packageManager,
-      )} --eslint --no-src-dir  --import-alias "@/*" --no-tailwind` +
+      )} --eslint --no-src-dir --import-alias "@/*" --no-tailwind` +
       // create-next-app 16.4+ enables Cache Components by default, which
       // rejects the `revalidate` route segment config our templates use
       " --no-cache-components" +
