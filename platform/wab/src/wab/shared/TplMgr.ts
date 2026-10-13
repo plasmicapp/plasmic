@@ -116,6 +116,7 @@ import {
   isContextCodeComponent,
   isFrameComponent,
   isPageComponent,
+  isPlainComponent,
   mkComponent,
   mkPageMeta,
   mkVariantGroupArgExpr,
@@ -2512,11 +2513,13 @@ export class TplMgr {
    * TplComponent to the containing component's props
    */
   canLinkToProp(tpl: TplTag | TplComponent) {
-    // Cannot do so if tpl is defaultContents of a slot!
-    if ($$$(tpl).ancestors().toArrayOfTplNodes().find(isTplSlot)) {
-      return false;
-    }
-    return true;
+    const ownerComponent = $$$(tpl).tryGetOwningComponent();
+    return (
+      !!ownerComponent &&
+      isPlainComponent(ownerComponent) &&
+      // Cannot do so if tpl is defaultContents of a slot!
+      !$$$(tpl).ancestors().toArrayOfTplNodes().find(isTplSlot)
+    );
   }
 
   canExtractComponent(tpl: TplNode) {

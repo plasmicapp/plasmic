@@ -82,8 +82,6 @@ import {
   getComponentDisplayName,
   getParamDisplayName,
   getRealParams,
-  isPageComponent,
-  isPlainComponent,
 } from "@/wab/shared/core/components";
 import {
   asCode,
@@ -770,9 +768,22 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     !isEditedAsTemplatedString &&
     !(isKnownQueryData(wabType) && isQuery(expr));
   const forceSetState = isNested ? ("isSet" as const) : undefined;
+  const readOnly = !!(
+    isPlainObjectPropType(propType) &&
+    propType.type !== "slot" &&
+    getContextDependentValue(
+      propType.readOnly,
+      componentPropValues,
+      ccContextData,
+      controlExtras,
+    )
+  );
+
   const canLinkToProp =
+    !readOnly &&
     !disableLinkToProp &&
     !disabled &&
+    !referencedParam &&
     viewCtx &&
     tpl &&
     viewCtx.tplMgr().canLinkToProp(tpl) &&
@@ -794,17 +805,6 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
         ? tryEvalExpr(asCode(expr, exprCtx).code, canvasEnv)
         : undefined,
     [expr ? hashExpr(studioCtx.site, expr, exprCtx) : undefined, canvasEnv],
-  );
-
-  const readOnly = !!(
-    isPlainObjectPropType(propType) &&
-    propType.type !== "slot" &&
-    getContextDependentValue(
-      propType.readOnly,
-      componentPropValues,
-      ccContextData,
-      controlExtras,
-    )
   );
 
   const allowPointerInteractions =
@@ -947,21 +947,17 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
           onUnlink={() => onChange(undefined)}
         />
       )}
-      {!readOnly &&
-        ownerComponent &&
-        (isPageComponent(ownerComponent) || isPlainComponent(ownerComponent)) &&
-        !referencedParam &&
-        canLinkToProp && (
-          <LinkToPropMenuItem
-            availableParams={getRealParams(ownerComponent).filter((p) =>
-              isLinkCompatible(wabType, p.type),
-            )}
-            onLinkExisting={(param) =>
-              onChange(new VarRef({ variable: param.variable }))
-            }
-            onCreateNew={() => setNewParamModalVisible(true)}
-          />
-        )}
+      {canLinkToProp && ownerComponent && (
+        <LinkToPropMenuItem
+          availableParams={getRealParams(ownerComponent).filter((p) =>
+            isLinkCompatible(wabType, p.type),
+          )}
+          onLinkExisting={(param) =>
+            onChange(new VarRef({ variable: param.variable }))
+          }
+          onCreateNew={() => setNewParamModalVisible(true)}
+        />
+      )}
       {renderDataTokensSubMenu()}
       {!readOnly &&
         allowDynamicValue &&
@@ -1398,8 +1394,7 @@ interface PageHrefRowsProps extends Pick<
 }
 
 type DeletePageHrefProps =
-  | { type: "Fragment" }
-  | { type: "Path" | "Query"; param: string };
+  { type: "Fragment" } | { type: "Path" | "Query"; param: string };
 
 type UpdatePageHrefProps = DeletePageHrefProps & {
   paramValue: Expr | undefined;

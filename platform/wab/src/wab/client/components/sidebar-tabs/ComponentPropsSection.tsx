@@ -1,7 +1,6 @@
 import { COMMANDS } from "@/wab/client/commands/command";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import { TextAndShortcut } from "@/wab/client/components/menu-builder";
-import { reactPrompt } from "@/wab/client/components/quick-modals";
 import { ComponentActionsSection } from "@/wab/client/components/sidebar-tabs/ComponentActionsSection";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
 import {
@@ -53,7 +52,6 @@ import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { unwrap } from "@/wab/commons/neverthrow-utils";
 import { VARIABLE_LOWER } from "@/wab/shared/Labels";
-import { TplMgr } from "@/wab/shared/TplMgr";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
 import {
   HighlightInteractionRequest,
@@ -980,37 +978,6 @@ export const AUTOCOMPLETE_OPTIONS = [
   "tel-extension",
   "impp",
 ];
-
-export async function promptForParamName(
-  tplMgr: TplMgr,
-  component: Component,
-): Promise<string | undefined> {
-  let name = await reactPrompt({
-    message: `Enter name for a new prop for "${getComponentDisplayName(
-      component,
-    )}":`,
-    placeholder: "Prop name",
-    actionText: "Confirm",
-  });
-  if (!name) {
-    return undefined;
-  }
-
-  name = name.trim();
-  const validName = tplMgr.getUniqueParamName(component, name);
-  if (validName !== name) {
-    notification.info({
-      message: "New prop created",
-      description: (
-        <>
-          <code>{name}</code> is not a valid prop name; renamed to{" "}
-          <code>{validName}</code> instead.
-        </>
-      ),
-    });
-  }
-  return validName;
-}
 
 export const TplComponentNameSection = observer(TplComponentNameSection_);
 

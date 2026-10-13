@@ -27,8 +27,6 @@ import { toVarName } from "@/wab/shared/codegen/util";
 import { assert, ensure, ensureInstance } from "@/wab/shared/common";
 import {
   getRealParams,
-  isPageComponent,
-  isPlainComponent,
   mkVariantGroupArgExpr,
 } from "@/wab/shared/core/components";
 import {
@@ -207,11 +205,7 @@ export const VariantPicker = observer(function VariantPicker(props: {
         ? codeLit(activeVariantsInVg[0])
         : undefined;
 
-  const canLinkToProp =
-    !isDisabled &&
-    !!ownerComponent &&
-    (isPageComponent(ownerComponent) || isPlainComponent(ownerComponent)) &&
-    viewCtx.tplMgr().canLinkToProp(tpl);
+  const canLinkToProp = !isDisabled && viewCtx.tplMgr().canLinkToProp(tpl);
 
   const isCompatibleOwnerParam = (param: Param): boolean =>
     isParamCompatibleWithVariantGroup(param, group);
