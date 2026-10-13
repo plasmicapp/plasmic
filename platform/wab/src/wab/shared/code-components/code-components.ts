@@ -1774,7 +1774,12 @@ async function checkParentComponents(ctx: SiteCtx) {
             }
             const parentMeta = ccMap.get(meta.parentComponentName)?.meta;
             if (!parentMeta) {
-              return err(new UnknownComponentError(meta.parentComponentName));
+              return err(
+                new UnknownComponentError(
+                  meta.parentComponentName,
+                  `Code component "${meta.name}" has parentComponentName "${meta.parentComponentName}", but no code component with that name is registered`,
+                ),
+              );
             }
             compStatus.set(meta.name, inProgess);
             yield* dfs(parentMeta);
@@ -2530,8 +2535,8 @@ export function attachRenderableTplSlots(component: CodeComponent) {
 export class UnknownComponentError extends CustomError {
   name: "UnknownComponentError";
   componentName: string;
-  constructor(name: string) {
-    super("Unknown component " + name);
+  constructor(name: string, message: string) {
+    super(message);
     this.componentName = name;
   }
 }
@@ -2994,7 +2999,12 @@ export function elementSchemaToTpl(
             (comp) => comp.name === schema.name,
           );
           if (!referencedComponent) {
-            return err(new UnknownComponentError(schema.name));
+            return err(
+              new UnknownComponentError(
+                schema.name,
+                `Element references unknown component "${schema.name}"`,
+              ),
+            );
           }
           if (referencedComponent === component) {
             return err(
@@ -4122,7 +4132,12 @@ export function propTypeToWabType(
               (c) => isCodeComponent(c) && c.name === name,
             );
             if (!component) {
-              err(new UnknownComponentError(name));
+              return err(
+                new UnknownComponentError(
+                  name,
+                  `Slot allowedComponents references unknown code component "${name}". If it comes from a @plasmicpkgs/* package, update your @plasmicpkgs/* packages to the latest version.`,
+                ),
+              );
             } else {
               components.push(typeFactory.instance(component));
             }

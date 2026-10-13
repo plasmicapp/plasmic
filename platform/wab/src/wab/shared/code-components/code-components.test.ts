@@ -4,12 +4,14 @@ import { TplMgr } from "@/wab/shared/TplMgr";
 import { FastBundler } from "@/wab/shared/bundler";
 import {
   CodeComponentsRegistry,
+  UnknownComponentError,
   _testonly,
   componentMetaToComponentParams,
   getNewProps,
   makePlumeComponentMeta,
   mkCodeComponent,
   parseStyles,
+  propTypeToWabType,
 } from "@/wab/shared/code-components/code-components";
 import { arrayRemove } from "@/wab/shared/collections";
 import { only, uncheckedCast } from "@/wab/shared/common";
@@ -327,5 +329,89 @@ describe("addNewRegisteredComponents", () => {
     expect(siteContext.params).toContain(arg.param);
     expect(arg.param.variable.name).toBe("domain");
     expect(arg.expr).toMatchObject({ code: '"example.com"' });
+  });
+});
+
+describe("propTypeToWabType", () => {
+  let site: Site;
+  beforeEach(() => {
+    site = createSite();
+    site.components.push(
+      mkCodeComponent(
+        "MyComponent",
+        { name: "MyComponent", importPath: "./my-component", props: {} },
+        {},
+      ),
+    );
+  });
+
+  it("converts a string prop type", () => {
+    const result = propTypeToWabType(site, "string");
+    expect(result._unsafeUnwrap().name).toBe("text");
+  });
+
+  it.each([
+    ["slot", "renderable"],
+    ["object", "any"],
+    ["imageUrl", "img"],
+  ] as const)("converts the %s shorthand to %s", (propType, expected) => {
+    expect(propTypeToWabType(site, propType)._unsafeUnwrap().name).toBe(
+      expected,
+    );
+  });
+
+  it("converts a slot with known allowedComponents", () => {
+    const result = propTypeToWabType(site, {
+      type: "slot",
+      allowedComponents: ["MyComponent"],
+    });
+    const type = result._unsafeUnwrap();
+    expect(type.name).toBe("renderable");
+    expect((type as any).params.map((p: any) => p.component.name)).toEqual([
+      "MyComponent",
+    ]);
+  });
+
+  it("returns an error for a slot with unknown allowedComponents", () => {
+    const result = propTypeToWabType(site, {
+      type: "slot",
+      allowedComponents: ["MyComponent", "UnknownComponent"],
+    });
+    const error = result._unsafeUnwrapErr();
+    expect(error).toBeInstanceOf(UnknownComponentError);
+    expect(error.componentName).toBe("UnknownComponent");
+    expect(error.message).toBe(
+      'Slot allowedComponents references unknown code component "UnknownComponent". If it comes from a @plasmicpkgs/* package, update your @plasmicpkgs/* packages to the latest version.',
+    );
+  });
+
+  it("converts a slot with renderPropParams to a render function", () => {
+    const result = propTypeToWabType(site, {
+      type: "slot",
+      allowedComponents: ["MyComponent"],
+      renderPropParams: ["item", "index"],
+    });
+    expect(result._unsafeUnwrap()).toMatchObject({
+      name: "renderFunc",
+      params: [{ argName: "item" }, { argName: "index" }],
+      allowed: [{ component: { name: "MyComponent" } }],
+    });
+  });
+
+  it.each([
+    [true, "multiChoice"],
+    [false, "choice"],
+    [undefined, "choice"],
+    [() => true, "choice"],
+  ])("converts a choice with multiSelect=%s to %s", (multiSelect, expected) => {
+    const result = propTypeToWabType(site, {
+      type: "choice",
+      options: ["a", "b"],
+      multiSelect,
+    });
+    expect(result._unsafeUnwrap()).toMatchObject({
+      name: expected,
+      options: ["a", "b"],
+    });
   });
 });
