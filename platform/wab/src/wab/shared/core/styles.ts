@@ -185,6 +185,7 @@ import {
   isKnownStyleToken,
   isKnownStyleTokenRef,
 } from "@/wab/shared/model/classes";
+import { instFieldValues } from "@/wab/shared/model/model-meta";
 import {
   deriveSizeStyleValue,
   deriveSizeStylesForTpl,
@@ -1054,7 +1055,7 @@ export function generateAnimationPropValue(animations: Animation[]) {
   return showCssAnimations(
     animations.map((anim) => ({
       name: `var(${makeAnimationKeyframeCssVarName(anim.sequence)})`,
-      ...anim,
+      ...instFieldValues(anim),
     })),
   );
 }

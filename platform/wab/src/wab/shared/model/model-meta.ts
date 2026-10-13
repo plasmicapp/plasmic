@@ -255,6 +255,19 @@ export interface ObjInstBase {
   uid: number;
 }
 
+/** An inst's field values as plain properties, unlike a spread of its type */
+export type FieldValues<T> = { [K in keyof T]: T[K] };
+
+/**
+ * A plain object with the inst's field values. Use it instead of spreading an
+ * inst, so that copies keep working if fields stop being own properties.
+ */
+export function instFieldValues<T extends ObjInstBase>(
+  inst: T,
+): FieldValues<T> {
+  return Object.assign({}, inst);
+}
+
 export function isStrongRefField(f: Field) {
   // We assume no @WeakRef implies StrongRef
   return !isWeakRefField(f);

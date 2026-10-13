@@ -1866,6 +1866,7 @@ export class DbMgr implements MigrationDbMgr {
 
     return users.map((u) => ({
       type: "user",
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- flattens the entity into the API response
       ...u,
       projectsCreated: Number(projectsCreatedMap.get(u.id)?.count || 0),
       lastActive: lastActiveMap.get(u.id)?.time || "",
@@ -5561,6 +5562,7 @@ export class DbMgr implements MigrationDbMgr {
         .where({
           [taggedResourceIds.type]: { id: In(resourceIds) },
           ...excludeDeleted(),
+          // eslint-disable-next-line @typescript-eslint/no-misused-spread -- FindConditions is a plain object
           ...(whereClause ? whereClause : {}),
         })
         .getMany();
@@ -5581,6 +5583,7 @@ export class DbMgr implements MigrationDbMgr {
       .where({
         [taggedResourceIds.type]: { id: In(resourceIds) },
         ...excludeDeleted(),
+        // eslint-disable-next-line @typescript-eslint/no-misused-spread -- FindConditions is a plain object
         ...(whereClause ? whereClause : {}),
       });
 
@@ -6857,10 +6860,7 @@ export class DbMgr implements MigrationDbMgr {
             i18nTagPrefix: i18nTagPrefix ?? null,
             appDir: appDir ? true : null,
           });
-        return {
-          ...publishment,
-          ...this.stampUpdate(),
-        };
+        return Object.assign(publishment, this.stampUpdate());
       }),
     );
     await this.loaderPublishments().save(loaderPublishments);
@@ -8930,10 +8930,9 @@ export class DbMgr implements MigrationDbMgr {
       "editor",
       "update end user directory",
     );
-    const result = await this.endUserDirectories().save({
-      ...endUserDirectory,
-      ...changes,
-    });
+    const result = await this.endUserDirectories().save(
+      Object.assign(endUserDirectory, changes),
+    );
     return result;
   }
 
@@ -8952,10 +8951,9 @@ export class DbMgr implements MigrationDbMgr {
         `Cannot delete end user directory ${endUserDirectoryId} because it has apps associated with it`,
       );
     }
-    await this.endUserDirectories().save({
-      ...endUserDirectory,
-      ...this.stampDelete(),
-    });
+    await this.endUserDirectories().save(
+      Object.assign(endUserDirectory, this.stampDelete()),
+    );
   }
 
   async upsertAppAuthConfig(
@@ -8993,10 +8991,7 @@ export class DbMgr implements MigrationDbMgr {
       // Create default Admin role
       await this.createAppRole(projectId, "Admin");
     } else {
-      appAuthConfig = this.appAuthConfigs().create({
-        ...appAuthConfig,
-        ...config,
-      });
+      Object.assign(appAuthConfig, config);
     }
     await this.appAuthConfigs().save(appAuthConfig);
     return findExactlyOne(this.appAuthConfigs(), {
@@ -9020,10 +9015,9 @@ export class DbMgr implements MigrationDbMgr {
       projectId,
       ...excludeDeleted(),
     });
-    await this.appAuthConfigs().save({
-      ...appAuthConfig,
-      ...this.stampDelete(),
-    });
+    await this.appAuthConfigs().save(
+      Object.assign(appAuthConfig, this.stampDelete()),
+    );
   }
 
   async disableAppAuthConfig(projectId: ProjectId) {
@@ -9034,20 +9028,16 @@ export class DbMgr implements MigrationDbMgr {
     );
     const appAccessRules = await this.listAppAccessRules(projectId);
     await this.appEndUserAccess().save(
-      appAccessRules.map((appAccessRule) => ({
-        ...appAccessRule,
-        ...this.stampDelete(),
-      })),
+      appAccessRules.map((appAccessRule) =>
+        Object.assign(appAccessRule, this.stampDelete()),
+      ),
     );
 
     await this.deleteAppAuthConfig(projectId);
 
     const appRoles = await this.listAppRoles(projectId);
     await this.appRoles().save(
-      appRoles.map((appRole) => ({
-        ...appRole,
-        ...this.stampDelete(),
-      })),
+      appRoles.map((appRole) => Object.assign(appRole, this.stampDelete())),
     );
   }
 
@@ -9261,10 +9251,7 @@ export class DbMgr implements MigrationDbMgr {
       throw new ForbiddenError("Cannot delete the only role for an app");
     }
     await this.checkProjectPerms(role.projectId, "editor", "delete app role");
-    await this.appRoles().save({
-      ...role,
-      ...this.stampDelete(),
-    });
+    await this.appRoles().save(Object.assign(role, this.stampDelete()));
     const newRoles = appRoles.filter((appRole) => appRole.id !== roleId);
     await this.changeAppRolesOrder(
       role.projectId,
@@ -9401,11 +9388,9 @@ export class DbMgr implements MigrationDbMgr {
     } else {
       appEndUserAccess.roleId = roleId;
     }
-    await this.appEndUserAccess().save({
-      ...appEndUserAccess,
-      ...this.stampUpdate(),
-      manuallyAdded,
-    });
+    await this.appEndUserAccess().save(
+      Object.assign(appEndUserAccess, this.stampUpdate(), { manuallyAdded }),
+    );
     return appEndUserAccess;
   }
 
@@ -9477,10 +9462,9 @@ export class DbMgr implements MigrationDbMgr {
     if (appEndUserAccess.projectId !== projectId) {
       throw new ForbiddenError("Cannot delete user from another app");
     }
-    await this.appEndUserAccess().save({
-      ...appEndUserAccess,
-      ...this.stampDelete(),
-    });
+    await this.appEndUserAccess().save(
+      Object.assign(appEndUserAccess, this.stampDelete()),
+    );
   }
 
   async getEndUserByIdentifier(
@@ -9617,10 +9601,7 @@ export class DbMgr implements MigrationDbMgr {
     if (endUser.directoryId !== directoryId) {
       throw new ForbiddenError("Cannot remove end user from another directory");
     }
-    await this.endUsers().save({
-      ...endUser,
-      ...this.stampDelete(),
-    });
+    await this.endUsers().save(Object.assign(endUser, this.stampDelete()));
   }
 
   async getDirectoryGroupById(directoryId: string, groupId: string) {
@@ -9703,10 +9684,9 @@ export class DbMgr implements MigrationDbMgr {
       directoryId,
       groupId,
     );
-    await this.directoryEndUserGroups().save({
-      ...directoryGroup,
-      ...this.stampDelete(),
-    });
+    await this.directoryEndUserGroups().save(
+      Object.assign(directoryGroup, this.stampDelete()),
+    );
 
     // Hard delete all relations to this group
     await this.appEndUserGroups().delete({
@@ -9754,10 +9734,7 @@ export class DbMgr implements MigrationDbMgr {
     });
     await this.appEndUserGroups().save(
       appEndUserGroups.map((appEndUserGroup) => {
-        return {
-          ...appEndUserGroup,
-          ...this.stampDelete(),
-        };
+        return Object.assign(appEndUserGroup, this.stampDelete());
       }),
     );
   }
@@ -9868,10 +9845,9 @@ export class DbMgr implements MigrationDbMgr {
         endUserId,
       });
     }
-    await this.appAccessRegistries().save({
-      ...appAccessRegistry,
-      ...this.stampUpdate(),
-    });
+    await this.appAccessRegistries().save(
+      Object.assign(appAccessRegistry, this.stampUpdate()),
+    );
     return appAccessRegistry;
   }
 
@@ -9957,6 +9933,7 @@ export class DbMgr implements MigrationDbMgr {
     const appRoles = await this.listAppRoles(fromProjectId, true);
     const newAppRoles = appRoles.map((appRole) => {
       const newRole = this.appRoles().create({
+        // eslint-disable-next-line @typescript-eslint/no-misused-spread -- copies the entity's columns
         ...appRole,
         ...this.stampNew(),
         projectId: toProjectId,
@@ -9967,6 +9944,7 @@ export class DbMgr implements MigrationDbMgr {
     await this.appRoles().save(newAppRoles);
 
     const newAuthConfig = this.appAuthConfigs().create({
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- copies the entity's columns
       ...authConfig,
       ...this.stampNew(),
       token: generateSomeApiToken(),
@@ -9983,6 +9961,7 @@ export class DbMgr implements MigrationDbMgr {
     const newAccessRules = accessRules.map((accessRule) => {
       // Also requires to fix directoryEndUserGroupId
       const newAccessRule = this.appEndUserAccess().create({
+        // eslint-disable-next-line @typescript-eslint/no-misused-spread -- copies the entity's columns
         ...accessRule,
         ...this.stampNew(),
         directoryEndUserGroupId: keepGroupRefs
@@ -10020,6 +9999,7 @@ export class DbMgr implements MigrationDbMgr {
     const oldToNewDirectoryGroupIds: Record<string, string> = {};
     const newDirectoryGroups = directoryGroups.map((directoryGroup) => {
       const newDirectory = this.directoryEndUserGroups().create({
+        // eslint-disable-next-line @typescript-eslint/no-misused-spread -- copies the entity's columns
         ...directoryGroup,
         ...this.stampNew(),
         directoryId: toDirectoryId,
@@ -10050,10 +10030,7 @@ export class DbMgr implements MigrationDbMgr {
     const byGroupAccessRules = accessRules
       .filter((accessRule) => accessRule.directoryEndUserGroupId)
       .map((accessRule) => {
-        return {
-          ...accessRule,
-          ...this.stampDelete(),
-        };
+        return Object.assign(accessRule, this.stampDelete());
       });
     await this.appEndUserAccess().save(byGroupAccessRules);
 
@@ -10493,10 +10470,7 @@ export class DbMgr implements MigrationDbMgr {
       comment.commentThreadId,
     );
     await this.entMgr.save([commentThread, reaction]);
-    return {
-      ...reaction,
-      comment,
-    } as CommentReaction;
+    return Object.assign(reaction, { comment });
   }
 
   async removeCommentReaction(

@@ -712,8 +712,7 @@ function resolveTemplatedString(nodes: Descendant[]): TemplatedString {
 
 interface CodeTagProps {
   element: CodeTagNode;
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  attributes: Object;
+  attributes: RenderElementProps["attributes"];
   children: React.ReactElement;
   data: Record<string, any> | undefined;
   schema?: DataPickerTypesSchema;

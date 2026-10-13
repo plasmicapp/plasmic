@@ -97,6 +97,7 @@ export function TopFrameCtxProvider({
             hostFrameApiReady: true,
           }));
         },
+        // eslint-disable-next-line @typescript-eslint/no-misused-spread -- filteredApi returns a plain object
         ...api,
         ...topFrameApi,
 

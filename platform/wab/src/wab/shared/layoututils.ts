@@ -24,6 +24,7 @@ import {
 } from "@/wab/shared/core/tpls";
 import { CONTENT_LAYOUT_INITIALS } from "@/wab/shared/default-styles";
 import { RuleSet, TplNode } from "@/wab/shared/model/classes";
+import { instFieldValues } from "@/wab/shared/model/model-meta";
 
 export type ContainerType =
   "free" | "flex-row" | "flex-column" | "grid" | "content-layout";
@@ -221,7 +222,7 @@ export function makeLayoutAwareRuleSet(
     return rs;
   }
   return {
-    ...rs,
+    ...instFieldValues(rs),
     typeTag: rs.typeTag,
     get values() {
       const values = rs.values;

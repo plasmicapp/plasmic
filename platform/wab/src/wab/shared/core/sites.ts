@@ -189,6 +189,7 @@ import {
   isKnownVariantedRuleSet,
   isKnownVariantedValue,
 } from "@/wab/shared/model/classes";
+import { instFieldValues } from "@/wab/shared/model/model-meta";
 import {
   isRenderFuncType,
   isRenderableType,
@@ -1593,7 +1594,7 @@ export function swapPageLinks(
     site,
     fromPage,
     (_site, _component, oldExpr: PageHref) =>
-      new PageHref({ ...oldExpr, page: toPage }),
+      new PageHref({ ...instFieldValues(oldExpr), page: toPage }),
   );
 }
 
@@ -2114,7 +2115,7 @@ export function allImportedStyleTokensWithProjectInfo(site: Site) {
   return [
     ...walkDependencyTree(site, "all").flatMap((d) =>
       d.site.styleTokens.flatMap((token) => ({
-        ...token,
+        ...instFieldValues(token),
         projectName: d.name,
         projectId: d.projectId,
       })),

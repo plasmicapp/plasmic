@@ -10,6 +10,7 @@ import {
   TplTag,
   Variant,
 } from "@/wab/shared/model/classes";
+import { instFieldValues } from "@/wab/shared/model/model-meta";
 import { clamp, isEqual, isUndefined, range, sum } from "lodash";
 
 export const hasMaxWidthVariant = (variant: Variant): boolean => {
@@ -148,7 +149,7 @@ export function adjustAllTplColumnsSizes(
         tpl,
         vs.variants,
         {
-          ...vs.columnsConfig,
+          ...instFieldValues(vs.columnsConfig),
         },
         vtm,
       );
@@ -216,7 +217,7 @@ export function redistributeColumnsSizes(
         tpl,
         vs.variants,
         {
-          ...vs.columnsConfig,
+          ...instFieldValues(vs.columnsConfig),
           colsSizes: newCols,
         },
         vtm,

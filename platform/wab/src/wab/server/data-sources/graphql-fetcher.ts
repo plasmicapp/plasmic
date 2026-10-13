@@ -195,6 +195,7 @@ async function processResult(res: AxiosResponse<string>) {
     data: {
       response: processedResponse,
       statusCode,
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- AxiosHeaders keeps headers as own properties
       headers: { ...res.headers },
     },
   };

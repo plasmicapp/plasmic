@@ -91,6 +91,7 @@ import type { SetRequired } from "type-fest";
 import { cleanDataForPreview } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerCodeEditorLayout";
 import { prepareEnvForDataPicker } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import DataQueryCodeEditorLayout from "@/wab/client/components/sidebar-tabs/DataBinding/DataQueryCodeEditorLayout";
+import { instFieldValues } from "@/wab/shared/model/model-meta";
 const LazyValuePreview = React.lazy(async () => {
   const mod = await import("@/wab/client/components/coding/CodePreview");
   return { default: mod.ValuePreview };
@@ -153,8 +154,7 @@ interface QueryDraft {
 }
 
 type ValidQueryDraft =
-  | SetRequired<QueryDraft, "fnExpr">
-  | SetRequired<QueryDraft, "codeExpr">;
+  SetRequired<QueryDraft, "fnExpr"> | SetRequired<QueryDraft, "codeExpr">;
 function isValidQueryDraft(draft: QueryDraft): draft is ValidQueryDraft {
   if (draft.codeExpr) {
     const code = stripParens(draft.codeExpr.code);
@@ -415,7 +415,7 @@ export const ServerQueryOpDraftForm = observer(
           onChange({
             queryName: value.queryName,
             fnExpr: new CustomFunctionExpr({
-              ...value.fnExpr,
+              ...instFieldValues(value.fnExpr),
               args: mkArgs(value.fnExpr.args),
             }),
           });

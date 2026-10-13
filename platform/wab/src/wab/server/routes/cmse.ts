@@ -125,6 +125,7 @@ export async function makeApiDatabase(
 ): Promise<ApiCmsDatabase> {
   const tables = await mgr.listCmsTables(database.id, includeArchived);
   return {
+    // eslint-disable-next-line @typescript-eslint/no-misused-spread -- flattens the entity into the API response
     ...database,
     tables,
   };

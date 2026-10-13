@@ -71,6 +71,7 @@ import {
   Site,
   TplNode,
 } from "@/wab/shared/model/classes";
+import { instFieldValues } from "@/wab/shared/model/model-meta";
 import { PlasmicElement } from "@plasmicapp/host";
 import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import { type GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
@@ -362,7 +363,7 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
   ) {
     const pkg = await promptHostLessPackageInfo(
       studioCtx.site.hostLessPackageInfo
-        ? { ...studioCtx.site.hostLessPackageInfo }
+        ? { ...instFieldValues(studioCtx.site.hostLessPackageInfo) }
         : undefined,
     );
 

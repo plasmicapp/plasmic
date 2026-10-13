@@ -2169,6 +2169,7 @@ function DataSourceOpDataPreview(props: {
                         ...(opResults.error instanceof Error // eslint-disable-line
                           ? {
                               error: {
+                                // eslint-disable-next-line @typescript-eslint/no-misused-spread -- copies the error's own fields
                                 ...opResults.error,
                                 // `JSON.stringify` removes error message, so we
                                 // force add it here
@@ -2939,7 +2940,7 @@ const JsonArrayWithSchemaEditor = observer(function JsonArrayWithSchemaEditor({
   );
 
   const handleChange = (
-    // eslint-disable-next-line @typescript-eslint/ban-types
+    // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
     newVal: Object[] | string,
     usedType: "editor" | "code",
   ) => {

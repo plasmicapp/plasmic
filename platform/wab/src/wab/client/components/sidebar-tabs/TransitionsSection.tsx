@@ -26,7 +26,7 @@ import { isBaseVariant, tryGetBaseVariantSetting } from "@/wab/shared/Variants";
 import { observer } from "mobx-react";
 import React, { createRef } from "react";
 
-export class Transition {
+export interface Transition {
   transitionProperty: string;
   transitionTimingFunction: string;
   transitionDuration: string;

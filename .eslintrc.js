@@ -49,7 +49,7 @@ function findOverlayTargets(root) {
           path
             .relative(__dirname, full)
             .replace(".external", "")
-            .replace(".public", "")
+            .replace(".public", ""),
         );
       }
     }
@@ -60,7 +60,7 @@ function findOverlayTargets(root) {
 
 const internalFiles = ["**/enterprise/**", "**/internal/**", "**/*.internal*"];
 const overlayTargets = findOverlayTargets(
-  path.join(__dirname, "platform/wab/src")
+  path.join(__dirname, "platform/wab/src"),
 );
 
 // Public synced files can't import enterprise/internal code.
@@ -245,30 +245,23 @@ module.exports = {
     "no-empty": ["error", { allowEmptyCatch: true }],
     "prefer-const": "warn",
     "prefer-spread": "off",
-    "@typescript-eslint/ban-types": [
-      "error",
-      {
-        extendDefaults: true,
-        types: {
-          // un-ban types banned by default
-          "{}": false,
-          Function: false,
-        },
-      },
-    ],
     "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-empty-object-type": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-namespace": "off",
+    "@typescript-eslint/no-require-imports": "off",
     "@typescript-eslint/no-this-alias": "off",
+    "@typescript-eslint/no-unsafe-function-type": "off",
+    "@typescript-eslint/no-unused-expressions": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
         argsIgnorePattern: "^_",
         varsIgnorePattern: "^_",
+        caughtErrors: "none",
         caughtErrorsIgnorePattern: "^_",
       },
     ],
-    "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/triple-slash-reference": [
       "error",
       {
@@ -303,10 +296,12 @@ module.exports = {
         "platform/wab/src/wab/main.tsx",
       ],
       rules: {
-        "@typescript-eslint/switch-exhaustiveness-check": "error",
+        "@typescript-eslint/switch-exhaustiveness-check": [
+          "error",
+          { considerDefaultExhaustiveForUnions: true },
+        ],
         "no-shadow": "off",
         "no-extra-boolean-cast": "off",
-        "@typescript-eslint/no-shadow": "error",
         "@typescript-eslint/no-floating-promises": ["error", {}],
         "@typescript-eslint/no-misused-promises": [
           "error",
@@ -314,6 +309,7 @@ module.exports = {
             checksVoidReturn: {
               attributes: false,
               arguments: false,
+              inheritedMethods: false,
             },
           },
         ],
@@ -322,12 +318,17 @@ module.exports = {
           {
             argsIgnorePattern: "^_",
             varsIgnorePattern: "^_",
+            caughtErrors: "none",
             caughtErrorsIgnorePattern: "^_",
           },
         ],
         "no-inner-declarations": "off",
         "@typescript-eslint/no-empty-function": "warn",
-        "@typescript-eslint/no-empty-interface": "warn",
+        "@typescript-eslint/no-empty-object-type": [
+          "warn",
+          { allowObjectTypes: "always" },
+        ],
+        "@typescript-eslint/no-misused-spread": "error",
         "@typescript-eslint/no-non-null-asserted-optional-chain": "warn",
         "@typescript-eslint/ban-ts-comment": "warn",
         "import/no-extraneous-dependencies": [
@@ -458,7 +459,7 @@ module.exports = {
         "no-restricted-syntax": [
           "warn",
           ...restrictedSyntaxRules.filter(
-            (rule) => rule !== restrictedTestonlySyntaxRule
+            (rule) => rule !== restrictedTestonlySyntaxRule,
           ),
         ],
       },

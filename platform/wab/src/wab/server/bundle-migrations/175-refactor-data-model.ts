@@ -310,6 +310,7 @@ const fakeMetaRuntime = new MetaRuntime(
   [
     ...meta.schema.filter((cls) => cls !== changeHandlerParamCls),
     new Class({
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- Class keeps its fields as own properties
       ...changeHandlerParamCls,
       fields: [
         ...changeHandlerParamCls.fields.filter((f) => f.name !== "state"),

@@ -262,7 +262,7 @@ class ModelSwitcher<RemainingInput, Result = never> {
     types: Cases,
     fn: (x: Case) => NewResult,
   ): SwitcherOrResult<Exclude<RemainingInput, Case>, Result | NewResult>;
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
   when<Case extends RemainingInput & Object, NewResult>(
     types: typeof Object,
     fn: (x: Case) => NewResult,
@@ -2547,7 +2547,7 @@ export function withTimeout<T>(
  * Note this relies on window.Object; if you're checking across windows,
  * like objects created within an iframe, use lodash.isPlainObject.
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
 export function isLiteralObject(obj: any, localObj = Object): obj is Object {
   return (
     !!obj && typeof obj === "object" && obj.constructor === (localObj ?? Object)
@@ -2559,12 +2559,12 @@ export function isLiteralObject(obj: any, localObj = Object): obj is Object {
  * your object may be from different windows, this is faster than
  * lodash.isPlainObject (but of course less accurate)
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
 export function isLiteralObjectByName(obj: any): obj is Object {
   return !!obj && typeof obj === "object" && obj.constructor?.name === "Object";
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
 export function isObjectEmpty(obj: Object) {
   return Object.keys(obj).length === 0;
 }

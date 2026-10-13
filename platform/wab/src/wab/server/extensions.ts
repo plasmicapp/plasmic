@@ -18,7 +18,7 @@ declare global {
       analytics: Analytics;
     }
     // Merge our User with passport's User
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     export interface User extends UserEnt {}
     export interface Request {
       /** TypeORM connection for this request. */

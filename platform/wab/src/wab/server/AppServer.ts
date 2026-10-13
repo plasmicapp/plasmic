@@ -1870,6 +1870,7 @@ function toErrorResponse(
   if (err instanceof ApiError) {
     return {
       statusCode: err.statusCode,
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- sends the error's own fields
       body: { ...err, message: err.message },
     };
   }
@@ -1878,6 +1879,7 @@ function toErrorResponse(
     // a bad SQL query). Without a statusCode, it's an internal failure.
     return {
       statusCode: err.statusCode,
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- sends the error's own fields
       body: { ...err, message: err.message },
     };
   }

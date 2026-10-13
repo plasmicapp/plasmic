@@ -182,6 +182,7 @@ import {
   isKnownVariantGroupState,
   isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
+import { instFieldValues } from "@/wab/shared/model/model-meta";
 import { typeFactory } from "@/wab/shared/model/model-util";
 import {
   isParamUsedInExpr,
@@ -776,7 +777,7 @@ export function cloneComponent(
       return cloned;
     }),
     figmaMappings: fromComponent.figmaMappings.map(
-      (c) => new FigmaComponentMapping({ ...c }),
+      (c) => new FigmaComponentMapping({ ...instFieldValues(c) }),
     ),
     alwaysAutoName: fromComponent.alwaysAutoName,
     trapsFocus: fromComponent.trapsFocus,

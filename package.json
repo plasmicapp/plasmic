@@ -46,8 +46,8 @@
   "devDependencies": {
     "@microsoft/api-extractor": "7.38.2",
     "@testing-library/react": "catalog:",
-    "@typescript-eslint/eslint-plugin": "6.21.0",
-    "@typescript-eslint/parser": "6.21.0",
+    "@typescript-eslint/eslint-plugin": "8.71.1",
+    "@typescript-eslint/parser": "8.71.1",
     "esbuild": "0.28.2",
     "esbuild-register": "^3.4.2",
     "eslint": "catalog:",

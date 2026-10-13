@@ -141,6 +141,7 @@ describe("downgrade on trial expiration", () => {
         expect(after.find((p) => p.id === perm.id)).toEqual(
           isTarget
             ? {
+                // eslint-disable-next-line @typescript-eslint/no-misused-spread -- toEqual ignores the prototype
                 ...perm,
                 accessLevel: "commenter",
                 updatedAt: expect.any(Date),

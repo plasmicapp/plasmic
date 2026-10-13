@@ -135,6 +135,7 @@ describe("toJsIdentifier", () => {
 
   // For debugging unicode with invisible characters
   function escapeUnicode(str: string) {
+    // eslint-disable-next-line @typescript-eslint/no-misused-spread -- splits by code point on purpose
     return [...str]
       .map((c: string) =>
         // eslint-disable-next-line no-control-regex

@@ -727,7 +727,7 @@ export function observeModel(
 
     // Now, observe the object itself, so we get notified when new entries
     // are added, removed, or changed.
-    // eslint-disable-next-line @typescript-eslint/ban-types
+    // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
     const objDispose = mobx.observe(obj as Object, (event) => {
       const newFlags: VisitFlags = {
         ...flags,

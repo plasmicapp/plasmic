@@ -779,7 +779,7 @@ export interface ListFeatureTiersResponse {
   tiers: ApiFeatureTier[];
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AddFeatureTierResponse {}
 
 export type SetupIntent = {
@@ -940,7 +940,7 @@ export interface GetDevFlagOverridesVersionsResponse {
   }>;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface SetDevFlagOverridesResponse {}
 
 export interface AppConfigResponse {
@@ -1600,10 +1600,10 @@ export interface ResolveThreadRequest {
   resolved: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface PostCommentResponse {}
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface DeleteCommentResponse {}
 
 export interface DomainsForProjectResponse {
@@ -1615,7 +1615,7 @@ export interface AddCommentReactionRequest {
   data: CommentReactionData;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AddCommentReactionResponse {}
 
 export type SetDomainStatus =

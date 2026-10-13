@@ -11,7 +11,7 @@ export async function getPromotionCodeById(req: Request, res: Response) {
     res.json({});
     return;
   }
-  res.json({ ...promotionCode });
+  res.json(promotionCode);
 }
 
 /**

@@ -113,6 +113,7 @@ import {
   transformDataTokensToDisplay,
 } from "@/wab/shared/eval/expression-parser";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { instFieldValues } from "@/wab/shared/model/model-meta";
 import { maybeConvertToIife } from "@/wab/shared/parser-utils";
 import { pageHrefPathToCode } from "@/wab/shared/utils/url-utils";
 import L, {
@@ -134,10 +135,7 @@ export interface ExprCtx {
 export type FallbackableExpr = CustomCode | ObjectPath;
 
 export type TemplatedStringPropEditorValue =
-  | string
-  | TemplatedString
-  | ObjectPath
-  | CustomCode;
+  string | TemplatedString | ObjectPath | CustomCode;
 
 export const summarizeExpr = (expr: Expr, exprCtx: ExprCtx): string =>
   switchType(expr)
@@ -479,21 +477,20 @@ export function asCode(expr: Expr, exprCtx: ExprCtx) {
   return _asCode(expr, exprCtx);
 }
 
-const _asCode = maybeComputedFn(
-  (_expr: Expr, exprCtx: ExprCtx): CustomCode =>
-    switchType(_expr)
-      .when(CustomCode, (expr) => expr)
-      .when(ImageAssetRef, (expr) =>
-        code(JSON.stringify(expr.asset.dataUri || "")),
-      )
-      .when(PageHref, (expr) => {
-        return code(pageHrefPathToCode({ expr, exprCtx }));
-      })
-      .when(ObjectPath, (expr) =>
-        code(`(${pathToString(expr.path)})`, expr.fallback),
-      )
-      .when(DataSourceOpExpr, (expr) =>
-        code(`{
+const _asCode = maybeComputedFn((_expr: Expr, exprCtx: ExprCtx): CustomCode =>
+  switchType(_expr)
+    .when(CustomCode, (expr) => expr)
+    .when(ImageAssetRef, (expr) =>
+      code(JSON.stringify(expr.asset.dataUri || "")),
+    )
+    .when(PageHref, (expr) => {
+      return code(pageHrefPathToCode({ expr, exprCtx }));
+    })
+    .when(ObjectPath, (expr) =>
+      code(`(${pathToString(expr.path)})`, expr.fallback),
+    )
+    .when(DataSourceOpExpr, (expr) =>
+      code(`{
       sourceId: ${JSON.stringify(expr.sourceId)},
       opId: ${JSON.stringify(expr.opId)},
       userArgs: {
@@ -558,132 +555,131 @@ const _asCode = maybeComputedFn(
       },
       roleId: ${JSON.stringify(expr.roleId)},
     }`),
-      )
-      .when(VarRef, (expr) => {
-        return code(`$props["${toVarName(expr.variable.name)}"]`);
-      })
-      .when(StyleTokenRef, (expr) => {
-        return codeLit(mkTokenRef(expr.token));
-      })
-      .when(TemplatedString, (expr) => {
-        const parts = expr.text.filter((x) => !!x && x !== "");
-        if (parts.length === 1) {
-          const part = parts[0];
-          if (isString(part)) {
-            return codeLit(part);
-          } else {
-            // If TemplatedString contains only a single code chip and nothing
-            // else, then let TemplatedString evaluate to whatever the code chip
-            // evaluates to, instead of always coercing to string
-            return asCode(part, exprCtx);
-          }
+    )
+    .when(VarRef, (expr) => {
+      return code(`$props["${toVarName(expr.variable.name)}"]`);
+    })
+    .when(StyleTokenRef, (expr) => {
+      return codeLit(mkTokenRef(expr.token));
+    })
+    .when(TemplatedString, (expr) => {
+      const parts = expr.text.filter((x) => !!x && x !== "");
+      if (parts.length === 1) {
+        const part = parts[0];
+        if (isString(part)) {
+          return codeLit(part);
         } else {
-          return code(
-            `\`${expr.text
-              .map((t) =>
-                isString(t)
-                  ? t
-                  : `\${ ${stripParensAndMaybeConvertToIife(
-                      asCode(t, exprCtx).code,
-                    )} }`,
-              )
-              .join("")}\``,
+          // If TemplatedString contains only a single code chip and nothing
+          // else, then let TemplatedString evaluate to whatever the code chip
+          // evaluates to, instead of always coercing to string
+          return asCode(part, exprCtx);
+        }
+      } else {
+        return code(
+          `\`${expr.text
+            .map((t) =>
+              isString(t)
+                ? t
+                : `\${ ${stripParensAndMaybeConvertToIife(
+                    asCode(t, exprCtx).code,
+                  )} }`,
+            )
+            .join("")}\``,
+        );
+      }
+    })
+    .when(VariantsRef, (expr) =>
+      code(
+        JSON.stringify(
+          expr.variants.length === 1
+            ? toVarName(expr.variants[0].name)
+            : expr.variants.map((v) => toVarName(v.name)),
+        ),
+      ),
+    )
+    .when(FunctionArg, (functionArg) => asCode(functionArg.expr, exprCtx))
+    .when(CollectionExpr, (collectionExpr) =>
+      code(
+        `[${collectionExpr.exprs
+          .map((expr) => (expr ? getRawCode(expr, exprCtx) : "undefined"))
+          .join(", ")}]`,
+      ),
+    )
+    .when(MapExpr, (expr) =>
+      code(
+        `({ ${Object.entries(expr.mapExpr)
+          .map(([name, expr2]) => `${name}: ${getRawCode(expr2, exprCtx)}`)
+          .join(", ")}})`,
+      ),
+    )
+    .when(RenderExpr, () => todo("RenderExpr"))
+    .when(EventHandler, (expr) => {
+      const serializedArgs = extractEventArgsNameFromEventHandler(
+        expr,
+        exprCtx,
+      ).join(", ");
+
+      function getInteractionCodeSnippets(interaction: Interaction) {
+        const interactionLoc: InteractionLoc = {
+          type: "InteractionLoc",
+          actionName: interaction.actionName,
+          interactionUuid: interaction.uuid,
+          componentUuid: exprCtx.component?.uuid,
+        };
+        const mkArgLoc = (argName: string): InteractionArgLoc => ({
+          ...interactionLoc,
+          type: "InteractionArgLoc",
+          argName,
+        });
+        const actionArgs = interaction.args.map(({ name, expr: argExpr }) => {
+          let argCode = getRawCode(
+            serializeActionArg(
+              ensure(
+                exprCtx.component,
+                `Cannot serialize interaction without component`,
+              ),
+              interaction.actionName,
+              name,
+              argExpr,
+            ),
+            exprCtx,
+          );
+          if (exprCtx.inStudio) {
+            argCode = wrapInteractionArgExpr(mkArgLoc(name), argCode);
+          }
+          return `${toJsIdentifier(name)}: ${argCode}`;
+        });
+        const condExpr =
+          interaction.condExpr &&
+          interaction.conditionalMode === InteractionConditionalMode.Expression
+            ? getRawCode(interaction.condExpr, exprCtx)
+            : interaction.conditionalMode === InteractionConditionalMode.Never
+              ? `false`
+              : `true`;
+        // We take care to wrap each of the arguments separately from wrapping the main body function,
+        // or else we'll have nested wrapping.
+
+        let performActionCode = `(${serializeActionFunction(
+          interaction,
+        )})?.apply(null, [${
+          !isGlobalAction(interaction) ? "actionArgs" : "...actionArgs.args"
+        }])`;
+        if (exprCtx.inStudio) {
+          performActionCode = wrapInteractionBodyExpr(
+            interactionLoc,
+            performActionCode,
+            `actionArgs`,
           );
         }
-      })
-      .when(VariantsRef, (expr) =>
-        code(
-          JSON.stringify(
-            expr.variants.length === 1
-              ? toVarName(expr.variants[0].name)
-              : expr.variants.map((v) => toVarName(v.name)),
-          ),
-        ),
-      )
-      .when(FunctionArg, (functionArg) => asCode(functionArg.expr, exprCtx))
-      .when(CollectionExpr, (collectionExpr) =>
-        code(
-          `[${collectionExpr.exprs
-            .map((expr) => (expr ? getRawCode(expr, exprCtx) : "undefined"))
-            .join(", ")}]`,
-        ),
-      )
-      .when(MapExpr, (expr) =>
-        code(
-          `({ ${Object.entries(expr.mapExpr)
-            .map(([name, expr2]) => `${name}: ${getRawCode(expr2, exprCtx)}`)
-            .join(", ")}})`,
-        ),
-      )
-      .when(RenderExpr, () => todo("RenderExpr"))
-      .when(EventHandler, (expr) => {
-        const serializedArgs = extractEventArgsNameFromEventHandler(
-          expr,
-          exprCtx,
-        ).join(", ");
 
-        function getInteractionCodeSnippets(interaction: Interaction) {
-          const interactionLoc: InteractionLoc = {
-            type: "InteractionLoc",
-            actionName: interaction.actionName,
-            interactionUuid: interaction.uuid,
-            componentUuid: exprCtx.component?.uuid,
-          };
-          const mkArgLoc = (argName: string): InteractionArgLoc => ({
-            ...interactionLoc,
-            type: "InteractionArgLoc",
-            argName,
-          });
-          const actionArgs = interaction.args.map(({ name, expr: argExpr }) => {
-            let argCode = getRawCode(
-              serializeActionArg(
-                ensure(
-                  exprCtx.component,
-                  `Cannot serialize interaction without component`,
-                ),
-                interaction.actionName,
-                name,
-                argExpr,
-              ),
-              exprCtx,
-            );
-            if (exprCtx.inStudio) {
-              argCode = wrapInteractionArgExpr(mkArgLoc(name), argCode);
-            }
-            return `${toJsIdentifier(name)}: ${argCode}`;
-          });
-          const condExpr =
-            interaction.condExpr &&
-            interaction.conditionalMode ===
-              InteractionConditionalMode.Expression
-              ? getRawCode(interaction.condExpr, exprCtx)
-              : interaction.conditionalMode === InteractionConditionalMode.Never
-                ? `false`
-                : `true`;
-          // We take care to wrap each of the arguments separately from wrapping the main body function,
-          // or else we'll have nested wrapping.
-
-          let performActionCode = `(${serializeActionFunction(
-            interaction,
-          )})?.apply(null, [${
-            !isGlobalAction(interaction) ? "actionArgs" : "...actionArgs.args"
-          }])`;
-          if (exprCtx.inStudio) {
-            performActionCode = wrapInteractionBodyExpr(
-              interactionLoc,
-              performActionCode,
-              `actionArgs`,
-            );
-          }
-
-          const bodyCode = `(() => {
+        const bodyCode = `(() => {
           const actionArgs = {${actionArgs}};
           return ${performActionCode};
         })()`;
-          return { interactionLoc, condExpr, bodyCode };
-        }
+        return { interactionLoc, condExpr, bodyCode };
+      }
 
-        return code(`async (${serializedArgs}) => {
+      return code(`async (${serializedArgs}) => {
         ${
           exprCtx.inStudio
             ? `globalThis.__PLASMIC_CACHE_EVENT_ARGS(${expr.uid}, ${serializedArgs})`
@@ -722,61 +718,61 @@ const _asCode = maybeComputedFn(
           })
           .join("\n")}
       }`);
-      })
-      .when(StyleExpr, (expr) =>
-        code(JSON.stringify(makeStyleExprClassName(expr))),
-      )
-      .when(FunctionExpr, (expr) => {
-        // Put bodyExpr in a separated line to avoid the case where the last line of the bodyExpr is a comment
-        // which would make the closing curly brace part of the comment and functionCode invalid even though
-        // bodyExpr is valid
-        const functionCode = `(${expr.argNames.join(", ")}) => {
+    })
+    .when(StyleExpr, (expr) =>
+      code(JSON.stringify(makeStyleExprClassName(expr))),
+    )
+    .when(FunctionExpr, (expr) => {
+      // Put bodyExpr in a separated line to avoid the case where the last line of the bodyExpr is a comment
+      // which would make the closing curly brace part of the comment and functionCode invalid even though
+      // bodyExpr is valid
+      const functionCode = `(${expr.argNames.join(", ")}) => {
           return (
             ${stripParensAndMaybeConvertToIife(
               asCode(expr.bodyExpr, exprCtx).code,
             )}
           );
       }`;
-        return code(functionCode);
-      })
-      .when(TplRef, () => unexpected(`Cannot convert TplRef to code`))
-      .when(QueryInvalidationExpr, (expr) =>
-        code(
-          `[${withoutNils(
-            expr.invalidationQueries.map((query) => {
-              // explicit query cache key
-              if (isString(query)) {
-                return jsLiteral(query);
-              }
-              const ref = query.ref;
-              // DataFetcher TplComponent invalidated by uuid
-              if (isKnownTplNode(ref)) {
-                return jsLiteral(ref.uuid);
-              }
-              // Server query ($q) invalidated by runtime cache-key id
-              // (the `<id>:` prefix of its SWR keys).
-              if (isKnownComponentServerQuery(ref)) {
-                const id = serverQueryId(ref);
-                return id ? jsLiteral(id) : undefined;
-              }
-              // Component-level data query invalidated by op id
-              return ref.op ? jsLiteral(ref.op.opId) : undefined;
-            }),
-          ).join(",")}]${
-            expr.invalidationKeys
-              ? `.concat(${getCodeExpressionWithFallback(
-                  expr.invalidationKeys,
-                  exprCtx,
-                )})`
-              : ""
-          }`,
-        ),
-      )
-      .when(CompositeExpr, (expr) => {
-        // We hope there are no collisions with the symbol "__composite"!
-        // The substitution paths are Lodash path strings.
-        return code(
-          `
+      return code(functionCode);
+    })
+    .when(TplRef, () => unexpected(`Cannot convert TplRef to code`))
+    .when(QueryInvalidationExpr, (expr) =>
+      code(
+        `[${withoutNils(
+          expr.invalidationQueries.map((query) => {
+            // explicit query cache key
+            if (isString(query)) {
+              return jsLiteral(query);
+            }
+            const ref = query.ref;
+            // DataFetcher TplComponent invalidated by uuid
+            if (isKnownTplNode(ref)) {
+              return jsLiteral(ref.uuid);
+            }
+            // Server query ($q) invalidated by runtime cache-key id
+            // (the `<id>:` prefix of its SWR keys).
+            if (isKnownComponentServerQuery(ref)) {
+              const id = serverQueryId(ref);
+              return id ? jsLiteral(id) : undefined;
+            }
+            // Component-level data query invalidated by op id
+            return ref.op ? jsLiteral(ref.op.opId) : undefined;
+          }),
+        ).join(",")}]${
+          expr.invalidationKeys
+            ? `.concat(${getCodeExpressionWithFallback(
+                expr.invalidationKeys,
+                exprCtx,
+              )})`
+            : ""
+        }`,
+      ),
+    )
+    .when(CompositeExpr, (expr) => {
+      // We hope there are no collisions with the symbol "__composite"!
+      // The substitution paths are Lodash path strings.
+      return code(
+        `
 ((() => {
   const __composite = (${expr.hostLiteral});
   ${Object.entries(expr.substitutions)
@@ -792,24 +788,24 @@ const _asCode = maybeComputedFn(
   return __composite;
 })())
   `.trim(),
-        );
-      })
-      .when(CustomFunctionExpr, (expr) => {
-        const { func, args } = expr;
-        const argsMap = groupBy(args, (arg) => arg.argType.argName);
-        const orderedArgs = func.params.map((param) => {
-          if (argsMap[param.argName]) {
-            return getRawCode(argsMap[param.argName][0].expr, exprCtx);
-          }
-          return "undefined";
-        });
-        return code(
-          `$$${expr.func.namespace ? `.${expr.func.namespace}` : ""}.${
-            expr.func.importName
-          }(${orderedArgs.join(",")})`,
-        );
-      })
-      .result(),
+      );
+    })
+    .when(CustomFunctionExpr, (expr) => {
+      const { func, args } = expr;
+      const argsMap = groupBy(args, (arg) => arg.argType.argName);
+      const orderedArgs = func.params.map((param) => {
+        if (argsMap[param.argName]) {
+          return getRawCode(argsMap[param.argName][0].expr, exprCtx);
+        }
+        return "undefined";
+      });
+      return code(
+        `$$${expr.func.namespace ? `.${expr.func.namespace}` : ""}.${
+          expr.func.importName
+        }(${orderedArgs.join(",")})`,
+      );
+    })
+    .result(),
 );
 
 export const isFallbackSet = (expr: Expr): expr is CustomCode | ObjectPath =>
@@ -1353,12 +1349,12 @@ export function removeFallbackFromDataSourceOp(op: DataSourceOpExpr) {
 
     if (isKnownDataSourceOpExpr(expr)) {
       return new DataSourceOpExpr({
-        ...expr,
+        ...instFieldValues(expr),
         templates: mapValues(
           expr.templates,
           (t) =>
             new DataSourceTemplate({
-              ...t,
+              ...instFieldValues(t),
               bindings: mapValues(t.bindings, (b) => withoutFallback(b)),
             }),
         ),

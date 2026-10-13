@@ -26,6 +26,7 @@ import {
   StateChangeHandlerParam,
   StateParam,
 } from "@/wab/shared/model/classes";
+import { instFieldValues } from "@/wab/shared/model/model-meta";
 import type { GlobalContextMeta } from "@plasmicapp/host";
 import type { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 
@@ -148,10 +149,12 @@ describe("code-components", () => {
       expect(findDuplicateAriaParams(plumeComponent)).toBeEmpty();
     });
     it("returns the param with higher uid for 2 params", () => {
-      const dupAriaLabelParam = new PropParam({ ...plumeAriaLabelParam });
-      const dupAriaLabelledByParam = new PropParam({
-        ...plumeAriaLabelledByParam,
-      });
+      const dupAriaLabelParam = new PropParam(
+        instFieldValues(plumeAriaLabelParam),
+      );
+      const dupAriaLabelledByParam = new PropParam(
+        instFieldValues(plumeAriaLabelledByParam),
+      );
       plumeComponent.params.push(dupAriaLabelParam);
       plumeComponent.params.push(dupAriaLabelledByParam);
       expect(findDuplicateAriaParams(plumeComponent)).toEqual([
@@ -165,12 +168,12 @@ describe("code-components", () => {
     });
     it("returns the params with 2 highest uids for 3 params", () => {
       const dupAriaLabelParams = [
-        new PropParam({ ...plumeAriaLabelParam }),
-        new PropParam({ ...plumeAriaLabelParam }),
+        new PropParam(instFieldValues(plumeAriaLabelParam)),
+        new PropParam(instFieldValues(plumeAriaLabelParam)),
       ];
       const dupAriaLabelledByParams = [
-        new PropParam({ ...plumeAriaLabelledByParam }),
-        new PropParam({ ...plumeAriaLabelledByParam }),
+        new PropParam(instFieldValues(plumeAriaLabelledByParam)),
+        new PropParam(instFieldValues(plumeAriaLabelledByParam)),
       ];
       plumeComponent.params.push(...dupAriaLabelParams);
       plumeComponent.params.push(...dupAriaLabelledByParams);

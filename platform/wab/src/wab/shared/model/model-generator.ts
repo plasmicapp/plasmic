@@ -297,6 +297,7 @@ export function writeClassesMetas(schema: string, outfile: string) {
   const classesStruct = Object.fromEntries(
     classes.map((cls) =>
       tuple(cls.name, {
+        // eslint-disable-next-line @typescript-eslint/no-misused-spread -- serializes the class's own fields
         ...cls,
         fields: Object.fromEntries(
           meta.allFields(cls).map((field) => tuple(field.name, field)),
