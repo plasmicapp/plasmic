@@ -162,7 +162,6 @@ import {
   PageArena,
   ProjectDependency,
   Site,
-  Split,
   State,
   StyleToken,
   Variant,
@@ -1390,7 +1389,11 @@ export class SiteOps {
     );
   }
 
-  async removeSplitAndGlobalVariant(split: Split, group: VariantGroup) {
+  /**
+   * Deleting the global variant group also removes every split whose content
+   * uses it.
+   */
+  async removeSplitAndGlobalVariant(group: VariantGroup) {
     const result = await deleteVariantGroup(
       group,
       undefined,
@@ -1410,14 +1413,6 @@ export class SiteOps {
       }
       return;
     }
-
-    await this.studioCtx.changeObserved(
-      () => [],
-      () => {
-        this.tplMgr.removeSplit(split);
-        return ok();
-      },
-    );
   }
 
   removeStyleOrCodeComponentVariantIfDuplicateOrEmpty(

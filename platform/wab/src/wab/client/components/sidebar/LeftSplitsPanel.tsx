@@ -91,7 +91,7 @@ function LeftSplitsPanel_(
 
     assert(isKnownGlobalVariantSplitContent(content), "Unknown split content");
 
-    await studioCtx.siteOps().removeSplitAndGlobalVariant(split, content.group);
+    await studioCtx.siteOps().removeSplitAndGlobalVariant(content.group);
   };
 
   const displayedEffect = { transform: "translate3d(0%,0,0)" };

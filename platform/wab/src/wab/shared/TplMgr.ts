@@ -231,7 +231,6 @@ import {
   Param,
   ProjectDependency,
   Site,
-  Split,
   State,
   StyleToken,
   Theme,
@@ -2907,10 +2906,6 @@ export class TplMgr {
     const split = mkGlobalVariantSplit(opts);
     this.site().splits.push(split);
     return split;
-  }
-
-  removeSplit(split: Split) {
-    remove(this.site().splits, split);
   }
 
   /**
