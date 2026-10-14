@@ -349,15 +349,23 @@ function mkDataUri(mime: string, charset: string, data: Buffer) {
 }
 
 async function upload(file: UploadedFile): Promise<CmsUploadedFile> {
+  let size: { width: number; height: number } | undefined;
+  if (isImageSupported(file.mimetype)) {
+    try {
+      size = await getImageSize(file.data);
+    } catch (e) {
+      throw new BadRequestError(
+        `Could not read image ${file.name}: ${e.message}`,
+      );
+    }
+  }
+
   const dataUri = mkDataUri(file.mimetype, file.encoding, file.data);
   const result = await uploadDataUriToS3(dataUri, { imageOnly: false });
   if (result.isErr()) {
     throw result.error;
   }
 
-  const size = isImageSupported(file.mimetype)
-    ? await getImageSize(file.data)
-    : undefined;
   const imageMeta =
     size?.width && size?.height
       ? { width: size.width, height: size.height }

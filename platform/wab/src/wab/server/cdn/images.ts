@@ -1,6 +1,7 @@
 import { logger } from "@/wab/server/observability";
 import { md5 } from "@/wab/server/util/hash";
 import { makeS3Client } from "@/wab/server/util/s3-util";
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { ensure } from "@/wab/shared/common";
 import { parseDataUrl } from "@/wab/shared/data-urls";
 import { isSVG } from "@/wab/shared/svg-utils";
@@ -52,13 +53,17 @@ export async function uploadFileToS3(
   const mime = fileType?.mime ?? opts?.contentType;
   const ext = fileType?.ext ?? (mime && extension(mime));
 
-  const optimizedBuffer =
-    fileType?.mime === "image/jpeg" || fileType?.mime === "image/png"
-      ? await sharp(fileBuffer)
-          .jpeg({ progressive: true, force: false, mozjpeg: true })
-          .png({ progressive: true, force: false })
-          .toBuffer()
-      : fileBuffer;
+  let optimizedBuffer = fileBuffer;
+  if (fileType?.mime === "image/jpeg" || fileType?.mime === "image/png") {
+    try {
+      optimizedBuffer = await sharp(fileBuffer)
+        .jpeg({ progressive: true, force: false, mozjpeg: true })
+        .png({ progressive: true, force: false })
+        .toBuffer();
+    } catch (e) {
+      return err(new BadRequestError(`Could not read image: ${e.message}`));
+    }
+  }
 
   if (!fileType && (imageOnly || !mime || !ext)) {
     return err(new Error("Invalid file type"));
