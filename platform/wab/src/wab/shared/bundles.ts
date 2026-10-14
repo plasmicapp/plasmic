@@ -1,4 +1,5 @@
 import { spawn, unexpected } from "@/wab/shared/common";
+import { mapValues, pick } from "lodash";
 
 export type BundledInst = {
   [field: string]: any;
@@ -101,3 +102,17 @@ export function getBundle(obj: HasBundle, expectedVersion: string): Bundle {
 
   return bundle as Bundle;
 }
+
+/**
+ * Returns a copy of `full` whose map keeps only the instances and fields
+ * present in `partial`, with values taken from `full`. Doesn't modify either
+ * bundle.
+ */
+export function pickPartialBundle(full: Bundle, partial: Bundle): Bundle {
+  const map = mapValues(
+    pick(full.map, Object.keys(partial.map)),
+    (inst, iid) => pick(inst, Object.keys(partial.map[iid])) as BundledInst,
+  );
+  return { ...full, map };
+}
+
