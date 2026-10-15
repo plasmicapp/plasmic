@@ -13,7 +13,7 @@ import { VariantGroupType } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { assert } from "@/wab/shared/common";
 import { createSite } from "@/wab/shared/core/sites";
-import { Site } from "@/wab/shared/model/classes";
+import { ProjectDependency, Site } from "@/wab/shared/model/classes";
 import { readFileSync } from "fs";
 import path from "path";
 
@@ -1204,6 +1204,56 @@ describe("renameTokenVarNameToUuid", () => {
     expect(
       renameTokenVarNameToUuid(`1px var(--token-border-color) solid`, site),
     ).toEqual("1px var(--token-border-color) solid");
+  });
+
+  it("resolves tokens from imported projects, with local tokens winning on name clashes", () => {
+    const depSite = createSite();
+    const depTplMgr = new TplMgr({ site: depSite });
+    const importedToken = depTplMgr.addStyleToken({
+      tokenType: "Color",
+      name: "Imported/Accent",
+      value: "#ff0000",
+    });
+    const clashingImportedToken = depTplMgr.addStyleToken({
+      tokenType: "Color",
+      name: colorPrimaryToken.name,
+      value: "#00ff00",
+    });
+    site.projectDependencies.push(
+      new ProjectDependency({
+        name: "Design System",
+        projectId: "design-system-project-id",
+        pkgId: "design-system-pkg-id",
+        version: "0.0.1",
+        uuid: "design-system-uuid",
+        site: depSite,
+      }),
+    );
+
+    expect(
+      renameTokenVarNameToUuid(
+        `var(--token-${toVarName(importedToken.name)})`,
+        site,
+      ),
+    ).toEqual(`var(--token-${importedToken.uuid})`);
+
+    expect(
+      renameTokenVarNameToUuid(`var(--token-${importedToken.uuid})`, site),
+    ).toEqual(`var(--token-${importedToken.uuid})`);
+
+    // a local token with the same name wins over the imported one
+    expect(
+      renameTokenVarNameToUuid(
+        `var(--token-${toVarName(colorPrimaryToken.name)})`,
+        site,
+      ),
+    ).toEqual(`var(--token-${colorPrimaryToken.uuid})`);
+    expect(
+      renameTokenVarNameToUuid(
+        `var(--token-${clashingImportedToken.uuid})`,
+        site,
+      ),
+    ).toEqual(`var(--token-${clashingImportedToken.uuid})`);
   });
 });
 

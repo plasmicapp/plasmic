@@ -29,9 +29,10 @@ import {
   WIVariant,
   WIVariantSettings,
 } from "@/wab/client/web-importer/types";
-import { findTokenByNameOrUuid } from "@/wab/commons/StyleToken";
+import { toVarName } from "@/wab/shared/codegen/util";
 import { ensure, ensureType, isOneOf, withoutNils } from "@/wab/shared/common";
 import { Background, NoneBackground } from "@/wab/shared/core/bg-styles";
+import { siteStyleTokensDirectDeps } from "@/wab/shared/core/site-style-tokens";
 import {
   expandGapProperty,
   parseCss,
@@ -440,11 +441,16 @@ function renameTokenVarNameToUuid(
   site: Site,
   errors: WIError[],
 ) {
+  const tokens = siteStyleTokensDirectDeps(site);
   const unresolvedTokens = new Set<string>();
   const renamed = value.replaceAll(
     /var\(--token-([^)]+)\)/g,
     (match, tokenIdentifier) => {
-      const token = findTokenByNameOrUuid(tokenIdentifier, { site });
+      const token = tokens.find(
+        (t) =>
+          toVarName(t.name) === toVarName(tokenIdentifier) ||
+          t.uuid === tokenIdentifier,
+      );
       if (token) {
         return `var(--token-${token.uuid})`;
       }
