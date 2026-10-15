@@ -44,7 +44,6 @@ export class NonAuthCtx {
   router: Router;
   change: (f: () => void) => void;
   bundler: FastBundler;
-  readonly lastBundleVersion: string;
 
   constructor(args: NonAuthCtx) {
     Object.assign(
@@ -58,7 +57,6 @@ export class NonAuthCtx {
         "router",
         "change",
         "bundler",
-        "lastBundleVersion",
       ),
     );
   }
@@ -509,7 +507,16 @@ export async function loadAppCtx(
     return nonAuthCtx.change(() => {});
   }
 
-  const loaded = await load();
+  const [loaded, lastBundleVersion] = await Promise.all([
+    load(),
+    withHostFrameCache("bundle", useCaching, baseApi, async () => {
+      const [, { latestBundleVersion }] = await Promise.all([
+        baseApi.refreshCsrfToken(),
+        baseApi.getLastBundleVersion(),
+      ]);
+      return latestBundleVersion;
+    }),
+  ]);
 
   const appCtx = new AppCtx({
     api: baseApi,
@@ -523,7 +530,7 @@ export async function loadAppCtx(
     reloadAll,
     reloadAppCtx,
     ops: null,
-    lastBundleVersion: nonAuthCtx.lastBundleVersion,
+    lastBundleVersion,
   });
   appCtx.ops = new AppOps({ appCtx });
   return appCtx;

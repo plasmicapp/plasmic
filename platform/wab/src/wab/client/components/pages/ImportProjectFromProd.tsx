@@ -1,4 +1,5 @@
 import { NonAuthCtx } from "@/wab/client/app-ctx";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { getBundle } from "@/wab/shared/bundles";
 import { ensureArray, spawn } from "@/wab/shared/common";
@@ -14,6 +15,7 @@ export function ImportProjectsFromProd({
 }: {
   nonAuthCtx: NonAuthCtx;
 }) {
+  const appCtx = useAppCtx();
   const [isLoading, setIsLoading] = React.useState(true);
 
   const isNonNil = function <T>(value: T): value is NonNullable<T> {
@@ -67,7 +69,7 @@ export function ImportProjectsFromProd({
                 ...depPkgs.map((info) => {
                   return [info.id, info.model];
                 }),
-                [project.id, getBundle(rev, nonAuthCtx.lastBundleVersion)],
+                [project.id, getBundle(rev, appCtx.lastBundleVersion)],
               ]),
             });
           }

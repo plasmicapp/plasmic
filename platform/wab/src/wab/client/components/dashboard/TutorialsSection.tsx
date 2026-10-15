@@ -16,6 +16,7 @@ export type TutorialsSectionProps = DefaultTutorialsSectionProps &
 export function TutorialsSection({ ...props }: TutorialsSectionProps) {
   const appCtx = useAppCtx();
   const selfInfo = ensure(appCtx.selfInfo, "Dashboard requires a user");
+  const collapsedRef = React.useRef(getExtraData(selfInfo).collapseStarters);
 
   const tutorials = appCtx.appConfig.tutorials;
   if (!tutorials) {
@@ -35,14 +36,19 @@ export function TutorialsSection({ ...props }: TutorialsSectionProps) {
       </Helmet>
       <PlasmicTutorialsSection
         {...props}
-        isInitiallyCollapsed={getExtraData(selfInfo).collapseStarters}
-        onIsCollapsedChange={(value) =>
+        isInitiallyCollapsed={collapsedRef.current}
+        onIsCollapsedChange={(value) => {
+          // Also fires on mount with the initial value.
+          if (!!value === collapsedRef.current) {
+            return;
+          }
+          collapsedRef.current = !!value;
           spawn(
             appCtx.api.updateSelfInfo(
               updateExtraDataJson(selfInfo, { collapseStarters: !!value }),
             ),
-          )
-        }
+          );
+        }}
         starterGroup={{ as: PlasmicStarterGroup }}
         tutorialPortfolio={{
           tag: "tutorial-portfolio",

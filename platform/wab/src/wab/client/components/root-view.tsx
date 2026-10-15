@@ -5,7 +5,6 @@ import {
   NonAuthCtx,
   NonAuthCtxContext,
   useNonAuthCtx,
-  withHostFrameCache,
 } from "@/wab/client/app-ctx";
 import {
   getLoginRouteWithContinuation,
@@ -39,10 +38,7 @@ import { useHistory, useLocation } from "@/wab/client/route/HistoryProvider";
 import { Redirect, RedirectAsync } from "@/wab/client/route/Redirect";
 import { Switch, switchCase, switchDefault } from "@/wab/client/route/Switch";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
-import {
-  promisifyMethods,
-  PromisifyMethods,
-} from "@/wab/commons/promisify-methods";
+import { promisifyMethods } from "@/wab/commons/promisify-methods";
 import { FastBundler } from "@/wab/shared/bundler";
 import { ensure, hackyCast, spawn } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
@@ -552,9 +548,6 @@ function LoggedInContainer(props: LoggedInContainerProps) {
 
 export function Root() {
   const history = useHistory();
-  const [nonAuthCtx, setNonAuthCtx] = React.useState<NonAuthCtx | undefined>(
-    undefined,
-  );
   const [loaderKey, setLoaderKey] = React.useState(0);
 
   const reloadData = () => setLoaderKey((prev) => prev + 1);
@@ -562,43 +555,24 @@ export function Root() {
 
   const hostFrameCtx = useHostFrameCtxIfHostFrame();
 
-  React.useEffect(() => {
-    const api: PromisifyMethods<Api> =
-      hostFrameCtx?.topFrameApi || promisifyMethods(new Api());
-    const topFrameApi = hostFrameCtx?.topFrameApi || null;
-    const bundler = new FastBundler();
-
-    spawn(
-      (async () => {
-        const lastBundleVersion = await withHostFrameCache(
-          "bundle",
-          true,
-          api,
-          async () => {
-            await api.refreshCsrfToken();
-            const { latestBundleVersion } = await api.getLastBundleVersion();
-            return latestBundleVersion;
-          },
-        );
-        setNonAuthCtx(
-          new NonAuthCtx({
-            api,
-            topFrameApi,
-            history,
-            router: new Router(history),
-            change: forceUpdate,
-            bundler,
-            lastBundleVersion,
-          }),
-        );
-      })(),
-    );
-  }, []);
+  const [nonAuthCtx] = React.useState(() => {
+    const { pathname } = history.location;
+    if (APP_ROUTES.project.parse(pathname, false)) {
+      spawn(import("./studio/view-initializer"));
+    } else if (APP_ROUTES.allProjects.parse(pathname)) {
+      spawn(import("./dashboard/AllProjectsPage"));
+    }
+    return new NonAuthCtx({
+      api: hostFrameCtx?.topFrameApi || promisifyMethods(new Api()),
+      topFrameApi: hostFrameCtx?.topFrameApi || null,
+      history,
+      router: new Router(history),
+      change: forceUpdate,
+      bundler: new FastBundler(),
+    });
+  });
 
   console.log("Rendering app");
-  if (!nonAuthCtx) {
-    return null;
-  }
 
   const loader = async () => {
     const appCtx = await loadAppCtx(nonAuthCtx, true);
