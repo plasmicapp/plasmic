@@ -107,7 +107,7 @@ async function pasteRouter(
       }
     }
 
-    const image = await clipboard.getImage(studioCtx.appCtx);
+    const image = await clipboard.getImage();
     if (image) {
       const imageResult = await pasteImage(image, args);
       if (imageResult.handled) {

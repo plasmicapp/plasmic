@@ -1,5 +1,3 @@
-import { fakeAppCtx } from "@/wab/client/__testonly__/fake-init-ctx";
-import { AppCtx } from "@/wab/client/app-ctx";
 import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
 import {
   pngData,
@@ -7,21 +5,14 @@ import {
 } from "@/wab/client/clipboard/__testonly__/clipboard-test-data";
 import { PLASMIC_CLIPBOARD_FORMAT } from "@/wab/client/clipboard/common";
 
-let appCtx: AppCtx;
-
 describe("ReadableClipboard", () => {
-  beforeEach(() => {
-    appCtx = fakeAppCtx().appCtx;
-  });
-
   it("handles Plasmic clipboard format", async () => {
     const clipboard = ReadableClipboard.fromData({
       [PLASMIC_CLIPBOARD_FORMAT]: '{"action":"copy"}',
     });
     expect(clipboard.getPlasmicData()).toEqual({ action: "copy" });
     expect(clipboard.getText()).toEqual(null);
-    expect(await clipboard.getImage(appCtx)).toEqual(null);
-    expect(appCtx.api.processSvg).not.toHaveBeenCalled();
+    expect(await clipboard.getImage()).toEqual(null);
   });
 
   it("handles plain text", async () => {
@@ -30,8 +21,7 @@ describe("ReadableClipboard", () => {
     });
     expect(clipboard.getPlasmicData()).toEqual(null);
     expect(clipboard.getText()).toEqual("plain text");
-    expect(await clipboard.getImage(appCtx)).toEqual(null);
-    expect(appCtx.api.processSvg).not.toHaveBeenCalled();
+    expect(await clipboard.getImage()).toEqual(null);
   });
 
   it("handles SVG image in plain text", async () => {
@@ -39,8 +29,7 @@ describe("ReadableClipboard", () => {
     const clipboard = ReadableClipboard.fromData(clipboardData);
     expect(clipboard.getPlasmicData()).toEqual(null);
     expect(clipboard.getText()).toEqual(xml);
-    const image = await clipboard.getImage(appCtx);
-    expect(appCtx.api.processSvg).toHaveBeenCalled();
+    const image = await clipboard.getImage();
     expect(image?.url).toEqual(dataUri);
     expect(image?.height).toEqual(height);
     expect(image?.width).toEqual(width);
@@ -55,8 +44,7 @@ describe("ReadableClipboard", () => {
     });
     expect(clipboard.getPlasmicData()).toEqual(null);
     expect(clipboard.getText()).toEqual(xmlMissingXmlns);
-    const image = await clipboard.getImage(appCtx);
-    expect(appCtx.api.processSvg).toHaveBeenCalled();
+    const image = await clipboard.getImage();
     expect(image?.url).toEqual(dataUri);
     expect(image?.height).toEqual(height);
     expect(image?.width).toEqual(width);
@@ -67,8 +55,7 @@ describe("ReadableClipboard", () => {
     const clipboard = ReadableClipboard.fromData(clipboardData);
     expect(clipboard.getPlasmicData()).toEqual(null);
     expect(clipboard.getText()).toEqual(null);
-    const image = await clipboard.getImage(appCtx);
-    expect(appCtx.api.processSvg).not.toHaveBeenCalled();
+    const image = await clipboard.getImage();
     expect(image?.height).toEqual(height);
     expect(image?.width).toEqual(width);
     expect(image?.url).toEqual(dataUri);
@@ -111,8 +98,7 @@ describe("ReadableClipboard", () => {
       const clipboard = ReadableClipboard.fromDataTransfer(dataTransfer);
       expect(clipboard.getPlasmicData()).toEqual(null);
       expect(clipboard.getText()).toEqual("plain text");
-      const image = await clipboard.getImage(appCtx);
-      expect(appCtx.api.processSvg).not.toHaveBeenCalled();
+      const image = await clipboard.getImage();
       expect(image?.height).toEqual(height);
       expect(image?.width).toEqual(width);
       expect(image?.url).toEqual(dataUri);

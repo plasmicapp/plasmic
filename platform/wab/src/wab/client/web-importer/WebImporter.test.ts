@@ -217,7 +217,6 @@ describe("WebImporter", () => {
 
       // The svg went through the sanitizer, and whatever got stored carries
       // no event handlers.
-      expect(api.processSvg).toHaveBeenCalled();
       expect(studioCtx.site.imageAssets).toHaveLength(1);
       expect(studioCtx.site.imageAssets[0].dataUri).not.toContain("onerror");
     });

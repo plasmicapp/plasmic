@@ -4,7 +4,6 @@ import { FileUploader, PlainLinkButton } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { IconButton } from "@/wab/client/components/widgets/IconButton";
 import { Textbox, TextboxRef } from "@/wab/client/components/widgets/Textbox";
-import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   ResizableImage,
   maybeUploadImage,
@@ -472,14 +471,13 @@ export function ImageUploader(props: {
   children?: React.ReactNode;
   isDisabled?: boolean;
 }) {
-  const appCtx = useAppCtx();
   const { onUploaded, accept, children, isDisabled } = props;
   const handleUploadChange = async (fileList: FileList | null) => {
     if (fileList === null || fileList.length === 0) {
       return;
     }
     const file = fileList[0];
-    const image = await readAndSanitizeFileAsImage(appCtx, file);
+    const image = await readAndSanitizeFileAsImage(file);
     if (!image) {
       notification.error({
         message: "Invalid image",
@@ -501,7 +499,6 @@ export function ImageUploader(props: {
 export function ImagePaster(props: {
   onPasted: (image: ResizableImage) => void;
 }) {
-  const appCtx = useAppCtx();
   const [isProcessing, setProcessing] = React.useState(false);
   const ref = React.useRef<HTMLTextAreaElement>(null);
 
@@ -516,7 +513,7 @@ export function ImagePaster(props: {
       setProcessing(true);
       const image = await ReadableClipboard.fromDataTransfer(
         event.clipboardData,
-      ).getImage(appCtx);
+      ).getImage();
       if (image) {
         props.onPasted(image);
       } else {

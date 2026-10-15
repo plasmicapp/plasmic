@@ -281,7 +281,6 @@ export const isContextMenuDescendant = (child: Element) => {
 };
 
 export async function readAndSanitizeFileAsImage(
-  appCtx: AppCtx,
   fileOrDataUrl: File | string,
 ): Promise<ResizableImage | undefined> {
   const dataUrl = isString(fileOrDataUrl)
@@ -290,10 +289,7 @@ export async function readAndSanitizeFileAsImage(
 
   const parsed = parseDataUrl(dataUrl);
   if (parsed && parsed.contentType === SVG_MEDIA_TYPE) {
-    return await readAndSanitizeSvgXmlAsImage(
-      appCtx,
-      getParsedDataUrlData(parsed),
-    );
+    return await readAndSanitizeSvgXmlAsImage(getParsedDataUrlData(parsed));
   }
 
   const size = await getImageSize(getParsedDataUrlBuffer(parsed));
@@ -301,11 +297,13 @@ export async function readAndSanitizeFileAsImage(
   return Promise.resolve(img);
 }
 
-export async function readAndSanitizeSvgXmlAsImage(
-  appCtx: AppCtx,
-  svgXml: string,
-) {
-  const sanitized = await appCtx.api.processSvg({ svgXml });
+export async function processSvg(svgXml: string) {
+  const { svgoProcess } = await import("@/wab/shared/svgo");
+  return svgoProcess(svgXml);
+}
+
+export async function readAndSanitizeSvgXmlAsImage(svgXml: string) {
+  const sanitized = await processSvg(svgXml);
   if (sanitized.status === "failure") {
     return undefined;
   }
@@ -393,7 +391,6 @@ async function getFileType(buffer: ArrayBuffer) {
 }
 
 export async function parseImage(
-  appCtx: AppCtx,
   base64: string,
 ): Promise<ResizableImage | undefined> {
   const binary = atob(base64);
@@ -412,7 +409,7 @@ export async function parseImage(
       typeof window === "undefined"
         ? Buffer.from(base64).toString("utf8")
         : window.atob(base64);
-    return await readAndSanitizeSvgXmlAsImage(appCtx, svgXml);
+    return await readAndSanitizeSvgXmlAsImage(svgXml);
   } else {
     return new ResizableImage(
       `data:${fileType.mime};base64,${base64}`,

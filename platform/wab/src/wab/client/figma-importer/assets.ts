@@ -24,7 +24,7 @@ export async function uploadFigmaImages(figmaData: FigmaData, appCtx: AppCtx) {
   > = new Map();
   for (const hash of [...keys(figmaData.i)]) {
     const imageData = figmaData.i[hash];
-    const image = await parseImage(appCtx, imageData);
+    const image = await parseImage(imageData);
     const { imageResult, opts } = image
       ? await maybeUploadImage(
           appCtx,

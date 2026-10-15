@@ -1,11 +1,24 @@
 // Copied from https://github.com/jakearchibald/svgomg/blob/master/src/js/svgo-worker/index.js
 
-"use strict";
-import { ProcessSvgResponse } from "@/wab/shared/ApiSchema";
 import { ensure } from "@/wab/shared/common";
 import { parseSvgXml } from "@/wab/shared/data-urls";
-import { JSDOM } from "jsdom";
+// The client build aliases this to svgo/browser.
 import { optimize, PluginConfig } from "svgo";
+
+export type SvgoResult =
+  | {
+      status: "success";
+      result: {
+        xml: string;
+        width: number;
+        height: number;
+        aspectRatio: number | undefined;
+      };
+    }
+  | {
+      status: "failure";
+      error: Error;
+    };
 
 const removeMarginStyle = {
   type: "visitor",
@@ -126,10 +139,8 @@ const pluginsData: PluginConfig[] = [
   removeMarginStyle,
 ];
 
-export function svgoProcess(svgXml: string): ProcessSvgResponse {
+export function svgoProcess(svgXml: string, domParser?: DOMParser): SvgoResult {
   try {
-    const jsDom = new JSDOM();
-    const domParser = new jsDom.window.DOMParser();
     const svgElt = parseSvgXml(addMissingXmlns(svgXml), domParser);
 
     const { dimensions, plugin: extractDimensionsPlugin } =

@@ -1,6 +1,5 @@
 import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { BundledMigrationFn } from "@/wab/server/db/BundleMigrator";
-import { svgoProcess } from "@/wab/server/svgo";
 import { makeS3Client } from "@/wab/server/util/s3-util";
 import { ensure } from "@/wab/shared/common";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
@@ -11,11 +10,14 @@ import {
   parseDataUrl,
   SVG_MEDIA_TYPE,
 } from "@/wab/shared/data-urls";
+import { svgoProcess } from "@/wab/shared/svgo";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { JSDOM } from "jsdom";
 
 const siteAssetsBucket = process.env.SITE_ASSETS_BUCKET as string;
 
 export const migrate: BundledMigrationFn = async (bundle) => {
+  const jsdomWindow = new JSDOM().window;
   for (const inst of Object.values(bundle.map)) {
     if (inst.__type === "ImageAsset") {
       inst["aspectRatio"] = null;
@@ -39,7 +41,10 @@ export const migrate: BundledMigrationFn = async (bundle) => {
         );
         const parsed = parseDataUrl(dataUrl);
         if (parsed && parsed.mediaType === SVG_MEDIA_TYPE) {
-          const processed = svgoProcess(getParsedDataUrlData(parsed));
+          const processed = svgoProcess(
+            getParsedDataUrlData(parsed),
+            new jsdomWindow.DOMParser(),
+          );
           const aspectRatio =
             processed.status === "success"
               ? processed.result.aspectRatio

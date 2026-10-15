@@ -113,7 +113,7 @@ function uploadImageDataUri(appCtx: AppCtx, dataUri: string) {
 
   return safeTry(async function* () {
     const image = yield* fromPromise(
-      readAndSanitizeFileAsImage(appCtx, dataUri),
+      readAndSanitizeFileAsImage(dataUri),
       uploadError,
     );
     if (!image) {

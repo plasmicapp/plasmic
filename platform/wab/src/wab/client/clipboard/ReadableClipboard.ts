@@ -1,4 +1,3 @@
-import { AppCtx } from "@/wab/client/app-ctx";
 import {
   readAndSanitizeFileAsImage,
   readAndSanitizeSvgXmlAsImage,
@@ -68,10 +67,10 @@ export class ReadableClipboard {
     }
   }
 
-  async getImage(appCtx: AppCtx): Promise<ResizableImage | null> {
+  async getImage(): Promise<ResizableImage | null> {
     for (const [type, data] of Object.entries(this.data)) {
       if (type.includes("image")) {
-        const resizableImage = await readAndSanitizeFileAsImage(appCtx, data);
+        const resizableImage = await readAndSanitizeFileAsImage(data);
         if (resizableImage?.url) {
           return resizableImage;
         }
@@ -79,7 +78,7 @@ export class ReadableClipboard {
 
       if (typeof data === "string" && data.includes("<svg")) {
         try {
-          const svg = await readAndSanitizeSvgXmlAsImage(appCtx, data);
+          const svg = await readAndSanitizeSvgXmlAsImage(data);
           if (svg) {
             return svg;
           }

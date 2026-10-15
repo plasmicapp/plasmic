@@ -12,6 +12,7 @@ import {
   ImageAssetOpts,
   ResizableImage,
   maybeUploadImage,
+  processSvg,
 } from "@/wab/client/dom-utils";
 import { deleteComponent } from "@/wab/client/operations/delete-component";
 import { deleteComponentState } from "@/wab/client/operations/delete-component-state";
@@ -1831,7 +1832,7 @@ export async function uploadSvgImage(
 ) {
   const svg = parseSvgXml(xml);
 
-  const processedSvg = await appCtx.api.processSvg({ svgXml: xml });
+  const processedSvg = await processSvg(xml);
   assert(processedSvg.status === "success", "Invalid processed SVG");
   const sanitized = processedSvg.result.xml;
 

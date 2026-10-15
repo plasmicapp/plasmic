@@ -126,8 +126,6 @@ import {
   NextPublishVersionResponse,
   PersonalApiToken,
   PostCommentResponse,
-  ProcessSvgRequest,
-  ProcessSvgResponse,
   ProjectExtraData,
   ProjectFullDataResponse,
   ProjectId,
@@ -2352,9 +2350,5 @@ export abstract class SharedApi {
     users: ApiUser[];
   }> {
     return this.get(`/admin/project-branches-metadata/${projectId}`);
-  }
-
-  async processSvg(data: ProcessSvgRequest): Promise<ProcessSvgResponse> {
-    return this.post(`/process-svg`, data);
   }
 }

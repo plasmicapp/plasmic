@@ -31,6 +31,8 @@ export function mkSharedRsbuildConfig(opts: {
         "@xmldom/xmldom": false,
         // site-invariants.ts uses the Node SDK only when there is no window.
         "@sentry/node": false,
+        // svgo's main entry needs node fs and os.
+        svgo$: "svgo/browser",
       },
     },
     plugins: [pluginReact(), pluginSass()],

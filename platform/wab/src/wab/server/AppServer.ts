@@ -258,7 +258,6 @@ import {
   executeDataSourceOperationHandler,
   executeDataSourceOperationHandlerInStudio,
 } from "@/wab/server/routes/server-data";
-import { processSvgRoute } from "@/wab/server/routes/svg";
 import * as teamRoutes from "@/wab/server/routes/teams";
 import { getUsersById } from "@/wab/server/routes/users";
 import {
@@ -1734,11 +1733,6 @@ export function addMainAppServerRoutes(
     "/api/v1/project_repositories/:projectRepositoryId/runs/:workflowRunId",
     getGitWorkflowJob,
   );
-
-  /**
-   * SVG utilities.
-   */
-  app.post("/api/v1/process-svg", withNext(processSvgRoute));
 
   /**
    * Trusted hosts

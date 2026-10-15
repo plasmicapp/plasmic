@@ -10,7 +10,6 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
-import { svgoProcess } from "@/wab/server/svgo";
 import { ApiTeam } from "@/wab/shared/ApiSchema";
 import { SiteInfo } from "@/wab/shared/SharedApi";
 import { FastBundler } from "@/wab/shared/bundler";
@@ -29,9 +28,6 @@ function fakePromisifiedApi() {
   const fakeApi = mock<PromisifyMethods<Api>>();
   fakeApi.getPkgByProjectId.mockImplementation(async (_projectId) => {
     return {};
-  });
-  fakeApi.processSvg.mockImplementation(async (data) => {
-    return svgoProcess(data.svgXml);
   });
 
   const storage: { [key: string]: string } = {};
