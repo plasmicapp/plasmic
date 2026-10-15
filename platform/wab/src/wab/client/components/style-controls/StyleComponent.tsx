@@ -794,9 +794,11 @@ function StylePanelSection_(
                   targetRs.animations = null;
                 }
               }
-              // apply the default styles props on unset
+              // Cleared props inherit, only unremovable ones need a default.
               for (const [key, value] of defaultStyleProps) {
-                exp.set(key, value);
+                if (unremovableProps.includes(key)) {
+                  exp.set(key, value);
+                }
               }
             });
           }}
