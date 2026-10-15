@@ -142,9 +142,13 @@ export function absorbLinkClick(
   let cur = e.target as HTMLElement | null;
   while (cur) {
     if (cur.tagName.toLowerCase() === "a" && cur.attributes["href"]?.value) {
-      onAnchorClick && onAnchorClick(cur.attributes["href"].value || "");
+      const href: string = cur.attributes["href"].value;
       e.preventDefault();
-      e.stopPropagation();
+      // A bare "#" is a placeholder for a link driven by its onClick.
+      if (href !== "#") {
+        onAnchorClick?.(href);
+        e.stopPropagation();
+      }
       return;
     }
     cur = cur.parentElement;
