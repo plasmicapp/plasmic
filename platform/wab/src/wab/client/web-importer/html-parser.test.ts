@@ -177,13 +177,13 @@ describe("parseHtmlToWebImporterTree", () => {
           type: "container",
           tag: "a",
           attrs: { href: "/x" },
-          children: [{ type: "container", tag: "img" }],
+          children: [{ type: "image", tag: "img" }],
         },
         // A heading with only an image still imports; it must not be dropped.
         {
           type: "container",
           tag: "h1",
-          children: [{ type: "container", tag: "img" }],
+          children: [{ type: "image", tag: "img" }],
         },
         // display:flex makes it a layout box even though it only holds text.
         {

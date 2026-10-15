@@ -1092,6 +1092,16 @@ function getElementsWITree(
       };
     }
 
+    if (tag === "img") {
+      return {
+        type: "image",
+        tag,
+        path,
+        attrs,
+        variantSettings: allVariantSettings,
+      };
+    }
+
     if (
       textEligibleTags.has(tag) &&
       !hasLayoutStyleKeys(allVariantSettings) &&
@@ -1119,7 +1129,7 @@ function getElementsWITree(
 
     const containerNode: WIContainer = {
       type: "container",
-      tag: isOneOf(tag, [...GENERAL_TAGS, "img"]) ? tag : "div",
+      tag: isOneOf(tag, GENERAL_TAGS) ? tag : "div",
       path,
       variantSettings: allVariantSettings,
       children: withoutNils([...elt.childNodes].map((e) => rec(e))),

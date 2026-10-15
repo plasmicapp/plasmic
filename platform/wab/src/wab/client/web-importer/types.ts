@@ -39,7 +39,7 @@ export interface WIVariantSettings {
 }
 
 export interface WIBase {
-  type: "container" | "text" | "svg" | "component" | "slot-target";
+  type: "container" | "image" | "text" | "svg" | "component" | "slot-target";
   tag: string;
   /**
    * Source HTML locator for each WI node to enrich WIErrors raised during parsing.
@@ -52,6 +52,10 @@ export interface WIBase {
 export interface WIContainer extends WIBase {
   type: "container";
   children: WIElement[];
+}
+
+export interface WIImage extends WIBase {
+  type: "image";
 }
 
 export interface WIText extends WIBase {
@@ -95,7 +99,13 @@ export interface WIFragment {
 }
 
 export type WIElement =
-  WIContainer | WIText | WISVG | WIComponent | WISlotTarget | WIFragment;
+  | WIContainer
+  | WIImage
+  | WIText
+  | WISVG
+  | WIComponent
+  | WISlotTarget
+  | WIFragment;
 
 export interface WIKeyFrame {
   percentage: number;

@@ -18,9 +18,9 @@ import {
   isWIBaseVariantSettings,
   WIAnimationSequence,
   WIBase,
-  WIContainer,
   WIElement,
   WIFragment,
+  WIImage,
   WIScreenVariant,
   WISVG,
   WIText,
@@ -631,7 +631,7 @@ async function wiTreeToTpl(
   ) {
     // Only containers get the layout defaults.
     const defaultStyles: Record<string, string> =
-      node.type === "container" && node.tag !== "img"
+      node.type === "container"
         ? {
             display: "flex",
             flexDirection: "column",
@@ -787,7 +787,7 @@ async function wiTreeToTpl(
     return tpl;
   }
 
-  function srcAsset(node: WIContainer | WISVG) {
+  function srcAsset(node: WIImage | WISVG) {
     const src = getImgSrc(node);
     if (!isImageAssetRefString(src)) {
       return undefined;
@@ -959,7 +959,7 @@ async function wiTreeToTpl(
       return [slot];
     }
 
-    if (node.tag === "img") {
+    if (node.type === "image") {
       const asset = srcAsset(node);
       if (asset === null) {
         return [];

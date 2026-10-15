@@ -6,7 +6,12 @@ import {
   readAndSanitizeFileAsImage,
 } from "@/wab/client/dom-utils";
 import { WIError } from "@/wab/client/web-importer/errors";
-import { WIBase, WIElement, WIText } from "@/wab/client/web-importer/types";
+import {
+  WIElement,
+  WIImage,
+  WISVG,
+  WIText,
+} from "@/wab/client/web-importer/types";
 import type { TplMgr } from "@/wab/shared/TplMgr";
 import { assertNever, withoutNils } from "@/wab/shared/common";
 import {
@@ -31,7 +36,7 @@ export interface UploadedAssetData {
   options: ImageAssetOpts;
 }
 
-export function getImgSrc(node: WIBase): string | undefined {
+export function getImgSrc(node: WIImage | WISVG): string | undefined {
   if (node.attrs.srcset) {
     const options = node.attrs.srcset.split("\n");
     return options[options.length - 1].split(" ")[0];
@@ -69,12 +74,14 @@ export function collectImageDataUris(wiTree: WIElement): Set<string> {
     }
 
     switch (node.type) {
-      case "container": {
-        const src = node.tag === "img" ? getImgSrc(node) : undefined;
+      case "container":
+        recurse(node.children);
+        return;
+      case "image": {
+        const src = getImgSrc(node);
         if (src && isImageDataUrl(src)) {
           dataUris.add(src);
         }
-        recurse(node.children);
         return;
       }
       case "text":
