@@ -20,6 +20,7 @@ import {
   User,
 } from "@/wab/server/entities/Entities";
 import { createTeam as createTeamRoute } from "@/wab/server/routes/teams";
+import { UnauthorizedError } from "@/wab/shared/ApiErrors/errors";
 import {
   CmsMetaType,
   CmsTableId,
@@ -1993,6 +1994,20 @@ describe("DbMgr.user", () => {
       );
     });
   });
+
+  it("rejects personal API token calls from anonymous users", () =>
+    withDb(async (_sudo, _users, [userMgr], _project, entMgr) => {
+      const anonMgr = new DbMgr(entMgr, ANON_USER);
+      await expect(anonMgr.listPersonalApiTokens()).rejects.toBeInstanceOf(
+        UnauthorizedError,
+      );
+      await expect(anonMgr.createPersonalApiToken()).rejects.toBeInstanceOf(
+        UnauthorizedError,
+      );
+
+      await userMgr().createPersonalApiToken();
+      expect(await userMgr().listPersonalApiTokens()).toHaveLength(1);
+    }));
 });
 
 describe("DbMgr organization entitlements", () => {
