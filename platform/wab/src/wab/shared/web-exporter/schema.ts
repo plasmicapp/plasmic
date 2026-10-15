@@ -437,7 +437,12 @@ export function pageMetaSchema() {
       .optional()
       .describe("Meta description for SEO and social previews."),
     canonical: z.string().optional().describe("Canonical URL."),
-    openGraphImage: z.string().optional().describe("Open Graph image URL."),
+    openGraphImage: z
+      .string()
+      .optional()
+      .describe(
+        "Open Graph image URL, or a project image as var(--image-<uuid>).",
+      ),
   });
 }
 export type PageMetaJson = z.infer<ReturnType<typeof pageMetaSchema>>;

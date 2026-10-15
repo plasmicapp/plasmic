@@ -191,7 +191,7 @@ exports[`Component Serialization > serializes all components 1`] = `
     <div id="LcbjVN0--45d" style="display: flex; justify-content: center; align-items: center; padding-top: var(--token--0yvAvGYfFhX); padding-right: var(--token-yk7m7bwFJ02R); padding-bottom: var(--token--0yvAvGYfFhX); padding-left: var(--token-yk7m7bwFJ02R); width: stretch; height: stretch; column-gap: var(--token--0yvAvGYfFhX)">
       <div id="4-zlvdO1CNcE" style="display: flex; flex-direction: column; flex-shrink: 0" data-visibility="displayNone">
         <slot-target name="Start" id="omi74nYXXVka">
-          <svg id="tJTRxQOR7i1z" style="position: relative"></svg>
+          <svg id="tJTRxQOR7i1z" style="position: relative" src="var(--image-p5LZm4Thu-g0)"></svg>
         </slot-target>
       </div>
       <slot-target name="Label" id="PgB8XX97acqo">
@@ -199,7 +199,7 @@ exports[`Component Serialization > serializes all components 1`] = `
       </slot-target>
       <div id="sjXkLSA3nurb" style="display: flex; flex-direction: column; flex-shrink: 0" data-visibility="displayNone">
         <slot-target name="End" id="6sD-taUBGCX5">
-          <svg id="QQVqRFbrgrbn" style="position: relative"></svg>
+          <svg id="QQVqRFbrgrbn" style="position: relative" src="var(--image-zy8rhY1sZqJ2)"></svg>
         </slot-target>
       </div>
     </div>
@@ -804,8 +804,8 @@ exports[`Component Serialization > serializes all components 1`] = `
   <baseVariantTplTree><![CDATA[<plasmic-component id="wSXrGkHnJdlR" data-plasmic-component="plasmicReactAriaCheckbox" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Checkbox" data-props='{"value":"{{ $props.value }}","aria-label":"{{ $props.ariaLabel }}","autoFocus":"{{ $props.autoFocus }}","isDisabled":"{{ $props.disabled }}"}' style="object-fit: cover; cursor: pointer; flex-direction: row; justify-content: flex-start; align-items: center; display: flex; box-sizing: border-box; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; column-gap: var(--token-J8bgk1cLaZ5G)">
   <slot name="children">
     <div id="n1iOLNRviVTt" style="position: relative; width: var(--token-41IdgVnm_uZQ); height: var(--token-41IdgVnm_uZQ); border-top-style: solid; border-top-width: 2px; border-right-style: solid; border-right-width: 2px; border-bottom-style: solid; border-bottom-width: 2px; border-left-style: solid; border-left-width: 2px; border-top-color: var(--token-6w7DbBUQGdRg); border-right-color: var(--token-6w7DbBUQGdRg); border-bottom-color: var(--token-6w7DbBUQGdRg); border-left-color: var(--token-6w7DbBUQGdRg); display: flex; flex-direction: column; align-items: center; justify-content: center; border-top-left-radius: var(--token-aR8bR72wtSYZ); border-top-right-radius: var(--token-aR8bR72wtSYZ); border-bottom-right-radius: var(--token-aR8bR72wtSYZ); border-bottom-left-radius: var(--token-aR8bR72wtSYZ)">
-      <svg id="RTvvgGVs_XKc" style="position: relative; color: #FFFFFF" data-visibility="notRendered"></svg>
-      <svg id="hK5nTl8uWngo" style="position: relative; color: #FFFFFF" data-visibility="notRendered"></svg>
+      <svg id="RTvvgGVs_XKc" style="position: relative; color: #FFFFFF" src="var(--image-gQUgs9AQG9_K)" data-visibility="notRendered"></svg>
+      <svg id="hK5nTl8uWngo" style="position: relative; color: #FFFFFF" src="var(--image-4ob9vnvgre66)" data-visibility="notRendered"></svg>
     </div>
     <slot-target name="Label" id="__lCWNt1e8Y1">
       <div id="tCoYwdk2uULK">Option</div>
@@ -957,7 +957,7 @@ exports[`Component Serialization > serializes all components 1`] = `
       <plasmic-component id="7-j7NzxcA8qX" data-plasmic-component="plasmicReactAriaInput" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Input" data-props='{"placeholder":"{{ $props.placeholder }}"}' style="padding-top: var(--token--0yvAvGYfFhX); padding-right: var(--token-_gnxKR8NG8ND); padding-bottom: var(--token--0yvAvGYfFhX); padding-left: var(--token-yk7m7bwFJ02R); border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX); box-shadow: inset 0px 0px 0px 1px var(--token-O--cwH0Y8I-6); border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; width: stretch; font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); outline-style: none"></plasmic-component>
       <plasmic-component id="U88cRV1rOikV" data-plasmic-component="plasmicReactAriaButton" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-top-color: black; border-right-color: black; border-bottom-color: black; border-left-color: black; box-sizing: border-box; cursor: pointer; object-fit: cover; border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX); background: none; position: absolute; right: 0; width: var(--token-_gnxKR8NG8ND); display: flex; justify-content: center; align-items: center; height: var(--token-_gnxKR8NG8ND)">
         <slot name="children">
-          <svg id="rI9gGfUvXg4F" style="width: var(--token-pNP36mHj6x6O); height: var(--token-pNP36mHj6x6O)"></svg>
+          <svg id="rI9gGfUvXg4F" style="width: var(--token-pNP36mHj6x6O); height: var(--token-pNP36mHj6x6O)" src="var(--image-zy8rhY1sZqJ2)"></svg>
         </slot>
       </plasmic-component>
     </div>
@@ -1080,13 +1080,13 @@ exports[`Component Serialization > serializes all components 1`] = `
     <slot-target name="Trigger" id="UPso8XRDR1_Z">
       <plasmic-component id="xAjNYgiC3lOR" data-plasmic-component="button" style="max-width: 100%">
         <slot name="start">
-          <svg id="8ipusFeBg7zx" style="position: relative"></svg>
+          <svg id="8ipusFeBg7zx" style="position: relative" src="var(--image-p5LZm4Thu-g0)"></svg>
         </slot>
         <slot name="label">
           <div id="-lZXwoVnp66e" style="padding-right: 0px">Open Drawer</div>
         </slot>
         <slot name="end">
-          <svg id="bKVZDjQ-wiq2" style="position: relative"></svg>
+          <svg id="bKVZDjQ-wiq2" style="position: relative" src="var(--image-zy8rhY1sZqJ2)"></svg>
         </slot>
       </plasmic-component>
     </slot-target>
@@ -1117,13 +1117,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
                   <div id="gxsdS8Cm-o_F" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: flex-end; width: stretch">
                     <plasmic-component id="qrbXOGBU0xVT" data-plasmic-component="button" data-props='{"type":"Soft","color":"Muted"}'>
                       <slot name="start">
-                        <svg id="nktOfFsQUlA7" style="position: relative"></svg>
+                        <svg id="nktOfFsQUlA7" style="position: relative" src="var(--image-p5LZm4Thu-g0)"></svg>
                       </slot>
                       <slot name="label">
                         <div id="XPrGEFLKxsFD">Close</div>
                       </slot>
                       <slot name="end">
-                        <svg id="cowl1a0YC_kS" style="position: relative"></svg>
+                        <svg id="cowl1a0YC_kS" style="position: relative" src="var(--image-zy8rhY1sZqJ2)"></svg>
                       </slot>
                     </plasmic-component>
                   </div>
@@ -1626,13 +1626,13 @@ Join our Slack community (icon in bottom left) for help any time.</div>
     <slot-target name="Trigger" id="ZTA2-vbNl2Ib">
       <plasmic-component id="TkoTLwYW1x8l" data-plasmic-component="button">
         <slot name="start">
-          <svg id="YCTKckfg_JVT" style="position: relative"></svg>
+          <svg id="YCTKckfg_JVT" style="position: relative" src="var(--image-p5LZm4Thu-g0)"></svg>
         </slot>
         <slot name="label">
           <div id="eX-1aZgHHsch">Open Modal</div>
         </slot>
         <slot name="end">
-          <svg id="WoPB1jtYSfns" style="position: relative"></svg>
+          <svg id="WoPB1jtYSfns" style="position: relative" src="var(--image-zy8rhY1sZqJ2)"></svg>
         </slot>
       </plasmic-component>
     </slot-target>
@@ -1661,13 +1661,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
               <div id="bNRZ2OqSSTzq" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: flex-end; width: stretch; padding-top: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C); padding-bottom: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C)">
                 <plasmic-component id="ssjp-JjPp06g" data-plasmic-component="button" data-props='{"color":"Muted","type":"Soft"}'>
                   <slot name="start">
-                    <svg id="eCH5euCJgz6N" style="position: relative"></svg>
+                    <svg id="eCH5euCJgz6N" style="position: relative" src="var(--image-p5LZm4Thu-g0)"></svg>
                   </slot>
                   <slot name="label">
                     <div id="vOmPwYXaatY_" style="padding-left: 0px">Close</div>
                   </slot>
                   <slot name="end">
-                    <svg id="U3RbCec4qSGT" style="position: relative"></svg>
+                    <svg id="U3RbCec4qSGT" style="position: relative" src="var(--image-zy8rhY1sZqJ2)"></svg>
                   </slot>
                 </plasmic-component>
               </div>
@@ -1723,7 +1723,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   </states>
   <baseVariantTplTree><![CDATA[<plasmic-component id="4e5blTBKaGaB" data-plasmic-component="plasmicReactAriaOverlayArrow" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="max-width: 100%; object-fit: cover; position: relative">
   <slot name="children">
-    <svg id="-2SFIm9VX_6T" style="color: var(--token-48p0Jlumb6Of); width: 10px; height: 10px; transform: translate3d(0px, 3px, 0px)"></svg>
+    <svg id="-2SFIm9VX_6T" style="color: var(--token-48p0Jlumb6Of); width: 10px; height: 10px; transform: translate3d(0px, 3px, 0px)" src="var(--image-qJjuExwSEg4U)"></svg>
   </slot>
 </plasmic-component>]]></baseVariantTplTree>
   <variantSettings>
@@ -1790,13 +1790,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <slot-target name="Trigger" id="fskV7PlbGiJY">
       <plasmic-component id="4ha5hODWDKC0" data-plasmic-component="button" style="max-width: 100%">
         <slot name="start">
-          <svg id="_xaTWvRT7hOo" style="position: relative"></svg>
+          <svg id="_xaTWvRT7hOo" style="position: relative" src="var(--image-p5LZm4Thu-g0)"></svg>
         </slot>
         <slot name="label">
           <div id="ZRF6Y-J1tOfJ">Open Popover</div>
         </slot>
         <slot name="end">
-          <svg id="KhVEFdHiMZdQ" style="position: relative"></svg>
+          <svg id="KhVEFdHiMZdQ" style="position: relative" src="var(--image-zy8rhY1sZqJ2)"></svg>
         </slot>
       </plasmic-component>
     </slot-target>
@@ -2068,7 +2068,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
           </slot>
         </plasmic-component>
         <div id="leBfvkFpGaYf" style="display: flex; position: relative; width: var(--token-_gnxKR8NG8ND); height: var(--token-_gnxKR8NG8ND); justify-content: center; align-items: center">
-          <svg id="FQ3d6y55TWD0" style="width: var(--token-pNP36mHj6x6O); height: var(--token-pNP36mHj6x6O)"></svg>
+          <svg id="FQ3d6y55TWD0" style="width: var(--token-pNP36mHj6x6O); height: var(--token-pNP36mHj6x6O)" src="var(--image-zy8rhY1sZqJ2)"></svg>
         </div>
       </slot>
     </plasmic-component>
@@ -2452,14 +2452,14 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <div id="2HpGGmOLvP9R" style="display: flex; flex-direction: column">
       <div id="EiP28sViJ6pF" style="display: flex; flex-direction: row; position: absolute; height: var(--token-_gnxKR8NG8ND); align-items: center; justify-content: center; z-index: 9; padding-right: var(--token-yk7m7bwFJ02R); padding-left: var(--token-yk7m7bwFJ02R); padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); left: 0px; top: 0px" data-visibility="displayNone">
         <slot-target name="Start" id="wm0PTpbqVRWh">
-          <svg id="UdctYqItpndH" style="position: relative"></svg>
+          <svg id="UdctYqItpndH" style="position: relative" src="var(--image-p5LZm4Thu-g0)"></svg>
         </slot-target>
       </div>
       <plasmic-component id="GW_pTiEM-XJh" data-plasmic-component="textInput" data-plasmic-name="Text Input" data-props='{"placeholder":"{{ $props.placeholder }}"}'></plasmic-component>
       <plasmic-component id="owbUg8BLCrEo" data-plasmic-component="textAreaInput" data-plasmic-name="TextArea Input" data-props='{"placeholder":"{{ $props.placeholder }}"}' data-visibility="notRendered"></plasmic-component>
       <div id="sy4BAFLD5x2S" style="display: flex; height: var(--token-_gnxKR8NG8ND); flex-direction: row; align-items: center; justify-content: center; position: absolute; padding-right: var(--token-yk7m7bwFJ02R); padding-left: var(--token-yk7m7bwFJ02R); padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); z-index: 1; top: 0px; right: 0px" data-visibility="displayNone">
         <slot-target name="End" id="o0es2qOp2wEI">
-          <svg id="xHHBwIzEWol6" style="position: relative"></svg>
+          <svg id="xHHBwIzEWol6" style="position: relative" src="var(--image-p5LZm4Thu-g0)"></svg>
         </slot-target>
       </div>
     </div>
@@ -3233,7 +3233,7 @@ exports[`Component Serialization > serializes all components 2`] = `
     <div id="LcbjVN0--45d" style="display: flex; justify-content: center; align-items: center; padding-top: var(--token--0yvAvGYfFhX); padding-right: var(--token-yk7m7bwFJ02R); padding-bottom: var(--token--0yvAvGYfFhX); padding-left: var(--token-yk7m7bwFJ02R); width: stretch; height: stretch; column-gap: var(--token--0yvAvGYfFhX)">
       <div id="4-zlvdO1CNcE" style="display: flex; flex-direction: column; flex-shrink: 0" data-visibility="displayNone">
         <slot-target name="Start" id="omi74nYXXVka">
-          <svg id="tJTRxQOR7i1z" style="position: relative"></svg>
+          <svg id="tJTRxQOR7i1z" style="position: relative" src="var(--image-p5LZm4Thu-g0)"></svg>
         </slot-target>
       </div>
       <slot-target name="Label" id="PgB8XX97acqo">
@@ -3241,7 +3241,7 @@ exports[`Component Serialization > serializes all components 2`] = `
       </slot-target>
       <div id="sjXkLSA3nurb" style="display: flex; flex-direction: column; flex-shrink: 0" data-visibility="displayNone">
         <slot-target name="End" id="6sD-taUBGCX5">
-          <svg id="QQVqRFbrgrbn" style="position: relative"></svg>
+          <svg id="QQVqRFbrgrbn" style="position: relative" src="var(--image-zy8rhY1sZqJ2)"></svg>
         </slot-target>
       </div>
     </div>
@@ -4293,8 +4293,8 @@ exports[`Component Serialization > serializes all components 2`] = `
     "baseVariantTplTree": "<plasmic-component id="wSXrGkHnJdlR" data-plasmic-component="plasmicReactAriaCheckbox" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Checkbox" data-props='{"value":"{{ $props.value }}","aria-label":"{{ $props.ariaLabel }}","autoFocus":"{{ $props.autoFocus }}","isDisabled":"{{ $props.disabled }}"}' style="object-fit: cover; cursor: pointer; flex-direction: row; justify-content: flex-start; align-items: center; display: flex; box-sizing: border-box; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; column-gap: var(--token-J8bgk1cLaZ5G)">
   <slot name="children">
     <div id="n1iOLNRviVTt" style="position: relative; width: var(--token-41IdgVnm_uZQ); height: var(--token-41IdgVnm_uZQ); border-top-style: solid; border-top-width: 2px; border-right-style: solid; border-right-width: 2px; border-bottom-style: solid; border-bottom-width: 2px; border-left-style: solid; border-left-width: 2px; border-top-color: var(--token-6w7DbBUQGdRg); border-right-color: var(--token-6w7DbBUQGdRg); border-bottom-color: var(--token-6w7DbBUQGdRg); border-left-color: var(--token-6w7DbBUQGdRg); display: flex; flex-direction: column; align-items: center; justify-content: center; border-top-left-radius: var(--token-aR8bR72wtSYZ); border-top-right-radius: var(--token-aR8bR72wtSYZ); border-bottom-right-radius: var(--token-aR8bR72wtSYZ); border-bottom-left-radius: var(--token-aR8bR72wtSYZ)">
-      <svg id="RTvvgGVs_XKc" style="position: relative; color: #FFFFFF" data-visibility="notRendered"></svg>
-      <svg id="hK5nTl8uWngo" style="position: relative; color: #FFFFFF" data-visibility="notRendered"></svg>
+      <svg id="RTvvgGVs_XKc" style="position: relative; color: #FFFFFF" src="var(--image-gQUgs9AQG9_K)" data-visibility="notRendered"></svg>
+      <svg id="hK5nTl8uWngo" style="position: relative; color: #FFFFFF" src="var(--image-4ob9vnvgre66)" data-visibility="notRendered"></svg>
     </div>
     <slot-target name="Label" id="__lCWNt1e8Y1">
       <div id="tCoYwdk2uULK">Option</div>
@@ -4448,7 +4448,7 @@ exports[`Component Serialization > serializes all components 2`] = `
       <plasmic-component id="7-j7NzxcA8qX" data-plasmic-component="plasmicReactAriaInput" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Input" data-props='{"placeholder":"{{ $props.placeholder }}"}' style="padding-top: var(--token--0yvAvGYfFhX); padding-right: var(--token-_gnxKR8NG8ND); padding-bottom: var(--token--0yvAvGYfFhX); padding-left: var(--token-yk7m7bwFJ02R); border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX); box-shadow: inset 0px 0px 0px 1px var(--token-O--cwH0Y8I-6); border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; width: stretch; font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); outline-style: none"></plasmic-component>
       <plasmic-component id="U88cRV1rOikV" data-plasmic-component="plasmicReactAriaButton" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-top-color: black; border-right-color: black; border-bottom-color: black; border-left-color: black; box-sizing: border-box; cursor: pointer; object-fit: cover; border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX); background: none; position: absolute; right: 0; width: var(--token-_gnxKR8NG8ND); display: flex; justify-content: center; align-items: center; height: var(--token-_gnxKR8NG8ND)">
         <slot name="children">
-          <svg id="rI9gGfUvXg4F" style="width: var(--token-pNP36mHj6x6O); height: var(--token-pNP36mHj6x6O)"></svg>
+          <svg id="rI9gGfUvXg4F" style="width: var(--token-pNP36mHj6x6O); height: var(--token-pNP36mHj6x6O)" src="var(--image-zy8rhY1sZqJ2)"></svg>
         </slot>
       </plasmic-component>
     </div>
@@ -4618,13 +4618,13 @@ exports[`Component Serialization > serializes all components 2`] = `
     <slot-target name="Trigger" id="UPso8XRDR1_Z">
       <plasmic-component id="xAjNYgiC3lOR" data-plasmic-component="button" style="max-width: 100%">
         <slot name="start">
-          <svg id="8ipusFeBg7zx" style="position: relative"></svg>
+          <svg id="8ipusFeBg7zx" style="position: relative" src="var(--image-p5LZm4Thu-g0)"></svg>
         </slot>
         <slot name="label">
           <div id="-lZXwoVnp66e" style="padding-right: 0px">Open Drawer</div>
         </slot>
         <slot name="end">
-          <svg id="bKVZDjQ-wiq2" style="position: relative"></svg>
+          <svg id="bKVZDjQ-wiq2" style="position: relative" src="var(--image-zy8rhY1sZqJ2)"></svg>
         </slot>
       </plasmic-component>
     </slot-target>
@@ -4655,13 +4655,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
                   <div id="gxsdS8Cm-o_F" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: flex-end; width: stretch">
                     <plasmic-component id="qrbXOGBU0xVT" data-plasmic-component="button" data-props='{"type":"Soft","color":"Muted"}'>
                       <slot name="start">
-                        <svg id="nktOfFsQUlA7" style="position: relative"></svg>
+                        <svg id="nktOfFsQUlA7" style="position: relative" src="var(--image-p5LZm4Thu-g0)"></svg>
                       </slot>
                       <slot name="label">
                         <div id="XPrGEFLKxsFD">Close</div>
                       </slot>
                       <slot name="end">
-                        <svg id="cowl1a0YC_kS" style="position: relative"></svg>
+                        <svg id="cowl1a0YC_kS" style="position: relative" src="var(--image-zy8rhY1sZqJ2)"></svg>
                       </slot>
                     </plasmic-component>
                   </div>
@@ -5287,13 +5287,13 @@ Join our Slack community (icon in bottom left) for help any time.</div>
     <slot-target name="Trigger" id="ZTA2-vbNl2Ib">
       <plasmic-component id="TkoTLwYW1x8l" data-plasmic-component="button">
         <slot name="start">
-          <svg id="YCTKckfg_JVT" style="position: relative"></svg>
+          <svg id="YCTKckfg_JVT" style="position: relative" src="var(--image-p5LZm4Thu-g0)"></svg>
         </slot>
         <slot name="label">
           <div id="eX-1aZgHHsch">Open Modal</div>
         </slot>
         <slot name="end">
-          <svg id="WoPB1jtYSfns" style="position: relative"></svg>
+          <svg id="WoPB1jtYSfns" style="position: relative" src="var(--image-zy8rhY1sZqJ2)"></svg>
         </slot>
       </plasmic-component>
     </slot-target>
@@ -5322,13 +5322,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
               <div id="bNRZ2OqSSTzq" style="display: flex; flex-direction: row; position: relative; align-items: center; justify-content: flex-end; width: stretch; padding-top: var(--token-5Dj8sI4bqV2C); padding-right: var(--token-5Dj8sI4bqV2C); padding-bottom: var(--token-5Dj8sI4bqV2C); padding-left: var(--token-5Dj8sI4bqV2C)">
                 <plasmic-component id="ssjp-JjPp06g" data-plasmic-component="button" data-props='{"color":"Muted","type":"Soft"}'>
                   <slot name="start">
-                    <svg id="eCH5euCJgz6N" style="position: relative"></svg>
+                    <svg id="eCH5euCJgz6N" style="position: relative" src="var(--image-p5LZm4Thu-g0)"></svg>
                   </slot>
                   <slot name="label">
                     <div id="vOmPwYXaatY_" style="padding-left: 0px">Close</div>
                   </slot>
                   <slot name="end">
-                    <svg id="U3RbCec4qSGT" style="position: relative"></svg>
+                    <svg id="U3RbCec4qSGT" style="position: relative" src="var(--image-zy8rhY1sZqJ2)"></svg>
                   </slot>
                 </plasmic-component>
               </div>
@@ -5458,7 +5458,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     "__type": "Component",
     "baseVariantTplTree": "<plasmic-component id="4e5blTBKaGaB" data-plasmic-component="plasmicReactAriaOverlayArrow" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" style="max-width: 100%; object-fit: cover; position: relative">
   <slot name="children">
-    <svg id="-2SFIm9VX_6T" style="color: var(--token-48p0Jlumb6Of); width: 10px; height: 10px; transform: translate3d(0px, 3px, 0px)"></svg>
+    <svg id="-2SFIm9VX_6T" style="color: var(--token-48p0Jlumb6Of); width: 10px; height: 10px; transform: translate3d(0px, 3px, 0px)" src="var(--image-qJjuExwSEg4U)"></svg>
   </slot>
 </plasmic-component>",
     "name": "Overlay Arrow",
@@ -5513,13 +5513,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <slot-target name="Trigger" id="fskV7PlbGiJY">
       <plasmic-component id="4ha5hODWDKC0" data-plasmic-component="button" style="max-width: 100%">
         <slot name="start">
-          <svg id="_xaTWvRT7hOo" style="position: relative"></svg>
+          <svg id="_xaTWvRT7hOo" style="position: relative" src="var(--image-p5LZm4Thu-g0)"></svg>
         </slot>
         <slot name="label">
           <div id="ZRF6Y-J1tOfJ">Open Popover</div>
         </slot>
         <slot name="end">
-          <svg id="KhVEFdHiMZdQ" style="position: relative"></svg>
+          <svg id="KhVEFdHiMZdQ" style="position: relative" src="var(--image-zy8rhY1sZqJ2)"></svg>
         </slot>
       </plasmic-component>
     </slot-target>
@@ -5880,7 +5880,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
           </slot>
         </plasmic-component>
         <div id="leBfvkFpGaYf" style="display: flex; position: relative; width: var(--token-_gnxKR8NG8ND); height: var(--token-_gnxKR8NG8ND); justify-content: center; align-items: center">
-          <svg id="FQ3d6y55TWD0" style="width: var(--token-pNP36mHj6x6O); height: var(--token-pNP36mHj6x6O)"></svg>
+          <svg id="FQ3d6y55TWD0" style="width: var(--token-pNP36mHj6x6O); height: var(--token-pNP36mHj6x6O)" src="var(--image-zy8rhY1sZqJ2)"></svg>
         </div>
       </slot>
     </plasmic-component>
@@ -6257,14 +6257,14 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <div id="2HpGGmOLvP9R" style="display: flex; flex-direction: column">
       <div id="EiP28sViJ6pF" style="display: flex; flex-direction: row; position: absolute; height: var(--token-_gnxKR8NG8ND); align-items: center; justify-content: center; z-index: 9; padding-right: var(--token-yk7m7bwFJ02R); padding-left: var(--token-yk7m7bwFJ02R); padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); left: 0px; top: 0px" data-visibility="displayNone">
         <slot-target name="Start" id="wm0PTpbqVRWh">
-          <svg id="UdctYqItpndH" style="position: relative"></svg>
+          <svg id="UdctYqItpndH" style="position: relative" src="var(--image-p5LZm4Thu-g0)"></svg>
         </slot-target>
       </div>
       <plasmic-component id="GW_pTiEM-XJh" data-plasmic-component="textInput" data-plasmic-name="Text Input" data-props='{"placeholder":"{{ $props.placeholder }}"}'></plasmic-component>
       <plasmic-component id="owbUg8BLCrEo" data-plasmic-component="textAreaInput" data-plasmic-name="TextArea Input" data-props='{"placeholder":"{{ $props.placeholder }}"}' data-visibility="notRendered"></plasmic-component>
       <div id="sy4BAFLD5x2S" style="display: flex; height: var(--token-_gnxKR8NG8ND); flex-direction: row; align-items: center; justify-content: center; position: absolute; padding-right: var(--token-yk7m7bwFJ02R); padding-left: var(--token-yk7m7bwFJ02R); padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); z-index: 1; top: 0px; right: 0px" data-visibility="displayNone">
         <slot-target name="End" id="o0es2qOp2wEI">
-          <svg id="xHHBwIzEWol6" style="position: relative"></svg>
+          <svg id="xHHBwIzEWol6" style="position: relative" src="var(--image-p5LZm4Thu-g0)"></svg>
         </slot-target>
       </div>
     </div>

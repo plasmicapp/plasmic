@@ -18,9 +18,11 @@ import {
   isWIBaseVariantSettings,
   WIAnimationSequence,
   WIBase,
+  WIContainer,
   WIElement,
   WIFragment,
   WIScreenVariant,
+  WISVG,
   WIText,
   WIVariant,
 } from "@/wab/client/web-importer/types";
@@ -42,7 +44,10 @@ import {
   InteractionConditionalMode,
 } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
-import { getTagAttrForImageAsset } from "@/wab/shared/core/image-assets";
+import {
+  getTagAttrForImageAsset,
+  isImageAssetRefString,
+} from "@/wab/shared/core/image-assets";
 import {
   JsonValue,
   mkNameArg,
@@ -53,6 +58,7 @@ import { nodeMarkerText } from "@/wab/shared/core/rich-text-util";
 import {
   allAnimationSequences,
   allMixins,
+  getImageAssetByRef,
   getResponsiveStrategy,
 } from "@/wab/shared/core/sites";
 import {
@@ -106,6 +112,7 @@ import {
 import {
   isAnyType,
   isChoiceType,
+  isImageType,
   isMultiChoiceType,
   typeFactory,
   wabToTsType,
@@ -622,16 +629,14 @@ async function wiTreeToTpl(
     node: Exclude<WIElement, WIFragment>,
     tpl: TplNode,
   ) {
-    // Container layout defaults don't apply to text and slots nodes.
+    // Only containers get the layout defaults.
     const defaultStyles: Record<string, string> =
-      node.type === "text" ||
-      node.type === "slot-target" ||
-      node.type === "component"
-        ? {}
-        : {
+      node.type === "container" && node.tag !== "img"
+        ? {
             display: "flex",
             flexDirection: "column",
-          };
+          }
+        : {};
 
     if (node.type === "svg") {
       defaultStyles["width"] = node.width;
@@ -782,6 +787,28 @@ async function wiTreeToTpl(
     return tpl;
   }
 
+  function srcAsset(node: WIContainer | WISVG) {
+    const src = getImgSrc(node);
+    if (!isImageAssetRefString(src)) {
+      return undefined;
+    }
+    const asset = getImageAssetByRef(
+      site,
+      src,
+      node.type === "svg" ? ImageAssetType.Icon : ImageAssetType.Picture,
+    );
+    if (asset.isErr()) {
+      errors.push({
+        code: "invalid-image-asset",
+        path: node.path,
+        tag: node.tag,
+        reason: asset.error.message,
+      });
+      return null;
+    }
+    return asset.value;
+  }
+
   async function rec(node: WIElement): Promise<TplNode[]> {
     // Fragment expands its children in place
     if (node.type === "fragment") {
@@ -797,21 +824,30 @@ async function wiTreeToTpl(
     }
 
     if (node.type === "svg") {
-      const uploaded = uploadedAssets.get(asSvgDataUrl(node.outerHtml));
-      if (!uploaded) {
+      const asset = srcAsset(node);
+      if (asset === null) {
+        return [];
+      }
+      const uploaded = asset
+        ? undefined
+        : uploadedAssets.get(asSvgDataUrl(node.outerHtml));
+      if (!asset && !uploaded) {
         return [];
       }
 
       const tpl = vtm.mkTplImage({
-        type: uploaded.options.type,
-        iconColor: uploaded.options.iconColor,
+        asset,
+        type: uploaded?.options.type,
+        iconColor: uploaded?.options.iconColor,
         name: tplName,
       });
       collectWIVariantData(node, tpl);
       collectStructuralBindings(node, tpl);
       // The asset is attached in finalize, which runs inside studioCtx.change;
       // creating it here would mutate the model outside a change.
-      tplImageAssetMap.set(tpl, uploaded);
+      if (uploaded) {
+        tplImageAssetMap.set(tpl, uploaded);
+      }
 
       return [tpl];
     }
@@ -924,17 +960,22 @@ async function wiTreeToTpl(
     }
 
     if (node.tag === "img") {
+      const asset = srcAsset(node);
+      if (asset === null) {
+        return [];
+      }
       const src = getImgSrc(node);
       const uploaded = src ? uploadedAssets.get(src) : undefined;
 
       const srcAttr =
-        uploaded || src === undefined || isImageDataUrl(src)
+        asset || uploaded || src === undefined || isImageDataUrl(src)
           ? undefined
           : isDynamicValue(src)
             ? interpolatedStringToExpr(src)
             : src;
 
       const tpl = vtm.mkTplImage({
+        asset,
         attrs: {
           ...htmlAttrsToTplAttrs(node),
           ...(srcAttr ? { src: srcAttr } : {}),
@@ -1203,6 +1244,15 @@ export function getComponentArgFromHtmlProp(
   // (non-variant-group) param type regardless of its declared type.
   if (typeof value === "string" && isDynamicValue(value)) {
     return ok([param, interpolatedStringToExpr(value)]);
+  }
+
+  // An image prop can store image asset reference as var(--image-<uuid>).
+  if (isImageType(param.type) && isImageAssetRefString(value)) {
+    const asset = getImageAssetByRef(site, value, ImageAssetType.Picture);
+    if (asset.isErr()) {
+      return fail(asset.error.message);
+    }
+    return ok([param, new ImageAssetRef({ asset: asset.value })]);
   }
 
   // Primitive-valued types (bool, num, text/img/href/target).

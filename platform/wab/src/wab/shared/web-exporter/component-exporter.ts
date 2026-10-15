@@ -13,6 +13,7 @@ import {
   tryGetVariantGroupValueFromArg,
 } from "@/wab/shared/core/components";
 import { stripParens, tryExtractJson } from "@/wab/shared/core/exprs";
+import { mkImageAssetRef } from "@/wab/shared/core/image-assets";
 import { JsonValue } from "@/wab/shared/core/lang";
 import { renderRichTextChildren } from "@/wab/shared/core/rich-text-util";
 import {
@@ -137,7 +138,9 @@ function buildTplNode(tpl: TplNode, site: Site): XmlElement {
  */
 function serializeExprValue(expr: Expr): JsonValue | undefined {
   return switchType(expr)
-    .when(ImageAssetRef, (imageAssetRef) => imageAssetRef.asset.dataUri || "")
+    .when(ImageAssetRef, (imageAssetRef) =>
+      mkImageAssetRef(imageAssetRef.asset),
+    )
     .when(StyleTokenRef, (styleTokenRef) => styleTokenRef.token.uuid)
     .when(CompositeExpr, (compositeExpr) => tryExtractJson(compositeExpr))
     .when([CustomCode, ObjectPath, TemplatedString], (valueExpr) => {
@@ -205,15 +208,18 @@ function getStylesFromVariantSetting(
   );
 }
 
-// Attrs that are either rendered by buildTplTag (id, style, children) or store
-// internal asset data we don't need in Copilot (e.g. outerHTML on svg resolves
-// to a base64 data).
+// Attrs that are either rendered by buildTplTag (id, style, children) or hold
+// an svg icon's asset, which reads as its src instead (outerHTML).
 const RESERVED_ATTR_KEYS = new Set(["id", "style", "children", "outerHTML"]);
 
 function getAttrsFromVariantSetting(
   vs: VariantSetting,
 ): Record<string, string> {
   const attrs: Record<string, string> = {};
+  const outerHtml = vs.attrs["outerHTML"];
+  if (isKnownImageAssetRef(outerHtml)) {
+    attrs["src"] = mkImageAssetRef(outerHtml.asset);
+  }
   for (const [key, expr] of Object.entries(vs.attrs)) {
     if (!RESERVED_ATTR_KEYS.has(key)) {
       const value = serializeExprToString(expr);

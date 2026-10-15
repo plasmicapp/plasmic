@@ -88,6 +88,7 @@ export type WIError =
     }
   | { code: "unknown-animation"; animation: string }
   | { code: "unknown-mixin"; tpl: WITplRef; mixin: string }
+  | { code: "invalid-image-asset"; path: string; tag: string; reason: string }
   | {
       code: "svg-size-fallback";
       path: string;
@@ -171,6 +172,8 @@ export function formatWIError(error: WIError): string {
       return `Dropped animation "${error.animation}": no matching animation sequence in this project.`;
     case "unknown-mixin":
       return `Dropped mixin "${error.mixin}" on ${error.tpl.type} uuid=${error.tpl.uuid}: no matching mixin in this project or its direct imports.`;
+    case "invalid-image-asset":
+      return `Skipped <${error.tag}>${pathAt(error.path)}: ${error.reason}.`;
     case "svg-size-fallback":
       return `SVG${pathAt(
         error.path,

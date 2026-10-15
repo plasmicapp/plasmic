@@ -63,8 +63,10 @@ import {
   convertHrefExprToCodeExpr,
   isFallbackableExpr,
 } from "@/wab/shared/core/exprs";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import {
   cloneImageAsset,
+  extractAllAssetRefs,
   isIcon,
   mkImageAssetRef,
   replaceAllAssetRefs,
@@ -97,6 +99,7 @@ import {
 } from "@/wab/shared/core/tpls";
 import { camelProp, getCssInitial } from "@/wab/shared/css";
 import { parseScreenSpec } from "@/wab/shared/css-size";
+import { GenericError } from "@/wab/shared/error-handling";
 import {
   isPathDataToken,
   replaceMemberExpression,
@@ -204,6 +207,7 @@ import escapeRegExp from "lodash/escapeRegExp";
 import keys from "lodash/keys";
 import orderBy from "lodash/orderBy";
 import pick from "lodash/pick";
+import { Result, err, ok } from "neverthrow";
 import { CSSProperties } from "react";
 
 export const writeable = <T extends ObjInst>(
@@ -2099,6 +2103,35 @@ export function allImageAssets(
     );
   }
   return images;
+}
+
+export function getImageAssetByRef(
+  site: Site,
+  ref: string,
+  type: ImageAssetType,
+): Result<ImageAsset, GenericError> {
+  const kind = (t: string) => (t === ImageAssetType.Icon ? "icon" : "image");
+
+  const [assetId] = extractAllAssetRefs(ref);
+  if (ref.trim() !== `var(--image-${assetId})`) {
+    return err({
+      message: `expected a single var(--image-<uuid>), got "${ref}"`,
+    });
+  }
+  const asset = allImageAssets(site, { includeDeps: "direct" }).find(
+    (a) => a.uuid === assetId,
+  );
+  if (!asset) {
+    return err({
+      message: `no ${kind(type)} "${ref}" in this project or its direct imports`,
+    });
+  }
+  if (asset.type !== type) {
+    return err({
+      message: `"${ref}" is an ${kind(asset.type)}, not an ${kind(type)}`,
+    });
+  }
+  return ok(asset);
 }
 
 export type StyleTokenWithProjectInfo = Omit<

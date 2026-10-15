@@ -9,7 +9,10 @@ import { WIError } from "@/wab/client/web-importer/errors";
 import { WIBase, WIElement, WIText } from "@/wab/client/web-importer/types";
 import type { TplMgr } from "@/wab/shared/TplMgr";
 import { assertNever, withoutNils } from "@/wab/shared/common";
-import { mkImageAssetRef } from "@/wab/shared/core/image-assets";
+import {
+  isImageAssetRefString,
+  mkImageAssetRef,
+} from "@/wab/shared/core/image-assets";
 import { extractImageDataUrls } from "@/wab/shared/css/urls";
 import {
   asSvgDataUrl,
@@ -88,7 +91,9 @@ export function collectImageDataUris(wiTree: WIElement): Set<string> {
         recurse(node.defaultChildren);
         return;
       case "svg":
-        dataUris.add(asSvgDataUrl(node.outerHtml));
+        if (!isImageAssetRefString(node.attrs["src"])) {
+          dataUris.add(asSvgDataUrl(node.outerHtml));
+        }
         return;
       default:
         assertNever(node);

@@ -166,6 +166,7 @@ Before generating HTML, read `references/html-constraints.md` for the full set o
 - Include `@media` queries for responsive breakpoints — `read` the project's breakpoints (with `screenBreakpoints`) first.
 - Use Google Fonts (single name, no fallback lists).
 - Use inline SVG for icons, `https://placehold.co` for placeholder images.
+- To use an existing image or icon asset, reference it as `src="var(--image-<asset-uuid>)"` on an `<img>` or `<svg>` tag respectively.
 - `<slot-target name="slotName">default content</slot-target>` defines a named slot when building a reusable component; slots cannot be nested.
 - No JavaScript, no vendor prefixes, no `data:image/svg+xml`, no `currentColor`, no `:root`.
 

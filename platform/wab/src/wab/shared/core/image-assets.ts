@@ -22,6 +22,7 @@ import {
   isTplImage,
 } from "@/wab/shared/core/tpls";
 import { joinCssValues, splitCssValue } from "@/wab/shared/css/parse";
+import { isDynamicValue } from "@/wab/shared/dynamic-bindings";
 import {
   ArenaFrame,
   Arg,
@@ -307,6 +308,12 @@ export function hasImageAssetRef(str: string, asset: ImageAsset) {
 
 export function hasAssetRefs(str: string) {
   return !!str.match(RE_ASSETREF_ALL);
+}
+
+export function isImageAssetRefString(value: unknown): value is string {
+  return (
+    typeof value === "string" && !isDynamicValue(value) && hasAssetRefs(value)
+  );
 }
 
 export const resolveAllAssetRefs = (
