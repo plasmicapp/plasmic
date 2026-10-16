@@ -86,10 +86,14 @@ import {
   User,
   Workspace,
 } from "@/wab/server/entities/Entities";
-import { isPaidTeam } from "@/wab/server/freeTrial";
 import { logger } from "@/wab/server/observability";
 import { REAL_PLUME_VERSION } from "@/wab/server/pkg-mgr/plume-pkg-mgr";
 import { CompatRequest } from "@/wab/server/routes/util";
+import {
+  isPaidSubscriptionStatus,
+  isPaidTeam,
+  loadSubscriptionStatuses,
+} from "@/wab/server/subscription-status";
 import { generateSomeApiToken } from "@/wab/server/util/Tokens";
 import {
   makeFieldMetaMap,
@@ -1175,7 +1179,9 @@ export class DbMgr implements MigrationDbMgr {
       qb.andWhere("t.id <> :exceptTeamId", { exceptTeamId });
     }
     checkPermissions(
-      (await qb.getMany()).every((team) => isPaidTeam(team)),
+      (await loadSubscriptionStatuses(this, await qb.getMany())).every(
+        isPaidSubscriptionStatus,
+      ),
       `You can only have one unpaid ${ORGANIZATION_LOWER}. Upgrade or delete your existing ${ORGANIZATION_LOWER} before ${action}.`,
     );
   }
@@ -1195,7 +1201,7 @@ export class DbMgr implements MigrationDbMgr {
 
   async checkCanCancelSubscription(teamId: TeamId): Promise<void> {
     const team = await this.getTeamById(teamId);
-    if (isPaidTeam(team)) {
+    if (await isPaidTeam(team, this)) {
       await this.checkTeamCanBecomeUnpaid(team, "canceling this subscription");
     }
   }
@@ -1539,7 +1545,7 @@ export class DbMgr implements MigrationDbMgr {
 
   async restoreTeam(id: TeamId) {
     const team = await this.getTeamById(id, true);
-    if (!isPaidTeam(team)) {
+    if (!(await isPaidTeam(team, this))) {
       await this.checkTeamCanBecomeUnpaid(team, "restoring another");
     }
     return this._restoreResource({ type: "team", id });
@@ -2883,7 +2889,7 @@ export class DbMgr implements MigrationDbMgr {
       return;
     }
     checkPermissions(
-      isPaidTeam(destinationTeam),
+      await isPaidTeam(destinationTeam, this),
       `Projects can only be transferred to a paid ${ORGANIZATION_LOWER}. Upgrade the destination ${ORGANIZATION_LOWER} before moving projects into it.`,
     );
   }
@@ -3069,7 +3075,7 @@ export class DbMgr implements MigrationDbMgr {
     const isOwnershipChange =
       (!!team.createdById && team.createdById !== newOwner) ||
       ownerPerms.some((perm) => perm.userId !== newOwner);
-    if (isOwnershipChange && !isPaidTeam(team)) {
+    if (isOwnershipChange && !(await isPaidTeam(team, this))) {
       checkPermissions(
         allowUnpaidTransfer,
         `Cannot transfer an unpaid ${ORGANIZATION_LOWER}.`,
@@ -3166,8 +3172,7 @@ export class DbMgr implements MigrationDbMgr {
       {
         featureTierId: In(featureTierIds),
 
-        // It would be nice to not need to know to check for stripeSubscriptionId
-        // https://linear.app/plasmic/issue/PLA-10654
+        // Excludes free trials, which have a tier but no subscription.
         stripeSubscriptionId: Not(IsNull()),
       },
       false,
@@ -6335,7 +6340,7 @@ export class DbMgr implements MigrationDbMgr {
     const userId = ensure(this.tryGetNormalActorId(), "Must have an user id");
     if (opts?.checkTeamHasPlan) {
       const team = await this.getTeamByProjectId(opts.checkTeamHasPlan);
-      if (!team || !isPaidTeam(team)) {
+      if (!team || !(await isPaidTeam(team, this))) {
         throw new CopilotPlanRequiredError();
       }
     }

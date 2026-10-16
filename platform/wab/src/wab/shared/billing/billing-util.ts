@@ -3,7 +3,6 @@ import {
   ApiTeam,
   BillingFrequency,
   StripePriceId,
-  Subscription,
 } from "@/wab/shared/ApiSchema";
 import { assert } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
@@ -54,67 +53,29 @@ export function canUseChatCopilot(
   );
 }
 
-/**
- * Given a team and Stripe subscription, determine the status of my account
- */
-export function getSubscriptionStatus(
-  team: ApiTeam,
-  subscription?: Subscription,
-): SubscriptionStatus {
+/** Display the authoritative status sent by the server. */
+export function getSubscriptionStatus(team: ApiTeam): SubscriptionStatus {
   const freeTier = DEVFLAGS.freeTier;
-
-  // Handle free tier
-  if (!team.featureTier) {
-    assert(
-      !team.stripeSubscriptionId,
-      `Found a Stripe subscription without a feature tier for teamId=${team.id}`,
-    );
-    return {
-      type: "valid",
-      free: true,
-      tier: freeTier,
-    };
+  switch (team.subscriptionStatus) {
+    case "free":
+      return { type: "valid", free: true, tier: freeTier };
+    case "past_due":
+      return {
+        type: "invalid",
+        errorMsg:
+          "Failed to process your credit card. Please go to your team settings and update your credit card information.",
+        freeTier,
+      };
+    case "trial":
+    case "paid":
+    case "manual":
+      assert(team.featureTier, `Missing tier for team ${team.id}`);
+      return {
+        type: "valid",
+        tier: team.featureTier,
+        ...(team.subscriptionStatus === "trial" ? { freeTrial: true } : {}),
+      };
   }
-
-  // Implicitly team.featureTier is defined by here
-
-  // Check if it's a free trial
-  if (!team.stripeSubscriptionId) {
-    return {
-      type: "valid",
-      tier: team.featureTier,
-      freeTrial: true,
-    };
-  }
-  assert(
-    !!team.stripeSubscriptionId && !!subscription,
-    `Found team.featureTier without a corresponding subscription for teamId=${team.id}`,
-  );
-  // team.featureTier and subscription are both defined by here
-
-  if (
-    ["canceled", "incomplete", "incomplete_expired"].includes(
-      subscription.status,
-    )
-  ) {
-    // Stay on the free tier if we have canceled or incomplete subs
-    return {
-      type: "valid",
-      free: true,
-      tier: freeTier,
-    };
-  } else if (["past_due", "unpaid"].includes(subscription.status)) {
-    // You'll be downgraded to free tier until you fix your credit card
-    return {
-      type: "invalid",
-      errorMsg:
-        "Failed to process your credit card. Please go to your team settings and update your credit card information.",
-      freeTier,
-    };
-  }
-
-  // Passed all the checks!
-  return { type: "valid", tier: team.featureTier };
 }
 
 export function calculateBill(

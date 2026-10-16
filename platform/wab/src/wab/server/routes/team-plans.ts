@@ -6,6 +6,10 @@
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { Team } from "@/wab/server/entities/Entities";
 import {
+  deriveSubscriptionStatus,
+  getEntitledTeam,
+} from "@/wab/server/freeTrial";
+import {
   ApiFeatureTier,
   MayTriggerPaywall,
   PaywallDescription,
@@ -68,10 +72,18 @@ export function mkStripeCustomerData(
   syncName?: boolean,
 ) {}
 
-export async function resetStripeCustomer(
-  userMgr: DbMgr,
-  superMgr: DbMgr,
-  team: Team,
-) {}
+export async function resetStripeCustomer(superMgr: DbMgr, team: Team) {}
 
 export async function syncDataWithStripe(team: Team, host: string) {}
+
+export async function syncTeamSubscription(
+  ctx: { superMgr: DbMgr; devflags: DevFlagsType },
+  teamId: TeamId,
+  known: Stripe.Subscription | null,
+) {}
+
+export async function loadSubscriptionStatuses(mgr: DbMgr, teams: Team[]) {
+  return teams.map((team) =>
+    deriveSubscriptionStatus(getEntitledTeam(team), null),
+  );
+}

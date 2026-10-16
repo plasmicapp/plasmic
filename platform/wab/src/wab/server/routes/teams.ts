@@ -1,13 +1,14 @@
-import { ForbiddenError, checkPermissions } from "@/wab/server/db/DbMgr";
+import { DbMgr, ForbiddenError, checkPermissions } from "@/wab/server/db/DbMgr";
 import { prepareTeamSupportUrls as doPrepareTeamSupportUrls } from "@/wab/server/discourse/prepareTeamSupportUrls";
 import { sendShareEmail } from "@/wab/server/emails/share-email";
 import { Project, Team, Workspace } from "@/wab/server/entities/Entities";
-import { getEntitledTeam, isTeamOnFreeTrial } from "@/wab/server/freeTrial";
+import { getEntitledTeam } from "@/wab/server/freeTrial";
 import { customCreateTeam } from "@/wab/server/routes/custom-routes";
 import { mkApiProject } from "@/wab/server/routes/projects";
 import { getPromotionCodeCookie } from "@/wab/server/routes/promo-code";
 import {
   checkStripeSubscription,
+  loadSubscriptionStatuses,
   maybeTriggerPaywall,
   passPaywall,
   resetStripeCustomer,
@@ -21,7 +22,7 @@ import {
   superDbMgr,
   userDbMgr,
 } from "@/wab/server/routes/util";
-import { mkApiWorkspace } from "@/wab/server/routes/workspaces";
+import { mkApiWorkspaces } from "@/wab/server/routes/workspaces";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiPermission,
@@ -45,6 +46,7 @@ import {
   Revoke,
   TeamId,
   TeamMember,
+  TeamSubscriptionStatus,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
 import {
@@ -69,7 +71,10 @@ import {
 import { Request, Response } from "express-serve-static-core";
 import L from "lodash";
 
-export function mkApiTeam(team: Team): ApiTeam {
+function mkApiTeam(
+  team: Team,
+  subscriptionStatus: TeamSubscriptionStatus,
+): ApiTeam {
   return L.assign(
     L.pick(team, [
       "createdAt",
@@ -98,10 +103,21 @@ export function mkApiTeam(team: Team): ApiTeam {
       parentTeamId: team.parentTeamId,
       featureTier: team.featureTier || team.parentTeam?.featureTier || null,
       uiConfig: mergeUiConfigs(team.parentTeam?.uiConfig, team.uiConfig),
-      onTrial: isTeamOnFreeTrial(team),
+      subscriptionStatus,
+      onTrial: subscriptionStatus === "trial",
     },
   );
 }
+
+export async function mkApiTeams(
+  mgr: DbMgr,
+  teams: Team[],
+): Promise<ApiTeam[]> {
+  const statuses = await loadSubscriptionStatuses(mgr, teams);
+  return teams.map((team, i) => mkApiTeam(team, statuses[i]));
+}
+
+export const _testonly = { mkApiTeam };
 
 export async function listCurrentFeatureTiers(req: Request, res: Response) {
   const mgr = userDbMgr(req);
@@ -119,7 +135,7 @@ export async function listTeams(req: Request, res: Response) {
   const userMgr = userDbMgr(req);
   const teams = await userMgr.getAffiliatedTeams();
   const perms = await userMgr.getPermissionsForTeams(teams.map((t) => t.id));
-  const apiTeams = teams.map((team) => mkApiTeam(team));
+  const apiTeams = await mkApiTeams(userMgr, teams);
   res.json(ensureType<ListTeamsResponse>({ teams: apiTeams, perms }));
 }
 
@@ -159,7 +175,7 @@ export async function createTeam(req: Request, res: Response) {
     });
     team = await userMgr.getTeamById(team.id);
   }
-  const apiTeam = mkApiTeam(team);
+  const [apiTeam] = await mkApiTeams(userMgr, [team]);
 
   // Automatically create a new workspace in the new team.
   await userMgr.createWorkspace({
@@ -189,7 +205,7 @@ export async function updateTeam(req: Request, res: Response) {
     await syncDataWithStripe(team, req.config.host);
   }
 
-  const apiTeam = mkApiTeam(team);
+  const [apiTeam] = await mkApiTeams(userMgr, [team]);
   res.json(ensureType<CreateTeamResponse>({ team: apiTeam }));
 }
 
@@ -199,7 +215,7 @@ export async function deleteTeam(req: Request, res: Response) {
   const superMgr = superDbMgr(req);
   const team = await userMgr.getTeamById(teamId);
   // Cancel any active subscriptions first
-  await resetStripeCustomer(userMgr, superMgr, team);
+  await resetStripeCustomer(superMgr, team);
 
   req.analytics.track("Delete team", {
     teamName: team.name,
@@ -212,7 +228,7 @@ export async function getTeamById(req: Request, res: Response) {
   const userMgr = userDbMgr(req);
   const { teamId } = uncheckedCast<{ teamId: TeamId }>(req.params);
   const team = await userMgr.getTeamById(teamId);
-  const apiTeam = mkApiTeam(team);
+  const [apiTeam] = await mkApiTeams(userMgr, [team]);
   const perms = await userMgr.getPermissionsForTeams([teamId]);
   const members = await userMgr.getTeamMembers(teamId);
   res.json(ensureType<GetTeamResponse>({ team: apiTeam, perms, members }));
@@ -495,7 +511,7 @@ export async function getTeamProjects(req: Request, res: Response) {
   // workspaces and projects that the user can't access.
 
   const team = await superMgr.getTeamById(teamId);
-  const apiTeam = mkApiTeam(team);
+  const [apiTeam] = await mkApiTeams(userMgr, [team]);
 
   let members: TeamMember[] = [];
   let teamPerms: ApiPermission[] = [];
@@ -513,7 +529,7 @@ export async function getTeamProjects(req: Request, res: Response) {
     workspaces.map((workspace) => workspace.id),
     true,
   );
-  const apiWorkspaces = workspaces.map((w) => mkApiWorkspace(w));
+  const apiWorkspaces = await mkApiWorkspaces(userMgr, workspaces);
 
   checkPermissions(
     teamPerms.length > 0 || workspaces.length > 0,
@@ -549,7 +565,7 @@ export async function getTeamWorkspaces(req: Request, res: Response) {
   // workspaces and projects that the user can't access.
 
   const team = await superMgr.getTeamById(teamId);
-  const apiTeam = mkApiTeam(team);
+  const [apiTeam] = await mkApiTeams(userMgr, [team]);
 
   let teamPerms: ApiPermission[] = [];
   try {
@@ -565,7 +581,7 @@ export async function getTeamWorkspaces(req: Request, res: Response) {
     workspaces.map((workspace) => workspace.id),
     true,
   );
-  const apiWorkspaces = workspaces.map((w) => mkApiWorkspace(w));
+  const apiWorkspaces = await mkApiWorkspaces(userMgr, workspaces);
 
   checkPermissions(
     teamPerms.length > 0 || workspaces.length > 0,

@@ -1,12 +1,14 @@
 import { Team } from "@/wab/server/entities/Entities";
-import { mkApiTeam } from "@/wab/server/routes/teams";
+import { _testonly } from "@/wab/server/routes/teams";
+
+const { mkApiTeam } = _testonly;
 
 describe("mkApiTeam", () => {
   it("has expected fields", () => {
     const team = {
       name: "Team Name",
     } as Team;
-    const apiTeam = mkApiTeam(team);
+    const apiTeam = mkApiTeam(team, "free");
     expect(apiTeam.name).toEqual("Team Name");
     expect(apiTeam.featureTier).toEqual(null);
     expect(apiTeam.uiConfig).toEqual({
@@ -21,8 +23,9 @@ describe("mkApiTeam", () => {
       styleSectionVisibilities: undefined,
     });
     expect(apiTeam.onTrial).toEqual(false);
+    expect(apiTeam.subscriptionStatus).toEqual("free");
   });
-  it("uses isTeamOnFreeTrial", () => {
+  it("derives onTrial from the authoritative status", () => {
     const team = {
       name: "Team Name",
       featureTier: {
@@ -31,7 +34,7 @@ describe("mkApiTeam", () => {
       featureTierId: "starter-tier-id",
       trialStartDate: new Date(),
     } as Team;
-    const apiTeam = mkApiTeam(team);
+    const apiTeam = mkApiTeam(team, "trial");
     expect(apiTeam.name).toEqual("Team Name");
     expect(apiTeam.onTrial).toEqual(true);
   });
@@ -45,7 +48,7 @@ describe("mkApiTeam", () => {
         },
       },
     } as Team;
-    const apiTeam = mkApiTeam(team);
+    const apiTeam = mkApiTeam(team, "free");
     expect(apiTeam.name).toEqual("Child Team");
     expect(apiTeam.featureTier?.name).toEqual("Parent Feature Tier");
   });
@@ -62,7 +65,7 @@ describe("mkApiTeam", () => {
         },
       },
     } as Team;
-    const apiTeam = mkApiTeam(team);
+    const apiTeam = mkApiTeam(team, "free");
     expect(apiTeam.name).toEqual("Child Team");
     expect(apiTeam.featureTier?.name).toEqual("Child Feature Tier");
   });
@@ -87,7 +90,7 @@ describe("mkApiTeam", () => {
         },
       },
     } as Team;
-    const apiTeam = mkApiTeam(team);
+    const apiTeam = mkApiTeam(team, "free");
     expect(apiTeam.name).toEqual("Child Team");
     expect(apiTeam.uiConfig.brand?.logoImgSrc).toEqual(
       "https://child.com/logo",

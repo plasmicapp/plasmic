@@ -6,7 +6,7 @@ import {
 } from "@/wab/server/data-sources/data-source-utils";
 import { DataSource } from "@/wab/server/entities/Entities";
 import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
-import { mkApiWorkspace } from "@/wab/server/routes/workspaces";
+import { mkApiWorkspaces } from "@/wab/server/routes/workspaces";
 import {
   BadRequestError,
   ForbiddenError,
@@ -109,14 +109,15 @@ export async function listDataSources(req: Request, res: Response) {
   const workspaces = maybeWorkspaceId
     ? [await mgr.getWorkspaceById(maybeWorkspaceId)]
     : await mgr.getAffiliatedWorkspaces();
+  const apiWorkspaces = await mkApiWorkspaces(mgr, workspaces);
   const sources = await Promise.all(
-    workspaces.map(async (workspace) => {
+    workspaces.map(async (workspace, i) => {
       const dataSources = await mgr.getWorkspaceDataSources(workspace.id);
       const accessLevel = await mgr.getActorAccessLevelToWorkspace(
         workspace.id,
       );
       return {
-        workspace: mkApiWorkspace(workspace),
+        workspace: apiWorkspaces[i],
         dataSources: dataSources.map((dataSource) =>
           mkApiDataSource(
             dataSource,

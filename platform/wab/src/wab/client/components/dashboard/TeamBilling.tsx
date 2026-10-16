@@ -17,7 +17,6 @@ import {
   ApiFeatureTier,
   ApiTeam,
   BillingFrequency,
-  Subscription,
   TeamMember,
 } from "@/wab/shared/ApiSchema";
 import {
@@ -39,7 +38,6 @@ interface TeamBillingProps extends DefaultTeamBillingProps {
   team: ApiTeam;
   members: TeamMember[];
   availFeatureTiers: ApiFeatureTier[];
-  subscription?: Subscription;
   canStartFreeTrial: boolean;
   onChange: () => Promise<void>;
   disabled?: boolean;
@@ -51,7 +49,6 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
     team,
     members,
     availFeatureTiers,
-    subscription,
     canStartFreeTrial,
     onChange,
     disabled,
@@ -63,7 +60,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
   );
 
   // Figure out the current plan we're on
-  const subStatus = getSubscriptionStatus(team, subscription);
+  const subStatus = getSubscriptionStatus(team);
 
   const billingError =
     subStatus.type === "invalid" ? subStatus.errorMsg : undefined;

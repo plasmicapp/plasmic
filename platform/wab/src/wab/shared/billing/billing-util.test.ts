@@ -1,5 +1,10 @@
 import { _testonly as featureTiers } from "@/wab/server/db/seed/feature-tier";
-import { calculateBill } from "@/wab/shared/billing/billing-util";
+import { ApiTeam, TeamSubscriptionStatus } from "@/wab/shared/ApiSchema";
+import {
+  calculateBill,
+  getSubscriptionStatus,
+} from "@/wab/shared/billing/billing-util";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 
 describe("calculateBill", () => {
   it("works for current feature tier", () => {
@@ -43,5 +48,31 @@ describe("calculateBill", () => {
       seatSubtotal: 45,
       total: 45,
     });
+  });
+});
+
+describe("getSubscriptionStatus", () => {
+  const tier = { ...DEVFLAGS.freeTier, id: "team-tier", name: "Team" };
+  it.each<[TeamSubscriptionStatus, object]>([
+    ["paid", { type: "valid", tier }],
+    ["manual", { type: "valid", tier }],
+    ["trial", { type: "valid", tier, freeTrial: true }],
+    ["free", { type: "valid", tier: DEVFLAGS.freeTier, free: true }],
+    [
+      "past_due",
+      {
+        type: "invalid",
+        errorMsg: expect.stringContaining("Failed to process your credit card"),
+        freeTier: DEVFLAGS.freeTier,
+      },
+    ],
+  ])("displays %s", (subscriptionStatus, expected) => {
+    expect(
+      getSubscriptionStatus({
+        id: "team",
+        subscriptionStatus,
+        featureTier: tier,
+      } as ApiTeam),
+    ).toEqual(expected);
   });
 });

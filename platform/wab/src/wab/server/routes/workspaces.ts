@@ -1,3 +1,4 @@
+import { DbMgr } from "@/wab/server/db/DbMgr";
 import { Workspace } from "@/wab/server/entities/Entities";
 import { getEntitledTeam } from "@/wab/server/freeTrial";
 import { doSafelyDeleteProject } from "@/wab/server/routes/projects";
@@ -6,7 +7,7 @@ import {
   maybeTriggerPaywall,
   passPaywall,
 } from "@/wab/server/routes/team-plans";
-import { mkApiTeam } from "@/wab/server/routes/teams";
+import { mkApiTeams } from "@/wab/server/routes/teams";
 import {
   commitTransaction,
   rollbackTransaction,
@@ -28,7 +29,7 @@ import { createTaggedResourceId } from "@/wab/shared/perms";
 import { Request, Response } from "express-serve-static-core";
 import L from "lodash";
 
-export function mkApiWorkspace(workspace: Workspace): ApiWorkspace {
+function mkApiWorkspace(workspace: Workspace, team: ApiTeam): ApiWorkspace {
   return {
     ...L.pick(workspace, [
       "createdAt",
@@ -42,7 +43,7 @@ export function mkApiWorkspace(workspace: Workspace): ApiWorkspace {
       "description",
       "uiConfig",
     ]),
-    team: mkApiTeam(workspace.team),
+    team,
     // only use the custom config if team feature tier has permission to customize it
     contentCreatorConfig: workspace.team.featureTier?.editContentCreatorMode
       ? workspace.contentCreatorConfig
@@ -50,12 +51,27 @@ export function mkApiWorkspace(workspace: Workspace): ApiWorkspace {
   };
 }
 
+export async function mkApiWorkspaces(
+  mgr: DbMgr,
+  workspaces: Workspace[],
+): Promise<ApiWorkspace[]> {
+  const teams = await mkApiTeams(
+    mgr,
+    workspaces.map((w) => w.team),
+  );
+  return workspaces.map((workspace, i) => mkApiWorkspace(workspace, teams[i]));
+}
+
 export async function getWorkspaces(req: Request, res: Response) {
   const userMgr = userDbMgr(req);
-  const workspaces: ApiWorkspace[] = (
-    await userMgr.getAffiliatedWorkspaces()
-  ).map(mkApiWorkspace);
-  const teams: ApiTeam[] = (await userMgr.getAffiliatedTeams()).map(mkApiTeam);
+  const workspaces = await mkApiWorkspaces(
+    userMgr,
+    await userMgr.getAffiliatedWorkspaces(),
+  );
+  const teams: ApiTeam[] = await mkApiTeams(
+    userMgr,
+    await userMgr.getAffiliatedTeams(),
+  );
   res.json({ teams, workspaces });
 }
 
@@ -63,7 +79,7 @@ export async function getWorkspace(req: Request, res: Response) {
   const { workspaceId } = req.params as { workspaceId: WorkspaceId };
   const userMgr = userDbMgr(req);
   const workspace = await userMgr.getWorkspaceById(workspaceId);
-  const apiWorkspace = mkApiWorkspace(workspace);
+  const [apiWorkspace] = await mkApiWorkspaces(userMgr, [workspace]);
   const perms = await userMgr.getPermissionsForWorkspaces([workspaceId]);
   res.json(
     ensureType<GetWorkspaceResponse>({ workspace: apiWorkspace, perms }),
@@ -79,7 +95,7 @@ export async function getPersonalWorkspace(req: Request, res: Response) {
     res.status(404).send();
   } else {
     const perms = await userMgr.getPermissionsForWorkspaces([workspace.id]);
-    const apiWorkspace = mkApiWorkspace(workspace);
+    const [apiWorkspace] = await mkApiWorkspaces(userMgr, [workspace]);
 
     res.json(
       ensureType<GetWorkspaceResponse>({
@@ -107,7 +123,7 @@ export async function createWorkspace(req: Request, res: Response) {
       description,
       teamId,
     });
-    const apiWorkspace = mkApiWorkspace(workspace);
+    const [apiWorkspace] = await mkApiWorkspaces(userMgr, [workspace]);
     req.analytics.track("Create workspace", {
       workspaceName: name,
       workspaceDescription: description,
@@ -149,7 +165,7 @@ export async function updateWorkspace(req: Request, res: Response) {
       ...args,
     });
 
-    const apiWorkspace = mkApiWorkspace(workspace);
+    const [apiWorkspace] = await mkApiWorkspaces(userMgr, [workspace]);
     const response: CreateWorkspaceResponse = { workspace: apiWorkspace };
 
     // Bypass paywall if workspace is not being moved to a different team.

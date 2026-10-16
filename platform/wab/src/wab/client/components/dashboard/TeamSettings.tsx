@@ -31,22 +31,14 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
   const selfInfo = ensure(appCtx.selfInfo, "Unexpected nullish selfInfo");
 
   const { value: data, retry: refetchData } = useAsyncStrict(async () => {
-    // needs to fetch subscription before team, because getSubscription will check the subscription status
-    const subscriptionResp = await appCtx.api.getSubscription(teamId);
     const team = await appCtx.api.getTeam(teamId);
     const { meta } = await appCtx.api.getTeamMeta(teamId);
     const featureTiers = await appCtx.api.listCurrentFeatureTiers();
-    const subscription =
-      subscriptionResp.type === "success"
-        ? { subscription: subscriptionResp.subscription }
-        : {};
-
     const isWhiteLabeled = !!team.team.whiteLabelInfo;
 
     return {
       ...team,
       ...featureTiers,
-      ...subscription,
       isWhiteLabeled,
       canStartFreeTrial: meta.canStartFreeTrial,
     };
@@ -60,7 +52,6 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
   const perms = data.perms ?? [];
   const members = data.members ?? [];
   const availFeatureTiers = data.tiers ?? [];
-  const subscription = data?.subscription;
   const tier = team.featureTier ?? DEVFLAGS.freeTier;
 
   const userAccessLevel = getAccessLevelToResource(
@@ -177,7 +168,6 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
               team,
               members,
               availFeatureTiers,
-              subscription,
               canStartFreeTrial: data.canStartFreeTrial,
               onChange: () => {
                 refetchData();

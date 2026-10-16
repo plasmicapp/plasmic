@@ -53,8 +53,11 @@ import { omit, uniq } from "lodash";
 import { getTeamDiscourseInfo as doGetTeamDiscourseInfo } from "@/wab/server/discourse/getTeamDiscourseInfo";
 import { sendTeamSupportWelcomeEmail as doSendTeamSupportWelcomeEmail } from "@/wab/server/discourse/sendTeamSupportWelcomeEmail";
 import { syncTeamDiscourseInfo as doSyncTeamDiscourseInfo } from "@/wab/server/discourse/syncTeamDiscourseInfo";
-import { checkAndResetTeamTrial } from "@/wab/server/routes/team-plans";
-import { mkApiWorkspace } from "@/wab/server/routes/workspaces";
+import {
+  checkAndResetTeamTrial,
+  syncTeamSubscription,
+} from "@/wab/server/routes/team-plans";
+import { mkApiWorkspaces } from "@/wab/server/routes/workspaces";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
 
 export async function createUser(req: Request, res: Response) {
@@ -150,7 +153,8 @@ export async function createWorkspace(req: Request, res: Response) {
     teamId,
   });
 
-  res.json({ workspace: mkApiWorkspace(workspace) });
+  const [apiWorkspace] = await mkApiWorkspaces(mgr, [workspace]);
+  res.json({ workspace: apiWorkspace });
 }
 
 export async function deleteProjectAndRevisions(req: Request, res: Response) {
@@ -389,6 +393,11 @@ export async function upgradeTeam(req: Request, res: Response) {
     stripeCustomerId,
     stripeSubscriptionId,
   });
+  await syncTeamSubscription(
+    { superMgr: mgr, devflags: req.devflags },
+    teamId,
+    null,
+  );
   res.json({});
 }
 

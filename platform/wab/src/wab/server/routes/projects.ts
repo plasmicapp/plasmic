@@ -46,7 +46,6 @@ import {
   maybeTriggerPaywall,
   passPaywall,
 } from "@/wab/server/routes/team-plans";
-import { mkApiTeam } from "@/wab/server/routes/teams";
 import {
   commitTransaction,
   parseMetadata,
@@ -185,17 +184,16 @@ import type { SetRequired } from "type-fest";
 import { EntityManager, MigrationExecutor } from "typeorm";
 
 export function mkApiProject(project: Project): ApiProject {
-  const team = project.workspace?.team
-    ? mkApiTeam(project.workspace.team)
-    : null;
+  const team = project.workspace?.team;
   return {
     ...omit(project, "workspace", "secretApiToken"),
     workspaceName: project.workspace?.name || null,
     parentTeamId: team?.parentTeamId || null,
     teamId: project.workspace?.teamId || null,
     teamName: team?.name || null,
-    featureTier: team?.featureTier || null,
+    featureTier: team ? (getEntitledTeam(team).featureTier ?? null) : null,
     uiConfig: mergeUiConfigs(
+      team?.parentTeam?.uiConfig,
       team?.uiConfig,
       project.workspace?.uiConfig,
       project.uiConfig,

@@ -257,9 +257,11 @@ function UpsellForm(
   // true if team is on a valid active subscription already
   // - Currently we don't ask for a credit card if true (using default payment method)
   // - If false, then we should ask for a new credit card
-  // Note: the server will make sure this field is undefined if Stripe says the subscription is invalid
+  // A pending checkout keeps its tier and subscription ID but is still "free"
   const hasActiveSubscription =
-    !!team.featureTierId && !!team.stripeSubscriptionId;
+    !!team.featureTierId &&
+    !!team.stripeSubscriptionId &&
+    team.subscriptionStatus !== "free";
 
   // Prevent submitting an unchanged subscription (allow changing seats or converting trial)
   const isCurrentSubscription =

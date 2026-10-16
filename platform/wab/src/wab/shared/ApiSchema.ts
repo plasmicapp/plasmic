@@ -154,6 +154,9 @@ export interface ApiTeamDiscourseInfo {
 
 export type BillingFrequency = "month" | "year";
 
+export type TeamSubscriptionStatus =
+  "paid" | "past_due" | "trial" | "manual" | "free";
+
 export interface ApiTeam extends ApiEntityBase {
   id: TeamId;
   parentTeamId: TeamId | null;
@@ -172,6 +175,7 @@ export interface ApiTeam extends ApiEntityBase {
   //  Ideally we should deserialize these back into Dates in the API client.
   trialStartDate: Date | string | null;
   trialDays: number | null;
+  subscriptionStatus: TeamSubscriptionStatus;
   onTrial: boolean;
   whiteLabelName: string | null;
   whiteLabelInfo: TeamWhiteLabelInfo | null;

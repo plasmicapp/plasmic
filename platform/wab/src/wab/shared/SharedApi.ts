@@ -166,6 +166,7 @@ import {
   SubscriptionIntentResponse,
   TeamApiToken,
   TeamId,
+  TeamSubscriptionStatus,
   TeamWhiteLabelInfo,
   ThreadCommentData,
   ThreadHistoryId,
@@ -1015,8 +1016,10 @@ export abstract class SharedApi {
     return this.post(`/teams/${teamId}/trial`);
   }
 
-  async getSubscription(teamId: TeamId): Promise<GetSubscriptionResponse> {
-    return this.get(`/billing/subscription/${teamId}`);
+  async refreshSubscription(teamId: TeamId): Promise<{
+    subscriptionStatus: TeamSubscriptionStatus;
+  }> {
+    return this.post(`/admin/teams/${teamId}/refresh-subscription`);
   }
 
   async createSubscription(

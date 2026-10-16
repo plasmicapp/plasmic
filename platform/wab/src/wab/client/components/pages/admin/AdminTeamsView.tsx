@@ -354,10 +354,7 @@ function Billing(props: TeamProps) {
       <div className="flex-row gap-m">
         {props.team.featureTier && (
           <>
-            <CheckStripeSubscription
-              {...props}
-              featureTier={props.team.featureTier}
-            />
+            <CheckStripeSubscription {...props} />
             <CancelTeamPlan {...props} featureTier={props.team.featureTier} />
           </>
         )}
@@ -368,25 +365,15 @@ function Billing(props: TeamProps) {
   );
 }
 
-function CheckStripeSubscription({
-  team,
-  featureTier,
-  refetch,
-}: TeamProps & { featureTier: ApiFeatureTier }) {
+function CheckStripeSubscription({ team, refetch }: TeamProps) {
   const nonAuthCtx = useNonAuthCtx();
   return (
     <Button
       onClick={async () => {
-        const res = await nonAuthCtx.api.getSubscription(team.id);
-        if (res.type === "success") {
-          notification.info({
-            message: `Organization ${team.name} on ${featureTier.name} plan has Stripe subscription status ${res.subscription.status}`,
-          });
-        } else {
-          notification.error({
-            message: `Organization ${team.name} does not have a subscription`,
-          });
-        }
+        const res = await nonAuthCtx.api.refreshSubscription(team.id);
+        notification.info({
+          message: `Organization ${team.name} has subscription status ${res.subscriptionStatus}`,
+        });
         refetch();
       }}
     >

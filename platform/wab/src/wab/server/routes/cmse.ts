@@ -4,7 +4,7 @@ import { DbMgr } from "@/wab/server/db/DbMgr";
 import { CmsDatabase } from "@/wab/server/entities/Entities";
 import { getImageSize, isImageSupported } from "@/wab/server/image/metadata";
 import { userDbMgr } from "@/wab/server/routes/util";
-import { mkApiWorkspace } from "@/wab/server/routes/workspaces";
+import { mkApiWorkspaces } from "@/wab/server/routes/workspaces";
 import { triggerWebhookOnly } from "@/wab/server/trigger-webhooks";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
@@ -75,10 +75,11 @@ export async function getDatabaseMeta(req: Request, res: Response) {
 export async function listDatabasesMeta(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const workspaces = await mgr.getAffiliatedWorkspaces();
+  const apiWorkspaces = await mkApiWorkspaces(mgr, workspaces);
   const data = await Promise.all(
-    workspaces.map(async (workspace) => {
+    workspaces.map(async (workspace, i) => {
       return {
-        workspace: mkApiWorkspace(workspace),
+        workspace: apiWorkspaces[i],
         databases: await mgr.listCmsDatabases(workspace.id),
       };
     }),
