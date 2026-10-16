@@ -6,6 +6,7 @@ import { getMigratedUserPropsOpBundle } from "@/wab/server/data-sources/end-user
 import { DbMgr, ForbiddenError } from "@/wab/server/db/DbMgr";
 import { getDevFlagsMergedWithOverrides } from "@/wab/server/db/appconfig";
 import { sendAppEndUserInviteEmail } from "@/wab/server/emails/app-end-user-invite-email";
+import { checkInviteEmailPhishing } from "@/wab/server/emails/invite-phishing-check";
 import {
   AppAccessRegistry,
   AppAuthConfig,
@@ -615,6 +616,7 @@ export async function loadProdUrlForProject(mgr: DbMgr, projectId: ProjectId) {
 
 export async function createAccessRules(req: Request, res: Response) {
   const mgr = userDbMgr(req);
+  const sharer = getUser(req);
   const projectId = req.params.projectId as ProjectId;
   const {
     emails,
@@ -650,15 +652,19 @@ export async function createAccessRules(req: Request, res: Response) {
     roleId,
   );
 
-  if (notify) {
+  const url =
+    notify && validatedEmails.length > 0
+      ? await loadProdUrlForProject(mgr, projectId)
+      : undefined;
+  if (url) {
     const project = await mgr.getProjectById(projectId);
+    await checkInviteEmailPhishing(req, res, {
+      sharer,
+      resources: [{ type: "app", name: project.name, url }],
+    });
     for (const email of validatedEmails) {
-      const url = await loadProdUrlForProject(mgr, projectId);
-      if (!url) {
-        continue;
-      }
       await sendAppEndUserInviteEmail(req, {
-        sharer: getUser(req),
+        sharer,
         email: email,
         url: url,
         appName: project.name,

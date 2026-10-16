@@ -447,6 +447,8 @@ const DEFAULT_DEVFLAGS = {
     modelName: "gemini-2.5-flash-lite",
     maxTokens: 10000,
   } as ModelProviderOpts,
+  emailPhishingCheckModelProviderOpts: undefined as
+    ModelProviderOpts | undefined,
 
   hostLessWorkspaceId: undefined as WorkspaceId | undefined,
   manuallyUpdatedHostLessProjectIds: [] as string[],

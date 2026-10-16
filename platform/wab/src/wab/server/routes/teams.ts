@@ -1,5 +1,6 @@
 import { DbMgr, ForbiddenError, checkPermissions } from "@/wab/server/db/DbMgr";
 import { prepareTeamSupportUrls as doPrepareTeamSupportUrls } from "@/wab/server/discourse/prepareTeamSupportUrls";
+import { checkInviteEmailPhishing } from "@/wab/server/emails/invite-phishing-check";
 import { sendShareEmail } from "@/wab/server/emails/share-email";
 import { Project, Team, Workspace } from "@/wab/server/entities/Entities";
 import { getEntitledTeam } from "@/wab/server/freeTrial";
@@ -247,6 +248,7 @@ export async function changeResourcePermissions(req: Request, res: Response) {
     MayTriggerPaywall<GrantRevokeResponse>
   >(req, async () => {
     const mgr = userDbMgr(req);
+    const sharer = getUser(req);
     const { grants, revokes, requireSignUp } =
       uncheckedCast<GrantRevokeRequest>(req.body);
     if (grants.length > MAX_GRANTS_PER_REQUEST) {
@@ -317,7 +319,7 @@ export async function changeResourcePermissions(req: Request, res: Response) {
           // not. We always re-send share emails if the user re-requested sharing with
           // a user!
           // Skip emailing the actor about their own role change
-          if (email !== getUser(req).email) {
+          if (email !== sharer.email) {
             emailsToSend.push({
               email: email,
               resourceType: type,
@@ -402,12 +404,24 @@ export async function changeResourcePermissions(req: Request, res: Response) {
       {},
       passResponse,
     );
-    if (paywall.paywall == "pass" && !req.apiTeam?.whiteLabelInfo) {
+    if (
+      paywall.paywall == "pass" &&
+      !req.apiTeam?.whiteLabelInfo &&
+      emailsToSend.length > 0
+    ) {
+      await checkInviteEmailPhishing(req, res, {
+        sharer,
+        resources: L.uniqBy(emailsToSend, (x) => x.resourceUrl).map((x) => ({
+          type: x.resourceType,
+          name: x.resourceName,
+          url: x.resourceUrl,
+        })),
+      });
       const promises = emailsToSend.map(
         async (x) =>
           await sendShareEmail(
             req,
-            getUser(req),
+            sharer,
             x.email,
             x.resourceType,
             x.resourceName,
