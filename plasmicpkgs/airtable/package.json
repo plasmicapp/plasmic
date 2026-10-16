@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/airtable",
-  "version": "0.0.276",
+  "version": "0.0.277",
   "description": "Plasmic code components for displaying Airtable records and collections.",
   "homepage": "https://www.plasmic.app",
   "repository": {

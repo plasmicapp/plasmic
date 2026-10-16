@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce-shopify",
-  "version": "0.0.273",
+  "version": "0.0.274",
   "description": "Shopify provider for Plasmic commerce components.",
   "homepage": "https://www.plasmic.app",
   "repository": {
