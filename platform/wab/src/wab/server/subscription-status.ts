@@ -6,25 +6,29 @@ import {
   getEntitledTeam,
 } from "@/wab/server/freeTrial";
 import { TeamId, TeamSubscriptionStatus } from "@/wab/shared/ApiSchema";
-import { uniq } from "lodash";
+import { chunk, uniq } from "lodash";
 import type { EntityManager } from "typeorm";
 
 export async function getLatestSubscriptionStatuses(
   em: EntityManager,
   teamIds: TeamId[],
 ) {
-  if (!teamIds.length) {
-    return new Map<TeamId, SubscriptionStatusRecord>();
+  const statuses = new Map<TeamId, SubscriptionStatusRecord>();
+  // Batch to avoid PostgreSQL's 65,535 bind-parameter limit.
+  for (const batch of chunk(teamIds, 10_000)) {
+    const rows = await em
+      .getRepository(SubscriptionStatusRecord)
+      .createQueryBuilder("status")
+      .distinctOn(['status."teamId"'])
+      .where('status."teamId" IN (:...teamIds)', { teamIds: batch })
+      .orderBy('status."teamId"')
+      .addOrderBy('status."updatedAt"', "DESC")
+      .getMany();
+    for (const row of rows) {
+      statuses.set(row.teamId, row);
+    }
   }
-  const rows = await em
-    .getRepository(SubscriptionStatusRecord)
-    .createQueryBuilder("status")
-    .distinctOn(['status."teamId"'])
-    .where('status."teamId" IN (:...teamIds)', { teamIds })
-    .orderBy('status."teamId"')
-    .addOrderBy('status."updatedAt"', "DESC")
-    .getMany();
-  return new Map(rows.map((row) => [row.teamId, row]));
+  return statuses;
 }
 
 /** Latest recorded status of each team's entitled team. */

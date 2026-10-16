@@ -350,6 +350,29 @@ describe("syncTeamSubscription", () => {
     ).get(teamId);
   }
 
+  it("loads latest statuses for more than 65,535 team IDs", () =>
+    withTrial(async ({ sudo, team, dbs }) => {
+      const mgr = InternalDbMgr.fromDbMgr(sudo);
+      const { team: otherTeam } = await getTeamAndWorkspace(dbs[1]());
+      await mgr.lockSubscriptionTeam(team.id);
+      await mgr.recordSubscriptionStatus(team.id, null, "trial");
+      await mgr.recordSubscriptionStatus(team.id, null, "free");
+      await mgr.lockSubscriptionTeam(otherTeam.id);
+      await mgr.recordSubscriptionStatus(otherTeam.id, null, "manual");
+
+      const teamIds = Array.from(
+        { length: 70_000 },
+        (_, i) => `missing-team-${i}` as TeamId,
+      );
+      teamIds[0] = team.id;
+      teamIds[teamIds.length - 1] = otherTeam.id;
+      const statuses = await mgr.getLatestSubscriptionStatuses(teamIds);
+      expect(statuses.size).toBe(2);
+      expect(statuses.get(team.id)?.status).toBe("free");
+      expect(statuses.get(otherTeam.id)?.status).toBe("manual");
+      expect(await mgr.getLatestSubscriptionStatuses([])).toEqual(new Map());
+    }));
+
   it("keeps valid subscriptions and resets invalid ones", () =>
     withTrial(async (fixture) => {
       const { team, sudo, em } = fixture;
