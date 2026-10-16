@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@plasmicapp/host':
-        specifier: ^2.0.19
-        version: 2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^2.0.20
+        version: 2.0.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -74,8 +74,8 @@ packages:
   '@leichtgewicht/ip-codec@2.0.5':
     resolution: {integrity: sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw==}
 
-  '@plasmicapp/host@2.0.19':
-    resolution: {integrity: sha512-owX7XGuhqodJMNSac/8uU4pKzdT2Uy062mKMg2oGQ+ds6GUK/fAKhWvfEPyn8ekv5vuZOK9RpUOPtjp/UzYIvA==}
+  '@plasmicapp/host@2.0.20':
+    resolution: {integrity: sha512-vg1sjL0C10WAqqXDuUfIYpGQiCfIxx3pzC3ukZkLQkSqd1o+JeY8wGycd0hbsbHUEbRCdHKzGfoGKJceZQOMAQ==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -1449,7 +1449,7 @@ snapshots:
 
   '@leichtgewicht/ip-codec@2.0.5': {}
 
-  '@plasmicapp/host@2.0.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicapp/host@2.0.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/query': 0.1.88(react@18.3.1)
       csstype: 3.2.3

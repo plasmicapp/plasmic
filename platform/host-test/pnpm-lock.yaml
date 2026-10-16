@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@plasmicapp/host':
-        specifier: ^2.0.19
-        version: 2.0.19(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: ^2.0.20
+        version: 2.0.20(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       lodash:
         specifier: ^4.18.1
         version: 4.18.1
@@ -177,8 +177,8 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@plasmicapp/host@2.0.19':
-    resolution: {integrity: sha512-owX7XGuhqodJMNSac/8uU4pKzdT2Uy062mKMg2oGQ+ds6GUK/fAKhWvfEPyn8ekv5vuZOK9RpUOPtjp/UzYIvA==}
+  '@plasmicapp/host@2.0.20':
+    resolution: {integrity: sha512-vg1sjL0C10WAqqXDuUfIYpGQiCfIxx3pzC3ukZkLQkSqd1o+JeY8wGycd0hbsbHUEbRCdHKzGfoGKJceZQOMAQ==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -1603,7 +1603,7 @@ snapshots:
       react-dom: 18.2.0(react@18.2.0)
       window-or-global: 1.0.1
 
-  '@plasmicapp/host@2.0.19(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@plasmicapp/host@2.0.20(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@plasmicapp/query': 0.1.88(react@18.2.0)
       csstype: 3.2.3
