@@ -69,8 +69,18 @@ class ConsoleMailer implements Mailer {
   }
 }
 
-export function createMailer(): Mailer {
-  if (process.env.NODE_ENV === "production") {
+export interface CreateMailerOptions {
+  /** Send real emails even outside production, such as from scripts. */
+  prod?: boolean;
+  /** Reuse SMTP connections across emails. */
+  pool?: boolean;
+}
+
+export function createMailer({
+  prod = false,
+  pool = false,
+}: CreateMailerOptions = {}): Mailer {
+  if (prod || process.env.NODE_ENV === "production") {
     const resendApiKey = getResendApiKey();
     if (resendApiKey) {
       return new ResendMailer(resendApiKey);
@@ -80,6 +90,7 @@ export function createMailer(): Mailer {
         host: "email-smtp.us-west-2.amazonaws.com",
         port: 587,
         auth: getSmtpAuth(),
+        ...(pool && { pool: true }),
       }),
     );
   } else {

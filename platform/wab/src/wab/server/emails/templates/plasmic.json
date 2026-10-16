@@ -177,6 +177,19 @@
           "cssFilePath": "plasmic/plasmic_kit_email_templates/PlasmicCommentsResolutions.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "csBO1M9NDqDd",
+          "name": "TemplateLegalNotice",
+          "type": "managed",
+          "projectId": "taNK5uwsoPrzfpYmBVwUwX",
+          "renderModuleFilePath": "plasmic/plasmic_kit_email_templates/PlasmicTemplateLegalNotice.tsx",
+          "importSpec": {
+            "modulePath": "TemplateLegalNotice.tsx"
+          },
+          "cssFilePath": "plasmic/plasmic_kit_email_templates/PlasmicTemplateLegalNotice.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [],

@@ -92,7 +92,8 @@ export function getResendApiKey() {
 }
 
 export function getSmtpAuth() {
-  return loadSecrets().smtpAuth;
+  const { EMAIL_SMTP_USER: user, EMAIL_SMTP_PASSWORD: pass } = process.env;
+  return user && pass ? { user, pass } : loadSecrets().smtpAuth;
 }
 
 export function getGithubSecrets() {

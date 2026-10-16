@@ -1,9 +1,9 @@
-import { generateEmailHtml } from "@/wab/server/emails/tools/generate";
+import { createMailer } from "@/wab/server/emails/Mailer";
+import {
+  generateEmailHtml,
+  writeHtmlToFile,
+} from "@/wab/server/emails/tools/generate";
 import { logger } from "@/wab/server/observability";
-import * as fs from "fs";
-import nodemailer from "nodemailer";
-import * as path from "path";
-import { Resend } from "resend";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
@@ -206,72 +206,15 @@ await writeHtmlToFile(html, outputPath);
 logger.info(`HTML saved to ${outputPath}. Open in the browser to preview!`);
 
 if (args.email) {
-  if (process.env.RESEND_API_KEY) {
-    const resend = new Resend(process.env.RESEND_API_KEY);
-
-    const { data, error } = await resend.emails.send({
+  try {
+    await createMailer({ prod: true }).sendMail({
       from: "test@plasmic.app",
       to: [args.email],
       subject: "Test email",
       html,
     });
-    if (error) {
-      logger.error("Error sending email", error);
-    } else {
-      logger.info(`Email sent to ${args.email}. Email ID: ${data?.id}`);
-    }
-  } else {
-    const transporter = nodemailer.createTransport({
-      host: "email-smtp.us-west-2.amazonaws.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_SMTP_USER,
-        pass: process.env.EMAIL_SMTP_PASSWORD,
-      },
-    });
-
-    transporter.sendMail(
-      {
-        from: "test@plasmic.app",
-        to: [args.email],
-        subject: "Test email",
-        html,
-      },
-      (err, info) => {
-        if (err) {
-          logger.error("Error sending email", err);
-          return;
-        }
-        logger.info(`Email sent to ${args.email}. Email ID: ${info.messageId}`);
-      },
-    );
+    logger.info(`Email sent to ${args.email}`);
+  } catch (err) {
+    logger.error("Error sending email", err);
   }
-}
-
-/**
- * Writes HTML content to a file
- * @param htmlContent The HTML content to write
- * @param outputPath The path where the HTML file should be written
- * @returns Promise that resolves when the file is written
- */
-export async function writeHtmlToFile(
-  htmlContent: string,
-  filePath: string = "out/output.html",
-): Promise<void> {
-  // Ensure the output directory exists
-  const dir = path.dirname(filePath);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-
-  return new Promise((resolve, reject) => {
-    fs.writeFile(filePath, htmlContent, "utf8", (err) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve();
-    });
-  });
 }

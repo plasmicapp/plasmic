@@ -150,6 +150,7 @@ function PlasmicLayout__RenderFunc(props: {
             data-plasmic-name={"emailImage"}
             data-plasmic-override={overrides.emailImage}
 
+            alt={"Plasmic logo"}
             className={classNames(
               "__wab_instance",
               "Layout__emailImage__fhmjg"
