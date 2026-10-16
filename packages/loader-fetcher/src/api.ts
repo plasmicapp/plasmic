@@ -1,3 +1,7 @@
+import type { AssetModule, CodeModule } from "./runtime-types";
+
+export type { AssetModule, CodeModule };
+
 export interface ComponentMeta {
   id: string;
   usedComponents: string[];
@@ -121,19 +125,6 @@ export interface LoaderBundleOutput extends ApiLoaderBundleOutput {
   filteredIds: Record<string, string[]>;
 }
 
-export interface CodeModule {
-  fileName: string;
-  code: string;
-  imports: string[];
-  type: "code";
-}
-
-export interface AssetModule {
-  fileName: string;
-  source: string;
-  type: "asset";
-}
-
 const VERSION = "10";
 
 export const isBrowser =
@@ -142,7 +133,7 @@ export const isBrowser =
   typeof window.document !== "undefined";
 
 export function transformApiLoaderBundleOutput(
-  bundle: ApiLoaderBundleOutput
+  bundle: ApiLoaderBundleOutput,
 ): LoaderBundleOutput {
   return {
     ...bundle,
@@ -171,7 +162,7 @@ export class Api {
       /** @deprecated No-op. Native fetch is always used now. */
       nativeFetch?: boolean;
       manualRedirect?: boolean;
-    }
+    },
   ) {
     this.apiHost =
       opts.apiHost ?? opts.host ?? "https://codegen-origin.plasmic.app";
@@ -193,7 +184,7 @@ export class Api {
       i18nKeyScheme?: "content" | "hash" | "path";
       i18nTagPrefix?: string;
       skipHead?: boolean;
-    }
+    },
   ): Promise<LoaderBundleOutput> {
     const { platform, preview } = opts;
     const query = new URLSearchParams([
@@ -233,14 +224,14 @@ export class Api {
         throw new Error(
           `Error fetching loader data, a redirect was expected: ${
             error?.error?.message ?? redirectResp.statusText
-          }`
+          }`,
         );
       }
 
       const nextLocation = redirectResp.headers.get("location");
       if (!nextLocation) {
         throw new Error(
-          `Error fetching loader data, a redirect was expected but no location header was found`
+          `Error fetching loader data, a redirect was expected but no location header was found`,
         );
       }
 
@@ -254,7 +245,7 @@ export class Api {
       });
 
       const json = transformApiLoaderBundleOutput(
-        await this.verifyAndParseJsonResponse(resp)
+        await this.verifyAndParseJsonResponse(resp),
       );
       this.lastResponse = {
         bundle: json,
@@ -286,12 +277,12 @@ export class Api {
 
   private async verifyAndParseJsonResponse(
     resp: Response,
-    errorText = "Error fetching loader data"
+    errorText = "Error fetching loader data",
   ) {
     if (resp.status >= 400) {
       const error = await this.parseJsonResponse(resp);
       throw new Error(
-        `${errorText}: ${error?.error?.message ?? resp.statusText}`
+        `${errorText}: ${error?.error?.message ?? resp.statusText}`,
       );
     }
     return (await this.parseJsonResponse(resp)) as ApiLoaderBundleOutput;
@@ -303,7 +294,7 @@ export class Api {
       return JSON.parse(text);
     } catch (err) {
       throw new Error(
-        `Error parsing JSON response: ${err}; status: ${resp.status}; response: ${text}`
+        `Error parsing JSON response: ${err}; status: ${resp.status}; response: ${text}`,
       );
     }
   }
@@ -326,12 +317,12 @@ export class Api {
 
   getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]) {
     return `${this.cdnHost}/api/v1/loader/chunks?bundleKey=${encodeURIComponent(
-      bundle.bundleKey ?? "null"
+      bundle.bundleKey ?? "null",
     )}&fileName=${encodeURIComponent(
       modules
         .map((m) => m.fileName)
         .sort()
-        .join(",")
+        .join(","),
     )}`;
   }
 }

@@ -129,21 +129,9 @@ function _PlasmicCanvasHost() {
       renderStudioIntoIframe();
     }
   }, [shouldRenderStudio, isFrameAttached]);
-  React.useEffect(() => {
-    if (!shouldRenderStudio && !document.querySelector("#getlibs") && isLive) {
-      const scriptElt = document.createElement("script");
-      scriptElt.id = "getlibs";
-      scriptElt.src = `${getPlasmicStaticBaseUrl()}/js/getlibs.js`;
-      scriptElt.async = false;
-      scriptElt.onload = () => {
-        (window as any).__GetlibsReadyResolver?.();
-      };
-      document.head.append(scriptElt);
-    }
-  }, [shouldRenderStudio]);
 
   const [canvasContextValue, setCanvasContextValue] = React.useState(() =>
-    deriveCanvasContextValue()
+    deriveCanvasContextValue(),
   );
 
   React.useEffect(() => {
@@ -174,14 +162,14 @@ function _PlasmicCanvasHost() {
         </PlasmicCanvasContext.Provider>
       </ErrorBoundary>,
       appDiv,
-      "plasmic-app"
+      "plasmic-app",
     );
   }
   if (shouldRenderStudio && window.parent === window) {
     return (
       <iframe
         src={`https://docs.plasmic.app/app-content/app-host-ready#appHostUrl=${encodeURIComponent(
-          location.href
+          location.href,
         )}`}
         style={{
           width: "100vw",
@@ -210,7 +198,7 @@ export const PlasmicCanvasHost: React.FunctionComponent<
   PlasmicCanvasHostProps
 > = () => {
   const [node, setNode] = React.useState<React.ReactElement<any, any> | null>(
-    null
+    null,
   );
   React.useEffect(() => {
     setNode(<_PlasmicCanvasHost />);

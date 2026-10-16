@@ -1,42 +1,39 @@
 import "@plasmicapp/react-web/lib/plasmic.css";
 import "./live.css";
+import { createPreview } from "./preview";
+import { createRenderer } from "./render";
+import { createLiveRuntime } from "./runtime";
+import type { LiveFrame, WindowWithLiveFrame } from "./types";
 
-const SystemJs = (window as any).SystemJS;
-const Sub = (window as any).__Sub;
+const w = window as any;
+const Sub = w.__Sub;
 
-// Directly register these pre-loaded dependencies within the live frame,
-// so we don't have to load them remotely
-SystemJs.set(SystemJs.resolveSync("react"), SystemJs.newModule(Sub.React));
-SystemJs.set(
-  SystemJs.resolveSync("react-dom"),
-  SystemJs.newModule(Sub.ReactDOM)
-);
-SystemJs.set(
-  SystemJs.resolveSync("@plasmicapp/react-web"),
-  SystemJs.newModule((window as any).__PlasmicReactWebBundle)
-);
-SystemJs.set(
-  SystemJs.resolveSync("@plasmicapp/data-sources-context"),
-  SystemJs.newModule((window as any).__PlasmicDataSourcesContextBundle)
-);
-SystemJs.set(SystemJs.resolveSync("@plasmicapp/host"), SystemJs.newModule(Sub));
-if (Sub.PlasmicQuery) {
-  SystemJs.set(
-    SystemJs.resolveSync("@plasmicapp/query"),
-    SystemJs.newModule(Sub.PlasmicQuery)
-  );
-  SystemJs.set(
-    SystemJs.resolveSync("@plasmicapp/react-web/lib/data-sources"),
-    SystemJs.newModule((window as any).__PlasmicDataSourcesBundle)
-  );
-}
-// Also register dummy content for plasmic.css.  We don't need the real
-// content here, because the import at the top of the file already inserted
-// the css into the document.
-SystemJs.refreshXModules([
-  {
-    name: "@plasmicapp/react-web/lib/plasmic.css",
-    source: "/* nothing to see */",
-    lang: "css",
+const runtime = createLiveRuntime({
+  react: Sub.React,
+  "react-dom": Sub.ReactDOM,
+  "@plasmicapp/host": Sub,
+  "@plasmicapp/react-web": w.__PlasmicReactWebBundle,
+  "@plasmicapp/data-sources-context": w.__PlasmicDataSourcesContextBundle,
+  // The import at the top of this file already inserted the real CSS.
+  "@plasmicapp/react-web/lib/plasmic.css": {},
+  ...(Sub.PlasmicQuery && {
+    "@plasmicapp/query": Sub.PlasmicQuery,
+    "@plasmicapp/react-web/lib/data-sources": w.__PlasmicDataSourcesBundle,
+  }),
+});
+
+const renderer = createRenderer(Sub);
+const preview = createPreview(Sub, runtime.require, renderer.renderRoot);
+
+const live: LiveFrame = {
+  ...renderer,
+  setProps: preview.setProps,
+  setGlobals: preview.setGlobals,
+  async update(modules, render) {
+    runtime.update(modules);
+    if (render) {
+      await preview.render(render);
+    }
   },
-]);
+};
+(window as WindowWithLiveFrame).__plasmicLive = live;

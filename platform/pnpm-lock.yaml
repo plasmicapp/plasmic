@@ -1770,6 +1770,9 @@ importers:
       stripe:
         specifier: 22.6.0
         version: 22.6.0(@types/node@24.12.2)
+      sucrase:
+        specifier: ^3.35.1
+        version: 3.35.1
       svgo:
         specifier: 4.1.0
         version: 4.1.0

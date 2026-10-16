@@ -3,33 +3,15 @@ import {
   DocsPortalCtx,
   IconToggleProp,
 } from "@/wab/client/components/docs/DocsPortalCtx";
-import {
-  CodeModule,
-  createCodeComponentHelperModule,
-  createCodeComponentModule,
-  createComponentModules,
-  createComponentOutput,
-  createDepsProjectMods,
-  createDepsProjectOutput,
-  createGlobalVariantGroupModule,
-  createIconAssetModule,
-  createProjectMods,
-  createProjectOutput,
-  updateModules,
-} from "@/wab/client/components/live/live-syncer";
-import { safeCallbackify } from "@/wab/commons/control";
-import {
-  getReferencedVariantGroups,
-  isStandaloneVariantGroup,
-} from "@/wab/shared/Variants";
+import { buildDocsPreviewModules } from "@/wab/client/components/live/preview-codegen";
+import { syncPreview } from "@/wab/client/components/live/preview-sync";
+import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { componentToDeepReferenced } from "@/wab/shared/cached-selectors";
-import { isCodeComponentWithHelpers } from "@/wab/shared/code-components/code-components";
 import {
   makeAssetClassName,
   makeIconAssetFileNameWithoutExt,
 } from "@/wab/shared/codegen/image-assets";
 import {
-  exportStyleConfig,
   getNamedDescendantNodes,
   makeNodeNamer,
 } from "@/wab/shared/codegen/react-p";
@@ -44,16 +26,12 @@ import {
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { ProjectConfig } from "@/wab/shared/codegen/types";
 import { jsLiteral, toVarName } from "@/wab/shared/codegen/util";
-import { extractUsedGlobalVariantsForComponents } from "@/wab/shared/codegen/variants";
-import { assert, ensure, removeAt, spawn } from "@/wab/shared/common";
+import { assert, ensure, removeAt } from "@/wab/shared/common";
 import {
   getSubComponents,
-  isCodeComponent,
   isPlumeComponent,
 } from "@/wab/shared/core/components";
-import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { getDependenciesWithReferencedCss } from "@/wab/shared/core/project-deps";
-import { allImageAssets } from "@/wab/shared/core/sites";
 import {
   Component,
   ImageAsset,
@@ -67,9 +45,7 @@ import { getPlumeDocsPlugin } from "@/wab/shared/plume/plume-registry";
 import generate from "@babel/generator";
 import * as parser from "@babel/parser";
 import * as t from "@babel/types";
-import * as asynclib from "async";
 import L from "lodash";
-import { autorun } from "mobx";
 import * as printerEstree from "prettier/plugins/estree";
 import * as parserTypescript from "prettier/plugins/typescript";
 import * as Prettier from "prettier/standalone";
@@ -89,153 +65,39 @@ export function syncDocsPreview(
 ) {
   const { onRendered, onError, codePreviewCtx } = opts;
 
-  // We use a queue so we would only be syncing one at a time, and
-  // can reliably deliver rendered and error messages.
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  const renderQueue = asynclib.cargo(
-    safeCallbackify(async (tasks: any[]) => {
-      const { modules } = ensure(
-        L.last(tasks),
-        "Expecting tasks to be passed from cargo",
-      ) as any;
-      return new Promise<void>((resolve) => {
-        // Our listener is invoked once the inner React app is rendered
-        // or errors out
-        const listener = (event: MessageEvent) => {
-          if (
-            event.data.source === "plasmic-live" &&
-            event.data.type === "rendered"
-          ) {
-            onRendered && onRendered();
-            doc.defaultView?.removeEventListener("message", listener);
-            resolve();
-          }
-          if (
-            event.data.source === "plasmic-live" &&
-            event.data.type === "error"
-          ) {
-            onError && onError(event.data.error);
-            doc.defaultView?.removeEventListener("message", listener);
-            resolve();
-          }
-        };
-
-        if (doc.defaultView) {
-          doc.defaultView.addEventListener("message", listener);
-        }
-
-        // Send the generated code modules to the live frame
-        updateModules(doc, modules);
-      });
-    }),
-  );
-  return autorun(
-    () => {
-      if (!docsCtx.tryGetFocusedComponent() && !docsCtx.tryGetFocusedIcon()) {
-        return;
-      }
-
-      // This function is within a mobx autorun, so it'll be re-run
-      // whenever mobx observables change -- specifically, the view
-      // state (current component, toggles, custom code) and also
-      // data model.
-      const { modules, globalGroups, depsProjectConfigs } =
-        serializeDependentModules(docsCtx);
-
-      modules.push(
-        createPreviewModule(
-          docsCtx,
-          globalGroups,
-          depsProjectConfigs,
-          codePreviewCtx,
-        ),
-      );
-
-      spawn(renderQueue.push({ modules }));
-    },
+  return syncPreview(
+    ensure(doc.defaultView, "docs preview frame has a window"),
+    () => buildDocsPreviewUpdate(docsCtx, codePreviewCtx),
+    (error) => (error ? onError?.(error as Error) : onRendered()),
     { name: "DocsPreviewCanvas.syncPreview" },
   );
 }
 
-/**
- * Serializes all the CodeModules necessary to render the live preview
- */
-export function serializeDependentModules(docsCtx: DocsPortalCtx) {
-  const component = docsCtx.tryGetFocusedComponent();
-  const site = docsCtx.studioCtx.site;
-  const siteInfo = docsCtx.studioCtx.siteInfo;
-
-  const modules: CodeModule[] = [];
-
-  const styleOutput = exportStyleConfig({ targetEnv: "preview" });
-  modules.push({
-    name: `./${styleOutput.defaultStyleCssFileName}`,
-    lang: "css",
-    source: styleOutput.defaultStyleCssRules,
-  });
-
-  const projectOutput = createProjectOutput(site, siteInfo.id, siteInfo.name);
-  modules.push(...createProjectMods(projectOutput));
-  const depsProjectConfigs = createDepsProjectOutput(site);
-  modules.push(...createDepsProjectMods(depsProjectConfigs));
-
-  // Give access to all icons, so that the user can use different icons
-  // in the custom code editor
-  const allIcons = allImageAssets(site, { includeDeps: "direct" }).filter(
-    (x) => x.type === ImageAssetType.Icon && !!x.dataUri,
-  );
-  modules.push(...allIcons.map((asset) => createIconAssetModule(asset)));
-
-  if (component) {
-    const referencedComponents = componentToDeepReferenced(component, true);
-    for (const comp of referencedComponents) {
-      if (isCodeComponent(comp)) {
-        modules.push(createCodeComponentModule(comp, { idFileNames: true }));
-        if (isCodeComponentWithHelpers(comp)) {
-          modules.push(
-            createCodeComponentHelperModule(comp, { idFileNames: true }),
-          );
-        }
-      } else {
-        modules.push(
-          ...createComponentModules(
-            createComponentOutput(
-              docsCtx.studioCtx,
-              comp,
-              projectOutput,
-              false,
-            ),
-          ),
-        );
-      }
-    }
-
-    const globalGroups = Array.from(
-      getReferencedVariantGroups(
-        extractUsedGlobalVariantsForComponents(
-          site,
-          [...referencedComponents],
-          docsCtx.studioCtx.appCtx.appConfig.usePlasmicImg,
-        ),
-      ),
-    );
-
-    modules.push(
-      ...globalGroups.map((group) => createGlobalVariantGroupModule(group)),
-    );
-
-    return {
-      modules,
-      globalGroups,
-      depsProjectConfigs,
-    };
-  } else {
-    return {
-      modules,
-      globalGroups: [] as VariantGroup[],
-      depsProjectConfigs,
-    };
+export function buildDocsPreviewUpdate(
+  docsCtx: DocsPortalCtx,
+  codePreviewCtx?: CodePreviewCtx,
+) {
+  if (!docsCtx.tryGetFocusedComponent() && !docsCtx.tryGetFocusedIcon()) {
+    return undefined;
   }
+  const { modules, globalGroups, depsProjectConfigs } =
+    serializeDependentModules(docsCtx);
+  const entry = createPreviewModule(
+    docsCtx,
+    globalGroups,
+    depsProjectConfigs,
+    codePreviewCtx,
+  );
+  modules.push(entry);
+  return { modules, render: { run: entry.name } };
+}
+
+export function serializeDependentModules(docsCtx: DocsPortalCtx) {
+  return buildDocsPreviewModules(
+    docsCtx.studioCtx,
+    docsCtx.tryGetFocusedComponent(),
+    docsCtx.studioCtx.appCtx.appConfig.usePlasmicImg,
+  );
 }
 
 export function depsForComponent(
@@ -404,7 +266,6 @@ function createPreviewModule(
       codePreviewCtx?.uuid
     }.tsx`,
     lang: "tsx",
-    run: true,
     source: `
 import React from "react";
 import ReactDOM from "react-dom";
@@ -426,8 +287,6 @@ PlasmicComponent.getPlumeType = function({ component }) {
   return componentsMap[component].__plumeType;
 }
 
-const Sub = (window as any).__Sub;
-
 export function __run() {
   try {
     ReactDOM.unmountComponentAtNode(document.getElementById("plasmic-app"));
@@ -435,35 +294,23 @@ export function __run() {
     // Swallow errors when unmounting
   }
 
-  const startRenderTime = performance.now();
-
   document.body.style.overflow = "auto";
 
   ${before}
-  Sub.hostUtils.setPlasmicRootNode(${content});
-
-  console.log("RENDERING TOOK", performance.now() - startRenderTime);
-  window.postMessage({
-    source: "plasmic-live",
-    type: "rendered"
-  });
-
-  for (const link of document.links) {
-    if (link.href !== undefined) {
-      link.href = "#";
+  return window.__plasmicLive.renderRoot(${content}).then(() => {
+    for (const link of document.links) {
+      if (link.href !== undefined) {
+        link.href = "#";
+      }
     }
-  }
+  });
 }
     `,
   };
 }
 
 type ComponentPropType =
-  | "plasmicIntrinsic"
-  | "variant"
-  | "arg"
-  | "override"
-  | "rootProp";
+  "plasmicIntrinsic" | "variant" | "arg" | "override" | "rootProp";
 const intrinsicProps = ["variants", "args", "overrides"];
 
 function variantAndArgNamesForComponent(component: Component) {

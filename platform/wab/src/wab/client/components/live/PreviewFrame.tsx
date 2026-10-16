@@ -5,7 +5,7 @@ import {
 import { trapInteractionError } from "@/wab/client/components/canvas/studio-canvas-util";
 import { PreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import {
-  onLoadInjectSystemJS,
+  onLoadInjectLiveRuntime,
   pushPreviewModules,
 } from "@/wab/client/components/live/live-syncer";
 import {
@@ -90,7 +90,7 @@ export function useLivePreview(previewCtx: PreviewCtx): LivePreview {
 
   const onLoad = async () => {
     const frameWindow = ensure(frameRef.current, `Frame must be loaded`);
-    await onLoadInjectSystemJS(
+    await onLoadInjectLiveRuntime(
       previewCtx.studioCtx,
       frameWindow,
       true,
@@ -185,8 +185,9 @@ export function useLivePreview(previewCtx: PreviewCtx): LivePreview {
       return;
     }
 
-    const doc = frameRef.current.document;
-    const dispose = pushPreviewModules(doc, previewCtx, { lazy: false });
+    const dispose = pushPreviewModules(frameRef.current, previewCtx, {
+      lazy: false,
+    });
 
     // If previewCtx has a hash, scroll frame to it.
     if (previewCtx.pageHash) {

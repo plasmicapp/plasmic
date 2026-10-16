@@ -5,7 +5,7 @@ import {
 import { CodePreviewCtx } from "@/wab/client/components/docs/CodePreviewSnippet";
 import { DocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
 import { syncDocsPreview } from "@/wab/client/components/docs/serialize-docs-preview";
-import { onLoadInjectSystemJS } from "@/wab/client/components/live/live-syncer";
+import { onLoadInjectLiveRuntime } from "@/wab/client/components/live/live-syncer";
 import {
   getSortedHostLessPkgs,
   getVersionForCanvasPackages,
@@ -106,7 +106,7 @@ export const DocsPreviewCanvas = observer(function DocsPreviewCanvas(props: {
             );
             const onAnchorClick = (href) =>
               showCanvasPageNavigationNotification(studioCtx, href);
-            await onLoadInjectSystemJS(
+            await onLoadInjectLiveRuntime(
               studioCtx,
               frameWindow,
               false,
