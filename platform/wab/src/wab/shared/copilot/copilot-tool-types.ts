@@ -1,4 +1,8 @@
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import {
+  stripImpliedTypeTags,
+  stripImpliedTypeTagsFromJsonSchema,
+} from "@/wab/shared/copilot/type-tags";
 import { jsonToXml } from "@/wab/shared/web-exporter/json-to-xml";
 import { zodSchema, type JSONSchema7 } from "ai";
 import { z } from "zod";
@@ -58,7 +62,8 @@ export type CopilotTool<
  * typed. The wrapper parses the wire input against `inputSchema` (schema transforms
  * run in the host frame, since Expr outputs can't cross the frame boundary). The authored
  * execute receives the parsed input and returns the typed output model, which the wrapper
- * validates against `outputSchema` and serializes to the agent's preferred format.
+ * validates against `outputSchema` and serializes to the agent's preferred format. JSON
+ * output drops `__type` tags the schema already implies (see `stripImpliedTypeTags`).
  */
 export function defineCopilotTool<
   TInput extends z.ZodObject<z.ZodRawShape>,
@@ -80,7 +85,11 @@ export function defineCopilotTool<
       );
       return opts?.outputFormat === "xml"
         ? jsonToXml(output, prettify)
-        : JSON.stringify(output, null, prettify ? 2 : undefined);
+        : JSON.stringify(
+            stripImpliedTypeTags(meta.outputSchema, output),
+            null,
+            prettify ? 2 : undefined,
+          );
     },
   };
 }
@@ -109,8 +118,11 @@ export function mapCopilotToolsToJsonSchema(
         // useReferences lets recursive schemas such as Expr.fallback come out
         // as `$ref` instead of degrading to `any` with a console warning.
         // Output schemas never reach the model provider, so `$ref` is not a concern here.
-        outputSchema: zodSchema(tool.outputSchema, { useReferences: true })
-          .jsonSchema as JSONSchema7,
+        // Describes the JSON output, which only tags union members.
+        outputSchema: stripImpliedTypeTagsFromJsonSchema(
+          zodSchema(tool.outputSchema, { useReferences: true })
+            .jsonSchema as JSONSchema7,
+        ),
       },
     ]),
   );

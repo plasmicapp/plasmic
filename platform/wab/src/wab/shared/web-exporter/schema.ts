@@ -21,7 +21,9 @@ export function outputResultSchema(resultSchema: z.ZodTypeAny) {
       .describe("Human-readable status messages from the tool, if any."),
     results: z
       .array(resultSchema)
-      .describe("Serialized resources, each self-describing via `__type`."),
+      .describe(
+        "Serialized resources. In JSON, `__type` is present only where it distinguishes union members.",
+      ),
   });
 }
 
