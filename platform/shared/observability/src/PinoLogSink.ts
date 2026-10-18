@@ -1,6 +1,7 @@
 import pino, { Logger as PinoLog } from "pino";
 import type { Logger } from "./Logger";
 import type { Properties } from "./Properties";
+import { redactError } from "./redactError";
 
 export class PinoLogSink implements Logger {
   private readonly pinoLogger: PinoLog;
@@ -8,6 +9,7 @@ export class PinoLogSink implements Logger {
   constructor(level = "debug") {
     this.pinoLogger = pino({
       level,
+      serializers: { err: (value) => value },
       formatters: {
         level: (label) => ({ level: label }),
       },
@@ -26,13 +28,10 @@ export class PinoLogSink implements Logger {
       ...payload,
     };
 
-    if (payload && payload.error instanceof Error) {
-      const err: Error = payload.error;
-      logEntry.error = {
-        name: err.name,
-        message: err.message,
-        stack: err.stack,
-      };
+    for (const [key, value] of Object.entries(logEntry)) {
+      if (value instanceof Error) {
+        logEntry[key] = redactError(value);
+      }
     }
 
     this.pinoLogger[level](logEntry);

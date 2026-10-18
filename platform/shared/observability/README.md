@@ -42,6 +42,25 @@ nested async context, log payload. Later values win, including `undefined`.
 The output logger and active span events receive the same logging context.
 Nested contexts restore their parent on return or failure.
 
+Passing an `Error` as the log payload wraps it under `error`. JSON output includes
+its custom fields, name, message, and stack, just as when passed as `{ error }`.
+Error properties remain inside `error`, preserving the log message and logging context.
+Pino and span events serialize top-level Error values (including `error` and `err`)
+as plain objects containing name, message, stack, primitive custom fields and
+`details`. Error causes use the same filtering, primitive causes are preserved,
+and circular causes become `[Circular]`. Other object-valued causes and fields
+are omitted because request configs and headers can carry credentials. `details`
+is explicitly retained as supplied; callers must keep it free of credentials.
+This is error-field filtering, not general redaction of arbitrary log payloads.
+
+Span events keep scalar attributes and homogeneous arrays in their original types.
+Other values use Node's `util.inspect` to produce readable text, including error
+details, causes, bigints, and circular references. Inspection has no depth, array,
+or string length limit and does not call custom inspection hooks. A value that
+throws during inspection becomes `[Unserializable]`. Undefined values and empty
+attribute keys are omitted. Conversion is skipped without a recording span.
+Pino output remains structured JSON.
+
 `withSpan` uses the service name as its tracer name. Its optional third argument
 sets span attributes independently of logging context. It ends spans on success
 and failure, records normalized `Error` exceptions, and rethrows the original value.

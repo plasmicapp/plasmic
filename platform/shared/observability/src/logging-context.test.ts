@@ -69,6 +69,88 @@ describe("logging context", () => {
     expect(output.mock.calls[0][1].error).toBe(error);
   });
 
+  it.each(["bare", "error", "err"])(
+    "filters %s errors in JSON and span events without changing the input or context",
+    async (key) => {
+      const { logger, withLogContext, withSpan } = initObservability(
+        "test-service",
+        "production",
+        {},
+      );
+      const cause = Object.assign(new Error("upstream failed"), {
+        code: "ECONNREFUSED",
+        config: { token: "secret" },
+      });
+      const error = Object.freeze(
+        Object.assign(new Error("request failed", { cause }), {
+          name: "RequestError",
+          statusCode: 503,
+          details: { retries: 2 },
+          request: { headers: { Authorization: "secret" } },
+        }),
+      );
+      cause.cause = error;
+      const payload = key === "bare" ? error : Object.freeze({ [key]: error });
+      await withLogContext({ requestId: "request-a", statusCode: 500 }, () =>
+        withSpan("operation", async () =>
+          logger.error("Failed request", payload),
+        ),
+      );
+      const field = key === "bare" ? "error" : key;
+      expect(logs[0]).toMatchObject({
+        message: "Failed request",
+        requestId: "request-a",
+        statusCode: 500,
+        [field]: {
+          name: "RequestError",
+          message: error.message,
+          stack: error.stack,
+          statusCode: 503,
+          details: { retries: 2 },
+          cause: {
+            message: cause.message,
+            code: "ECONNREFUSED",
+            cause: "[Circular]",
+          },
+        },
+      });
+      expect(JSON.stringify(logs)).not.toContain("secret");
+      const attributes = exporter.getFinishedSpans()[0].events[0].attributes;
+      expect(attributes).toMatchObject({
+        requestId: "request-a",
+        statusCode: 500,
+      });
+      expect(attributes?.[field]).toContain("upstream failed");
+      expect(attributes?.[field]).toContain("ECONNREFUSED");
+      expect(attributes?.[field]).not.toContain("secret");
+      expect(error.request.headers.Authorization).toBe("secret");
+      expect(error.cause).toBe(cause);
+      expect(cause.cause).toBe(error);
+    },
+  );
+
+  it.each(["upstream failed", { config: { token: "secret" } }])(
+    "keeps primitive causes and omits object causes: %j",
+    async (cause) => {
+      const { logger, withSpan } = initObservability(
+        "test-service",
+        "production",
+        {},
+      );
+      await withSpan("operation", async () =>
+        logger.error("failed", new Error("outer", { cause })),
+      );
+      expect(logs[0].error.cause).toBe(
+        typeof cause === "string" ? cause : undefined,
+      );
+      const attributes = exporter.getFinishedSpans()[0].events[0].attributes;
+      if (typeof cause === "string") {
+        expect(attributes?.error).toContain(cause);
+      }
+      expect(JSON.stringify(attributes)).not.toContain("secret");
+    },
+  );
+
   it("shares service metadata, nested async and payload context between JSON and span events", async () => {
     const { logger, withLogContext, withSpan } = initObservability(
       "test-service",

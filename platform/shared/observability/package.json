@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@opentelemetry/api": "catalog:",
+    "@opentelemetry/core": "2.2.0",
     "@sentry/node": "catalog:",
     "pino": "^9.14.0"
   },
