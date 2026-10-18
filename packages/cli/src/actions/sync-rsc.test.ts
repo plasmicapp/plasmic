@@ -10,6 +10,7 @@ import { getChecksums } from "../utils/checksum";
 import { ComponentConfig } from "../utils/config-utils";
 import { getContext } from "../utils/get-context";
 import { ensure } from "../utils/lang-utils";
+import * as userUtils from "../utils/user-utils";
 import {
   defaultPlasmicJson,
   opts,
@@ -104,6 +105,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  vi.restoreAllMocks();
   standardTestTeardown();
 });
 
@@ -167,6 +169,128 @@ describe("RSC page sync", () => {
       );
       expect(existsSrc(`../app/page.${ext}`)).toBe(false);
       expect(existsSrc(`../app/page-client.${ext}`)).toBe(false);
+    },
+  );
+
+  test("carries both skeletons over when the page is renamed", async () => {
+    setupRscProject("ts");
+    await sync(opts);
+    const oldConfig = homepageConfig();
+    const clientPath = ensure(oldConfig.rsc?.clientModulePath);
+    const renderImport = `import { PlasmicHomepage, DefaultHomepageProps } from "./x"; // plasmic-import: homepageId/render`;
+    // Skeletons lose their plasmic-import markers after the first sync
+    const serverImport = (serverModulePath: string) =>
+      path.relative(
+        path.dirname(oldConfig.importSpec.modulePath),
+        serverModulePath.replace(/\.tsx$/, ""),
+      );
+    writeSrc(
+      oldConfig.importSpec.modulePath,
+      `import { PlasmicHomepageServer } from "${serverImport(
+        ensure(oldConfig.rsc?.serverModulePath),
+      )}";
+// user page edits
+export default PlasmicHomepageServer;
+`,
+    );
+    writeSrc(
+      clientPath,
+      `"use client";
+${renderImport}
+// user client edits
+export function ClientHomepage(props: DefaultHomepageProps) {
+  return <PlasmicHomepage {...props} />;
+}
+`,
+    );
+
+    addMockProject({
+      projectId: "projectId1",
+      branchName: "main",
+      projectApiToken: "abc",
+      version: "1.2.3",
+      projectName: "project1",
+      components: [{ id: "homepageId", name: "Landing", path: "/", rsc: true }],
+      dependencies: {},
+    });
+    await sync(opts);
+
+    const config = homepageConfig();
+    expect(config.importSpec.modulePath).toBe(oldConfig.importSpec.modulePath);
+    expect(config.rsc?.clientModulePath).toBe(clientPath);
+    const page = readSrc(config.importSpec.modulePath);
+    expect(page).toContain("user page edits");
+    expect(page).toContain(
+      `from "${serverImport(ensure(config.rsc?.serverModulePath))}"`,
+    );
+    expect(page).toContain("PlasmicLandingServer as PlasmicHomepageServer");
+    const client = readSrc(clientPath);
+    expect(client).toContain("user client edits");
+    expect(client).toContain("export { ClientHomepage as ClientLanding }");
+    expect(client).toContain("<PlasmicHomepage {...props} />");
+    expect(client).toContain("PlasmicLanding as PlasmicHomepage");
+    for (const oldPath of [
+      oldConfig.renderModuleFilePath,
+      oldConfig.cssFilePath,
+      ensure(oldConfig.rsc?.serverModulePath),
+    ]) {
+      expect(existsSrc(oldPath)).toBe(false);
+    }
+    expect(existsSrc(ensure(config.rsc?.serverModulePath))).toBe(true);
+  });
+
+  test.each(["ts", "js"] as const)(
+    "preserves a custom client path when the page is renamed (%s)",
+    async (lang) => {
+      setupRscProject(lang);
+      await sync(opts);
+      const oldConfig = homepageConfig();
+      const defaultPath = ensure(
+        oldConfig.rsc?.clientModulePath,
+        "Client was synced",
+      );
+      const ext = lang === "js" ? "jsx" : "tsx";
+      const customPath = `../custom/home-client.${ext}`;
+      moveSrc(defaultPath, customPath);
+      const config = tmpRepo.readPlasmicJson();
+      ensure(
+        config.projects[0].components[0].rsc,
+        "Page has RSC config",
+      ).clientModulePath = customPath;
+      tmpRepo.writePlasmicJson(config);
+      const page =
+        'import Client from "../custom/home-client";\nexport default Client;\n';
+      writeSrc(oldConfig.importSpec.modulePath, page);
+      writeSrc(
+        customPath,
+        '"use client";\nexport default function ClientHomepage() { return null; }\n',
+      );
+
+      addMockProject({
+        projectId: "projectId1",
+        branchName: "main",
+        projectApiToken: "abc",
+        version: "1.2.3",
+        projectName: "project1",
+        components: [
+          { id: "homepageId", name: "Landing", path: "/", rsc: true },
+        ],
+        dependencies: {},
+      });
+      await sync(opts);
+
+      const renamed = homepageConfig();
+      expect(readSrc(renamed.importSpec.modulePath)).toBe(page);
+      const importedClientPath = path.join(
+        path.dirname(renamed.importSpec.modulePath),
+        `../custom/home-client.${ext}`,
+      );
+      expect(existsSrc(importedClientPath)).toBe(true);
+      expect(renamed.rsc?.clientModulePath).toBe(customPath);
+      expect(readSrc(customPath)).toContain(
+        "export default function ClientHomepage()",
+      );
+      expect(existsSrc(defaultPath)).toBe(false);
     },
   );
 
@@ -325,4 +449,101 @@ describe("RSC page sync", () => {
       expect(await checksumsFor()).toEqual([]);
     },
   );
+});
+
+test.each([
+  ["page.tsx", false],
+  ["page-client.tsx", false],
+  ["page.tsx", true],
+  ["page-client.tsx", true],
+] as const)(
+  "declining a renamed page's %s destination preserves files and config (skipBuffering=%s)",
+  async (file, skipBuffering) => {
+    opts.skipBuffering = skipBuffering;
+    setupRscProject("ts");
+    await sync(opts);
+    const old = homepageConfig();
+    writeSrc(
+      old.importSpec.modulePath,
+      "// edited page\nexport default function Homepage() { return null; }",
+    );
+    writeSrc(
+      ensure(old.rsc?.clientModulePath),
+      "// edited client\nexport function ClientHomepage() { return null; }",
+    );
+    const destination = `../app/about/${file}`;
+    writeSrc(destination, "// existing destination");
+    const config = tmpRepo.readPlasmicJson();
+    const paths = [
+      old.importSpec.modulePath,
+      ensure(old.rsc?.clientModulePath),
+      old.renderModuleFilePath,
+      old.cssFilePath,
+      ensure(old.rsc?.serverModulePath),
+      destination,
+    ];
+    const before = paths.map(readSrc);
+    addMockProject({
+      projectId: "projectId1",
+      branchName: "main",
+      projectApiToken: "abc",
+      version: "2.0.0",
+      projectName: "project1",
+      dependencies: {},
+      components: [
+        { id: "homepageId", name: "Landing", path: "/about", rsc: true },
+      ],
+    });
+    const confirm = vi
+      .spyOn(userUtils, "confirmWithUser")
+      .mockResolvedValue(false);
+    await expect(sync(opts)).rejects.toThrow("was not accepted");
+    expect(confirm).toHaveBeenCalledWith(
+      expect.stringContaining(destination),
+      true,
+    );
+    expect(paths.map(readSrc)).toEqual(before);
+    expect(tmpRepo.readPlasmicJson()).toEqual(config);
+  },
+);
+
+test("accepting renamed page destinations carries over both edited wrappers", async () => {
+  setupRscProject("ts");
+  await sync(opts);
+  const old = homepageConfig();
+  writeSrc(
+    old.importSpec.modulePath,
+    "// edited page\nexport default function Homepage() { return null; }",
+  );
+  writeSrc(
+    ensure(old.rsc?.clientModulePath),
+    "// edited client\nexport function ClientHomepage() { return null; }",
+  );
+  writeSrc("../app/about/page.tsx", "// occupied page");
+  writeSrc("../app/about/page-client.tsx", "// occupied client");
+  addMockProject({
+    projectId: "projectId1",
+    branchName: "main",
+    projectApiToken: "abc",
+    version: "2.0.0",
+    projectName: "project1",
+    dependencies: {},
+    components: [
+      { id: "homepageId", name: "Landing", path: "/about", rsc: true },
+    ],
+  });
+  const confirm = vi
+    .spyOn(userUtils, "confirmWithUser")
+    .mockResolvedValue(true);
+  await sync(opts);
+  expect(confirm).toHaveBeenCalledTimes(2);
+  const renamed = homepageConfig();
+  expect(renamed.importSpec.modulePath).toBe("../app/about/page.tsx");
+  expect(renamed.rsc?.clientModulePath).toBe("../app/about/page-client.tsx");
+  expect(readSrc(renamed.importSpec.modulePath)).toContain("// edited page");
+  expect(readSrc(ensure(renamed.rsc?.clientModulePath))).toContain(
+    "// edited client",
+  );
+  expect(existsSrc(old.importSpec.modulePath)).toBe(false);
+  expect(existsSrc(ensure(old.rsc?.clientModulePath))).toBe(false);
 });

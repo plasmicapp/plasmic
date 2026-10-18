@@ -46,7 +46,7 @@ import { assert, flatMap } from "./lang-utils";
 export async function formatAsLocal(
   content: string,
   filePath: string,
-  defaultOpts?: Options
+  defaultOpts?: Options,
 ): Promise<string> {
   if (GLOBAL_SETTINGS.skipFormatting) {
     return content;
@@ -75,7 +75,7 @@ export async function formatAsLocal(
 async function nodeToFormattedCode(
   n: Node,
   unformatted?: boolean,
-  commentsToRemove?: Set<string>
+  commentsToRemove?: Set<string>,
 ): Promise<string> {
   const c = generate(n, {
     retainLines: true,
@@ -91,7 +91,7 @@ async function nodeToFormattedCode(
 
 function findImportSpecifierWithAlias(
   importDecl: ImportDeclaration,
-  local: string
+  local: string,
 ) {
   for (const spec of importDecl.specifiers) {
     if (spec.type === "ImportSpecifier" && spec.local.name === local) {
@@ -113,7 +113,7 @@ function findImportDefaultSpecifier(importDecl: ImportDeclaration) {
 export function ensureImportSpecifierWithAlias(
   decl: ImportDeclaration,
   imported: string,
-  alias: string
+  alias: string,
 ) {
   const existing = findImportSpecifierWithAlias(decl, alias);
   if (existing) {
@@ -137,15 +137,15 @@ export function ensureImportSpecifierWithAlias(
     decl.specifiers.push(
       babel.types.importSpecifier(
         babel.types.identifier(alias),
-        babel.types.identifier(imported)
-      )
+        babel.types.identifier(imported),
+      ),
     );
   }
 }
 
 export function ensureImportDefaultSpecifier(
   decl: ImportDeclaration,
-  defaultExport: string
+  defaultExport: string,
 ) {
   const existing = findImportDefaultSpecifier(decl);
   if (existing) {
@@ -154,7 +154,7 @@ export function ensureImportDefaultSpecifier(
     decl.specifiers.splice(
       0,
       0,
-      babel.types.importDefaultSpecifier(babel.types.identifier(defaultExport))
+      babel.types.importDefaultSpecifier(babel.types.identifier(defaultExport)),
     );
   }
 }
@@ -201,7 +201,7 @@ const validJsIdentifierChars = [
   "-_",
 ];
 
-function tryParsePlasmicImportSpec(node: ImportDeclaration) {
+function tryParsePlasmicImportSpec(node: Node) {
   const c = node.trailingComments?.[0];
   if (!c) {
     return undefined;
@@ -214,8 +214,8 @@ function tryParsePlasmicImportSpec(node: ImportDeclaration) {
         ...validJsIdentifierChars,
         "\\.",
         "]+)(?:\\/(component|css|render|globalVariant|projectcss|defaultcss|icon|picture|codeComponent|globalContext|customFunction|splitsProvider|styleTokensProvider|dataTokens|projectModule|rscClient|rscServer))?",
-      ].join("")
-    )
+      ].join(""),
+    ),
   );
   if (m) {
     return { id: m[1], type: m[2] as PlasmicImportType } as PlasmicImportSpec;
@@ -242,7 +242,7 @@ export async function replaceImports(
   fromPath: string,
   fixImportContext: FixImportContext,
   removeImportDirective: boolean,
-  changed = false
+  changed = false,
 ): Promise<string> {
   [code, changed] = filterUnformattedMarker(code, changed);
   const file = parser.parse(code, {
@@ -300,7 +300,7 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        compConfig.renderModuleFilePath
+        compConfig.renderModuleFilePath,
       );
       stmt.source.value = realPath;
     } else if (type === "css") {
@@ -312,7 +312,7 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        compConfig.cssFilePath
+        compConfig.cssFilePath,
       );
       stmt.source.value = realPath;
     } else if (type === "globalVariant") {
@@ -324,7 +324,7 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        variantConfig.contextFilePath
+        variantConfig.contextFilePath,
       );
       stmt.source.value = realPath;
     } else if (type === "icon") {
@@ -336,7 +336,7 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        iconConfig.moduleFilePath
+        iconConfig.moduleFilePath,
       );
       stmt.source.value = realPath;
     } else if (type === "picture") {
@@ -354,27 +354,27 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        projectConfig.cssFilePath
+        projectConfig.cssFilePath,
       );
       stmt.source.value = realPath;
     } else if (type === "defaultcss") {
       const realPath = makeImportPath(
         context,
         fromPath,
-        fixImportContext.config.style.defaultStyleCssFilePath
+        fixImportContext.config.style.defaultStyleCssFilePath,
       );
       stmt.source.value = realPath;
     } else if (type === "codeComponent") {
       const meta = fixImportContext.codeComponentMetas[uuid];
       if (!meta.componentImportPath) {
         throw new HandledError(
-          `Encountered code component "${meta.displayName}" that was not registered with an importPath, so we don't know where to import this component from.  Please see https://docs.plasmic.app/learn/code-components-ref/`
+          `Encountered code component "${meta.displayName}" that was not registered with an importPath, so we don't know where to import this component from.  Please see https://docs.plasmic.app/learn/code-components-ref/`,
         );
       }
       if (meta.componentImportPath[0] === ".") {
         // Relative path from the project root
         const toPath = path.join(context.rootDir, meta.componentImportPath);
-        assert(path.isAbsolute(toPath));
+        assert(path.isAbsolute(toPath), "rootDir must be absolute");
         const realPath = makeImportPath(context, fromPath, toPath, true);
         stmt.source.value = realPath;
       } else {
@@ -385,13 +385,13 @@ export async function replaceImports(
       const meta = fixImportContext.codeComponentMetas[uuid];
       if (!meta.helper?.importPath) {
         throw new HandledError(
-          `Encountered code component "${meta.displayName}" that was not registered with an importPath to the component helper, so we don't know where to import this code component helper from.  Please see https://docs.plasmic.app/learn/code-components-ref/`
+          `Encountered code component "${meta.displayName}" that was not registered with an importPath to the component helper, so we don't know where to import this code component helper from.  Please see https://docs.plasmic.app/learn/code-components-ref/`,
         );
       }
       if (meta.helper.importPath[0] === ".") {
         // Relative path from the project root
         const toPath = path.join(context.rootDir, meta.helper.importPath);
-        assert(path.isAbsolute(toPath));
+        assert(path.isAbsolute(toPath), "rootDir must be absolute");
         const realPath = makeImportPath(context, fromPath, toPath, true);
         stmt.source.value = realPath;
       } else {
@@ -406,20 +406,20 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        projectConfig.globalContextsFilePath
+        projectConfig.globalContextsFilePath,
       );
       stmt.source.value = realPath;
     } else if (type === "customFunction") {
       const meta = fixImportContext.customFunctionMetas[uuid];
       if (!meta?.importPath) {
         throw new HandledError(
-          `Encountered custom function "${uuid}" that was not registered with an importPath, so we don't know where to import this function from. Please see https://docs.plasmic.app/learn/code-components-ref/`
+          `Encountered custom function "${uuid}" that was not registered with an importPath, so we don't know where to import this function from. Please see https://docs.plasmic.app/learn/code-components-ref/`,
         );
       }
       if (meta.importPath[0] === ".") {
         // Relative path from the project root
         const toPath = path.join(context.rootDir, meta.importPath);
-        assert(path.isAbsolute(toPath));
+        assert(path.isAbsolute(toPath), "rootDir must be absolute");
         const realPath = makeImportPath(context, fromPath, toPath, true);
         stmt.source.value = realPath;
       } else {
@@ -434,7 +434,7 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        projectConfig.splitsProviderFilePath
+        projectConfig.splitsProviderFilePath,
       );
       stmt.source.value = realPath;
     } else if (type === "styleTokensProvider") {
@@ -445,7 +445,7 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        projectConfig.styleTokensProviderFilePath
+        projectConfig.styleTokensProviderFilePath,
       );
       stmt.source.value = realPath;
     } else if (type === "dataTokens") {
@@ -456,7 +456,7 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        projectConfig.dataTokensFilePath
+        projectConfig.dataTokensFilePath,
       );
       stmt.source.value = realPath;
     } else if (type === "projectModule") {
@@ -467,7 +467,7 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        projectConfig.projectModuleFilePath
+        projectConfig.projectModuleFilePath,
       );
       stmt.source.value = realPath;
     } else if (type === "rscClient") {
@@ -478,7 +478,7 @@ export async function replaceImports(
       const clientModulePath = compConfig.rsc?.clientModulePath;
       if (!clientModulePath) {
         throw new HandledError(
-          `Encountered Plasmic component "${uuid}" that is missing a rscClientModulePath.`
+          `Encountered Plasmic component "${uuid}" that is missing a rscClientModulePath.`,
         );
       }
 
@@ -491,12 +491,12 @@ export async function replaceImports(
       const serverModulePath = compConfig.rsc?.serverModulePath;
       if (!serverModulePath) {
         throw new HandledError(
-          `Encountered Plasmic component "${uuid}" that is missing a rscServerModulePath.`
+          `Encountered Plasmic component "${uuid}" that is missing a rscServerModulePath.`,
         );
       }
 
       logger.info(
-        `Fixing "rscServer" with "${serverModulePath}" and from "${fromPath}"`
+        `Fixing "rscServer" with "${serverModulePath}" and from "${fromPath}"`,
       );
 
       stmt.source.value = makeImportPath(context, fromPath, serverModulePath);
@@ -514,7 +514,7 @@ function throwMissingReference(
   context: PlasmicContext,
   itemType: string,
   uuid: string,
-  fromPath: string
+  fromPath: string,
 ) {
   let recFix = `Please make sure projects that "${uuid}" depends on have already been synced.`;
   if (context.cliArgs.nonRecursive) {
@@ -523,7 +523,7 @@ function throwMissingReference(
     recFix = `Please run "plasmic sync" with --force flag to force-sync the dependencies.`;
   }
   throw new HandledError(
-    `Encountered Plasmic ${itemType} "${uuid}" in ${fromPath} that are being used but have not been synced. ${recFix}`
+    `Encountered Plasmic ${itemType} "${uuid}" in ${fromPath} that are being used but have not been synced. ${recFix}`,
   );
 }
 
@@ -531,7 +531,7 @@ function makeImportPath(
   context: PlasmicContext,
   fromPath: string,
   toPath: string,
-  forceRelative = false
+  forceRelative = false,
 ) {
   let result = toPath;
   const stripExt = context.config.preserveJsImportExtensions
@@ -539,13 +539,13 @@ function makeImportPath(
       false
     : // Strip extensions only for JavaScript/TypeScript modules
       [".ts", ".tsx", ".js", ".jsx"].includes(
-        path.extname(toPath).toLowerCase()
+        path.extname(toPath).toLowerCase(),
       );
 
   if (forceRelative || isLocalModulePath(toPath)) {
     result = path.relative(
       makeFilePath(context, path.dirname(fromPath)),
-      makeFilePath(context, toPath)
+      makeFilePath(context, toPath),
     );
     if (!result.startsWith(".")) {
       result = `./${result}`;
@@ -569,6 +569,272 @@ export function isLocalModulePath(modulePath: string) {
   return !!path.extname(modulePath) && !modulePath.startsWith("@");
 }
 
+export interface ComponentModuleRename {
+  componentId: string;
+  importType: "render" | "css" | "rscServer" | "rscClient";
+  oldPath: string;
+  newPath: string;
+  oldName: string;
+  newName: string;
+}
+
+function componentExportRenamer(
+  r: ComponentModuleRename,
+): (name: string) => string | undefined {
+  if (r.importType === "css") {
+    return () => undefined;
+  }
+  const names = new Map(
+    r.importType === "rscClient"
+      ? [[`Client${r.oldName}`, `Client${r.newName}`]]
+      : [
+          [`Default${r.oldName}Props`, `Default${r.newName}Props`],
+          [`Plasmic${r.oldName}`, `Plasmic${r.newName}`],
+          [`Plasmic${r.oldName}Server`, `Plasmic${r.newName}Server`],
+          [`Plasmic${r.oldName}ServerProps`, `Plasmic${r.newName}ServerProps`],
+        ],
+  );
+  const prefix = `Plasmic${r.oldName}__`;
+  return (name: string) =>
+    names.get(name) ??
+    (r.importType !== "rscClient" && name.startsWith(prefix)
+      ? `Plasmic${r.newName}__${name.slice(prefix.length)}`
+      : undefined);
+}
+
+function importsModule(filePath: string, source: string, modulePath: string) {
+  if (source.startsWith(".")) {
+    return (
+      stripExtension(path.resolve(path.dirname(filePath), source)) ===
+      stripExtension(path.resolve(modulePath))
+    );
+  }
+  // The alias root is unknown, so match the path after the alias prefix.
+  const target = stripExtension(path.normalize(modulePath));
+  const suffix = stripExtension(source.slice(source.indexOf("/") + 1));
+  return target === suffix || target.endsWith(`/${suffix}`);
+}
+
+/** Update module contracts, leaving local bindings and wrapper exports intact. */
+export async function updateRenamedComponentImports(
+  code: string,
+  oldFilePath: string,
+  newFilePath: string,
+  renames: ComponentModuleRename[],
+): Promise<string> {
+  const file = parser.parse(code, {
+    sourceType: "module",
+    plugins: ["jsx", "typescript", "classProperties"],
+  });
+  const namespaceRenamers = new Map<
+    Node,
+    ReturnType<typeof componentExportRenamer>
+  >();
+  let changed = false;
+  const edit = (node: Node, name: string | undefined) => {
+    if (!name) {
+      return;
+    }
+    if (babel.types.isIdentifier(node) || babel.types.isJSXIdentifier(node)) {
+      changed ||= node.name !== name;
+      node.name = name;
+    } else if (babel.types.isStringLiteral(node)) {
+      changed ||= node.value !== name;
+      node.value = name;
+    }
+  };
+  for (const decl of file.program.body) {
+    if (
+      !(
+        decl.type === "ImportDeclaration" ||
+        decl.type === "ExportNamedDeclaration" ||
+        decl.type === "ExportAllDeclaration"
+      ) ||
+      !decl.source
+    ) {
+      continue;
+    }
+    const source = decl.source.value;
+    const marker = tryParsePlasmicImportSpec(decl);
+    const matched = renames.find((r) =>
+      marker
+        ? marker.id === r.componentId && marker.type === r.importType
+        : importsModule(oldFilePath, source, r.oldPath),
+    );
+    if (matched) {
+      const rename = componentExportRenamer(matched);
+      if (decl.type !== "ExportAllDeclaration") {
+        for (const spec of decl.specifiers) {
+          if (
+            spec.type === "ImportSpecifier" &&
+            decl.type === "ImportDeclaration"
+          ) {
+            const name =
+              spec.imported.type === "Identifier"
+                ? spec.imported.name
+                : spec.imported.value;
+            const renamed = rename(name);
+            if (renamed) {
+              ensureImportSpecifierWithAlias(decl, renamed, spec.local.name);
+              changed = true;
+            }
+          } else if (spec.type === "ExportSpecifier") {
+            edit(spec.local, rename(spec.local.name));
+          } else if (spec.type === "ImportNamespaceSpecifier") {
+            namespaceRenamers.set(spec, rename);
+          }
+        }
+      }
+    }
+    // Rebase relative imports when a page moves, including user utility imports.
+    if (
+      source.startsWith(".") &&
+      (matched || path.dirname(oldFilePath) !== path.dirname(newFilePath))
+    ) {
+      const target = matched
+        ? stripExtension(matched.newPath) + path.extname(source)
+        : path.join(path.dirname(oldFilePath), source);
+      const relative = path.relative(path.dirname(newFilePath), target);
+      edit(decl.source, relative.startsWith(".") ? relative : `./${relative}`);
+    } else if (matched && !source.startsWith(".")) {
+      edit(
+        decl.source,
+        path.join(
+          path.dirname(source),
+          path.relative(
+            path.dirname(matched.oldPath),
+            path.dirname(matched.newPath),
+          ),
+          path.basename(stripExtension(matched.newPath)) + path.extname(source),
+        ),
+      );
+    }
+  }
+  // RSC generated servers require Client<NewName>. Preserve the local client
+  // function and its references; change only the name exported to the server.
+  const client = renames.find(
+    (r) =>
+      r.importType === "rscClient" &&
+      path.resolve(r.oldPath) === path.resolve(oldFilePath),
+  );
+  if (client) {
+    const rename = componentExportRenamer(client);
+    traverse(file, {
+      ExportNamedDeclaration(p) {
+        const decl = p.node.declaration;
+        if (decl) {
+          const names = Object.keys(
+            babel.types.getOuterBindingIdentifiers(decl),
+          );
+          if (names.some((name) => rename(name))) {
+            p.replaceWithMultiple([
+              decl,
+              babel.types.exportNamedDeclaration(
+                null,
+                names.map((name) =>
+                  babel.types.exportSpecifier(
+                    babel.types.identifier(name),
+                    babel.types.identifier(rename(name) ?? name),
+                  ),
+                ),
+              ),
+            ]);
+            changed = true;
+            p.skip();
+          }
+        } else {
+          for (const spec of p.node.specifiers) {
+            if (spec.type === "ExportSpecifier") {
+              edit(
+                spec.exported,
+                rename(
+                  spec.exported.type === "Identifier"
+                    ? spec.exported.name
+                    : spec.exported.value,
+                ),
+              );
+            }
+          }
+        }
+      },
+    });
+  }
+  // Only references to a matched namespace binding need edits inside user code.
+  traverse(file, {
+    ReferencedIdentifier(p) {
+      const binding = p.scope.getBinding(p.node.name);
+      const rename = binding && namespaceRenamers.get(binding.path.node);
+      if (!rename) {
+        return;
+      }
+      const renameProperty = (node: Node) => {
+        const name =
+          babel.types.isIdentifier(node) || babel.types.isJSXIdentifier(node)
+            ? node.name
+            : babel.types.isStringLiteral(node)
+              ? node.value
+              : undefined;
+        const renamed = name && rename(name);
+        if (!renamed) {
+          return false;
+        }
+        edit(node, renamed);
+        return true;
+      };
+      const parent = p.parent;
+      if (
+        (babel.types.isMemberExpression(parent) ||
+          babel.types.isOptionalMemberExpression(parent) ||
+          babel.types.isJSXMemberExpression(parent)) &&
+        parent.object === p.node
+      ) {
+        if (
+          !("computed" in parent && parent.computed) ||
+          babel.types.isStringLiteral(parent.property)
+        ) {
+          renameProperty(parent.property);
+        }
+      } else if (
+        babel.types.isTSQualifiedName(parent) &&
+        parent.left === p.node
+      ) {
+        renameProperty(parent.right);
+      } else if (babel.types.isTSTypeQuery(parent)) {
+        let query = p.parentPath;
+        while (query.parentPath?.isTSParenthesizedType()) {
+          query = query.parentPath;
+        }
+        const indexed = query.parent;
+        if (
+          babel.types.isTSIndexedAccessType(indexed) &&
+          indexed.objectType === query.node &&
+          babel.types.isTSLiteralType(indexed.indexType)
+        ) {
+          renameProperty(indexed.indexType.literal);
+        }
+      } else if (
+        babel.types.isVariableDeclarator(parent) &&
+        parent.init === p.node &&
+        babel.types.isObjectPattern(parent.id)
+      ) {
+        for (const prop of parent.id.properties) {
+          if (
+            babel.types.isObjectProperty(prop) &&
+            (!prop.computed || babel.types.isStringLiteral(prop.key))
+          ) {
+            if (renameProperty(prop.key)) {
+              prop.shorthand = false;
+            }
+          }
+        }
+      }
+    },
+  });
+  return changed
+    ? formatAsLocal(generate(file, { retainLines: true }).code, newFilePath)
+    : code;
+}
+
 export interface ComponentUpdateSummary {
   // Whether the skeleton module was modified or created.
   skeletonModuleModified: boolean;
@@ -590,25 +856,25 @@ export const mkFixImportContext = (config: PlasmicConfig): FixImportContext => {
   const components = L.keyBy(allComponents, (c) => c.id);
   const allCodeComponents = flatMap(
     config.projects,
-    (p) => p.codeComponents || []
+    (p) => p.codeComponents || [],
   );
   const allCustomFunctions = flatMap(
     config.projects,
-    (p) => p.customFunctions ?? []
+    (p) => p.customFunctions ?? [],
   );
   const codeComponentMetas = L.keyBy(allCodeComponents, (c) => c.id);
   const customFunctionMetas = L.keyBy(allCustomFunctions, (fn) => fn.id);
   const globalVariants = L.keyBy(
     config.globalVariants.variantGroups,
-    (c) => c.id
+    (c) => c.id,
   );
   const icons = L.keyBy(
     flatMap(config.projects, (p) => p.icons),
-    (c) => c.id
+    (c) => c.id,
   );
   const images = L.keyBy(
     flatMap(config.projects, (p) => p.images),
-    (c) => c.id
+    (c) => c.id,
   );
   const projects = L.keyBy(config.projects, (p) => p.projectId);
   return {
@@ -629,7 +895,7 @@ export const mkFixImportContext = (config: PlasmicConfig): FixImportContext => {
  */
 export async function fixAllImportStatements(
   context: PlasmicContext,
-  summary?: Map<string, ComponentUpdateSummary>
+  summary?: Map<string, ComponentUpdateSummary>,
 ) {
   logger.info("Fixing import statements...");
   const config = context.config;
@@ -656,11 +922,11 @@ export async function fixAllImportStatements(
             context,
             compConfig,
             fixImportContext,
-            fixSkeletonModule
+            fixSkeletonModule,
           );
         } catch (err) {
           logger.error(
-            `Error encountered while fixing imports for ${compConfig.name}: ${err}`
+            `Error encountered while fixing imports for ${compConfig.name}: ${err}`,
           );
           lastError = err;
         }
@@ -672,7 +938,7 @@ export async function fixAllImportStatements(
     await fixGlobalContextImportStatements(context, fixImportContext);
   } catch (err) {
     logger.error(
-      `Error encountered while fixing imports for global contexts: ${err}`
+      `Error encountered while fixing imports for global contexts: ${err}`,
     );
     lastError = err;
   }
@@ -682,11 +948,11 @@ export async function fixAllImportStatements(
       context,
       fixImportContext,
       "splitsProviderFilePath",
-      getSplitsProviderResourcePath
+      getSplitsProviderResourcePath,
     );
   } catch (err) {
     logger.error(
-      `Error encountered while fixing imports for splits provider: ${err}`
+      `Error encountered while fixing imports for splits provider: ${err}`,
     );
     lastError = err;
   }
@@ -696,11 +962,11 @@ export async function fixAllImportStatements(
       context,
       fixImportContext,
       "projectModuleFilePath",
-      getProjectModuleResourcePath
+      getProjectModuleResourcePath,
     );
   } catch (err) {
     logger.error(
-      `Error encountered while fixing imports for project module bundle: ${err}`
+      `Error encountered while fixing imports for project module bundle: ${err}`,
     );
     lastError = err;
   }
@@ -710,11 +976,11 @@ export async function fixAllImportStatements(
       context,
       fixImportContext,
       "styleTokensProviderFilePath",
-      getStyleTokensProviderResourcePath
+      getStyleTokensProviderResourcePath,
     );
   } catch (err) {
     logger.error(
-      `Error encountered while fixing imports for style tokens provider: ${err}`
+      `Error encountered while fixing imports for style tokens provider: ${err}`,
     );
     lastError = err;
   }
@@ -724,11 +990,11 @@ export async function fixAllImportStatements(
       context,
       fixImportContext,
       "dataTokensFilePath",
-      getDataTokensResourcePath
+      getDataTokensResourcePath,
     );
   } catch (err) {
     logger.error(
-      `Error encountered while fixing imports for data tokens: ${err}`
+      `Error encountered while fixing imports for data tokens: ${err}`,
     );
     lastError = err;
   }
@@ -737,7 +1003,7 @@ export async function fixAllImportStatements(
     await fixCssImports(context, fixImportContext);
   } catch (err) {
     logger.error(
-      `Error encountered while fixing project plasmic.css @imports: ${err}`
+      `Error encountered while fixing project plasmic.css @imports: ${err}`,
     );
     lastError = err;
   }
@@ -746,7 +1012,7 @@ export async function fixAllImportStatements(
     await fixNextjsGlobalCssFileImports(context);
   } catch (err) {
     logger.error(
-      `Error encountered while ensuring plasmic.css imports in Next.js root file: ${err}`
+      `Error encountered while ensuring plasmic.css imports in Next.js root file: ${err}`,
     );
     lastError = err;
   }
@@ -762,7 +1028,7 @@ const RE_CSS_IMPORT =
 
 async function fixCssImports(
   context: PlasmicContext,
-  fixImportContext: FixImportContext
+  fixImportContext: FixImportContext,
 ) {
   for (const project of context.config.projects) {
     if (!project.cssFilePath || !fileExists(context, project.cssFilePath)) {
@@ -781,13 +1047,13 @@ async function fixCssImports(
 
         let relativePath = path.relative(
           path.dirname(absoluteFilePath),
-          makeFilePath(context, depConfig.cssFilePath)
+          makeFilePath(context, depConfig.cssFilePath),
         );
         if (!relativePath.startsWith(".")) {
           relativePath = `./${relativePath}`;
         }
         return `@import "${relativePath}"; /* plasmic-import: ${depProjectId}/projectcss */`;
-      }
+      },
     );
 
     if (prevContent !== newContent) {
@@ -843,12 +1109,12 @@ async function fixNextjsGlobalCssFileImports(context: PlasmicContext) {
   const cssImports = config.projects
     .filter(
       (p) =>
-        !p.indirect && !!p.cssFilePath && fileExists(context, p.cssFilePath)
+        !p.indirect && !!p.cssFilePath && fileExists(context, p.cssFilePath),
     )
     .map((p) => {
       const relativePath = path.relative(
         path.dirname(expectedRootPath),
-        makeFilePath(context, p.cssFilePath)
+        makeFilePath(context, p.cssFilePath),
       );
       return {
         projectId: p.projectId,
@@ -867,7 +1133,7 @@ async function fixNextjsGlobalCssFileImports(context: PlasmicContext) {
     const importLines = cssImports
       .map(
         (c) =>
-          `import "${c.importPath}"; // plasmic-import: ${c.projectId}/projectcss`
+          `import "${c.importPath}"; // plasmic-import: ${c.projectId}/projectcss`,
       )
       .join("\n");
     logger.warn(
@@ -877,7 +1143,7 @@ You will need to manually add the following imports to your root file:
 
 ${importLines}
 
-Once you add the root file, future syncs will keep the import paths up to date.`
+Once you add the root file, future syncs will keep the import paths up to date.`,
     );
     return;
   }
@@ -886,7 +1152,7 @@ Once you add the root file, future syncs will keep the import paths up to date.`
   const newContent = await ensureNextjsGlobalCssFileImports(
     prevContent,
     cssImports,
-    absoluteRootPath
+    absoluteRootPath,
   );
   if (newContent !== prevContent) {
     await writeFileContentRaw(absoluteRootPath, newContent, {
@@ -911,7 +1177,7 @@ export async function ensureNextjsGlobalCssFileImports(
     projectId: string;
     importPath: string;
   }[],
-  filePath: string
+  filePath: string,
 ): Promise<string> {
   const file = parser.parse(code, {
     strictMode: false,
@@ -953,20 +1219,20 @@ export async function ensureNextjsGlobalCssFileImports(
   });
 
   const toInsert = cssImports.filter(
-    (c) => !handledProjectIds.has(c.projectId)
+    (c) => !handledProjectIds.has(c.projectId),
   );
   if (toInsert.length > 0) {
     changed = true;
     for (const { projectId, importPath } of [...toInsert].reverse()) {
       const decl = babel.types.importDeclaration(
         [],
-        babel.types.stringLiteral(importPath)
+        babel.types.stringLiteral(importPath),
       );
       babel.types.addComment(
         decl,
         "trailing",
         ` plasmic-import: ${projectId}/projectcss`,
-        true
+        true,
       );
       file.program.body.unshift(decl);
     }
@@ -987,7 +1253,7 @@ async function fixComponentImportStatements(
   context: PlasmicContext,
   compConfig: ComponentConfig,
   fixImportContext: FixImportContext,
-  fixSkeletonModule: boolean
+  fixSkeletonModule: boolean,
 ) {
   // If ComponentConfig.importPath is still a local file, we best-effort also fix up the import statements there.
   if (
@@ -999,7 +1265,7 @@ async function fixComponentImportStatements(
       context,
       compConfig.importSpec.modulePath,
       fixImportContext,
-      true
+      true,
     );
   }
 
@@ -1009,13 +1275,13 @@ async function fixComponentImportStatements(
     await fixComponentCssReferences(
       context,
       fixImportContext,
-      compConfig.cssFilePath
+      compConfig.cssFilePath,
     );
     if (context.config.images.scheme === "public-files") {
       renderModuleChanged = await fixComponentImagesReferences(
         context,
         fixImportContext,
-        compConfig.renderModuleFilePath
+        compConfig.renderModuleFilePath,
       );
     }
   }
@@ -1026,7 +1292,7 @@ async function fixComponentImportStatements(
     compConfig.renderModuleFilePath,
     fixImportContext,
     false,
-    renderModuleChanged
+    renderModuleChanged,
   );
 }
 
@@ -1035,12 +1301,12 @@ async function fixFileImportStatements(
   srcDirFilePath: string,
   fixImportContext: FixImportContext,
   removeImportDirective: boolean,
-  fileHasChanged = false
+  fileHasChanged = false,
 ) {
   const filePath = makeFilePath(context, srcDirFilePath);
   if (!existsBuffered(filePath)) {
     logger.warn(
-      `Cannot fix imports in non-existing file ${srcDirFilePath}. Check your plasmic.json file for invalid entries.`
+      `Cannot fix imports in non-existing file ${srcDirFilePath}. Check your plasmic.json file for invalid entries.`,
     );
     return;
   }
@@ -1053,7 +1319,7 @@ async function fixFileImportStatements(
     srcDirFilePath,
     fixImportContext,
     removeImportDirective,
-    fileHasChanged
+    fileHasChanged,
   );
   if (prevContent !== newContent) {
     await writeFileContent(context, srcDirFilePath, newContent, {
@@ -1076,7 +1342,7 @@ class CompilerOptions {
       const c = ts.readConfigFile(configPath, (path2) => readFileText(path2));
       this.opts = ts.convertCompilerOptionsFromJson(
         c.config.compilerOptions,
-        "."
+        ".",
       ).options;
     }
     return this.opts;
@@ -1114,7 +1380,7 @@ export const tsxToJsx = (code: string) => {
 
 export async function maybeConvertTsxToJsx(
   fileName: string,
-  content: string
+  content: string,
 ): Promise<[string, string]> {
   if (fileName.endsWith("tsx")) {
     const jsFileName = stripExtension(fileName) + ".jsx";
@@ -1149,7 +1415,7 @@ export async function formatScript(code: string): Promise<string> {
   const withmarkers = await nodeToFormattedCode(file, true);
   const withNewLines = withmarkers.replace(
     new RegExp(`"${newLineMarker}"`, "g"),
-    "\n"
+    "\n",
   );
   return await formatAsLocal(withNewLines, "/tmp/x.tsx", {
     printWidth: 80,
@@ -1160,7 +1426,7 @@ export async function formatScript(code: string): Promise<string> {
 
 async function fixGlobalContextImportStatements(
   context: PlasmicContext,
-  fixImportContext: FixImportContext
+  fixImportContext: FixImportContext,
 ) {
   for (const project of context.config.projects) {
     if (!project.globalContextsFilePath) {
@@ -1171,11 +1437,11 @@ async function fixGlobalContextImportStatements(
     let prevContent: string;
     try {
       prevContent = readFileText(
-        makeFilePath(context, resourcePath)
+        makeFilePath(context, resourcePath),
       ).toString();
     } catch (e) {
       logger.warn(
-        `${resourcePath} is missing. If you deleted this component, remember to remove the component from ${CONFIG_FILE_NAME}`
+        `${resourcePath} is missing. If you deleted this component, remember to remove the component from ${CONFIG_FILE_NAME}`,
       );
       throw e;
     }
@@ -1186,7 +1452,7 @@ async function fixGlobalContextImportStatements(
       resourcePath,
       fixImportContext,
       false,
-      true
+      true,
     );
 
     if (prevContent !== newContent) {
@@ -1201,7 +1467,7 @@ async function fixImportStatements(
   context: PlasmicContext,
   fixImportContext: FixImportContext,
   configKey: keyof ProjectConfig,
-  getResourcePath: (ctx: PlasmicContext, project: ProjectConfig) => string
+  getResourcePath: (ctx: PlasmicContext, project: ProjectConfig) => string,
 ) {
   for (const project of context.config.projects) {
     if (!project[configKey]) {
@@ -1213,11 +1479,11 @@ async function fixImportStatements(
     let prevContent: string;
     try {
       prevContent = readFileText(
-        makeFilePath(context, resourcePath)
+        makeFilePath(context, resourcePath),
       ).toString();
     } catch (e) {
       logger.warn(
-        `${resourcePath} is missing. If you deleted this component, remember to remove the component from ${CONFIG_FILE_NAME}`
+        `${resourcePath} is missing. If you deleted this component, remember to remove the component from ${CONFIG_FILE_NAME}`,
       );
       throw e;
     }
@@ -1228,7 +1494,7 @@ async function fixImportStatements(
       resourcePath,
       fixImportContext,
       false,
-      true
+      true,
     );
 
     if (prevContent !== newContent) {
@@ -1242,7 +1508,7 @@ async function fixImportStatements(
 export async function fixRscModulesImports(
   context: PlasmicContext,
   fixImportContext: FixImportContext,
-  compConfig: ComponentConfig
+  compConfig: ComponentConfig,
 ) {
   const errors: any[] = [];
 
@@ -1259,11 +1525,11 @@ export async function fixRscModulesImports(
         context,
         modulePath,
         fixImportContext,
-        false
+        false,
       );
     } catch (err) {
       logger.error(
-        `Error encountered while fixing imports for rsc modules ${compConfig.name}: ${err}`
+        `Error encountered while fixing imports for rsc modules ${compConfig.name}: ${err}`,
       );
 
       errors.push(err);
