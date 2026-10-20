@@ -1,5 +1,5 @@
-import { expect, FrameLocator, Locator } from "@playwright/test";
-import { test } from "../fixtures/test";
+import { expect, FrameLocator, Locator, Page } from "@playwright/test";
+import { PageModels, test } from "../fixtures/test";
 import { modifierKey } from "../utils/key-utils";
 import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
@@ -82,33 +82,6 @@ test.describe("routing", () => {
 
     await models.studio.publishVersion("need to publish before branching");
 
-    async function createNewBranch(branchName: string) {
-      await models.studio.leftPanel.switchToTreeTab();
-
-      const branchButton = models.studio.frame.locator("#branch-nav-button");
-      await branchButton.click();
-
-      const newBranchButton = models.studio.frame.getByRole("button", {
-        name: "New",
-        exact: true,
-      });
-      await newBranchButton.click();
-
-      await page.keyboard.type(branchName);
-      await page.keyboard.press("Enter");
-
-      await expect(page).toHaveURL(new RegExp(`branch=${branchName}`), {
-        timeout: 15_000,
-      });
-      await waitForFrameToLoad(page);
-
-      const frame = await getFrameWithText("Main");
-      await setCanvasText(frame, branchName);
-      await expect(frame.getByText(branchName).first()).toBeVisible({
-        timeout: 10_000,
-      });
-    }
-
     async function switchBranch(branchName: string) {
       await models.studio.waitForSave();
 
@@ -134,7 +107,13 @@ test.describe("routing", () => {
       await models.studio.waitForSave();
     }
 
-    await createNewBranch("Feature");
+    await models.studio.leftPanel.switchToTreeTab();
+    await createBranchInApp(page, models, "Feature");
+    const featureFrame = await getFrameWithText("Main");
+    await setCanvasText(featureFrame, "Feature");
+    await expect(featureFrame.getByText("Feature").first()).toBeVisible({
+      timeout: 10_000,
+    });
 
     await switchBranch("main");
     await getFrameWithText("Main");
@@ -165,4 +144,78 @@ test.describe("routing", () => {
     await expect(page).not.toHaveURL(/branch=/, { timeout: 15_000 });
     await getFrameWithText("Main");
   });
+
+  test("inserts a recently used component after switching branches", async ({
+    models,
+    page,
+    apiClient,
+  }) => {
+    const pageErrors: string[] = [];
+    page.on("pageerror", (error) => pageErrors.push(error.message));
+    const invariantErrors = () =>
+      pageErrors.filter((message) => message.includes("Invariant failed"));
+    const instancesInOutline = models.studio.leftPanel.treeLabels.filter({
+      hasText: "TestComp",
+    });
+
+    projectId = await apiClient.setupNewProject({
+      name: "routing-branches-insert-panel",
+      devFlags: { branching: true },
+    });
+    await goToProject(page, `/projects/${projectId}`);
+
+    await models.studio.leftPanel.addComponent("TestComp");
+    await models.studio.leftPanel.createNewPage("NewPage");
+
+    // Puts TestComp in the Insert panel's Recent list.
+    await models.studio.focusCreatedFrameRoot();
+    await models.studio.leftPanel.insertNode("TestComp");
+    await models.studio.leftPanel.switchToTreeTab();
+    await expect(instancesInOutline).toHaveCount(1);
+    await models.studio.waitForSave();
+    await models.studio.publishVersion("before branching");
+
+    await createBranchInApp(page, models, "A");
+
+    await models.studio.switchArena("NewPage");
+    await models.studio.focusCreatedFrameRoot();
+    // Recent is the first group, so this picks the recent entry.
+    await models.studio.leftPanel.insertNode("TestComp", {
+      expectDrawerToClose: false,
+    });
+    await expect
+      .poll(invariantErrors, {
+        message: "inserting a recently used component after a branch switch",
+        timeout: 5_000,
+      })
+      .toEqual([]);
+    await models.studio.leftPanel.switchToTreeTab();
+    await expect(instancesInOutline).toHaveCount(2);
+    await models.studio.waitForSave();
+
+    await test.step("control: after a hard reload the same insert works", async () => {
+      await goToProject(page, `/projects/${projectId}?branch=A`);
+      await expect(page).toHaveURL(/branch=A/);
+      await models.studio.switchArena("NewPage");
+      await models.studio.focusCreatedFrameRoot();
+      await models.studio.leftPanel.insertNode("TestComp");
+      await models.studio.leftPanel.switchToTreeTab();
+      await expect(instancesInOutline).toHaveCount(3);
+    });
+  });
 });
+
+/** Creates a branch via the branch menu, which switches to it in-app. */
+async function createBranchInApp(page: Page, models: PageModels, name: string) {
+  await models.studio.frame.locator("#branch-nav-button").click();
+  await models.studio.frame
+    .getByRole("button", { name: "New", exact: true })
+    .click();
+  await page.keyboard.type(name);
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(new RegExp(`branch=${name}`), {
+    timeout: 15_000,
+  });
+  await waitForFrameToLoad(page);
+  await models.studio.waitStudioLoaded();
+}

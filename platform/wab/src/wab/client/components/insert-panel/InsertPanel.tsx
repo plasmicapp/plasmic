@@ -84,6 +84,7 @@ import {
   ensure,
   ensureArray,
   filterFalsy,
+  filterMapNils,
   groupConsecBy,
   maybe,
   mergeSane,
@@ -110,7 +111,7 @@ import { ExprCtx } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { isIcon } from "@/wab/shared/core/image-assets";
 import { getLeafProjectIdForHostLessPackageMeta } from "@/wab/shared/core/project-deps";
-import { isHostLessPackage } from "@/wab/shared/core/sites";
+import { allComponents, isHostLessPackage } from "@/wab/shared/core/sites";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   isComponentRoot,
@@ -179,6 +180,23 @@ export const InsertPanel = observer(function InsertPanel_({
   const studioCtx = useStudioCtx();
   const [isDragging, setDragging] = React.useState(false);
   const recentItemsRef = React.useRef<AddTplItem[]>([]);
+
+  // A branch/version switch replaces the site, leaving recent items pointing
+  // at the old site's components. Rebuild them against the current
+  // site;
+  React.useEffect(() => {
+    const currentComponents = allComponents(studioCtx.site, {
+      includeDeps: "all",
+    });
+    recentItemsRef.current = filterMapNils(recentItemsRef.current, (item) => {
+      if (!item.component) {
+        return item;
+      }
+      const uuid = item.component.uuid;
+      const current = currentComponents.find((c) => c.uuid === uuid);
+      return current ? createAddTplComponent(current) : undefined;
+    });
+  }, [studioCtx.site]);
 
   // Only save insertable items like elements and components.
   const saveRecentItem = (item: AddTplItem, tplNode: TplNode | null) => {
