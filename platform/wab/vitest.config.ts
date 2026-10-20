@@ -1,3 +1,4 @@
+import fs from "fs";
 import { isBuiltin } from "module";
 import os from "os";
 import path from "path";
@@ -61,7 +62,11 @@ export default defineConfig({
   plugins: [nodeBuiltins(), webpackLoaderPrefixes(), stubStylesheets()],
   server: {
     // The codegen tests compile into a temp dir and import the result.
-    fs: { allow: [path.join(__dirname, "../.."), os.tmpdir()] },
+    // On macOS the temp dir is under /var, a symlink to /private/var, so the
+    // allowed path must be the real one.
+    fs: {
+      allow: [path.join(__dirname, "../.."), fs.realpathSync(os.tmpdir())],
+    },
   },
   resolve: {
     alias: {
