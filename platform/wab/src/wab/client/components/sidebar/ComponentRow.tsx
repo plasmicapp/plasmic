@@ -20,7 +20,7 @@ import {
 import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { UiActionsOverlay } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
-import { mkModelUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
+import { mkSiteScopedUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { MainBranchId } from "@/wab/shared/ApiSchema";
 import { isMixedArena } from "@/wab/shared/Arenas";
@@ -177,7 +177,7 @@ export const ComponentRow = observer(function ComponentRow(props: {
           )}
         </RowItem>
       </DraggableInsertable>
-      <UiActionsOverlay uiId={mkModelUiId(component)} />
+      <UiActionsOverlay uiId={mkSiteScopedUiId(component)} />
     </>
   );
 });

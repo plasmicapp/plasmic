@@ -19,7 +19,7 @@ import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelW
 import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { mkModelUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
+import { mkComponentScopedUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   CONFIGURE_ACTION,
@@ -139,7 +139,7 @@ const ServerQueryRow = observer(
     return (
       <WithContextMenu overlay={menu}>
         <LabeledListItem
-          uiId={mkModelUiId(query)}
+          uiId={mkComponentScopedUiId(query, component.uuid)}
           label={query.name}
           menu={menu}
           onClick={() => openServerQueryModal()}

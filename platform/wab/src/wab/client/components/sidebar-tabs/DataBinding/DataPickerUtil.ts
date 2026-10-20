@@ -16,8 +16,9 @@ import SquareCheckSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/Pla
 import TextSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__TextSvg";
 import {
   UiId,
-  mkModelUiId,
+  mkComponentScopedUiId,
   mkSectionUiId,
+  mkSiteScopedUiId,
 } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { getAncestorTplSlot } from "@/wab/shared/SlotUtils";
@@ -404,7 +405,7 @@ export function getSourceUiId(
     case "$dataTokens": {
       if (itemPath.length === 2) {
         const token = site.dataTokens.find((t) => toVarName(t.name) === name);
-        return token ? mkModelUiId(token) : undefined;
+        return token ? mkSiteScopedUiId(token) : undefined;
       } else if (itemPath.length === 3) {
         const tokenName = itemPath[2];
         const dep = walkDependencyTree(site, "direct").find(
@@ -413,7 +414,7 @@ export function getSourceUiId(
         const token = dep?.site.dataTokens.find(
           (t) => toVarName(t.name) === tokenName,
         );
-        return token ? mkModelUiId(token) : undefined;
+        return token ? mkSiteScopedUiId(token) : undefined;
       }
       return undefined;
     }
@@ -436,7 +437,7 @@ export function getSourceUiId(
       const param = getRealParams(component).find(
         (p) => toVarName(p.variable.name) === name,
       );
-      return param ? mkModelUiId(param) : undefined;
+      return param ? mkComponentScopedUiId(param, component.uuid) : undefined;
     }
     case "$q": {
       // Accept `$q.<name>` or `$q.<name>.data`
@@ -448,14 +449,14 @@ export function getSourceUiId(
         return undefined;
       }
       const query = getComponentServerQueryByVarName(component, name);
-      return query ? mkModelUiId(query) : undefined;
+      return query ? mkComponentScopedUiId(query, component.uuid) : undefined;
     }
     case "$queries": {
       if (!component || itemPath.length !== 2 || typeof name !== "string") {
         return undefined;
       }
       const query = getComponentDataQueryByVarName(component, name);
-      return query ? mkModelUiId(query) : undefined;
+      return query ? mkComponentScopedUiId(query, component.uuid) : undefined;
     }
     case "$state": {
       if (!component || typeof name !== "string") {
@@ -464,7 +465,9 @@ export function getSourceUiId(
       // Accept `$state.<componentState>`
       if (itemPath.length === 2) {
         const state = getStateByVarName(component, name);
-        return state ? mkModelUiId(state.param) : undefined;
+        return state
+          ? mkComponentScopedUiId(state.param, component.uuid)
+          : undefined;
       }
       // Accept `$state.<element>.<elementState>`
       if (itemPath.length === 3 && typeof itemPath[2] === "string") {
@@ -472,7 +475,9 @@ export function getSourceUiId(
         const state = component.states.find(
           (s) => getStateVarName(s) === varName,
         );
-        return state ? mkModelUiId(state.param) : undefined;
+        return state
+          ? mkComponentScopedUiId(state.param, component.uuid)
+          : undefined;
       }
       return undefined;
     }

@@ -66,7 +66,10 @@ import {
 import { clone as cloneExpr, isRealCodeExpr } from "@/wab/shared/core/exprs";
 import * as Lang from "@/wab/shared/core/lang";
 import { cloneParamAndVar } from "@/wab/shared/core/lang";
-import { walkDependencyTree } from "@/wab/shared/core/project-deps";
+import {
+  DependencyWalkScope,
+  walkDependencyTree,
+} from "@/wab/shared/core/project-deps";
 import {
   UNINITIALIZED_VALUE,
   isHostLessPackage,
@@ -2583,8 +2586,19 @@ export function getDefaultComponent(site: Site, kind: DefaultComponentKind) {
 export function tryGetComponentByUuid(
   site: Site,
   uuid: string,
+  opts: { includeDeps?: DependencyWalkScope } = {},
 ): Component | undefined {
-  return site.components.find((c) => c.uuid === uuid);
+  const local = site.components.find((c) => c.uuid === uuid);
+  if (local || !opts.includeDeps) {
+    return local;
+  }
+  for (const dep of walkDependencyTree(site, opts.includeDeps)) {
+    const imported = dep.site.components.find((c) => c.uuid === uuid);
+    if (imported) {
+      return imported;
+    }
+  }
+  return undefined;
 }
 
 export function getAllComponentsInTopologicalOrder(site: Site) {

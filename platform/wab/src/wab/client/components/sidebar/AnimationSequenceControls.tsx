@@ -51,7 +51,7 @@ import {
   UiActionsOverlay,
   useModelUiActionHandler,
 } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
-import { mkModelUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
+import { mkSiteScopedUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { isStylePropSet } from "@/wab/client/utils/style-utils";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
@@ -388,7 +388,7 @@ const AnimationSequenceRow = observer(function AnimationSequenceRow(
       >
         {sequence.name}
       </ListItem>
-      <UiActionsOverlay uiId={mkModelUiId(sequence)} />
+      <UiActionsOverlay uiId={mkSiteScopedUiId(sequence)} />
     </>
   );
 });

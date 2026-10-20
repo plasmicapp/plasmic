@@ -277,9 +277,11 @@ export class StudioModel extends BaseModel {
   async renameSelectionTag(name: string) {
     const selectionTag = this.frame.locator(".node-outline-tag");
     await selectionTag.dblclick({ delay: 100 });
-    await this.page.keyboard.type(name);
-    await this.page.keyboard.press("Enter");
-    await expect(selectionTag).toContainText(name);
+    const renameInput = selectionTag.locator("input");
+    await renameInput.fill(name);
+    await expect(renameInput).toHaveValue(name);
+    await renameInput.press("Enter");
+    await renameInput.waitFor({ state: "hidden" });
   }
 
   async extractComponentNamed(name: string) {

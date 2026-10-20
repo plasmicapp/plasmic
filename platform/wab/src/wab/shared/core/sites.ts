@@ -108,6 +108,7 @@ import {
 import { makeTplAnimationsFixer } from "@/wab/shared/insertable-templates/fixers";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
+  AnimationSequence,
   Arena,
   ArenaFrame,
   ArenaFrameCell,
@@ -203,6 +204,7 @@ import {
 } from "@/wab/shared/responsiveness";
 import { naturalSort } from "@/wab/shared/sort";
 import { getMatchingPagePathParams } from "@/wab/shared/utils/url-utils";
+import { keyBy } from "lodash";
 import escapeRegExp from "lodash/escapeRegExp";
 import keys from "lodash/keys";
 import orderBy from "lodash/orderBy";
@@ -2080,6 +2082,13 @@ export function allAnimationSequences(
     );
   }
   return animationSequences;
+}
+
+export function allAnimationSequencesDict(
+  site: Site,
+  opts: { includeDeps?: DependencyWalkScope } = {},
+): Readonly<{ [uuid: string]: AnimationSequence }> {
+  return keyBy(allAnimationSequences(site, opts), (a) => a.uuid);
 }
 
 export function localImageAssets(site: Site) {

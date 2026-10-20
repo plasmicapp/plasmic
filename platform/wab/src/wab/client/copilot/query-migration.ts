@@ -2,9 +2,8 @@
  * Prompts prefilled into the chat input by the legacy data-query menus. These are
  * meant to be human readable, the system prompt explains technical migration details.
  */
-import { mkMentionRaw } from "@/wab/client/components/copilot/resource-mention-utils";
+import { mkMentionRaw } from "@/wab/client/components/mentions/mention-parse";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { ComponentType } from "@/wab/shared/core/components";
 import { Component, ComponentDataQuery } from "@/wab/shared/model/classes";
 
 type ComponentIdentity = Pick<Component, "name" | "uuid" | "type">;
@@ -17,14 +16,13 @@ function describeQuery(query: LegacyQueryIdentity): string {
 
 /**
  * The component as an @-mention, so it lands in the chat input as a chip that
- * resolves to the model object. Legacy data queries aren't a mentionable kind,
- * so those stay described by name and uuid.
+ * resolves to the model object.
  */
 function mentionComponent(component: ComponentIdentity): string {
   return `@<${mkMentionRaw({
-    kind: component.type === ComponentType.Page ? "page" : "component",
+    type: "SiteScoped",
+    tag: "Component",
     uuid: component.uuid,
-    name: component.name,
   })}>`;
 }
 

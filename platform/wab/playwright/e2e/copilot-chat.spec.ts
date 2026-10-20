@@ -1,10 +1,18 @@
-import { expect } from "@playwright/test";
+import { Page, expect } from "@playwright/test";
 import { PageModels, test } from "../fixtures/test";
 import { goToProject } from "../utils/studio-utils";
 
 const PAGE_NAME = "MentionsPage";
 const ELEMENT_NAME = "MentionsHeader";
 const SECOND_ELEMENT_NAME = "MentionsFooter";
+const RENAMED_ELEMENT_NAME = "MentionsRenamed";
+
+/** A page with one named element, so the canvas has something to mention. */
+async function addPageWithElement(models: PageModels) {
+  await models.studio.createNewPage(PAGE_NAME);
+  await models.studio.insertTextNodeWithContent("hello");
+  await models.studio.renameSelectionTag(ELEMENT_NAME);
+}
 
 let projectId: string;
 
@@ -29,13 +37,6 @@ test.afterEach(async ({ apiClient }) => {
  * `noCopilotApi` fixture, which fails the test if any copilot request escapes.
  */
 test.describe("copilot mentions", () => {
-  /** A page with one named element, so the canvas has something to mention. */
-  async function addPageWithElement(models: PageModels) {
-    await models.studio.createNewPage(PAGE_NAME);
-    await models.studio.insertTextNodeWithContent("hello");
-    await models.studio.renameSelectionTag(ELEMENT_NAME);
-  }
-
   test("offers the canvas selections on a bare @", async ({ page, models }) => {
     await addPageWithElement(models);
 
@@ -185,5 +186,124 @@ test.describe("copilot stop button", () => {
     expect(requestCount).toBe(1);
 
     releaseRequest();
+  });
+});
+
+async function stubCopilotAnswer(page: Page, markdown: string) {
+  const sse = (chunks: object[]) =>
+    chunks.map((c) => `data: ${JSON.stringify(c)}\n\n`).join("") +
+    "data: [DONE]\n\n";
+  await page.route("**/api/v1/copilot/chat", (route) =>
+    route.fulfill({
+      status: 200,
+      headers: {
+        "content-type": "text/event-stream",
+        "x-vercel-ai-ui-message-stream": "v1",
+      },
+      body: sse([
+        { type: "start" },
+        { type: "start-step" },
+        { type: "text-start", id: "0" },
+        {
+          type: "text-delta",
+          id: "0",
+          delta: `[Dummy response]\n\n${markdown}`,
+        },
+        { type: "text-end", id: "0" },
+        { type: "finish-step" },
+        { type: "finish" },
+      ]),
+    }),
+  );
+}
+
+async function submitPrompt(page: Page, promptText: string) {
+  await page.keyboard.press("ControlOrMeta+k");
+  const prompt = page.locator('[data-test-id="copilot-chat-prompt-editor"]');
+  await expect(prompt).toBeVisible();
+  await prompt.click();
+  await page.keyboard.type(promptText);
+  await page.keyboard.press("ControlOrMeta+Enter");
+  await expect(prompt).not.toContainText(promptText);
+}
+
+test.describe("copilot response mentions", () => {
+  async function readUuids(models: PageModels) {
+    return models.studio.frame.locator("body").evaluate((_, elementName) => {
+      const site = (window as any).dbg.studioCtx.site;
+      const comp = site.components.find((c: any) => c.name === "MentionsPage");
+      const tpls: any[] = [];
+      const walk = (t: any) => {
+        tpls.push(t);
+        (t.children ?? []).forEach(walk);
+      };
+      walk(comp.tplTree);
+      return {
+        pageUuid: comp.uuid as string,
+        elementUuid: tpls.find((t) => t.name === elementName).uuid as string,
+      };
+    }, ELEMENT_NAME);
+  }
+
+  test("renders mentions in the AI answer as chips, named from the site", async ({
+    page,
+    models,
+  }) => {
+    await addPageWithElement(models);
+    const { pageUuid, elementUuid } = await readUuids(models);
+    await stubCopilotAnswer(
+      page,
+      `Restyled @<Tpl:${pageUuid}/${elementUuid}> on @<Component:${pageUuid}>.`,
+    );
+    await submitPrompt(page, "restyle the header");
+
+    await expect(page.locator(".mention-link")).toHaveText([
+      `@${ELEMENT_NAME}`,
+      `@${PAGE_NAME}`,
+    ]);
+    await expect(page.getByText("@<Tpl:")).toHaveCount(0);
+
+    await models.studio.leftPanel.treeTabButton.click();
+    await models.studio.leftPanel.treeLabels
+      .filter({ hasText: ELEMENT_NAME })
+      .click();
+    await models.studio.renameSelectionTag(RENAMED_ELEMENT_NAME);
+
+    await expect(page.locator(".mention-link")).toHaveText([
+      `@${RENAMED_ELEMENT_NAME}`,
+      `@${PAGE_NAME}`,
+    ]);
+
+    await models.studio.deleteSelection();
+    await expect(page.locator(".mention-link")).toHaveText([
+      "@(deleted)",
+      `@${PAGE_NAME}`,
+    ]);
+  });
+
+  test("clicking a chip focuses the mentioned element", async ({
+    page,
+    models,
+  }) => {
+    await addPageWithElement(models);
+    await models.studio.insertTextNodeWithContent("world");
+    await models.studio.renameSelectionTag(SECOND_ELEMENT_NAME);
+
+    const { pageUuid, elementUuid } = await readUuids(models);
+    await stubCopilotAnswer(
+      page,
+      `Styled @<Tpl:${pageUuid}/${elementUuid}> for you.`,
+    );
+    await submitPrompt(page, "style the header");
+
+    await page.locator(".mention-link").click();
+    await expect
+      .poll(() =>
+        models.studio.frame.locator("body").evaluate(() => {
+          const ctx = (window as any).dbg.studioCtx;
+          return ctx.focusedViewCtx()?.focusedTpl()?.uuid ?? null;
+        }),
+      )
+      .toBe(elementUuid);
   });
 });

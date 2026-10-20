@@ -140,7 +140,7 @@ describe("round trip", () => {
     "@<page:Home>@<component:Nav>",
     "line one\nwith @<token:Primary>\n\nline four",
     // A resolved mention, carrying a uuid alongside the label.
-    "tag @<tpl:abc123/def456|(unnamed div)> please",
+    "tag @<tpl:abc123/def456> please",
     // Malformed: no closing `>`, so there is nothing to turn into a chip.
     "half @<page:Home",
   ])("preserves %j", (text) => {

@@ -774,6 +774,9 @@ export class StudioCtx extends WithDbCtx {
       }),
       this.uiActionBus.registerListener((uiId, _type) => {
         const parsed = parseUiId(uiId);
+        if (!parsed) {
+          return;
+        }
         switch (parsed.type) {
           case "Section":
             switch (parsed.section) {
@@ -785,8 +788,8 @@ export class StudioCtx extends WithDbCtx {
                 assertNever(parsed.section);
             }
             break;
-          case "Model":
-            switch (parsed.typeTag) {
+          case "SiteScoped":
+            switch (parsed.tag) {
               case "DataToken":
                 this.switchLeftTab("dataTokens");
                 break;
@@ -796,38 +799,19 @@ export class StudioCtx extends WithDbCtx {
               case "AnimationSequence":
                 this.switchLeftTab("animationSequences");
                 break;
-              case "Variant": {
-                const globalVariant = tryGetGlobalVariantByUuid(
+              case "GlobalVariant": {
+                const variant = tryGetGlobalVariantByUuid(
                   this.site,
                   parsed.uuid,
                   { includeDeps: "direct" },
                 );
-                if (!globalVariant) {
-                  // A component variant: focus its owning component so the
-                  // variants panel shows it.
-                  const owner = this.site.components.find((c) =>
-                    allComponentVariants(c).some((v) => v.uuid === parsed.uuid),
-                  );
-                  if (owner) {
-                    this.switchToComponentArena(owner);
-                    this.switchRightTab(RightTabKey.component);
-                  }
-                } else if (isScreenVariant(globalVariant)) {
+                if (variant && isScreenVariant(variant)) {
                   this.switchLeftTab("responsiveness");
                 } else {
                   this.switchRightTab(RightTabKey.component);
                 }
                 break;
               }
-              case "ComponentDataQuery":
-              case "ComponentServerQuery":
-              case "PropParam":
-              case "StateParam":
-              case "SlotParam":
-              case "GlobalVariantGroupParam":
-              case "StateChangeHandlerParam":
-                this.switchRightTab(RightTabKey.component);
-                break;
               case "Component": {
                 const component = tryGetComponentByUuid(this.site, parsed.uuid);
                 if (component && isPageComponent(component)) {
@@ -838,17 +822,40 @@ export class StudioCtx extends WithDbCtx {
                 break;
               }
               default:
-                assertNever(parsed.typeTag);
+                assertNever(parsed);
             }
             break;
-          case "Tpl": {
+          case "ComponentScoped": {
             const component = tryGetComponentByUuid(
               this.site,
               parsed.componentUuid,
             );
-            const tpl = component && tryGetTplByUuid(component, parsed.tplUuid);
-            if (component && tpl) {
-              spawn(this.setStudioFocusOnTpl(component, tpl));
+            if (!component) {
+              break;
+            }
+            switch (parsed.tag) {
+              case "Tpl": {
+                const tpl = tryGetTplByUuid(component, parsed.uuid);
+                if (tpl) {
+                  spawn(this.setStudioFocusOnTpl(component, tpl));
+                }
+                break;
+              }
+              case "Variant":
+                this.switchToComponentArena(component);
+                this.switchRightTab(RightTabKey.component);
+                break;
+              case "ComponentDataQuery":
+              case "ComponentServerQuery":
+              case "PropParam":
+              case "StateParam":
+              case "SlotParam":
+              case "GlobalVariantGroupParam":
+              case "StateChangeHandlerParam":
+                this.switchRightTab(RightTabKey.component);
+                break;
+              default:
+                assertNever(parsed);
             }
             break;
           }
@@ -7775,6 +7782,7 @@ export const withStudioCtx = withConsumer(
 );
 export const providesStudioCtx = withProvider(StudioCtxContext.Provider);
 export const useStudioCtx = () => ensure(useContext(StudioCtxContext), "");
+export const useStudioCtxMaybe = () => useContext(StudioCtxContext);
 export const usePlasmicCtx = () => {
   const studioCtx = useStudioCtx();
   const viewCtx = studioCtx.focusedViewCtx();

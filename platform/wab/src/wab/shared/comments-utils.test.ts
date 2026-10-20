@@ -62,6 +62,12 @@ describe("extractMentionedEmails", function () {
     expect(emails).toEqual(["support@mail.example.co.uk"]);
   });
 
+  it("should ignore a resource mention sharing the syntax", () => {
+    const body = "restyle @<StyleToken:t1> for @<a@b.co>";
+    const emails = extractMentionedEmails(body);
+    expect(emails).toEqual(["a@b.co"]);
+  });
+
   it("should extract mention at start", () => {
     const body = "@<a@b.c> foo";
     const emails = extractMentionedEmails(body);

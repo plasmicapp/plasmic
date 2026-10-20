@@ -27,6 +27,7 @@ import {
   TplNode,
 } from "@/wab/shared/model/classes";
 import keyBy from "lodash/keyBy";
+import { computedFn } from "mobx-utils";
 
 /** Token resolver that returns the value and token. */
 export type TokenResolver = (
@@ -153,7 +154,7 @@ export const siteStyleTokens = maybeComputedFn(
   (site: Site): ReadonlyArray<StyleToken> => styleTokens(site),
 );
 
-export const siteStyleTokensDirectDeps = maybeComputedFn(
+export const siteStyleTokensDirectDeps = computedFn(
   (site: Site): ReadonlyArray<StyleToken> =>
     styleTokens(site, { includeDeps: "direct" }),
 );

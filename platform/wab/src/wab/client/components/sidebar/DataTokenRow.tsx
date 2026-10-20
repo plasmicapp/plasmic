@@ -10,7 +10,7 @@ import {
 import { Matcher } from "@/wab/client/components/view-common";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { UiActionsOverlay } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
-import { mkModelUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
+import { mkSiteScopedUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { DataTokenValue, isDataTokenEditable } from "@/wab/commons/DataToken";
 import { spawn } from "@/wab/shared/common";
 import { FinalToken, MutableToken } from "@/wab/shared/core/tokens";
@@ -127,7 +127,7 @@ const DataTokenRow = observer(function _DataTokenRow(props: {
         menu={overlay}
         onClick={onClickHandler}
       />
-      <UiActionsOverlay uiId={mkModelUiId(token.base)} />
+      <UiActionsOverlay uiId={mkSiteScopedUiId(token.base)} />
     </>
   );
 });

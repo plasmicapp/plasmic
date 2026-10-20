@@ -1,12 +1,11 @@
-import type {
-  MentionableResourceKind,
-  MentionableResources,
-} from "@/wab/client/components/copilot/resource-mention-utils";
+import type { MentionableResources } from "@/wab/client/components/copilot/resource-mention-utils";
 import type { RemoteFileDragEvent } from "@/wab/client/file-drag/file-drag-monitor";
 import {
   PublishResult,
   StudioAppUser,
 } from "@/wab/client/studio-ctx/StudioCtx";
+import type { UiActionType } from "@/wab/client/studio-ctx/ui/UiActionBus";
+import type { ModelUiId, UiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ApiBranch, ArenaRef, BranchId } from "@/wab/shared/ApiSchema";
 import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
 import type { AiIdentity } from "@/wab/shared/copilot/copilot-tool-types";
@@ -69,12 +68,11 @@ export type HostFrameApi = {
   blockChanges(): Promise<void>;
   listMentionableResources(): Promise<MentionableResources>;
   getCurrentArena(): Promise<ArenaRef | undefined>;
-  /** Labels of `@<…>` mentions whose resource no longer exists. */
-  findMissingMentions(text: string): Promise<string[]>;
-  navigateToMentionedResource(
-    kind: MentionableResourceKind,
-    uuid: string,
-  ): Promise<void>;
+  subscribeResource(
+    uiId: ModelUiId,
+    onLabel: (label: string | undefined) => void,
+  ): Promise<() => void>;
+  dispatchUiAction(uiId: UiId, type: UiActionType): Promise<void>;
   onFileDragEventInTop(event: RemoteFileDragEvent): Promise<void>;
 };
 

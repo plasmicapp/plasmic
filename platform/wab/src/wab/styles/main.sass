@@ -5712,6 +5712,11 @@ a, button.link-like
 .mention-link
   color: $link-color
   cursor: pointer
+  &:focus-visible
+    @include focused
+  &--missing
+    color: $dimfg
+    cursor: default
 
 .yellow-snippet
   background: yellow

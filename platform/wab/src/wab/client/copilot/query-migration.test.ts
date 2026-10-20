@@ -26,16 +26,16 @@ describe("legacy query migration prompts", () => {
 
   it("mentions the owning component so it lands as a chip", () => {
     expect(makeLegacyQueryMigrationPrompt(component, firstQuery)).toContain(
-      "@<component:component-1|Users>",
+      "@<Component:component-1>",
     );
     expect(
       makeAllLegacyQueriesMigrationPrompt(component, [firstQuery]),
-    ).toContain("@<component:component-1|Users>");
+    ).toContain("@<Component:component-1>");
   });
 
-  it("mentions a page with the page kind", () => {
+  it("mentions a page with the Component tag", () => {
     expect(makeLegacyQueryMigrationPrompt(page, firstQuery)).toContain(
-      "@<page:page-1|Home>",
+      "@<Component:page-1>",
     );
   });
 

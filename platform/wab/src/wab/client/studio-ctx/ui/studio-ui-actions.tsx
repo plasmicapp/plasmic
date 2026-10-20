@@ -1,7 +1,8 @@
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { UiActionType } from "@/wab/client/studio-ctx/ui/UiActionBus";
 import {
-  ModelTypeTag,
+  ComponentScopedTag,
+  SiteScopedTag,
   UiId,
   parseUiId,
 } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
@@ -20,7 +21,7 @@ import * as React from "react";
  * @param handler - handles an action (by its type) for a matching model's uuid
  */
 export function useModelUiActionHandler(
-  typeTag: ModelTypeTag,
+  tag: SiteScopedTag | ComponentScopedTag,
   handler: (uuid: string, type: UiActionType) => void,
 ) {
   const studioCtx = useStudioCtx();
@@ -29,12 +30,12 @@ export function useModelUiActionHandler(
   React.useEffect(() => {
     const { dispose } = studioCtx.uiActionBus.registerListener((uiId, type) => {
       const parsed = parseUiId(uiId);
-      if (parsed.type === "Model" && parsed.typeTag === typeTag) {
+      if (parsed && parsed.type !== "Section" && parsed.tag === tag) {
         handlerRef.current(parsed.uuid, type);
       }
     });
     return dispose;
-  }, [studioCtx, typeTag]);
+  }, [studioCtx, tag]);
 }
 
 /**

@@ -13,6 +13,7 @@ import { FinalToken, mkToFinalToken } from "@/wab/shared/core/tokens";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import { DataToken, Site } from "@/wab/shared/model/classes";
 import keyBy from "lodash/keyBy";
+import { computedFn } from "mobx-utils";
 
 /**
  * Data tokens for the given site, optionally including dependencies
@@ -38,7 +39,7 @@ export const siteDataTokens = maybeComputedFn(
   (site: Site): ReadonlyArray<DataToken> => dataTokens(site),
 );
 
-export const siteDataTokensDirectDeps = maybeComputedFn(
+export const siteDataTokensDirectDeps = computedFn(
   (site: Site): ReadonlyArray<DataToken> =>
     dataTokens(site, { includeDeps: "direct" }),
 );

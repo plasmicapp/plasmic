@@ -1,30 +1,19 @@
 import { matchScore } from "@/wab/client/components/mentions/mention-query";
-import {
-  ModelTypeTag,
-  UiId,
-  mkModelUiId,
-  mkTplUiId,
-} from "@/wab/client/studio-ctx/ui/studio-ui-ids";
+
+import { mkMentionRaw } from "@/wab/client/components/mentions/mention-parse";
 import {
   getBaseVariant,
   getVariantGroupName,
   isScreenVariantGroup,
 } from "@/wab/shared/Variants";
-import { assertNever, isNonNil } from "@/wab/shared/common";
+import { isNonNil } from "@/wab/shared/common";
 import {
   allComponentVariants,
   isPageComponent,
   isPlasmicComponent,
-  tryGetComponentByUuid,
 } from "@/wab/shared/core/components";
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
-import { siteStyleTokensDirectDeps } from "@/wab/shared/core/site-style-tokens";
-import {
-  allAnimationSequences,
-  allComponents,
-  allGlobalVariants,
-  isHostLessPackage,
-} from "@/wab/shared/core/sites";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
 import {
   flattenTpls,
   getTplType,
@@ -32,10 +21,10 @@ import {
   isTplNamable,
   summarizeTpl,
   summarizeTplNamable,
-  tryGetTplByUuid,
   type TplType,
 } from "@/wab/shared/core/tpls";
 import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
+import { MentionTag } from "@/wab/shared/mentions";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
   Component,
@@ -45,43 +34,45 @@ import {
 } from "@/wab/shared/model/classes";
 import { naturalSortByName } from "@/wab/shared/sort";
 import { partition } from "lodash";
-import { regex } from "regex";
 
-export const MENTION_KIND_TYPE_TAG_MAP = {
-  component: "Component",
-  page: "Component",
-  token: "StyleToken",
-  globalVariant: "Variant",
-  animation: "AnimationSequence",
-  tpl: "tpl",
-  componentVariant: "Variant",
-} as const;
-
-export type MentionableResourceKind = keyof typeof MENTION_KIND_TYPE_TAG_MAP;
-
-/**
- * `componentUuid` is required for the kinds that live inside a component: it
- * narrows the search scope on lookup */
-export type MentionableResource = {
+type BaseMentionableResource = {
   uuid: string;
-  /**
-   * The resource's own name. It is what a mention stores and a chip shows
-   */
   name: string;
-  /* Additional data about the resource */
+  /** Additional data about the resource */
   detail?: string;
   /** Display name of the imported project this came from; unset for local ones. */
   fromProject?: string;
-} & (
-  | { kind: Exclude<MentionableResourceKind, "tpl" | "componentVariant"> }
-  | { kind: "tpl"; tplType: TplType; componentUuid: string }
-  | { kind: "componentVariant"; componentUuid: string }
-);
+};
+
+type ComponentMentionableResource = BaseMentionableResource & {
+  tag: "Component";
+  isPage: boolean;
+};
+
+export type TplMentionableResource = BaseMentionableResource & {
+  tag: "Tpl";
+  /** Narrows the search scope on lookup. */
+  componentUuid: string;
+  tplType: TplType;
+};
+
+type VariantMentionableResource = BaseMentionableResource & {
+  tag: "Variant";
+  componentUuid: string;
+};
+
+export type MentionableResource =
+  | ComponentMentionableResource
+  | (BaseMentionableResource & {
+      tag: Exclude<MentionTag, "Component" | "Tpl" | "Variant">;
+    })
+  | VariantMentionableResource
+  | TplMentionableResource;
 
 export interface MentionableResources {
   selection?: {
-    component: MentionableResource;
-    elements: MentionableResource[];
+    component: ComponentMentionableResource;
+    elements: TplMentionableResource[];
   };
   searchable: MentionableResource[];
 }
@@ -127,7 +118,7 @@ function mkComponentMentionableResources(
   for (const tpl of flattenTpls(component.tplTree)) {
     if (isTplNamable(tpl) && tpl.name) {
       tpls.push({
-        kind: "tpl",
+        tag: "Tpl",
         uuid: tpl.uuid,
         componentUuid: component.uuid,
         name: tpl.name,
@@ -144,7 +135,7 @@ function mkComponentMentionableResources(
 
   for (const variant of naturalSortByName(allComponentVariants(component))) {
     resources.push({
-      kind: "componentVariant",
+      tag: "Variant",
       uuid: variant.uuid,
       componentUuid: component.uuid,
       name: variant.name,
@@ -170,7 +161,8 @@ const mkSiteMentionableResources = maybeComputedFn(
     );
     for (const comp of naturalSortByName(components)) {
       resources.push({
-        kind: "component",
+        tag: "Component",
+        isPage: false,
         uuid: comp.uuid,
         name: comp.name,
         fromProject,
@@ -178,7 +170,12 @@ const mkSiteMentionableResources = maybeComputedFn(
     }
     if (!isImported) {
       for (const page of naturalSortByName(pages)) {
-        resources.push({ kind: "page", uuid: page.uuid, name: page.name });
+        resources.push({
+          tag: "Component",
+          isPage: true,
+          uuid: page.uuid,
+          name: page.name,
+        });
       }
     }
 
@@ -188,7 +185,7 @@ const mkSiteMentionableResources = maybeComputedFn(
         : site.styleTokens;
     for (const token of naturalSortByName(styleTokens)) {
       resources.push({
-        kind: "token",
+        tag: "StyleToken",
         uuid: token.uuid,
         name: token.name,
         fromProject,
@@ -206,7 +203,7 @@ const mkSiteMentionableResources = maybeComputedFn(
       globalVariantGroups.flatMap((group) => group.variants),
     )) {
       resources.push({
-        kind: "globalVariant",
+        tag: "GlobalVariant",
         uuid: variant.uuid,
         name: variant.name,
         detail: getVariantGroupName(variant),
@@ -216,7 +213,7 @@ const mkSiteMentionableResources = maybeComputedFn(
 
     for (const animation of naturalSortByName(site.animationSequences)) {
       resources.push({
-        kind: "animation",
+        tag: "AnimationSequence",
         uuid: animation.uuid,
         name: animation.name,
         fromProject,
@@ -240,14 +237,15 @@ function mkCanvasSelectionResources(
   const baseVariant = getBaseVariant(currentComponent);
   return {
     component: {
-      kind: isPageComponent(currentComponent) ? "page" : "component",
+      tag: "Component",
+      isPage: isPageComponent(currentComponent),
       uuid: currentComponent.uuid,
       name: currentComponent.name,
     },
     elements: selectedTpls.map((tpl) => {
       const vs = getEffectiveVariantSetting(tpl, [baseVariant]);
       return {
-        kind: "tpl",
+        tag: "Tpl" as const,
         uuid: tpl.uuid,
         componentUuid: currentComponent.uuid,
         tplType: getTplType(tpl, vs),
@@ -259,10 +257,6 @@ function mkCanvasSelectionResources(
   };
 }
 
-/**
- * Scores @param resource against what the user typed after `@`;
- * `undefined` drops it.
- */
 export function getResourceMatchScore(
   resource: MentionableResource,
   query: string,
@@ -271,168 +265,38 @@ export function getResourceMatchScore(
     [
       resource.name,
       resource.detail,
-      resource.kind,
+      mentionSearchKeyword(resource),
       resource.fromProject,
     ].filter(isNonNil),
     query,
   );
 }
 
-const MENTIONABLE_KINDS: string[] = Object.keys(MENTION_KIND_TYPE_TAG_MAP);
-
-function isKnownKind(kind: string): kind is MentionableResourceKind {
-  return MENTIONABLE_KINDS.includes(kind);
-}
-
-const kindPattern = new RegExp(MENTIONABLE_KINDS.join("|"));
-
-/**
- * Matches and captures one whole mention
- */
-export const mentionSplitRegex = regex`
-  (?<mention> @< ${kindPattern} : [^>]* > )
-`;
-
-const MENTION_ESCAPE_CODES: Record<string, string> = {
-  "25": "%",
-  "3E": ">",
-  "7C": "|",
-};
-
-/**
- * Percent-encode the grammar's delimiters so a resource name containing them can't break parsing
- */
-function escapeMentionLabel(label: string): string {
-  return label.replace(/%/g, "%25").replace(/>/g, "%3E").replace(/\|/g, "%7C");
-}
-
-function unescapeMentionLabel(label: string): string {
-  return label.replace(/%(25|3E|7C)/g, (_, code) => MENTION_ESCAPE_CODES[code]);
-}
-
-/** The uuid a mention stores: scoped by component where the kind needs it. */
-function mentionUuid(resource: MentionableResource): string {
-  return "componentUuid" in resource
-    ? `${resource.componentUuid}/${resource.uuid}`
-    : resource.uuid;
-}
-
-/**
- * The raw text stored in a chip for a picked resource: `kind:uuid|label`.
- */
-export function mkMentionRaw(resource: MentionableResource): string {
-  return `${resource.kind}:${mentionUuid(resource)}|${escapeMentionLabel(
-    resource.name,
-  )}`;
-}
-
-/** Matches one whole mention, capturing its kind, optional uuid, and label. */
-const mentionParseRegex = regex`
-  ^ @<
-    (?<kind> ${kindPattern} )
-    :
-    (?: (?<uuid> [^\|>]* ) \| )?   # optional: only a hand-typed mention lacks one
-    (?<label> [^>]* )
-  > $
-`;
-
-export interface ParsedMention {
-  kind: MentionableResourceKind;
-  uuid: string | undefined;
-  label: string;
-}
-
-export function parseMention(text: string): ParsedMention | undefined {
-  const match = mentionParseRegex.exec(text);
-  if (!match) {
-    return undefined;
-  }
-  const { kind, uuid, label } = match.groups!;
-  if (!isKnownKind(kind)) {
-    return undefined;
-  }
-  return { kind, uuid, label: unescapeMentionLabel(label) };
-}
-
-/**
- * Labels of mentions in @param text whose resource no longer exists in @param site
- */
-export function findMissingMentions(text: string, site: Site): string[] {
-  return text
-    .split(mentionSplitRegex)
-    .map(parseMention)
-    .filter(isNonNil)
-    .filter(({ kind, uuid }) => !uuid || !getMentionUiId(kind, uuid, site))
-    .map(({ label }) => label);
-}
-
-/**
- * The UiActionBus UiId to jump to a mentioned resource, or undefined if it no
- * longer exists.
- */
-export function getMentionUiId(
-  kind: MentionableResourceKind,
-  uuid: string,
-  site: Site,
-): UiId | undefined {
-  switch (kind) {
-    case "component":
-    case "page":
-      return tryGetModelUiId(
-        allComponents(site, { includeDeps: "direct" }),
-        uuid,
-        MENTION_KIND_TYPE_TAG_MAP[kind],
-      );
-    case "token":
-      return tryGetModelUiId(
-        siteStyleTokensDirectDeps(site),
-        uuid,
-        MENTION_KIND_TYPE_TAG_MAP[kind],
-      );
-    case "animation":
-      return tryGetModelUiId(
-        allAnimationSequences(site, { includeDeps: "direct" }),
-        uuid,
-        MENTION_KIND_TYPE_TAG_MAP[kind],
-      );
-    case "globalVariant":
-      return tryGetModelUiId(
-        allGlobalVariants(site, { includeDeps: "direct" }),
-        uuid,
-        MENTION_KIND_TYPE_TAG_MAP[kind],
-      );
-    case "componentVariant": {
-      const [componentUuid, variantUuid] = uuid.split("/");
-      const component = tryGetComponentByUuid(site, componentUuid);
-      return component
-        ? tryGetModelUiId(
-            allComponentVariants(component),
-            variantUuid,
-            MENTION_KIND_TYPE_TAG_MAP[kind],
-          )
-        : undefined;
-    }
-    case "tpl": {
-      const [componentUuid, tplUuid] = uuid.split("/");
-      const component = tryGetComponentByUuid(site, componentUuid);
-      return component && tryGetTplByUuid(component, tplUuid)
-        ? mkTplUiId(componentUuid, tplUuid)
-        : undefined;
-    }
-    default:
-      return assertNever(kind);
+function mentionSearchKeyword(resource: MentionableResource): string {
+  switch (resource.tag) {
+    case "Component":
+      return resource.isPage ? "page" : "component";
+    case "StyleToken":
+      return "token";
+    case "AnimationSequence":
+      return "animation";
+    case "Variant":
+    case "GlobalVariant":
+      return "variant";
+    case "Tpl":
+      return "element";
   }
 }
 
-/**
- * The Model UiId for `uuid` if a matching candidate exists, else undefined.
- */
-function tryGetModelUiId(
-  candidates: readonly { uuid: string }[],
-  uuid: string,
-  typeTag: ModelTypeTag,
-): UiId | undefined {
-  return candidates.some((c) => c.uuid === uuid)
-    ? mkModelUiId({ typeTag, uuid })
-    : undefined;
+export function mkResourceMentionRaw(resource: MentionableResource): string {
+  return mkMentionRaw(
+    "componentUuid" in resource
+      ? {
+          type: "ComponentScoped",
+          tag: resource.tag,
+          componentUuid: resource.componentUuid,
+          uuid: resource.uuid,
+        }
+      : { type: "SiteScoped", tag: resource.tag, uuid: resource.uuid },
+  );
 }

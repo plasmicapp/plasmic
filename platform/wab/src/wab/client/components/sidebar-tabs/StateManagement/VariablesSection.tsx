@@ -51,7 +51,7 @@ function VariablesSection_(props: VariablesSectionProps) {
     const { dispose } = studioCtx.uiActionBus.registerListener(
       (uiId, _type) => {
         const parsed = parseUiId(uiId);
-        if (parsed.type === "Model" && parsed.typeTag === "StateParam") {
+        if (parsed?.type === "ComponentScoped" && parsed.tag === "StateParam") {
           sectionRef.current?.expand();
           setExpanded(true);
         }

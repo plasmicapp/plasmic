@@ -14,7 +14,7 @@ import { SimpleReorderableList } from "@/wab/client/components/widgets/SimpleReo
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
-  mkModelUiId,
+  mkComponentScopedUiId,
   parseUiId,
 } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
@@ -100,7 +100,7 @@ export const ComponentPropsDefinitionSection = observer(
       const { dispose } = studioCtx.uiActionBus.registerListener(
         (uiId, _type) => {
           const parsed = parseUiId(uiId);
-          if (parsed.type === "Model") {
+          if (parsed?.type === "ComponentScoped") {
             const param = component.params.find((p) => p.uuid === parsed.uuid);
             if (param) {
               expandAncestorsOf(param);
@@ -338,7 +338,7 @@ const PropRow = observer(function ParamRow(props: {
     <>
       <WithContextMenu overlay={overlay}>
         <LabeledListItem
-          uiId={mkModelUiId(param)}
+          uiId={mkComponentScopedUiId(param, component.uuid)}
           draggable={draggable}
           dragHandleProps={props.dragHandleProps}
           onClick={() => setShowModal(true)}

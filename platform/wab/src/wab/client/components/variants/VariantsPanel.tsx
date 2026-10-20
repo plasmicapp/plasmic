@@ -71,7 +71,6 @@ import {
   getSuperComponents,
   isPageComponent,
 } from "@/wab/shared/core/components";
-import { tryGetGlobalVariantByUuid } from "@/wab/shared/core/sites";
 import {
   isGlobalVariantGroupUsedInSplits,
   isVariantUsedInSplits,
@@ -142,14 +141,8 @@ export const VariantsPanel = observer(
 
     const globalVariantsSectionRef = React.useRef<SidebarSectionHandle>(null);
 
-    useModelUiActionHandler("Variant", (uuid) => {
-      if (
-        tryGetGlobalVariantByUuid(studioCtx.site, uuid, {
-          includeDeps: "direct",
-        })
-      ) {
-        globalVariantsSectionRef.current?.expand();
-      }
+    useModelUiActionHandler("GlobalVariant", () => {
+      globalVariantsSectionRef.current?.expand();
     });
 
     const addVariantsMenu = React.useMemo(

@@ -1,4 +1,5 @@
 import type { MentionElement } from "@/wab/client/components/canvas/slate";
+import { MENTION_REGEX } from "@/wab/shared/mentions";
 import { Descendant, Editor, Text, Transforms } from "slate";
 
 export const isMentionElement = (x: any): x is MentionElement =>
@@ -31,9 +32,6 @@ export function insertMention(editor: Editor, raw: string) {
   Transforms.insertText(editor, " ");
 }
 
-/** Matches one whole `@<…>` mention. */
-const MENTION_TEXT_REGEX = /@<([^>]*)>/g;
-
 function serializeNode(node: Descendant): string {
   if (Text.isText(node)) {
     return node.text;
@@ -54,7 +52,7 @@ export function serializeToText(nodes: Descendant[]): string {
 function parseLine(line: string): Descendant[] {
   const children: Descendant[] = [];
   let last = 0;
-  for (const match of line.matchAll(MENTION_TEXT_REGEX)) {
+  for (const match of line.matchAll(MENTION_REGEX)) {
     const raw = match[1];
     // Slate requires a text node either side of an inline (mentions are inline nodes)
     // https://docs.slatejs.org/concepts/02-nodes#blocks-vs.-inlines

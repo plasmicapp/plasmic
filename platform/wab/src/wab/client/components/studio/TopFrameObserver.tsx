@@ -1,7 +1,5 @@
 import {
   MentionableResources,
-  findMissingMentions,
-  getMentionUiId,
   mkMentionableResources,
 } from "@/wab/client/components/copilot/resource-mention-utils";
 import { usePreviewCtx } from "@/wab/client/components/live/PreviewCtx";
@@ -19,6 +17,7 @@ import {
   aiStudioCtx,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
+import { subscribeResourceLabel } from "@/wab/client/studio-ctx/ui/studio-ui-resources";
 import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ApiBranch, ArenaRef } from "@/wab/shared/ApiSchema";
 import {
@@ -44,6 +43,7 @@ import {
 import { formatErrorMessage } from "@/wab/shared/error-handling";
 import { Component } from "@/wab/shared/model/classes";
 import { notification } from "antd";
+import * as Comlink from "comlink";
 import { sortBy } from "lodash";
 import { autorun, computed } from "mobx";
 import { observer } from "mobx-react";
@@ -56,13 +56,6 @@ import { LocalizationConfig } from "@/wab/shared/localization";
 
 export interface TopFrameObserverProps {
   preview?: boolean;
-}
-
-function notifyMentionedResourceGone() {
-  notification.info({
-    message: "That resource no longer exists",
-    description: "It may have been deleted since it was mentioned.",
-  });
 }
 
 function trackArtboardFileDrags(studioCtx: StudioCtx): () => void {
@@ -277,16 +270,15 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
       async getCurrentArena(): Promise<ArenaRef | undefined> {
         return maybe(studioCtx.currentArena, getArenaRef);
       },
-      async findMissingMentions(text: string): Promise<string[]> {
-        return findMissingMentions(text, studioCtx.site);
+      async subscribeResource(uiId, onLabel): Promise<() => void> {
+        const dispose = subscribeResourceLabel(studioCtx.site, uiId, onLabel);
+        return Comlink.proxy(() => {
+          dispose();
+          onLabel[Comlink.releaseProxy]();
+        });
       },
-      async navigateToMentionedResource(kind, uuid): Promise<void> {
-        const uiId = getMentionUiId(kind, uuid, studioCtx.site);
-        if (!uiId) {
-          notifyMentionedResourceGone();
-          return;
-        }
-        studioCtx.uiActionBus.dispatch(uiId, "jump");
+      async dispatchUiAction(uiId, type): Promise<void> {
+        studioCtx.uiActionBus.dispatch(uiId, type);
       },
       async onFileDragEventInTop(event): Promise<void> {
         fileDragMonitor.onRemoteEvent(event);

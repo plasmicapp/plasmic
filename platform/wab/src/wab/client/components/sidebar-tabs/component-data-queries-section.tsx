@@ -25,7 +25,7 @@ import {
   StudioCtx,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
-import { mkModelUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
+import { mkComponentScopedUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   CONFIGURE_ACTION,
@@ -209,7 +209,7 @@ const DataQueryRow = observer(
     return (
       <WithContextMenu overlay={menu}>
         <LabeledListItem
-          uiId={mkModelUiId(query)}
+          uiId={mkComponentScopedUiId(query, component.uuid)}
           label={query.name}
           menu={menu}
           onClick={() => openDataSourceModal()}

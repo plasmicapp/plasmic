@@ -13,7 +13,7 @@ import PlasmicIcon__Alert from "@/wab/client/plasmic/plasmic_kit_icons/icons/Pla
 import PlasmicButton from "@/wab/client/plasmic/PlasmicButton";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { UiActionsWrapper } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
-import { mkModelUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
+import { mkSiteScopedUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ensure, spawn, xGroupBy } from "@/wab/shared/common";
 import { getSiteScreenSizes } from "@/wab/shared/core/sites";
 import { ScreenSizeSpec } from "@/wab/shared/css-size";
@@ -314,7 +314,13 @@ export function ResponsivenessPanel_() {
               };
 
               return (
-                <UiActionsWrapper key={variant.uid} uiId={mkModelUiId(variant)}>
+                <UiActionsWrapper
+                  key={variant.uid}
+                  uiId={mkSiteScopedUiId({
+                    typeTag: "GlobalVariant",
+                    uuid: variant.uuid,
+                  })}
+                >
                   <Row gutter={8}>
                     {isUnknownStrategy ? (
                       <Col span={isActiveOwnedBySite && !readOnly ? 21 : 24}>
