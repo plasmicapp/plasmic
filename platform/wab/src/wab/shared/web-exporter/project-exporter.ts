@@ -8,6 +8,8 @@ import { isScreenVariantGroup } from "@/wab/shared/Variants";
 import { makeShortProjectId, toVarName } from "@/wab/shared/codegen/util";
 import { withoutUndefinedFields } from "@/wab/shared/common";
 import { isPageComponent } from "@/wab/shared/core/components";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { isIcon } from "@/wab/shared/core/image-assets";
 import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import { generateKeyframesRule } from "@/wab/shared/core/styles";
 import {
@@ -22,6 +24,7 @@ import {
   AnimationSequence,
   Component,
   DataToken,
+  ImageAsset,
   Mixin,
   ProjectDependency,
   Site,
@@ -30,6 +33,7 @@ import {
   Theme,
   VariantGroup,
 } from "@/wab/shared/model/classes";
+import { SearchSpec, getSearchHits } from "@/wab/shared/search";
 import { getStylesFromRuleSet } from "@/wab/shared/web-exporter/component-exporter";
 import {
   type AnimationJson,
@@ -38,6 +42,8 @@ import {
   type DataQueryFunctionsJson,
   type DataTokenJson,
   type GlobalVariantGroupJson,
+  type IconJson,
+  type ImageJson,
   type MixinJson,
   type ProjectJson,
   type ScreenBreakpointJson,
@@ -48,6 +54,41 @@ import {
   type VariantedStyleJson,
   type VariantedValueJson,
 } from "@/wab/shared/web-exporter/schema";
+
+const MAX_SEARCH_HITS = 100;
+
+const NAME_SEARCH: SearchSpec<{ name: string }> = { name: (item) => item.name };
+
+const COMPONENT_SEARCH: SearchSpec<ComponentSummaryJson> = {
+  name: (component) => component.name,
+  also: [{ key: "pagePath", get: (component) => component.pageMeta?.path }],
+};
+
+const GLOBAL_VARIANT_GROUP_SEARCH: SearchSpec<GlobalVariantGroupJson> = {
+  name: (group) => group.name,
+  also: [
+    {
+      key: "variants",
+      get: (group) => group.variants.map((variant) => variant.name),
+    },
+  ],
+};
+
+const TOKEN_SEARCH: SearchSpec<TokenJson> = {
+  name: (token) => token.name,
+  also: [
+    {
+      key: "value",
+      get: (token) => token.value.resolvedValue ?? token.value.value,
+      compareAs: "literal",
+    },
+  ],
+};
+
+const DATA_TOKEN_SEARCH: SearchSpec<DataTokenJson> = {
+  name: (token) => token.name,
+  also: [{ key: "value", get: (token) => token.value, compareAs: "literal" }],
+};
 
 /**
  * Build the canonical JSON model for project-level information. Each requested key lists
@@ -68,7 +109,11 @@ export function buildProjectResource(
     dataTokens?: boolean;
     mixins?: boolean;
     animations?: boolean;
+    images?: boolean;
+    icons?: boolean;
     themes?: "active" | "all";
+    search?: readonly string[];
+    messages?: string[];
   },
 ): ProjectJson {
   const screenBreakpoints = opts.screenBreakpoints
@@ -114,14 +159,43 @@ export function buildProjectResource(
     const list = <T, R>(
       items: readonly T[] | false | undefined,
       build: (item: T) => R,
-    ) =>
-      items && (!dep || items.length > 0)
-        ? items.map((item) => build(item))
-        : undefined;
+      spec?: SearchSpec<R>,
+    ) => {
+      if (!items) {
+        return undefined;
+      }
+
+      let builtItems = items.map((item) => build(item));
+      if (spec && opts.search?.length) {
+        builtItems = getSearchHits(builtItems, spec, {
+          terms: opts.search,
+          require: "any",
+        }).map((hit) => hit.item);
+      }
+
+      return !dep || builtItems.length > 0 ? builtItems : undefined;
+    };
+
+    const capped = <R>(items: R[] | undefined, plural: string) => {
+      if (!items || items.length <= MAX_SEARCH_HITS) {
+        return items;
+      }
+
+      const ownerProj = dep ? `Imported project "${dep.name}"` : "This project";
+      opts.messages?.push(
+        opts.search?.length
+          ? `${ownerProj} has ${items.length} ${plural} matching the search; listing the best ${MAX_SEARCH_HITS}. Use more specific search terms to narrow them.`
+          : `${ownerProj} has ${items.length} ${plural}; listing the first ${MAX_SEARCH_HITS}. Use project.search to find others.`,
+      );
+
+      return items.slice(0, MAX_SEARCH_HITS);
+    };
+
     return withoutUndefinedFields({
       components: list(
         opts.components && owner.components,
         buildComponentSummary,
+        COMPONENT_SEARCH,
       ),
       globalVariantGroups: list(
         opts.globalVariants &&
@@ -131,20 +205,50 @@ export function buildProjectResource(
               group === site.activeScreenVariantGroup,
           ),
         buildGlobalVariantGroupSummary,
+        GLOBAL_VARIANT_GROUP_SEARCH,
       ),
-      tokens: list(opts.tokens && owner.styleTokens, (token) =>
-        buildTokenModel(token, site, allFinalTokens),
+      tokens: list(
+        opts.tokens && owner.styleTokens,
+        (token) => buildTokenModel(token, site, allFinalTokens),
+        TOKEN_SEARCH,
       ),
-      dataTokens: list(opts.dataTokens && owner.dataTokens, (token) =>
-        buildDataTokenResource(token, {
-          site: owner,
-          projectId: dep?.projectId ?? opts.projectId,
-        }),
+      dataTokens: list(
+        opts.dataTokens && owner.dataTokens,
+        (token) =>
+          buildDataTokenResource(token, {
+            site: owner,
+            projectId: dep?.projectId ?? opts.projectId,
+          }),
+        DATA_TOKEN_SEARCH,
       ),
-      mixins: list(opts.mixins && owner.mixins, buildMixinResource),
+      mixins: list(
+        opts.mixins && owner.mixins,
+        buildMixinResource,
+        NAME_SEARCH,
+      ),
       animations: list(
         opts.animations && owner.animationSequences,
         buildAnimationSummary,
+        NAME_SEARCH,
+      ),
+      images: capped(
+        list(
+          opts.images &&
+            owner.imageAssets.filter(
+              (asset) => asset.type === ImageAssetType.Picture && asset.dataUri,
+            ),
+          buildImageSummary,
+          NAME_SEARCH,
+        ),
+        "images",
+      ),
+      icons: capped(
+        list(
+          opts.icons && owner.imageAssets.filter(isIcon),
+          buildIconSummary,
+          NAME_SEARCH,
+        ),
+        "icons",
       ),
       themes: list(
         themes?.filter((st) => st.fromProject === dep?.projectId),
@@ -167,6 +271,14 @@ export function buildProjectResource(
       ...buildSections(dep),
     })),
   };
+}
+
+function buildImageSummary(asset: ImageAsset): ImageJson {
+  return { __type: "Image", name: asset.name, uuid: asset.uuid };
+}
+
+function buildIconSummary(asset: ImageAsset): IconJson {
+  return { __type: "Icon", name: asset.name, uuid: asset.uuid };
 }
 
 function buildComponentSummary(comp: Component): ComponentSummaryJson {

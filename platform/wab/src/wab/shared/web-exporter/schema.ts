@@ -137,6 +137,11 @@ function projectResourcesSchema() {
       .array(animationSummarySchema())
       .optional()
       .describe("Animation sequences, when requested."),
+    images: z
+      .array(imageSchema())
+      .optional()
+      .describe("Images, when requested."),
+    icons: z.array(iconSchema()).optional().describe("Icons, when requested."),
     themes: z
       .array(themeSchema())
       .optional()
@@ -904,6 +909,28 @@ export function animationSummarySchema() {
 export type AnimationSummaryJson = z.infer<
   ReturnType<typeof animationSummarySchema>
 >;
+
+export function imageSchema() {
+  return z.object({
+    __type: z.literal("Image"),
+    name: z.string().describe("Image name."),
+    uuid: z
+      .string()
+      .describe("Image asset UUID, referenced as var(--image-<uuid>)."),
+  });
+}
+export type ImageJson = z.infer<ReturnType<typeof imageSchema>>;
+
+export function iconSchema() {
+  return z.object({
+    __type: z.literal("Icon"),
+    name: z.string().describe("Icon name."),
+    uuid: z
+      .string()
+      .describe("Icon asset UUID, referenced as var(--image-<uuid>)."),
+  });
+}
+export type IconJson = z.infer<ReturnType<typeof iconSchema>>;
 
 export function invalidResourceSchema() {
   return z.object({
