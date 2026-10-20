@@ -2,39 +2,17 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  grid-column-start: 1 !important;
+  grid-column-end: -1 !important;
+  min-height: 0;
+}
+.settings:global(.__wab_instance) {
   width: 100%;
   height: 100%;
   min-width: 0;
   min-height: 0;
-}
-.defaultLayout:global(.__wab_instance) {
-  position: relative;
-}
-.settings:global(.__wab_instance) {
-  position: relative;
-}
-.img___2UR45 {
-  object-fit: cover;
-  width: 24px;
-  height: 24px;
-  max-width: 24px;
-  border-radius: 50%;
-}
-.img___2UR45 > picture > img {
-  object-fit: cover;
-}
-.navTeamSection:global(.__wab_instance) {
-  position: relative;
-}
-.svg__q2R5R {
-  display: flex;
-  position: relative;
-  width: 24px;
-  height: 24px;
-}
-.svg__svHy {
-  display: flex;
-  position: relative;
-  width: 24px;
-  height: 24px;
 }

@@ -15,22 +15,51 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import ProjectListItem from "../../components/ProjectListItem"; // plasmic-import: 2FvZipCkyxl/component
-import DefaultLayout from "../../components/dashboard/DefaultLayout"; // plasmic-import: nSkQWLjK-B/component
-import NavTeamSection from "../../components/dashboard/NavTeamSection"; // plasmic-import: VqaN_WL-stA/component
-import NavWorkspaceButton from "../../components/dashboard/NavWorkspaceButton"; // plasmic-import: Cma6XahJmS/component
 import TeamPageHeader from "../../components/dashboard/TeamPageHeader"; // plasmic-import: pcPdf_yULU3/component
 import WorkspaceSection from "../../components/dashboard/WorkspaceSection"; // plasmic-import: 5cdjGaqBQ4/component
-import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import ProjectListItem from "../../components/ProjectListItem"; // plasmic-import: 2FvZipCkyxl/component
 import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -40,7 +69,7 @@ import sty from "./PlasmicTeamPage.module.css"; // plasmic-import: O3FCcJ_viT/cs
 const emptyProxy: any = new Proxy(() => "", {
   get(_, prop) {
     return prop === Symbol.toPrimitive ? () => "" : emptyProxy;
-  },
+  }
 });
 
 function wrapQueriesWithLoadingProxy($q: any): any {
@@ -48,7 +77,7 @@ function wrapQueriesWithLoadingProxy($q: any): any {
     get(target, queryName) {
       const query = target[queryName];
       return !query || query.isLoading || !query.data ? emptyProxy : query;
-    },
+    }
   });
 }
 
@@ -63,8 +92,8 @@ export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   return {
     openGraph: {},
     twitter: {
-      card: "summary" as const,
-    },
+      card: "summary" as const
+    }
   };
 }
 
@@ -81,10 +110,8 @@ export const PlasmicTeamPage__ArgProps = new Array<ArgPropType>("children");
 
 export type PlasmicTeamPage__OverridesType = {
   root?: Flex__<"div">;
-  defaultLayout?: Flex__<typeof DefaultLayout>;
   header?: Flex__<typeof TeamPageHeader>;
-  navTeamSection?: Flex__<typeof NavTeamSection>;
-  text?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
 };
 
 export interface DefaultTeamPageProps {
@@ -115,7 +142,7 @@ function PlasmicTeamPage__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -143,109 +170,77 @@ function PlasmicTeamPage__RenderFunc(props: {
             sty.root
           )}
         >
-          <DefaultLayout
-            data-plasmic-name={"defaultLayout"}
-            data-plasmic-override={overrides.defaultLayout}
-            className={classNames("__wab_instance", sty.defaultLayout)}
-            teams={
-              <NavTeamSection
-                data-plasmic-name={"navTeamSection"}
-                data-plasmic-override={overrides.navTeamSection}
-                className={classNames("__wab_instance", sty.navTeamSection)}
-              >
-                <NavWorkspaceButton
-                  className={classNames(
-                    "__wab_instance",
-                    sty.navWorkspaceButton__vrx2D
-                  )}
-                />
+          <TeamPageHeader
+            data-plasmic-name={"header"}
+            data-plasmic-override={overrides.header}
 
-                <NavWorkspaceButton
-                  className={classNames(
-                    "__wab_instance",
-                    sty.navWorkspaceButton___5MOvF
-                  )}
-                  name={
-                    <div
-                      data-plasmic-name={"text"}
-                      data-plasmic-override={overrides.text}
-                      className={classNames("all", "__wab_text", sty.text)}
-                    >
-                      {"Workspace B"}
-                    </div>
-                  }
-                />
-              </NavTeamSection>
-            }
+            className={classNames("__wab_instance", sty.header)}
+          />
+
+          <div
+            data-plasmic-name={"freeBox"}
+            data-plasmic-override={overrides.freeBox}
+
+            className={classNames("all", sty.freeBox)}
           >
-            <div className={classNames("all", sty.freeBox__cpaZg)}>
-              <TeamPageHeader
-                data-plasmic-name={"header"}
-                data-plasmic-override={overrides.header}
-                className={classNames("__wab_instance", sty.header)}
-              />
-
-              <div className={classNames("all", sty.freeBox__jk5PX)}>
-                {renderPlasmicSlot({
-                  defaultContents: (
-                    <React.Fragment>
-                      <WorkspaceSection
-                        canUseCms={true}
-                        canUseCmsAndDataSources={"empty"}
-                        inTeamPage={true}
-                        noProjects={true}
-                        numMembers={
-                          <div
-                            className={classNames(
-                              "all",
-                              "__wab_text",
-                              sty.text__l2A9P
-                            )}
-                          >
-                            {"6"}
-                          </div>
-                        }
+            {renderPlasmicSlot({
+              defaultContents: (
+                <React.Fragment>
+                  <WorkspaceSection
+                    canUseCms={true}
+                    canUseCmsAndDataSources={"empty"}
+                    inTeamPage={true}
+                    noProjects={true}
+                    numMembers={
+                      <div
+                        className={classNames(
+                          "all",
+                          "__wab_text",
+                          sty.text__l2A9P
+                        )}
                       >
-                        <ProjectListItem timestamp={"updated 1h ago"} />
+                        {"6"}
+                      </div>
+                    }
+                  >
+                    <ProjectListItem timestamp={"updated 1h ago"} />
 
-                        <ProjectListItem
-                          className={classNames(
-                            "__wab_instance",
-                            sty.projectListItem__gcUcH
-                          )}
-                        />
+                    <ProjectListItem
+                      className={classNames(
+                        "__wab_instance",
+                        sty.projectListItem__gcUcH
+                      )}
+                    />
 
-                        <ProjectListItem
-                          className={classNames(
-                            "__wab_instance",
-                            sty.projectListItem__bkTRw
-                          )}
-                        />
-                      </WorkspaceSection>
-                      <WorkspaceSection inTeamPage={true}>
-                        <ProjectListItem />
+                    <ProjectListItem
+                      className={classNames(
+                        "__wab_instance",
+                        sty.projectListItem__bkTRw
+                      )}
+                    />
+                  </WorkspaceSection>
+                  <WorkspaceSection inTeamPage={true}>
+                    <ProjectListItem />
 
-                        <ProjectListItem
-                          className={classNames(
-                            "__wab_instance",
-                            sty.projectListItem__zqqA
-                          )}
-                        />
+                    <ProjectListItem
+                      className={classNames(
+                        "__wab_instance",
+                        sty.projectListItem__zqqA
+                      )}
+                    />
 
-                        <ProjectListItem
-                          className={classNames(
-                            "__wab_instance",
-                            sty.projectListItem___449Jj
-                          )}
-                        />
-                      </WorkspaceSection>
-                    </React.Fragment>
-                  ),
-                  value: args.children,
-                })}
-              </div>
-            </div>
-          </DefaultLayout>
+                    <ProjectListItem
+                      className={classNames(
+                        "__wab_instance",
+                        sty.projectListItem___449Jj
+                      )}
+                    />
+                  </WorkspaceSection>
+                </React.Fragment>
+              ),
+              value: args.children
+            })}
+          </div>
         </div>
       </div>
     </React.Fragment>
@@ -253,21 +248,17 @@ function PlasmicTeamPage__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "defaultLayout", "header", "navTeamSection", "text"],
-  defaultLayout: ["defaultLayout", "header", "navTeamSection", "text"],
+  root: ["root", "header", "freeBox"],
   header: ["header"],
-  navTeamSection: ["navTeamSection", "text"],
-  text: ["text"],
+  freeBox: ["freeBox"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
-  defaultLayout: typeof DefaultLayout;
   header: typeof TeamPageHeader;
-  navTeamSection: typeof NavTeamSection;
-  text: "div";
+  freeBox: "div";
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -281,7 +272,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTeamPage__VariantsArgs;
     args?: PlasmicTeamPage__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicTeamPage__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicTeamPage__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTeamPage__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -306,7 +299,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicTeamPage__ArgProps,
-          internalVariantPropNames: PlasmicTeamPage__VariantProps,
+          internalVariantPropNames: PlasmicTeamPage__VariantProps
         }),
       [props, nodeName]
     );
@@ -314,7 +307,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -330,10 +323,8 @@ export const PlasmicTeamPage = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
-    defaultLayout: makeNodeComponent("defaultLayout"),
     header: makeNodeComponent("header"),
-    navTeamSection: makeNodeComponent("navTeamSection"),
-    text: makeNodeComponent("text"),
+    freeBox: makeNodeComponent("freeBox"),
 
     // Metadata about props expected for PlasmicTeamPage
     internalVariantProps: PlasmicTeamPage__VariantProps,
@@ -343,8 +334,8 @@ export const PlasmicTeamPage = Object.assign(
       pageRoute: "/teams/[id]",
       pagePath: "/teams/[id]",
       params: {},
-      query: {},
-    }),
+      query: {}
+    })
   }
 );
 

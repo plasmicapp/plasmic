@@ -1,0 +1,105 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  width: 100%;
+  height: auto;
+  justify-content: flex-start;
+  align-items: center;
+  column-gap: var(--token-O2OprmOFWLju);
+  justify-self: flex-start;
+  min-width: 0;
+  border-radius: var(--token-O2OprmOFWLju);
+  padding: var(--token-YwPV7bN0RvD8) 0px;
+}
+.rootselected {
+  background: var(--token-8MEyDjsqznQc);
+}
+.root:hover:hover {
+  background: var(--token-iCBCh1BQyu-W);
+}
+.root___focusVisible {
+  box-shadow: 0px 0px 0px 2px #0091ff80;
+  outline: none;
+}
+.freeBox__vhNxb {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+  justify-content: flex-start;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.root .freeBox___focusVisible__vhNxbw8Hrx {
+  outline: none;
+}
+.img__rFck {
+  animation: none;
+  object-fit: cover;
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.img__rFck > picture > img {
+  object-fit: cover;
+}
+.freeBox__aYjpn {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  row-gap: var(--token-vhXSTyxt_gU9);
+  min-width: 0;
+}
+.root .freeBox___focusVisible__aYjpnW8Hrx {
+  outline: none;
+}
+.text__zJucp {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  font-weight: 500;
+  font-size: var(--token-y-e1zIVKHJyd);
+  min-width: 0;
+}
+.text__qD8Wr {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  color: var(--token-RTPypKCJE4bm);
+  font-size: var(--token-XviUmtZ5j0iF);
+  min-width: 0;
+}
+.root .text___focusVisible__qD8Wrw8Hrx {
+  outline: none;
+}
+.freeBox__xyuOq {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+  justify-content: flex-start;
+  width: var(--token-8b4HJYZr1yuK);
+  flex-shrink: 0;
+}
+.root .freeBox___focusVisible__xyuOqw8Hrx {
+  outline: none;
+}
+.svg {
+  object-fit: cover;
+  max-width: 100%;
+  color: var(--token-mwrqWBxg1aja);
+  width: 100%;
+  min-width: 0;
+  height: 1em;
+  flex-shrink: 0;
+}
+.svgselected {
+  display: block;
+}

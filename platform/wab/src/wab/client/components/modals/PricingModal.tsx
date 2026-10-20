@@ -108,12 +108,18 @@ export type PromptBillingResponse = MakeADT<
 export async function promptBilling(
   props: PromptBillingArgs,
 ): Promise<PromptBillingResponse | undefined> {
-  return showTemporaryPrompt<PromptBillingResponse>((onSubmit, onCancel) => (
-    // @ts-ignore
-    <Elements stripe={getStripePromise()}>
-      <UpsellForm {...props} onSubmit={onSubmit} onCancel={onCancel} />
-    </Elements>
-  ));
+  const response = await showTemporaryPrompt<PromptBillingResponse>(
+    (onSubmit, onCancel) => (
+      // @ts-ignore
+      <Elements stripe={getStripePromise()}>
+        <UpsellForm {...props} onSubmit={onSubmit} onCancel={onCancel} />
+      </Elements>
+    ),
+  );
+  if (response?.type === "success") {
+    await props.appCtx.reloadAppCtx();
+  }
+  return response;
 }
 
 export type PromptTeamUpgradeOpts = Pick<
@@ -307,7 +313,6 @@ function UpsellForm(
 
   const startFreeTrial = async () => {
     await appCtx.api.startFreeTrial(team.id);
-    await appCtx.reloadAppCtx();
     return onSubmit({
       type: "success",
       team: team,

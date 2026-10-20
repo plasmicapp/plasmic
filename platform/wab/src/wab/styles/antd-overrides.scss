@@ -1,3 +1,5 @@
+@import "./_mixins.sass";
+
 .ant-popover-inner-content {
   width: auto;
 }
@@ -21,6 +23,11 @@
 
   .ant-dropdown-menu-item {
     padding-left: 12px;
+    &:focus-visible {
+      z-index: 1;
+      outline-width: 1px;
+      @include focused;
+    }
   }
 
   .ant-dropdown-menu-item,

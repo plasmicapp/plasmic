@@ -15,18 +15,49 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import DefaultLayout from "../../components/dashboard/DefaultLayout"; // plasmic-import: nSkQWLjK-B/component
-import NavTeamSection from "../../components/dashboard/NavTeamSection"; // plasmic-import: VqaN_WL-stA/component
 import TeamSettings from "../../components/dashboard/TeamSettings"; // plasmic-import: zRIUpVU0Cm8/component
-import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
 import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -36,7 +67,7 @@ import sty from "./PlasmicTeamSettingsPage.module.css"; // plasmic-import: LW4T3
 const emptyProxy: any = new Proxy(() => "", {
   get(_, prop) {
     return prop === Symbol.toPrimitive ? () => "" : emptyProxy;
-  },
+  }
 });
 
 function wrapQueriesWithLoadingProxy($q: any): any {
@@ -44,7 +75,7 @@ function wrapQueriesWithLoadingProxy($q: any): any {
     get(target, queryName) {
       const query = target[queryName];
       return !query || query.isLoading || !query.data ? emptyProxy : query;
-    },
+    }
   });
 }
 
@@ -59,8 +90,8 @@ export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   return {
     openGraph: {},
     twitter: {
-      card: "summary" as const,
-    },
+      card: "summary" as const
+    }
   };
 }
 
@@ -78,9 +109,7 @@ export const PlasmicTeamSettingsPage__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicTeamSettingsPage__OverridesType = {
   root?: Flex__<"div">;
-  defaultLayout?: Flex__<typeof DefaultLayout>;
   settings?: Flex__<typeof TeamSettings>;
-  navTeamSection?: Flex__<typeof NavTeamSection>;
 };
 
 export interface DefaultTeamSettingsPageProps {
@@ -110,7 +139,7 @@ function PlasmicTeamSettingsPage__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -138,25 +167,13 @@ function PlasmicTeamSettingsPage__RenderFunc(props: {
             sty.root
           )}
         >
-          <DefaultLayout
-            data-plasmic-name={"defaultLayout"}
-            data-plasmic-override={overrides.defaultLayout}
-            className={classNames("__wab_instance", sty.defaultLayout)}
-            teams={
-              <NavTeamSection
-                data-plasmic-name={"navTeamSection"}
-                data-plasmic-override={overrides.navTeamSection}
-                className={classNames("__wab_instance", sty.navTeamSection)}
-              />
-            }
-          >
-            <TeamSettings
-              data-plasmic-name={"settings"}
-              data-plasmic-override={overrides.settings}
-              className={classNames("__wab_instance", sty.settings)}
-              teamName={"Team Name"}
-            />
-          </DefaultLayout>
+          <TeamSettings
+            data-plasmic-name={"settings"}
+            data-plasmic-override={overrides.settings}
+
+            className={classNames("__wab_instance", sty.settings)}
+            teamName={"Team Name"}
+          />
         </div>
       </div>
     </React.Fragment>
@@ -164,19 +181,15 @@ function PlasmicTeamSettingsPage__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "defaultLayout", "settings", "navTeamSection"],
-  defaultLayout: ["defaultLayout", "settings", "navTeamSection"],
-  settings: ["settings"],
-  navTeamSection: ["navTeamSection"],
+  root: ["root", "settings"],
+  settings: ["settings"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
-  defaultLayout: typeof DefaultLayout;
   settings: typeof TeamSettings;
-  navTeamSection: typeof NavTeamSection;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -190,8 +203,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTeamSettingsPage__VariantsArgs;
     args?: PlasmicTeamSettingsPage__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicTeamSettingsPage__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicTeamSettingsPage__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTeamSettingsPage__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -216,7 +230,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicTeamSettingsPage__ArgProps,
-          internalVariantPropNames: PlasmicTeamSettingsPage__VariantProps,
+          internalVariantPropNames: PlasmicTeamSettingsPage__VariantProps
         }),
       [props, nodeName]
     );
@@ -224,7 +238,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -240,9 +254,7 @@ export const PlasmicTeamSettingsPage = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
-    defaultLayout: makeNodeComponent("defaultLayout"),
     settings: makeNodeComponent("settings"),
-    navTeamSection: makeNodeComponent("navTeamSection"),
 
     // Metadata about props expected for PlasmicTeamSettingsPage
     internalVariantProps: PlasmicTeamSettingsPage__VariantProps,
@@ -252,8 +264,8 @@ export const PlasmicTeamSettingsPage = Object.assign(
       pageRoute: "/teams/[id]/settings",
       pagePath: "/teams/[id]/settings",
       params: {},
-      query: {},
-    }),
+      query: {}
+    })
   }
 );
 

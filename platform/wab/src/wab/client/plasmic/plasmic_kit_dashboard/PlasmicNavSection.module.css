@@ -1,0 +1,123 @@
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+}
+@media (min-width: 0px) and (max-width: 768px) {
+  .root {
+    border-bottom: 1px solid var(--token-CE-OiWjNhspe);
+  }
+}
+.freeBox__vefYm {
+  animation: none;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  border-radius: 6px;
+}
+@media (min-width: 0px) and (max-width: 768px) {
+  .freeBox__vefYm {
+    animation: none;
+    margin-bottom: var(--token-8b4HJYZr1yuK);
+    margin-top: var(--token-O2OprmOFWLju);
+  }
+}
+.listSectionHeader:global(.__wab_instance) {
+  animation: none;
+  max-width: 100%;
+  margin-top: var(--token-YwPV7bN0RvD8);
+}
+.svg__w27H4 {
+  position: relative;
+  object-fit: cover;
+  width: 1rem;
+  height: 1rem;
+}
+.text {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+@media (min-width: 0px) and (max-width: 768px) {
+  .text {
+    text-align: center;
+  }
+}
+.iconButton__s0PA:global(.__wab_instance) {
+  position: relative;
+}
+.svg__eBc2J {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.svg__n7CKb {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-UunsGa2Y3t3);
+  height: 1em;
+}
+.freeBox___0Gz4N {
+  animation: none;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  row-gap: var(--token-vhXSTyxt_gU9);
+}
+.navButton__hvjq:global(.__wab_instance) {
+  animation: none;
+  max-width: 100%;
+}
+.svg__fwB4H {
+  display: flex;
+  position: relative;
+  height: 1em;
+}
+.svg___1OzA1 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.navButton__cfHjl:global(.__wab_instance) {
+  animation: none;
+  max-width: 100%;
+}
+.svg___56Rn {
+  display: flex;
+  position: relative;
+  height: 1em;
+}
+.svg__teGa {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.navButton__lSr1C:global(.__wab_instance) {
+  animation: none;
+  max-width: 100%;
+}
+.svg__teUkE {
+  display: flex;
+  position: relative;
+  height: 1em;
+}
+.svg__uXluI {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}

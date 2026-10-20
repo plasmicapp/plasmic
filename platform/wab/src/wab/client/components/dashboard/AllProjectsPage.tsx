@@ -44,9 +44,8 @@ function AllProjectsPage_(
     <>
       {documentTitle("All projects")}
       <PlasmicAllProjectsPage
-        root={{ ref }}
+        projects={{ ref }}
         {...props}
-        defaultLayout={{ props: { helpButton: { render: () => null } } }}
         newProjectButton={{ onClick: () => setShowNewProjectModal(true) }}
         filter={{ props: filterProps }}
         mainList={{

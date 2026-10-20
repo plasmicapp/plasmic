@@ -491,6 +491,16 @@
       }
     },
     {
+      "name": "Side Nav Width",
+      "type": "spacing",
+      "value": "250px",
+      "category": "spacing",
+      "meta": {
+        "projectId": "ooL7EhXDmFQWnW9sxtchhE",
+        "id": "bw12RQUaqRtW"
+      }
+    },
+    {
       "name": "Size-10",
       "type": "spacing",
       "value": "0.625rem",

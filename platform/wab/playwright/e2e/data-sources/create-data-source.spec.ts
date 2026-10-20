@@ -18,10 +18,13 @@ test.describe("create-data-source", () => {
     await models.studio.deleteDataSource(dataSourceName);
   });
 
-  test("can create postgres data source", async ({ page }) => {
+  test("can create postgres data source", async ({ page, models }) => {
     dataSourceName = "Postgres Test";
 
-    await page.getByText("Plasmic's First Workspace").click();
+    await models.studio.goToWorkspace(
+      "Plasmic's First Organization",
+      "Plasmic's First Workspace",
+    );
     await page.getByText("Integrations").click();
     await page.getByText("New integration").click();
     await page.waitForTimeout(1000);
@@ -84,10 +87,13 @@ test.describe("create-data-source", () => {
     await page.waitForTimeout(1000);
   });
 
-  test("can create HTTP data source", async ({ page }) => {
+  test("can create HTTP data source", async ({ page, models }) => {
     dataSourceName = "HTTP Test";
 
-    await page.getByText("Plasmic's First Workspace").click();
+    await models.studio.goToWorkspace(
+      "Plasmic's First Organization",
+      "Plasmic's First Workspace",
+    );
     await page.getByText("Integrations").click();
     await page.getByText("New integration").click();
     await page.waitForTimeout(1000);

@@ -6,6 +6,11 @@
 @import "./plasmic_embed_css/plasmic_plasmic_embed_css.css"; /* plasmic-import: 8PtdGodUbexNYgkuyBUcWu/projectcss */
 @import "./react_aria/plasmic.css"; /* plasmic-import: gmeH6XgPaBtkt51HunAo4g/projectcss */
 
+.plasmic_tokens_ooL7EhXDmFQWnW9sxtchhE {
+  --token-bw12RQUaqRtW: 250px;
+  --plasmic-token-side-nav-width: var(--token-bw12RQUaqRtW);
+}
+
 .plasmic_default_styles {
   --mixin-qP3g6Hd5AdC_text-decoration-line: none;
   --mixin-qP3g6Hd5AdC_font-family: "Inter", sans-serif;

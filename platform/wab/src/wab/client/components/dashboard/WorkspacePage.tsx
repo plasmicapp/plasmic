@@ -1,4 +1,3 @@
-import DefaultTeamLayout from "@/wab/client/components/dashboard/DefaultTeamLayout";
 import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
@@ -77,23 +76,17 @@ function WorkspacePage_(
     <>
       {documentTitle(workspace.name)}
       <PlasmicWorkspacePage
-        root={{ ref }}
-        defaultLayout={{
-          as: DefaultTeamLayout,
-          props: { team: workspace.team, workspace },
-        }}
         workspaceSection={{
-          props: {
-            workspace,
-            projects,
-            databases,
-            onUpdate: async () => {
-              await fetchAsyncData();
-            },
-            perms,
-            matcher,
-            filterProps,
+          ref,
+          workspace,
+          projects,
+          databases,
+          onUpdate: async () => {
+            await fetchAsyncData();
           },
+          perms,
+          matcher,
+          filterProps,
         }}
         {...rest}
       />

@@ -14,16 +14,47 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
-  StrictProps,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import DefaultLayout from "../../components/dashboard/DefaultLayout"; // plasmic-import: nSkQWLjK-B/component
-import NavTeamSection from "../../components/dashboard/NavTeamSection"; // plasmic-import: VqaN_WL-stA/component
 import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
 
@@ -35,7 +66,7 @@ import sty from "./PlasmicSettingsPage.module.css"; // plasmic-import: VfLXr8Uqd
 const emptyProxy: any = new Proxy(() => "", {
   get(_, prop) {
     return prop === Symbol.toPrimitive ? () => "" : emptyProxy;
-  },
+  }
 });
 
 function wrapQueriesWithLoadingProxy($q: any): any {
@@ -43,7 +74,7 @@ function wrapQueriesWithLoadingProxy($q: any): any {
     get(target, queryName) {
       const query = target[queryName];
       return !query || query.isLoading || !query.data ? emptyProxy : query;
-    },
+    }
   });
 }
 
@@ -58,8 +89,8 @@ export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   return {
     openGraph: {},
     twitter: {
-      card: "summary" as const,
-    },
+      card: "summary" as const
+    }
   };
 }
 
@@ -76,8 +107,6 @@ export const PlasmicSettingsPage__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicSettingsPage__OverridesType = {
   root?: Flex__<"div">;
-  defaultLayout?: Flex__<typeof DefaultLayout>;
-  navTeamSection?: Flex__<typeof NavTeamSection>;
 };
 
 export interface DefaultSettingsPageProps {
@@ -107,7 +136,7 @@ function PlasmicSettingsPage__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -134,39 +163,20 @@ function PlasmicSettingsPage__RenderFunc(props: {
             styleTokensClassNames,
             sty.root
           )}
-        >
-          <DefaultLayout
-            data-plasmic-name={"defaultLayout"}
-            data-plasmic-override={overrides.defaultLayout}
-            children={null}
-            className={classNames("__wab_instance", sty.defaultLayout)}
-            navigation={"starters"}
-            teams={
-              <NavTeamSection
-                data-plasmic-name={"navTeamSection"}
-                data-plasmic-override={overrides.navTeamSection}
-                className={classNames("__wab_instance", sty.navTeamSection)}
-              />
-            }
-          />
-        </div>
+        />
       </div>
     </React.Fragment>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root", "defaultLayout", "navTeamSection"],
-  defaultLayout: ["defaultLayout", "navTeamSection"],
-  navTeamSection: ["navTeamSection"],
+  root: ["root"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
-  defaultLayout: typeof DefaultLayout;
-  navTeamSection: typeof NavTeamSection;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -180,8 +190,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSettingsPage__VariantsArgs;
     args?: PlasmicSettingsPage__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicSettingsPage__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicSettingsPage__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicSettingsPage__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -206,7 +217,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicSettingsPage__ArgProps,
-          internalVariantPropNames: PlasmicSettingsPage__VariantProps,
+          internalVariantPropNames: PlasmicSettingsPage__VariantProps
         }),
       [props, nodeName]
     );
@@ -214,7 +225,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -230,8 +241,6 @@ export const PlasmicSettingsPage = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
-    defaultLayout: makeNodeComponent("defaultLayout"),
-    navTeamSection: makeNodeComponent("navTeamSection"),
 
     // Metadata about props expected for PlasmicSettingsPage
     internalVariantProps: PlasmicSettingsPage__VariantProps,
@@ -241,8 +250,8 @@ export const PlasmicSettingsPage = Object.assign(
       pageRoute: "/settings",
       pagePath: "/settings",
       params: {},
-      query: {},
-    }),
+      query: {}
+    })
   }
 );
 

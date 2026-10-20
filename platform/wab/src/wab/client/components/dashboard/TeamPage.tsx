@@ -1,5 +1,4 @@
 import { freeTrialKey } from "@/wab/client/LocalStorageKey";
-import DefaultTeamLayout from "@/wab/client/components/dashboard/DefaultTeamLayout";
 import FreeTrialModal from "@/wab/client/components/dashboard/FreeTrialModal";
 import WorkspaceSection from "@/wab/client/components/dashboard/WorkspaceSection";
 import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
@@ -148,10 +147,6 @@ function TeamPageContent_(
       )}
       <PlasmicTeamPage
         root={{ ref }}
-        defaultLayout={{
-          as: DefaultTeamLayout,
-          props: { team },
-        }}
         header={{
           team,
           perms,

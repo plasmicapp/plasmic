@@ -15,23 +15,52 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
   generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import ProjectListItem from "../../components/ProjectListItem"; // plasmic-import: 2FvZipCkyxl/component
-import DefaultLayout from "../../components/dashboard/DefaultLayout"; // plasmic-import: nSkQWLjK-B/component
-import NavTeamSection from "../../components/dashboard/NavTeamSection"; // plasmic-import: VqaN_WL-stA/component
-import ProjectsFilter from "../../components/dashboard/ProjectsFilter"; // plasmic-import: mdX7wFJOmP/component
 import { TutorialsSection } from "../../components/dashboard/TutorialsSection"; // plasmic-import: 3oNTe9fVQ0xW/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import ProjectsFilter from "../../components/dashboard/ProjectsFilter"; // plasmic-import: mdX7wFJOmP/component
+import ProjectListItem from "../../components/ProjectListItem"; // plasmic-import: 2FvZipCkyxl/component
 import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -39,11 +68,12 @@ import "../PP__plasmickit_dashboard.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtc
 import sty from "./PlasmicAllProjectsPage.module.css"; // plasmic-import: gCsGtvW8svmg/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 const emptyProxy: any = new Proxy(() => "", {
   get(_, prop) {
     return prop === Symbol.toPrimitive ? () => "" : emptyProxy;
-  },
+  }
 });
 
 function wrapQueriesWithLoadingProxy($q: any): any {
@@ -51,7 +81,7 @@ function wrapQueriesWithLoadingProxy($q: any): any {
     get(target, queryName) {
       const query = target[queryName];
       return !query || query.isLoading || !query.data ? emptyProxy : query;
-    },
+    }
   });
 }
 
@@ -67,12 +97,12 @@ export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
     title: "All projects",
 
     openGraph: {
-      title: "All projects",
+      title: "All projects"
     },
     twitter: {
       card: "summary" as const,
-      title: "All projects",
-    },
+      title: "All projects"
+    }
   };
 }
 
@@ -89,8 +119,6 @@ type ArgPropType = keyof PlasmicAllProjectsPage__ArgsType;
 export const PlasmicAllProjectsPage__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicAllProjectsPage__OverridesType = {
-  root?: Flex__<"div">;
-  defaultLayout?: Flex__<typeof DefaultLayout>;
   projects?: Flex__<"div">;
   tutorialsSection?: Flex__<typeof TutorialsSection>;
   freeBox?: Flex__<"div">;
@@ -99,7 +127,6 @@ export type PlasmicAllProjectsPage__OverridesType = {
   filter?: Flex__<typeof ProjectsFilter>;
   mainList?: Flex__<"div">;
   noProjectsText?: Flex__<"div">;
-  navTeamSection?: Flex__<typeof NavTeamSection>;
 };
 
 export interface DefaultAllProjectsPageProps {
@@ -129,7 +156,7 @@ function PlasmicAllProjectsPage__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -142,8 +169,8 @@ function PlasmicAllProjectsPage__RenderFunc(props: {
         path: "tutorialsSection.isCollapsed",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -155,7 +182,7 @@ function PlasmicAllProjectsPage__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -164,8 +191,8 @@ function PlasmicAllProjectsPage__RenderFunc(props: {
     <React.Fragment>
       <div className={"plasmic_page_wrapper"}>
         <div
-          data-plasmic-name={"root"}
-          data-plasmic-override={overrides.root}
+          data-plasmic-name={"projects"}
+          data-plasmic-override={overrides.projects}
           data-plasmic-root={true}
           data-plasmic-for-node={forNode}
           className={classNames(
@@ -174,154 +201,141 @@ function PlasmicAllProjectsPage__RenderFunc(props: {
             "plasmic_default_styles",
             "plasmic_mixins",
             styleTokensClassNames,
-            sty.root
+            sty.projects
           )}
         >
-          <DefaultLayout
-            data-plasmic-name={"defaultLayout"}
-            data-plasmic-override={overrides.defaultLayout}
-            className={classNames("__wab_instance", sty.defaultLayout)}
-            navigation={"allProjects"}
-            teams={
-              <NavTeamSection
-                data-plasmic-name={"navTeamSection"}
-                data-plasmic-override={overrides.navTeamSection}
-                className={classNames("__wab_instance", sty.navTeamSection)}
-              />
-            }
+          <TutorialsSection
+            data-plasmic-name={"tutorialsSection"}
+            data-plasmic-override={overrides.tutorialsSection}
+
+            className={classNames("__wab_instance", sty.tutorialsSection)}
+            onIsCollapsedChange={async (...eventArgs: any) => {
+              generateStateOnChangeProp($state, [
+                "tutorialsSection",
+                "isCollapsed"
+              ]).apply(null, eventArgs);
+
+              if (
+                eventArgs.length > 1 &&
+                eventArgs[1] &&
+                eventArgs[1]._plasmic_state_init_
+              ) {
+                return;
+              }
+            }}
+          />
+
+          <div
+            data-plasmic-name={"freeBox"}
+            data-plasmic-override={overrides.freeBox}
+
+            className={classNames("all", sty.freeBox)}
           >
-            <div
-              data-plasmic-name={"projects"}
-              data-plasmic-override={overrides.projects}
-              className={classNames("all", sty.projects)}
+            <Button
+              data-plasmic-name={"newProjectButton"}
+              data-plasmic-override={overrides.newProjectButton}
+
+              className={classNames("__wab_instance", sty.newProjectButton)}
+              size={"wide"}
+              startIcon={
+                <PlusIcon
+                  data-plasmic-name={"svg"}
+                  data-plasmic-override={overrides.svg}
+
+                  className={classNames("all", sty.svg)}
+                  role={"img"}
+                />
+              }
+              type={["clearPrimary"]}
+              withIcons={["startIcon"]}
             >
-              <TutorialsSection
-                data-plasmic-name={"tutorialsSection"}
-                data-plasmic-override={overrides.tutorialsSection}
-                className={classNames("__wab_instance", sty.tutorialsSection)}
-                onIsCollapsedChange={async (...eventArgs: any) => {
-                  generateStateOnChangeProp($state, [
-                    "tutorialsSection",
-                    "isCollapsed",
-                  ]).apply(null, eventArgs);
-
-                  if (
-                    eventArgs.length > 1 &&
-                    eventArgs[1] &&
-                    eventArgs[1]._plasmic_state_init_
-                  ) {
-                    return;
-                  }
-                }}
-              />
-
-              <div
-                data-plasmic-name={"freeBox"}
-                data-plasmic-override={overrides.freeBox}
-                className={classNames("all", sty.freeBox)}
+              <span
+                className={classNames(
+                  "all",
+                  "span",
+                  "span__ooL7E",
+                  "__wab_text",
+                  sty.span__kb7Yr
+                )}
               >
-                <Button
-                  data-plasmic-name={"newProjectButton"}
-                  data-plasmic-override={overrides.newProjectButton}
-                  className={classNames("__wab_instance", sty.newProjectButton)}
-                  size={"wide"}
-                  startIcon={
-                    <PlusIcon
-                      data-plasmic-name={"svg"}
-                      data-plasmic-override={overrides.svg}
-                      className={classNames("all", sty.svg)}
-                      role={"img"}
-                    />
-                  }
-                  type={["clearPrimary"]}
-                  withIcons={["startIcon"]}
-                >
-                  <span
-                    className={classNames(
-                      "all",
-                      "span",
-                      "span__ooL7E",
-                      "__wab_text",
-                      sty.span__kb7Yr
-                    )}
-                  >
-                    {"New project"}
-                  </span>
-                </Button>
-                <ProjectsFilter
-                  data-plasmic-name={"filter"}
-                  data-plasmic-override={overrides.filter}
-                  className={classNames("__wab_instance", sty.filter)}
-                />
-              </div>
-              <div
-                data-plasmic-name={"mainList"}
-                data-plasmic-override={overrides.mainList}
-                className={classNames("all", sty.mainList)}
-              >
-                <ProjectListItem
-                  className={classNames(
-                    "__wab_instance",
-                    sty.projectListItem__bpow4
-                  )}
-                  showWorkspace={true}
-                  timestamp={
-                    <span
-                      className={classNames(
-                        "all",
-                        "span",
-                        "span__ooL7E",
-                        "__wab_text",
-                        sty.span__oKg4A
-                      )}
-                    >
-                      {"updated 1h ago"}
-                    </span>
-                  }
-                />
+                {"New project"}
+              </span>
+            </Button>
+            <ProjectsFilter
+              data-plasmic-name={"filter"}
+              data-plasmic-override={overrides.filter}
 
-                <ProjectListItem
-                  className={classNames(
-                    "__wab_instance",
-                    sty.projectListItem__xs45U
-                  )}
-                  showWorkspace={true}
-                  timestamp={
-                    <span
-                      className={classNames(
-                        "all",
-                        "span",
-                        "span__ooL7E",
-                        "__wab_text",
-                        sty.span___7RoZ
-                      )}
-                    >
-                      {"updated 1h ago"}
-                    </span>
-                  }
-                />
-              </div>
-              <div
-                data-plasmic-name={"noProjectsText"}
-                data-plasmic-override={overrides.noProjectsText}
-                className={classNames("all", sty.noProjectsText)}
-              >
+              className={classNames("__wab_instance", sty.filter)}
+            />
+          </div>
+          <div
+            data-plasmic-name={"mainList"}
+            data-plasmic-override={overrides.mainList}
+
+            className={classNames("all", sty.mainList)}
+          >
+            <ProjectListItem
+              className={classNames(
+                "__wab_instance",
+                sty.projectListItem__bpow4
+              )}
+              showWorkspace={true}
+              timestamp={
                 <span
                   className={classNames(
                     "all",
                     "span",
                     "span__ooL7E",
                     "__wab_text",
-                    sty.span__gfsry
+                    sty.span__oKg4A
                   )}
                 >
-                  {
-                    'You have no projects. Create a new one by hitting "New project".'
-                  }
+                  {"updated 1h ago"}
                 </span>
-              </div>
-            </div>
-          </DefaultLayout>
+              }
+            />
+
+            <ProjectListItem
+              className={classNames(
+                "__wab_instance",
+                sty.projectListItem__xs45U
+              )}
+              showWorkspace={true}
+              timestamp={
+                <span
+                  className={classNames(
+                    "all",
+                    "span",
+                    "span__ooL7E",
+                    "__wab_text",
+                    sty.span___7RoZ
+                  )}
+                >
+                  {"updated 1h ago"}
+                </span>
+              }
+            />
+          </div>
+          <div
+            data-plasmic-name={"noProjectsText"}
+            data-plasmic-override={overrides.noProjectsText}
+
+            className={classNames("all", sty.noProjectsText)}
+          >
+            <span
+              className={classNames(
+                "all",
+                "span",
+                "span__ooL7E",
+                "__wab_text",
+                sty.span__gfsry
+              )}
+            >
+              {
+                'You have no projects. Create a new one by hitting "New project".'
+              }
+            </span>
+          </div>
         </div>
       </div>
     </React.Fragment>
@@ -329,31 +343,6 @@ function PlasmicAllProjectsPage__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: [
-    "root",
-    "defaultLayout",
-    "projects",
-    "tutorialsSection",
-    "freeBox",
-    "newProjectButton",
-    "svg",
-    "filter",
-    "mainList",
-    "noProjectsText",
-    "navTeamSection",
-  ],
-  defaultLayout: [
-    "defaultLayout",
-    "projects",
-    "tutorialsSection",
-    "freeBox",
-    "newProjectButton",
-    "svg",
-    "filter",
-    "mainList",
-    "noProjectsText",
-    "navTeamSection",
-  ],
   projects: [
     "projects",
     "tutorialsSection",
@@ -362,7 +351,7 @@ const PlasmicDescendants = {
     "svg",
     "filter",
     "mainList",
-    "noProjectsText",
+    "noProjectsText"
   ],
   tutorialsSection: ["tutorialsSection"],
   freeBox: ["freeBox", "newProjectButton", "svg", "filter"],
@@ -370,15 +359,12 @@ const PlasmicDescendants = {
   svg: ["svg"],
   filter: ["filter"],
   mainList: ["mainList"],
-  noProjectsText: ["noProjectsText"],
-  navTeamSection: ["navTeamSection"],
+  noProjectsText: ["noProjectsText"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
-  root: "div";
-  defaultLayout: typeof DefaultLayout;
   projects: "div";
   tutorialsSection: typeof TutorialsSection;
   freeBox: "div";
@@ -387,7 +373,6 @@ type NodeDefaultElementType = {
   filter: typeof ProjectsFilter;
   mainList: "div";
   noProjectsText: "div";
-  navTeamSection: typeof NavTeamSection;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -401,8 +386,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicAllProjectsPage__VariantsArgs;
     args?: PlasmicAllProjectsPage__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicAllProjectsPage__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicAllProjectsPage__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicAllProjectsPage__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -427,7 +413,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicAllProjectsPage__ArgProps,
-          internalVariantPropNames: PlasmicAllProjectsPage__VariantProps,
+          internalVariantPropNames: PlasmicAllProjectsPage__VariantProps
         }),
       [props, nodeName]
     );
@@ -435,10 +421,10 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
-  if (nodeName === "root") {
+  if (nodeName === "projects") {
     func.displayName = "PlasmicAllProjectsPage";
   } else {
     func.displayName = `PlasmicAllProjectsPage.${nodeName}`;
@@ -448,11 +434,9 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
 
 export const PlasmicAllProjectsPage = Object.assign(
   // Top-level PlasmicAllProjectsPage renders the root element
-  makeNodeComponent("root"),
+  makeNodeComponent("projects"),
   {
     // Helper components rendering sub-elements
-    defaultLayout: makeNodeComponent("defaultLayout"),
-    projects: makeNodeComponent("projects"),
     tutorialsSection: makeNodeComponent("tutorialsSection"),
     freeBox: makeNodeComponent("freeBox"),
     newProjectButton: makeNodeComponent("newProjectButton"),
@@ -460,7 +444,6 @@ export const PlasmicAllProjectsPage = Object.assign(
     filter: makeNodeComponent("filter"),
     mainList: makeNodeComponent("mainList"),
     noProjectsText: makeNodeComponent("noProjectsText"),
-    navTeamSection: makeNodeComponent("navTeamSection"),
 
     // Metadata about props expected for PlasmicAllProjectsPage
     internalVariantProps: PlasmicAllProjectsPage__VariantProps,
@@ -470,8 +453,8 @@ export const PlasmicAllProjectsPage = Object.assign(
       pageRoute: "/projects",
       pagePath: "/projects",
       params: {},
-      query: {},
-    }),
+      query: {}
+    })
   }
 );
 

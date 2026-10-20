@@ -45,9 +45,9 @@ function SettingsPage_(props: SettingsPageProps, ref: HTMLElementRefOf<"div">) {
     <>
       {documentTitle("Settings")}
       <PlasmicSettingsPage
-        root={{ ref }}
         {...rest}
-        defaultLayout={{
+        root={{
+          ref,
           children: (
             <>
               {showHostModal && (

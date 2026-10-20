@@ -285,16 +285,21 @@ export async function reactPrompt(opts: ReactPromptOpts) {
             data-test-id="prompt"
           />
         </Form.Item>
-        <Form.Item style={{ margin: 0 }}>
-          <Button
-            className="mr-sm"
-            type="primary"
-            htmlType="submit"
-            data-test-id="prompt-submit"
-          >
-            {actionText ?? "Submit"}
-          </Button>
-          <Button onClick={() => onCancel()}>Cancel</Button>
+        <Form.Item style={{ margin: 0 }} shouldUpdate>
+          {({ getFieldValue }) => (
+            <>
+              <Button
+                className="mr-sm"
+                type="primary"
+                htmlType="submit"
+                disabled={!(getFieldValue("input") ?? defaultValue)}
+                data-test-id="prompt-submit"
+              >
+                {actionText ?? "Submit"}
+              </Button>
+              <Button onClick={() => onCancel()}>Cancel</Button>
+            </>
+          )}
         </Form.Item>
       </Form>
     </Modal>

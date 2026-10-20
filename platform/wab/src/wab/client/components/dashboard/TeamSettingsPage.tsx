@@ -1,4 +1,3 @@
-import DefaultTeamLayout from "@/wab/client/components/dashboard/DefaultTeamLayout";
 import { useUpsellQueryParam } from "@/wab/client/components/dashboard/useUpsellQueryParam";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
@@ -26,15 +25,7 @@ function TeamSettingsPage_(
   );
   useUpsellQueryParam(team);
   return (
-    <PlasmicTeamSettingsPage
-      root={{ ref }}
-      defaultLayout={{
-        as: DefaultTeamLayout,
-        props: { team },
-      }}
-      settings={{ teamId }}
-      {...rest}
-    />
+    <PlasmicTeamSettingsPage root={{ ref }} settings={{ teamId }} {...rest} />
   );
 }
 

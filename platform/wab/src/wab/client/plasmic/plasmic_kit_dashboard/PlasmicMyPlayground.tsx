@@ -15,18 +15,50 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import DefaultLayout from "../../components/dashboard/DefaultLayout"; // plasmic-import: nSkQWLjK-B/component
-import NavTeamSection from "../../components/dashboard/NavTeamSection"; // plasmic-import: VqaN_WL-stA/component
 import WorkspaceSection from "../../components/dashboard/WorkspaceSection"; // plasmic-import: 5cdjGaqBQ4/component
-import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import ProjectListItem from "../../components/ProjectListItem"; // plasmic-import: 2FvZipCkyxl/component
 import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -36,7 +68,7 @@ import sty from "./PlasmicMyPlayground.module.css"; // plasmic-import: KVpOSX15w
 const emptyProxy: any = new Proxy(() => "", {
   get(_, prop) {
     return prop === Symbol.toPrimitive ? () => "" : emptyProxy;
-  },
+  }
 });
 
 function wrapQueriesWithLoadingProxy($q: any): any {
@@ -44,7 +76,7 @@ function wrapQueriesWithLoadingProxy($q: any): any {
     get(target, queryName) {
       const query = target[queryName];
       return !query || query.isLoading || !query.data ? emptyProxy : query;
-    },
+    }
   });
 }
 
@@ -59,8 +91,8 @@ export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   return {
     openGraph: {},
     twitter: {
-      card: "summary" as const,
-    },
+      card: "summary" as const
+    }
   };
 }
 
@@ -76,10 +108,7 @@ type ArgPropType = keyof PlasmicMyPlayground__ArgsType;
 export const PlasmicMyPlayground__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicMyPlayground__OverridesType = {
-  root?: Flex__<"div">;
-  defaultLayout?: Flex__<typeof DefaultLayout>;
-  workspaceSection?: Flex__<typeof WorkspaceSection>;
-  navTeamSection?: Flex__<typeof NavTeamSection>;
+  root?: Flex__<typeof WorkspaceSection>;
 };
 
 export interface DefaultMyPlaygroundProps {
@@ -109,7 +138,7 @@ function PlasmicMyPlayground__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -122,61 +151,26 @@ function PlasmicMyPlayground__RenderFunc(props: {
 
   return (
     <React.Fragment>
-      <div className={"plasmic_page_wrapper"}>
-        <div
-          data-plasmic-name={"root"}
-          data-plasmic-override={overrides.root}
-          data-plasmic-root={true}
-          data-plasmic-for-node={forNode}
-          className={classNames(
-            "all",
-            "root_reset_ooL7EhXDmFQWnW9sxtchhE",
-            "plasmic_default_styles",
-            "plasmic_mixins",
-            styleTokensClassNames,
-            sty.root
-          )}
-        >
-          <DefaultLayout
-            data-plasmic-name={"defaultLayout"}
-            data-plasmic-override={overrides.defaultLayout}
-            className={classNames("__wab_instance", sty.defaultLayout)}
-            navigation={"myProjects"}
-            teams={
-              <NavTeamSection
-                data-plasmic-name={"navTeamSection"}
-                data-plasmic-override={overrides.navTeamSection}
-                className={classNames("__wab_instance", sty.navTeamSection)}
-              />
-            }
-          >
-            <WorkspaceSection
-              data-plasmic-name={"workspaceSection"}
-              data-plasmic-override={overrides.workspaceSection}
-              className={classNames("__wab_instance", sty.workspaceSection)}
-              personalWorkspace={true}
-            />
-          </DefaultLayout>
-        </div>
-      </div>
+      <WorkspaceSection
+        data-plasmic-name={"root"}
+        data-plasmic-override={overrides.root}
+        data-plasmic-root={true}
+        data-plasmic-for-node={forNode}
+        className={classNames("__wab_instance", sty.root)}
+        personalWorkspace={true}
+      />
     </React.Fragment>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root", "defaultLayout", "workspaceSection", "navTeamSection"],
-  defaultLayout: ["defaultLayout", "workspaceSection", "navTeamSection"],
-  workspaceSection: ["workspaceSection"],
-  navTeamSection: ["navTeamSection"],
+  root: ["root"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
-  root: "div";
-  defaultLayout: typeof DefaultLayout;
-  workspaceSection: typeof WorkspaceSection;
-  navTeamSection: typeof NavTeamSection;
+  root: typeof WorkspaceSection;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -190,7 +184,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicMyPlayground__VariantsArgs;
     args?: PlasmicMyPlayground__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicMyPlayground__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicMyPlayground__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicMyPlayground__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -215,7 +211,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicMyPlayground__ArgProps,
-          internalVariantPropNames: PlasmicMyPlayground__VariantProps,
+          internalVariantPropNames: PlasmicMyPlayground__VariantProps
         }),
       [props, nodeName]
     );
@@ -223,7 +219,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -239,9 +235,6 @@ export const PlasmicMyPlayground = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
-    defaultLayout: makeNodeComponent("defaultLayout"),
-    workspaceSection: makeNodeComponent("workspaceSection"),
-    navTeamSection: makeNodeComponent("navTeamSection"),
 
     // Metadata about props expected for PlasmicMyPlayground
     internalVariantProps: PlasmicMyPlayground__VariantProps,
@@ -251,8 +244,8 @@ export const PlasmicMyPlayground = Object.assign(
       pageRoute: "/playground",
       pagePath: "/playground",
       params: {},
-      query: {},
-    }),
+      query: {}
+    })
   }
 );
 

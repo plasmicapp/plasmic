@@ -15,19 +15,50 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import ProjectListItem from "../../components/ProjectListItem"; // plasmic-import: 2FvZipCkyxl/component
-import DefaultLayout from "../../components/dashboard/DefaultLayout"; // plasmic-import: nSkQWLjK-B/component
-import NavTeamSection from "../../components/dashboard/NavTeamSection"; // plasmic-import: VqaN_WL-stA/component
 import WorkspaceSection from "../../components/dashboard/WorkspaceSection"; // plasmic-import: 5cdjGaqBQ4/component
-import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
+import ProjectListItem from "../../components/ProjectListItem"; // plasmic-import: 2FvZipCkyxl/component
 import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -37,7 +68,7 @@ import sty from "./PlasmicWorkspacePage.module.css"; // plasmic-import: ohP9gHR_
 const emptyProxy: any = new Proxy(() => "", {
   get(_, prop) {
     return prop === Symbol.toPrimitive ? () => "" : emptyProxy;
-  },
+  }
 });
 
 function wrapQueriesWithLoadingProxy($q: any): any {
@@ -45,7 +76,7 @@ function wrapQueriesWithLoadingProxy($q: any): any {
     get(target, queryName) {
       const query = target[queryName];
       return !query || query.isLoading || !query.data ? emptyProxy : query;
-    },
+    }
   });
 }
 
@@ -60,8 +91,8 @@ export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   return {
     openGraph: {},
     twitter: {
-      card: "summary" as const,
-    },
+      card: "summary" as const
+    }
   };
 }
 
@@ -77,10 +108,7 @@ type ArgPropType = keyof PlasmicWorkspacePage__ArgsType;
 export const PlasmicWorkspacePage__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicWorkspacePage__OverridesType = {
-  root?: Flex__<"div">;
-  defaultLayout?: Flex__<typeof DefaultLayout>;
   workspaceSection?: Flex__<typeof WorkspaceSection>;
-  navTeamSection?: Flex__<typeof NavTeamSection>;
 };
 
 export interface DefaultWorkspacePageProps {
@@ -110,7 +138,7 @@ function PlasmicWorkspacePage__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -123,103 +151,51 @@ function PlasmicWorkspacePage__RenderFunc(props: {
 
   return (
     <React.Fragment>
-      <div className={"plasmic_page_wrapper"}>
-        <div
-          data-plasmic-name={"root"}
-          data-plasmic-override={overrides.root}
-          data-plasmic-root={true}
-          data-plasmic-for-node={forNode}
-          className={classNames(
-            "all",
-            "root_reset_ooL7EhXDmFQWnW9sxtchhE",
-            "plasmic_default_styles",
-            "plasmic_mixins",
-            styleTokensClassNames,
-            sty.root
-          )}
-        >
-          <DefaultLayout
-            data-plasmic-name={"defaultLayout"}
-            data-plasmic-override={overrides.defaultLayout}
-            className={classNames("__wab_instance", sty.defaultLayout)}
-            teams={
-              <NavTeamSection
-                data-plasmic-name={"navTeamSection"}
-                data-plasmic-override={overrides.navTeamSection}
-                className={classNames("__wab_instance", sty.navTeamSection)}
-              />
-            }
-          >
-            <WorkspaceSection
-              data-plasmic-name={"workspaceSection"}
-              data-plasmic-override={overrides.workspaceSection}
-              className={classNames("__wab_instance", sty.workspaceSection)}
-            >
-              <ProjectListItem />
+      <WorkspaceSection
+        data-plasmic-name={"workspaceSection"}
+        data-plasmic-override={overrides.workspaceSection}
+        data-plasmic-root={true}
+        data-plasmic-for-node={forNode}
+        className={classNames("__wab_instance", sty.workspaceSection)}
+      >
+        <ProjectListItem />
 
-              <ProjectListItem
-                className={classNames(
-                  "__wab_instance",
-                  sty.projectListItem__seC2O
-                )}
-              />
+        <ProjectListItem
+          className={classNames("__wab_instance", sty.projectListItem__seC2O)}
+        />
 
-              <ProjectListItem
-                className={classNames(
-                  "__wab_instance",
-                  sty.projectListItem__qnZxn
-                )}
-              />
+        <ProjectListItem
+          className={classNames("__wab_instance", sty.projectListItem__qnZxn)}
+        />
 
-              <ProjectListItem
-                className={classNames(
-                  "__wab_instance",
-                  sty.projectListItem__dNcjL
-                )}
-              />
+        <ProjectListItem
+          className={classNames("__wab_instance", sty.projectListItem__dNcjL)}
+        />
 
-              <ProjectListItem
-                className={classNames(
-                  "__wab_instance",
-                  sty.projectListItem__fs4Vv
-                )}
-              />
+        <ProjectListItem
+          className={classNames("__wab_instance", sty.projectListItem__fs4Vv)}
+        />
 
-              <ProjectListItem
-                className={classNames(
-                  "__wab_instance",
-                  sty.projectListItem___4BZuv
-                )}
-              />
+        <ProjectListItem
+          className={classNames("__wab_instance", sty.projectListItem___4BZuv)}
+        />
 
-              <ProjectListItem
-                className={classNames(
-                  "__wab_instance",
-                  sty.projectListItem__sLb7K
-                )}
-              />
-            </WorkspaceSection>
-          </DefaultLayout>
-        </div>
-      </div>
+        <ProjectListItem
+          className={classNames("__wab_instance", sty.projectListItem__sLb7K)}
+        />
+      </WorkspaceSection>
     </React.Fragment>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root", "defaultLayout", "workspaceSection", "navTeamSection"],
-  defaultLayout: ["defaultLayout", "workspaceSection", "navTeamSection"],
-  workspaceSection: ["workspaceSection"],
-  navTeamSection: ["navTeamSection"],
+  workspaceSection: ["workspaceSection"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
-  root: "div";
-  defaultLayout: typeof DefaultLayout;
   workspaceSection: typeof WorkspaceSection;
-  navTeamSection: typeof NavTeamSection;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -233,7 +209,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicWorkspacePage__VariantsArgs;
     args?: PlasmicWorkspacePage__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicWorkspacePage__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicWorkspacePage__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicWorkspacePage__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -258,7 +236,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicWorkspacePage__ArgProps,
-          internalVariantPropNames: PlasmicWorkspacePage__VariantProps,
+          internalVariantPropNames: PlasmicWorkspacePage__VariantProps
         }),
       [props, nodeName]
     );
@@ -266,10 +244,10 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
-  if (nodeName === "root") {
+  if (nodeName === "workspaceSection") {
     func.displayName = "PlasmicWorkspacePage";
   } else {
     func.displayName = `PlasmicWorkspacePage.${nodeName}`;
@@ -279,12 +257,9 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
 
 export const PlasmicWorkspacePage = Object.assign(
   // Top-level PlasmicWorkspacePage renders the root element
-  makeNodeComponent("root"),
+  makeNodeComponent("workspaceSection"),
   {
     // Helper components rendering sub-elements
-    defaultLayout: makeNodeComponent("defaultLayout"),
-    workspaceSection: makeNodeComponent("workspaceSection"),
-    navTeamSection: makeNodeComponent("navTeamSection"),
 
     // Metadata about props expected for PlasmicWorkspacePage
     internalVariantProps: PlasmicWorkspacePage__VariantProps,
@@ -294,8 +269,8 @@ export const PlasmicWorkspacePage = Object.assign(
       pageRoute: "/workspaces/[id]",
       pagePath: "/workspaces/[id]",
       params: {},
-      query: {},
-    }),
+      query: {}
+    })
   }
 );
 

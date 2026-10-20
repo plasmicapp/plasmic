@@ -14,19 +14,46 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  PlasmicLink as PlasmicLink__,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  SingleBooleanChoiceArg,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
   useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import { _useGlobalVariants } from "./plasmic"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/styleTokensProvider
@@ -71,19 +98,19 @@ export const PlasmicNavButton__VariantProps = new Array<VariantPropType>(
 );
 
 export type PlasmicNavButton__ArgsType = {
-  children?: React.ReactNode;
-  startIcon?: React.ReactNode;
-  endIcon?: React.ReactNode;
   href?: string;
   target?: string;
+  startIcon?: React.ReactNode;
+  children?: React.ReactNode;
+  endIcon?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicNavButton__ArgsType;
 export const PlasmicNavButton__ArgProps = new Array<ArgPropType>(
-  "children",
-  "startIcon",
-  "endIcon",
   "href",
-  "target"
+  "target",
+  "startIcon",
+  "children",
+  "endIcon"
 );
 
 export type PlasmicNavButton__OverridesType = {
@@ -94,11 +121,11 @@ export type PlasmicNavButton__OverridesType = {
 };
 
 export interface DefaultNavButtonProps {
-  children?: React.ReactNode;
-  startIcon?: React.ReactNode;
-  endIcon?: React.ReactNode;
   href?: string;
   target?: string;
+  startIcon?: React.ReactNode;
+  children?: React.ReactNode;
+  endIcon?: React.ReactNode;
   disabled?: SingleBooleanChoiceArg<"disabled">;
   selected?: SingleBooleanChoiceArg<"selected">;
   withEndIcon?: SingleBooleanChoiceArg<"withEndIcon">;
@@ -123,7 +150,7 @@ function PlasmicNavButton__RenderFunc(props: {
     () =>
       Object.assign(
         {
-          target: "",
+          target: ""
         },
         Object.fromEntries(
           Object.entries(props.args).filter(([_, v]) => v !== undefined)
@@ -134,7 +161,7 @@ function PlasmicNavButton__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -147,45 +174,44 @@ function PlasmicNavButton__RenderFunc(props: {
         path: "disabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.disabled,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.disabled
       },
       {
         path: "selected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.selected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.selected
       },
       {
         path: "withEndIcon",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.withEndIcon,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.withEndIcon
       },
       {
         path: "blue",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.blue,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.blue
       },
       {
         path: "violet",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.violet,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.violet
       },
       {
         path: "bold",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.bold,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.bold
       },
       {
         path: "smallIcon",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.smallIcon,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.smallIcon
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -197,22 +223,22 @@ function PlasmicNavButton__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const [isRootFocusVisibleWithin, triggerRootFocusVisibleWithinProps] =
     useTrigger("useFocusVisibleWithin", {
-      isTextInput: false,
+      isTextInput: false
     });
   const [isRootFocusVisible, triggerRootFocusVisibleProps] = useTrigger(
     "useFocusVisible",
     {
-      isTextInput: false,
+      isTextInput: false
     }
   );
   const triggers = {
     focusVisibleWithin_root: isRootFocusVisibleWithin,
-    focusVisible_root: isRootFocusVisible,
+    focusVisible_root: isRootFocusVisible
   };
 
   const styleTokensClassNames = _useStyleTokens();
@@ -254,7 +280,7 @@ function PlasmicNavButton__RenderFunc(props: {
             $state,
             "withEndIcon",
             "withEndIcon"
-          ),
+          )
         }
       )}
       href={args.href}
@@ -262,12 +288,13 @@ function PlasmicNavButton__RenderFunc(props: {
       target={args.target}
       data-plasmic-trigger-props={[
         triggerRootFocusVisibleWithinProps,
-        triggerRootFocusVisibleProps,
+        triggerRootFocusVisibleProps
       ]}
     >
       <div
         data-plasmic-name={"startIconContainer"}
         data-plasmic-override={overrides.startIconContainer}
+
         className={classNames("all", sty.startIconContainer, {
           [sty.startIconContainer___focusVisibleWithin]:
             triggers.focusVisibleWithin_root,
@@ -287,7 +314,7 @@ function PlasmicNavButton__RenderFunc(props: {
             $state,
             "withEndIcon",
             "withEndIcon"
-          ),
+          )
         })}
       >
         {renderPlasmicSlot({
@@ -324,13 +351,14 @@ function PlasmicNavButton__RenderFunc(props: {
               $state,
               "withEndIcon",
               "withEndIcon"
-            ),
-          }),
+            )
+          })
         })}
       </div>
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
+
         className={classNames("all", sty.freeBox, {
           [sty.freeBoxblue]: hasVariant($state, "blue", "blue"),
           [sty.freeBoxviolet]: hasVariant($state, "violet", "violet"),
@@ -338,7 +366,7 @@ function PlasmicNavButton__RenderFunc(props: {
             $state,
             "withEndIcon",
             "withEndIcon"
-          ),
+          )
         })}
       >
         {renderPlasmicSlot({
@@ -369,13 +397,14 @@ function PlasmicNavButton__RenderFunc(props: {
               $state,
               "withEndIcon",
               "withEndIcon"
-            ),
-          }),
+            )
+          })
         })}
         {(hasVariant($state, "withEndIcon", "withEndIcon") ? true : false) ? (
           <div
             data-plasmic-name={"endIconContainer"}
             data-plasmic-override={overrides.endIconContainer}
+
             className={classNames("all", sty.endIconContainer, {
               [sty.endIconContainerblue]: hasVariant($state, "blue", "blue"),
               [sty.endIconContainerviolet]: hasVariant(
@@ -387,7 +416,7 @@ function PlasmicNavButton__RenderFunc(props: {
                 $state,
                 "withEndIcon",
                 "withEndIcon"
-              ),
+              )
             })}
           >
             {renderPlasmicSlot({
@@ -410,8 +439,8 @@ function PlasmicNavButton__RenderFunc(props: {
                   $state,
                   "withEndIcon",
                   "withEndIcon"
-                ),
-              }),
+                )
+              })
             })}
           </div>
         ) : null}
@@ -424,7 +453,7 @@ const PlasmicDescendants = {
   root: ["root", "startIconContainer", "freeBox", "endIconContainer"],
   startIconContainer: ["startIconContainer"],
   freeBox: ["freeBox", "endIconContainer"],
-  endIconContainer: ["endIconContainer"],
+  endIconContainer: ["endIconContainer"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -447,8 +476,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicNavButton__VariantsArgs;
     args?: PlasmicNavButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicNavButton__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicNavButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicNavButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -473,7 +503,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicNavButton__ArgProps,
-          internalVariantPropNames: PlasmicNavButton__VariantProps,
+          internalVariantPropNames: PlasmicNavButton__VariantProps
         }),
       [props, nodeName]
     );
@@ -481,7 +511,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -503,7 +533,7 @@ export const PlasmicNavButton = Object.assign(
 
     // Metadata about props expected for PlasmicNavButton
     internalVariantProps: PlasmicNavButton__VariantProps,
-    internalArgProps: PlasmicNavButton__ArgProps,
+    internalArgProps: PlasmicNavButton__ArgProps
   }
 );
 

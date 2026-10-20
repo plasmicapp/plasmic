@@ -23,7 +23,10 @@ test.describe("hostless-cms", () => {
 
     await page.goto("/projects/", { timeout: 120000 });
 
-    await page.locator("text=Plasmic's First Workspace").click();
+    await models.studio.goToWorkspace(
+      "Plasmic's First Organization",
+      "Plasmic's First Workspace",
+    );
     await page.locator("text=Integrations").click();
     await page.locator("text=New CMS").click();
 

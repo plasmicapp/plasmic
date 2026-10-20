@@ -1073,6 +1073,18 @@ export class StudioModel extends BaseModel {
     }
   }
 
+  async goToWorkspace(orgName: string, workspaceName: string): Promise<void> {
+    await this.page.locator('[data-test-id="org-switcher-trigger"]').click();
+    await this.page
+      .locator(".ant-dropdown-menu")
+      .getByText(orgName, { exact: true })
+      .click();
+    await this.page
+      .locator("aside")
+      .getByRole("link", { name: workspaceName, exact: true })
+      .click();
+  }
+
   async deleteDataSource(name: string): Promise<void> {
     await this.page.getByText(name).first().click({ button: "right" });
     await this.page.waitForTimeout(500);

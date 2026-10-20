@@ -8,37 +8,24 @@ import {
   PlasmicFreeTrial,
 } from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicFreeTrial";
 import { ApiTeam } from "@/wab/shared/ApiSchema";
-import { ensure, spawn } from "@/wab/shared/common";
+import { spawn } from "@/wab/shared/common";
+import {
+  getOrgStatus,
+  isTrialActive,
+} from "@/wab/shared/pricing/pricing-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { round } from "lodash";
 import * as React from "react";
-
-const MILLIS_PER_DAY = 1000 * 60 * 60 * 24;
 
 function getTrialTimeRemaining(
   appCtx: AppCtx,
-  trialStartDate: Date,
-  trialDays: number,
+  team: ApiTeam,
+  daysLeft: number,
 ) {
-  if (Date.now() - trialStartDate.getTime() > trialDays * MILLIS_PER_DAY) {
+  if (!isTrialActive(team, appCtx.appConfig.freeTrialDays)) {
     spawn(appCtx.reloadAppCtx());
     return null;
   }
-  const daysRemaining =
-    trialDays - round((Date.now() - trialStartDate.getTime()) / MILLIS_PER_DAY);
-  return `${daysRemaining} ${daysRemaining === 1 ? "day" : "days"}`;
-}
-
-export function recentlyEndedTrial(appCtx: AppCtx, team: ApiTeam) {
-  const daysToShowAfterEnded = 7;
-  return !!(
-    !team.featureTierId &&
-    team.trialStartDate &&
-    ((team.trialDays ?? appCtx.appConfig.freeTrialDays) +
-      daysToShowAfterEnded) *
-      MILLIS_PER_DAY >
-      Date.now() - new Date(team.trialStartDate).getTime()
-  );
+  return `${daysLeft} ${daysLeft === 1 ? "day" : "days"}`;
 }
 
 export interface FreeTrialProps extends DefaultFreeTrialProps {
@@ -48,39 +35,30 @@ export interface FreeTrialProps extends DefaultFreeTrialProps {
 function FreeTrial_(props: FreeTrialProps, ref: HTMLElementRefOf<"a">) {
   const { team, ...rest } = props;
   const appCtx = useAppCtx();
+  const status = getOrgStatus(team, appCtx.appConfig.freeTrialDays);
+
   // Show the banner if the org is on a trial, or one just ended.
-  const recentlyEnded = recentlyEndedTrial(appCtx, team);
+  if (status.status !== "trial" && status.status !== "trialEnded") {
+    return null;
+  }
 
   return (
-    <>
-      {(team.onTrial || recentlyEnded) && (
-        <PlasmicFreeTrial
-          {...rest}
-          root={{ ref }}
-          freeTrialTimeRemaining={
-            team.onTrial &&
-            getTrialTimeRemaining(
-              appCtx,
-              new Date(
-                ensure(
-                  team.trialStartDate,
-                  "A team on free trial must have a start date",
-                ),
-              ),
-              team.trialDays ?? appCtx.appConfig.freeTrialDays,
-            )
-          }
-          trialEnded={recentlyEnded}
-          onClick={async () => {
-            if (appCtx.topFrameApi) {
-              await appCtx.topFrameApi.promptBilling();
-            } else {
-              await promptTeamUpgrade(appCtx, team);
-            }
-          }}
-        />
-      )}
-    </>
+    <PlasmicFreeTrial
+      {...rest}
+      root={{ ref }}
+      freeTrialTimeRemaining={
+        status.status === "trial" &&
+        getTrialTimeRemaining(appCtx, team, status.trialDaysLeft)
+      }
+      trialEnded={status.status === "trialEnded"}
+      onClick={async () => {
+        if (appCtx.topFrameApi) {
+          await appCtx.topFrameApi.promptBilling();
+        } else {
+          await promptTeamUpgrade(appCtx, team);
+        }
+      }}
+    />
   );
 }
 

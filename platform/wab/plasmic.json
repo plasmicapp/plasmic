@@ -807,32 +807,6 @@
           "componentType": "component"
         },
         {
-          "id": "VqaN_WL-stA",
-          "name": "NavTeamSection",
-          "type": "managed",
-          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicNavTeamSection.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/dashboard/NavTeamSection.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicNavTeamSection.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "Cma6XahJmS",
-          "name": "NavWorkspaceButton",
-          "type": "managed",
-          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicNavWorkspaceButton.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/dashboard/NavWorkspaceButton.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicNavWorkspaceButton.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "cOUHQYmbvX",
           "name": "NavSeparator",
           "type": "managed",
@@ -1000,6 +974,58 @@
             "exportName": "TutorialsSection"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicTutorialsSection.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "Cma6XahJmS",
+          "name": "NavWorkspaceButton",
+          "type": "managed",
+          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicNavWorkspaceButton.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/dashboard/NavWorkspaceButton.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicNavWorkspaceButton.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "VqaN_WL-stA",
+          "name": "NavSection",
+          "type": "managed",
+          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicNavSection.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/dashboard/NavSection.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicNavSection.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "XCe0uvfI3wKX",
+          "name": "OrgSwitcher",
+          "type": "managed",
+          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicOrgSwitcher.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/dashboard/OrgSwitcher.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicOrgSwitcher.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "DeJ932qvZqev",
+          "name": "OrgSwitcherRow",
+          "type": "managed",
+          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicOrgSwitcherRow.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/dashboard/OrgSwitcherRow.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicOrgSwitcherRow.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         }
