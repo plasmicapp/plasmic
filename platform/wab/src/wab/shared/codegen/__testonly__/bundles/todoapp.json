@@ -2096,7 +2096,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "33380065": {
           "uuid": "aAB6jyKLKxx",
@@ -2106,7 +2107,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "33380066": {
           "uuid": "zybmzsG04D_",
@@ -10433,7 +10435,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "33381351": {
           "uuid": "1nGo_qaPSzF",
@@ -13390,7 +13393,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ]
 ]

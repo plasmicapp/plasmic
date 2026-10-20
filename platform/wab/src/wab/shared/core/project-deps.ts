@@ -492,6 +492,7 @@ function getOrCloneNewAsset(
       width: oldAsset.width ?? undefined,
       height: oldAsset.height ?? undefined,
       aspectRatio: oldAsset.aspectRatio ?? undefined,
+      description: oldAsset.description ?? undefined,
     });
     oldToNewAsset.set(oldAsset, newAsset);
   }

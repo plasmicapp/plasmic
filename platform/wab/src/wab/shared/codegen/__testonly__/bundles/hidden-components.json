@@ -628,7 +628,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "14363088": {
           "uuid": "HrhUyOqMxRB",
@@ -638,7 +639,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "14364338": {
           "type": { "__ref": "2o0X1c2b3P6s" },
@@ -2049,7 +2051,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ]
 ]

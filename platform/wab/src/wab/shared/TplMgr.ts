@@ -2143,6 +2143,7 @@ export class TplMgr {
     width?: number;
     height?: number;
     aspectRatio?: number;
+    description?: string;
   }) {
     const existing = this.site().imageAssets.find(
       (asset) => asset.dataUri === opts.dataUri && asset.type === opts.type,
@@ -2160,6 +2161,7 @@ export class TplMgr {
       width: opts.width,
       height: opts.height,
       aspectRatio: opts.aspectRatio,
+      description: opts.description,
     });
     this.site().imageAssets.push(asset);
     return asset;

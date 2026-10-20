@@ -28631,7 +28631,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ],
   [
@@ -29993,7 +29993,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "RY-Z-k42nyDQ": {
           "uuid": "pyuuq8DrReIv",
@@ -30003,7 +30004,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "g_4P3_YH0DT5": {
           "uuid": "pi3KI4IOKKgC",
@@ -37964,7 +37966,7 @@
         }
       },
       "deps": ["b40f6e19-d463-42da-8612-be48dc88c549"],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ]
 ]

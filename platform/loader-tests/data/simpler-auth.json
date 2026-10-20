@@ -833,7 +833,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "i9xJcsRFqi76": {
           "uuid": "nH4fDsauK_rU",
@@ -843,7 +844,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "XLJSGB8O24nV": {
           "type": { "__ref": "0qZgZKOTWbwu" },
@@ -10087,7 +10089,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ]
 ]

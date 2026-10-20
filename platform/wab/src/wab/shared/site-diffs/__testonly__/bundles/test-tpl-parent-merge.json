@@ -1261,7 +1261,7 @@
           }
         },
         "deps": [],
-        "version": "258-add-page-href-encode"
+        "version": "259-add-image-asset-description"
       },
       "projectId": "pC2jRmcov3iBGmrqWaP53P",
       "version": "0.0.1",
@@ -2570,7 +2570,7 @@
           }
         },
         "deps": [],
-        "version": "258-add-page-href-encode"
+        "version": "259-add-image-asset-description"
       }
     },
     {
@@ -3824,7 +3824,7 @@
           }
         },
         "deps": [],
-        "version": "258-add-page-href-encode"
+        "version": "259-add-image-asset-description"
       }
     }
   ]

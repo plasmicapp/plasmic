@@ -712,6 +712,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
   ImageAsset: {
     aspectRatio: "generic",
     dataUri: "generic",
+    description: "generic",
     height: "generic",
     name: "generic",
     type: "unexpected",

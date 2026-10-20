@@ -28323,7 +28323,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ],
   [
@@ -30633,7 +30633,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "925022": {
           "uuid": "M6GjM9Trpyy",
@@ -30643,7 +30644,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "925023": {
           "uuid": "GbLNzEdN1wc",
@@ -40641,7 +40643,7 @@
         "p4m7rWp5nDGl": { "tpl": [], "__type": "VirtualRenderExpr" }
       },
       "deps": ["b420cd72-36aa-46e8-a9af-795714ebc344"],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ]
 ]

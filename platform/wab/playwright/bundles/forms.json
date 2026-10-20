@@ -29365,7 +29365,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ],
   [
@@ -33641,7 +33641,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ],
   [
@@ -63010,7 +63010,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ],
   [
@@ -70813,7 +70813,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "8Myt2L5oII7J": {
           "uuid": "RVqId_ZmjW1l",
@@ -70823,7 +70824,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "YpYH3D6AlQzw": {
           "name": null,
@@ -80316,7 +80318,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "eoEQrNEIDYdq": {
           "uuid": "32ag2NGgenCx",
@@ -83083,7 +83086,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "YGgHzsrx9BgR": {
           "uuid": "kfY7Vtm9vJW0",
@@ -83093,7 +83097,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "se9KucYqnmkB": {
           "uuid": "013R4JRjRf72",
@@ -90287,7 +90292,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "gdl8Uv4_F8dW": {
           "uuid": "lbLmbxq9PxDS",
@@ -90297,7 +90303,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "eqEYOIGa4u7C": {
           "uuid": "MbImK7ruUrO-",
@@ -90307,7 +90314,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "4UHLJFL91FTo": {
           "uuid": "70b7JX79Rv7M",
@@ -102330,7 +102338,7 @@
         "ff598514-e845-4b90-9402-61b6e85b5633",
         "a0c6a0b1-20be-4fe8-a98b-9618eb575490"
       ],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ]
 ]

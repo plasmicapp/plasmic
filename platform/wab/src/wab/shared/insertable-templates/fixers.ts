@@ -221,6 +221,7 @@ export function makeImageAssetImporter(
           ? ImageAssetType.Icon
           : ImageAssetType.Picture,
       aspectRatio: asset.aspectRatio ?? undefined,
+      description: asset.description ?? undefined,
     });
     oldToNew.set(asset, newAsset);
     return newAsset;

@@ -3400,7 +3400,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "830": {
           "uuid": "T-bi-rtb01",
@@ -3410,7 +3411,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "842": {
           "variants": [{ "__ref": "721" }],
@@ -12914,7 +12916,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "3446": {
           "variants": [{ "__ref": "2825" }],
@@ -12941,7 +12944,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "3455": {
           "variants": [{ "__ref": "265" }],
@@ -19283,7 +19287,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "20123081": {
           "tpl": [{ "__ref": "20123085" }],
@@ -30237,7 +30242,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "44494710": {
           "uuid": "JpwPuIcLdx",
@@ -30247,7 +30253,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "44494711": {
           "uuid": "Gc5JT8MjK0",
@@ -30257,7 +30264,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "44494712": {
           "uuid": "eJszfETHvI",
@@ -30267,7 +30275,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "44494713": {
           "uuid": "g9_MNN4FrX",
@@ -30277,7 +30286,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "44494714": {
           "uuid": "KQyaQkVme0",
@@ -30287,7 +30297,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "44494715": {
           "uuid": "_QhNLw0rbc",
@@ -30297,7 +30308,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "44494716": {
           "tpl": [{ "__ref": "44494202" }],
@@ -34849,7 +34861,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "58830002": {
           "asset": { "__ref": "58830001" },
@@ -46403,7 +46416,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ]
 ]

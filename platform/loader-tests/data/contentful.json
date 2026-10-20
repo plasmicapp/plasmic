@@ -117,7 +117,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ],
   [
@@ -2284,7 +2284,7 @@
         }
       },
       "deps": ["e44dffc5-685f-4e8f-89c1-ff00982efc3c"],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ]
 ]

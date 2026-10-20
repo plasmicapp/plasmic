@@ -1705,7 +1705,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "5592171": {
           "values": {
@@ -2336,7 +2337,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "5592274": {
           "values": {
@@ -5479,7 +5481,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "5592777": {
           "values": {
@@ -13219,7 +13222,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ]
 ]

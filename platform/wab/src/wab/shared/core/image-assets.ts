@@ -48,6 +48,7 @@ export function cloneImageAsset(asset: ImageAsset) {
     width: asset.width,
     height: asset.height,
     aspectRatio: asset.aspectRatio,
+    description: asset.description,
   });
 }
 
@@ -58,6 +59,7 @@ export function mkImageAsset(opts: {
   width?: number;
   height?: number;
   aspectRatio?: number;
+  description?: string;
 }) {
   return new ImageAsset({
     uuid: mkShortId(),
@@ -67,6 +69,7 @@ export function mkImageAsset(opts: {
     width: opts.width ?? null,
     height: opts.height ?? null,
     aspectRatio: opts.aspectRatio ?? null,
+    description: opts.description ?? null,
   });
 }
 

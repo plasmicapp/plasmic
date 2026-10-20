@@ -1232,7 +1232,8 @@
           "dataUri": "https://site-assets.plasmic.app/93f3368d6745a86b3a0d36fbf933480c.png",
           "width": 128,
           "height": 128,
-          "aspectRatio": null
+          "aspectRatio": null,
+          "description": null
         },
         "ref_TEST_IID_1": {
           "__type": "ImageAssetRef",
@@ -1240,7 +1241,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ]
 ]

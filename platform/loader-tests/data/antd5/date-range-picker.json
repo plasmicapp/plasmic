@@ -28631,7 +28631,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ],
   [
@@ -30357,7 +30357,7 @@
         "u0TMUIJvyXea": { "tpl": [], "__type": "VirtualRenderExpr" }
       },
       "deps": ["db595a43-dd4e-450e-931a-93fa59116dc5"],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ]
 ]

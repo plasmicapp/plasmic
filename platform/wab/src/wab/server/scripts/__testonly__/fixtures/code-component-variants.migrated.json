@@ -13763,7 +13763,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ],
   [
@@ -16069,6 +16069,7 @@
           "width": 24,
           "height": 24,
           "aspectRatio": 1000000,
+          "description": null,
           "__type": "ImageAsset"
         },
         "5A_Cl9N3XeHA": {
@@ -16079,6 +16080,7 @@
           "width": 24,
           "height": 24,
           "aspectRatio": 1000000,
+          "description": null,
           "__type": "ImageAsset"
         },
         "EDFLlYCuxZB5": {
@@ -23371,7 +23373,7 @@
         }
       },
       "deps": ["680b1b11-6954-4dd8-b4e6-6a2d087c1c28"],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ]
 ]

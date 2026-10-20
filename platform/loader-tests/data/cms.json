@@ -149,7 +149,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ],
   [
@@ -2122,7 +2122,7 @@
         }
       },
       "deps": ["fab02607-a7c5-462d-a6f7-735890794fea"],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ]
 ]

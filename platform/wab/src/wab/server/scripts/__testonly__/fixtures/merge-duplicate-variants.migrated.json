@@ -1561,6 +1561,7 @@
       "width": 24,
       "height": 24,
       "aspectRatio": 1000000,
+      "description": null,
       "__type": "ImageAsset"
     },
     "sWGdqU6z6ble": {
@@ -1571,6 +1572,7 @@
       "width": 24,
       "height": 24,
       "aspectRatio": 1000000,
+      "description": null,
       "__type": "ImageAsset"
     },
     "VkWeLUdUDBRP": {
@@ -2635,5 +2637,5 @@
     }
   },
   "deps": [],
-  "version": "258-add-page-href-encode"
+  "version": "259-add-image-asset-description"
 }

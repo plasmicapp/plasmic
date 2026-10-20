@@ -322,6 +322,7 @@ describe("cloneSite", () => {
       width: null,
       height: null,
       aspectRatio: null,
+      description: null,
     });
     const component = mkComponent({
       name: "Page",

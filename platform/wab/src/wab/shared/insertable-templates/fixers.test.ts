@@ -31,6 +31,7 @@ describe("Insertable templates fixers", () => {
         width: 100,
         height: 100,
         aspectRatio: 1,
+        description: null,
       });
 
       const tpl = mkTplTag("div", [], {

@@ -569,7 +569,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ],
   [
@@ -1082,7 +1082,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ],
   [
@@ -12881,7 +12881,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "Xt1EuC1-sK1F": {
           "uuid": "zzllTmMjsK5c",
@@ -12891,7 +12892,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "DrD_VVxCixKE": {
           "uuid": "OqIW3nHfyrHq",
@@ -12901,7 +12903,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "m7zvgNNTcngd": {
           "uuid": "_LwlzkWqW98Z",
@@ -12911,7 +12914,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "JZ4C_C9dEsJX": {
           "uuid": "K3kzNlhFP-Z_",
@@ -12921,7 +12925,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "lFUkE29WcpaT": {
           "uuid": "9SBD3wIVZb_9",
@@ -12931,7 +12936,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "V_NtfdhYjlOD": {
           "uuid": "ow6M00jM0WQM",
@@ -12941,7 +12947,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "QQuMC5lG4HPU": {
           "uuid": "ZJ9-a4stLHLE",
@@ -12951,7 +12958,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "-Go-AOuitJIL": {
           "uuid": "GYvpUqJM3Aa6",
@@ -12961,7 +12969,8 @@
           "width": 1920,
           "height": 1080,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "g3Cj1ePgf4Eb": {
           "uuid": "AzxJzDPlFUTG",
@@ -12971,7 +12980,8 @@
           "width": 4096,
           "height": 2304,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "JOnfk54myYLz": {
           "uuid": "dJo6UoiREoa2",
@@ -12981,7 +12991,8 @@
           "width": 1920,
           "height": 1080,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "5Q2wrodZAcch": {
           "uuid": "UQfZfxuXgCKX",
@@ -12991,7 +13002,8 @@
           "width": 4096,
           "height": 2304,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "R1b4eLRTZ1hG": {
           "uuid": "qAy33-tjpynC",
@@ -13001,7 +13013,8 @@
           "width": 1024,
           "height": 684,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "Q87QLknx19xu": {
           "uuid": "w4HQAJxaAjY1",
@@ -13011,7 +13024,8 @@
           "width": 1024,
           "height": 905,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "MtRJh47OCxl5": {
           "uuid": "1RgFnSugj84G",
@@ -13021,7 +13035,8 @@
           "width": 1365,
           "height": 2048,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "taSuc5g8gijT": {
           "uuid": "yPEO64NegOZf",
@@ -13031,7 +13046,8 @@
           "width": 1638,
           "height": 2048,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "Hag7WgKelZhW": {
           "uuid": "e61oHAO6pey1",
@@ -13041,7 +13057,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "Rfi28GAIteW4": {
           "uuid": "8jyqXK-MsWEq",
@@ -13051,7 +13068,8 @@
           "width": 512,
           "height": 512,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "TLfh7H0m1gKA": {
           "uuid": "PGaNXyjcuXMV",
@@ -13061,7 +13079,8 @@
           "width": 341,
           "height": 512,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "zus9MD1egC0r": {
           "uuid": "cponMEy6v2U_",
@@ -13071,7 +13090,8 @@
           "width": 341,
           "height": 512,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "ZIcJNV1F7E3w": {
           "uuid": "XNc0ISJ9JQhW",
@@ -13081,7 +13101,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "G-1ij2lxZPUW": {
           "uuid": "qT_1FBFK9DwX",
@@ -13091,7 +13112,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "qrRtZ02ncrgu": {
           "uuid": "qs_lbXaml69v",
@@ -13101,7 +13123,8 @@
           "width": 200,
           "height": 200,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "9a9V3B1uoU4j": {
           "uuid": "rkXvyOiACQhi",
@@ -13111,7 +13134,8 @@
           "width": 219,
           "height": 192,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "-kQLfwkQtsu-": {
           "uuid": "j4I6yx0cJgmp",
@@ -13121,7 +13145,8 @@
           "width": 200,
           "height": 200,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "Vyj8XBAcH3Ck": {
           "uuid": "Dm5YQ3CnV-zm",
@@ -13131,7 +13156,8 @@
           "width": 204,
           "height": 156,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "pWYgGt4BRnfh": {
           "uuid": "NRmVA3zUj8-o",
@@ -13141,7 +13167,8 @@
           "width": 1920,
           "height": 1280,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "kiktILsjwkip": {
           "uuid": "0_-2LeIrCXKd",
@@ -13151,7 +13178,8 @@
           "width": 1920,
           "height": 1278,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "r-T79WTtvOr2": {
           "uuid": "NOWdPgkhyGQB",
@@ -13161,7 +13189,8 @@
           "width": 1920,
           "height": 1280,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "eC1yfVbFM1tl": {
           "uuid": "s1-_QnqycUbX",
@@ -13171,7 +13200,8 @@
           "width": 1920,
           "height": 1282,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "Pvt0dbKRJj3O": {
           "uuid": "zKO7JPgBWMfF",
@@ -13181,7 +13211,8 @@
           "width": 1280,
           "height": 853,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "FExZEqKGi1bA": {
           "uuid": "mkkn9ReDpjdL",
@@ -13191,7 +13222,8 @@
           "width": 1920,
           "height": 1280,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "wzRjUqNlKPDo": {
           "uuid": "0ocJxAFdj_vN",
@@ -13201,7 +13233,8 @@
           "width": 1920,
           "height": 2449,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "a1FWoEUfcvoU": {
           "uuid": "YwWj6J7Ib1No",
@@ -13211,7 +13244,8 @@
           "width": 1920,
           "height": 2400,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "fZ1x60UPp6z3": {
           "uuid": "MHK53NsVFhQr",
@@ -13221,7 +13255,8 @@
           "width": 640,
           "height": 640,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "oD-Hke5GMYjg": {
           "uuid": "qMLLQNYrKaON",
@@ -13231,7 +13266,8 @@
           "width": 640,
           "height": 427,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "9PsQ7Zb53GMc": {
           "uuid": "qkytYM0IxVC2",
@@ -13241,7 +13277,8 @@
           "width": 640,
           "height": 960,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "cFXZh7oUCp7_": {
           "uuid": "YG-MV-S0B3iS",
@@ -13251,7 +13288,8 @@
           "width": 640,
           "height": 640,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "ViUoaA5qnNnx": {
           "uuid": "Lpd5E50eiGWl",
@@ -13261,7 +13299,8 @@
           "width": 512,
           "height": 512,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "MoCQCWv1UUWI": {
           "uuid": "kx-g5SWhqjTn",
@@ -13271,7 +13310,8 @@
           "width": 512,
           "height": 512,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "w-iOdEN9kcNY": {
           "uuid": "z7vrjmTSKFV5",
@@ -13281,7 +13321,8 @@
           "width": 512,
           "height": 512,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "xshVxm0fdrjN": {
           "uuid": "CXjmPpwVeZd3",
@@ -13291,7 +13332,8 @@
           "width": 326,
           "height": 326,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "HL3FORhSsEAz": {
           "uuid": "6jaufa4Owabd",
@@ -13301,7 +13343,8 @@
           "width": 326,
           "height": 326,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "OS33zv9g5hms": {
           "uuid": "20HQayoo-YC0",
@@ -13311,7 +13354,8 @@
           "width": 512,
           "height": 512,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "DaFRF92nQQcA": {
           "uuid": "TDATN4-KZxPW",
@@ -13321,7 +13365,8 @@
           "width": 512,
           "height": 512,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "cZTDFBlP6TLS": {
           "uuid": "MxGxKViBzTuf",
@@ -13331,7 +13376,8 @@
           "width": 512,
           "height": 512,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "wEAyQAbO0qYl": {
           "uuid": "T_p0BuYDF3lq",
@@ -13341,7 +13387,8 @@
           "width": 1921,
           "height": 1081,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "jF2ic906_Yx1": {
           "uuid": "GB3jawt8OS5e",
@@ -13351,7 +13398,8 @@
           "width": 1920,
           "height": 1280,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "I7mEYrm-e4Mx": {
           "uuid": "bdL-nh6hiaW1",
@@ -13361,7 +13409,8 @@
           "width": 1920,
           "height": 1080,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "2QpMk5b_SIQx": {
           "uuid": "qxwf82OWxaAc",
@@ -13371,7 +13420,8 @@
           "width": 1280,
           "height": 853,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "SZGFuj4B8rl2": {
           "uuid": "aXK_nT-_0L07",
@@ -13381,7 +13431,8 @@
           "width": 1280,
           "height": 853,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "aqxk8AdLinZ1": {
           "uuid": "WNALPR6FScD9",
@@ -13391,7 +13442,8 @@
           "width": 1280,
           "height": 853,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "B_vOSzM4WarC": {
           "uuid": "rmgHJiq9J82y",
@@ -13401,7 +13453,8 @@
           "width": 1920,
           "height": 1280,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "ThMNblxwe7_7": {
           "uuid": "Ckdobyt9lD--",
@@ -13411,7 +13464,8 @@
           "width": 1920,
           "height": 1171,
           "aspectRatio": null,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "bRReqEHsbrP9": {
           "components": [
@@ -28684,7 +28738,7 @@
         "7b35d653-7565-4b50-82ca-04055e2bdef1",
         "431a83b5-e5ea-4605-ac3b-aa81b4842b91"
       ],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ]
 ]

@@ -28340,7 +28340,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ],
   [
@@ -32548,7 +32548,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ],
   [
@@ -32883,7 +32883,7 @@
         }
       },
       "deps": [],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ],
   [
@@ -37301,7 +37301,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "EWq0fp_qDFMW": {
           "uuid": "2AZCi9uKHCzA",
@@ -37311,7 +37312,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "7WvC4NqmKOYx": {
           "uuid": "PtGbY0Mu3auE",
@@ -37321,7 +37323,8 @@
           "width": 150,
           "height": 150,
           "aspectRatio": 1000000,
-          "__type": "ImageAsset"
+          "__type": "ImageAsset",
+          "description": null
         },
         "EV4lR2s9QjcD": {
           "components": [
@@ -37664,7 +37667,7 @@
         "88b7de88-9046-4021-b08b-d5d7d1db6a8c",
         "0b5c4773-e201-48c2-86a4-c29335ea539b"
       ],
-      "version": "258-add-page-href-encode"
+      "version": "259-add-image-asset-description"
     }
   ]
 ]

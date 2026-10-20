@@ -1257,6 +1257,7 @@
       "width": 150,
       "height": 150,
       "aspectRatio": 1000000,
+      "description": null,
       "__type": "ImageAsset"
     },
     "G-RjXd7VO7EL": {
@@ -1267,6 +1268,7 @@
       "width": 150,
       "height": 150,
       "aspectRatio": 1000000,
+      "description": null,
       "__type": "ImageAsset"
     },
     "H2wXxdwtkOHp": {
@@ -7938,6 +7940,7 @@
       "width": 150,
       "height": 150,
       "aspectRatio": null,
+      "description": null,
       "__type": "ImageAsset"
     },
     "RJegK8v8vxJp": {
@@ -7948,6 +7951,7 @@
       "width": 150,
       "height": 150,
       "aspectRatio": null,
+      "description": null,
       "__type": "ImageAsset"
     },
     "dNZAuZdA_YUK": {
@@ -7958,6 +7962,7 @@
       "width": 150,
       "height": 150,
       "aspectRatio": null,
+      "description": null,
       "__type": "ImageAsset"
     },
     "IsZQ7sMOdp-n": {
@@ -10298,6 +10303,7 @@
       "width": 150,
       "height": 150,
       "aspectRatio": null,
+      "description": null,
       "__type": "ImageAsset"
     },
     "fxZ_2kveoZv_": {
@@ -10308,6 +10314,7 @@
       "width": 150,
       "height": 150,
       "aspectRatio": null,
+      "description": null,
       "__type": "ImageAsset"
     },
     "vyepoNo1pDZB": {
@@ -19525,6 +19532,7 @@
       "width": 150,
       "height": 150,
       "aspectRatio": null,
+      "description": null,
       "__type": "ImageAsset"
     },
     "u1RwYgNztI78": {
@@ -23962,5 +23970,5 @@
     }
   },
   "deps": [],
-  "version": "258-add-page-href-encode"
+  "version": "259-add-image-asset-description"
 }
