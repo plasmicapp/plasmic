@@ -129,7 +129,9 @@ async function migrate() {
     // });
     const bundleJson = fs.readFileSync(path, { encoding: "utf8" });
     const migratedBundleJson = await migrateInMemory(bundleJson);
-    fs.writeFileSync(path, migratedBundleJson);
+    if (migratedBundleJson !== bundleJson) {
+      fs.writeFileSync(path, migratedBundleJson);
+    }
   }
   logger.info("All done!");
   process.exit(0);
@@ -248,6 +250,7 @@ export async function migrateInMemory(bundleJson: string) {
   // for it.  We now want to remove the stale bundles, corresponding to old
   // versions of hostless packages that are no longer in use.
   const pkgIdToMaxVersion: Record<string, [string, Bundle]> = {};
+  let prunedSomething = false;
   for (const bundleId of [...Object.keys(bundles)]) {
     const bundle = bundles[bundleId];
     const root = bundleRoot(bundle);
@@ -266,11 +269,16 @@ export async function migrateInMemory(bundleJson: string) {
       if (existingVersions.some((v) => semver.gt(v, root.version))) {
         // There exists a newer version! Remove this one
         delete bundles[bundleId];
+        prunedSomething = true;
       } else {
         // This is the latest PkgVersion for this Pkg
         pkgIdToMaxVersion[pkgId] = [bundleId, bundle];
       }
     }
+  }
+
+  if (!migratedSomething && !prunedSomething) {
+    return bundleJson;
   }
 
   if (migratedSomething) {

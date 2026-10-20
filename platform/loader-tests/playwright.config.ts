@@ -14,6 +14,7 @@ const headless = process.env["PLAYWRIGHT_HEADFUL"] !== "true";
  */
 export default defineConfig({
   testDir: "./src/playwright-tests",
+  globalSetup: "./src/global-setup.ts",
   snapshotDir: "./snapshots",
   snapshotPathTemplate:
     "{snapshotDir}/{testFileDir}/{testFileName}-snapshots/{arg}{-projectName}{ext}",
@@ -23,7 +24,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry in CI only */
   retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 6 : undefined,
+  workers: process.env.CI ? 8 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI
     ? [["github"], ["playwright-ctrf-json-reporter", {}]]
@@ -62,7 +63,7 @@ export default defineConfig({
           args: [
             "--disable-web-security",
             ...(process.env.PLAYWRIGHT_CHROMIUM_ARGS?.split(" ").filter(
-              Boolean
+              Boolean,
             ) ?? []),
           ],
         },
