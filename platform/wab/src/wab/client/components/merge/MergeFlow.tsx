@@ -161,18 +161,25 @@ function MergeFlow_(
   const { data, error } = useSWR(
     invalidationKey(`theFullMerge`, projectId, revisionNum, toBranchId),
     async () => {
-      const { branches } = await api.listBranchesForProject(projectId);
-      const fromSiteResponse = await api.getSiteInfo(projectId, {
-        branchId: isMainBranchId(fromBranchId) ? undefined : fromBranchId,
-      });
-      const toSiteResponse = await api.getSiteInfo(projectId, {
-        branchId: isMainBranchId(toBranchId) ? undefined : toBranchId,
-      });
-      const pretendMergeResult = await api.tryMergeBranch(projectId, {
-        subject,
-        pretend: true,
-        autoCommitOnToBranch: !isMainBranchId(toBranchId),
-      });
+      const [
+        { branches },
+        fromSiteResponse,
+        toSiteResponse,
+        pretendMergeResult,
+      ] = await Promise.all([
+        api.listBranchesForProject(projectId),
+        api.getSiteInfo(projectId, {
+          branchId: isMainBranchId(fromBranchId) ? undefined : fromBranchId,
+        }),
+        api.getSiteInfo(projectId, {
+          branchId: isMainBranchId(toBranchId) ? undefined : toBranchId,
+        }),
+        api.tryMergeBranch(projectId, {
+          subject,
+          pretend: true,
+          autoCommitOnToBranch: !isMainBranchId(toBranchId),
+        }),
+      ]);
 
       const ancestorPkgVersion = await api.getPkgVersion(
         pretendMergeResult.pkgId,
