@@ -55,6 +55,7 @@ import fs from "fs";
 import passport from "passport";
 import { AuthenticateOptionsGoogle } from "passport-google-oauth20";
 import { IVerifyOptions } from "passport-local";
+import { TokenError } from "passport-oauth2";
 
 export function csrf(req: Request, res: Response, _next: NextFunction) {
   res.json({ csrf: res.locals._csrf });
@@ -586,13 +587,21 @@ async function handleOauthCallback(
       strategy,
       async (err: Error, user: User, info: IVerifyOptions) =>
         (async () => {
-          logger.error(`${logPrefix} AUTH CALLBACK`, { err, user, info });
+          logger.info(`${logPrefix} AUTH CALLBACK`, { err, user, info });
           if (err || !user) {
             const errName = `${err}`;
-            logger.error(
-              `${logPrefix} could not auth due to error: ${errName}`,
-            );
-            Sentry.captureException(err);
+            // Denied consent or an expired/reused authorization code.
+            if (
+              !err ||
+              (err instanceof TokenError && err.code === "invalid_grant")
+            ) {
+              logger.warn(`${logPrefix} could not auth: ${errName}`, { info });
+            } else {
+              logger.error(
+                `${logPrefix} could not auth due to error: ${errName}`,
+              );
+              Sentry.captureException(err);
+            }
             res.send(callbackHtml(errName));
             return;
           }
