@@ -98,16 +98,27 @@ export class Matcher {
   _query: /*TWZ*/ string;
   _typeaheadPatternGlobal: /*TWZ*/ RegExp;
   _typeaheadPatternOnce: /*TWZ*/ RegExp;
-  constructor(rawQuery: string, opts: { matchMiddleOfWord?: boolean } = {}) {
+  constructor(
+    rawQuery: string,
+    opts: { matchMiddleOfWord?: boolean; matchCodegenNames?: boolean } = {},
+  ) {
     const matchMiddleOfWord = opts.matchMiddleOfWord ?? true;
     this._query = rawQuery.trim();
     const patPrefix = matchMiddleOfWord ? "" : "\\b";
     const patternStr = [...simpleWords(this._query)]
-      .map((word: /*TWZ*/ string) => patPrefix + L.escapeRegExp(word))
+      .map(
+        (word: /*TWZ*/ string) =>
+          patPrefix +
+          (opts.matchCodegenNames
+            ? codegenNamePattern(word)
+            : L.escapeRegExp(word)),
+      )
       .join(".*");
+    // \p{...} in codegenNamePattern needs the u flag.
+    const flags = opts.matchCodegenNames ? "iu" : "i";
     // We use two here since RegExps are stateful if g flag is used.
-    this._typeaheadPatternGlobal = new RegExp(`${patternStr}`, "gi");
-    this._typeaheadPatternOnce = new RegExp(`${patternStr}`, "i");
+    this._typeaheadPatternGlobal = new RegExp(`${patternStr}`, `g${flags}`);
+    this._typeaheadPatternOnce = new RegExp(`${patternStr}`, flags);
   }
   matches(text: /*TWZ*/ string) {
     return !this.hasQuery() || this._typeaheadPatternOnce.test(text);
@@ -131,6 +142,21 @@ export class Matcher {
     const scrolledText = getTextWithScrolling(text, maxLength, this);
     return this.boldSnippets(scrolledText, className);
   }
+}
+
+/**
+ * Lets a word match a name the way codegen writes it, so "InputsTextField"
+ * finds "Inputs/Text Field" and "GoalsObjectives" finds "Goals & Objectives".
+ * Codegen keeps only the letters and digits of a name, so anything else may
+ * sit between two characters of the word.
+ */
+function codegenNamePattern(word: string) {
+  // eslint-disable-next-line @typescript-eslint/no-misused-spread -- code points are fine, it only puts optional separators between them
+  const chars = [...word.replace(/[^\p{L}\p{N}]/gu, "")];
+  if (chars.length === 0) {
+    return L.escapeRegExp(word);
+  }
+  return chars.map((char) => L.escapeRegExp(char)).join("[^\\p{L}\\p{N}]*");
 }
 
 function boldSnippets(text: React.ReactNode, pat: RegExp, className?: string) {
