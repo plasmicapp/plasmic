@@ -16,7 +16,10 @@ import {
   MultiOAuth2Strategy,
   OAuth2Config,
 } from "@/wab/server/util/passport-multi-oauth2";
-import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
+import {
+  BadRequestError,
+  UnauthorizedError,
+} from "@/wab/shared/ApiErrors/errors";
 import { SsoConfigId, UserId } from "@/wab/shared/ApiSchema";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import {
@@ -53,13 +56,11 @@ export async function setupPassport(
   passport.deserializeUser((id: string, done) => {
     asyncToCallback(done, async () => {
       const mgr = new DbMgr(getManager(), SUPER_USER);
-      try {
-        return await mgr.getUserById(id);
-      } catch (err) {
-        // Do not use NotFoundError.  This is necessary for now since our global error handler blindly transforms
-        // NotFoundErrors into 404s.
-        throw new Error(err.message);
+      const user = await mgr.tryGetUserById(id);
+      if (!user) {
+        throw new UnauthorizedError("Must be logged in");
       }
+      return user;
     });
   });
 

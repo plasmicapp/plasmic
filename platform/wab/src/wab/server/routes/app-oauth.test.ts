@@ -1,4 +1,27 @@
-import { parseRedirectURI } from "@/wab/server/routes/app-oauth";
+import {
+  extractAppUserFromToken,
+  issueOauthCode,
+  parseRedirectURI,
+} from "@/wab/server/routes/app-oauth";
+import { UnauthorizedError } from "@/wab/shared/ApiErrors/errors";
+import { Request, Response } from "express-serve-static-core";
+
+describe("auth errors", () => {
+  it("issueOauthCode throws UnauthorizedError when logged out", async () => {
+    await expect(
+      issueOauthCode({ query: {} } as Request, {} as Response),
+    ).rejects.toBeInstanceOf(UnauthorizedError);
+  });
+
+  it("extractAppUserFromToken throws UnauthorizedError for an invalid token", () => {
+    expect(() =>
+      extractAppUserFromToken({
+        id: "req",
+        headers: { "x-plasmic-data-user-auth-token": "not-a-jwt" },
+      } as unknown as Request),
+    ).toThrow(UnauthorizedError);
+  });
+});
 
 describe("parseRedirectURI", () => {
   it("should validate redirectUri", () => {
