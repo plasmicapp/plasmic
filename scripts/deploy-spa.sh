@@ -48,6 +48,7 @@ gcloud storage cp -r --quiet ./index.html "gs://$GCS_BUCKET/index.html" --cache-
 gcloud storage cp -r --quiet ./static/js/studio.js "gs://$GCS_BUCKET/static/js/studio.js" --cache-control 'max-age=0, s-maxage=31536000'
 
 echo "Invalidating CDN cache..."
+gcloud compute url-maps invalidate-cdn-cache platform-url-map --path "/" --async --project "$GCP_PROJECT"
 gcloud compute url-maps invalidate-cdn-cache platform-url-map --path "/index.html" --async --project "$GCP_PROJECT"
 gcloud compute url-maps invalidate-cdn-cache platform-url-map --path "/static/js/studio.js" --async --project "$GCP_PROJECT"
 
