@@ -191,14 +191,6 @@ export interface TeamWhiteLabelInfo {
     algo: "RS256";
     publicKey: string;
   };
-  /**
-   * Info for verifying API calls via client credentials
-   */
-  apiClientCredentials?: {
-    clientId: string;
-    issuer: string;
-    aud: string;
-  };
 }
 
 export interface TeamJwtOpenPayload {

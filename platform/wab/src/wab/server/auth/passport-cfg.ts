@@ -1,4 +1,3 @@
-import { setupCustomPassport } from "@/wab/server/auth/custom-passport-cfg";
 import { createUserFull } from "@/wab/server/auth/routes";
 import { Config } from "@/wab/server/config";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
@@ -266,8 +265,6 @@ export async function setupPassport(
     passport.use("google-sheets", googleStrategy);
     refresh.use("google-sheets", googleStrategy);
   }
-
-  await setupCustomPassport(dbMgr, config);
 }
 
 export async function extractSsoConfig(req: Request) {
@@ -353,7 +350,7 @@ export async function upsertOauthUser(
   return user;
 }
 
-export async function updateUserFromProfile(
+async function updateUserFromProfile(
   mgr: DbMgr,
   userId: UserId,
   profile: Profile,

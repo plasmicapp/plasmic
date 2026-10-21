@@ -183,7 +183,6 @@
     "@octokit/app": "^16.1.2",
     "@octokit/core": "^7.0.6",
     "@octokit/plugin-paginate-rest": "13.2.0",
-    "@okta/jwt-verifier": "^4.0.2",
     "@opentelemetry/api": "catalog:",
     "@pankod/refine-core": "3.58.1",
     "@plasmic-shared/hosting": "workspace:*",

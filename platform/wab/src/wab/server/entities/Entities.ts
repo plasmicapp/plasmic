@@ -680,11 +680,7 @@ export class LoaderPublishment extends Base<"LoaderPublishmentId"> {
 }
 
 export type OauthTokenProvider =
-  | "google"
-  | "okta"
-  | "ping"
-  | "airtable"
-  | "google-sheets";
+  "google" | "okta" | "ping" | "airtable" | "google-sheets";
 
 const cryptr = new Cryptr(getEncryptionKey());
 const encryptTransformer = {
@@ -1017,15 +1013,10 @@ export class SsoConfig extends Base<"SsoConfigId"> {
 
   @Column("jsonb")
   config: Record<string, any>;
-
-  @Column("jsonb", { nullable: true })
-  whitelabelConfig: Record<string, any> | null;
 }
 
 export type KeyValueNamespace =
-  | "hosting-hit"
-  | "copilot-cache"
-  | "notification-settings";
+  "hosting-hit" | "copilot-cache" | "notification-settings";
 
 export interface HostingHit {
   path: string;

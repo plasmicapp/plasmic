@@ -1,7 +1,3 @@
-import {
-  customTeamApiAuth,
-  customTeamApiUserAuth,
-} from "@/wab/server/auth/custom-api-auth";
 import { extractSsoConfig } from "@/wab/server/auth/passport-cfg";
 import { hasBlockedEmailDomain } from "@/wab/server/auth/signup-policy";
 import { doLogin, doLogout } from "@/wab/server/auth/util";
@@ -19,7 +15,6 @@ import { sendWelcomeEmail } from "@/wab/server/emails/welcome-email";
 import { SsoConfig, User } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
 import { logger } from "@/wab/server/observability";
-import { isCustomPublicApiRequest } from "@/wab/server/routes/custom-routes";
 import { getPromotionCodeCookie } from "@/wab/server/routes/promo-code";
 import {
   getUser,
@@ -688,7 +683,7 @@ export async function teamApiAuth(
   next: NextFunction,
 ) {
   await extractApiTeam(req);
-  await customTeamApiAuth(req, res, next);
+  next();
 }
 
 /**
@@ -712,7 +707,7 @@ export async function teamApiUserAuth(
       req.user = user;
     }
   }
-  await customTeamApiUserAuth(req, res, next);
+  next();
 }
 
 /**
@@ -728,8 +723,7 @@ export function isPublicApiRequest(req: Request) {
     // CMS
     req.headers?.["x-plasmic-api-cms-tokens"] ||
     // Team API token
-    req.headers?.["x-plasmic-team-token"] ||
-    isCustomPublicApiRequest(req)
+    req.headers?.["x-plasmic-team-token"]
   );
 }
 

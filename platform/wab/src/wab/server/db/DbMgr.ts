@@ -5509,7 +5509,6 @@ export class DbMgr implements MigrationDbMgr {
     ssoType: "oidc";
     provider: KnownProvider;
     config: any;
-    whitelabelConfig: any;
   }) {
     await this.checkTeamPerms(opts.teamId, "owner", "write");
     let sso = await this.getSsoConfigByTeam(opts.teamId);
@@ -5519,7 +5518,6 @@ export class DbMgr implements MigrationDbMgr {
         ssoType: opts.ssoType,
         provider: opts.provider,
         config: opts.config,
-        whitelabelConfig: opts.whitelabelConfig,
       });
     } else {
       sso = this.ssoConfigs().create({
@@ -5530,7 +5528,6 @@ export class DbMgr implements MigrationDbMgr {
         provider: opts.provider,
         tenantId: generateId(),
         config: opts.config,
-        whitelabelConfig: opts.whitelabelConfig,
       });
     }
     await this.entMgr.save(sso);

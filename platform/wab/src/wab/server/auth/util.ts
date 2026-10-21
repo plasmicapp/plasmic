@@ -1,11 +1,7 @@
 import { User } from "@/wab/server/entities/Entities";
-import { logger } from "@/wab/server/observability";
 import { makeUserTraits } from "@/wab/server/routes/util";
 import { disconnectUserSockets } from "@/wab/server/socket-util";
-import { ForbiddenError } from "@/wab/shared/ApiErrors/errors";
-import { TeamWhiteLabelInfo } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
-import OktaJwtVerifier from "@okta/jwt-verifier";
 import { Request, Response } from "express-serve-static-core";
 import { promisify } from "util";
 
@@ -40,26 +36,4 @@ export async function doLogout(request: Request, response: Response) {
       resolve(true);
     }
   });
-}
-
-export async function verifyClientCredentials(
-  whiteLabelName: string,
-  token: string,
-  info: Exclude<TeamWhiteLabelInfo["apiClientCredentials"], undefined>,
-) {
-  const verifier = new OktaJwtVerifier({
-    issuer: info.issuer,
-    clientId: info.clientId,
-    assertClaims: {
-      cid: info.clientId,
-    },
-  });
-  try {
-    await verifier.verifyAccessToken(token, info.aud);
-  } catch (err) {
-    logger.error(
-      `Failed to verify client credentials for ${whiteLabelName}: ${token}: ${err}`,
-    );
-    throw new ForbiddenError(`Invalid client token: ${err.userMessage}`);
-  }
 }

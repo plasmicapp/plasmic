@@ -4,7 +4,6 @@ import { checkInviteEmailPhishing } from "@/wab/server/emails/invite-phishing-ch
 import { sendShareEmail } from "@/wab/server/emails/share-email";
 import { Project, Team, Workspace } from "@/wab/server/entities/Entities";
 import { getEntitledTeam } from "@/wab/server/freeTrial";
-import { customCreateTeam } from "@/wab/server/routes/custom-routes";
 import { mkApiProject } from "@/wab/server/routes/projects";
 import { getPromotionCodeCookie } from "@/wab/server/routes/promo-code";
 import {
@@ -141,10 +140,6 @@ export async function listTeams(req: Request, res: Response) {
 }
 
 export async function createTeam(req: Request, res: Response) {
-  if (await customCreateTeam(req, res)) {
-    return;
-  }
-
   const userMgr = userDbMgr(req);
   const superMgr = superDbMgr(req);
   const { name: rawName } = uncheckedCast<CreateTeamRequest>(req.body);

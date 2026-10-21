@@ -736,9 +736,6 @@ function ConfigureSso({ team, refetch }: TeamProps) {
             ...existing,
             domain: existing.domains[0],
             config: JSON.stringify(existing.config, undefined, 2),
-            whitelabelConfig: existing.whitelabelConfig
-              ? JSON.stringify(existing.whitelabelConfig, undefined, 2)
-              : null,
           };
         }
 
@@ -757,9 +754,6 @@ function ConfigureSso({ team, refetch }: TeamProps) {
                   const data = {
                     ...event,
                     config: JSON.parse(event.config),
-                    whitelabelConfig: event.whitelabelConfig
-                      ? JSON.parse(event.whitelabelConfig)
-                      : null,
                   };
                   console.log("Submitting", data);
                   const sso = await nonAuthCtx.api.upsertSsoConfig(data);
@@ -792,9 +786,6 @@ function ConfigureSso({ team, refetch }: TeamProps) {
                 </Select>
               </Form.Item>
               <Form.Item name="config" label="Config">
-                <Input.TextArea autoSize={{ minRows: 4 }} className="code" />
-              </Form.Item>
-              <Form.Item name="whitelabelConfig" label="Whitelabel Config">
                 <Input.TextArea autoSize={{ minRows: 4 }} className="code" />
               </Form.Item>
               <Form.Item>
@@ -849,7 +840,6 @@ function WhiteLabel(props: TeamProps) {
     <div className="flex-row gap-m">
       <UpdateWhiteLabelName {...props} />
       <UpdateWhiteLabelJwt {...props} />
-      <UpdateWhiteLabelTeamClientCredentials {...props} />
     </div>
   );
 }
@@ -965,73 +955,6 @@ function UpdateWhiteLabelJwt({ team, refetch }: TeamProps) {
       }}
     >
       Update white label JWT
-    </Button>
-  );
-}
-
-function UpdateWhiteLabelTeamClientCredentials({ team, refetch }: TeamProps) {
-  const nonAuthCtx = useNonAuthCtx();
-  if (!team.whiteLabelName) {
-    return null;
-  }
-  return (
-    <Button
-      onClick={() => {
-        Modal.confirm({
-          title: "Update white label client credentials",
-          okButtonProps: { style: { display: "none" } },
-          content: (
-            <>
-              <h3>
-                Team "{team.name}" ({team.whiteLabelName})
-              </h3>
-              <Form
-                initialValues={team.whiteLabelInfo ?? undefined}
-                onFinish={async (event) => {
-                  const whiteLabelInfo: TeamWhiteLabelInfo = {
-                    apiClientCredentials: {
-                      ...event.apiClientCredentials,
-                    },
-                  };
-                  await nonAuthCtx.api.updateTeamWhiteLabelInfo(
-                    team.id,
-                    whiteLabelInfo,
-                  );
-                  refetch();
-                  Modal.destroyAll();
-                  notification.success({ message: "Updated!" });
-                }}
-              >
-                <Form.Item
-                  name={["apiClientCredentials", "clientId"]}
-                  label="Client ID"
-                >
-                  <Input />
-                </Form.Item>
-                <Form.Item
-                  name={["apiClientCredentials", "issuer"]}
-                  label="Issuer"
-                >
-                  <Input />
-                </Form.Item>
-                <Form.Item
-                  name={["apiClientCredentials", "aud"]}
-                  label="Expected audience (aud)"
-                >
-                  <Input />
-                </Form.Item>
-                <Form.Item>
-                  <Button htmlType="submit" type="primary">
-                    Save
-                  </Button>
-                </Form.Item>
-              </Form>
-            </>
-          ),
-        });
-      }}
-    >
-      Update white label client credentials
     </Button>
   );
 }
