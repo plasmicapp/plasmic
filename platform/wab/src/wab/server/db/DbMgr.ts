@@ -8560,19 +8560,6 @@ export class DbMgr implements MigrationDbMgr {
     const latestToRev = await this.getLatestProjectRev(projectId, {
       branchId: toBranchId,
     });
-    const bundler = new Bundler();
-    const latestToSite = await unbundleProjectFromData(
-      this,
-      bundler,
-      latestToRev,
-      `to-${projectId}`,
-    );
-    const latestFromSite = await unbundleProjectFromData(
-      this,
-      bundler,
-      latestFromRev,
-      `from-${projectId}`,
-    );
 
     const graph = await this.getCommitGraphForProject(projectId, [
       fromBranchId ?? MainBranchId,
@@ -8653,122 +8640,189 @@ export class DbMgr implements MigrationDbMgr {
       };
     }
 
-    const { site: ancestorSite } = await unbundlePkgVersion(
-      this,
-      bundler,
-      ancestorPkgVersion,
-    );
+    // When the destination hasn't changed since the source branched off, the
+    // merge result is the source itself, so skip unbundling and the 3-way
+    // merge, which are slow on large sites.
+    const isFastForward =
+      !resolution &&
+      !extras.toHasOutstandingChanges &&
+      latestToPkgVersion.id === ancestorPkgVersion.id;
 
     let result: MergeResult;
-    let mergeStepRaw: MergeStep | undefined = undefined;
-    const mergedUuid = mkUuid();
-    const mergedSite = (
-      bundler.unbundle(
-        JSON.parse(ancestorPkgVersion.model),
-        mergedUuid,
-      ) as ProjectDependency
-    ).site;
-    if (!resolution) {
-      mergeStepRaw = tryMerge(
-        ancestorSite,
-        latestFromSite,
-        latestToSite,
-        mergedSite,
-        bundler,
-        undefined,
-      );
-      const canMerge = mergeStepRaw.status === "merged";
-      const mergeStep = excludeMergeStepFromResult ? undefined : mergeStepRaw;
-
-      if (!canMerge) {
-        return {
-          status: "has conflicts",
-          parentToPkgVersionId: latestToPkgVersion.id,
-          fromRevisionNum: latestFromRev.revision,
-          toRevisionNum: latestToRev.revision,
-          mergeStep,
-          ...extras,
-        };
-      }
-
+    let mergedRevData: string;
+    if (isFastForward) {
       result = {
         status: "can be merged",
-        mergeStep,
         ...extras,
       };
-
       if (mode === "preview") {
         return result;
       }
+      mergedRevData = JSON.stringify(await getMigratedBundle(latestFromRev));
     } else {
-      const { expectedFromRevisionNum, expectedToRevisionNum } = resolution;
-
-      // Prepare to create a commit
-
-      // User has made some resolutions, so we blindly save whatever they want as the merge result
-      // But we only want to do this blind write if nothing has changed since they started the merge!
-      // This includes that both:
-      // (1) Nobody has made edits to the source branch (or if they did, that nothing actually changed)
-      if (
-        expectedFromRevisionNum !== latestFromRev.revision &&
-        (
-          await this.getProjectRevision(
-            projectId,
-            expectedFromRevisionNum,
-            fromBranchId,
-          )
-        ).data !== latestFromRev.data
-      ) {
-        return {
-          status: "concurrent source branch changes during merge",
-          ...extras,
-        };
-      }
-
-      // And (2) the destination branch also has not changed.
-      if (
-        expectedToRevisionNum !== latestToRev.revision &&
-        (
-          await this.getProjectRevision(
-            projectId,
-            expectedToRevisionNum,
-            toBranchId,
-          )
-        ).data !== latestToRev.data
-      ) {
-        return {
-          status: "concurrent destination branch changes during merge",
-          ...extras,
-        };
-      }
-
-      assert(
-        xor(!!resolution.resolvedSite, !!resolution.picks),
-        "tryMergeBranch: expecting either resolvedSite or picks",
+      const bundler = new Bundler();
+      const latestToSite = await unbundleProjectFromData(
+        this,
+        bundler,
+        latestToRev,
+        `to-${projectId}`,
+      );
+      const latestFromSite = await unbundleProjectFromData(
+        this,
+        bundler,
+        latestFromRev,
+        `from-${projectId}`,
       );
 
-      if (resolution.picks) {
+      const { site: ancestorSite } = await unbundlePkgVersion(
+        this,
+        bundler,
+        ancestorPkgVersion,
+      );
+
+      let mergeStepRaw: MergeStep | undefined = undefined;
+      const mergedUuid = mkUuid();
+      const mergedSite = (
+        bundler.unbundle(
+          JSON.parse(ancestorPkgVersion.model),
+          mergedUuid,
+        ) as ProjectDependency
+      ).site;
+      if (!resolution) {
         mergeStepRaw = tryMerge(
           ancestorSite,
           latestFromSite,
           latestToSite,
           mergedSite,
           bundler,
-          resolution.picks,
+          undefined,
         );
+        const canMerge = mergeStepRaw.status === "merged";
+        const mergeStep = excludeMergeStepFromResult ? undefined : mergeStepRaw;
+
+        if (!canMerge) {
+          return {
+            status: "has conflicts",
+            parentToPkgVersionId: latestToPkgVersion.id,
+            fromRevisionNum: latestFromRev.revision,
+            toRevisionNum: latestToRev.revision,
+            mergeStep,
+            ...extras,
+          };
+        }
+
+        result = {
+          status: "can be merged",
+          mergeStep,
+          ...extras,
+        };
+
+        if (mode === "preview") {
+          return result;
+        }
         assert(
           mergeStepRaw.status === "merged",
-          "tryMergeBranch: expecting tryMerge with picks to result in a fully merged site with no further resolutions needed",
+          "Should be merge-able by this point",
         );
-      }
+        mergedRevData = JSON.stringify(
+          bundler.bundle(
+            mergeStepRaw.mergedSite,
+            // Make sure to bundle with the correct mergedUuid,
+            // since the mergedSite was originally unbundled with that.
+            mergedUuid,
+            await getLastBundleVersion(),
+          ),
+        );
+      } else {
+        const { expectedFromRevisionNum, expectedToRevisionNum } = resolution;
 
-      result = {
-        status: "resolution accepted",
-        ...extras,
-      };
+        // Prepare to create a commit
 
-      if (mode === "preview") {
-        return result;
+        // User has made some resolutions, so we blindly save whatever they want as the merge result
+        // But we only want to do this blind write if nothing has changed since they started the merge!
+        // This includes that both:
+        // (1) Nobody has made edits to the source branch (or if they did, that nothing actually changed)
+        if (
+          expectedFromRevisionNum !== latestFromRev.revision &&
+          (
+            await this.getProjectRevision(
+              projectId,
+              expectedFromRevisionNum,
+              fromBranchId,
+            )
+          ).data !== latestFromRev.data
+        ) {
+          return {
+            status: "concurrent source branch changes during merge",
+            ...extras,
+          };
+        }
+
+        // And (2) the destination branch also has not changed.
+        if (
+          expectedToRevisionNum !== latestToRev.revision &&
+          (
+            await this.getProjectRevision(
+              projectId,
+              expectedToRevisionNum,
+              toBranchId,
+            )
+          ).data !== latestToRev.data
+        ) {
+          return {
+            status: "concurrent destination branch changes during merge",
+            ...extras,
+          };
+        }
+
+        assert(
+          xor(!!resolution.resolvedSite, !!resolution.picks),
+          "tryMergeBranch: expecting either resolvedSite or picks",
+        );
+
+        if (resolution.picks) {
+          mergeStepRaw = tryMerge(
+            ancestorSite,
+            latestFromSite,
+            latestToSite,
+            mergedSite,
+            bundler,
+            resolution.picks,
+          );
+          assert(
+            mergeStepRaw.status === "merged",
+            "tryMergeBranch: expecting tryMerge with picks to result in a fully merged site with no further resolutions needed",
+          );
+        }
+
+        result = {
+          status: "resolution accepted",
+          ...extras,
+        };
+
+        if (mode === "preview") {
+          return result;
+        }
+        // Make the final resolved revision (so that this can become the merge commit).
+        // Either we use the given resolvedSite if available,
+        // or we use mergedSite which should have been produced earlier using `picks`.
+        mergedRevData = resolution.resolvedSite
+          ? L.isString(resolution.resolvedSite)
+            ? resolution.resolvedSite
+            : JSON.stringify(
+                bundler.bundle(
+                  resolution.resolvedSite,
+                  projectId,
+                  await getLastBundleVersion(),
+                ),
+              )
+          : JSON.stringify(
+              bundler.bundle(
+                mergedSite,
+                mergedUuid,
+                await getLastBundleVersion(),
+              ),
+            );
       }
     }
 
@@ -8805,54 +8859,12 @@ export class DbMgr implements MigrationDbMgr {
     // Make the merge commit.
     // Note that we do not want to make this on the source branch. Its terminal commit should be the one pre-merge - it
     // shouldn't ever be part of the destination branch (or you won't know which ancestor path is the source vs destination)!
-    if (resolution) {
-      // Make the final resolved revision (so that this can become the merge commit).
-      // Either we use the given resolvedSite if available,
-      // or we use mergedSite which should have been produced earlier using `picks`.
-      await this.saveProjectRev({
-        projectId: projectId,
-        data: resolution.resolvedSite
-          ? L.isString(resolution.resolvedSite)
-            ? resolution.resolvedSite
-            : JSON.stringify(
-                bundler.bundle(
-                  resolution.resolvedSite,
-                  projectId,
-                  await getLastBundleVersion(),
-                ),
-              )
-          : JSON.stringify(
-              bundler.bundle(
-                mergedSite,
-                mergedUuid,
-                await getLastBundleVersion(),
-              ),
-            ),
-        revisionNum: latestToRev.revision + 1,
-        branchId: toBranchId,
-      });
-    } else {
-      assert(
-        result.status === "can be merged" &&
-          mergeStepRaw &&
-          mergeStepRaw.status === "merged",
-        "Should be merge-able by this point",
-      );
-      await this.saveProjectRev({
-        projectId,
-        data: JSON.stringify(
-          bundler.bundle(
-            mergeStepRaw.mergedSite,
-            // Make sure to bundle with the correct mergedUuid,
-            // since the mergedSite was originally unbundled with that.
-            mergedUuid,
-            await getLastBundleVersion(),
-          ),
-        ),
-        revisionNum: latestToRev.revision + 1,
-        branchId: toBranchId,
-      });
-    }
+    await this.saveProjectRev({
+      projectId,
+      data: mergedRevData,
+      revisionNum: latestToRev.revision + 1,
+      branchId: toBranchId,
+    });
 
     const { pkgVersion } = await this.publishProject(
       projectId,
