@@ -91,9 +91,17 @@ export async function runAppServer(config: Config) {
         socketProxy.ws(req, socket, head);
       });
       socketProxy.on("error", (err, _req, res) => {
+        // Client socket errors arrive with the socket already destroyed.
+        // Upstream errors arrive while the client socket is still open.
+        if (res.destroyed) {
+          logger.warn(`Client disconnected from socketProxy. ${err}`);
+          return;
+        }
         captureException(err);
         logger.error(`Error in socketProxy. ${err}`);
-        res.end("Something wrong happened when connecting to the server.");
+        if (!res.writableEnded) {
+          res.end("Something wrong happened when connecting to the server.");
+        }
       });
     } else if (attach) {
       attach(server);
