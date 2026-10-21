@@ -401,7 +401,25 @@ class RenderStateImpl {
     return undefined;
   }
 
-  dispose() {
+  /**
+   * @param opts.detachCachedValNodes Whether to detach the cached ValNodes,
+   *   which are shared with any other RenderState of the same frame uid. Only
+   *   pass true if no newer RenderState for the frame uid is live.
+   */
+  dispose(opts: { detachCachedValNodes: boolean }) {
+    for (const vals of this._fullKey2vals.values()) {
+      vals.forEach((val) => val.detachFrame());
+    }
+    if (opts.detachCachedValNodes) {
+      for (const [fullKey, ref] of this.cachedValNodes) {
+        const val = ref.deref();
+        if (val) {
+          val.detachFrame();
+        } else {
+          this.cachedValNodes.delete(fullKey);
+        }
+      }
+    }
     this._tpl2valKeys = new WeakMap();
     this._fullKey2vals.clear();
     this._fullSlotPlaceholderKey2fiber.clear();

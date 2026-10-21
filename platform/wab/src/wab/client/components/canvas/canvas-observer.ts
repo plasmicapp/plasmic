@@ -34,9 +34,9 @@ export const mkUseCanvasObserver = computedFn(
       );
       const onUpdate = onUpdateCallback ?? rerenderOnEval;
 
-      // StrictMode/ConcurrentMode/Suspense may mean that our component is
-      // rendered and abandoned multiple times. The Reactions of abandoned
-      // renders are disposed with the ViewCtx's canvasObservers.
+      // StrictMode/ConcurrentMode/Suspense/errors may mean that our component
+      // is rendered and abandoned multiple times. The Reactions of abandoned
+      // renders are disposed by `trackUncommittedReaction`.
       const reactionTrackingRef = sub.React.useRef<IReactionTracking | null>(
         null,
       );
@@ -71,6 +71,7 @@ export const mkUseCanvasObserver = computedFn(
           changedBeforeMount: false,
         };
         reactionTrackingRef.current = trackingData;
+        trackUncommittedReaction(vc, reactionTrackingRef);
       }
 
       const { reaction } = reactionTrackingRef.current!;
@@ -82,6 +83,7 @@ export const mkUseCanvasObserver = computedFn(
           // all we need to do is to record that it's now mounted,
           // to allow future observable changes to trigger re-renders
           reactionTrackingRef.current.mounted = true;
+          untrackCommittedReaction(vc, reactionTrackingRef);
           // Got a change before first mount, force an update
           if (reactionTrackingRef.current.changedBeforeMount) {
             reactionTrackingRef.current.changedBeforeMount = false;
@@ -147,4 +149,94 @@ interface IReactionTracking {
   reaction: Reaction;
   mounted: boolean;
   changedBeforeMount: boolean;
+}
+
+type ReactionTrackingRef = React.MutableRefObject<IReactionTracking | null>;
+
+/**
+ * How long a render may take to commit before its Reaction is disposed. This
+ * needs to be long enough that a component won't have its effects run
+ * without being rendered again.
+ */
+const CLEANUP_UNCOMMITTED_REACTIONS_AFTER_MS = 10000;
+
+/**
+ * Per ViewCtx, the Reactions of renders that haven't committed yet. A render
+ * that never commits never runs its effect cleanup, so this is what disposes
+ * its Reaction.
+ */
+const vcToUncommitted = new WeakMap<ViewCtx, UncommittedReactions>();
+
+interface UncommittedReactions {
+  /** When to dispose each ref's Reaction */
+  reactions: Map<ReactionTrackingRef, number>;
+  sweepTimeout: ReturnType<typeof setTimeout> | undefined;
+}
+
+function trackUncommittedReaction(vc: ViewCtx, ref: ReactionTrackingRef) {
+  let uncommitted = vcToUncommitted.get(vc);
+  if (!uncommitted) {
+    uncommitted = { reactions: new Map(), sweepTimeout: undefined };
+    vcToUncommitted.set(vc, uncommitted);
+  }
+  uncommitted.reactions.set(
+    ref,
+    Date.now() + CLEANUP_UNCOMMITTED_REACTIONS_AFTER_MS,
+  );
+  scheduleSweep(vc, uncommitted);
+}
+
+function untrackCommittedReaction(vc: ViewCtx, ref: ReactionTrackingRef) {
+  const uncommitted = vcToUncommitted.get(vc);
+  if (!uncommitted) {
+    return;
+  }
+  uncommitted.reactions.delete(ref);
+  if (uncommitted.reactions.size === 0) {
+    clearTimeout(uncommitted.sweepTimeout);
+    uncommitted.sweepTimeout = undefined;
+  }
+}
+
+function scheduleSweep(vc: ViewCtx, uncommitted: UncommittedReactions) {
+  if (uncommitted.sweepTimeout !== undefined) {
+    return;
+  }
+  // The pending timeout must not keep a disposed frame alive, so it only
+  // holds the ViewCtx weakly. If the ViewCtx is collected, so are its
+  // uncommitted Reactions.
+  const vcRef = new WeakRef(vc);
+  uncommitted.sweepTimeout = setTimeout(
+    () => sweepUncommittedReactions(vcRef),
+    CLEANUP_UNCOMMITTED_REACTIONS_AFTER_MS,
+  );
+}
+
+function sweepUncommittedReactions(vcRef: WeakRef<ViewCtx>) {
+  const vc = vcRef.deref();
+  const uncommitted = vc && vcToUncommitted.get(vc);
+  if (!vc || !uncommitted) {
+    return;
+  }
+  uncommitted.sweepTimeout = undefined;
+  const now = Date.now();
+  for (const [ref, cleanAt] of uncommitted.reactions) {
+    if (cleanAt > now && !vc.isDisposed) {
+      continue;
+    }
+    uncommitted.reactions.delete(ref);
+    const tracking = ref.current;
+    if (tracking && !tracking.mounted) {
+      vc.canvasObservers.delete(tracking.reaction);
+      if (!tracking.reaction.isDisposed) {
+        tracking.reaction.dispose();
+      }
+      // If the render does commit after all, its effect re-creates the
+      // Reaction
+      ref.current = null;
+    }
+  }
+  if (uncommitted.reactions.size > 0) {
+    scheduleSweep(vc, uncommitted);
+  }
 }

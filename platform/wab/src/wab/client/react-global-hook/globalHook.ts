@@ -1056,7 +1056,9 @@ function createFrameState(
       }
       isDisposed = true;
 
-      if (frames.get(uid) === state) {
+      // A recreated frame with the same uid may have replaced this state
+      const isCurrent = frames.get(uid) === state;
+      if (isCurrent) {
         frames.delete(uid);
       }
 
@@ -1068,7 +1070,7 @@ function createFrameState(
         }
       }
 
-      state.renderState.dispose();
+      state.renderState.dispose({ detachCachedValNodes: isCurrent });
       state.contextData.clear();
       state.valRoot.set(null);
     },

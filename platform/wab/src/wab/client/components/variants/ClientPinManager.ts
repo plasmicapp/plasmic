@@ -46,12 +46,17 @@ export function makeVariantEvalState(vc: ViewCtx, valComponent: ValComponent) {
   // could refer to the activated variants via $props.
 
   const map = new Map<Variant, boolean>();
+  const props = valComponent.fibers[0]?.memoizedProps;
+
+  // Props may not be available if the ValComponent was detached from its frame.
+  if (!props) {
+    return map;
+  }
+
   for (const group of component.variantGroups) {
     const groupName = toVarName(group.param.variable.name);
     const variantsObj = {
-      [groupName]:
-        valComponent.fibers[0].memoizedProps?.variants?.[groupName] ??
-        valComponent.fibers[0].memoizedProps?.[groupName],
+      [groupName]: props.variants?.[groupName] ?? props[groupName],
     };
     for (const variant of group.variants) {
       map.set(

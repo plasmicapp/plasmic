@@ -264,6 +264,10 @@ export class CanvasCtx {
       "Couldn't get userBody",
       CANVAS_CTX_TIMEOUT_PERIOD,
     );
+    // The ctx may be disposed at any await, and then must not set anything up
+    if (this._isDisposed) {
+      return;
+    }
     // We reinsert things because some frameworks (Remix Hydrogen dev server) blow away the entire document.
     // We also do it earlier so that we can intercept clicks as much as possible, rather than waiting for __wab_user_body first.
     this._$head = this._$html.find("head");
@@ -308,6 +312,9 @@ export class CanvasCtx {
         CANVAS_CTX_TIMEOUT_PERIOD,
       ),
     );
+    if (this._isDisposed) {
+      return;
+    }
 
     (this._win as any).__PLASMIC__ = {
       EXECUTE_SERVER_QUERY: sc.executeServerQuery,
@@ -334,6 +341,9 @@ export class CanvasCtx {
       "Couldn't acquire hostLessPkgsLock.",
       CANVAS_CTX_TIMEOUT_PERIOD,
     );
+    if (this._isDisposed) {
+      return;
+    }
 
     let dataSources: SubDeps["dataSources"] = (this._win as any)
       .__PlasmicDataSourcesBundle;
@@ -695,6 +705,10 @@ export class CanvasCtx {
   }
 
   private _isDisposed = false;
+  get isDisposed() {
+    return this._isDisposed;
+  }
+
   dispose() {
     if (this._isDisposed) {
       return;

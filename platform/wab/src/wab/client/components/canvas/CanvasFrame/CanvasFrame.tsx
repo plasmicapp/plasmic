@@ -145,15 +145,27 @@ export const CanvasFrame = observer(function CanvasFrame({
 
       const $viewport = $(viewport);
       const ctx = createCanvasCtx($viewport, canvasName);
+      // If the frame unmounts while it's initializing, dispose the ctx then,
+      // rather than when the initialization finishes or times out
+      disposeRef.current = () => {
+        ctx.dispose();
+        loadedResolveRef.current?.();
+      };
       try {
         for await (const initState_ of ctx.initViewPort(
           $viewport,
           arenaFrame,
           studioCtx,
         )) {
+          if (ctx.isDisposed) {
+            return;
+          }
           setInitState(initState_);
         }
       } catch (e: any) {
+        if (ctx.isDisposed) {
+          return;
+        }
         ctx.dispose();
         if (!toggleTrailingSlash && e?.name === "SecurityError") {
           console.log(
@@ -163,6 +175,9 @@ export const CanvasFrame = observer(function CanvasFrame({
           return;
         }
         throw e;
+      }
+      if (ctx.isDisposed) {
+        return;
       }
 
       const onFocus = () => {

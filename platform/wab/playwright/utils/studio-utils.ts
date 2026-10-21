@@ -48,6 +48,38 @@ export async function waitForFrameToLoad(page: Page) {
 }
 
 /**
+ * Waits for every frame of the current arena to render.
+ *
+ * @param studio The studio's window frame, if already known
+ */
+export async function waitForArenaFrames(page: Page, studio?: Frame) {
+  studio ??= await getStudioWindowFrame(page);
+  await studio.waitForFunction(
+    () => {
+      const sc = (window as any).dbg.studioCtx;
+      const arena = sc.currentArena;
+      if (!arena) {
+        return false;
+      }
+      // See getArenaFrames
+      const frames =
+        arena.children ??
+        (arena._focusedFrame
+          ? [arena._focusedFrame]
+          : [arena.matrix, arena.customMatrix]
+              .flatMap((m: any) => m.rows.flatMap((r: any) => r.cols))
+              .map((cell: any) => cell.frame));
+      return frames.every(
+        (frame: any) =>
+          sc.tryGetViewCtxForFrame(frame)?.csEvaluator?.renderCount > 0,
+      );
+    },
+    undefined,
+    { timeout: 60000 },
+  );
+}
+
+/**
  * Replaces this context's e2e devflags cookie so the server applies `flags` over
  * its e2e defaults (arrays replace, not merge). Call before goToProject.
  */

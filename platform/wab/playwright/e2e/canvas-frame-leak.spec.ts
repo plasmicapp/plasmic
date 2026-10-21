@@ -1,9 +1,10 @@
-import { expect, Page } from "@playwright/test";
+import { expect, Frame, Page } from "@playwright/test";
 import { test } from "../fixtures/test";
 import {
   getStudioWindowFrame,
   goToProject,
   setE2eDevFlags,
+  waitForArenaFrames,
 } from "../utils/studio-utils";
 
 // Studio keeps only `liveArenas` arenas rendered. Each component gets its own
@@ -35,6 +36,42 @@ async function countDetachedDocuments(page: Page) {
   }
 }
 
+/** Returns a handle to the ViewCtx of the current arena's first frame. */
+async function getFirstFrameViewCtx(studio: Frame) {
+  return studio.evaluateHandle(() => {
+    const sc = (window as any).dbg.studioCtx;
+    return sc.tryGetViewCtxForFrame(
+      sc.currentArena.matrix.rows[0].cols[0].frame,
+    );
+  });
+}
+
+/**
+ * Selects the root element of the current arena's component in its first
+ * frame, and checks that this records a view snapshot with the element's
+ * ValNode in the undo log.
+ */
+async function selectRootIntoUndoRecord(studio: Frame) {
+  const vc = await getFirstFrameViewCtx(studio);
+  await studio.evaluate(async (vc_: any) => {
+    await vc_.studioCtx.changeUnsafe(() =>
+      vc_.setStudioFocusByTpl(vc_.arenaFrame().container.component.tplTree),
+    );
+  }, vc);
+  // A handle keeps its object alive
+  await vc.dispose();
+  expect(
+    await studio.evaluate(() => {
+      const sc = (window as any).dbg.studioCtx;
+      const { view } = sc.undoLog.head();
+      return (
+        view.focusedSelectable?.fullKey &&
+        view.focusedSelectable.tpl === sc.currentArena.component.tplTree
+      );
+    }),
+  ).toBe(true);
+}
+
 test.describe("canvas frames", () => {
   let projectId: string;
 
@@ -52,7 +89,7 @@ test.describe("canvas frames", () => {
     );
   });
 
-  test("frees the frames of evicted arenas", async ({ page }) => {
+  test("frees the frames of evicted arenas", async ({ page, models }) => {
     const studio = await getStudioWindowFrame(page);
     await studio.evaluate(async (numComponents) => {
       const sc = (window as any).dbg.studioCtx;
@@ -62,34 +99,69 @@ test.describe("canvas frames", () => {
         }
       });
     }, NUM_COMPONENTS);
+    // Warm up first: the first selection lazily creates a document that
+    // isn't attached to any frame (and stays, no matter how many frames come
+    // and go), which would otherwise count as a leak
+    await models.studio.switchToComponentArena("LeakTest0");
+    await selectRootIntoUndoRecord(studio);
     const detachedBefore = await countDetachedDocuments(page);
 
-    for (let i = 0; i < NUM_COMPONENTS; i++) {
-      await studio.evaluate(async (name) => {
-        const sc = (window as any).dbg.studioCtx;
-        const component = sc.site.components.find((c: any) => c.name === name);
-        await sc.changeUnsafe(() => sc.switchToComponentArena(component));
-      }, `LeakTest${i}`);
-      // Wait for every frame of the arena to render
-      await studio.waitForFunction(() => {
-        const sc = (window as any).dbg.studioCtx;
-        const arena = sc.currentArena;
-        const frames = [arena.matrix, arena.customMatrix]
-          .filter(Boolean)
-          .flatMap((m: any) => m.rows.flatMap((r: any) => r.cols))
-          .map((cell: any) => cell.frame);
-        return (
-          frames.length > 0 &&
-          frames.every(
-            (frame: any) =>
-              sc.tryGetViewCtxForFrame(frame)?.csEvaluator?.renderCount > 0,
-          )
-        );
-      });
+    for (let i = 1; i < NUM_COMPONENTS; i++) {
+      await models.studio.switchToComponentArena(`LeakTest${i}`);
+      // Undo records hold on to what was selected, and must not keep the
+      // frame alive through it
+      await selectRootIntoUndoRecord(studio);
     }
 
     // Disposed frames are freed: no more documents than before are left
     // without a frame
+    expect(await countDetachedDocuments(page)).toBeLessThanOrEqual(
+      detachedBefore,
+    );
+
+    // Undo back to a selection in an evicted arena, which recreates its
+    // frames. The undo record's ValNode was detached from the old frame, and
+    // is filled in again by the new render.
+    const evictedIndex = NUM_COMPONENTS - LIVE_ARENAS - 1;
+    const evictedName = `LeakTest${evictedIndex}`;
+    const undoRecordVal = await studio.evaluateHandle((componentName) => {
+      const sc = (window as any).dbg.studioCtx;
+      const { tplTree } = sc.site.components.find(
+        (c: any) => c.name === componentName,
+      );
+      return sc.undoLog._log.find(
+        (r: any) => r.view.focusedSelectable?.tpl === tplTree,
+      ).view.focusedSelectable;
+    }, evictedName);
+    const detached = await studio.evaluate(async (val: any) => {
+      const sc = (window as any).dbg.studioCtx;
+      const valState = { fibers: val.fibers.length, env: val.env };
+      for (let i = 0; i < 100; i++) {
+        if (sc.currentArena?.component.tplTree === val.tpl) {
+          return valState;
+        }
+        if (!sc.canUndo()) {
+          throw new Error("Ran out of undo records");
+        }
+        await sc.undo();
+      }
+      throw new Error("Never got back to the evicted arena");
+    }, undoRecordVal);
+    expect(detached).toEqual({ fibers: 0, env: undefined });
+    await waitForArenaFrames(page, studio);
+    const vc = await getFirstFrameViewCtx(studio);
+    // The undo record's ValNode is the new render's ValNode again
+    await studio.waitForFunction(
+      ([val, vc_]) =>
+        val.fibers.length > 0 &&
+        !!val.env &&
+        val === vc_.renderState.tpl2bestVal(val.tpl),
+      [undoRecordVal, vc],
+    );
+    await undoRecordVal.dispose();
+    await vc.dispose();
+
+    // The arena evicted by the undo is freed too
     expect(await countDetachedDocuments(page)).toBeLessThanOrEqual(
       detachedBefore,
     );

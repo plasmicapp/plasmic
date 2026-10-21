@@ -55,10 +55,13 @@ export interface ValNodeParams {
 }
 export abstract class ValNode {
   static modelTypeName = "ValNode";
-  private readonly _envs = mobx.observable.box<{
-    env: CanvasEnv;
-    wrappingEnv: CanvasEnv;
-  }>(undefined, { deep: false });
+  private readonly _envs = mobx.observable.box<
+    | {
+        env: CanvasEnv;
+        wrappingEnv: CanvasEnv;
+      }
+    | undefined
+  >(undefined, { deep: false });
   constructor(args: ValNodeParams) {
     Object.assign(this, args);
   }
@@ -105,6 +108,15 @@ export abstract class ValNode {
     this.copyFrom(other, { merge: false });
   }
 
+  /**
+   * The frame this ValNode was attached needs to be disposed, so clear any
+   * state that references it that might prevent release.
+   */
+  detachFrame() {
+    writeableValNode(this).fibers = [];
+    this._envs.set(undefined);
+  }
+
   declare readonly tpl: TplNode;
   declare readonly valOwner: ValComponent | null | undefined;
   declare readonly key: string;
@@ -126,11 +138,11 @@ export class ValTag extends ValNode {
   constructor(args: ValTagParams) {
     super(args);
   }
-  merge(other: ValTag) {
+  override merge(other: ValTag) {
     super.merge(other);
     writeableValNode(this).children = [...other.children];
   }
-  copy(other: ValTag) {
+  override copy(other: ValTag) {
     super.copy(other);
     writeableValNode(this).children = [...other.children];
   }
@@ -188,7 +200,7 @@ export class ValComponent extends ValNode {
     return this._contents.get();
   }
 
-  merge(other: ValComponent) {
+  override merge(other: ValComponent) {
     super.merge(other);
     insertMaps(this.slotArgs, other.slotArgs);
     insertMaps(this.slotCanvasEnvs, other.slotCanvasEnvs);
@@ -205,7 +217,7 @@ export class ValComponent extends ValNode {
     }
   }
 
-  copy(other: ValComponent) {
+  override copy(other: ValComponent) {
     super.copy(other);
     writeableValNode(this).slotArgs = new Map([...other.slotArgs.entries()]);
     writeableValNode(this).slotCanvasEnvs = new Map([
@@ -222,6 +234,12 @@ export class ValComponent extends ValNode {
         this.contents = [...other.contents];
       }
     }
+  }
+
+  override detachFrame() {
+    super.detachFrame();
+    this.slotCanvasEnvs.clear();
+    this.codeComponentProps = undefined;
   }
 
   private _invalidArgs = mobx.observable.box<InvalidArgMeta[] | undefined>(
@@ -251,11 +269,11 @@ export class ValSlot extends ValNode {
   constructor(args: ValSlotParams) {
     super(args);
   }
-  merge(other: ValSlot) {
+  override merge(other: ValSlot) {
     super.merge(other);
     writeableValNode(this).contents = other.contents && [...other.contents];
   }
-  copy(other: ValSlot) {
+  override copy(other: ValSlot) {
     super.copy(other);
     writeableValNode(this).contents = other.contents && [...other.contents];
   }
@@ -280,15 +298,20 @@ export class ValTextTag extends ValTag {
   constructor(args: ValTextParams) {
     super(args);
   }
-  merge(other: ValTextTag) {
+  override merge(other: ValTextTag) {
     super.merge(other);
     writeableValNode(this).handle = other.handle;
     writeableValNode(this).text = other.text;
   }
-  copy(other: ValTextTag) {
+  override copy(other: ValTextTag) {
     super.copy(other);
     writeableValNode(this).handle = other.handle;
     writeableValNode(this).text = other.text;
+  }
+  override detachFrame() {
+    super.detachFrame();
+    // The handle closes over the frame's text editor
+    writeableValNode(this).handle = undefined;
   }
   declare readonly tpl: TplTextTag;
   declare readonly handle:

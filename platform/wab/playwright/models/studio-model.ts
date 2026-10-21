@@ -1,5 +1,9 @@
 import { expect, FrameLocator, Locator, Page, test } from "@playwright/test";
-import { waitForFrameToLoad } from "../utils/studio-utils";
+import {
+  getStudioWindowFrame,
+  waitForArenaFrames,
+  waitForFrameToLoad,
+} from "../utils/studio-utils";
 import { BaseModel } from "./BaseModel";
 import { LeftPanel } from "./components/left-panel";
 import { RightPanel } from "./components/right-panel";
@@ -196,13 +200,32 @@ export class StudioModel extends BaseModel {
 
     await expect(this.projectNavButton).toBeVisible();
 
-    await waitForFrameToLoad(this.page);
+    await waitForArenaFrames(this.page);
 
     const viewportFrame = this.frame.frameLocator(
       ".canvas-editor__viewport[data-test-frame-uid]",
     );
 
     return viewportFrame;
+  }
+
+  /**
+   * Switches to the arena of the named component through the StudioCtx,
+   * which is faster than through the UI, and waits for its frames.
+   */
+  async switchToComponentArena(name: string) {
+    const studio = await getStudioWindowFrame(this.page);
+    await studio.evaluate(async (componentName) => {
+      const sc = (window as any).dbg.studioCtx;
+      const component = sc.site.components.find(
+        (c: any) => c.name === componentName,
+      );
+      if (!component) {
+        throw new Error(`No component named ${componentName}`);
+      }
+      await sc.changeUnsafe(() => sc.switchToComponentArena(component));
+    }, name);
+    await waitForArenaFrames(this.page, studio);
   }
 
   async withinLiveMode(fn: (liveFrame: FrameLocator) => Promise<void>) {
