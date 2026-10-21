@@ -178,6 +178,41 @@ describe("Matcher", () => {
     });
   });
 
+  describe("ignoreFolderSlashes", () => {
+    const name = "Forms/Inputs/TextField";
+
+    it("matches a folder-grouped name without typing the slashes", () => {
+      const matcher = new Matcher("InputsTextField", {
+        ignoreFolderSlashes: true,
+      });
+      expect(matcher.matches(name)).toBe(true);
+      expect(matcher.matches("FormsInputsTextField")).toBe(true);
+    });
+
+    it("matches with slashes in the query or spaces around them in the name", () => {
+      const matcher = new Matcher("Forms/InputsTextField", {
+        ignoreFolderSlashes: true,
+      });
+      expect(matcher.matches(name)).toBe(true);
+      expect(matcher.matches("Forms / Inputs / TextField")).toBe(true);
+    });
+
+    it("does not skip spaces that are not next to a slash", () => {
+      const matcher = new Matcher("TextField", { ignoreFolderSlashes: true });
+      expect(matcher.matches("Forms/Inputs/Text Field")).toBe(false);
+    });
+
+    it("still matches a query made of only a slash", () => {
+      const matcher = new Matcher("/", { ignoreFolderSlashes: true });
+      expect(matcher.matches(name)).toBe(true);
+      expect(matcher.matches("Button")).toBe(false);
+    });
+
+    it("is off by default", () => {
+      expect(new Matcher("InputsTextField").matches(name)).toBe(false);
+    });
+  });
+
   describe("boldSnippetsWithScrolling", () => {
     it("should combine scrolling and bold highlighting", () => {
       const matcher = new Matcher("needs");

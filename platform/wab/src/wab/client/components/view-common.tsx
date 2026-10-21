@@ -98,12 +98,21 @@ export class Matcher {
   _query: /*TWZ*/ string;
   _typeaheadPatternGlobal: /*TWZ*/ RegExp;
   _typeaheadPatternOnce: /*TWZ*/ RegExp;
-  constructor(rawQuery: string, opts: { matchMiddleOfWord?: boolean } = {}) {
+  constructor(
+    rawQuery: string,
+    opts: { matchMiddleOfWord?: boolean; ignoreFolderSlashes?: boolean } = {},
+  ) {
     const matchMiddleOfWord = opts.matchMiddleOfWord ?? true;
     this._query = rawQuery.trim();
     const patPrefix = matchMiddleOfWord ? "" : "\\b";
     const patternStr = [...simpleWords(this._query)]
-      .map((word: /*TWZ*/ string) => patPrefix + L.escapeRegExp(word))
+      .map(
+        (word: /*TWZ*/ string) =>
+          patPrefix +
+          (opts.ignoreFolderSlashes
+            ? ignoringFolderSlashesPattern(word)
+            : L.escapeRegExp(word)),
+      )
       .join(".*");
     // We use two here since RegExps are stateful if g flag is used.
     this._typeaheadPatternGlobal = new RegExp(`${patternStr}`, "gi");
@@ -131,6 +140,20 @@ export class Matcher {
     const scrolledText = getTextWithScrolling(text, maxLength, this);
     return this.boldSnippets(scrolledText, className);
   }
+}
+
+/**
+ * Lets a word match a folder-grouped name with or without the slashes, so
+ * "InputsTextField" (the name codegen produces) finds
+ * "Inputs/TextField" and "Inputs / TextField".
+ */
+function ignoringFolderSlashesPattern(word: string) {
+  // eslint-disable-next-line @typescript-eslint/no-misused-spread -- code points are fine, it only puts optional separators between them
+  const chars = [...word.replace(/\//g, "")];
+  if (chars.length === 0) {
+    return L.escapeRegExp(word);
+  }
+  return chars.map((char) => L.escapeRegExp(char)).join("(?:\\s*\\/\\s*)?");
 }
 
 function boldSnippets(text: React.ReactNode, pat: RegExp, className?: string) {

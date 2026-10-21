@@ -285,7 +285,7 @@ export function useTreeData<T>({
   defaultOpenKeys,
 }: UseTreeDataProps<T>): UseTreeData<T> {
   const matcher = React.useMemo(() => {
-    return new Matcher(query?.trim() ?? "");
+    return new Matcher(query?.trim() ?? "", { ignoreFolderSlashes: true });
   }, [query]);
   const [expandedNodes, setExpandedNodes] = React.useState<Set<NodeKey>>(
     new Set(
