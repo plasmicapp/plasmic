@@ -6528,7 +6528,10 @@ export class DbMgr implements MigrationDbMgr {
     if (this.actor.type === "SuperUser" && !userId) {
       throw new Error("Super user must specify userId to use");
     }
-    return ensure(userId, "User id should exist");
+    if (!userId) {
+      throw new UnauthorizedError("Must be logged in");
+    }
+    return userId;
   }
 
   isUserIdSelf(userId?: string) {
