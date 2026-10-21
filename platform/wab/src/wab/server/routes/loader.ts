@@ -1046,10 +1046,10 @@ const getHydrationScriptInfo = () => {
 };
 
 export function getHydrationScript(_: Request, res: Response) {
+  const { dir, filename } = getHydrationScriptInfo();
   res.setHeader("Cache-Control", "max-age=60, s-maxage=60");
-  res.redirect(
-    `${getCodegenUrl()}/static/js/${getHydrationScriptInfo().filename}`,
-  );
+  // Serve directly to avoid the CDN's rejection of the redirect response.
+  res.sendFile(path.join(dir, filename));
 }
 
 export function getHydrationScriptVersioned(req: Request, res: Response) {
