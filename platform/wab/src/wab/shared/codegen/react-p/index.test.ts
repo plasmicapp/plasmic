@@ -1,4 +1,6 @@
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
+import { TplMgr } from "@/wab/shared/TplMgr";
 import {
   ensureVariantSetting,
   mkComponentVariantGroup,
@@ -6,16 +8,28 @@ import {
 import { codegen } from "@/wab/shared/codegen/__testonly__/codegen-tests-util";
 import { makeCssClassNameForVariantCombo } from "@/wab/shared/codegen/react-p/class-names";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
+import { codeLit } from "@/wab/shared/core/exprs";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { ParamTypes, mkParam } from "@/wab/shared/core/lang";
 import { createSite } from "@/wab/shared/core/sites";
-import { mkTplTagX, trackComponentRoot } from "@/wab/shared/core/tpls";
+import {
+  TplTagType,
+  mkTplTagX,
+  trackComponentRoot,
+} from "@/wab/shared/core/tpls";
+import { genLocalizationStringsForProject } from "@/wab/shared/localization";
 import {
   Component,
+  ImageAsset,
+  ImageAssetRef,
   TplNode,
   Variant,
   VariantGroup,
 } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
+import { PlasmicTranslatorContext } from "@plasmicapp/host";
+import { render } from "@testing-library/react";
+import * as React from "react";
 import tmp from "tmp";
 
 describe("serializeTplTagBase", () => {
@@ -69,6 +83,138 @@ describe("serializeTplTagBase", () => {
     const submitButtonJsx = renderModule.slice(submitButtonStart);
     expect(submitButtonJsx).toContain('type={"submit"}');
     expect(submitButtonJsx).not.toContain('type={"button"}');
+  });
+
+  it("defaults <img> alt to its image asset's description unless alt is set", async () => {
+    const site = createSite();
+    const tplMgr = new TplMgr({ site });
+    const addPicture = (name: string, description?: string) =>
+      tplMgr.addImageAsset({
+        name,
+        type: ImageAssetType.Picture,
+        dataUri: `https://site-assets.plasmic.app/${name}.jpg`,
+        description,
+      });
+    const bicycle = addPicture("bicycle", "A red bicycle against a brick wall");
+    const canoe = addPicture("canoe", "A canoe on a calm lake");
+    const logo = addPicture("logo");
+
+    const imgs: TplNode[] = [];
+    const component = mkComponent({
+      name: "Gallery",
+      type: ComponentType.Plain,
+      tplTree: (baseVariant) => {
+        const mkImg = (asset: ImageAsset, attrs: Record<string, string> = {}) =>
+          mkTplTagX("img", {
+            type: TplTagType.Image,
+            baseVariant,
+            attrs: { src: new ImageAssetRef({ asset }), ...attrs },
+          });
+
+        imgs.push(
+          mkImg(bicycle),
+          mkImg(bicycle, { alt: "" }),
+          mkImg(logo),
+          mkImg(bicycle),
+          mkImg(bicycle, { alt: "Our delivery bike" }),
+        );
+        const root = mkTplTagX("div", {}, imgs);
+        ensureVariantSetting(root, [baseVariant]);
+        return root;
+      },
+    });
+    site.components.push(component);
+
+    const addVariant = (groupName: string, variantName: string) =>
+      tplMgr.createVariant(
+        component,
+        tplMgr.createVariantGroup({ component, name: groupName }),
+        variantName,
+      );
+    // Created before testGroup, so its variant settings come first in codegen.
+    // Its alt must still win over the test variant's default.
+    const otherVariant = addVariant("otherGroup", "otherVariant");
+    const testVariant = addVariant("testGroup", "testVariant");
+    const [swapped, , , overridden, captioned] = imgs;
+    ensureVariantSetting(swapped, [testVariant]).attrs["src"] =
+      new ImageAssetRef({ asset: canoe });
+    ensureVariantSetting(swapped, [otherVariant]).attrs["alt"] =
+      codeLit("Our bike, on sale");
+    ensureVariantSetting(overridden, [testVariant]).attrs["alt"] = codeLit(
+      "A bicycle, close up",
+    );
+    ensureVariantSetting(captioned, [testVariant]).attrs["src"] =
+      new ImageAssetRef({ asset: canoe });
+
+    site.flags.usePlasmicTranslation = true;
+    const { importFromProject } = await codegen(dir.name, site);
+
+    const Gallery = (await importFromProject("Gallery.js")).default;
+
+    const translatedKeys = new Set<string>();
+    const translator = (key: string) => {
+      translatedKeys.add(key);
+      return key;
+    };
+
+    const renderAlts = (testGroup?: string, otherGroup?: string) => {
+      const { container, unmount } = render(
+        React.createElement(
+          PlasmicTranslatorContext.Provider,
+          { value: translator },
+          React.createElement(Gallery, { testGroup, otherGroup }),
+        ),
+      );
+      const alts = Array.from(
+        container.querySelectorAll("img"),
+        (img) => img.alt,
+      );
+      unmount();
+      return alts;
+    };
+
+    expect(renderAlts()).toEqual([
+      "A red bicycle against a brick wall",
+      "",
+      "",
+      "A red bicycle against a brick wall",
+      "Our delivery bike",
+    ]);
+
+    expect(renderAlts("testVariant")).toEqual([
+      "A canoe on a calm lake",
+      "",
+      "",
+      "A bicycle, close up",
+      "Our delivery bike",
+    ]);
+
+    expect(renderAlts("testVariant", "otherVariant")).toEqual([
+      "Our bike, on sale",
+      "",
+      "",
+      "A bicycle, close up",
+      "Our delivery bike",
+    ]);
+
+    // Each alt above went through the translator
+    expect(translatedKeys).toEqual(
+      new Set([
+        "A red bicycle against a brick wall",
+        "A canoe on a calm lake",
+        "A bicycle, close up",
+        "Our bike, on sale",
+        "Our delivery bike",
+      ]),
+    );
+
+    const localizedKeys = Object.keys(
+      genLocalizationStringsForProject("projectId" as ProjectId, site, {
+        keyScheme: "content",
+        tagPrefix: undefined,
+      }),
+    );
+    expect(localizedKeys).toEqual(expect.arrayContaining([...translatedKeys]));
   });
 });
 

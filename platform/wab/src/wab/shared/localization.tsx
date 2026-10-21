@@ -12,7 +12,12 @@ import {
   isPageComponent,
   isPlainComponent,
 } from "@/wab/shared/core/components";
-import { isFallbackableExpr, tryExtractJson } from "@/wab/shared/core/exprs";
+import {
+  codeLit,
+  isFallbackableExpr,
+  tryExtractJson,
+} from "@/wab/shared/core/exprs";
+import { getImageAssetAlts } from "@/wab/shared/core/image-assets";
 import { renderRichTextChildren } from "@/wab/shared/core/rich-text-util";
 import {
   flattenTpls,
@@ -171,6 +176,13 @@ export function genLocalizationStringsForProject(
             }
           }
         }
+        if (tpl.tag === "img") {
+          for (const [vs, alt] of getImageAssetAlts(tpl.vsettings) ?? []) {
+            if (alt) {
+              maybeLocalizeExpr("alt", codeLit(alt), vs.variants);
+            }
+          }
+        }
       }
 
       // Extract localizable component args
@@ -266,9 +278,7 @@ interface TplAttrSource {
 }
 
 export type LocalizableStringSource =
-  | ParamDefaultExprSource
-  | TplTextSource
-  | TplAttrSource;
+  ParamDefaultExprSource | TplTextSource | TplAttrSource;
 
 export function makeLocalizationStringKey(
   str: string,

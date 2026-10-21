@@ -1,7 +1,9 @@
 import { getArenaFrames } from "@/wab/shared/Arenas";
+import { isBaseVariant } from "@/wab/shared/Variants";
 import {
   ensure,
   findIndexes,
+  isSubList,
   mkShortId,
   notNil,
   removeAtIndexes,
@@ -71,6 +73,25 @@ export function mkImageAsset(opts: {
     aspectRatio: opts.aspectRatio ?? null,
     description: opts.description ?? null,
   });
+}
+
+/** Returns an img's default alt per variant setting, from its image's description. */
+export function getImageAssetAlts(vsettings: VariantSetting[]) {
+  const altCombos = vsettings
+    .filter((vs) => "alt" in vs.attrs)
+    .map((vs) => vs.variants);
+
+  const alts = new Map<VariantSetting, string>();
+  for (const vs of vsettings) {
+    const src = vs.attrs["src"];
+    const hasAlt = altCombos.some(
+      (combo) => isBaseVariant(combo) || isSubList(vs.variants, combo),
+    );
+    if (src && !hasAlt) {
+      alts.set(vs, (isKnownImageAssetRef(src) && src.asset.description) || "");
+    }
+  }
+  return [...alts.values()].some((alt) => alt) ? alts : undefined;
 }
 
 interface ImageAssetUsageByParam {

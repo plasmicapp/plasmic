@@ -262,6 +262,7 @@ import {
   jsonLit,
   code as toCode,
 } from "@/wab/shared/core/exprs";
+import { getImageAssetAlts } from "@/wab/shared/core/image-assets";
 import { ParamExportType } from "@/wab/shared/core/lang";
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import { siteFinalStyleTokens } from "@/wab/shared/core/site-style-tokens";
@@ -3271,6 +3272,16 @@ function conditionalTagAttrs(
       withDefault(attr2variant, key, []).push([val, vs.variants]);
     }
   }
+  const assetAlts =
+    node.tag === "img" ? getImageAssetAlts(orderedVsettings) : undefined;
+  if (assetAlts) {
+    // Alts set by the user come last, so they win over a default whenever both apply.
+    attr2variant["alt"] = [
+      ...[...assetAlts].map(([vs, alt]) => tuple(codeLit(alt), vs.variants)),
+      ...(attr2variant["alt"] ?? []),
+    ];
+  }
+
   return conditionalProps(ctx, attr2variant, node, {
     forCodeComponent: false,
     localizableProps: Object.keys(attr2variant).filter((attr) =>
