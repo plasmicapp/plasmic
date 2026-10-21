@@ -4,6 +4,8 @@ import {
   renderStyles,
 } from "@/wab/client/components/view-common";
 import { cx, tuple } from "@/wab/shared/common";
+import * as React from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 
 describe("cx", () =>
   it("should work", function () {
@@ -178,12 +180,12 @@ describe("Matcher", () => {
     });
   });
 
-  describe("ignoreFolderSlashes", () => {
+  describe("matchCodegenNames", () => {
     const name = "Forms/Inputs/TextField";
 
     it("matches a folder-grouped name without typing the slashes", () => {
       const matcher = new Matcher("InputsTextField", {
-        ignoreFolderSlashes: true,
+        matchCodegenNames: true,
       });
       expect(matcher.matches(name)).toBe(true);
       expect(matcher.matches("FormsInputsTextField")).toBe(true);
@@ -191,21 +193,39 @@ describe("Matcher", () => {
 
     it("matches with slashes in the query or spaces around them in the name", () => {
       const matcher = new Matcher("Forms/InputsTextField", {
-        ignoreFolderSlashes: true,
+        matchCodegenNames: true,
       });
       expect(matcher.matches(name)).toBe(true);
       expect(matcher.matches("Forms / Inputs / TextField")).toBe(true);
     });
 
-    it("does not skip spaces that are not next to a slash", () => {
-      const matcher = new Matcher("TextField", { ignoreFolderSlashes: true });
-      expect(matcher.matches("Forms/Inputs/Text Field")).toBe(false);
+    it("skips the symbols codegen drops from a name", () => {
+      const matcher = new Matcher("GoalsObjectives", {
+        matchCodegenNames: true,
+      });
+      expect(matcher.matches("Program/Goals & Objectives")).toBe(true);
+      expect(matcher.matches("Goals (and) Objectives")).toBe(false);
+      expect(
+        new Matcher("TextField", { matchCodegenNames: true }).matches(
+          "Forms/Text Field",
+        ),
+      ).toBe(true);
     });
 
-    it("still matches a query made of only a slash", () => {
-      const matcher = new Matcher("/", { ignoreFolderSlashes: true });
-      expect(matcher.matches(name)).toBe(true);
-      expect(matcher.matches("Button")).toBe(false);
+    it("bolds the matched part of the name, symbols included", () => {
+      const matcher = new Matcher("GoalsObjectives", {
+        matchCodegenNames: true,
+      });
+      const result = matcher.boldSnippets("Program/Goals & Objectives");
+      expect(
+        renderToStaticMarkup(React.createElement(React.Fragment, null, result)),
+      ).toBe("<span>Program/<strong>Goals &amp; Objectives</strong></span>");
+    });
+
+    it("still matches a query made of only symbols", () => {
+      const matcher = new Matcher("&", { matchCodegenNames: true });
+      expect(matcher.matches("Goals & Objectives")).toBe(true);
+      expect(matcher.matches(name)).toBe(false);
     });
 
     it("is off by default", () => {

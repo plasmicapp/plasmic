@@ -100,7 +100,7 @@ export class Matcher {
   _typeaheadPatternOnce: /*TWZ*/ RegExp;
   constructor(
     rawQuery: string,
-    opts: { matchMiddleOfWord?: boolean; ignoreFolderSlashes?: boolean } = {},
+    opts: { matchMiddleOfWord?: boolean; matchCodegenNames?: boolean } = {},
   ) {
     const matchMiddleOfWord = opts.matchMiddleOfWord ?? true;
     this._query = rawQuery.trim();
@@ -109,14 +109,16 @@ export class Matcher {
       .map(
         (word: /*TWZ*/ string) =>
           patPrefix +
-          (opts.ignoreFolderSlashes
-            ? ignoringFolderSlashesPattern(word)
+          (opts.matchCodegenNames
+            ? codegenNamePattern(word)
             : L.escapeRegExp(word)),
       )
       .join(".*");
+    // \p{...} in codegenNamePattern needs the u flag.
+    const flags = opts.matchCodegenNames ? "iu" : "i";
     // We use two here since RegExps are stateful if g flag is used.
-    this._typeaheadPatternGlobal = new RegExp(`${patternStr}`, "gi");
-    this._typeaheadPatternOnce = new RegExp(`${patternStr}`, "i");
+    this._typeaheadPatternGlobal = new RegExp(`${patternStr}`, `g${flags}`);
+    this._typeaheadPatternOnce = new RegExp(`${patternStr}`, flags);
   }
   matches(text: /*TWZ*/ string) {
     return !this.hasQuery() || this._typeaheadPatternOnce.test(text);
@@ -143,17 +145,18 @@ export class Matcher {
 }
 
 /**
- * Lets a word match a folder-grouped name with or without the slashes, so
- * "InputsTextField" (the name codegen produces) finds
- * "Inputs/TextField" and "Inputs / TextField".
+ * Lets a word match a name the way codegen writes it, so "InputsTextField"
+ * finds "Inputs/Text Field" and "GoalsObjectives" finds "Goals & Objectives".
+ * Codegen keeps only the letters and digits of a name, so anything else may
+ * sit between two characters of the word.
  */
-function ignoringFolderSlashesPattern(word: string) {
+function codegenNamePattern(word: string) {
   // eslint-disable-next-line @typescript-eslint/no-misused-spread -- code points are fine, it only puts optional separators between them
-  const chars = [...word.replace(/\//g, "")];
+  const chars = [...word.replace(/[^\p{L}\p{N}]/gu, "")];
   if (chars.length === 0) {
     return L.escapeRegExp(word);
   }
-  return chars.map((char) => L.escapeRegExp(char)).join("(?:\\s*\\/\\s*)?");
+  return chars.map((char) => L.escapeRegExp(char)).join("[^\\p{L}\\p{N}]*");
 }
 
 function boldSnippets(text: React.ReactNode, pat: RegExp, className?: string) {
