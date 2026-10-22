@@ -739,6 +739,38 @@ describe("merging", () => {
       });
     }));
 
+  it("previewing a merge reads only the ancestor's model from the database", () =>
+    withBranch(async (branch, helpers, sudo, [user1], [db1], project, em) => {
+      await setupMainAndBranch(helpers, {
+        data1: { x: 1, y: 1 },
+        data2: { x: 1, z: 1 },
+      });
+
+      const queryRunner = ensure(em.queryRunner, "queryRunner");
+      const realQuery = queryRunner.query.bind(queryRunner);
+      let modelsRead = 0;
+      queryRunner.query = async (...args: Parameters<typeof realQuery>) => {
+        const rows = await realQuery(...args);
+        const records = Array.isArray(rows) ? rows : (rows?.records ?? []);
+        for (const row of records) {
+          if (Object.keys(row).some((k) => /model$/i.test(k) && row[k])) {
+            modelsRead++;
+          }
+        }
+        return rows;
+      };
+      try {
+        await db1().previewMergeBranch({
+          toBranchId: MainBranchId,
+          fromBranchId: branch.id,
+        });
+      } finally {
+        queryRunner.query = realQuery;
+      }
+
+      expect(modelsRead).toBe(1);
+    }));
+
   it("merging uses new ancestor after pulling into local branch", () =>
     withBranch(async (branch, helpers, sudo, [user1], [db1], project) => {
       await setupMainAndBranch(helpers, {
