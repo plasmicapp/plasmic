@@ -19,7 +19,7 @@
     "@plasmicpkgs/plasmic-strapi": "workspace:*",
     "@plasmicpkgs/strapi": "workspace:*",
     "@plasmicpkgs/wordpress": "workspace:*",
-    "next": "^15.5.9",
+    "next": "^15.5.24",
     "react": "^19",
     "react-dom": "^19"
   },
