@@ -39,4 +39,21 @@ describe("PlasmicImg", () => {
       `https://img.plasmic.app/img-optimizer/v1/img?`
     );
   });
+
+  it("sizes the spacer of an SVG from its exact aspect ratio", () => {
+    const markup = renderToStaticMarkup(
+      <PlasmicImg
+        src={{
+          src: "https://site-assets.plasmic.app/example.svg",
+          fullWidth: 246,
+          fullHeight: 150,
+          aspectRatio: 1120 / 682,
+        }}
+      />
+    );
+    const spacerSrc = markup.match(/data:image\/svg\+xml;base64,([^"]+)/)![1];
+    expect(Buffer.from(spacerSrc, "base64").toString()).toContain(
+      `width="10000" height="${10000 / (1120 / 682)}"`
+    );
+  });
 });

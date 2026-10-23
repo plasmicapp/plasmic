@@ -214,10 +214,11 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
   if (aspectRatio && isFinite(aspectRatio) && isSvg(srcStr)) {
     // For SVGs, fullWidth and fullHeight can be rounded values, which would
     // cause some discrepancy between the actual aspect ratio and the aspect
-    // ratio from those values. So, for those cases, we set large width / height
-    // values to get a more precise ratio from the spacer.
+    // ratio from those values. So, for those cases, we size the spacer from
+    // the aspect ratio instead. The height isn't rounded, because even at this
+    // width rounding it changes the rendered height by a fraction of a pixel.
     spacerWidth = DEFAULT_SVG_WIDTH;
-    spacerHeight = Math.round(spacerWidth / aspectRatio);
+    spacerHeight = spacerWidth / aspectRatio;
   }
 
   const { sizes, widthDescs } = getWidths(computedDisplayWidth, fullWidth, {

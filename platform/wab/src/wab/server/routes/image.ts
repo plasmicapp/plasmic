@@ -17,15 +17,15 @@ export async function uploadImage(req: Request, res: Response) {
   }
   const imgFile = req.files.file as fileUpload.UploadedFile;
   try {
-    const { fileBuffer, metadata } = await downscaleImage(imgFile.data);
+    const { fileBuffer, dims } = await downscaleImage(imgFile.data);
     const result = await uploadFileToS3(fileBuffer);
     if (result.isErr()) {
       throw result.error;
     }
     res.status(200).json({
       dataUri: result.value.url,
-      width: metadata.width,
-      height: metadata.height,
+      width: dims.width,
+      height: dims.height,
       mimeType: result.value.mimeType,
     });
   } catch {
@@ -46,45 +46,56 @@ async function downscaleImage(imgFile: Buffer) {
   if (isSVG(imgFile)) {
     return {
       fileBuffer: imgFile,
-      metadata: { width: undefined, height: undefined },
+      dims: { width: undefined, height: undefined },
     };
   }
   const sharpObj = sharp(imgFile, {
     pages: -1,
   });
   const metadata = await sharpObj.metadata();
+  const { width, height } = getDims(metadata);
   if (
-    !metadata.width ||
-    !metadata.height ||
+    !width ||
+    !height ||
     !metadata.size ||
-    (metadata.width < MaxImageDim &&
-      metadata.height < MaxImageDim &&
+    (width <= MaxImageDim &&
+      height <= MaxImageDim &&
       metadata.size < DownscaleImageSizeThreshold)
   ) {
-    return { fileBuffer: await sharpObj.toBuffer(), metadata };
+    return {
+      fileBuffer: await sharpObj.toBuffer(),
+      dims: { width, height },
+    };
   }
 
-  const targetWidth =
-    metadata.width > metadata.height
-      ? Math.min(metadata.width, MaxImageDim)
-      : undefined;
-  const targetHeight =
-    metadata.width <= metadata.height
-      ? Math.min(metadata.height, MaxImageDim)
-      : undefined;
-  sharpObj.resize({
-    width: targetWidth,
-    height: targetHeight,
-    fit: "inside",
-    withoutEnlargement: true,
-  });
-  const resizedImageMetadata = await sharpObj.metadata();
-  resizedImageMetadata.format;
+  const { data, info } = await sharpObj
+    .resize({
+      width: width > height ? Math.min(width, MaxImageDim) : undefined,
+      height: width <= height ? Math.min(height, MaxImageDim) : undefined,
+      fit: "inside",
+      withoutEnlargement: true,
+    })
+    .toBuffer({ resolveWithObject: true });
   return {
-    fileBuffer: await sharpObj.toBuffer(),
-    metadata: {
-      width: resizedImageMetadata.width,
-      height: resizedImageMetadata.pageHeight ?? resizedImageMetadata.height,
-    },
+    fileBuffer: data,
+    dims: getDims(info),
   };
 }
+
+function getDims(metadata: sharp.Metadata | sharp.OutputInfo): {
+  width: number | undefined;
+  height: number | undefined;
+} {
+  return {
+    width: metadata.width,
+    // For multi-page images (animation),
+    // height is the height of all pages stacked,
+    // pageHeight is the height of one page.
+    // https://sharp.pixelplumbing.com/api-input/
+    height: metadata.pageHeight ?? metadata.height,
+  };
+}
+
+export const _testonly = {
+  downscaleImage,
+};
