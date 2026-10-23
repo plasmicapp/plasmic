@@ -22,7 +22,7 @@
     "@plasmicapp/prepass": "^1.0.30",
     "@plasmicapp/query": "^0.1.88",
     "@plasmicapp/react-ssr-prepass": "^2.0.9",
-    "@plasmicapp/react-web": "^1.0.41",
+    "@plasmicapp/react-web": "^1.0.42",
     "@plasmicpkgs/airtable": "^0.0.277",
     "@plasmicpkgs/antd": "^2.0.186",
     "@plasmicpkgs/antd5": "^0.0.379",
