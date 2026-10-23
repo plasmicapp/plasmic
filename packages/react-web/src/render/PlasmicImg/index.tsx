@@ -103,9 +103,11 @@ export interface PlasmicImgProps extends ImgTagProps {
 
   /**
    * ImageLoader to use for loading different dimensions of the image.
+   * "plasmic" uses Plasmic's image optimizer, and a URL string uses the image
+   * optimizer hosted at that base URL.
    * If none specified, will not attempt to load different dimensions.
    */
-  loader?: "plasmic" | ImageLoader;
+  loader?: "plasmic" | string | ImageLoader;
 
   /**
    * Style applied to the wrapper element. objectFit and objectPosition
@@ -544,11 +546,15 @@ function getImageSizeData(
   };
 }
 
-function getImageLoader(loader: "plasmic" | ImageLoader | undefined) {
+function getImageLoader(
+  loader: "plasmic" | string | ImageLoader | undefined
+) {
   if (loader == null) {
     return undefined;
   } else if (loader === "plasmic") {
-    return PLASMIC_IMAGE_LOADER;
+    return makePlasmicImageLoader(IMG_OPTIMIZER_HOST);
+  } else if (typeof loader === "string") {
+    return makePlasmicImageLoader(loader);
   } else {
     return loader;
   }
@@ -558,7 +564,7 @@ function isInternalKey(src: string) {
   return /^([a-f0-9]{32})\..{1,16}$/i.test(src);
 }
 
-const PLASMIC_IMAGE_LOADER: ImageLoader = {
+const makePlasmicImageLoader = (host: string): ImageLoader => ({
   supportsUrl: (src) => {
     return (src.startsWith("http") || isInternalKey(src)) && !isSvg(src);
   },
@@ -569,6 +575,6 @@ const PLASMIC_IMAGE_LOADER: ImageLoader = {
       `q=${opts.quality ?? 75}`,
       opts.format ? `f=${opts.format}` : undefined,
     ].filter((x) => !!x);
-    return `${IMG_OPTIMIZER_HOST}/img-optimizer/v1/img?${params.join("&")}`;
+    return `${host}/img-optimizer/v1/img?${params.join("&")}`;
   },
-};
+});

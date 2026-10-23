@@ -27,4 +27,16 @@ describe("PlasmicImg", () => {
       `<div class="__wab_img-wrapper" style="width:auto;height:auto"><img alt="" aria-hidden="true" class="__wab_img-spacer-svg" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI4MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIi8+"/><picture class="__wab_picture"><img loading="lazy" class="__wab_img" decoding="async" src="https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;q=75&amp;f=png" srcSet="https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;w=640&amp;q=75&amp;f=png 640w, https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;w=750&amp;q=75&amp;f=png 750w, https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;w=828&amp;q=75&amp;f=png 828w, https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;q=75&amp;f=png 1080w" sizes="100vw" style="width:0;height:0"/></picture></div>`
     );
   });
+
+  it("uses the image optimizer at a loader base URL", () => {
+    const markup = renderToStaticMarkup(
+      <PlasmicImg src={src} loader="https://img.example.com" format="png" />
+    );
+    expect(markup).toContain(
+      `src="https://img.example.com/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;q=75&amp;f=png"`
+    );
+    expect(markup).not.toContain(
+      `https://img.plasmic.app/img-optimizer/v1/img?`
+    );
+  });
 });
