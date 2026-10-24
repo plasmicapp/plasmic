@@ -362,6 +362,7 @@ export async function getContext(
     Sentry.init({
       dsn: "https://3ed4eb43d28646e381bf3c50cff24bd6@o328029.ingest.sentry.io/5285892",
       beforeSend: sentryBeforeSend,
+      release: getCliVersion(),
     });
     Sentry.configureScope((scope) => {
       if (auth.user) {
