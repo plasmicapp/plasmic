@@ -113,6 +113,12 @@ const paths = [
 async function migrate() {
   process.env["DEV_BUNDLE_MIGRATION"] = "true";
   for (const path of paths) {
+    assert(
+      !path.includes("/scripts/__testonly__/fixtures/") ||
+        path.endsWith(".migrated.json"),
+      () =>
+        `${path} must not be migrated. Only .migrated.json expectations may be updated.`,
+    );
     /*
       The stale-bundle.json is exempted from migration, because it is used to
       test if the stale bundle (representing very old projects, revived) can be migrated to the latest no matter how old it is.
