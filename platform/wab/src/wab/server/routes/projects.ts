@@ -37,25 +37,25 @@ import "@/wab/server/extensions";
 import { logger } from "@/wab/server/observability";
 import { REAL_PLUME_VERSION } from "@/wab/server/pkg-mgr/plume-pkg-mgr";
 
-import { getEntitledTeam } from "@/wab/server/freeTrial";
 import { withSpan } from "@/wab/server/observability";
 import { checkEtagSkippable } from "@/wab/server/routes/loader";
 import { moveBundleAssetsToS3 } from "@/wab/server/routes/moveAssetsToS3";
 import {
   checkStripeSubscription,
   maybeTriggerPaywall,
-  passPaywall,
 } from "@/wab/server/routes/team-plans";
 import {
   commitTransaction,
   parseMetadata,
   parseQueryParams,
+  passPaywall,
   rollbackTransaction,
   startTransaction,
   superDbMgr,
   userDbMgr,
 } from "@/wab/server/routes/util";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
+import { getEntitledTeam } from "@/wab/server/subscription-status";
 import {
   BadRequestError,
   BundleTypeError,

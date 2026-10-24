@@ -5,10 +5,7 @@
  */
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { Team } from "@/wab/server/entities/Entities";
-import {
-  deriveSubscriptionStatus,
-  getEntitledTeam,
-} from "@/wab/server/freeTrial";
+import { passPaywall } from "@/wab/server/routes/util";
 import {
   ApiFeatureTier,
   MayTriggerPaywall,
@@ -24,10 +21,6 @@ import Stripe from "stripe";
 export async function checkFreeTrialDuration(req: Request, team: Team) {}
 
 export async function checkStripeSubscription(req: Request, team: Team) {}
-
-export function passPaywall<T>(response: T): MayTriggerPaywall<T> {
-  return { paywall: "pass", response };
-}
 
 export async function maybeTriggerPaywall<T>(
   req: Request,
@@ -56,22 +49,6 @@ export async function getTeamCurrentPeriodRange(
   };
 }
 
-export async function checkAndResetTeamTrial(
-  teamId: TeamId,
-  mgr: DbMgr,
-  devflags: DevFlagsType,
-) {}
-
-export const stripe = new Stripe("BAD_KEY", {
-  apiVersion: "2026-08-26.dahlia",
-});
-
-export function mkStripeCustomerData(
-  team: Team,
-  teamUrl?: string,
-  syncName?: boolean,
-) {}
-
 export async function resetStripeCustomer(superMgr: DbMgr, team: Team) {}
 
 export async function syncDataWithStripe(team: Team, host: string) {}
@@ -81,9 +58,3 @@ export async function syncTeamSubscription(
   teamId: TeamId,
   known: Stripe.Subscription | null,
 ) {}
-
-export async function loadSubscriptionStatuses(mgr: DbMgr, teams: Team[]) {
-  return teams.map((team) =>
-    deriveSubscriptionStatus(getEntitledTeam(team), null),
-  );
-}

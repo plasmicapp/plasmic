@@ -1,5 +1,5 @@
 import { Team } from "@/wab/server/entities/Entities";
-import { deriveSubscriptionStatus } from "@/wab/server/freeTrial";
+import { deriveSubscriptionStatus } from "@/wab/server/subscription-status";
 
 const team = {
   featureTierId: "tier",

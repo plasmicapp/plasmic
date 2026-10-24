@@ -1269,11 +1269,6 @@ export function addMainAppServerRoutes(
     adminOnly,
     withNext(adminRoutes.upgradePersonalTeam),
   );
-  app.post(
-    "/api/v1/admin/reset-team-trial",
-    adminOnly,
-    withNext(adminRoutes.resetTeamTrial),
-  );
   app.post("/api/v1/admin/teams", adminOnly, withNext(adminRoutes.listTeams));
   app.post(
     "/api/v1/admin/projects",

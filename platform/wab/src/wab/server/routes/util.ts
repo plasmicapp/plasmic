@@ -14,7 +14,11 @@ import {
   ForbiddenError,
   UnauthorizedError,
 } from "@/wab/shared/ApiErrors/errors";
-import { CmsIdAndToken, ProjectIdAndToken } from "@/wab/shared/ApiSchema";
+import {
+  CmsIdAndToken,
+  MayTriggerPaywall,
+  ProjectIdAndToken,
+} from "@/wab/shared/ApiSchema";
 import { omitNils } from "@/wab/shared/common";
 import { AppRouter } from "@ts-rest/core";
 import { createExpressEndpoints } from "@ts-rest/express";
@@ -409,4 +413,8 @@ export function createTsRestEndpoints<TRouter extends AppRouter>(
     },
     ...options,
   });
+}
+
+export function passPaywall<T>(response: T): MayTriggerPaywall<T> {
+  return { paywall: "pass", response };
 }

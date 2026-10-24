@@ -3,26 +3,28 @@ import { prepareTeamSupportUrls as doPrepareTeamSupportUrls } from "@/wab/server
 import { checkInviteEmailPhishing } from "@/wab/server/emails/invite-phishing-check";
 import { sendShareEmail } from "@/wab/server/emails/share-email";
 import { Project, Team, Workspace } from "@/wab/server/entities/Entities";
-import { getEntitledTeam } from "@/wab/server/freeTrial";
 import { mkApiProject } from "@/wab/server/routes/projects";
 import { getPromotionCodeCookie } from "@/wab/server/routes/promo-code";
 import {
   checkStripeSubscription,
-  loadSubscriptionStatuses,
   maybeTriggerPaywall,
-  passPaywall,
   resetStripeCustomer,
   syncDataWithStripe,
 } from "@/wab/server/routes/team-plans";
 import {
   commitTransaction,
   getUser,
+  passPaywall,
   rollbackTransaction,
   startTransaction,
   superDbMgr,
   userDbMgr,
 } from "@/wab/server/routes/util";
 import { mkApiWorkspaces } from "@/wab/server/routes/workspaces";
+import {
+  getEntitledTeam,
+  loadSubscriptionStatuses,
+} from "@/wab/server/subscription-status";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiPermission,

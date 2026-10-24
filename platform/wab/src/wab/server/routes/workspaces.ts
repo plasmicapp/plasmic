@@ -1,19 +1,19 @@
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { Workspace } from "@/wab/server/entities/Entities";
-import { getEntitledTeam } from "@/wab/server/freeTrial";
 import { doSafelyDeleteProject } from "@/wab/server/routes/projects";
 import {
   checkStripeSubscription,
   maybeTriggerPaywall,
-  passPaywall,
 } from "@/wab/server/routes/team-plans";
 import { mkApiTeams } from "@/wab/server/routes/teams";
 import {
   commitTransaction,
+  passPaywall,
   rollbackTransaction,
   startTransaction,
   userDbMgr,
 } from "@/wab/server/routes/util";
+import { getEntitledTeam } from "@/wab/server/subscription-status";
 import {
   ApiTeam,
   ApiWorkspace,

@@ -53,10 +53,7 @@ import { omit, uniq } from "lodash";
 import { getTeamDiscourseInfo as doGetTeamDiscourseInfo } from "@/wab/server/discourse/getTeamDiscourseInfo";
 import { sendTeamSupportWelcomeEmail as doSendTeamSupportWelcomeEmail } from "@/wab/server/discourse/sendTeamSupportWelcomeEmail";
 import { syncTeamDiscourseInfo as doSyncTeamDiscourseInfo } from "@/wab/server/discourse/syncTeamDiscourseInfo";
-import {
-  checkAndResetTeamTrial,
-  syncTeamSubscription,
-} from "@/wab/server/routes/team-plans";
+import { syncTeamSubscription } from "@/wab/server/routes/team-plans";
 import { mkApiWorkspaces } from "@/wab/server/routes/workspaces";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
 
@@ -105,13 +102,6 @@ export async function upgradePersonalTeam(req: Request, res: Response) {
   const teamId = req.body.teamId;
 
   await (teamId && mgr.upgradePersonalTeam(teamId));
-  res.json({});
-}
-
-export async function resetTeamTrial(req: Request, res: Response) {
-  const mgr = superDbMgr(req);
-  const teamId = req.body.teamId;
-  await checkAndResetTeamTrial(teamId, mgr, req.devflags);
   res.json({});
 }
 
