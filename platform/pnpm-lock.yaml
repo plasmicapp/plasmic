@@ -1835,8 +1835,8 @@ importers:
         version: 3.25.76
     devDependencies:
       '@plasmicapp/cli':
-        specifier: ^0.1.383
-        version: 0.1.383
+        specifier: ^0.1.384
+        version: 0.1.384
       '@rsbuild/core':
         specifier: 1.7.6
         version: 1.7.6
@@ -4802,8 +4802,8 @@ packages:
     peerDependencies:
       react: '>=16.8.0'
 
-  '@plasmicapp/cli@0.1.383':
-    resolution: {integrity: sha512-j07BEHI1Kk2XaM349Q88mivDKD0fbatNOIoxo/LjXs4an/DXYZ4XqnMNzFGj6N/zQjkTpT/JVbIBBIItVwKjhQ==}
+  '@plasmicapp/cli@0.1.384':
+    resolution: {integrity: sha512-k+RpAvjzsultUq8aLkgd2BMJMVQaUv0v6MnZljLcodLCkVLIE6xGqrIyhDWDetBuXyBgeJUORITa46z7XnqZ7g==}
     engines: {node: '>=12'}
     hasBin: true
 
@@ -20260,7 +20260,7 @@ snapshots:
       '@plasmicapp/query': 0.1.88(react@18.3.1)
       react: 18.3.1
 
-  '@plasmicapp/cli@0.1.383': {}
+  '@plasmicapp/cli@0.1.384': {}
 
   '@plasmicapp/data-sources-context@0.1.26(react@18.3.1)':
     dependencies:
