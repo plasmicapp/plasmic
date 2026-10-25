@@ -801,6 +801,60 @@ describe("merging", () => {
         ),
       );
     }));
+
+  it("merging into a destination with no new commits saves the source as the merge result", () =>
+    withBranch(async (branch, helpers, sudo, [user1], [db1], project) => {
+      await setupMainAndBranch(helpers, {
+        data2: { x: 1, z: 1 },
+        skipPublishMain: true,
+      });
+      const pkg = ensure(await db1().getPkgByProjectId(project.id), "");
+      const [init] = await db1().listPkgVersions(pkg.id);
+
+      expect(
+        await db1().previewMergeBranch({
+          fromBranchId: branch.id,
+          toBranchId: MainBranchId,
+        }),
+      ).toMatchObject({
+        status: "can be merged",
+        ancestorPkgVersionId: init.id,
+        toPkgVersionId: init.id,
+      });
+      expect(
+        await db1().tryMergeBranch({
+          fromBranchId: branch.id,
+          toBranchId: MainBranchId,
+        }),
+      ).toMatchObject({
+        status: "can be merged",
+      });
+
+      const latestBranchRev = await db1().getLatestProjectRev(project.id, {
+        branchId: branch.id,
+      });
+      const latestMainRev = await db1().getLatestProjectRev(project.id);
+      expect(latestMainRev.data).toEqual(latestBranchRev.data);
+      expect(extractTokensRev(latestMainRev)).toEqual({ x: 1, y: 0, z: 1 });
+
+      const [postMerge] = await db1().listPkgVersions(pkg.id, {
+        includeData: true,
+      });
+      const [preMergeOnBranch] = await db1().listPkgVersions(pkg.id, {
+        branchId: branch.id,
+      });
+      expect(extractTokensPkgVersion(postMerge, project.id)).toEqual({
+        x: 1,
+        y: 0,
+        z: 1,
+      });
+      const graph = await db1().getCommitGraphForProject(project.id);
+      expect(graph.branches[MainBranchId]).toEqual(postMerge.id);
+      expect(graph.parents[postMerge.id]).toEqual([
+        init.id,
+        preMergeOnBranch.id,
+      ]);
+    }));
 });
 
 function deferred<T = void>() {
