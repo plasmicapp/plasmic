@@ -13,10 +13,8 @@
 
 # See https://hub.docker.com/_/node/
 # Pinned to an exact patch (not the floating node:24-alpine tag) to avoid silently
-# pulling in Node patch regressions on rebuild. Node 24.17.0 introduced an http.Agent
-# keep-alive regression (nodejs/node#63989) that broke node-fetch outbound requests with
-# ERR_STREAM_PREMATURE_CLOSE. Bump deliberately once a fixed 24.17.x+ is verified.
-FROM node:24.16.0-alpine AS builder
+# pulling in Node patch regressions on rebuild.
+FROM node:24.22.1-alpine AS builder
 
 ENV PUPPETEER_SKIP_DOWNLOAD=1
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
@@ -95,7 +93,7 @@ RUN --mount=type=secret,id=npmrc,target=/root/.npmrc \
       --filter "@plasmicapp/loader-html-hydrate..." \
       --config.confirmModulesPurge=false
 
-FROM node:24.16.0-alpine AS runner
+FROM node:24.22.1-alpine AS runner
 
 # make + bubblewrap for the runtime code-eval sandbox; toolchain kept so native
 # addons that resolve a prebuilt binary at load time still have their deps.

@@ -1,5 +1,5 @@
 # --- Build stage ---
-FROM node:24-alpine AS builder
+FROM node:24.22.1-alpine AS builder
 
 WORKDIR /plasmic
 
@@ -30,7 +30,7 @@ RUN mkdir -p /tmp/.plasmic && \
     pnpm setup:canvas-packages
 
 # --- Final stage ---
-FROM node:24-alpine
+FROM node:24.22.1-alpine
 
 # Create non-root user and prepare env
 RUN addgroup -S plasmic && \
