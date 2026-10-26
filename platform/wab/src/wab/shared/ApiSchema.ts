@@ -1226,6 +1226,22 @@ export type ImageUploadResponse = {
   warning?: string;
   mimeType?: string;
 };
+
+/** Image formats the describe endpoint accepts. */
+export const DESCRIBABLE_IMAGE_TYPES: readonly string[] = [
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+  "image/gif",
+];
+
+export interface DescribeImageRequest {
+  imageFile: Blob;
+}
+
+export type DescribeImageResponse = {
+  description: string;
+};
 //
 // CMS
 //

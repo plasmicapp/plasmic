@@ -447,6 +447,15 @@ const DEFAULT_DEVFLAGS = {
     modelName: "gemini-2.5-flash-lite",
     maxTokens: 10000,
   } as ModelProviderOpts,
+  enableImageDescriptions: false,
+  imageDescriptionModelProviderOpts: {
+    provider: "Google",
+    modelName: "gemini-3.1-flash-lite",
+    location: "global",
+    maxTokens: 400,
+    temperature: 0,
+    options: { google: { mediaResolution: "MEDIA_RESOLUTION_LOW" } },
+  } as ModelProviderOpts,
   emailPhishingCheckModelProviderOpts: undefined as
     ModelProviderOpts | undefined,
 

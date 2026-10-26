@@ -1,5 +1,6 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import { hasLayoutBox } from "@/wab/client/dom";
+import { describeImage } from "@/wab/client/image/describe";
 import { getImageSize } from "@/wab/client/image/metadata";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import { ensure, ensureHTMLElt, ensureString } from "@/wab/shared/common";
@@ -182,6 +183,7 @@ export type ImageAssetOpts = {
   type: ImageAssetType;
   iconColor?: string;
   name?: string;
+  description?: string;
 };
 
 export const isDescendant = ({
@@ -321,17 +323,21 @@ export async function maybeUploadImage(
   image: ResizableImage,
   type?: ImageAssetType,
   file?: File | string,
+  { autoDescribe = false }: { autoDescribe?: boolean } = {},
 ) {
   const res = deriveImageAssetTypeAndUri(image, { type });
   if (!res) {
     return {};
   }
   let imageResult: ResizableImage;
+  let description: string | undefined;
   if (res.type === ImageAssetType.Picture) {
     const blob = imageDataUriToBlob(res.dataUri);
-    const uploadedImage = await appCtx.api.uploadImageFile({
-      imageFile: blob,
-    });
+    const [uploadedImage, imageDescription] = await Promise.all([
+      appCtx.api.uploadImageFile({ imageFile: blob }),
+      autoDescribe ? describeImage(appCtx, image, blob) : undefined,
+    ]);
+    description = imageDescription;
     if (uploadedImage.warning) {
       notification.warning({ message: uploadedImage.warning, duration: 0 });
     }
@@ -354,6 +360,7 @@ export async function maybeUploadImage(
     type: res.type,
     iconColor: res.iconColor,
     name: file instanceof File ? file?.name : file,
+    description,
   };
 
   return { imageResult, opts };

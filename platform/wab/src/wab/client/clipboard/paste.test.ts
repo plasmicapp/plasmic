@@ -13,6 +13,7 @@ import { ComponentType } from "@/wab/shared/core/components";
 import * as ImageAssets from "@/wab/shared/core/image-assets";
 import * as Tpls from "@/wab/shared/core/tpls";
 import { TplImageTag } from "@/wab/shared/core/tpls";
+import { DevFlagsType } from "@/wab/shared/devflags";
 import { Component } from "@/wab/shared/model/classes";
 
 let studioCtx: StudioCtx;
@@ -20,17 +21,36 @@ let api: ReturnType<typeof fakeStudioCtx>["api"];
 let page: Component;
 let pageViewCtx: ViewCtx;
 
-describe("paste", () => {
-  beforeEach(() => {
-    const studioCtxDeps = fakeStudioCtx();
-    studioCtx = studioCtxDeps.studioCtx;
-    api = studioCtxDeps.api;
+function setUp(devFlagOverrides?: Partial<DevFlagsType>) {
+  const studioCtxDeps = fakeStudioCtx({ devFlagOverrides });
+  studioCtx = studioCtxDeps.studioCtx;
+  api = studioCtxDeps.api;
 
-    page = studioCtx.addComponent("Page", {
-      type: ComponentType.Page,
-    });
-    pageViewCtx = studioCtx.focusedViewCtx()!;
+  page = studioCtx.addComponent("Page", {
+    type: ComponentType.Page,
   });
+  pageViewCtx = studioCtx.focusedViewCtx()!;
+}
+
+/** Pastes the 5x5 PNG fixture and returns the asset of the pasted picture. */
+async function pastePng() {
+  pageViewCtx.selectNewTpl(page.tplTree);
+  const { dataUri, clipboardData, height, width } = pngData();
+  api.uploadImageFile.mockResolvedValue({ dataUri, height, width });
+
+  expect(
+    await paste({
+      clipboard: ReadableClipboard.fromData(clipboardData),
+      studioCtx,
+      cursorClientPt: undefined,
+    }),
+  ).toBe(true);
+  const [pastedTpl] = Tpls.tplChildren(page.tplTree);
+  return ImageAssets.getOnlyAssetRef(pastedTpl as TplImageTag);
+}
+
+describe("paste", () => {
+  beforeEach(() => setUp());
 
   it("pastes plain text as a tpl text", async () => {
     pageViewCtx.selectNewTpl(page.tplTree);
@@ -104,6 +124,7 @@ describe("paste", () => {
       ImageAssets.getOnlyAssetRef(pastedTpl as TplImageTag)?.dataUri,
     ).toEqual(dataUri);
     expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
+    expect(api.describeImage).not.toHaveBeenCalled();
   });
 
   it("pastes a single tpl", async () => {
@@ -201,5 +222,26 @@ describe("paste", () => {
     const pastedTpl2 = Tpls.tplChildren(dstDiv)[1];
     expect(Tpls.getTagOrComponentName(pastedTpl2)).toEqual("div");
     expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl2]);
+  });
+});
+
+describe("paste with image descriptions on", () => {
+  beforeEach(() => setUp({ enableImageDescriptions: true }));
+
+  it("stores the description on the pasted picture's asset", async () => {
+    api.describeImage.mockResolvedValue({ description: "A small red dot." });
+
+    const asset = await pastePng();
+
+    expect(asset?.description).toBe("A small red dot.");
+  });
+
+  it("pastes the picture without a description when describing fails", async () => {
+    api.describeImage.mockRejectedValue(new Error("Too many requests"));
+
+    const asset = await pastePng();
+
+    expect(asset?.dataUri).toBe(pngData().dataUri);
+    expect(asset?.description).toBeNull();
   });
 });

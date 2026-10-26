@@ -6,6 +6,12 @@ type BaseModelProviderOpts = {
     openai?: {
       reasoningEffort?: string;
     };
+    google?: {
+      mediaResolution?:
+        | "MEDIA_RESOLUTION_LOW"
+        | "MEDIA_RESOLUTION_MEDIUM"
+        | "MEDIA_RESOLUTION_HIGH";
+    };
   };
 };
 

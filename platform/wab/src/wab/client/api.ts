@@ -494,6 +494,7 @@ export function filteredApi(
     "getClip",
     "readNavigatorClipboard",
     "uploadImageFile",
+    "describeImage",
     "queryCopilot",
     "sendCopilotFeedback",
     "addReactionToComment",

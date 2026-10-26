@@ -80,6 +80,8 @@ import {
   CreateWorkspaceRequest,
   CreateWorkspaceResponse,
   DeleteCommentResponse,
+  DescribeImageRequest,
+  DescribeImageResponse,
   DomainsForProjectResponse,
   EditCommentRequest,
   ExistingGithubRepoRequest,
@@ -1606,6 +1608,14 @@ export abstract class SharedApi {
     const data = new FormData();
     data.append("file", req.imageFile);
     return this.post("/image/upload", data);
+  }
+
+  async describeImage(
+    req: DescribeImageRequest,
+  ): Promise<DescribeImageResponse> {
+    const data = new FormData();
+    data.append("file", req.imageFile);
+    return this.post("/copilot/describe-image", data);
   }
 
   //

@@ -269,7 +269,9 @@ export const ImageAssetOrUrlPicker = observer(
     const handleImageUploaded = async (image: ResizableImage, file?: File) => {
       const { imageResult, opts } = await studioCtx.app.withSpinner(
         (async () => {
-          return await maybeUploadImage(studioCtx.appCtx, image, type, file);
+          return await maybeUploadImage(studioCtx.appCtx, image, type, file, {
+            autoDescribe: true,
+          });
         })(),
       );
       if (!imageResult || !opts) {

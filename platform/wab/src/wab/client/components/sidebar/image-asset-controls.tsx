@@ -453,6 +453,7 @@ export const ImageAssetSidebarPopup = observer(
             image,
             asset.type as ImageAssetType,
             file,
+            { autoDescribe: true },
           );
         })(),
       );
@@ -460,7 +461,9 @@ export const ImageAssetSidebarPopup = observer(
         return;
       }
       return studioCtx.change(() => {
-        studioCtx.siteOps().updateImageAsset(asset, imageResult);
+        studioCtx
+          .siteOps()
+          .updateImageAsset(asset, imageResult, opts.description);
         if (
           file &&
           (asset.name.startsWith("image") || asset.name.startsWith("icon"))

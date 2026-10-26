@@ -127,7 +127,9 @@ function uploadImageDataUri(appCtx: AppCtx, dataUri: string) {
       return err(uploadError());
     }
     const { imageResult, opts } = yield* fromPromise(
-      maybeUploadImage(appCtx, image, undefined, undefined),
+      maybeUploadImage(appCtx, image, undefined, undefined, {
+        autoDescribe: true,
+      }),
       uploadError,
     );
     return imageResult && opts

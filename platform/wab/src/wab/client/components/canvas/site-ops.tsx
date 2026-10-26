@@ -685,11 +685,18 @@ export class SiteOps {
     this.studioCtx.switchToArena(destinationArena);
   }
 
-  updateImageAsset(asset: ImageAsset, image: ResizableImage) {
+  updateImageAsset(
+    asset: ImageAsset,
+    image: ResizableImage,
+    description?: string,
+  ) {
     asset.dataUri = image.url;
     asset.width = image.width;
     asset.height = image.height;
     asset.aspectRatio = image.scaledRoundedAspectRatio;
+    if (description) {
+      asset.description = description;
+    }
     return asset;
   }
 

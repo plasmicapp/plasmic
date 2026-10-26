@@ -12,7 +12,9 @@ export async function pasteImage(
   { studioCtx, cursorClientPt, insertRelLoc }: PasteArgs,
 ): Promise<PasteResult> {
   const { imageResult, opts } = await studioCtx.app.withSpinner(
-    maybeUploadImage(studioCtx.appCtx, image, undefined, undefined),
+    maybeUploadImage(studioCtx.appCtx, image, undefined, undefined, {
+      autoDescribe: true,
+    }),
   );
   if (!imageResult || !opts) {
     return {

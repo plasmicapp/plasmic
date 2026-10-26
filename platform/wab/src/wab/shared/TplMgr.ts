@@ -2180,6 +2180,7 @@ export class TplMgr {
       width: image.width,
       height: image.height,
       aspectRatio: image.scaledRoundedAspectRatio,
+      description: opts.description,
     });
 
     return { asset, iconColor: opts.iconColor };
