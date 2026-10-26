@@ -6820,11 +6820,11 @@ packages:
   '@remirror/types@1.0.1':
     resolution: {integrity: sha512-VlZQxwGnt1jtQ18D6JqdIF+uFZo525WEqrfp9BOc3COPpK4+AWCgdnAWL+ho6imWcoINlGjR/+3b6y5C1vBVEA==}
 
-  '@rive-app/canvas@2.45.0':
-    resolution: {integrity: sha512-GnfJI75Z990maZC7NtXUzuZG2C66j/qIQvFmFAUDS+fPy8k4genTPTrCSgpVpGQDuedFhhmVcPtRZks5lAPf3w==}
+  '@rive-app/canvas@2.45.1':
+    resolution: {integrity: sha512-VWOO1hHCMB3YKp3L2R1FqfobtreoAnMzpen9ngxTn6mNZj4KJEOW6lF7RhuVQkspN4t7BUCsGzBnEpZOFUHvyw==}
 
-  '@rive-app/react-canvas@4.37.0':
-    resolution: {integrity: sha512-qgUn427tbtYv85SyDRVjv3bwD0fsTxM2lVgphRLTY3g3UBrsOpocMmleGhswjdKqQsYgVBxWnj91a2OVCE8FQg==}
+  '@rive-app/react-canvas@4.37.1':
+    resolution: {integrity: sha512-gA50ajL3igvr192QOtafRkRP9gcBDTN7hp3s90SA7q1t0T3pjXA3T9j7RDKaKM3wt7O0Vt30rPwiuH6EqfGv+A==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
 
@@ -11983,8 +11983,8 @@ packages:
   linkify-it@5.0.2:
     resolution: {integrity: sha512-ONTm2jCMAVZjgQa/Fy1kScXsuOoF5NPTsoFBdE1KVIZ2vAh/r9+Bqo+0jINCBYnavTPQZz38QzFTme79ENoN3Q==}
 
-  linkifyjs@4.3.3:
-    resolution: {integrity: sha512-P8aEP5U/D1/IlTY2OeYsErdwh9bGuLE30NcXtKEjgdHcahveQoQwM2yZNsioQHsWFz0P7KKudisbrzCgR0sDHg==}
+  linkifyjs@4.4.0:
+    resolution: {integrity: sha512-InTexvtbai+2c+dEVGcc6O6P2DMVIiwD9a/i4zFroazOIYLOS6FSVmAJ7kFeumnCMx6/gQqNAkbUvgMubV4+MA==}
 
   load-script@1.0.0:
     resolution: {integrity: sha512-kPEjMFtZvwL9TaZo0uZ2ml+Ye9HUMmPwbYRJ324qF9tqMejwykJ5ggTyvzmrbBeapCAbk98BSbTeovHEEP1uCA==}
@@ -14256,8 +14256,8 @@ packages:
       '@types/react':
         optional: true
 
-  react-parallax-tilt@1.7.348:
-    resolution: {integrity: sha512-u6UJjuESR0ogNv+PxhdeV2I20mnVcgfSu83wjVgGtEm1Yu19JkWnVjqWfBJHWrf5qk9fvfgPY3X/qwwbXqbimA==}
+  react-parallax-tilt@1.7.349:
+    resolution: {integrity: sha512-JIidDwXkBF+oMJmJfLecL+yE9glM6ZmReSJ+YrtkdYKQszAviyLabplJzo7ZmVTB26On4nupbKomyxuGiFPi+w==}
     peerDependencies:
       react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -20776,7 +20776,7 @@ snapshots:
       '@plasmicapp/host': 2.0.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      react-parallax-tilt: 1.7.348(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-parallax-tilt: 1.7.349(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   '@plasmicpkgs/react-quill@1.0.126(@plasmicapp/host@2.0.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -20823,7 +20823,7 @@ snapshots:
   '@plasmicpkgs/rive@0.0.53(@plasmicapp/host@2.0.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@rive-app/react-canvas': 4.37.0(react@18.3.1)
+      '@rive-app/react-canvas': 4.37.1(react@18.3.1)
       react: 18.3.1
 
   '@plasmicpkgs/strapi@0.0.42(@plasmicapp/host@2.0.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
@@ -23036,11 +23036,11 @@ snapshots:
     dependencies:
       type-fest: 2.19.0
 
-  '@rive-app/canvas@2.45.0': {}
+  '@rive-app/canvas@2.45.1': {}
 
-  '@rive-app/react-canvas@4.37.0(react@18.3.1)':
+  '@rive-app/react-canvas@4.37.1(react@18.3.1)':
     dependencies:
-      '@rive-app/canvas': 2.45.0
+      '@rive-app/canvas': 2.45.1
       react: 18.3.1
 
   '@rolldown/pluginutils@1.0.0-beta.27': {}
@@ -23987,7 +23987,7 @@ snapshots:
     dependencies:
       '@tiptap/core': 2.1.13(@tiptap/pm@2.1.13)
       '@tiptap/pm': 2.1.13
-      linkifyjs: 4.3.3
+      linkifyjs: 4.4.0
 
   '@tiptap/extension-mention@2.1.13(@tiptap/core@2.1.13(@tiptap/pm@2.1.13))(@tiptap/pm@2.1.13)(@tiptap/suggestion@2.1.13(@tiptap/core@2.1.13(@tiptap/pm@2.1.13))(@tiptap/pm@2.1.13))':
     dependencies:
@@ -28863,7 +28863,7 @@ snapshots:
     dependencies:
       uc.micro: 2.1.0
 
-  linkifyjs@4.3.3: {}
+  linkifyjs@4.4.0: {}
 
   load-script@1.0.0: {}
 
@@ -31858,7 +31858,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  react-parallax-tilt@1.7.348(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-parallax-tilt@1.7.349(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
