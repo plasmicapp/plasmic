@@ -46,6 +46,7 @@ import {
 } from "@/wab/server/routes/team-plans";
 import {
   commitTransaction,
+  parseJsonQueryParam,
   parseMetadata,
   parseQueryParams,
   passPaywall,
@@ -1512,7 +1513,7 @@ export async function setMainBranchProtection(req: Request, res: Response) {
 
 export async function getProjectRev(req: Request, res: Response) {
   const revisionId = req.query.revisionId
-    ? JSON.parse(req.query.revisionId as string)
+    ? parseJsonQueryParam(req, "revisionId")
     : undefined;
   const revisionNum = req.query.revisionNum;
   if (revisionNum !== undefined) {
@@ -1520,7 +1521,7 @@ export async function getProjectRev(req: Request, res: Response) {
   }
   const dontMigrateProject =
     !!req.query.dontMigrateProject &&
-    (JSON.parse(req.query.dontMigrateProject as string) as boolean);
+    (parseJsonQueryParam(req, "dontMigrateProject") as boolean);
   const mgr = userDbMgr(req);
   const { projectId, branchId } = parseProjectBranchId(
     req.params.projectBranchId,
@@ -1589,10 +1590,10 @@ export async function getProjectRev(req: Request, res: Response) {
 
 export async function getProjectRevWithoutData(req: Request, res: Response) {
   const revisionId = req.query.revisionId
-    ? JSON.parse(req.query.revisionId as string)
+    ? parseJsonQueryParam(req, "revisionId")
     : undefined;
   const branchId = req.query.branchId
-    ? JSON.parse(req.query.branchId as string)
+    ? parseJsonQueryParam(req, "branchId")
     : undefined;
   const mgr = userDbMgr(req);
   const projectId = req.params.projectId;
@@ -1949,13 +1950,13 @@ export async function getPkgVersion(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const pkgId: string = req.params.pkgId;
   const version: string | undefined = req.query.version
-    ? JSON.parse(req.query.version as string)
+    ? parseJsonQueryParam(req, "version")
     : undefined;
   const meta: boolean | undefined = req.query.meta
-    ? JSON.parse(req.query.meta as string)
+    ? parseJsonQueryParam(req, "meta")
     : undefined;
   const branchId = req.query.branchId
-    ? JSON.parse(req.query.branchId as string)
+    ? parseJsonQueryParam(req, "branchId")
     : undefined;
   const dontMigrateProject = !!req.query.dontMigrateProject;
 
@@ -1985,7 +1986,7 @@ export async function listUnpublishedProjectRevisions(
   const mgr = userDbMgr(req);
   const projectId = req.params.projectId;
   const branchId = req.query.branchId
-    ? JSON.parse(req.query.branchId as string)
+    ? parseJsonQueryParam(req, "branchId")
     : undefined;
   const revisionNumGt = req.query.revisionNumGt
     ? parseInt(req.query.revisionNumGt as string)
@@ -2255,7 +2256,7 @@ export async function listPkgVersionsWithoutData(req: Request, res: Response) {
   const pkgId = req.params.pkgId;
   const branchId =
     req.query.branchId != null
-      ? (JSON.parse(req.query.branchId as string) as BranchId)
+      ? (parseJsonQueryParam(req, "branchId") as BranchId)
       : undefined;
   const pkgVersions = await mgr.listPkgVersions(pkgId, {
     includeData: false,

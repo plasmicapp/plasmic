@@ -72,6 +72,7 @@ import {
 } from "@/wab/shared/urls";
 import { Request, Response } from "express-serve-static-core";
 import L from "lodash";
+import validator from "validator";
 
 function mkApiTeam(
   team: Team,
@@ -191,11 +192,27 @@ export async function createTeam(req: Request, res: Response) {
   res.json(ensureType<CreateTeamResponse>({ team: apiTeam }));
 }
 
+/**
+ * Trims `email` and throws a BadRequestError if it isn't a valid email
+ * address. Uses the same validator as the entities' `@IsEmail` checks.
+ */
+function ensureValidEmail(email: unknown, field: string): string {
+  const trimmed = typeof email === "string" ? email.trim() : undefined;
+  if (!trimmed || !validator.isEmail(trimmed, { ignore_max_length: true })) {
+    throw new BadRequestError(`${field} must be a valid email address`);
+  }
+  return trimmed;
+}
+
 export async function updateTeam(req: Request, res: Response) {
   const userMgr = userDbMgr(req);
+  const fields = { ...req.body };
+  if ("billingEmail" in fields) {
+    fields.billingEmail = ensureValidEmail(fields.billingEmail, "billingEmail");
+  }
   const team = await userMgr.updateTeam({
     id: req.params.teamId,
-    ...req.body,
+    ...fields,
   });
 
   // Only sync what Stripe stores.
@@ -246,13 +263,17 @@ export async function changeResourcePermissions(req: Request, res: Response) {
   >(req, async () => {
     const mgr = userDbMgr(req);
     const sharer = getUser(req);
-    const { grants, revokes, requireSignUp } =
-      uncheckedCast<GrantRevokeRequest>(req.body);
-    if (grants.length > MAX_GRANTS_PER_REQUEST) {
+    const body = uncheckedCast<GrantRevokeRequest>(req.body);
+    const { revokes, requireSignUp } = body;
+    if (body.grants.length > MAX_GRANTS_PER_REQUEST) {
       throw new BadRequestError(
         `Cannot grant access to more than ${MAX_GRANTS_PER_REQUEST} recipients at a time.`,
       );
     }
+    const grants = body.grants.map((grant) => ({
+      ...grant,
+      email: ensureValidEmail(grant.email, "email"),
+    }));
     const host = req.config.host;
     const resourcesById: Record<string, Team | Workspace | Project> = {};
     const emailsToSend: {

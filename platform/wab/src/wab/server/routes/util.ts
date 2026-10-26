@@ -186,19 +186,29 @@ export function parseMetadata(m?: any) {
 }
 
 export function parseQueryParams(req: Pick<Request, "query">) {
-  return L.mapValues(req.query, (v, key) => {
-    if (typeof v !== "string") {
-      throw new BadRequestError(`Query parameter ${key} must be a JSON string`);
+  return L.mapValues(req.query, (_v, key) => parseJsonQueryParam(req, key));
+}
+
+/**
+ * Parses a single JSON-encoded query parameter, throwing a BadRequestError
+ * (400) if it's not a string or not valid JSON.
+ */
+export function parseJsonQueryParam(
+  req: Pick<Request, "query">,
+  key: string,
+): any {
+  const v = req.query[key];
+  if (typeof v !== "string") {
+    throw new BadRequestError(`Query parameter ${key} must be a JSON string`);
+  }
+  try {
+    return JSON.parse(v);
+  } catch (err) {
+    if (err instanceof SyntaxError) {
+      throw new BadRequestError(`Query parameter ${key} must be valid JSON`);
     }
-    try {
-      return JSON.parse(v);
-    } catch (err) {
-      if (err instanceof SyntaxError) {
-        throw new BadRequestError(`Query parameter ${key} must be valid JSON`);
-      }
-      throw err;
-    }
-  });
+    throw err;
+  }
 }
 
 /**

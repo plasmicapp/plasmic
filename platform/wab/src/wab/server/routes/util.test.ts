@@ -1,4 +1,7 @@
-import { parseQueryParams } from "@/wab/server/routes/util";
+import {
+  parseJsonQueryParam,
+  parseQueryParams,
+} from "@/wab/server/routes/util";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 
 describe("parseQueryParams", () => {
@@ -43,4 +46,34 @@ describe("parseQueryParams", () => {
       );
     },
   );
+});
+
+describe("parseJsonQueryParam", () => {
+  it("parses a single JSON query value", () => {
+    expect(
+      parseJsonQueryParam(
+        { query: { branchId: '"b1"', x: "nope" } },
+        "branchId",
+      ),
+    ).toEqual("b1");
+  });
+
+  it("rejects malformed JSON as a bad request", () => {
+    expect(() =>
+      parseJsonQueryParam({ query: { revisionId: "abc" } }, "revisionId"),
+    ).toThrow(
+      new BadRequestError("Query parameter revisionId must be valid JSON"),
+    );
+  });
+
+  it("rejects missing or non-string values as a bad request", () => {
+    expect(() => parseJsonQueryParam({ query: {} }, "branchId")).toThrow(
+      new BadRequestError("Query parameter branchId must be a JSON string"),
+    );
+    expect(() =>
+      parseJsonQueryParam({ query: { branchId: ["a", "b"] } }, "branchId"),
+    ).toThrow(
+      new BadRequestError("Query parameter branchId must be a JSON string"),
+    );
+  });
 });
