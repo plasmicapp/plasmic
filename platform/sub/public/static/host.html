@@ -39,7 +39,11 @@
     </style>
   </head>
   <body>
-    <div class="app-root"></div>
+    <div
+      class="app-root"
+      data-studio-origin="<%- publicUrl %>"
+      data-studio-static-url="<%- staticUrl %>"
+    ></div>
     <script src="/static/sub/build/client.<%= commitHash %>.js"></script>
   </body>
 </html>

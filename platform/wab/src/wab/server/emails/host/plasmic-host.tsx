@@ -303,4 +303,13 @@ registerComponent(EmailSection, {
   },
 });
 
-createRoot(document.getElementById("root")!).render(<PlasmicCanvasHost />);
+// The Email Templates project is on production Studio; also allow a local one.
+createRoot(document.getElementById("root")!).render(
+  <PlasmicCanvasHost
+    allowedStudioOrigins={[
+      "https://studio.plasmic.app",
+      ...(process.env.DEV_STUDIO_ORIGIN ? [process.env.DEV_STUDIO_ORIGIN] : []),
+    ]}
+    allowedStudioStaticBaseUrl="https://studio-static.plasmic.app"
+  />,
+);

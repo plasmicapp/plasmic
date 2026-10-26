@@ -28,30 +28,74 @@ function getHashParams() {
   return new URLSearchParams(location.hash.replace(/^#/, "?"));
 }
 
-function getPlasmicStaticBaseUrl() {
-  return getHashParams().get("staticBaseUrl") ?? getHashParams().get("origin");
-}
-
-function getStudioHash() {
-  const hashParams = getHashParams();
-  if (hashParams.has("studioHash")) {
-    return hashParams.get("studioHash");
-  }
-  const urlParams = new URL(location.href).searchParams;
-  return urlParams.get("studio-hash");
-}
-
 const STUDIO_SCRIPT_ID = "plasmic-studio-script";
+const PLASMIC_STUDIO_ORIGINS: readonly string[] = [
+  "https://studio.plasmic.app",
+];
+const PLASMIC_STATIC_BASE_URL = "https://studio-static.plasmic.app";
 
-function renderStudioIntoIframe() {
+function parseStudioUrl(value: string | null | undefined): URL | undefined {
+  // Reject delimiters even when empty (URL.search/hash omit empty ?/#), and
+  // characters that URL parsing would silently normalize.
+  if (!value || !/^https?:\/\//.test(value) || /[\s\\?#]/.test(value)) {
+    return undefined;
+  }
+  try {
+    const url = new URL(value);
+    return url.username || url.password ? undefined : url;
+  } catch {
+    return undefined;
+  }
+}
+
+function isUnder(url: URL, base: URL | undefined) {
+  return (
+    !!base &&
+    url.origin === base.origin &&
+    `${url.pathname}/`.startsWith(base.pathname.replace(/\/?$/, "/"))
+  );
+}
+
+function renderStudioIntoIframe({
+  allowedStudioOrigins,
+  allowedStudioStaticBaseUrl,
+}: PlasmicCanvasHostProps) {
   if (document.getElementById(STUDIO_SCRIPT_ID)) {
+    return;
+  }
+  // A self-hosted Studio must not also trust Plasmic's.
+  const useDefaults = !allowedStudioOrigins && !allowedStudioStaticBaseUrl;
+  const studioOrigins = useDefaults
+    ? PLASMIC_STUDIO_ORIGINS
+    : (allowedStudioOrigins ?? []);
+  const staticBaseUrl = parseStudioUrl(
+    useDefaults ? PLASMIC_STATIC_BASE_URL : allowedStudioStaticBaseUrl,
+  );
+  // Read and validate at injection point, not during render. The fragment
+  // can change between render and the effect that loads the script.
+  const params = getHashParams();
+  const origin = parseStudioUrl(params.get("origin"));
+  const base = parseStudioUrl(
+    params.get("staticBaseUrl") ?? params.get("origin"),
+  );
+  const hash = params.get("studioHash");
+  if (
+    !origin ||
+    origin.pathname !== "/" ||
+    !studioOrigins.includes(origin.origin) ||
+    !base ||
+    !(studioOrigins.includes(base.origin) || isUnder(base, staticBaseUrl)) ||
+    (hash && !/^[a-zA-Z0-9_-]+$/.test(hash))
+  ) {
+    console.warn(
+      "[PlasmicCanvasHost] Blocked an invalid or untrusted Studio URL. " +
+        "For a self-hosted Studio, configure allowedStudioOrigins and allowedStudioStaticBaseUrl.",
+    );
     return;
   }
   const script = document.createElement("script");
   script.id = STUDIO_SCRIPT_ID;
-  const staticBaseUrl = getPlasmicStaticBaseUrl();
-  const hash = getStudioHash();
-  script.src = `${staticBaseUrl}/js/studio${hash ? `.${hash}.js` : `.js`}`;
+  script.src = `${base.href.replace(/\/$/, "")}/js/studio${hash ? `.${hash}` : ""}.js`;
   document.body.appendChild(script);
 }
 
@@ -95,7 +139,10 @@ export const PlasmicCanvasContext = React.createContext<
 export const usePlasmicCanvasContext = () =>
   React.useContext(PlasmicCanvasContext);
 
-function _PlasmicCanvasHost() {
+function _PlasmicCanvasHost({
+  allowedStudioOrigins,
+  allowedStudioStaticBaseUrl,
+}: PlasmicCanvasHostProps) {
   // If window.parent is null, then this is a window whose containing iframe
   // has been detached from the DOM (for the top window, window.parent === window).
   // In that case, we shouldn't do anything.  If window.parent is null, by the way,
@@ -126,9 +173,17 @@ function _PlasmicCanvasHost() {
   }, [isFrameAttached]);
   React.useEffect(() => {
     if (shouldRenderStudio && isFrameAttached && window.parent !== window) {
-      renderStudioIntoIframe();
+      renderStudioIntoIframe({
+        allowedStudioOrigins,
+        allowedStudioStaticBaseUrl,
+      });
     }
-  }, [shouldRenderStudio, isFrameAttached]);
+  }, [
+    shouldRenderStudio,
+    isFrameAttached,
+    allowedStudioOrigins,
+    allowedStudioStaticBaseUrl,
+  ]);
 
   const [canvasContextValue, setCanvasContextValue] = React.useState(() =>
     deriveCanvasContextValue(),
@@ -188,6 +243,16 @@ function _PlasmicCanvasHost() {
 
 interface PlasmicCanvasHostProps {
   /**
+   * Trusted Studio origins, replacing Plasmic's. Grants script execution on
+   * your app's origin; never derive from user-controlled input.
+   */
+  allowedStudioOrigins?: readonly string[];
+  /**
+   * Trusted base URL for Studio assets, if not served from a Studio origin.
+   * Setting either prop drops Plasmic's defaults.
+   */
+  allowedStudioStaticBaseUrl?: string;
+  /**
    * @deprecated HMR handling is now managed by Plasmic Studio. This prop is
    * retained for backward compatibility and has no effect.
    */
@@ -196,13 +261,18 @@ interface PlasmicCanvasHostProps {
 
 export const PlasmicCanvasHost: React.FunctionComponent<
   PlasmicCanvasHostProps
-> = () => {
+> = ({ allowedStudioOrigins, allowedStudioStaticBaseUrl }) => {
   const [node, setNode] = React.useState<React.ReactElement<any, any> | null>(
     null,
   );
   React.useEffect(() => {
-    setNode(<_PlasmicCanvasHost />);
-  }, []);
+    setNode(
+      <_PlasmicCanvasHost
+        allowedStudioOrigins={allowedStudioOrigins}
+        allowedStudioStaticBaseUrl={allowedStudioStaticBaseUrl}
+      />,
+    );
+  }, [allowedStudioOrigins, allowedStudioStaticBaseUrl]);
   return <>{node}</>;
 };
 

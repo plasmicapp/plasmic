@@ -71,5 +71,9 @@ for (let i = 0; i < styleSections.length; i++) {
 registerTestComponent("All", styleSections);
 
 export default function Host() {
-  return <PlasmicCanvasHost />;
+  return (
+    <PlasmicCanvasHost
+      allowedStudioOrigins={[process.env.NEXT_PUBLIC_STUDIO_ORIGIN]}
+    />
+  );
 }

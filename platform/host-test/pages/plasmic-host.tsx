@@ -28,5 +28,9 @@ registerComponent(Badge, {
 registerAllPropTypes();
 
 export default function Host() {
-  return <PlasmicCanvasHost />;
+  return (
+    <PlasmicCanvasHost
+      allowedStudioOrigins={[process.env.NEXT_PUBLIC_STUDIO_ORIGIN]}
+    />
+  );
 }

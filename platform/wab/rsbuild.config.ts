@@ -131,7 +131,7 @@ const appConfig = defineConfig({
       : {}),
     // We write intermediate files to disk (build/) for debugging,
     // and also because our local host server will serve from there.
-    writeToDisk: publicUrl.includes("localhost") ? true : false,
+    writeToDisk: true,
   },
   server: {
     host: bindHost,
@@ -219,6 +219,8 @@ const appConfig = defineConfig({
           inject: false,
           templateParameters: {
             commitHash,
+            publicUrl,
+            staticUrl,
           },
         }),
         new HtmlWebpackPlugin({

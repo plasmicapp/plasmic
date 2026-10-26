@@ -51,5 +51,7 @@ echo "Invalidating CDN cache..."
 gcloud compute url-maps invalidate-cdn-cache platform-url-map --path "/" --async --project "$GCP_PROJECT"
 gcloud compute url-maps invalidate-cdn-cache platform-url-map --path "/index.html" --async --project "$GCP_PROJECT"
 gcloud compute url-maps invalidate-cdn-cache platform-url-map --path "/static/js/studio.js" --async --project "$GCP_PROJECT"
+gcloud compute url-maps invalidate-cdn-cache platform-url-map --path "/static/host.html" --async --project "$GCP_PROJECT"
+gcloud compute url-maps invalidate-cdn-cache platform-url-map --path "/static/popup.html" --async --project "$GCP_PROJECT"
 
 echo "Deployment complete!"
