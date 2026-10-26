@@ -2,6 +2,7 @@ import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { createDbConnection } from "@/wab/server/db/dbcli-utils";
 import { logger } from "@/wab/server/observability";
+import { runJob } from "@/wab/server/run-job";
 import { delay, ensure } from "@/wab/shared/common";
 import { Command, InvalidArgumentError } from "commander";
 
@@ -109,11 +110,5 @@ export async function main() {
 }
 
 if (require.main === module) {
-  main().catch((error: unknown) => {
-    logger.error("Session pruning failed", {
-      errorMessage: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-    });
-    process.exitCode = 1;
-  });
+  runJob("session-prune", main);
 }

@@ -4,7 +4,8 @@ import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { createDbConnection } from "@/wab/server/db/dbcli-utils";
 import { ProjectRevision } from "@/wab/server/entities/Entities";
 import { logger } from "@/wab/server/observability";
-import { assert, ensure, spawn } from "@/wab/shared/common";
+import { runJob } from "@/wab/server/run-job";
+import { assert, ensure } from "@/wab/shared/common";
 import { MoreThan } from "typeorm";
 
 export async function main() {
@@ -239,5 +240,5 @@ export async function main() {
 }
 
 if (require.main === module) {
-  spawn(main());
+  runJob("db-prune", main);
 }
