@@ -133,6 +133,7 @@ function SettingsContainer(props: SettingsContainerProps) {
                   } catch (err: unknown) {
                     if (err instanceof PreconditionFailedError) {
                       showError(err);
+                      return;
                     }
                     throw err;
                   }

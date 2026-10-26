@@ -3,6 +3,7 @@ import {
   shouldIgnoreError,
 } from "@/wab/client/ErrorNotifications";
 import { AppCtx } from "@/wab/client/app-ctx";
+import { isExpectedApiError } from "@/wab/client/observability/expected-errors";
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { UserError } from "@/wab/shared/UserError";
 import { CustomError, hackyCast, withoutFalsy } from "@/wab/shared/common";
@@ -47,6 +48,10 @@ export function initSentryBrowser(opts: {
       }
 
       if (hint && hint.originalException instanceof UserError) {
+        return null;
+      }
+
+      if (isExpectedApiError(hint?.originalException)) {
         return null;
       }
 
