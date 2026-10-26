@@ -67,9 +67,11 @@ import {
   sourceMatchThemeStyle,
 } from "@/wab/shared/core/styles";
 import {
+  clearText,
   isTplComponent,
   isTplNamable,
   isTplTag,
+  removeTextOverride,
   summarizeTplNamable,
   tryGetTplOwnerComponent,
 } from "@/wab/shared/core/tpls";
@@ -87,7 +89,6 @@ import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setti
 import { BASE_THEMABLE_TAG } from "@/wab/shared/html";
 import {
   Expr,
-  RawText,
   Site,
   TplNode,
   Variant,
@@ -936,12 +937,10 @@ export const VariantSettingPopoverContent = observer(
             title="Text"
             type="target"
             onClear={() =>
-              viewCtx.change(
-                () =>
-                  (vs.text = new RawText({
-                    text: "",
-                    markers: [],
-                  })),
+              viewCtx.change(() =>
+                isBaseVariant(vs.variants)
+                  ? clearText(tpl, vs)
+                  : removeTextOverride(tpl, vs),
               )
             }
           >

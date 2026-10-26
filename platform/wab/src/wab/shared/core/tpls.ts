@@ -664,6 +664,30 @@ export function fixTextChildren(tpl: TplTag) {
   return tpl;
 }
 
+export function clearText(tpl: TplNode, vs: VariantSetting) {
+  assert(isTplTextBlock(tpl), "clearText expects a TplTag with 'text' type");
+  if (isKnownRawText(vs.text)) {
+    vs.text.text = "";
+    vs.text.markers = [];
+  } else {
+    vs.text = new RawText({ text: "", markers: [] });
+  }
+  fixTextChildren(tpl);
+}
+
+export function removeTextOverride(tpl: TplNode, vs: VariantSetting) {
+  assert(
+    isTplTextBlock(tpl),
+    "removeTextOverride expects a TplTag with 'text' type",
+  );
+  assert(
+    !isBaseVariant(vs.variants),
+    "Cannot remove the text of the base variant setting",
+  );
+  vs.text = undefined;
+  fixTextChildren(tpl);
+}
+
 export function reconnectChildren(tpl: TplNode) {
   tplChildren(tpl).forEach((child) => (child.parent = tpl));
   return tpl;

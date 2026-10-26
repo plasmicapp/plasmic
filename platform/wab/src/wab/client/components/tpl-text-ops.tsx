@@ -6,9 +6,10 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { DataTokenRef, generateDataTokenName } from "@/wab/commons/DataToken";
 import { isBaseVariant, tryGetVariantSetting } from "@/wab/shared/Variants";
 import {
+  clearText,
   convertTextToDynamic,
-  fixTextChildren,
   mkDataTokenExprText,
+  removeTextOverride,
 } from "@/wab/shared/core/tpls";
 import {
   DefinedIndicatorType,
@@ -16,7 +17,6 @@ import {
 } from "@/wab/shared/defined-indicator";
 import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import {
-  RawText,
   TplTag,
   VariantSetting,
   isKnownRawText,
@@ -39,10 +39,9 @@ export interface TplTextOps {
     createDataToken?: () => void;
     /** Bind the text directly to an existing data token. */
     bindDataToken?: (dataTokenRef: DataTokenRef) => void;
-    /** Set to empty RawText. */
-    clear?: () => void;
-    /** Set to undefined, on non-base variants only. */
-    removeVariantSetting?: () => void;
+    clearText?: () => void;
+    /** Only on non-base variants. */
+    removeTextOverride?: () => void;
   };
 }
 
@@ -106,28 +105,22 @@ export function makeTplTextOps(viewCtx: ViewCtx, tpl: TplTag): TplTextOps {
           }
         : undefined,
 
-      clear:
+      clearText:
         isKnownRawText(targetVsText) &&
         targetVsText.text === "" &&
         targetVsText.markers.length === 0
           ? undefined
           : () => {
               viewCtx.change(() => {
-                if (isKnownRawText(targetVsText)) {
-                  targetVsText.text = "";
-                  targetVsText.markers = [];
-                  fixTextChildren(tpl);
-                } else {
-                  targetVs.text = new RawText({ text: "", markers: [] });
-                }
+                clearText(tpl, targetVs);
               });
             },
 
-      removeVariantSetting:
+      removeTextOverride:
         targetVsText && !isBaseVariant(targetVariants)
           ? () => {
               viewCtx.change(() => {
-                targetVs.text = undefined;
+                removeTextOverride(tpl, targetVs);
               });
             }
           : undefined,
@@ -178,19 +171,19 @@ export function makeTplTextMenu(ops: TplTextOps, viewCtx: ViewCtx) {
       </Menu.Item>,
     );
   }
-  if (ops.actions.removeVariantSetting) {
+  if (ops.actions.removeTextOverride) {
     menuItems.push(
       <Menu.Item
         key="remove-text-override"
-        onClick={ops.actions.removeVariantSetting}
+        onClick={ops.actions.removeTextOverride}
       >
         Remove text override
       </Menu.Item>,
     );
   }
-  if (ops.actions.clear) {
+  if (ops.actions.clearText) {
     menuItems.push(
-      <Menu.Item key="clear-text" onClick={ops.actions.clear}>
+      <Menu.Item key="clear-text" onClick={ops.actions.clearText}>
         Clear text
       </Menu.Item>,
     );
