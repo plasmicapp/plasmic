@@ -206,7 +206,7 @@ import {
   withoutNils,
   xor,
 } from "@/wab/shared/common";
-import { CreateChatCompletionRequest } from "@/wab/shared/copilot/prompt-utils";
+import { ModelProviderOpts } from "@/wab/shared/copilot/provider";
 import {
   cloneSite,
   fixAppAuthRefs,
@@ -258,7 +258,7 @@ import {
   MergeStep,
   tryMerge,
 } from "@/wab/shared/site-diffs/merge-core";
-import { LanguageModelRequestMetadata } from "ai";
+import { ModelMessage } from "ai";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import fs from "fs";
@@ -6402,8 +6402,8 @@ export class DbMgr implements MigrationDbMgr {
     projectId: ProjectId;
     userPrompt: string;
     response: string;
-    model: "gpt" | "claude";
-    request: CreateChatCompletionRequest | LanguageModelRequestMetadata;
+    model: string;
+    request: { modelProviderOpts: ModelProviderOpts; messages: ModelMessage[] };
   }) {
     await this.checkProjectPerms(projectId, "content", "use Plasmic AI");
     const copilotInteraction = this.copilotInteractions().create({

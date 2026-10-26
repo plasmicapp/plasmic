@@ -442,6 +442,12 @@ const DEFAULT_DEVFLAGS = {
     modelName: "claude-sonnet-5",
     maxTokens: 32000,
   } as ModelProviderOpts,
+  codeCopilotModelProviderOpts: {
+    provider: "OpenAI",
+    modelName: "gpt-6-luna",
+    maxTokens: 4000,
+    options: { openai: { reasoningEffort: "low" } },
+  } as ModelProviderOpts,
   phishingCheckModelProviderOpts: {
     provider: "Google",
     modelName: "gemini-2.5-flash-lite",

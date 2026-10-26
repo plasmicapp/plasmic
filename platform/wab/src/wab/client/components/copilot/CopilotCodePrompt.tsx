@@ -2,7 +2,6 @@ import { CopilotPromptDialog } from "@/wab/client/components/copilot/CopilotProm
 import { dataPickerShouldHideKey } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import PlasmicCopilotCodePrompt from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotCodePrompt";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { CopilotResponseData } from "@/wab/shared/ApiSchema";
 import {
   ensure,
   isPrimitive,
@@ -63,38 +62,30 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
               type={type}
               maxLength={500}
               onCopilotSubmit={async ({ prompt }) => {
-                const result = await studioCtx.appCtx.api
-                  .queryCopilot({
-                    ...(type === "sql"
-                      ? {
-                          type: "code-sql",
-                          schema: ensure(
-                            dataSourceSchema,
-                            () => `Missing schema`,
-                          ),
-                          currentCode: processCurrentCode(currentValue),
-                          data: processData(data),
-                        }
-                      : {
-                          type: "code",
-                          context,
-                          currentCode: processCurrentCode(currentValue),
-                          data: processData(data),
-                        }),
-                    projectId: studioCtx.siteInfo.id,
-                    goal: prompt,
-                  })
-                  .then((x) => {
-                    const res: CopilotResponseData = JSON.parse(x.response);
-                    return res;
-                  });
-
-                const response =
-                  result.data.choices[0]?.message?.content ?? undefined;
+                const result = await studioCtx.appCtx.api.queryCopilot({
+                  ...(type === "sql"
+                    ? {
+                        type: "code-sql",
+                        schema: ensure(
+                          dataSourceSchema,
+                          () => `Missing schema`,
+                        ),
+                        currentCode: processCurrentCode(currentValue),
+                        data: processData(data),
+                      }
+                    : {
+                        type: "code",
+                        context,
+                        currentCode: processCurrentCode(currentValue),
+                        data: processData(data),
+                      }),
+                  projectId: studioCtx.siteInfo.id,
+                  goal: prompt,
+                });
 
                 return {
-                  response,
-                  displayMessage: response,
+                  response: result.response,
+                  displayMessage: result.response,
                   copilotInteractionId: result.copilotInteractionId,
                   data,
                   currentValue,

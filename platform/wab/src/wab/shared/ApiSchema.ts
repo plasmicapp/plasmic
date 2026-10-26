@@ -5,10 +5,7 @@
 import { StyleTokenType } from "@/wab/commons/StyleToken";
 import { Bundle } from "@/wab/shared/bundles";
 import { Dict } from "@/wab/shared/collections";
-import {
-  CopilotChat,
-  WholeChatCompletionResponse,
-} from "@/wab/shared/copilot/prompt-utils";
+import { CopilotChat } from "@/wab/shared/copilot/prompt-utils";
 import { ModelProviderOpts } from "@/wab/shared/copilot/provider";
 import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
@@ -1985,7 +1982,6 @@ export interface ListAuthIntegrationsResponse {
 interface QueryCopilotResquestBase {
   type: string;
   projectId: ProjectId;
-  useClaude?: boolean;
 }
 
 export interface QueryCopilotCodeRequest extends QueryCopilotResquestBase {
@@ -2002,13 +1998,6 @@ export interface QueryCopilotSqlCodeRequest extends QueryCopilotResquestBase {
   currentCode?: string;
   schema: DataSourceSchema;
   goal: string;
-}
-
-export interface QueryCopilotDebugRequest extends QueryCopilotResquestBase {
-  type: "debug";
-  rawDebug?: string;
-  typeDebug?: string;
-  dataSourcesDebug?: true;
 }
 
 export const copilotImageTypes = ["png", "jpeg", "jpg", "gif", "webp"] as const;
@@ -2038,21 +2027,12 @@ export type QueryCopilotChatUiStreamRequest = {
 } & CopilotChat;
 
 export type QueryCopilotRequest =
-  | QueryCopilotCodeRequest
-  | QueryCopilotSqlCodeRequest
-  | QueryCopilotDebugRequest;
+  QueryCopilotCodeRequest | QueryCopilotSqlCodeRequest;
 
 export interface QueryCopilotResponse {
-  dataSourcesDebug?: string;
-  rawDebug?: string;
   response: string;
-  typeDebug?: string;
-}
-
-export type CopilotResponseData = {
-  data: WholeChatCompletionResponse;
   copilotInteractionId: CopilotInteractionId;
-};
+}
 
 export interface SendCopilotFeedbackRequest {
   id: CopilotInteractionId;

@@ -26,6 +26,11 @@ const E2E_DEVFLAGS: Partial<DevFlagsType> = {
     modelName: "not-a-model",
     maxTokens: 1,
   } as unknown as DevFlagsType["chatCopilotModelProviderOpts"],
+  codeCopilotModelProviderOpts: {
+    provider: "NotAProvider",
+    modelName: "not-a-model",
+    maxTokens: 1,
+  } as unknown as DevFlagsType["codeCopilotModelProviderOpts"],
 
   // tutorial.spec.ts
   templateTours: {

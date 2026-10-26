@@ -65,10 +65,6 @@ interface Secrets {
     password: string;
     database?: string;
   };
-  dynamodb?: {
-    accessKeyId: string;
-    secretAccessKey: string;
-  };
 }
 
 export function getEncryptionKey() {
@@ -141,10 +137,6 @@ export function getVercelSecrets() {
 
 export function getClickhouseSecrets() {
   return loadSecrets().clickhouse;
-}
-
-export function getDynamoDbSecrets() {
-  return loadSecrets().dynamodb;
 }
 
 export function loadSecrets(): Secrets {

@@ -1072,7 +1072,7 @@ export class CopilotInteraction extends Base<"CopilotInteractionId"> {
   fullPromptSnapshot: string;
 
   @Column("text")
-  model: "gpt" | "claude";
+  model: string;
 
   @ManyToOne(() => Project)
   project: Project | null;
