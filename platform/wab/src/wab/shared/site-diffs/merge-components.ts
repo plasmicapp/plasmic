@@ -43,10 +43,12 @@ import { ChangeRecorder } from "@/wab/shared/core/observable-model";
 import { visitComponentRefs } from "@/wab/shared/core/sites";
 import {
   fixParentPointers,
+  isTplComponent,
   mkTplComponentX,
   tplChildren,
   trackComponentRoot,
   trackComponentSite,
+  walkTpls,
 } from "@/wab/shared/core/tpls";
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import {
@@ -1549,43 +1551,74 @@ export function fixDuplicatedCodeComponents(mergedSite: Site) {
     });
   });
   // Also fix duplicated params
-  mergedSite.components.filter(isCodeComponent).forEach((component) => {
-    const paramsByName = groupBy(component.params, (p) => p.variable.name);
-    visitComponentRefs(mergedSite, component, (tplComponent) => {
-      tplComponent.vsettings.forEach((vs) => {
-        // Since code components can be reinstantied and new instance of params can appear
-        // in the site, we can arrive at situations where a param is duplicated in the same
-        // variant setting. For the values where there is an already valid param, we keep it
-        // and remove the others. But if there is no valid param, we try to convert the old
-        // params to the new ones.
-        const validArgsVarNameSet = new Set(
-          vs.args
-            .filter(
-              (arg) => paramsByName[arg.param.variable.name]?.[0] === arg.param,
-            )
-            .map((arg) => arg.param.variable.name),
-        );
+  const codeComponents = mergedSite.components.filter(isCodeComponent);
+  if (codeComponents.length === 0) {
+    return;
+  }
+  const paramsByNameByComponent = new Map<Component, Record<string, Param[]>>(
+    codeComponents.map((component) =>
+      tuple(
+        component,
+        groupBy(component.params, (p) => p.variable.name),
+      ),
+    ),
+  );
+  // A single pass over the site instead of one visitComponentRefs per code
+  // component, which rebuilds the referencers map of the whole site every call.
+  const fixTplComponentArgs = (tplComponent: TplComponent) => {
+    const paramsByName = paramsByNameByComponent.get(tplComponent.component);
+    if (!paramsByName) {
+      return;
+    }
+    tplComponent.vsettings.forEach((vs) => {
+      // Since code components can be reinstantiated and new instances of params can appear
+      // in the site, we can arrive at situations where a param is duplicated in the same
+      // variant setting. For the values where there is an already valid param, we keep it
+      // and remove the others. But if there is no valid param, we try to convert the old
+      // params to the new ones.
+      const validArgsVarNameSet = new Set(
+        vs.args
+          .filter(
+            (arg) => paramsByName[arg.param.variable.name]?.[0] === arg.param,
+          )
+          .map((arg) => arg.param.variable.name),
+      );
 
-        removeWhere(vs.args, (arg) => {
-          const name = arg.param.variable.name;
-          const finalParam = paramsByName[name]?.[0];
-          return validArgsVarNameSet.has(name) && arg.param !== finalParam;
-        });
+      removeWhere(vs.args, (arg) => {
+        const name = arg.param.variable.name;
+        const finalParam = paramsByName[name]?.[0];
+        return validArgsVarNameSet.has(name) && arg.param !== finalParam;
+      });
 
-        vs.args.forEach((arg) => {
-          const name = arg.param.variable.name;
-          const finalParam = paramsByName[name]?.[0];
-          if (finalParam && finalParam !== arg.param) {
-            arg.param = finalParam;
-          }
-        });
+      vs.args.forEach((arg) => {
+        const name = arg.param.variable.name;
+        const finalParam = paramsByName[name]?.[0];
+        if (finalParam && finalParam !== arg.param) {
+          arg.param = finalParam;
+        }
+      });
 
-        removeWhere(vs.args, (arg) => {
-          const name = arg.param.variable.name;
-          return !paramsByName[name]?.[0];
-        });
+      removeWhere(vs.args, (arg) => {
+        const name = arg.param.variable.name;
+        return !paramsByName[name]?.[0];
       });
     });
+  };
+  for (const component of mergedSite.components) {
+    walkTpls(component.tplTree, {
+      pre(tpl) {
+        if (isTplComponent(tpl)) {
+          fixTplComponentArgs(tpl);
+        }
+      },
+    });
+  }
+  mergedSite.globalContexts.forEach(fixTplComponentArgs);
+  codeComponents.forEach((component) => {
+    const paramsByName = ensure(
+      paramsByNameByComponent.get(component),
+      "Code component params should be grouped",
+    );
     removeWhere(
       component.params,
       (p) => p !== paramsByName[p.variable.name][0],

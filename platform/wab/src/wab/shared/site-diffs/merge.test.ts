@@ -109,6 +109,7 @@ import {
   TestResult,
   upsertTokens,
 } from "@/wab/shared/site-diffs/__testonly__/utils";
+import { fixDuplicatedCodeComponents } from "@/wab/shared/site-diffs/merge-components";
 import { MergeStep } from "@/wab/shared/site-diffs/merge-core";
 import { fillVirtualSlotContents } from "@/wab/shared/SlotUtils";
 import { ensureBaseVariant, TplMgr } from "@/wab/shared/TplMgr";
@@ -2838,6 +2839,62 @@ describe("merging", () => {
         .map((tpl) => (tpl as any).name),
     ).toMatchObject(["oldRoot"]);
   });
+  it("repairs code component args inside stale slots and global contexts", () => {
+    const site = createSite();
+    const makeCodeComponent = (name: string) =>
+      mkCodeComponent(name, { name, props: {}, importPath: "" }, {});
+    const container = makeCodeComponent("Container");
+    const child = makeCodeComponent("Child");
+    site.components.push(container, child);
+    const staleSlot = addSlotParam(site, container, "children");
+    const slot = addSlotParam(site, container, "children");
+    slot.variable.name = staleSlot.variable.name;
+    container.params = [slot];
+    const makeProp = (name: string) =>
+      mkParam({ name, type: typeFactory.any(), paramType: "prop" });
+    const prop = makeProp("value");
+    const staleProp = makeProp("value");
+    child.params = [prop, staleProp];
+    const nested = mkTplComponentX({
+      component: child,
+      baseVariant: getBaseVariant(child),
+    });
+    const staleArg = new Arg({ param: staleProp, expr: codeLit("stale") });
+    const validArg = new Arg({ param: prop, expr: codeLit("valid") });
+    nested.vsettings[0].args = [staleArg, validArg];
+    const root = mkTplComponentX({
+      component: container,
+      baseVariant: getBaseVariant(container),
+    });
+    root.vsettings[0].args = [
+      new Arg({ param: staleSlot, expr: new RenderExpr({ tpl: [nested] }) }),
+    ];
+    nested.parent = root;
+    const page = new TplMgr({ site }).addComponent({
+      name: "Page",
+      type: ComponentType.Plain,
+    });
+    $$$(page.tplTree).append(root);
+    const context = mkTplComponentX({
+      component: child,
+      baseVariant: getBaseVariant(child),
+    });
+    const contextArg = new Arg({ param: staleProp, expr: codeLit("context") });
+    context.vsettings[0].args = [
+      contextArg,
+      new Arg({ param: makeProp("removed"), expr: codeLit("removed") }),
+    ];
+    site.globalContexts.push(context);
+
+    fixDuplicatedCodeComponents(site);
+
+    expect(root.vsettings[0].args[0].param).toBe(slot);
+    expect(nested.vsettings[0].args).toEqual([validArg]);
+    expect(context.vsettings[0].args).toEqual([contextArg]);
+    expect(contextArg.param).toBe(prop);
+    expect(child.params).toEqual([prop]);
+  });
+
   it("Name collisions with code components, props and normal components", () => {
     const result = testMergeFromJsonBundle(
       hackyCast<ProjectFullDataResponse>(codeComponentsWithSameNameBundle),
