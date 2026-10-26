@@ -2,13 +2,12 @@ import {
   coalesce,
   ensure,
   filterMapTruthy,
+  isEqualWithoutKeys,
   multimap,
   tuple,
 } from "@/wab/shared/common";
-import isObject from "lodash/isObject";
-import omit from "lodash/omit";
+import type { ObjInst } from "@/wab/shared/model/classes";
 import pick from "lodash/pick";
-import sortBy from "lodash/sortBy";
 import uniqBy from "lodash/uniqBy";
 
 export class Class {
@@ -348,44 +347,7 @@ export function toTs(type: Type) {
   }
 }
 
-/**
- * Converts the model structure to one that:
- *
- * - has a stable order of keys, for consistent JSON.stringify's
- * - has no uid's, so you can compare the JSON.stringify's for value-equality
- * - has repeated elements referenced by their IDs
- */
-export function withoutUids(
-  x_: any,
-  { includeUids = false }: { includeUids?: boolean } = {},
-) {
-  const seen = {};
-  let counter = 0;
-  function rec(x: any) {
-    if (x == null) {
-      return x;
-      // We must short-circuit functions because Fiber.
-    } else if (typeof x === "function") {
-      return x;
-    } else if (Array.isArray(x)) {
-      return Array.from(x).map((e) => rec(e));
-    } else if (isObject(x)) {
-      if (x["uid"] != null) {
-        const uid = x["uid"];
-        if (x["uid"] in seen) {
-          return `[seen@${seen[uid]}]`;
-        }
-        seen[uid] = counter++;
-      }
-      return Object.fromEntries(
-        sortBy(
-          Object.entries(includeUids ? x : omit(x, "uid", "uuid")),
-          ([k, v]) => k,
-        ).map(([k, v]) => tuple(k, rec(v))),
-      );
-    } else {
-      return x;
-    }
-  }
-  return rec(x_);
+/** Returns whether model instances a and b are deeply equal. */
+export function areModelsEqual(a: ObjInst, b: ObjInst): boolean {
+  return isEqualWithoutKeys(a, b, ["uid", "uuid"]);
 }

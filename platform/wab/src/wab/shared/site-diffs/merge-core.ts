@@ -63,8 +63,8 @@ import { meta } from "@/wab/shared/model/classes-metas";
 import {
   Class,
   Field,
+  areModelsEqual,
   isWeakRefField,
-  withoutUids,
 } from "@/wab/shared/model/model-meta";
 import {
   NodeCtx,
@@ -97,7 +97,6 @@ import {
   uniqBy,
   zip,
 } from "lodash";
-import isEqual from "lodash/isEqual";
 
 // site-diffs has circular dependencies
 // keeping these imports last seems to make sure everything works properly
@@ -2037,7 +2036,7 @@ export function tryMerge(
   picks: DirectConflictPickMap | undefined,
 ): MergeStep {
   assert(
-    isEqual(withoutUids(ancestor), withoutUids(mergedSite)),
+    areModelsEqual(ancestor, mergedSite),
     "Initial merged site must be identical to ancestor site",
   );
 

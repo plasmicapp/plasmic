@@ -25,8 +25,8 @@ import {
   ProjectId,
 } from "@/wab/shared/ApiSchema";
 import { assert, ensure, sortBy, tuple } from "@/wab/shared/common";
-import { ProjectDependency, Site } from "@/wab/shared/model/classes";
-import { withoutUids } from "@/wab/shared/model/model-meta";
+import { ProjectDependency } from "@/wab/shared/model/classes";
+import { areModelsEqual } from "@/wab/shared/model/model-meta";
 import { BranchSide } from "@/wab/shared/site-diffs/merge-core";
 import { omit } from "lodash";
 import { Connection } from "typeorm";
@@ -162,11 +162,8 @@ describe("branching", () => {
         },
       );
       expect(
-        withoutUids(
+        areModelsEqual(
           bundler.unbundle(JSON.parse(latestBranchRev.data), project.id),
-        ) as Site,
-      ).toEqual(
-        withoutUids(
           (
             bundler.unbundle(
               JSON.parse(basePkgVersion.model),
@@ -174,7 +171,7 @@ describe("branching", () => {
             ) as ProjectDependency
           ).site,
         ),
-      );
+      ).toBe(true);
     }));
 
   it("can create and list commits on any branch", () =>

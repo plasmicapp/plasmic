@@ -5,7 +5,7 @@ import {
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
-import { withoutUids } from "@/wab/shared/model/model-meta";
+import { areModelsEqual } from "@/wab/shared/model/model-meta";
 import {
   INITIAL_VERSION_NUMBER,
   calculateSemVer,
@@ -40,11 +40,7 @@ export async function createBranchFromBase(
       : undefined;
 
     // The newest version is equal to the latest PkgVersion
-    if (
-      pkgVersion &&
-      JSON.stringify(withoutUids(latestRevSite)) ===
-        JSON.stringify(withoutUids(latestPkgSite))
-    ) {
+    if (latestPkgSite && areModelsEqual(latestRevSite, latestPkgSite)) {
       return;
     }
 

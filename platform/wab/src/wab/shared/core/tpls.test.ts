@@ -36,7 +36,7 @@ import {
   ensureKnownTplNode,
   isKnownTplSlot,
 } from "@/wab/shared/model/classes";
-import { withoutUids } from "@/wab/shared/model/model-meta";
+import { areModelsEqual } from "@/wab/shared/model/model-meta";
 import { typeFactory } from "@/wab/shared/model/model-util";
 
 describe("clone", () =>
@@ -47,7 +47,7 @@ describe("clone", () =>
     });
     const tpl = Tpls.mkTplComponent(component, STpls.TEST_GLOBAL_VARIANT, []);
     const clone = Tpls.clone(tpl);
-    return expect(withoutUids(clone)).toEqual(withoutUids(tpl));
+    return expect(areModelsEqual(clone, tpl)).toBe(true);
   }));
 
 describe("flattenTpls", () =>

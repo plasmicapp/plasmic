@@ -88,7 +88,6 @@ import {
   TplTag,
   VariantedValue,
 } from "@/wab/shared/model/classes";
-import { withoutUids } from "@/wab/shared/model/model-meta";
 import { typeFactory } from "@/wab/shared/model/model-util";
 import codeComponentsWithSameNameBundle from "@/wab/shared/site-diffs/__testonly__/bundles/code-components-with-same-name.json";
 import globalContextBundle from "@/wab/shared/site-diffs/__testonly__/bundles/global-context-merge.json";
@@ -121,7 +120,7 @@ import {
   mkVariantSetting,
 } from "@/wab/shared/Variants";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
-import { isArray, isString, pick, sortBy } from "lodash";
+import { isArray, isString, omit, pick, sortBy } from "lodash";
 import type { PartialDeep } from "type-fest";
 
 const fixmeLater = false;
@@ -605,7 +604,7 @@ describe("merging", () => {
           {
             violation: "duplicate-names",
             mergedInst: {
-              ...withoutUids(shallow(rightSubject)),
+              ...omit(shallow(rightSubject), "uuid"),
               name: "aaa 2",
             },
             origName: "aaa",
@@ -636,7 +635,7 @@ describe("merging", () => {
           {
             violation: "duplicate-names",
             mergedInst: {
-              ...withoutUids(shallow(rightSubject)),
+              ...omit(shallow(rightSubject), "uuid"),
               name: "X 2",
             },
             origName: "X",
@@ -715,7 +714,7 @@ describe("merging", () => {
           {
             violation: "duplicate-names",
             mergedInst: {
-              ...withoutUids(shallow(rightSubject)),
+              ...omit(shallow(rightSubject), "uuid"),
               variable: {
                 name: "variable 2",
               },

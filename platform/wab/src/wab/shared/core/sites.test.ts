@@ -25,7 +25,6 @@ import {
   Site,
   SiteParams,
 } from "@/wab/shared/model/classes";
-import { withoutUids } from "@/wab/shared/model/model-meta";
 import {
   createNodeCtx,
   walkModelTree,
@@ -254,8 +253,12 @@ describe("cloneSite", () => {
     const sourceSite = ensureKnownSite(
       bundles.map(([id, bundle]) => bundler.unbundle(bundle, id)).pop(),
     );
+    const [sourceId, sourceBundle] = ensure(
+      bundles.at(-1),
+      "Expected the website bundle",
+    );
 
-    function normalize(site: Site) {
+    function normalize(site: Site, id: string) {
       // Assign UUIDs by tree position, including references in CSS and map keys.
       const uuids = new Map<string, string>();
       for (const inst of walkModelTree(createNodeCtx(site))) {
@@ -271,35 +274,65 @@ describe("cloneSite", () => {
         [...uuids.keys()].map(escapeRegExp).join("|"),
         "g",
       );
-      // Cloning refreshes component timestamps and may swap null with undefined.
+      // Assign IIDs by position in a walk from the root, since the bundle map
+      // is ordered by uid.
+      const bundle = bundler.bundle(site, id, sourceBundle.version);
+      const iids = new Map<string, string>();
+      const visit = (value: any) => {
+        if (Array.isArray(value)) {
+          value.forEach(visit);
+        } else if (value && typeof value === "object") {
+          if (typeof value.__ref === "string") {
+            if (!iids.has(value.__ref)) {
+              iids.set(value.__ref, `normalized-iid-${iids.size}`);
+              visit(bundle.map[value.__ref]);
+            }
+          } else {
+            for (const key of Object.keys(value).sort()) {
+              visit(value[key]);
+            }
+          }
+        }
+      };
+      visit({ __ref: bundle.root });
+      const map = Object.fromEntries(
+        Object.entries(bundle.map).map(([iid, json]) => [
+          ensure(iids.get(iid), "Expected a reachable IID"),
+          json,
+        ]),
+      );
+      // Cloning refreshes component timestamps.
       return JSON.parse(
-        JSON.stringify(withoutUids(site), function (key, value) {
-          return key === "updatedAt" && "tplTree" in this ? 0 : (value ?? null);
-        }).replace(pattern, (id) =>
-          ensure(uuids.get(id), "Expected a known model UUID"),
+        JSON.stringify(map, function (key, value) {
+          if (key === "__ref") {
+            return iids.get(value);
+          }
+          return key === "updatedAt" && "tplTree" in this ? 0 : value;
+        }).replace(pattern, (uuid) =>
+          ensure(uuids.get(uuid), "Expected a known model UUID"),
         ),
       );
     }
 
-    const sourceBefore = withoutUids(sourceSite, { includeUids: true });
-    const expected = normalize(sourceSite);
+    const sourceBefore = JSON.stringify(
+      bundler.bundle(sourceSite, sourceId, sourceBundle.version),
+    );
+    const expected = normalize(sourceSite, sourceId);
     const clonedSite = cloneSite(sourceSite);
 
     // The clone must not reference objects owned by the source project.
-    const sourceBundle = ensure(
-      bundles.at(-1),
-      "Expected the website bundle",
-    )[1];
     const clonedBundle = bundler.bundle(
       clonedSite,
       "cloned-project",
       sourceBundle.version,
     );
     expect(clonedBundle.deps.sort()).toEqual([...sourceBundle.deps].sort());
-    expect(normalize(clonedSite)).toEqual(expected);
-    expect(withoutUids(sourceSite, { includeUids: true })).toEqual(
-      sourceBefore,
-    );
+    expect(normalize(clonedSite, "cloned-project")).toEqual(expected);
+    expect(
+      JSON.stringify(
+        bundler.bundle(sourceSite, sourceId, sourceBundle.version),
+      ),
+    ).toEqual(sourceBefore);
   });
 
   test("does not retain source-project refs from custom-function server queries", () => {

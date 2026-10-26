@@ -2596,6 +2596,92 @@ export function setEquals<T extends Set<any>>(set1: T, set2: T) {
 }
 
 /**
+ * Returns whether a and b are deeply equal, ignoring the given keys, without
+ * copying either value and stopping at the first difference.
+ */
+export function isEqualWithoutKeys(
+  a_: unknown,
+  b_: unknown,
+  keys: string[],
+): boolean {
+  const seenA = new Map<object, number>();
+  const seenB = new Map<object, number>();
+  let counter = 0;
+
+  function collectKeys(x: any): string[] {
+    const result: string[] = [];
+    for (const key in x) {
+      if (!keys.includes(key)) {
+        result.push(key);
+      }
+    }
+    return result;
+  }
+
+  // rec is called on every value in a's and b's subtrees
+  // see tests for performance benchmarks
+  function rec(a: any, b: any): boolean {
+    if (a == null || b == null) {
+      return a === b;
+    }
+    const aIsObject = typeof a === "object";
+    const bIsObject = typeof b === "object";
+    if (!aIsObject || !bIsObject) {
+      if (aIsObject || bIsObject) {
+        return false;
+      }
+      return a === b || (a !== a && b !== b);
+    }
+    const aIsArray = Array.isArray(a);
+    if (aIsArray || Array.isArray(b)) {
+      if (!aIsArray || !Array.isArray(b) || a.length !== b.length) {
+        return false;
+      }
+      for (let i = 0; i < a.length; i++) {
+        if (!rec(a[i], b[i])) {
+          return false;
+        }
+      }
+      return true;
+    }
+    const aSeen = seenA.get(a);
+    const bSeen = seenB.get(b);
+    if (aSeen !== undefined || bSeen !== undefined) {
+      return aSeen === bSeen;
+    }
+    seenA.set(a, counter);
+    seenB.set(b, counter);
+    counter++;
+    const aKeys = collectKeys(a);
+    const bKeys = collectKeys(b);
+    const n = aKeys.length;
+    if (n !== bKeys.length) {
+      return false;
+    }
+    for (let i = 0; i < n; i++) {
+      if (aKeys[i] !== bKeys[i]) {
+        const bKeySet = new Set(bKeys);
+        for (let j = 0; j < n; j++) {
+          if (!bKeySet.has(aKeys[j])) {
+            return false;
+          }
+        }
+        break;
+      }
+    }
+    for (let i = 0; i < n; i++) {
+      const key = aKeys[i];
+      if (!rec(a[key], b[key])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  return rec(a_, b_);
+}
+
+/**
  * Counts the number of times a substring occurs in another string.
  *
  * https://stackoverflow.com/questions/4009756/how-to-count-string-occurrence-in-string

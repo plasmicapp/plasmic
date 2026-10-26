@@ -1,3 +1,5 @@
+import { generateSiteFromBundle } from "@/wab/shared/__testonly__/site-tests-utils";
+import { Bundle } from "@/wab/shared/bundler";
 import { toVarName } from "@/wab/shared/codegen/util";
 import * as common from "@/wab/shared/common";
 import {
@@ -10,6 +12,7 @@ import {
   groupConsecBy,
   interleave,
   intersectSets,
+  isEqualWithoutKeys,
   isShortUuidV4,
   isUuidV4,
   isValidIsoDate,
@@ -40,9 +43,13 @@ import {
   xOmit,
   xpick,
 } from "@/wab/shared/common";
+import { Site } from "@/wab/shared/model/classes";
 import { mkVariant } from "@/wab/shared/Variants";
+import _bundle from "@/wab/shared/web-exporter/bundles/starter-project-desktop-first.json";
 import dayjs from "dayjs";
 import { identity } from "lodash";
+
+const PRINT_BENCHMARKS = false;
 
 const isEven = (x) => x % 2 === 0;
 
@@ -863,5 +870,229 @@ describe("sortByKeys", () => {
       { name: "bob", age: 12 },
       { name: "frank", age: 10 },
     ]);
+  });
+});
+
+describe("isEqualWithoutKeys", () => {
+  const uidKeys = ["uid", "uuid"];
+  const shared = { uid: 10, v: 1 };
+  const other = { uid: 11, v: 1 };
+  const sharedNoUid = { v: 1 };
+  const sharedArray = [1];
+  const cycle = () => {
+    const x: any = {};
+    x.self = x;
+    return x;
+  };
+  const fn = () => 1;
+  // [name, a, b, equal ignoring uid and uuid, equal ignoring nothing]
+  it.each<[string, any, any, boolean, boolean]>([
+    [
+      "equal objects",
+      { uid: 1, a: 1, b: [1, 2] },
+      { uid: 2, b: [1, 2], a: 1 },
+      true,
+      false,
+    ],
+    ["changed value", { a: 1 }, { a: 2 }, false, false],
+    ["extra key", { a: 1 }, { a: 1, b: 2 }, false, false],
+    ["missing vs undefined", { a: undefined }, {}, false, false],
+    ["null vs undefined", { a: null }, { a: undefined }, false, false],
+    ["NaN", { a: NaN }, { a: NaN }, true, true],
+    ["-0", { a: -0 }, { a: 0 }, true, true],
+    ["same function", { f: fn }, { f: fn }, true, true],
+    ["different functions", { f: fn }, { f: () => 1 }, false, false],
+    ["reordered array", [1, 2], [2, 1], false, false],
+    ["array vs object", [1], { "0": 1 }, false, false],
+    ["uid vs no uid", { x: { uid: 1 } }, { x: {} }, true, false],
+    ["uuid ignored", { uuid: "a", v: 1 }, { uuid: "b", v: 1 }, true, false],
+    [
+      "shared on both sides",
+      { a: shared, b: shared },
+      { a: other, b: other },
+      true,
+      false,
+    ],
+    [
+      "shared vs copies",
+      { a: shared, b: shared },
+      { a: shared, b: other },
+      false,
+      false,
+    ],
+    [
+      "shared without a uid vs copies",
+      { a: sharedNoUid, b: sharedNoUid },
+      { a: { v: 1 }, b: { v: 1 } },
+      false,
+      false,
+    ],
+    [
+      "repeat vs string",
+      { a: shared, b: shared },
+      { a: other, b: "[seen@0]" },
+      false,
+      false,
+    ],
+    [
+      "repeats line up by position, not uid",
+      { x: { uid: 1 }, y: shared, z: shared },
+      { x: {}, y: other, z: other },
+      true,
+      false,
+    ],
+    [
+      "distinct objects with the same uid",
+      { x: { uid: 1, v: 1 }, y: { uid: 1, v: 2 } },
+      { x: { uid: 5, v: 1 }, y: { uid: 6, v: 2 } },
+      true,
+      false,
+    ],
+    [
+      "distinct objects with the same uid, different contents",
+      { x: { uid: 1, v: 1 }, y: { uid: 1, v: 2 } },
+      { x: { uid: 5, v: 1 }, y: { uid: 6, v: 3 } },
+      false,
+      false,
+    ],
+    ["cycles without a uid", cycle(), cycle(), true, true],
+    [
+      "shared array vs copies",
+      { a: sharedArray, b: sharedArray },
+      { a: [1], b: [1] },
+      true,
+      true,
+    ],
+    [
+      "shared object inside arrays vs copies",
+      { a: [shared], b: [shared] },
+      { a: [other], b: [{ uid: 12, v: 1 }] },
+      false,
+      false,
+    ],
+    ["cycle vs finite", cycle(), { self: { self: {} } }, false, false],
+    ["date vs empty object", new Date(1), {}, true, true],
+    ["typed array vs object", new Uint8Array([7]), { "0": 7 }, true, true],
+    ["string vs number", { a: "1" }, { a: 1 }, false, false],
+    [
+      "shared, keys in different orders",
+      { x: shared, y: shared },
+      { y: other, x: other },
+      true,
+      false,
+    ],
+    [
+      "same key count, different keys",
+      { a: 1, b: 1 },
+      { a: 1, c: 1 },
+      false,
+      false,
+    ],
+  ])("%s", (_name, a, b, withoutUidKeys, withAllKeys) => {
+    expect(isEqualWithoutKeys(a, b, uidKeys)).toBe(withoutUidKeys);
+    expect(isEqualWithoutKeys(b, a, uidKeys)).toBe(withoutUidKeys);
+    expect(isEqualWithoutKeys(a, b, [])).toBe(withAllKeys);
+    expect(isEqualWithoutKeys(b, a, [])).toBe(withAllKeys);
+  });
+
+  it("ignores only the given keys", () => {
+    expect(isEqualWithoutKeys({ a: 1, b: 1 }, { a: 1, b: 2 }, ["b"])).toBe(
+      true,
+    );
+    expect(isEqualWithoutKeys({ a: 1, b: 1 }, { a: 2, b: 1 }, ["b"])).toBe(
+      false,
+    );
+  });
+
+  describe("on sites", () => {
+    const bundle = _bundle as [string, Bundle][];
+    const fresh = () => generateSiteFromBundle(bundle);
+    const check = (site: Site, siteCopy: Site, expected: boolean) => {
+      expect(isEqualWithoutKeys(site, siteCopy, uidKeys)).toBe(expected);
+      expect(isEqualWithoutKeys(siteCopy, site, uidKeys)).toBe(expected);
+    };
+
+    it("equal", () => check(fresh(), fresh(), true));
+
+    it("pushed font", () => {
+      const siteCopy = fresh();
+      siteCopy.userManagedFonts.push("x");
+      check(fresh(), siteCopy, false);
+    });
+
+    it("deep nested string", () => {
+      const siteCopy = fresh();
+      let deepest: [any, string] | undefined;
+      let deepestDepth = -1;
+      const visit = (x: any, depth: number, visited: Set<any>) => {
+        if (x == null || typeof x !== "object" || visited.has(x)) {
+          return;
+        }
+        visited.add(x);
+        for (const key in x) {
+          if (
+            typeof x[key] === "string" &&
+            key !== "uuid" &&
+            depth > deepestDepth
+          ) {
+            deepest = [x, key];
+            deepestDepth = depth;
+          }
+          visit(x[key], depth + 1, visited);
+        }
+      };
+      visit(siteCopy.components, 0, new Set());
+      expect(deepestDepth).toBeGreaterThan(5);
+      const [obj, key] = deepest!;
+      obj[key] = obj[key] + "!";
+      check(fresh(), siteCopy, false);
+    });
+
+    it("reordered array", () => {
+      const siteCopy = fresh();
+      siteCopy.components.reverse();
+      check(fresh(), siteCopy, false);
+    });
+
+    it("extra key", () => {
+      const siteCopy = fresh();
+      (siteCopy.components[0] as any).extra = 1;
+      check(fresh(), siteCopy, false);
+    });
+  });
+});
+
+describe("benchmarks", () => {
+  const bundle = _bundle as [string, Bundle][];
+  let site: Site;
+  let siteCopy: Site;
+  beforeAll(() => {
+    site = generateSiteFromBundle(bundle);
+    siteCopy = generateSiteFromBundle(bundle);
+  });
+
+  function bench(name: string, f: () => void) {
+    if (!PRINT_BENCHMARKS) {
+      f();
+      return;
+    }
+    for (let i = 0; i < 5; i++) {
+      f();
+    }
+    const times: number[] = [];
+    for (let i = 0; i < 20; i++) {
+      const start = performance.now();
+      f();
+      times.push(performance.now() - start);
+    }
+    times.sort((a, b) => a - b);
+    const median = (times[9] + times[10]) / 2;
+    console.log(`${name}: ${median.toFixed(1)} ms (median of 20)`);
+  }
+
+  it("isEqualWithoutKeys(site, siteCopy)", () => {
+    bench("isEqualWithoutKeys(site, siteCopy)", () =>
+      expect(isEqualWithoutKeys(site, siteCopy, ["uid", "uuid"])).toBe(true),
+    );
   });
 });

@@ -22,7 +22,7 @@ import {
   ensureKnownTplTag,
   isKnownRenderExpr,
 } from "@/wab/shared/model/classes";
-import { withoutUids } from "@/wab/shared/model/model-meta";
+import { areModelsEqual } from "@/wab/shared/model/model-meta";
 import { typeFactory } from "@/wab/shared/model/model-util";
 
 describe("TplQuery", function () {
@@ -346,14 +346,15 @@ describe("TplQuery", function () {
         baseVariant: TEST_GLOBAL_VARIANT,
       });
       $$$(child).remove({ deep: true });
-      expect(withoutUids($$$(tpl).getSlotArg("children"))).toEqual(
-        withoutUids(
+      expect(
+        areModelsEqual(
+          ensure($$$(tpl).getSlotArg("children"), "Expected a children arg"),
           new Arg({
             param: componentWithSlots.params[0],
             expr: new RenderExpr({ tpl: [] }),
           }),
         ),
-      );
+      ).toBe(true);
     }));
   describe("ungroup", () => {
     it("works on TplTag", () => {

@@ -3,7 +3,7 @@ import { LocalClipboard, TplClip } from "@/wab/client/clipboard/local";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import { mkTplTagX } from "@/wab/shared/core/tpls";
 import { TplTag } from "@/wab/shared/model/classes";
-import { withoutUids } from "@/wab/shared/model/model-meta";
+import { areModelsEqual } from "@/wab/shared/model/model-meta";
 
 describe("LocalClipboard", function () {
   let src: TplTag, cb: LocalClipboard;
@@ -39,13 +39,13 @@ describe("LocalClipboard", function () {
     const z = cb.paste() as TplClip;
     expect(y.type).toEqual("tpl");
     expect(z.type).toEqual("tpl");
-    expect(withoutUids(src)).toEqual(withoutUids(y.node));
-    expect(withoutUids(src)).toEqual(withoutUids(z.node));
+    expect(areModelsEqual(src, y.node)).toBe(true);
+    expect(areModelsEqual(src, z.node)).toBe(true);
   });
   it("should clone, not reference, the object it copies", function () {
     mutate(src);
     const y = cb.paste() as TplClip;
-    expect(withoutUids(src)).not.toEqual(withoutUids(y.node));
+    expect(areModelsEqual(src, y.node)).toBe(false);
   });
   return it("should clone, not reference, the clipboard contents on paste", function () {
     cb.copy({
@@ -56,6 +56,6 @@ describe("LocalClipboard", function () {
     const y = cb.paste() as TplClip;
     mutate(y.node);
     const z = cb.paste() as TplClip;
-    expect(withoutUids(y.node)).not.toEqual(withoutUids(z.node));
+    expect(areModelsEqual(y.node, z.node)).toBe(false);
   });
 });
