@@ -5526,16 +5526,18 @@ export class StudioCtx extends WithDbCtx {
   }
 
   // When adding an event handler we set it here so the interaction section modal can auto-open it.
-  private _newlyAddedEventHandlerKey = observable.box<
-    EventHandlerKeyType | undefined
+  private _newlyAddedEventHandler = observable.box<
+    { tpl: TplNode; key: EventHandlerKeyType } | undefined
   >();
 
-  get newlyAddedEventHandlerKey() {
-    return this._newlyAddedEventHandlerKey.get();
+  get newlyAddedEventHandler() {
+    return this._newlyAddedEventHandler.get();
   }
 
-  set newlyAddedEventHandlerKey(v: EventHandlerKeyType | undefined) {
-    this._newlyAddedEventHandlerKey.set(v);
+  set newlyAddedEventHandler(
+    v: { tpl: TplNode; key: EventHandlerKeyType } | undefined,
+  ) {
+    this._newlyAddedEventHandler.set(v);
   }
 
   //

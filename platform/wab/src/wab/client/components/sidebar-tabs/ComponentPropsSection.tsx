@@ -83,10 +83,10 @@ import {
 } from "@/wab/shared/core/states";
 import {
   EventHandlerKeyType,
-  getDisplayNameOfEventHandlerKey,
   getReactEventHandlerTsType,
   isEventHandlerKeyForAttr,
   isEventHandlerKeyForParam,
+  isSameEventHandlerKey,
   isTplComponent,
   isTplNamable,
   summarizeUnnamedTpl,
@@ -367,17 +367,16 @@ export const InteractionPropEditor = observer(
       React.useState(false);
 
     React.useEffect(() => {
+      const newlyAdded = studioCtx.newlyAddedEventHandler;
       if (
-        studioCtx.newlyAddedEventHandlerKey &&
-        getDisplayNameOfEventHandlerKey(eventHandlerKey, { tpl }) ===
-          getDisplayNameOfEventHandlerKey(studioCtx.newlyAddedEventHandlerKey, {
-            tpl,
-          })
+        newlyAdded &&
+        newlyAdded.tpl === tpl &&
+        isSameEventHandlerKey(eventHandlerKey, newlyAdded.key)
       ) {
-        studioCtx.newlyAddedEventHandlerKey = undefined;
+        studioCtx.newlyAddedEventHandler = undefined;
         setShowInteractionModal(true);
       }
-    }, [eventHandlerKey, studioCtx.newlyAddedEventHandlerKey]);
+    }, [tpl, eventHandlerKey, studioCtx.newlyAddedEventHandler]);
     return !value || isKnownEventHandler(value) ? (
       <>
         <ActionChip

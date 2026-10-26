@@ -99,7 +99,7 @@ function InteractionsSection_(props: InteractionsSectionProps) {
         }),
       );
     }
-    sc.newlyAddedEventHandlerKey = eventHandlerKey;
+    sc.newlyAddedEventHandler = { tpl, key: eventHandlerKey };
   }
 
   return (

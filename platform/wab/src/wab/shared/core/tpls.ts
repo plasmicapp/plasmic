@@ -2935,6 +2935,23 @@ export const isEventHandlerKeyForFuncType = (
   eventHandlerKey: EventHandlerKeyType,
 ): eventHandlerKey is GenericEventHandler => "funcType" in eventHandlerKey;
 
+/**
+ * Whether two keys refer to the same attr or the same component param.
+ * Generic (funcType) keys don't identify a single handler, so they never match.
+ */
+export function isSameEventHandlerKey(
+  a: EventHandlerKeyType,
+  b: EventHandlerKeyType,
+): boolean {
+  if (isEventHandlerKeyForAttr(a) && isEventHandlerKeyForAttr(b)) {
+    return a.attr === b.attr;
+  }
+  if (isEventHandlerKeyForParam(a) && isEventHandlerKeyForParam(b)) {
+    return a.param === b.param;
+  }
+  return false;
+}
+
 export function getDisplayNameOfEventHandlerKey(
   eventHandlerKey: EventHandlerKeyType,
   ctx: { component: Component } | { tpl: TplNode },

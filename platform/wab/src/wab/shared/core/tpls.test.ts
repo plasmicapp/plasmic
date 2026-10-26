@@ -832,3 +832,45 @@ describe("replaceExprInNode", () => {
     expect(tplTag.vsettings[0].attrs.title).toBe(otherExpr);
   });
 });
+
+describe("isSameEventHandlerKey", () => {
+  const mkEventParam = (name: string) =>
+    mkParam({
+      name,
+      type: typeFactory.func(),
+      paramType: "prop",
+    });
+
+  it("matches attr keys by attr name", () => {
+    expect(
+      Tpls.isSameEventHandlerKey({ attr: "onClick" }, { attr: "onClick" }),
+    ).toBe(true);
+    expect(
+      Tpls.isSameEventHandlerKey({ attr: "onClick" }, { attr: "onFocus" }),
+    ).toBe(false);
+  });
+
+  it("matches param keys by param identity", () => {
+    const onClick = mkEventParam("onClick");
+    expect(
+      Tpls.isSameEventHandlerKey({ param: onClick }, { param: onClick }),
+    ).toBe(true);
+    expect(
+      Tpls.isSameEventHandlerKey(
+        { param: onClick },
+        { param: mkEventParam("onClick") },
+      ),
+    ).toBe(false);
+  });
+
+  it("doesn't match keys of different kinds or generic keys", () => {
+    // Comparing must not resolve a param key against a plain tag, which has
+    // no component to resolve it on (PLASMIC-CLIENT-15H8).
+    const onClick = mkEventParam("onClick");
+    expect(
+      Tpls.isSameEventHandlerKey({ param: onClick }, { attr: "onClick" }),
+    ).toBe(false);
+    const funcType = typeFactory.func();
+    expect(Tpls.isSameEventHandlerKey({ funcType }, { funcType })).toBe(false);
+  });
+});
