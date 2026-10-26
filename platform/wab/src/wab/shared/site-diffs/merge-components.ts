@@ -756,6 +756,22 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
                 recorder,
               }),
             );
+            // Args merged from an upgraded dep point at another version's params,
+            // so getSlotArgs() (identity) would skip these slots. Rebind before
+            // descending; merge-deps completes the upgrade afterwards.
+            if (isKnownTplComponent(tplMerged)) {
+              const paramsByUuid = new Map(
+                tplMerged.component.params.map((param) => [param.uuid, param]),
+              );
+              for (const vs of tplMerged.vsettings) {
+                for (const arg of vs.args) {
+                  const param = paramsByUuid.get(arg.param.uuid);
+                  if (param && param !== arg.param) {
+                    arg.param = param;
+                  }
+                }
+              }
+            }
           }
         },
       );
