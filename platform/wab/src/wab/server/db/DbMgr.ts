@@ -686,6 +686,10 @@ export const SkipSafeDelete: ProofSafeDelete = toOpaque({
   SkipSafeDelete: "SkipSafeDelete",
 });
 
+type PkgVersionOpts = { prefilledOnly?: boolean; branchId?: BranchId };
+
+export type PkgVersionWithoutModel = Omit<PkgVersion, "model">;
+
 /**
  * DbMgr currently errs on the side of runtime strictness by throwing errors.
  * This doesn't afford great static time checking, since TS has neither checked
@@ -4507,11 +4511,19 @@ export class DbMgr implements MigrationDbMgr {
     });
   }
 
-  async getPkgVersionById(id: string): Promise<PkgVersion> {
+  async getPkgVersionById(
+    id: string,
+    opts?: { noModel?: false },
+  ): Promise<PkgVersion>;
+  async getPkgVersionById(
+    id: string,
+    opts: { noModel: true },
+  ): Promise<PkgVersionWithoutModel>;
+  async getPkgVersionById(id: string, { noModel = false } = {}) {
     const pkgVersion = ensureFound(
       await this.pkgVersions().findOne({
-        id,
-        ...excludeDeleted(),
+        where: { id, ...excludeDeleted() },
+        ...(noModel ? { select: this.pkgVersionColumnsWithoutModel() } : {}),
       }),
       `Pkg Version ${id}`,
     );
@@ -4544,10 +4556,22 @@ export class DbMgr implements MigrationDbMgr {
     pkgId: string,
     versionRange?: string,
     tag?: string,
-    opts?: { prefilledOnly?: boolean; branchId?: BranchId },
+    opts?: PkgVersionOpts & { noModel?: false },
+  ): Promise<PkgVersion>;
+  async getPkgVersion(
+    pkgId: string,
+    versionRange: string | undefined,
+    tag: string | undefined,
+    opts: PkgVersionOpts & { noModel: true },
+  ): Promise<PkgVersionWithoutModel>;
+  async getPkgVersion(
+    pkgId: string,
+    versionRange?: string,
+    tag?: string,
+    opts?: PkgVersionOpts & { noModel?: boolean },
   ) {
-    return ensureFound<PkgVersion>(
-      await this.tryGetPkgVersion(pkgId, versionRange, tag, opts),
+    return ensureFound(
+      await this.tryGetPkgVersionInternal(pkgId, versionRange, tag, opts),
       `PkgVersion for pkgId=${pkgId}, branchId=${opts?.branchId}, version=${
         versionRange ? versionRange : "latest"
       }${tag ? ", tag=" + tag : ""}`,
@@ -4558,9 +4582,21 @@ export class DbMgr implements MigrationDbMgr {
     pkgId: string,
     versionRange?: string,
     tag?: string,
-    opts: { prefilledOnly?: boolean; branchId?: BranchId } = {},
+    opts?: PkgVersionOpts & { noModel?: false },
+  ): Promise<PkgVersion | undefined>;
+  async tryGetPkgVersion(
+    pkgId: string,
+    versionRange: string | undefined,
+    tag: string | undefined,
+    opts: PkgVersionOpts & { noModel: true },
+  ): Promise<PkgVersionWithoutModel | undefined>;
+  async tryGetPkgVersion(
+    pkgId: string,
+    versionRange?: string,
+    tag?: string,
+    opts?: PkgVersionOpts & { noModel?: boolean },
   ) {
-    return this.tryGetPkgVersionInternal(pkgId, versionRange, tag, opts, false);
+    return this.tryGetPkgVersionInternal(pkgId, versionRange, tag, opts);
   }
 
   /** Resolves the latest published version without fetching its potentially large model. */
@@ -4569,13 +4605,10 @@ export class DbMgr implements MigrationDbMgr {
     tag: string | undefined,
     opts: { prefilledOnly?: boolean } = {},
   ): Promise<string> {
-    const pkgVersion = await this.tryGetPkgVersionInternal(
-      pkgId,
-      "latest",
-      tag,
-      opts,
-      true,
-    );
+    const pkgVersion = await this.tryGetPkgVersion(pkgId, "latest", tag, {
+      ...opts,
+      noModel: true,
+    });
     return ensureFound(
       pkgVersion,
       `PkgVersion for pkgId=${pkgId}, version=latest${
@@ -4591,9 +4624,9 @@ export class DbMgr implements MigrationDbMgr {
     {
       prefilledOnly = false,
       branchId,
-    }: { prefilledOnly?: boolean; branchId?: BranchId },
-    versionOnly: boolean,
-  ) {
+      noModel = false,
+    }: PkgVersionOpts & { noModel?: boolean } = {},
+  ): Promise<PkgVersion | PkgVersionWithoutModel | undefined> {
     await this.checkPkgPerms(pkgId, "viewer", "get");
     if (branchId) {
       await this.checkBranchPerms(branchId, "viewer", "get pkg version", true);
@@ -4628,18 +4661,9 @@ export class DbMgr implements MigrationDbMgr {
       ]);
       const chain = getCommitChainFromBranch(graph, branchId);
       if (chain[0]) {
-        if (!versionOnly) {
-          return this.getPkgVersionById(chain[0]);
-        }
-        const pkgVersion = ensureFound(
-          await this.pkgVersions().findOne({
-            select: ["id", "pkgId", "version"],
-            where: { id: chain[0], ...excludeDeleted() },
-          }),
-          `Pkg Version ${chain[0]}`,
-        );
-        await this.checkPkgPerms(pkgVersion.pkgId, "viewer", "get");
-        return pkgVersion;
+        return noModel
+          ? this.getPkgVersionById(chain[0], { noModel })
+          : this.getPkgVersionById(chain[0]);
       }
       // A branch without published pkgVersions has no head in the commit graph.
       return undefined;
@@ -4693,12 +4717,21 @@ export class DbMgr implements MigrationDbMgr {
       )
       .andWhere("pkgVersion.version = :version", { version })
       .andWhere("pkgVersion.deletedAt IS NULL");
-    if (versionOnly) {
-      pkgVersionQuery.select(["pkgVersion.id", "pkgVersion.version"]);
+    if (noModel) {
+      pkgVersionQuery.select(
+        this.pkgVersionColumnsWithoutModel().map((c) => `pkgVersion.${c}`),
+      );
     } else {
       pkgVersionQuery.leftJoinAndSelect("pkgVersion.pkg", "pkg");
     }
     return getOneOrFailIfTooMany(pkgVersionQuery.printSql());
+  }
+
+  private pkgVersionColumnsWithoutModel() {
+    return this.entMgr.connection
+      .getMetadata(PkgVersion)
+      .columns.map((c) => c.propertyName as keyof PkgVersion)
+      .filter((c) => c !== "model");
   }
 
   /**
@@ -8600,17 +8633,13 @@ export class DbMgr implements MigrationDbMgr {
       pkg.id,
       undefined,
       undefined,
-      {
-        branchId: toBranchId,
-      },
+      { branchId: toBranchId, noModel: true },
     );
     const latestFromPkgVersion = await this.getPkgVersion(
       pkg.id,
       undefined,
       undefined,
-      {
-        branchId: fromBranchId,
-      },
+      { branchId: fromBranchId, noModel: true },
     );
 
     const extras = {
@@ -8773,7 +8802,7 @@ export class DbMgr implements MigrationDbMgr {
     }
 
     // Auto-commit if there are outstanding changes in source
-    const finalFromCommit: PkgVersion = !extras.fromHasOutstandingChanges
+    const finalFromCommit = !extras.fromHasOutstandingChanges
       ? latestFromPkgVersion
       : (
           await this.publishProject(

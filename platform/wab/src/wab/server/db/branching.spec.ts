@@ -472,6 +472,103 @@ describe("merging", () => {
       });
     }));
 
+  it("merge preview reads only the ancestor's model", () =>
+    withBranch(async (branch, helpers, sudo, [user1], [db1], project) => {
+      await setupMainAndBranch(helpers, {
+        data1: { x: 1, y: 1 },
+        data2: { x: 1, z: 1 },
+      });
+
+      const getPkgVersionByIdSpy = vi.spyOn(
+        DbMgr.prototype,
+        "getPkgVersionById",
+      );
+      const getPkgVersionSpy = vi.spyOn(DbMgr.prototype, "getPkgVersion");
+      try {
+        expect(
+          await db1().previewMergeBranch({
+            fromBranchId: branch.id,
+            toBranchId: MainBranchId,
+          }),
+        ).toMatchObject({
+          status: "can be merged",
+        });
+        const modelReads = getPkgVersionByIdSpy.mock.calls.filter(
+          ([, opts]) => !opts?.noModel,
+        );
+        expect(modelReads).toHaveLength(1);
+        // Both heads, main's included, are fetched without their model.
+        expect(getPkgVersionSpy).toHaveBeenCalledTimes(2);
+        for (const result of getPkgVersionSpy.mock.results) {
+          expect(await result.value).not.toHaveProperty("model");
+        }
+      } finally {
+        getPkgVersionByIdSpy.mockRestore();
+        getPkgVersionSpy.mockRestore();
+      }
+    }));
+
+  it("merging a committed branch doesn't auto-commit on it", () =>
+    withBranch(async (branch, helpers, sudo, [user1], [db1], project) => {
+      await setupMainAndBranch(helpers, {
+        data1: { x: 1, y: 1 },
+        data2: { x: 1, z: 1 },
+      });
+      await db1().publishProject(
+        project.id,
+        "0.1.0",
+        [],
+        "Branch commit",
+        undefined,
+        undefined,
+        branch.id as BranchId,
+      );
+      const pkg = ensure(await db1().getPkgByProjectId(project.id), "");
+      const listBranchPkgVersions = () =>
+        db1().listPkgVersions(pkg.id, { branchId: branch.id });
+
+      // A committed branch as destination has no outstanding changes.
+      expect(
+        await db1().previewMergeBranch({
+          fromBranchId: MainBranchId,
+          toBranchId: branch.id,
+        }),
+      ).toMatchObject({
+        status: "can be merged",
+        toHasOutstandingChanges: false,
+      });
+
+      // Nor as source, so merging reuses its head instead of auto-committing.
+      expect(
+        await db1().previewMergeBranch({
+          fromBranchId: branch.id,
+          toBranchId: MainBranchId,
+        }),
+      ).toMatchObject({
+        status: "can be merged",
+        fromHasOutstandingChanges: false,
+      });
+      expect(await listBranchPkgVersions()).toHaveLength(1);
+      expect(
+        await db1().tryMergeBranch({
+          fromBranchId: branch.id,
+          toBranchId: MainBranchId,
+        }),
+      ).toMatchObject({
+        status: "can be merged",
+      });
+      expect(await listBranchPkgVersions()).toHaveLength(1);
+
+      const [postMerge] = await db1().listPkgVersions(pkg.id, {
+        includeData: true,
+      });
+      expect(extractTokensPkgVersion(postMerge, project.id)).toEqual({
+        x: 1,
+        y: 1,
+        z: 1,
+      });
+    }));
+
   // TODO re-enable this one once tryMerge starts returning a good mergedSite again
   it("merging auto-commits on source branch before merge and creates post-merge commit on dest branch", () =>
     withBranch(async (branch, helpers, sudo, [user1], [db1], project) => {
