@@ -110,3 +110,41 @@ it.each([false, true])(
     }
   },
 );
+
+it("logs CORS preflight requests at debug instead of info", async () => {
+  const { addLoggingMiddleware } = await import("@/wab/server/AppServer");
+  const info = vi.spyOn(console, "info").mockImplementation(() => undefined);
+  const debug = vi.spyOn(console, "debug").mockImplementation(() => undefined);
+  const app = express();
+  addLoggingMiddleware(app);
+  app.options("/preflight", (_req, res) => res.sendStatus(204));
+  app.get("/preflight", (_req, res) => res.send("ok"));
+
+  const server = app.listen(0, "127.0.0.1");
+  try {
+    await once(server, "listening");
+    const address = server.address();
+    if (!address || typeof address === "string") {
+      throw new Error("Expected a TCP server address");
+    }
+    const url = `http://127.0.0.1:${address.port}/preflight`;
+    expect((await fetch(url, { method: "OPTIONS" })).status).toBe(204);
+    expect(await (await fetch(url)).text()).toBe("ok");
+
+    const requestLines = (calls: unknown[][]) =>
+      calls
+        .map(([message]) => String(message))
+        .filter((message) => message.includes("/preflight"));
+    expect(requestLines(debug.mock.calls)).toEqual([
+      expect.stringMatching(
+        /^\[logger\.debug\] OPTIONS \/preflight 204 \(\d+ms\)$/,
+      ),
+    ]);
+    expect(requestLines(info.mock.calls)).toEqual([
+      expect.stringMatching(/^\[logger\.info\] GET \/preflight 200 \(\d+ms\)$/),
+    ]);
+  } finally {
+    server.closeAllConnections();
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+  }
+});

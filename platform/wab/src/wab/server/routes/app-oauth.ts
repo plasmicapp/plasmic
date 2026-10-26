@@ -287,7 +287,7 @@ export function trackAppUserActivity(
 export function extractAppUserFromToken(req: Request, skipError = false) {
   const token = req.headers["x-plasmic-data-user-auth-token"];
   if (!token || !isString(token)) {
-    logger.info(
+    logger.debug(
       `[${req.id}] - Data source request without app auth token or with invalid token`,
     );
     if (skipError) {

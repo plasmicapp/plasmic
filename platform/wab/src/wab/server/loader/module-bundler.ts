@@ -22,7 +22,11 @@ import {
 } from "@/wab/shared/codegen/types";
 import { ensure, notNil, withoutNils } from "@/wab/shared/common";
 import type { AssetModule, CodeModule } from "@/wab/shared/live-frame-types";
-import esbuild, { Plugin as EsbuildPlugin, Metafile } from "esbuild";
+import esbuild, {
+  BuildResult,
+  Plugin as EsbuildPlugin,
+  Metafile,
+} from "esbuild";
 import { promises as fs } from "fs";
 import { glob } from "glob";
 import { flatMap, kebabCase, sortBy } from "lodash";
@@ -125,6 +129,7 @@ async function bundleModulesEsbuild(
     // is esm, so we first build as esm, and then we convert esm to cjs
     const outDirEsm = path.join(dir, `dist-esbuild-esm-${target}`);
     const outRes = await esbuild.build({
+      logLevel: "silent",
       // entryPoints are the files that we may want to load explicitly via loader.
       entryPoints: [
         "root-provider.tsx",
@@ -341,7 +346,8 @@ async function bundleModulesEsbuild(
 
     // Next, we just convert all the esm modules into cjs
     const outDir = path.join(dir, `dist-esbuild-${target}`);
-    await esbuild.build({
+    const cjsRes = await esbuild.build({
+      logLevel: "silent",
       entryPoints: glob.sync(path.join(outDirEsm, "*.js")),
       outdir: outDir,
       format: "cjs",
@@ -355,6 +361,7 @@ async function bundleModulesEsbuild(
     });
 
     metafiles[target] = outRes.metafile;
+    reportEsbuildWarnings(`${target} bundle`, [outRes, cjsRes]);
   }
 
   // Next we build the css, which is really just a minification pass, as we don't
@@ -363,7 +370,8 @@ async function bundleModulesEsbuild(
   // dist-esbuild-browser):
   const browserOutDir = path.join(dir, `dist-esbuild-browser`);
   // First, all the component css
-  await esbuild.build({
+  const cssRes = await esbuild.build({
+    logLevel: "silent",
     entryPoints: glob.sync(path.join(dir, "css__*.css")),
     minify: true,
     outdir: browserOutDir,
@@ -379,7 +387,8 @@ async function bundleModulesEsbuild(
   // Next, the "common" / shared css like default react-web styles, project defaults,
   // etc. These are imported by css-entrypoint.tsx, so doing this will combine the
   // referenced css
-  await esbuild.build({
+  const cssEntrypointRes = await esbuild.build({
+    logLevel: "silent",
     entryPoints: [path.join(dir, "css-entrypoint.tsx")],
     minify: true,
     outdir: browserOutDir,
@@ -411,6 +420,7 @@ async function bundleModulesEsbuild(
       },
     ],
   });
+  reportEsbuildWarnings("css", [cssRes, cssEntrypointRes]);
   // We rename the output css file from the last step to entrypoint.css, which is what
   // loader expects
   await fs.rename(
@@ -751,6 +761,16 @@ async function getPkgJson(dir: string) {
   } catch {
     return undefined;
   }
+}
+
+function reportEsbuildWarnings(step: string, results: BuildResult[]) {
+  const warnings = results.flatMap((result) => result.warnings);
+  if (warnings.length === 0) {
+    return;
+  }
+  logger.warn(`esbuild reported ${warnings.length} warning(s) in ${step}`, {
+    warnings: warnings.slice(0, 5).map((w) => `${w.id}: ${w.text}`),
+  });
 }
 
 /**

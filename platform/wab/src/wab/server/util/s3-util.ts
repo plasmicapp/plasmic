@@ -44,7 +44,7 @@ export async function tryGetS3CacheEntry<T>(opts: {
       obj.Body,
       "Unexpected empty S3 cache entry body",
     ).transformToString("utf8");
-    logger.info(`S3 cache hit for ${bucket} ${key}`);
+    logger.debug(`S3 cache hit for ${bucket} ${key}`);
     return deserialize(serialized);
   } catch (err) {
     if (err.name === "TimeoutError") {

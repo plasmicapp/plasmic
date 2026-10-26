@@ -89,7 +89,7 @@ export async function executeDataSourceOperation(
   // GenericDataSource is a union of real data sources and a fake data source.
   // The real data sources have "workspaceId" since they extend from DataSource.
   if ("workspaceId" in source) {
-    logger.info("executeDataSourceOperation", {
+    logger.debug("executeDataSourceOperation", {
       source: source.source,
       sourceId: source.id,
       sourceName: source.name,
@@ -111,7 +111,6 @@ export async function executeDataSourceOperation(
     // Always return valid JSON
     return result ?? null;
   } catch (err) {
-    logger.error("Integration Error: ", err);
     throw stampIgnoreError(err);
   }
 }

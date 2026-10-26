@@ -4649,7 +4649,7 @@ export class DbMgr implements MigrationDbMgr {
     if (!semver.validRange(range)) {
       throw new BadRequestError(`version range ${range} is not valid`);
     }
-    logger.info(
+    logger.debug(
       `Looking for pkgVersion for pkgId=${pkgId}, branchId=${branchId}, version=${range}${
         tag ? ", tag=" + tag : ""
       }`,

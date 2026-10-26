@@ -113,7 +113,7 @@ export async function ensureDbConnection(
           );
           await conn.close();
         } else {
-          logger.info(`Reusing typeorm connection pool for ${name}`);
+          logger.debug(`Reusing typeorm connection pool for ${name}`);
           return conn;
         }
       }

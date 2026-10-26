@@ -1,5 +1,5 @@
 import { logger, withSpan } from "@/wab/server/observability";
-import { context, propagation, Span, trace } from "@opentelemetry/api";
+import { Span, context, propagation, trace } from "@opentelemetry/api";
 import * as Sentry from "@sentry/node";
 
 const { timerEnd } = vi.hoisted(() => ({ timerEnd: vi.fn() }));
@@ -40,7 +40,7 @@ describe("withSpan", () => {
       let loggedSpan: Span | undefined;
       let recordingAtLog: boolean | undefined;
       const log = vi
-        .spyOn(logger, failure ? "error" : "info")
+        .spyOn(logger, failure ? "warn" : "info")
         .mockImplementation(() => {
           loggedSpan = trace.getSpan(context.active());
           recordingAtLog = loggedSpan?.isRecording();

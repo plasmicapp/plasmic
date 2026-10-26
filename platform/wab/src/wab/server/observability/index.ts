@@ -37,7 +37,7 @@ export async function withSpan<T>(
       );
       return result;
     } catch (err) {
-      logger.error(
+      logger.warn(
         `span "${name}" failed in ${new Date().getTime() - start}ms${suffix}`,
       );
       throw err;

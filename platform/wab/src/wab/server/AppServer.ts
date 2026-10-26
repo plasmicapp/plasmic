@@ -422,7 +422,7 @@ export function addLoggingMiddleware(app: express.Application) {
         endpoint: getTemplatedEndpointFromExpressRoutePath(req.route?.path),
         responseCode: res.statusCode,
       });
-      logger.info(
+      logger[req.method === "OPTIONS" ? "debug" : "info"](
         `${req.method} ${req.originalUrl} ${res.statusCode} (${duration}ms)`,
         {
           requestMethod: req.method,

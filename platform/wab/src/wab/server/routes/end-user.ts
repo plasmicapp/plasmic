@@ -17,6 +17,7 @@ import {
   EndUserDirectory,
   EndUserIdentifier,
 } from "@/wab/server/entities/Entities";
+import { logger } from "@/wab/server/observability";
 import { extractAppUserFromToken } from "@/wab/server/routes/app-oauth";
 import { mkApiProject } from "@/wab/server/routes/projects";
 import { getUser, superDbMgr, userDbMgr } from "@/wab/server/routes/util";
@@ -302,7 +303,9 @@ async function getCurrentUserDataProperties(
           return userPropertiesData;
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      logger.warn("Failed to fetch current user properties", e);
+    }
   }
   return {};
 }
