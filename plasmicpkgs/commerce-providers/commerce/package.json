@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce",
-  "version": "0.0.264",
+  "version": "0.0.265",
   "description": "Plasmic code components for building ecommerce storefronts — product lists, carts, and checkout.",
   "homepage": "https://www.plasmic.app",
   "repository": {
