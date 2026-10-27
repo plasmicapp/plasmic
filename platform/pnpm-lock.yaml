@@ -13876,8 +13876,8 @@ packages:
     peerDependencies:
       react: '>=16.3.0'
 
-  react-hook-form@7.90.0:
-    resolution: {integrity: sha512-+NdG0FLzCPhFOp2NNxaUYLF9fyZhNjx9FTBBSYWF71/l6BBlmIc/j6xlp3DbaHWLJbIG7Zd8oznA19xJClU97w==}
+  react-hook-form@7.91.0:
+    resolution: {integrity: sha512-5BEBUnCBwa28AFXYTYmOaB/+CSpJ/+CWVASHEvIGUzFdHyUiPHeRhG7r5hOZ8nZi0yP7pbHdFNXO/p31EKTJFQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@types/react': 18.3.18
@@ -19967,7 +19967,7 @@ snapshots:
       js-cookie: 3.0.5
       lodash.debounce: 4.0.8
       react: 18.3.1
-      react-hook-form: 7.90.0(@types/react@18.3.18)(react@18.3.1)
+      react-hook-form: 7.91.0(@types/react@18.3.18)(react@18.3.1)
       swr: 1.3.0(react@18.3.1)
     transitivePeerDependencies:
       - '@types/node-fetch'
@@ -19984,7 +19984,7 @@ snapshots:
       js-cookie: 3.0.5
       lodash.debounce: 4.0.8
       react: 18.3.1
-      react-hook-form: 7.90.0(@types/react@18.3.18)(react@18.3.1)
+      react-hook-form: 7.91.0(@types/react@18.3.18)(react@18.3.1)
       swr: 1.3.0(react@18.3.1)
     transitivePeerDependencies:
       - '@types/node-fetch'
@@ -30966,7 +30966,7 @@ snapshots:
       react-fast-compare: 3.2.2
       react-side-effect: 2.1.2(react@18.3.1)
 
-  react-hook-form@7.90.0(@types/react@18.3.18)(react@18.3.1):
+  react-hook-form@7.91.0(@types/react@18.3.18)(react@18.3.1):
     dependencies:
       react: 18.3.1
     optionalDependencies:
