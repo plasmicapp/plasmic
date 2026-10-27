@@ -38,7 +38,8 @@
     "@plasmicapp/host": "workspace:*",
     "@types/node": "^14.18.63",
     "@types/react": "catalog:",
-    "@types/react-slick": "^0.23.7",
+    "@types/react-slick": "^0.23.13",
+    "jsdom": "28.1.0",
     "tsdx": "catalog:",
     "tslib": "catalog:"
   },

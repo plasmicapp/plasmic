@@ -3082,8 +3082,11 @@ importers:
         specifier: 'catalog:'
         version: 18.3.27
       '@types/react-slick':
-        specifier: ^0.23.7
+        specifier: ^0.23.13
         version: 0.23.13
+      jsdom:
+        specifier: 28.1.0
+        version: 28.1.0
       tsdx:
         specifier: 'catalog:'
         version: 0.14.1(@types/babel__core@7.20.5)(@types/node@14.18.63)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(@types/node@14.18.63)(typescript@5.2.2))
