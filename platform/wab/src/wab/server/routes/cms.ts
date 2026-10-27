@@ -14,6 +14,7 @@ import {
   RootSelection,
 } from "@/wab/server/util/cms-util";
 import { publicCmsReadsContract } from "@/wab/shared/api/cms";
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiCmsTable,
   CmsDatabaseId,
@@ -21,13 +22,7 @@ import {
   CmsTableId,
   CmsTableSchema,
 } from "@/wab/shared/ApiSchema";
-import {
-  ensure,
-  multimap,
-  notNil,
-  setMultimap,
-  unexpected,
-} from "@/wab/shared/common";
+import { multimap, notNil, setMultimap, unexpected } from "@/wab/shared/common";
 import { initServer } from "@ts-rest/express";
 import { NextFunction } from "express";
 import { Request, Response } from "express-serve-static-core";
@@ -171,8 +166,11 @@ export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
 
 export async function upsertDatabaseTables(req: Request, res: Response) {
   const databaseId: CmsDatabaseId = toOpaque(req.params.dbId);
-  const deleteUnspecified = req.body.deleteUnspecified as boolean;
-  const tables: ApiCmsTable[] = req.body.tables;
+  const deleteUnspecified = req.body?.deleteUnspecified as boolean;
+  const tables: ApiCmsTable[] = req.body?.tables;
+  if (!Array.isArray(tables)) {
+    throw new BadRequestError("'tables' must be an array");
+  }
   const mgr = userDbMgr(req);
   const existingTables = await mgr.listCmsTables(databaseId);
   if (deleteUnspecified) {
@@ -271,13 +269,15 @@ export async function publicUpdateRow(req: Request, res: Response) {
 }
 
 export async function publicCreateRows(req: Request, res: Response) {
+  if (!Array.isArray(req.body?.rows)) {
+    throw new BadRequestError("'rows' must be an array");
+  }
   const mgr = userDbMgr(req);
   const dbId = req.params.dbId as CmsDatabaseId;
   const tableIdentifier = req.params.tableIdentifier;
 
   const table = await mgr.getCmsTableByIdentifier(dbId, tableIdentifier);
   const db = await mgr.getCmsDatabaseById(dbId);
-  ensure(req.body.rows, "'rows' should exist to create rows");
   const rows = await mgr.createCmsRows(
     table.id,
     req.body.rows.map((row) => {

@@ -154,6 +154,9 @@ export function transformErrors(err: Error): Error {
   ) {
     return new AuthError(err.message);
   }
+  if ((err as { type?: unknown }).type === "entity.parse.failed") {
+    return new BadRequestError("Invalid JSON body");
+  }
   const transformedErrType = errorNameRegistry[err.name];
   if (transformedErrType) {
     err = new transformedErrType(err.message);

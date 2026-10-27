@@ -11,6 +11,7 @@ import { DbMgr } from "@/wab/server/db/DbMgr";
 import { logger } from "@/wab/server/observability";
 import { getOpEncryptionKey as getDataSourceOperationEncryptionKey } from "@/wab/server/secrets";
 import { makeStableEncryptor } from "@/wab/server/util/crypt";
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { FastBundler } from "@/wab/shared/bundler";
 import { findAllDataSourceOpExprForComponent } from "@/wab/shared/cached-selectors";
@@ -312,7 +313,11 @@ export async function getDataSourceOperation(
     );
     return dataSourceOperation.operationInfo;
   }
-  return JSON.parse(encryptor.from(str)) as OperationTemplate;
+  try {
+    return JSON.parse(encryptor.from(str)) as OperationTemplate;
+  } catch {
+    throw new BadRequestError("Invalid opId");
+  }
 }
 
 export const JSON_LOGIC_REVERSE_OPERATORS = {

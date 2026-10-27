@@ -17,6 +17,7 @@ import {
 } from "@/wab/server/routes/end-user";
 import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import { asyncTimed } from "@/wab/server/timing-util";
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { GenericDataSource } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { OperationTemplate } from "@/wab/shared/data-sources-meta/data-sources";
 import { Request, Response } from "express-serve-static-core";
@@ -183,7 +184,10 @@ export function executeDataSourceOperationWithCurrentUserHandler(
       skipPermissionCheck: !inStudioAuth,
     });
 
-    const opString = req.body.opId as string;
+    const opString: unknown = req.body?.opId;
+    if (typeof opString !== "string" || !opString) {
+      throw new BadRequestError("opId must be a non-empty string");
+    }
     const op = await getDataSourceOperation(reqMgr, dataSourceId, opString);
 
     res.header("Access-Control-Allow-Origin", "*");

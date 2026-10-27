@@ -7555,7 +7555,7 @@ export class DbMgr implements MigrationDbMgr {
           locale,
           Object.fromEntries(
             table.schema.fields.map((field) =>
-              tuple(field.identifier, field.defaultValueByLocale[locale]),
+              tuple(field.identifier, field.defaultValueByLocale?.[locale]),
             ),
           ),
         ),

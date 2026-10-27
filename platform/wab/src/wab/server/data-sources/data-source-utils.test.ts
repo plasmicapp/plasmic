@@ -1,7 +1,12 @@
 import {
+  getDataSourceOperation,
   normalizeOperationTemplate,
   substituteArgs,
 } from "@/wab/server/data-sources/data-source-utils";
+import { DbMgr } from "@/wab/server/db/DbMgr";
+import { getOpEncryptionKey } from "@/wab/server/secrets";
+import { makeStableEncryptor } from "@/wab/server/util/crypt";
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   DataSourceError,
   DataSourceMeta,
@@ -197,5 +202,58 @@ describe("substituteArgs", () => {
   it("leaves an absent filter untouched on an untemplated op", () => {
     const result = substituteArgs(source, op, {}, { resource: "users" });
     expect(result.filters).toBeUndefined();
+  });
+});
+
+describe("getDataSourceOperation", () => {
+  const mgr = {} as DbMgr;
+  const encryptor = makeStableEncryptor(getOpEncryptionKey());
+  const op = { name: "getList", templates: { resource: "athletes" } };
+
+  it.each([
+    ["missing", undefined],
+    ["not hex", "not-an-op-id"],
+    ["too short for an auth tag", "abc"],
+    ["wrong auth tag", "00".repeat(32)],
+    ["invalid decrypted JSON", encryptor.to("{")],
+  ])("throws BadRequestError for an opId that is %s", async (_, opId) => {
+    await expect(
+      getDataSourceOperation(mgr, "dataSourceId", opId as string),
+    ).rejects.toThrow(BadRequestError);
+  });
+
+  it("decodes a valid encrypted operation", async () => {
+    await expect(
+      getDataSourceOperation(mgr, "source", encryptor.to(JSON.stringify(op))),
+    ).resolves.toEqual(op);
+  });
+
+  it("looks up a UUID operation", async () => {
+    const getOperation = vi.fn().mockResolvedValue({
+      dataSourceId: "source",
+      operationInfo: op,
+    });
+    const uuid = "e524286a-4f09-46b3-a78d-d12b7c74b31c";
+    await expect(
+      getDataSourceOperation(
+        { getDataSourceOperation: getOperation } as unknown as DbMgr,
+        "source",
+        uuid,
+      ),
+    ).resolves.toEqual(op);
+    expect(getOperation).toHaveBeenCalledWith(uuid);
+  });
+
+  it("preserves database failures", async () => {
+    const error = new Error("Database unavailable");
+    await expect(
+      getDataSourceOperation(
+        {
+          getDataSourceOperation: vi.fn().mockRejectedValue(error),
+        } as unknown as DbMgr,
+        "source",
+        "e524286a-4f09-46b3-a78d-d12b7c74b31c",
+      ),
+    ).rejects.toBe(error);
   });
 });
