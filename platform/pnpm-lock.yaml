@@ -414,8 +414,8 @@ importers:
         specifier: ^0.0.273
         version: 0.0.273(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-slick':
-        specifier: ^0.0.287
-        version: 0.0.287(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.288
+        version: 0.0.288(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-twitter-widgets':
         specifier: ^0.0.262
         version: 0.0.262(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -805,8 +805,8 @@ importers:
         specifier: ^0.0.273
         version: 0.0.273(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-slick':
-        specifier: ^0.0.287
-        version: 0.0.287(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.288
+        version: 0.0.288(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-twitter-widgets':
         specifier: ^0.0.262
         version: 0.0.262(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -5009,8 +5009,8 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@plasmicpkgs/react-slick@0.0.287':
-    resolution: {integrity: sha512-2f92691KTh64twSKlFleH5LqfAuBhanjUdHSTpQExYkBgnU3lHYa4wjvTafYRBo1t2xxxxe50C6DZOmzl4Xr1w==}
+  '@plasmicpkgs/react-slick@0.0.288':
+    resolution: {integrity: sha512-Tj+u6txDQ957sSDJvxeFf8MEzi7mlPfaUzmMB4ofHoZ7X4ohf8S/wTO4rJBJIzTX/g/N2DwuKrTCPPAVRcdD2w==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       react: '>=16.8.0'
@@ -20249,7 +20249,7 @@ snapshots:
       react-scroll-parallax: 3.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       resize-observer-polyfill: 1.5.1
 
-  '@plasmicpkgs/react-slick@0.0.287(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/react-slick@0.0.288(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(jquery@3.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@seznam/compose-react-refs': 1.0.6
