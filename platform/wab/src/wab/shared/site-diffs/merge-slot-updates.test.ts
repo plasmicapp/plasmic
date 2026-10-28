@@ -21,6 +21,7 @@ import {
 } from "@/wab/shared/core/tpls";
 import {
   Arg,
+  ensureKnownCustomCode,
   ensureKnownProjectDependency,
   ensureKnownRawText,
   ensureKnownRenderExpr,
@@ -736,17 +737,21 @@ it.each(["left", "right"] as const)(
 
 // Kit 2.0.0 deletes Intro's `title` prop and adds it again. Left upgrades to
 // 2.0.0 and right stays on 1.0.0; each side sets `title` when given a value.
-// With `variantTitles`, each side also sets `title` in a page variant.
+// With `variantTitles`, each side also sets `title` in a page variant. With
+// `editInPlace`, a side changes an existing value's code instead of replacing
+// the value, as Studio does for some values such as interactions.
 function setupRecreatedTitleMerge({
   ancestorTitle,
   leftTitle,
   rightTitle,
   variantTitles,
+  editInPlace = false,
 }: {
   ancestorTitle?: string;
   leftTitle?: string;
   rightTitle?: string;
   variantTitles?: { left: string; right: string };
+  editInPlace?: boolean;
 }) {
   const bundler = new Bundler();
   const kitSite = createSite();
@@ -817,6 +822,10 @@ function setupRecreatedTitleMerge({
     const existing = branchIntro.vsettings[vsIndex].args.find(
       (arg) => arg.param.variable.name === "title",
     );
+    if (existing && editInPlace) {
+      ensureKnownCustomCode(existing.expr).code = JSON.stringify(value);
+      return;
+    }
     if (existing) {
       existing.expr = codeLit(value);
       return;
@@ -920,6 +929,22 @@ it("asks which value to keep for a prop that a dependency kit release recreated 
   ).toMatchObject([[{ code: '"A"' }], [{ code: '"Y"' }]]);
   assertSiteInvariants(resolved.mergedSite);
 });
+
+it.each(["left", "right"] as const)(
+  "keeps the picked value when both branches edit in place a prop that one branch's dependency kit release recreated, resolving to %s",
+  (pickSide) => {
+    expectTitleConflict(
+      setupRecreatedTitleMerge({
+        ancestorTitle: "X",
+        leftTitle: "A",
+        rightTitle: "B",
+        editInPlace: true,
+      }),
+      pickSide,
+      pickSide === "left" ? '"A"' : '"B"',
+    );
+  },
+);
 
 it("keeps an edit to a prop that the other branch's dependency kit release recreated", () => {
   const result = setupRecreatedTitleMerge({

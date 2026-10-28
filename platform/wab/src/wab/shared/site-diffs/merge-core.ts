@@ -669,6 +669,20 @@ export function cloneFieldValueToMergedSite(
   }
 }
 
+export function cloneContentsToMergedSite<T extends ObjInst>(
+  value: T,
+  branch: Site,
+  mergedSite: Site,
+  bundler: Bundler,
+): T {
+  return cloneObjInstToMergedSite(
+    cloneContents(value, bundler, bundler.addrOfUnsafe(branch).uuid),
+    branch,
+    mergedSite,
+    bundler,
+  );
+}
+
 export function cloneObjInstToMergedSite<T extends ObjInst>(
   inst: T,
   branch: Site,

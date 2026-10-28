@@ -84,6 +84,7 @@ import {
   AutoReconciliation,
   DirectConflict,
   SpecialDirectConflict,
+  cloneContentsToMergedSite,
   cloneFieldValueToMergedSite,
   cloneObjInstToMergedSite,
   deriveKeyFunc,
@@ -986,8 +987,18 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
                   askWhichValue(name, (side) => {
                     mergedArgs[0].expr =
                       side === "left"
-                        ? cloneInst(leftArg.expr, siteA)
-                        : cloneInst(rightArg.expr, siteB);
+                        ? cloneContentsToMergedSite(
+                            leftArg.expr,
+                            siteA,
+                            mergedSite,
+                            bundler,
+                          )
+                        : cloneContentsToMergedSite(
+                            rightArg.expr,
+                            siteB,
+                            mergedSite,
+                            bundler,
+                          );
                   });
                 }
               }
