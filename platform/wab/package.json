@@ -375,7 +375,7 @@
     "sucrase": "^3.35.1",
     "svgo": "4.1.0",
     "swr": "2.4.1",
-    "temporal-polyfill": "0.3.0",
+    "temporal-polyfill": "1.0.6",
     "tinymce": "^6.8.6",
     "tldts": "^6.0.12",
     "tmp": "0.2.5",
