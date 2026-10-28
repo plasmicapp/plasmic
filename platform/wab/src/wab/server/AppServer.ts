@@ -307,7 +307,10 @@ import { safeCast, spawn } from "@/wab/shared/common";
 import { DataSourceError } from "@/wab/shared/data-sources-meta/data-sources";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS, applyDevFlagOverridesToTarget } from "@/wab/shared/devflags";
-import { isStampedIgnoreError } from "@/wab/shared/error-handling";
+import {
+  isStampedIgnoreError,
+  stampIgnoreError,
+} from "@/wab/shared/error-handling";
 import fileUpload from "express-fileupload";
 
 const csrfFreeStaticRoutes = [
@@ -1812,7 +1815,7 @@ export function addMainAppServerRoutes(
  * Really, we only want this to run after our normal route handlers, and not
  * transform errors thrown in (e.g.) our passport.deserializeUser handler.
  */
-function addEndErrorHandlers(app: express.Application) {
+export function addEndErrorHandlers(app: express.Application) {
   // This transforms certain known errors into proper response codes and JSON.
   // This is only called if there was previously a next(error).
   app.use(
@@ -1825,11 +1828,10 @@ function addEndErrorHandlers(app: express.Application) {
       ) => {
         const response = toErrorResponse(origErr);
 
-        // Log at a severity matching the status code we're about to return.
-        // A 4xx is the client's mistake and is expected traffic, so logging it
-        // at ERROR both buries real failures and dominates log volume; only an
-        // unhandled error (no response, i.e. a 500) is ours to act on.
-        if (!response || response.statusCode >= 500) {
+        // Customer upstream failures are expected even when they have no status.
+        if (isStampedIgnoreError(origErr)) {
+          logger.warn("Request failed", origErr);
+        } else if (!response || response.statusCode >= 500) {
           logger.error("ERROR!", origErr);
         } else if (!(origErr instanceof AuthError)) {
           logger.warn("Request failed", origErr);
@@ -1841,7 +1843,13 @@ function addEndErrorHandlers(app: express.Application) {
         if (response) {
           res.status(response.statusCode).json({ error: response.body });
         } else {
-          res.status(500).json({ error: { message: "Internal Server Error" } });
+          const body = { message: "Internal Server Error" };
+          // Preserve the stamp without exposing upstream error details.
+          res.status(500).json({
+            error: isStampedIgnoreError(origErr)
+              ? stampIgnoreError(body)
+              : body,
+          });
         }
       },
     ),

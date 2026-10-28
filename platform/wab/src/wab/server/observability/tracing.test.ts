@@ -1,4 +1,5 @@
 import { logger, withSpan } from "@/wab/server/observability";
+import { stampIgnoreError } from "@/wab/shared/error-handling";
 import { Span, context, propagation, trace } from "@opentelemetry/api";
 import * as Sentry from "@sentry/node";
 
@@ -33,6 +34,24 @@ afterEach(async () => {
 });
 
 describe("withSpan", () => {
+  it("logs ignored upstream failures at WARN and still rethrows them", async () => {
+    const warn = vi.spyOn(logger, "warn").mockImplementation(() => undefined);
+    const logError = vi
+      .spyOn(logger, "error")
+      .mockImplementation(() => undefined);
+    const error = stampIgnoreError(new Error("ENOTFOUND"));
+    await expect(
+      withSpan("execute-data-op", async () => {
+        throw error;
+      }),
+    ).rejects.toBe(error);
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining('span "execute-data-op" failed'),
+    );
+    expect(logError).not.toHaveBeenCalled();
+    expect(timerEnd).toHaveBeenCalledOnce();
+  });
+
   it.each([false, true])(
     "logs on the operation span before ending it (failure: %s)",
     async (failure) => {
