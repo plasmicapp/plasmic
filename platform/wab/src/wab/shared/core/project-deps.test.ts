@@ -1,14 +1,20 @@
 import { mkTokenRef } from "@/wab/commons/StyleToken";
 import { getArenaFrames, setFocusedFrame } from "@/wab/shared/Arenas";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
 import {
   VariantGroupType,
   ensureVariantSetting,
+  getBaseVariant,
   mkGlobalVariantGroup,
   mkVariant,
 } from "@/wab/shared/Variants";
+import { Bundler } from "@/wab/shared/bundler";
+import { ensure, jsonClone } from "@/wab/shared/common";
 import { mkComponentArena } from "@/wab/shared/component-arenas";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
+import { codeLit } from "@/wab/shared/core/exprs";
 import { mkParam } from "@/wab/shared/core/lang";
 import {
   getDependenciesWithReferencedCss,
@@ -18,17 +24,20 @@ import {
 import { createSite } from "@/wab/shared/core/sites";
 import {
   TplTagType,
+  mkTplComponentX,
   mkTplTagX,
   trackComponentRoot,
   trackComponentSite,
 } from "@/wab/shared/core/tpls";
 import {
+  Arg,
   ColumnsSetting,
   ProjectDependency,
   Site,
   StyleToken,
   StyleTokenOverride,
   VariantedValue,
+  ensureKnownProjectDependency,
 } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
 
@@ -601,6 +610,102 @@ describe("upgradeProjectDeps", () => {
       false,
     );
     expect(columns.columnsSetting?.screenBreakpoint).toBeNull();
+  });
+
+  // Three versions of a kit whose Intro gets an `align` prop in 3.0.0, and a
+  // page with an Intro instance on 1.0.0.
+  function setupIntroUpgrades() {
+    const bundler = new Bundler();
+    const kitSite = createSite();
+    new TplMgr({ site: kitSite }).addComponent({
+      name: "Intro",
+      type: ComponentType.Plain,
+    });
+    const kit1Dep = new ProjectDependency({
+      name: "Kit",
+      pkgId: "kit-pkg-id",
+      projectId: "kit-project-id",
+      version: "1.0.0",
+      uuid: "kit-dep-uuid",
+      site: kitSite,
+    });
+    // Like a real publish, keeps the uuids of unchanged objects.
+    const release = (dep: ProjectDependency, version: string) => {
+      const next = ensureKnownProjectDependency(
+        bundler.unbundle(
+          jsonClone(bundler.bundle(dep, `kit-${dep.version}`, "")),
+          `kit-${version}`,
+        ),
+      );
+      next.version = version;
+      return next;
+    };
+    const kit2Dep = release(kit1Dep, "2.0.0");
+    const kit3Dep = release(kit2Dep, "3.0.0");
+    const [kit1, kit2, kit3] = [kit1Dep, kit2Dep, kit3Dep].map((dep) => ({
+      dep,
+      intro: ensure(
+        dep.site.components.find((c) => c.name === "Intro"),
+        "Missing Intro",
+      ),
+    }));
+    const align = mkParam({
+      name: "align",
+      type: typeFactory.text(),
+      paramType: "prop",
+    });
+    kit3.intro.params.push(align);
+
+    const site = createSite({ projectDependencies: [kit1.dep] });
+    const page = new TplMgr({ site }).addComponent({
+      name: "Page",
+      type: ComponentType.Page,
+    });
+    const intro = mkTplComponentX({
+      name: "intro",
+      component: kit1.intro,
+      baseVariant: getBaseVariant(page),
+    });
+    $$$(page.tplTree).append(intro);
+    site.components.forEach((c) => {
+      trackComponentRoot(c);
+      trackComponentSite(c, site);
+    });
+    return { site, intro, kit1, kit2, kit3, align };
+  }
+
+  test("keeps an arg on a future version's param until the upgrade to that version", () => {
+    const { site, intro, kit1, kit2, kit3, align } = setupIntroUpgrades();
+    intro.vsettings[0].args.push(
+      new Arg({ param: align, expr: codeLit("center") }),
+    );
+
+    upgradeProjectDeps(site, [
+      { oldDep: kit1.dep, newDep: kit2.dep, futureDeps: [kit3.dep] },
+    ]);
+    expect(intro.component).toBe(kit2.intro);
+    expect(intro.vsettings[0].args.map((arg) => arg.param)).toEqual([align]);
+
+    upgradeProjectDeps(site, [{ oldDep: kit2.dep, newDep: kit3.dep }]);
+    expect(intro.component).toBe(kit3.intro);
+    expect(intro.vsettings[0].args.map((arg) => arg.param)).toEqual([align]);
+  });
+
+  test("removes an arg whose param no future version has", () => {
+    const { site, intro, kit1, kit2, kit3 } = setupIntroUpgrades();
+    const orphan = mkParam({
+      name: "orphan",
+      type: typeFactory.text(),
+      paramType: "prop",
+    });
+    intro.vsettings[0].args.push(
+      new Arg({ param: orphan, expr: codeLit("lost") }),
+    );
+
+    upgradeProjectDeps(site, [
+      { oldDep: kit1.dep, newDep: kit2.dep, futureDeps: [kit3.dep] },
+    ]);
+    expect(intro.vsettings[0].args).toEqual([]);
   });
 });
 

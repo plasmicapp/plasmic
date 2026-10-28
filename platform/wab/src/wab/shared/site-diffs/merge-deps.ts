@@ -1,6 +1,6 @@
 import { lt, sortAsc } from "@/wab/commons/semver";
 import { Bundler } from "@/wab/shared/bundler";
-import { ensure, removeWhere } from "@/wab/shared/common";
+import { ensure, removeWhere, withoutNils } from "@/wab/shared/common";
 import { upgradeProjectDeps } from "@/wab/shared/core/project-deps";
 import { ProjectDependency, Site } from "@/wab/shared/model/classes";
 
@@ -101,7 +101,11 @@ export function fixProjectDependencies(
 
   while (updates.length > 0) {
     // Get the next list of updates
-    const nextUpdateRound = updates.map((list) => list[0]);
+    const nextUpdateRound = updates.map(([[oldDep, newDep], ...rest]) => ({
+      oldDep,
+      newDep,
+      futureDeps: withoutNils(rest.map(([, dep]) => dep)),
+    }));
     updates.forEach((list) => list.splice(0, 1));
     removeWhere(updates, (list) => list.length === 0);
 
@@ -110,11 +114,11 @@ export function fixProjectDependencies(
       merged.projectDependencies,
       (dep) =>
         !!nextUpdateRound.find(
-          ([oldDep]) =>
+          ({ oldDep }) =>
             oldDep.pkgId === dep.pkgId && oldDep.version !== dep.version,
         ),
     );
-    nextUpdateRound.forEach(([oldDep]) => {
+    nextUpdateRound.forEach(({ oldDep }) => {
       if (
         !merged.projectDependencies.find(
           (dep) => oldDep.pkgId === dep.pkgId && oldDep.version === dep.version,
@@ -125,10 +129,7 @@ export function fixProjectDependencies(
     });
 
     // Upgrade `oldVersion` to `newVersion`
-    upgradeProjectDeps(
-      merged,
-      nextUpdateRound.map(([oldDep, newDep]) => ({ oldDep, newDep })),
-    );
+    upgradeProjectDeps(merged, nextUpdateRound);
   }
 
   // `upgradeProjectDeps` might create several new instances; bundle the site to

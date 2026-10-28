@@ -2,8 +2,8 @@ import { ensureActivatedScreenVariantsForArena } from "@/wab/shared/Arenas";
 import {
   fillVirtualSlotContents,
   getSlotArgs,
-  getSlotParams,
   getTplSlots,
+  isSlot,
 } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
@@ -31,6 +31,7 @@ import {
   tuple,
   withoutFalsy,
   withoutNils,
+  xGroupBy,
   xIntersect,
   xSetDefault,
 } from "@/wab/shared/common";
@@ -40,6 +41,7 @@ import {
   isCodeComponent,
 } from "@/wab/shared/core/components";
 import { ChangeRecorder } from "@/wab/shared/core/observable-model";
+import { getEquivalentParam } from "@/wab/shared/core/project-deps";
 import { visitComponentRefs } from "@/wab/shared/core/sites";
 import {
   fixParentPointers,
@@ -140,6 +142,67 @@ function getNewAndDeletedComponents(
   };
 }
 
+// Components with the same uuid can be different versions of one imported
+// component, and a release can recreate a param with a new uuid. A swapped
+// component matches only by param uuid.
+function getMatchingParam(
+  component: Component,
+  paramComponent: Component,
+  param: Param,
+) {
+  return component.uuid === paramComponent.uuid
+    ? getEquivalentParam(component, param)
+    : component.params.find((p) => p.uuid === param.uuid);
+}
+
+// The nearest instance above `tpl` and its slot arg that holds `tpl`.
+function getHoldingSlotArg(tpl: TplNode) {
+  let child = tpl;
+  while (child.parent && !isKnownTplComponent(child.parent)) {
+    child = child.parent;
+  }
+  const inst = child.parent;
+  const arg =
+    inst && isKnownTplComponent(inst)
+      ? $$$(inst).tryGetArgContainingTpl(child)
+      : undefined;
+  return inst && arg ? { inst: ensureKnownTplComponent(inst), arg } : undefined;
+}
+
+// Whether `tplAnc` was default slot content that the kept branch edited,
+// while the other branch still shows default content there. A dependency
+// upgrade rebuilds default content with new elements, so the other branch
+// can lack `tplAnc` without having deleted it.
+function isDefaultContentEditedOnOneBranch(
+  tplAnc: TplNode,
+  keptTpl: TplNode,
+  otherTplsByUuid: Map<string, TplNode>,
+) {
+  const ancHolder = getHoldingSlotArg(tplAnc);
+  const keptHolder = getHoldingSlotArg(keptTpl);
+  if (
+    !ancHolder ||
+    !keptHolder ||
+    !isKnownVirtualRenderExpr(ancHolder.arg.expr) ||
+    isKnownVirtualRenderExpr(keptHolder.arg.expr)
+  ) {
+    return false;
+  }
+  const otherInst = otherTplsByUuid.get(ancHolder.inst.uuid);
+  if (!otherInst || !isKnownTplComponent(otherInst)) {
+    return false;
+  }
+  const otherParam = getMatchingParam(
+    otherInst.component,
+    ancHolder.inst.component,
+    ancHolder.arg.param,
+  );
+  const otherArg = getSlotArgs(otherInst).find(
+    (arg) => arg.param === otherParam,
+  );
+  return !!otherArg && isKnownVirtualRenderExpr(otherArg.expr);
+}
+
 // Updates `mergedTpl.parent` to be `branchTpl.parent`
 // (and fix the children pointers)
 function updateParent(
@@ -197,10 +260,11 @@ function updateParent(
           ),
           `Couldn't find arg in parent tpl component`,
         );
-        const paramInBranch = argInBranch.param;
         const renderExprInBranch = ensureKnownRenderExpr(argInBranch.expr);
-        const param = getSlotParams(tpl.component).find(
-          (p) => p.uuid === paramInBranch.uuid,
+        const param = getMatchingParam(
+          tpl.component,
+          ensureKnownTplComponent(parentInBranch).component,
+          argInBranch.param,
         );
         if (!param) {
           // The corresponding param has been deleted! Simply delete this node
@@ -639,7 +703,13 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
         // that contains each of them to determine equality
         const argContainingA = $$$(tplA.parent).getArgContainingTpl(tplA);
         const argContainingB = $$$(tplB.parent).getArgContainingTpl(tplB);
-        return argContainingA.param.uuid === argContainingB.param.uuid;
+        return (
+          getMatchingParam(
+            tplA.parent.component,
+            tplB.parent.component,
+            argContainingB.param,
+          ) === argContainingA.param
+        );
       };
 
       for (const tplMerged of flattenComponent(mergedComp)) {
@@ -765,15 +835,224 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
               const paramsByUuid = new Map(
                 tplMerged.component.params.map((param) => [param.uuid, param]),
               );
+              const branchTpls = [tplA, tplB].filter(isKnownTplComponent);
               for (const vs of tplMerged.vsettings) {
+                // Record each arg's branch now, since the rebind below replaces
+                // the param that tells the branches apart.
+                const argBranches = new Map<Arg, TplComponent>();
                 for (const arg of vs.args) {
-                  const param = paramsByUuid.get(arg.param.uuid);
+                  const branchTpl = branchTpls.find((tpl) =>
+                    tpl.component.params.includes(arg.param),
+                  );
+                  if (branchTpl) {
+                    argBranches.set(arg, branchTpl);
+                  }
+                  const param = branchTpl
+                    ? getMatchingParam(
+                        tplMerged.component,
+                        branchTpl.component,
+                        arg.param,
+                      )
+                    : paramsByUuid.get(arg.param.uuid);
                   if (param && param !== arg.param) {
                     arg.param = param;
                   }
                 }
+                const askWhichValue = (
+                  name: string,
+                  pickSide: SpecialDirectConflict["pickSide"],
+                ) => {
+                  // Each variant setting can ask about the same prop, so the
+                  // key includes its variants for each pick to stay separate.
+                  const pathStr = JSON.stringify([
+                    ...getCompPath(mergedComp, bundler),
+                    ...nodePathMerged,
+                    "vsettings",
+                    JSON.stringify(
+                      vs.variants.map((v) => toVariantKey(v)).sort(),
+                    ),
+                    "args",
+                    name,
+                  ]);
+                  const conf: SpecialDirectConflict = {
+                    conflictType: "special",
+                    objectType: "components",
+                    conflictParts: [`tpl ${tplMerged.uuid} arg ${name}`],
+                    objectInsts: [compA, compB],
+                    pathStr,
+                    pickSide,
+                  };
+                  if (picks) {
+                    const side = ensure(
+                      picks[pathStr],
+                      `Could not find the corresponding pick with pathStr ${pathStr}, got resolutions for: ${JSON.stringify(
+                        Object.keys(picks),
+                      )}`,
+                    );
+                    conf.pickSide(side);
+                  } else {
+                    directConflicts.push(conf);
+                  }
+                };
+                // A recreated prop has a new param uuid, so the merge keeps
+                // both branches' args for it. Swapped instances are skipped,
+                // since fixSwappedTplComponents removes the other component's
+                // args.
+                const propArgs = vs.args.filter(
+                  (arg) =>
+                    !isSlot(arg.param) &&
+                    (tplMerged.component.params.includes(arg.param) ||
+                      argBranches.get(arg)?.component.uuid ===
+                        tplMerged.component.uuid),
+                );
+                for (const [name, args] of xGroupBy(
+                  propArgs,
+                  (arg) => arg.param.variable.name,
+                )) {
+                  if (args.length < 2) {
+                    continue;
+                  }
+                  const keepOnly = (keep: Arg) =>
+                    removeWhere(
+                      vs.args,
+                      (arg) => args.includes(arg) && arg !== keep,
+                    );
+                  if (
+                    args.every((arg) =>
+                      instUtil.deepEquals(arg.expr, args[0].expr, true),
+                    )
+                  ) {
+                    keepOnly(args[0]);
+                    continue;
+                  }
+                  const argFrom = (tpl: TplNode) =>
+                    args.find((arg) => argBranches.get(arg) === tpl);
+                  askWhichValue(name, (side) =>
+                    keepOnly(
+                      ensure(
+                        argFrom(side === "left" ? tplA : tplB),
+                        `Each branch set ${name}`,
+                      ),
+                    ),
+                  );
+                }
+                // An upgrade that recreated a prop points its arg at the new
+                // param, so the merge doesn't compare the two branches' edits
+                // and keeps the upgrading branch's value. The upgrade keeps the
+                // arg's iid, so the iid finds the same arg on each side.
+                if (
+                  !isKnownTplComponent(tplAnc) ||
+                  !isKnownTplComponent(tplA) ||
+                  !isKnownTplComponent(tplB) ||
+                  tplA.component.uuid !== tplMerged.component.uuid ||
+                  tplB.component.uuid !== tplMerged.component.uuid
+                ) {
+                  continue;
+                }
+                const iidOf = (inst: ObjInst) => bundler.addrOfUnsafe(inst).iid;
+                const sameArg = (tpl: TplComponent, ancArg: Arg) =>
+                  findEquivVS(tpl, vs)?.args.find(
+                    (arg) => iidOf(arg) === iidOf(ancArg),
+                  );
+                for (const ancArg of findEquivVS(tplAnc, vs)?.args ?? []) {
+                  const [leftArg, rightArg] = [tplA, tplB].map((tpl) =>
+                    sameArg(tpl, ancArg),
+                  );
+                  if (
+                    !leftArg ||
+                    !rightArg ||
+                    isSlot(ancArg.param) ||
+                    leftArg.param.uuid === rightArg.param.uuid
+                  ) {
+                    continue;
+                  }
+                  const edited = (arg: Arg) =>
+                    !instUtil.deepEquals(arg.expr, ancArg.expr, true);
+                  if (
+                    !edited(leftArg) ||
+                    !edited(rightArg) ||
+                    instUtil.deepEquals(leftArg.expr, rightArg.expr, true)
+                  ) {
+                    continue;
+                  }
+                  const name = ancArg.param.variable.name;
+                  const mergedArgs = vs.args.filter(
+                    (arg) =>
+                      !isSlot(arg.param) && arg.param.variable.name === name,
+                  );
+                  if (mergedArgs.length !== 1) {
+                    continue;
+                  }
+                  askWhichValue(name, (side) => {
+                    mergedArgs[0].expr =
+                      side === "left"
+                        ? cloneInst(leftArg.expr, siteA)
+                        : cloneInst(rightArg.expr, siteB);
+                  });
+                }
               }
             }
+          } else if (
+            tplAnc &&
+            !tplA !== !tplB &&
+            isDefaultContentEditedOnOneBranch(
+              tplAnc,
+              ensure(tplA ?? tplB, "One branch has it"),
+              tplA ? tplInBByUuid : tplInAByUuid,
+            )
+          ) {
+            // The other branch didn't edit this element; its dependency
+            // upgrade only rebuilt the default content around it. So its
+            // version is the ancestor's, and merging against the ancestor
+            // applies this branch's edit.
+            const ancCtx = {
+              node: tplAnc,
+              site: siteAncestorCtx.site,
+              path: [
+                ...getCompPath(ancestorComp, bundler),
+                ...ensure(
+                  nodeToPathAnc.get(tplAnc),
+                  "Path to tplNode must exist.",
+                ),
+              ],
+            };
+            const [keptTpl, keptSite, keptComp, keptPaths] = tplA
+              ? ([tplA, siteA, compA, nodeToPathA] as const)
+              : ([
+                  ensure(tplB, "One branch has it"),
+                  siteB,
+                  compB,
+                  nodeToPathB,
+                ] as const);
+            const keptCtx = {
+              node: keptTpl,
+              site: keptSite,
+              path: [
+                ...getCompPath(keptComp, bundler),
+                ...ensure(
+                  keptPaths.get(keptTpl),
+                  "Path to tplNode must exist.",
+                ),
+              ],
+            };
+            directConflicts.push(
+              ...getDirectConflicts({
+                ancestorCtx: ancCtx,
+                leftCtx: tplA ? keptCtx : ancCtx,
+                rightCtx: tplA ? ancCtx : keptCtx,
+                mergedCtx: {
+                  node: tplMerged,
+                  site: mergedSiteCtx.site,
+                  path: [
+                    ...getCompPath(mergedComp, bundler),
+                    ...nodePathMerged,
+                  ],
+                },
+                bundler,
+                picks,
+                recorder,
+              }),
+            );
           }
         },
       );
@@ -784,6 +1063,19 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
         const tplAnc = tplInAncestorByUuid.get(tplMerged.uuid);
 
         if (tplMerged.parent && tplAnc && (!tplA || !tplB)) {
+          const keptTpl = tplA ?? tplB;
+          if (
+            keptTpl &&
+            isDefaultContentEditedOnOneBranch(
+              tplAnc,
+              keptTpl,
+              tplA ? tplInBByUuid : tplInAByUuid,
+            )
+          ) {
+            // The walk above already applied the kept branch's changes.
+            continue;
+          }
+
           // Deleted in one branch, remove it as it might have been moved
 
           const changedTplAndBranch = tplA
@@ -1052,14 +1344,12 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
           isKnownTplComponent(merged),
         `Already checked equivalent inst types`,
       );
-      const existingSlotParams = new Set(
-        getSlotParams(merged.component).map((param) => param.uuid),
-      );
+      // Each site can be on a different version of the instance's component.
+      const getMergedParam = (tpl: TplComponent, arg: Arg) =>
+        getMatchingParam(merged.component, tpl.component, arg.param);
 
       const getFilteredSlotArgs = (tpl: TplComponent) =>
-        getSlotArgs(tpl).filter((arg) =>
-          existingSlotParams.has(arg.param.uuid),
-        );
+        getSlotArgs(tpl).filter((arg) => !!getMergedParam(tpl, arg));
 
       const tplFilteredChildren = (tpl: TplComponent) =>
         getFilteredSlotArgs(tpl).flatMap((arg) =>
@@ -1087,13 +1377,14 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
       );
 
       // Then compute their relative order along with their respective arg.param
-      const computeOrderOfCommonNodes = (args: Arg[]) => {
+      const computeOrderOfCommonNodes = (tpl: TplComponent) => {
         return sortBy(
-          args
+          getFilteredSlotArgs(tpl)
             .map(
               (arg) =>
                 [
-                  arg.param.uuid,
+                  ensure(getMergedParam(tpl, arg), "Slot args are filtered")
+                    .uuid,
                   isKnownVirtualRenderExpr(arg.expr)
                     ? ("VirtualRenderExpr" as const)
                     : ensureKnownRenderExpr(arg.expr)
@@ -1106,21 +1397,15 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
         );
       };
 
-      const [ancArgs, leftArgs, rightArgs] = [
-        getFilteredSlotArgs(anc),
-        getFilteredSlotArgs(left),
-        getFilteredSlotArgs(right),
-      ] as const;
-
-      const previousOrder = computeOrderOfCommonNodes(ancArgs);
-      const leftOrder = computeOrderOfCommonNodes(leftArgs);
-      const rightOrder = computeOrderOfCommonNodes(rightArgs);
+      const previousOrder = computeOrderOfCommonNodes(anc);
+      const leftOrder = computeOrderOfCommonNodes(left);
+      const rightOrder = computeOrderOfCommonNodes(right);
 
       // Even tough merged is initialized with the ancestor state, at this point reparenting
       // from `updateParent` was already done, so it's not recommended to assume any similarity
       // with the previousOrder
       let finalOrder: typeof previousOrder | "conflict" =
-        computeOrderOfCommonNodes(getFilteredSlotArgs(merged));
+        computeOrderOfCommonNodes(merged);
 
       // Detect conflict if the relative order of the same elements changed in
       // more than one branch
@@ -1143,34 +1428,10 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
           `Expected finalOrder to be already defined`,
         );
 
-        const argsAndBranchCtx = [
-          [ancArgs, ancestorCtx],
-          [leftArgs, leftCtx],
-          [rightArgs, rightCtx],
-        ] as const;
-
-        const getParamAndBranchCtxByUuid = (uuid: string) => {
-          return ensure(
-            withoutNils(
-              argsAndBranchCtx.map(([args, ctx]) => {
-                const arg = args.find((a) => a.param.uuid === uuid);
-                if (arg) {
-                  return [arg, ctx] as const;
-                }
-                return null;
-              }),
-            )[0],
-            `Couldn't find arg for param ${uuid}`,
-          );
-        };
-
         finalOrder.forEach(([paramUuid, maybeIids]) => {
-          const [arg, ctx] = getParamAndBranchCtxByUuid(paramUuid);
-          const mergedParam = cloneObjInstToMergedSite(
-            arg.param,
-            ctx.site,
-            mergedCtx.site,
-            bundler,
+          const mergedParam = ensure(
+            merged.component.params.find((p) => p.uuid === paramUuid),
+            `Couldn't find param ${paramUuid}`,
           );
 
           if (maybeIids === "VirtualRenderExpr") {
@@ -1308,11 +1569,9 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
                 .map(({ uuid }) => uuid),
             );
 
-            const mergedParam = cloneObjInstToMergedSite(
-              arg.param,
-              branch.site,
-              mergedCtx.site,
-              bundler,
+            const mergedParam = ensure(
+              getMergedParam(parent, arg),
+              "Children are taken from filtered slot args",
             );
 
             setMergedSlotArg(merged, mergedParam, (mergedExpr) => {
@@ -1335,11 +1594,83 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
             });
           });
       });
+
+      // A slot that shows default content at the ancestor and that only one
+      // branch edited takes that branch's content, while the other branch
+      // still shows default content, which its own dependency upgrade may
+      // have rebuilt with new elements. Otherwise the slot stays default
+      // content, and the dependency upgrade at the end of the merge refills
+      // it with the kit's default.
+      const isDefaultContent = (arg: Arg | undefined): arg is Arg =>
+        !!arg && isKnownVirtualRenderExpr(arg.expr);
+      const isEditedContent = (arg: Arg | undefined): arg is Arg =>
+        !!arg && !isKnownVirtualRenderExpr(arg.expr);
+
+      for (const ancArg of getFilteredSlotArgs(anc)) {
+        if (!isKnownVirtualRenderExpr(ancArg.expr)) {
+          continue;
+        }
+
+        const mergedParam = ensure(
+          getMergedParam(anc, ancArg),
+          "Slot args are filtered",
+        );
+        const [leftArg, rightArg] = [left, right].map((tpl) =>
+          getFilteredSlotArgs(tpl).find(
+            (arg) => getMergedParam(tpl, arg) === mergedParam,
+          ),
+        );
+        const edited =
+          isEditedContent(leftArg) && isDefaultContent(rightArg)
+            ? { arg: leftArg, ctx: leftCtx, otherCtx: rightCtx }
+            : isEditedContent(rightArg) && isDefaultContent(leftArg)
+              ? { arg: rightArg, ctx: rightCtx, otherCtx: leftCtx }
+              : undefined;
+        if (!edited) {
+          continue;
+        }
+
+        const defaultUuids = new Set(ancArg.expr.tpl.map((tpl) => tpl.uuid));
+        setMergedSlotArg(
+          merged,
+          mergedParam,
+          () =>
+            new RenderExpr({
+              tpl: ensureKnownRenderExpr(edited.arg.expr)
+                .tpl.filter(
+                  // Leave out elements the other branch deleted, unless they
+                  // were default content it only rebuilt.
+                  (child) =>
+                    defaultUuids.has(child.uuid) ||
+                    !equivOnBranch(child, ancestorCtx.site) ||
+                    !!equivOnBranch(child, edited.otherCtx.site),
+                )
+                .map((child) =>
+                  cloneObjInstToMergedSite(
+                    child,
+                    edited.ctx.site,
+                    mergedCtx.site,
+                    bundler,
+                  ),
+                ),
+            }),
+        );
+      }
     })
     .result();
 
   return conflicts;
 };
+
+function findEquivVS(node: TplNode, vs: VariantSetting) {
+  const variantKeys = vs.variants.map((v) => toVariantKey(v));
+  return node.vsettings.find((vs2) =>
+    arrayEqIgnoreOrder(
+      variantKeys,
+      vs2.variants.map((v) => toVariantKey(v)),
+    ),
+  );
+}
 
 export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
   ancestorCtx,
@@ -1370,16 +1701,6 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
       ),
     );
   }
-
-  const findEquivVS = (node: TplNode, vs: VariantSetting) => {
-    const variantKeys = vs.variants.map((v) => toVariantKey(v));
-    return node.vsettings.find((vs2) =>
-      arrayEqIgnoreOrder(
-        variantKeys,
-        vs2.variants.map((v) => toVariantKey(v)),
-      ),
-    );
-  };
 
   ancestor.vsettings.forEach((vs, i) => {
     const leftEquiv = findEquivVS(left, vs);

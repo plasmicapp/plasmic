@@ -624,16 +624,34 @@ function ensureDirectDep(
   site.projectDependencies.push(dep);
 }
 
+/**
+ * Returns the param of `component` that matches `param` from another version
+ * of the same imported component.
+ */
+export function getEquivalentParam(component: Component, param: Param) {
+  const sameKind = component.params.filter((p) => isSlot(p) === isSlot(param));
+  return (
+    sameKind.find((p) => p === param) ??
+    sameKind.find((p) => p.variable.uuid === param.variable.uuid) ??
+    sameKind.find((p) => p.variable.name === param.variable.name)
+  );
+}
+
 export function upgradeProjectDeps(
   site: Site,
   deps: {
     oldDep: ProjectDependency;
     newDep?: ProjectDependency;
+    /**
+     * Versions after `newDep`. Args that already point at one of their params
+     * stay, and a later upgrade rebinds them.
+     */
+    futureDeps?: ProjectDependency[];
   }[],
 ) {
   const newDeps: ProjectDependency[] = [];
-  deps.forEach(({ oldDep, newDep }) => {
-    upgradeProjectDep(site, oldDep, newDep);
+  deps.forEach(({ oldDep, newDep, futureDeps = [] }) => {
+    upgradeProjectDep(site, oldDep, newDep, futureDeps);
     if (newDep) {
       newDeps.push(newDep);
     }
@@ -665,7 +683,8 @@ export function upgradeProjectDeps(
 function upgradeProjectDep(
   site: Site,
   oldDep: ProjectDependency,
-  newDep?: ProjectDependency,
+  newDep: ProjectDependency | undefined,
+  futureDeps: ProjectDependency[],
 ) {
   // We need to look for and replace these references:
   // 1. TplComponent referencing imported Component.  We need to fix up
@@ -692,14 +711,16 @@ function upgradeProjectDep(
   const oldToNewPage = new Map<PageComponent, PageComponent | undefined>();
   const oldToNewCustomFunctions = getOldToNewCustomFunctions(oldDep, newDep);
 
+  const isFutureParam = (component: Component, param: Param) =>
+    futureDeps.some((dep) =>
+      dep.site.components.some(
+        (c) => c.uuid === component.uuid && c.params.includes(param),
+      ),
+    );
+
   const mapParams = (oldComp: Component, newComp: Component) => {
     for (const oldParam of oldComp.params) {
-      const newParam = newComp.params.find(
-        (p) =>
-          (p.variable.uuid === oldParam.variable.uuid ||
-            p.variable.name === oldParam.variable.name) &&
-          isSlot(p) === isSlot(oldParam),
-      );
+      const newParam = getEquivalentParam(newComp, oldParam);
       if (newParam) {
         oldToNewParam.set(oldParam, newParam);
         if (oldParam.variable.name !== newParam.variable.name) {
@@ -1415,7 +1436,15 @@ function upgradeProjectDep(
       for (const vs of tpl.vsettings) {
         for (const arg of [...vs.args]) {
           const oldParam = arg.param;
-          const newParam = oldToNewParam.get(oldParam);
+          // After a branch merge, an arg copied from a branch on a newer
+          // version still points at that version's param.
+          const isOldParam = oldComp.params.includes(oldParam);
+          const newParam = isOldParam
+            ? oldToNewParam.get(oldParam)
+            : getEquivalentParam(newComp, oldParam);
+          if (!newParam && isFutureParam(newComp, oldParam)) {
+            continue;
+          }
           if (!newParam) {
             // This param has been deleted, so we delete the corresponding arg.
             if (isKnownRenderExpr(arg.expr)) {

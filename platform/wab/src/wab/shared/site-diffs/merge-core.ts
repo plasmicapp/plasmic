@@ -1,4 +1,5 @@
 import { Lookup, pathSelector } from "@/wab/commons/path-selector";
+import { getSlotArgs } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { Bundler, addrKey } from "@/wab/shared/bundler";
 import { toVarName } from "@/wab/shared/codegen/util";
@@ -58,6 +59,9 @@ import {
   StyleTokenOverride,
   Variant,
   VariantGroup,
+  isKnownTplComponent,
+  isKnownTplNode,
+  isKnownVirtualRenderExpr,
 } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
 import {
@@ -1909,6 +1913,8 @@ function runMergeFnAndApplyFixes(
 
       fixProjectDependencies(ancestor, a, b, mergedSite, bundler);
 
+      fixDefaultContentNames(mergedSite);
+
       autoReconciliations.push(
         ...walkAndFixNames(mergedSite, bundler, new Map(), isDeletedInst),
       );
@@ -1929,21 +1935,56 @@ function runMergeFnAndApplyFixes(
         iid: bundler.addrOfUnsafe(inst).iid,
       });
     };
-    return arr.map((r) => {
+    const mergedTpls = new Set(
+      mergedSite.components.flatMap((c) => flattenTpls(c.tplTree)),
+    );
+    return arr.flatMap((r): AutoReconciliation[] => {
       if (r.violation === "duplicate-page-path") {
-        return r;
+        return [r];
       }
-      return {
-        ...r,
-        mergedInst: getMergedInst(r.mergedInst) ?? r.mergedInst,
-        mergedParent: getMergedInst(r.mergedParent) ?? r.mergedParent,
-      };
+      const mergedInst = getMergedInst(r.mergedInst) ?? r.mergedInst;
+      if (isKnownTplNode(mergedInst) && !mergedTpls.has(mergedInst)) {
+        // The dependency upgrade can rebuild default slot contents, so a
+        // node renamed on a branch may not be in the merged site.
+        return [];
+      }
+
+      return [
+        {
+          ...r,
+          mergedInst,
+          mergedParent: getMergedInst(r.mergedParent) ?? r.mergedParent,
+        },
+      ];
     });
   };
 
   return {
     autoReconciliations: fixAutoReconciliationsInsts(autoReconciliations),
   };
+}
+
+function fixDefaultContentNames(mergedSite: Site) {
+  const tplMgr = new TplMgr({ site: mergedSite });
+  for (const component of mergedSite.components) {
+    for (const tpl of flattenTpls(component.tplTree)) {
+      if (!isKnownTplComponent(tpl)) {
+        continue;
+      }
+      for (const arg of getSlotArgs(tpl)) {
+        if (!isKnownVirtualRenderExpr(arg.expr)) {
+          continue;
+        }
+        for (const child of arg.expr.tpl) {
+          for (const node of flattenTpls(child)) {
+            if (isTplNamable(node) && node.name) {
+              tplMgr.renameTpl(component, node, node.name, child);
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 /**
