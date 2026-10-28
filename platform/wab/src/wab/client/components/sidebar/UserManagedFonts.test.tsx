@@ -4,7 +4,7 @@ import { ensure } from "@/wab/shared/common";
 import { createSite } from "@/wab/shared/core/sites";
 import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import $ from "jquery";
-import { observable, runInAction } from "mobx";
+import { runInAction } from "mobx";
 import React from "react";
 
 const context = vi.hoisted(() => ({ current: undefined as any }));
@@ -43,11 +43,7 @@ async function setup(hostFamilies: string[] = []) {
     return this.css("font-family").includes("Local Font") ? 200 : 100;
   } as any);
   const site = createSite();
-  site.userManagedFonts = observable.array([
-    "Host Font",
-    "Missing Font",
-    "Local Font",
-  ]);
+  site.userManagedFonts = ["Host Font", "Missing Font", "Local Font"];
   const manager = new FontManager(site);
   const iframe = document.body.appendChild(document.createElement("iframe"));
   const hostWindow = ensure(iframe.contentWindow, "host window");
@@ -203,7 +199,9 @@ it("checks fonts added after the host was registered", async () => {
   const { site, available, manager } = await setup();
   await act(async () => {
     available.add("New Font");
-    runInAction(() => site.userManagedFonts.push("New Font"));
+    runInAction(() => {
+      site.userManagedFonts = [...site.userManagedFonts, "New Font"];
+    });
     await manager.addUserManagedFont("New Font");
   });
   await waitFor(() => expect(warning("New Font")).toBeNull());

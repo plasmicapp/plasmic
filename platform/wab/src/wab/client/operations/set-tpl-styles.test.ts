@@ -14,7 +14,10 @@ describe("applySanitizedTplStyles", () => {
     for (const safe of keyShapes) {
       const tpl = mkTplTagX("div");
       const vs = mkTestVariantSetting();
-      vs.attrs["style"] = codeLit({ fontSize: "10px", mixBlendMode: "darken" });
+      vs.attrs = {
+        ...vs.attrs,
+        style: codeLit({ fontSize: "10px", mixBlendMode: "darken" }),
+      };
 
       applySanitizedTplStyles({
         tpl,

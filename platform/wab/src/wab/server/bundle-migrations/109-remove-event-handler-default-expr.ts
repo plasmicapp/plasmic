@@ -4,13 +4,14 @@ import {
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
 import { Bundler } from "@/wab/shared/bundler";
-import { ensure, remove } from "@/wab/shared/common";
+import { ensure } from "@/wab/shared/common";
 import {
   extractReferencedParam,
   isRealCodeExpr,
 } from "@/wab/shared/core/exprs";
 import { flattenTpls, isAttrEventHandler } from "@/wab/shared/core/tpls";
 import {
+  Arg,
   Expr,
   isKnownEventHandler,
   isKnownFunctionType,
@@ -46,16 +47,18 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
             }
           }
         }
-        for (const arg of [...vs.args]) {
+        const invalidArgs = new Set<Arg>();
+        for (const arg of vs.args) {
           if (isKnownFunctionType(arg.param.type)) {
             if (!isExprValidForEventHandler(arg.param.defaultExpr)) {
               arg.param.defaultExpr = null;
             }
             if (!isExprValidForEventHandler(arg.expr)) {
-              remove(vs.args, arg);
+              invalidArgs.add(arg);
             }
           }
         }
+        vs.args = vs.args.filter((arg) => !invalidArgs.has(arg));
       }
     }
   }

@@ -6,13 +6,12 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import ColorStopIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__ColorStop";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
+import { arrayInsertAt, arrayRemoveAt } from "@/wab/shared/collections";
 import {
   ensure,
   ensureHTMLElt,
-  insert,
   maybe,
   maybes,
-  removeAt,
   spawn,
   tuple,
   withoutNils,
@@ -82,7 +81,9 @@ const KeyFrameStops_ = (props: KeyFrameStopsProps) => {
       studioCtx.change(() => {
         f();
         // Sort keyframes by percentage after any change
-        sequence.keyframes.sort((a, b) => a.percentage - b.percentage);
+        sequence.keyframes = [...sequence.keyframes].sort(
+          (a, b) => a.percentage - b.percentage,
+        );
         return ok();
       }),
     );
@@ -158,7 +159,11 @@ const KeyFrameStops_ = (props: KeyFrameStopsProps) => {
             if (res != null) {
               const { index, keyframe } = res;
               handleChange(() => {
-                insert(sequence.keyframes, index, keyframe);
+                sequence.keyframes = arrayInsertAt(
+                  sequence.keyframes,
+                  keyframe,
+                  index,
+                );
               });
               onSelectKeyframe(keyframe);
             }
@@ -243,7 +248,10 @@ const KeyFrameStops_ = (props: KeyFrameStopsProps) => {
                       (top > 90 || top < -30)
                     ) {
                       handleChange(() => {
-                        removeAt(sequence.keyframes, keyframeNum);
+                        sequence.keyframes = arrayRemoveAt(
+                          sequence.keyframes,
+                          keyframeNum,
+                        );
                       });
                       // Select another keyframe if we deleted the selected one
                       if (isSelected && sequence.keyframes.length > 0) {

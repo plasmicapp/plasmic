@@ -23,7 +23,7 @@ export function setupComponentWithTplTree(tplTree: TplTag) {
     type: ComponentType.Plain,
   });
   const site = createSite();
-  site.components.push(component);
+  site.components = [...site.components, component];
   Tpls.trackComponentSite(component, site);
   Tpls.trackComponentRoot(component);
   const tplMgr = new TplMgr({ site });
@@ -55,7 +55,8 @@ export function setupComponentWithInstance() {
     }),
   );
 
-  button.params.push(
+  button.params = [
+    ...button.params,
     mkParam({ name: "label", type: typeFactory.text(), paramType: "prop" }),
     mkParam({ name: "count", type: typeFactory.num(), paramType: "prop" }),
     mkParam({ name: "disabled", type: typeFactory.bool(), paramType: "prop" }),
@@ -85,7 +86,7 @@ export function setupComponentWithInstance() {
       type: typeFactory.renderable(),
       paramType: "slot",
     }),
-  );
+  ];
 
   const sizeGroup = unwrap(
     createVariantGroup({
@@ -140,7 +141,7 @@ export function setupComponentWithInstance() {
     baseVariant,
   });
   const root = page.tplTree as TplTag;
-  root.children.push(instance);
+  root.children = [...root.children, instance];
   instance.parent = root;
 
   const vs = ensureVariantSetting(instance, [baseVariant]);

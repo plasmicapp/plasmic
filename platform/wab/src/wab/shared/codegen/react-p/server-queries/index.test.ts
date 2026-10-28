@@ -620,8 +620,8 @@ export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
         accessType: "private",
         variableType: "number",
       });
-      component.states.push(state);
-      component.params.push(valueParam, onChangeParam);
+      component.states = [...component.states, state];
+      component.params = [...component.params, valueParam, onChangeParam];
 
       const ctx = {
         component,

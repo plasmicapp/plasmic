@@ -2,13 +2,19 @@ import { TplMgr } from "@/wab/shared/TplMgr";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { Bundler } from "@/wab/shared/bundler";
 import { Bundle } from "@/wab/shared/bundles";
+import { observeModel } from "@/wab/shared/core/observable-model";
 import {
   Component,
   CustomFunction,
+  ObjInst,
   Site,
   isKnownProjectDependency,
   isKnownSite,
 } from "@/wab/shared/model/classes";
+import {
+  createNodeCtx,
+  walkModelTree,
+} from "@/wab/shared/model/model-tree-util";
 
 /**
  * Generates a site object from bundle data of a project with dependencies.
@@ -55,6 +61,25 @@ export function mkCustomFunction(opts: {
     params: [],
     isQuery: opts.isQuery ?? true,
     isMutation: opts.isMutation ?? false,
+  });
+}
+
+/**
+ * Makes `site` tracked by a tracker, as in Studio, so that cached selectors cache.
+ * Dependency sites are not tracked: their insts are external refs, which
+ * should not change once observed.
+ */
+export function observeSiteForTest(site: Site) {
+  const externals = new Set<ObjInst>();
+  for (const dep of site.projectDependencies) {
+    externals.add(dep);
+    walkModelTree(createNodeCtx(dep.site)).forEach((inst) =>
+      externals.add(inst),
+    );
+  }
+  return observeModel(site, {
+    listener: () => {},
+    isExternalRef: (inst) => externals.has(inst),
   });
 }
 

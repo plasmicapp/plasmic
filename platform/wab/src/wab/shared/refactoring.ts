@@ -5,6 +5,7 @@ import {
   makeShortProjectId,
   toVarName,
 } from "@/wab/shared/codegen/util";
+import { arrayReplaceAt } from "@/wab/shared/collections";
 import { assert, uniqueName } from "@/wab/shared/common";
 import * as Exprs from "@/wab/shared/core/exprs";
 import { customFunctionId } from "@/wab/shared/core/query-ids";
@@ -26,7 +27,7 @@ import {
   replaceVarWithProp,
   transformDataTokensInExpr,
 } from "@/wab/shared/eval/expression-parser";
-import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { siteSelector } from "@/wab/shared/mobx-util";
 import {
   Component,
   ComponentDataQuery,
@@ -99,9 +100,9 @@ export function isQueryUsedInExpr(
  * every query for dynamic access (`$queries[someVar]`) or exprs that fail to parse.
  */
 function queriesPossiblyUsedInExpr(
-  queries: ComponentDataQuery[],
+  queries: ReadonlyArray<ComponentDataQuery>,
   expr: Expr | null | undefined,
-): ComponentDataQuery[] {
+): ReadonlyArray<ComponentDataQuery> {
   if (!Exprs.isRealCodeExpr(expr)) {
     return [];
   }
@@ -127,7 +128,7 @@ function queriesPossiblyUsedInExpr(
  */
 export function findLegacyQueriesReadByOp(
   query: ComponentDataQuery,
-  queries: ComponentDataQuery[],
+  queries: ReadonlyArray<ComponentDataQuery>,
 ): ComponentDataQuery[] {
   if (!query.op) {
     return [];
@@ -220,8 +221,8 @@ function toPathSegments(dottedPath: string): (string | number)[] {
 }
 
 function isPathPrefix(
-  prefix: (string | number)[],
-  path: (string | number)[],
+  prefix: ReadonlyArray<string | number>,
+  path: ReadonlyArray<string | number>,
 ): boolean {
   return (
     prefix.length <= path.length &&
@@ -538,7 +539,7 @@ function findQueryInvalidationExprs(site: Site) {
   );
 }
 
-export const findQueryInvalidationRefs = maybeComputedFn(
+export const findQueryInvalidationRefs = siteSelector(
   function findQueryInvalidationRefs(site: Site): QueryRef[] {
     return findQueryInvalidationExprs(site).flatMap((expr) =>
       expr.invalidationQueries.filter(
@@ -554,7 +555,7 @@ export const findQueryInvalidationRefs = maybeComputedFn(
  */
 export function countQueryReferences(
   component: Component,
-  queries: ComponentDataQuery[],
+  queries: ReadonlyArray<ComponentDataQuery>,
   invalidationRefs: QueryRef[],
 ): Map<ComponentDataQuery, number> {
   const counts = new Map(queries.map((q) => [q, 0]));
@@ -666,7 +667,7 @@ export function renameDataTokenInExpr(
 ) {
   if (isKnownObjectPath(expr)) {
     if (expr.path[0] === oldIdentifier) {
-      expr.path[0] = newIdentifier;
+      expr.path = arrayReplaceAt(expr.path, 0, newIdentifier);
     }
   } else if (isKnownCustomCode(expr)) {
     transformDataTokensInExpr(expr, (node, token, nestedProps) => {

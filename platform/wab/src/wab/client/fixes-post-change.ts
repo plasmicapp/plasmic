@@ -1,4 +1,3 @@
-import { DbCtx } from "@/wab/client/db";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { FrameViewMode } from "@/wab/shared/Arenas";
 import {
@@ -82,7 +81,7 @@ export function fixupForChanges(
   if (changes.changes.length > 0) {
     // Do model-related fixes
     [changes, summary] = applyFix(() =>
-      fixupVirtualSlotArgs(studioCtx.dbCtx(), studioCtx.tplMgr(), summary),
+      fixupVirtualSlotArgs(studioCtx.tplMgr(), summary),
     );
 
     [changes, summary] = applyFix(() =>
@@ -332,7 +331,6 @@ function fixupImplicitStates(summary: ChangeSummary) {
  * "fix up" the forking or virtual node updates here, after the change has happened.
  */
 export function fixupVirtualSlotArgs(
-  dbCtx: DbCtx,
   tplMgr: TplMgr,
   summary: Pick<ChangeSummary, "updatedNodes" | "newTrees">,
 ) {
@@ -392,9 +390,6 @@ export function fixupVirtualSlotArgs(
   // affected by updatedTplSlots, because some of those updatedTplSlots may
   // contain one of these newTplComponents, and they need to have their virtual
   // contents filled in first before they are copied to affected TplComponents
-  dbCtx.maybeObserveComponents(
-    Array.from(newTplComponents).map((tpl) => $$$(tpl).owningComponent()),
-  );
   for (const tplc of newTplComponents) {
     fillVirtualSlotContents(tplMgr, tplc);
   }
@@ -424,9 +419,6 @@ export function fixupVirtualSlotArgs(
       }
       return false;
     });
-    dbCtx.maybeObserveComponents(
-      affectedTplComponents.map((tpl) => $$$(tpl).owningComponent()),
-    );
     for (const tplc of affectedTplComponents) {
       const slots = Array.from(updatedTplSlots).filter((slot) =>
         tplc.component.params.includes(slot.param),

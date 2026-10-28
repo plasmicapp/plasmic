@@ -1,6 +1,7 @@
 import { mkDataToken } from "@/wab/commons/DataToken";
 import { mkStyleToken } from "@/wab/commons/StyleToken";
 import { mkVariant } from "@/wab/shared/Variants";
+import { observeSiteForTest } from "@/wab/shared/__testonly__/site-tests-utils";
 import { createSite } from "@/wab/shared/core/sites";
 import {
   ImmutableToken,
@@ -16,6 +17,7 @@ import {
   StyleToken,
   Token,
   VariantedValue,
+  isKnownDataToken,
   isKnownStyleToken,
 } from "@/wab/shared/model/classes";
 
@@ -82,12 +84,13 @@ describe("tokens", () => {
         type: "Color",
         value: "#FF0000",
       });
-      styleToken.variantedValues.push(
+      styleToken.variantedValues = [
+        ...styleToken.variantedValues,
         new VariantedValue({
           variants: [variantWebsite],
           value: "#AA0000",
         }),
-      );
+      ];
       overridableToken = new OverrideableToken(styleToken, site);
     });
     describe("setValue, setVariantedValue", () => {
@@ -381,61 +384,71 @@ describe("token ownership snapshots", () => {
           uuid: "dep",
           version: "1.0.0",
         });
-      depSite.projectDependencies.push(dep(transitiveSite));
-      site.projectDependencies.push(dep(depSite));
-      if (observable) {
-        for (const s of [site, depSite, transitiveSite]) {
-          mobx.makeObservable(s, {
-            styleTokens: mobx.observable.shallow,
-            dataTokens: mobx.observable.shallow,
-            projectDependencies: mobx.observable.shallow,
-          });
-        }
-      }
-      for (const token of [
-        mkStyleToken({ name: "color", type: "Color", value: "red" }),
-        mkDataToken({ name: "data", value: "42" }),
-      ]) {
-        const tokens = (s: Site): Token[] =>
-          isKnownStyleToken(token) ? s.styleTokens : s.dataTokens;
-        const finalize = () => mkToFinalToken(site)(token);
-        expect(finalize()).toBeInstanceOf(ImmutableToken);
-        mobx.runInAction(() => tokens(transitiveSite).push(token));
-        expect(finalize()).toBeInstanceOf(ImmutableToken);
-        mobx.runInAction(() => tokens(depSite).push(token));
-        expect(finalize()).toBeInstanceOf(OverrideableToken);
-        mobx.runInAction(() => tokens(site).push(token));
-        expect(finalize()).toBeInstanceOf(MutableToken);
-        token.isRegistered = true;
-        expect(finalize()).toBeInstanceOf(OverrideableToken);
-        token.isRegistered = false;
-        // Identity, not UUID, determines ownership.
-        const other = isKnownStyleToken(token)
-          ? new StyleToken({
-              name: "other",
-              type: "Color",
-              value: "blue",
-              uuid: token.uuid,
-              variantedValues: [],
-              isRegistered: false,
-              regKey: undefined,
-            })
-          : mkDataToken({ name: "other", value: "43", uuid: token.uuid });
-        expect(mkToFinalToken(site)(other)).toBeInstanceOf(ImmutableToken);
-        mobx.runInAction(() => tokens(site).splice(0));
-        expect(finalize()).toBeInstanceOf(OverrideableToken);
-        mobx.runInAction(() => tokens(depSite).splice(0));
-        expect(finalize()).toBeInstanceOf(ImmutableToken);
-      }
-      const imported = mkStyleToken({
-        name: "imported",
-        type: "Color",
-        value: "red",
+      const tokenPairs = () => ({
+        style: mkStyleToken({ name: "color", type: "Color", value: "red" }),
+        data: mkDataToken({ name: "data", value: "42" }),
       });
-      mobx.runInAction(() => depSite.styleTokens.push(imported));
-      expect(toFinalToken(imported, site)).toBeInstanceOf(OverrideableToken);
-      mobx.runInAction(() => site.projectDependencies.splice(0));
-      expect(toFinalToken(imported, site)).toBeInstanceOf(ImmutableToken);
+      // Dependency sites don't change once the site is observed, so they are
+      // set up first.
+      const transitiveTokens = tokenPairs();
+      transitiveSite.styleTokens = [transitiveTokens.style];
+      transitiveSite.dataTokens = [transitiveTokens.data];
+      const depTokens = tokenPairs();
+      depSite.styleTokens = [depTokens.style];
+      depSite.dataTokens = [depTokens.data];
+      depSite.projectDependencies = [dep(transitiveSite)];
+      site.projectDependencies = [dep(depSite)];
+      if (observable) {
+        const tracker = observeSiteForTest(site);
+        onTestFinished(() => tracker.dispose());
+      }
+
+      const localTokens = tokenPairs();
+      for (const kind of ["style", "data"] as const) {
+        const finalize = (token: Token) => mkToFinalToken(site)(token);
+        const token = localTokens[kind];
+        const setLocalTokens = (tokens: Token[]) => {
+          if (kind === "style") {
+            site.styleTokens = tokens.filter(isKnownStyleToken);
+          } else {
+            site.dataTokens = tokens.filter(isKnownDataToken);
+          }
+        };
+        expect(finalize(transitiveTokens[kind])).toBeInstanceOf(ImmutableToken);
+        expect(finalize(depTokens[kind])).toBeInstanceOf(OverrideableToken);
+        expect(finalize(token)).toBeInstanceOf(ImmutableToken);
+        mobx.runInAction(() => setLocalTokens([token]));
+        expect(finalize(token)).toBeInstanceOf(MutableToken);
+        mobx.runInAction(() => (token.isRegistered = true));
+        expect(finalize(token)).toBeInstanceOf(OverrideableToken);
+        mobx.runInAction(() => (token.isRegistered = false));
+        expect(finalize(token)).toBeInstanceOf(MutableToken);
+        // Identity, not UUID, determines ownership.
+        const other =
+          kind === "style"
+            ? new StyleToken({
+                name: "other",
+                type: "Color",
+                value: "blue",
+                uuid: token.uuid,
+                variantedValues: [],
+                isRegistered: false,
+                regKey: undefined,
+              })
+            : mkDataToken({ name: "other", value: "43", uuid: token.uuid });
+        expect(finalize(other)).toBeInstanceOf(ImmutableToken);
+        mobx.runInAction(() => setLocalTokens([]));
+        expect(finalize(token)).toBeInstanceOf(ImmutableToken);
+      }
+      expect(toFinalToken(depTokens.style, site)).toBeInstanceOf(
+        OverrideableToken,
+      );
+      mobx.runInAction(() => {
+        site.projectDependencies = [];
+      });
+      expect(toFinalToken(depTokens.style, site)).toBeInstanceOf(
+        ImmutableToken,
+      );
     });
   }
 });

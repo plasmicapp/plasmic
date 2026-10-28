@@ -61,6 +61,7 @@ import {
   getExpectedValuesForVariantGroup,
   isParamCompatibleWithVariantGroup,
   isStandaloneVariantGroup,
+  VariantCombo,
   variantGroupToLinkedPropType,
 } from "@/wab/shared/Variants";
 import { Menu } from "antd";
@@ -266,7 +267,7 @@ export const VariantPicker = observer(function VariantPicker(props: {
   };
 
   const renderValueEditor = (
-    activeVariants: Variant[],
+    activeVariants: VariantCombo,
     updateActiveVariants: (newActiveVariants: Variant[]) => void,
     valueSetState: ValueSetState | undefined,
   ) => {

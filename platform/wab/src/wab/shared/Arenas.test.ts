@@ -18,7 +18,10 @@ describe("getFrameSizeForTargetScreenVariant", () => {
     function prepSite(variants: Variant[]) {
       const site = createSite();
       const screenVariantGroup = ensure(site.activeScreenVariantGroup, "");
-      screenVariantGroup.variants.push(...variants);
+      screenVariantGroup.variants = [
+        ...screenVariantGroup.variants,
+        ...variants,
+      ];
       return site;
     }
 

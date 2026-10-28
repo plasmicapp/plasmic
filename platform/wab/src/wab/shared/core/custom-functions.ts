@@ -5,7 +5,7 @@ import {
   maybePropTypeToRequired,
   normalizeCustomFunctionParams,
 } from "@/wab/shared/code-components/code-components";
-import { arrayRemove } from "@/wab/shared/collections";
+import { arrayWithout } from "@/wab/shared/collections";
 import { withoutNils } from "@/wab/shared/common";
 import {
   ExprCtx,
@@ -355,7 +355,7 @@ export function fixCustomFunctionsInTpl(
             if (fixedExpr) {
               arg.expr = fixedExpr;
             } else {
-              arrayRemove(interaction.args, arg);
+              interaction.args = arrayWithout(interaction.args, arg);
             }
           }
         }

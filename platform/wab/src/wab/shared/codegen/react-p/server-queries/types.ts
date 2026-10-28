@@ -55,7 +55,7 @@ export interface ServerComponentNode {
   // Server queries from this component, to be executed
   queries: ServerQueryWithOperation[];
   // Component states, serialized to $StateSpec[] to build $state before evaluating queries.
-  states: State[];
+  states: ReadonlyArray<State>;
   // Maps prop name to expression code. May reference $props, $ctx, $queries from parent.
   propsContext: Record<string, DynamicExprCode>;
   children: ServerNode[];

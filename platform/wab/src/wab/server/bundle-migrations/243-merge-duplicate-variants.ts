@@ -10,6 +10,7 @@ import { isTplColumns, isTplVariantable } from "@/wab/shared/core/tpls";
 import { Site, Variant, VariantSetting } from "@/wab/shared/model/classes";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { toVariantKey } from "@/wab/shared/Variants";
+import { pickBy } from "lodash";
 
 function checkDuplicateVsExists(site: Site) {
   const duplicatesSet = new Set();
@@ -96,11 +97,14 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
                 }
 
                 // Add keys from duplicate if they don't exist in the last variant setting
-                Object.keys(dupVs.rs.values).forEach((key) => {
-                  if (!(key in lastVs.rs.values)) {
-                    lastVs.rs.values[key] = dupVs.rs.values[key];
-                  }
-                });
+                const lastValues = lastVs.rs.values;
+                lastVs.rs.values = {
+                  ...lastValues,
+                  ...pickBy(
+                    dupVs.rs.values,
+                    (_value, key) => !(key in lastValues),
+                  ),
+                };
               }
 
               // For mixins, we want duplicates' mixins to come first, followed by last mixins

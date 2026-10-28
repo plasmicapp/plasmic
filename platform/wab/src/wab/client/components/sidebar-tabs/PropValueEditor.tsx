@@ -212,8 +212,7 @@ const PropValueEditor_ = (
   const _getContextDependentValue = React.useCallback(
     function <P>(
       contextDependentValue?:
-        | P
-        | ComponentContextConfig<typeof componentPropValues, P>,
+        P | ComponentContextConfig<typeof componentPropValues, P>,
     ) {
       return getContextDependentValue(
         contextDependentValue,
@@ -619,7 +618,11 @@ const PropValueEditor_ = (
                       expr: isKnownExpr(val) ? val : codeLit(val),
                     })
                   : undefined;
-                newCollectionExpr.exprs[i] = newFunctionArg;
+                // Index `i` may be past the end of `exprs`, so this can't use
+                // arrayReplaceAt.
+                const newExprs = [...newCollectionExpr.exprs];
+                newExprs[i] = newFunctionArg;
+                newCollectionExpr.exprs = newExprs;
                 onChange(newCollectionExpr);
               }}
             />
@@ -636,7 +639,7 @@ const PropValueEditor_ = (
       (vg) => vg.param.variable === vgroupVarRef?.variable,
     );
 
-    let variantOptions: Variant[];
+    let variantOptions: ReadonlyArray<Variant>;
     if (vgroup) {
       variantOptions = vgroup.variants;
     } else {

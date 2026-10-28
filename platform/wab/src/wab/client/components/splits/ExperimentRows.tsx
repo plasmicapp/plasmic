@@ -7,7 +7,7 @@ import { observer } from "mobx-react";
 import * as React from "react";
 
 export const ExperimentRows = observer(function ExperimentRows(props: {
-  splits: Split[];
+  splits: ReadonlyArray<Split>;
   type: SplitType;
   onClick: (_: Split) => void;
   onDelete?: (_: Split) => void;

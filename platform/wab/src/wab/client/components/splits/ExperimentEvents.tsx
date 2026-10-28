@@ -22,7 +22,7 @@ import * as React from "react";
 // You can also stop extending from DefaultExperimentEventsProps altogether and have
 // total control over the props for your component.
 export interface ExperimentEventsProps extends DefaultExperimentEventsProps {
-  events: string[];
+  events: ReadonlyArray<string>;
   changeEvents: (_: string[]) => void;
 }
 

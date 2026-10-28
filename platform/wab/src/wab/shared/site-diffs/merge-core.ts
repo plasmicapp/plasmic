@@ -2112,10 +2112,7 @@ export function tryMerge(
   });
 
   const recorder = new ChangeRecorder({
-    inst: mergedSite,
-    _instUtil: instUtil,
-    excludeFields: [meta.getFieldByName("ProjectDependency", "site")],
-    excludeClasses: [],
+    site: mergedSite,
     isExternalRef: (obj) =>
       !!maybe(bundler.addrOf(obj), (addr) => addr.uuid !== mergedSiteUuid),
     visitNodeListener: (obj) => {
@@ -2130,18 +2127,7 @@ export function tryMerge(
         `Re-used the same inst from a different branch`,
       );
     },
-    // We skip observing the tplTree field of components, since we will only want to observe the ones that were updated.
-    // This is the same setup used in the studio.
-    skipInitialObserveFields: [meta.getFieldByName("Component", "tplTree")],
-    incremental: true,
   });
-
-  // Observe the components that were updated, since we need to track them for tree operations.
-  recorder.ensureObservedComponents(
-    mergedSite.components.filter((component) =>
-      updatedComponentsUuids.has(component.uuid),
-    ),
-  );
 
   const { autoReconciliations } = runMergeFnAndApplyFixes(
     ancestor,

@@ -138,7 +138,7 @@ export function getCommentThreadsWithModelMetadata(
 
 export function partitionThreadsForFrames(
   threads: TplCommentThreads,
-  arenaFrames: ArenaFrame[],
+  arenaFrames: ReadonlyArray<ArenaFrame>,
   studioCtx: StudioCtx,
 ) {
   const [current, other] = partition([...threads], (thread) =>

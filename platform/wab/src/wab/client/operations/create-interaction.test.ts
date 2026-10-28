@@ -135,9 +135,10 @@ describe("createInteraction", () => {
 
   it("creates on a component instance's function-typed prop", () => {
     const { page, button, instance } = setup();
-    button.params.push(
+    button.params = [
+      ...button.params,
       mkParam({ name: "onSave", type: typeFactory.func(), paramType: "prop" }),
-    );
+    ];
 
     const result = createInteraction({
       component: page,
@@ -265,8 +266,8 @@ describe("createInteraction", () => {
 
   it("rejects a slot occupied by a custom expression", () => {
     const { page, root } = setup();
-    ensureBaseVariantSetting(root).attrs["onClick"] =
-      customCode("$props.onClick");
+    const rootVs = ensureBaseVariantSetting(root);
+    rootVs.attrs = { ...rootVs.attrs, onClick: customCode("$props.onClick") };
 
     const result = createInteraction({
       component: page,

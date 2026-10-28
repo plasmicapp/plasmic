@@ -21,7 +21,7 @@ export const ResponsiveColumnsCanvasControls = observer(
     const [dragState, setDragState] = React.useState<
       | {
           index: number;
-          cols: number[];
+          cols: ReadonlyArray<number>;
         }
       | undefined
     >(undefined);

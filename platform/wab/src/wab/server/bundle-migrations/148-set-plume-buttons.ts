@@ -41,7 +41,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
         type: typeFactory.bool(),
         paramType: "prop",
       });
-      comp.params.push(param);
+      comp.params = [...comp.params, param];
     }
     const tpls = site.components
       .filter((c) => !isCodeComponent(c))
@@ -56,12 +56,13 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
       if (!arg) {
         // If nothing specified so far, then explicitly set it to
         // true to preserve previous behavior
-        baseVs.args.push(
+        baseVs.args = [
+          ...baseVs.args,
           new Arg({
             param,
             expr: codeLit(true),
           }),
-        );
+        ];
       }
     }
   }

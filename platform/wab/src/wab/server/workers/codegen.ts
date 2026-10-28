@@ -101,7 +101,7 @@ export interface CodegenOutputBundle {
   usedTokens: TheoTokensOutput;
   defaultStyles: StyleConfig;
   usedNpmPackages: string[];
-  externalCssImports: string[];
+  externalCssImports: readonly string[];
   activeSplits: ActiveSplit[];
 }
 

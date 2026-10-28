@@ -2,7 +2,7 @@ import { isScreenVariant } from "@/wab/shared/Variants";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
 import { NonCssScreenVariantOverrideLintIssue } from "@/wab/shared/linting/lint-types";
 import { lintIssuesEquals } from "@/wab/shared/linting/lint-utils";
-import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { componentSelector, maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
   Component,
   Site,
@@ -27,7 +27,7 @@ export const lintScreenVariantOverrides = maybeComputedFn(
   },
 );
 
-const lintComponent = maybeComputedFn(
+const lintComponent = componentSelector(
   function lintComponent(component: Component) {
     const issues: NonCssScreenVariantOverrideLintIssue[] = [];
     for (const tpl of flattenComponent(component)) {
@@ -42,64 +42,51 @@ const lintComponent = maybeComputedFn(
   },
 );
 
-const lintTpl = maybeComputedFn(
-  function lintTpl(component: Component, tpl: TplNode) {
-    const issues: NonCssScreenVariantOverrideLintIssue[] = [];
-    for (const vs of tpl.vsettings) {
-      if (vs.variants.some((v) => isScreenVariant(v))) {
-        issues.push(...lintVs(component, tpl, vs));
-      }
+// Not cached per tpl: lintComponent depends on the whole component anyway
+function lintTpl(component: Component, tpl: TplNode) {
+  const issues: NonCssScreenVariantOverrideLintIssue[] = [];
+  for (const vs of tpl.vsettings) {
+    if (vs.variants.some((v) => isScreenVariant(v))) {
+      issues.push(...lintVs(component, tpl, vs));
     }
-    return issues;
-  },
-  {
-    keepAlive: false,
-    equals: lintIssuesEquals,
-    name: "lintScreenVariantOverridesTpl",
-  },
-);
+  }
+  return issues;
+}
 
-const lintVs = maybeComputedFn(
-  function lintVs(component: Component, tpl: TplNode, vs: VariantSetting) {
-    const issues: NonCssScreenVariantOverrideLintIssue[] = [];
-    for (const attr of Object.keys(vs.attrs)) {
-      issues.push({
-        type: TYPE,
-        key: `${makeKeyPrefix(component, tpl, vs)}-attr-${attr}`,
-        component,
-        tpl,
-        vs,
-        prop: { type: "attr", attr },
-      });
-    }
-    for (const arg of vs.args) {
-      issues.push({
-        type: TYPE,
-        key: `${makeKeyPrefix(component, tpl, vs)}-arg-${arg.param.uuid}`,
-        component,
-        tpl,
-        vs,
-        prop: { type: "arg", param: arg.param },
-      });
-    }
-    if (vs.text) {
-      issues.push({
-        type: TYPE,
-        key: `${makeKeyPrefix(component, tpl, vs)}-text`,
-        component,
-        tpl,
-        vs,
-        prop: { type: "text" },
-      });
-    }
-    return issues;
-  },
-  {
-    keepAlive: false,
-    equals: lintIssuesEquals,
-    name: "lintScreenVariantOverridesVs",
-  },
-);
+function lintVs(component: Component, tpl: TplNode, vs: VariantSetting) {
+  const issues: NonCssScreenVariantOverrideLintIssue[] = [];
+  for (const attr of Object.keys(vs.attrs)) {
+    issues.push({
+      type: TYPE,
+      key: `${makeKeyPrefix(component, tpl, vs)}-attr-${attr}`,
+      component,
+      tpl,
+      vs,
+      prop: { type: "attr", attr },
+    });
+  }
+  for (const arg of vs.args) {
+    issues.push({
+      type: TYPE,
+      key: `${makeKeyPrefix(component, tpl, vs)}-arg-${arg.param.uuid}`,
+      component,
+      tpl,
+      vs,
+      prop: { type: "arg", param: arg.param },
+    });
+  }
+  if (vs.text) {
+    issues.push({
+      type: TYPE,
+      key: `${makeKeyPrefix(component, tpl, vs)}-text`,
+      component,
+      tpl,
+      vs,
+      prop: { type: "text" },
+    });
+  }
+  return issues;
+}
 
 function makeKeyPrefix(component: Component, tpl: TplNode, vs: VariantSetting) {
   return `${TYPE}-${component.uuid}-${tpl.uuid}-${vs.variants

@@ -68,7 +68,7 @@ describe("renameTpl", () => {
     const root = Tpls.mkTplTagX("div", {}, tplComponent);
     const { component, site, tplMgr } = setupComponentWithTplTree(root);
 
-    site.components.push(innerComponent);
+    site.components = [...site.components, innerComponent];
 
     // Add a public state to the inner component
     const state = mkValueStateForTextInput(innerRoot, innerComponent, tplMgr);

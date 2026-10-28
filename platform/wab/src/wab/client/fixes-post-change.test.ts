@@ -12,7 +12,14 @@ import { ScreenSizeSpec } from "@/wab/shared/css-size";
 import { ok } from "neverthrow";
 
 describe("Fixes post change", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("updates component.updatedAt", async () => {
+    // updatedAt is a timestamp, so move the clock forward between changes
+    vi.useFakeTimers({ toFake: ["Date"] });
+    const tick = () => vi.setSystemTime(Date.now() + 1);
     const { studioCtx } = fakeStudioCtx();
     const component = studioCtx.addComponent("Button", {
       type: ComponentType.Plain,
@@ -24,47 +31,42 @@ describe("Fixes post change", () => {
 
     let componentUpdatedAt = component.updatedAt!;
 
-    await studioCtx.changeObserved(
-      () => [component],
-      () => {
-        // Change directly on the component
-        component.name = "NewButton";
-        return ok();
-      },
-    );
+    tick();
+    await studioCtx.change(() => {
+      // Change directly on the component
+      component.name = "NewButton";
+      return ok();
+    });
 
     expect(component.updatedAt).toBeGreaterThan(componentUpdatedAt);
 
     componentUpdatedAt = component.updatedAt!;
 
-    await studioCtx.changeObserved(
-      () => [component],
-      () => {
-        // Directly change the tplTree
-        component.tplTree = tpls[0];
-        return ok();
-      },
-    );
+    tick();
+    await studioCtx.change(() => {
+      // Directly change the tplTree
+      component.tplTree = tpls[0];
+      return ok();
+    });
 
     expect(component.updatedAt).toBeGreaterThan(componentUpdatedAt);
 
     componentUpdatedAt = component.updatedAt!;
 
-    await studioCtx.changeObserved(
-      () => [component],
-      () => {
-        // Change the tpl tree by accessing the children only should still update the component
-        tpls[0].children = [tpls[1]];
-        return ok();
-      },
-    );
+    tick();
+    await studioCtx.change(() => {
+      // Change the tpl tree by accessing the children only should still update the component
+      tpls[0].children = [tpls[1]];
+      return ok();
+    });
 
     expect(component.updatedAt).toBeGreaterThan(componentUpdatedAt);
 
     componentUpdatedAt = component.updatedAt!;
 
+    tick();
     await studioCtx.changeUnsafe(() => {
-      // Using changeUnsafe should still update the component if it's observed already
+      // Using changeUnsafe should still update the component
       tpls[1].children = [tpls[2]];
     });
 
@@ -104,13 +106,10 @@ describe("Fixes post change", () => {
     expect(child.vsettings.length).toBe(1);
 
     // Set the grid tpl as the component's tplTree (triggers fixups)
-    await studioCtx.changeObserved(
-      () => [component],
-      () => {
-        component.tplTree = gridTpl;
-        return ok();
-      },
-    );
+    await studioCtx.change(() => {
+      component.tplTree = gridTpl;
+      return ok();
+    });
 
     // After the fixup runs, verify the child does NOT have any variant settings
     // with the parent's private hover variant
@@ -175,25 +174,19 @@ describe("Fixes post change", () => {
     siblingBaseRsh.set("left", "10px");
     $$$(gridTpl).append(sibling);
 
-    await studioCtx.changeObserved(
-      () => [component],
-      () => {
-        component.tplTree = gridTpl;
-        return ok();
-      },
-    );
+    await studioCtx.change(() => {
+      component.tplTree = gridTpl;
+      return ok();
+    });
 
     // Now change the parent grid to 1 column, in the mobile variant only
-    await studioCtx.changeObserved(
-      () => [component],
-      () => {
-        RSH(
-          ensureVariantSetting(gridTpl, [baseVariant, mobileVariant]).rs,
-          gridTpl,
-        ).set("grid-template-columns", "repeat(1, minmax(0, 1fr))");
-        return ok();
-      },
-    );
+    await studioCtx.change(() => {
+      RSH(
+        ensureVariantSetting(gridTpl, [baseVariant, mobileVariant]).rs,
+        gridTpl,
+      ).set("grid-template-columns", "repeat(1, minmax(0, 1fr))");
+      return ok();
+    });
 
     // The child's coordinates must be intact, in base and in mobile, even
     // though only base says it's free-positioned

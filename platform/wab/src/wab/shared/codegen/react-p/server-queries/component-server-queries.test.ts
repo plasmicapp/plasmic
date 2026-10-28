@@ -268,7 +268,7 @@ describe("Component server queries", () => {
             mkTplComponentX({ component: codeComponent, baseVariant }),
           ]),
       });
-      site.components.push(codeComponent, page);
+      site.components = [...site.components, codeComponent, page];
       return { site, page, codeComponent };
     }
 

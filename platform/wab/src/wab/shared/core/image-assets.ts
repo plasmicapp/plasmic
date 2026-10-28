@@ -1,5 +1,6 @@
 import { getArenaFrames } from "@/wab/shared/Arenas";
 import { isBaseVariant } from "@/wab/shared/Variants";
+import { isReadonlyArray, tryArrayWithout } from "@/wab/shared/collections";
 import {
   ensure,
   findIndexes,
@@ -7,7 +8,6 @@ import {
   mkShortId,
   notNil,
   removeAtIndexes,
-  tryRemove,
   tuple,
 } from "@/wab/shared/common";
 import {
@@ -76,7 +76,7 @@ export function mkImageAsset(opts: {
 }
 
 /** Returns an img's default alt per variant setting, from its image's description. */
-export function getImageAssetAlts(vsettings: VariantSetting[]) {
+export function getImageAssetAlts(vsettings: ReadonlyArray<VariantSetting>) {
   const altCombos = vsettings
     .filter((vs) => "alt" in vs.attrs)
     .map((vs) => vs.variants);
@@ -284,13 +284,13 @@ export function removeImageAssetUsage(
 ) {
   if (usage.type === "tpl-image") {
     const attr = usage.tpl.tag === "img" ? "src" : "outerHTML";
-    delete usage.vs.attrs[attr];
+    usage.vs.attrs = L.omit(usage.vs.attrs, attr);
   } else if (usage.type === "page-meta") {
     usage.pageMeta.openGraphImage = null;
   } else if (usage.type === "component-param") {
     usage.param.defaultExpr = null;
   } else if (usage.type === "component-arg") {
-    tryRemove(usage.vs.args, usage.arg);
+    usage.vs.args = tryArrayWithout(usage.vs.args, usage.arg);
   } else {
     const cssRef = mkImageAssetRef(asset);
     const rs = usage.type === "tpl-rs" ? usage.vs.rs : usage.mixin.rs;
@@ -300,9 +300,12 @@ export function removeImageAssetUsage(
       const indexes = findIndexes(vals, (v) => v.includes(cssRef));
       removeAtIndexes(vals, indexes);
       if (vals.length === 0) {
-        rs.values["background"] = "none";
+        rs.values = { ...rs.values, background: "none" };
       } else {
-        rs.values["background"] = joinCssValues("background", vals);
+        rs.values = {
+          ...rs.values,
+          background: joinCssValues("background", vals),
+        };
       }
     }
   }
@@ -313,13 +316,15 @@ const RE_ASSETREF_ALL = new RegExp(RE_ASSETREF, "g");
 
 export function tryParseImageAssetRef(
   ref: string,
-  assets: ImageAsset[] | Record<string, ImageAsset>,
+  assets: ReadonlyArray<ImageAsset> | Readonly<Record<string, ImageAsset>>,
 ) {
   const m = ref.match(RE_ASSETREF);
   if (!m) {
     return undefined;
   }
-  return L.isArray(assets) ? assets.find((t) => t.uuid === m[1]) : assets[m[1]];
+  return isReadonlyArray<ImageAsset>(assets)
+    ? assets.find((t) => t.uuid === m[1])
+    : assets[m[1]];
 }
 
 export function mkImageAssetRef(asset: ImageAsset) {

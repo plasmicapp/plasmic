@@ -127,15 +127,16 @@ function mkCtx(
 describe("useComponentLevelQueries", () => {
   it("seeds $q before initializing states that read it, and both before legacy ops", async () => {
     const component = mkEmptyComponent();
-    component.serverQueries.push(
+    component.serverQueries = [
+      ...component.serverQueries,
       new ComponentServerQuery({
         uuid: "sq1",
         name: "My Query",
         op: new CustomCode({ code: "(async () => [1, 2])", fallback: null }),
       }),
-    );
+    ];
     // A mid-migrating project with a legacy op that reads a migrated server query.
-    component.dataQueries.push(mkLegacyDataQuery());
+    component.dataQueries = [...component.dataQueries, mkLegacyDataQuery()];
 
     const resolved: { op?: any; err?: unknown }[] = [];
     const env = mkEnv();
@@ -198,7 +199,10 @@ describe("useComponentLevelQueries", () => {
 
   it("seeds $queries before initializing a state that reads it, while the legacy op still reads $state", async () => {
     const component = mkEmptyComponent();
-    component.dataQueries.push(mkLegacyDataQuery("{{ $state.filter }}"));
+    component.dataQueries = [
+      ...component.dataQueries,
+      mkLegacyDataQuery("{{ $state.filter }}"),
+    ];
 
     const resolved: { op?: any; err?: unknown }[] = [];
     const env = mkEnv();
@@ -254,12 +258,11 @@ describe("useComponentLevelQueries", () => {
 
   it("gives a legacy op the results of the legacy queries before it", async () => {
     const component = mkEmptyComponent();
-    component.dataQueries.push(
+    component.dataQueries = [
+      ...component.dataQueries,
       mkLegacyDataQuery("{{ $state.filter }}", "First"),
-    );
-    component.dataQueries.push(
       mkLegacyDataQuery("{{ $queries.first.data }}", "Second"),
-    );
+    ];
 
     const resolved: { op?: any; err?: unknown }[] = [];
     const env = mkEnv();
@@ -311,7 +314,10 @@ describe("useComponentLevelQueries", () => {
      */
     function setup() {
       const component = mkEmptyComponent();
-      component.serverQueries.push(mkFunctionServerQuery(mkFetchFunction()));
+      component.serverQueries = [
+        ...component.serverQueries,
+        mkFunctionServerQuery(mkFetchFunction()),
+      ];
 
       // Empty on a cold load: the host hasn't run its registrations yet.
       const registeredFunctions = new Map<string, any>();

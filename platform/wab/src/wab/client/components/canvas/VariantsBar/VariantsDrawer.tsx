@@ -14,6 +14,7 @@ import {
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { VARIANTS_LOWER } from "@/wab/shared/Labels";
 import {
+  VariantCombo,
   getAllVariantsForTpl,
   isCodeComponentVariant,
   isComponentStyleVariant,
@@ -45,7 +46,7 @@ const baseLabel = "Base";
 
 interface VariantsDrawerProps extends DefaultVariantsDrawerProps {
   searchInputRef?: React.RefObject<HTMLInputElement>;
-  targetedVariants: Variant[];
+  targetedVariants: VariantCombo;
   hideBase?: boolean;
   hideInteractions?: boolean;
   hideScreen?: boolean;
@@ -180,9 +181,7 @@ function VariantsDrawer_({
       case "Enter":
       case "Space": {
         const currentHighlightedVariant = flattenedVariants[highlightIndex] as
-          | Variant
-          | string
-          | undefined;
+          Variant | string | undefined;
         if (currentHighlightedVariant) {
           handleVariantClick(currentHighlightedVariant)();
         }

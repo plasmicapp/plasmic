@@ -7,12 +7,16 @@ import { siteCCVariantsToInfos } from "@/wab/shared/cached-selectors";
 import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
 import { toVarName } from "@/wab/shared/codegen/util";
 import {
+  arrayMoveIndex,
+  arrayRemoveAt,
+  isReadonlyArray,
+} from "@/wab/shared/collections";
+import {
   arrayEqIgnoreOrder,
   assert,
   ensure,
   mapify,
   mkShortId,
-  moveIndex,
   tuple,
   xAddAll,
 } from "@/wab/shared/common";
@@ -73,7 +77,7 @@ export enum VariantGroupType {
   GlobalUserDefined = "global-user-defined",
 }
 
-export type VariantCombo = Variant[];
+export type VariantCombo = ReadonlyArray<Variant>;
 
 export function mkVariant({
   name,
@@ -92,7 +96,7 @@ export function mkVariant({
   description?: string | null;
   forTpl?: TplNode | null;
   codeComponentName?: string | null;
-  codeComponentVariantKeys?: string[] | null;
+  codeComponentVariantKeys?: ReadonlyArray<string> | null;
 }) {
   return new Variant({
     uuid: mkShortId(),
@@ -112,7 +116,7 @@ export function mkBaseVariant() {
 }
 
 export function isBaseVariant(variants: Variant | VariantCombo) {
-  if (Array.isArray(variants)) {
+  if (isReadonlyArray<Variant>(variants)) {
     return variants.length === 1 && variants[0].name === BASE_VARIANT_NAME;
   }
   return variants.name === BASE_VARIANT_NAME;
@@ -219,9 +223,9 @@ export function mkVariantSetting({
   dataRep,
   text,
 }: {
-  variants: Variant[];
-  args?: Array<Arg>;
-  attrs?: Record<string, Expr>;
+  variants: VariantCombo;
+  args?: ReadonlyArray<Arg>;
+  attrs?: Readonly<Record<string, Expr>>;
   styles?: Record<string, string>;
   dataCond?: CustomCode | ObjectPath;
   dataRep?: Rep;
@@ -419,7 +423,7 @@ export function isGlobalVariantGroup(
  * - localVariants: Component-level variants (non-global, non-private)
  * - globalVariants: Site-level variants (screen variants, user-defined globals)
  */
-export function partitionVariantsByScope(variants: Variant[]) {
+export function partitionVariantsByScope(variants: VariantCombo) {
   const privateStyleVariants = variants.filter(isPrivateStyleVariant);
   const nonPrivateVariants = variants.filter((v) => !isPrivateStyleVariant(v));
   const globalVariants = nonPrivateVariants.filter(isGlobalVariant);
@@ -449,7 +453,7 @@ export function isScreenVariant(variant: Variant) {
   return !!variant.parent && isScreenVariantGroup(variant.parent);
 }
 
-export function hasScreenVariant(variantCombo: Variant[]) {
+export function hasScreenVariant(variantCombo: VariantCombo) {
   return variantCombo.some((v) => isScreenVariant(v));
 }
 
@@ -458,7 +462,7 @@ export function hasScreenVariant(variantCombo: Variant[]) {
  * per rule, and single-choice variants are never active together.
  */
 export function validateGlobalVariantCombo(
-  variants: Variant[],
+  variants: VariantCombo,
 ): { ok: true } | { ok: false; error: string } {
   const screenVariants = [...new Set(variants)].filter((v) =>
     isScreenVariant(v),
@@ -831,7 +835,7 @@ export function getReferencedVariantGroups(
   return vgs;
 }
 
-export function tryGetVariantSetting(tpl: TplNode, v: Variant[]) {
+export function tryGetVariantSetting(tpl: TplNode, v: VariantCombo) {
   if (v.length === 0) {
     return tryGetBaseVariantSetting(tpl);
   } else {
@@ -841,7 +845,7 @@ export function tryGetVariantSetting(tpl: TplNode, v: Variant[]) {
 
 export function addingBaseToTplWithExistingBase(
   tpl: TplNode,
-  variants: Variant[] | Variant,
+  variants: VariantCombo | Variant,
 ) {
   return (
     tpl.vsettings.length > 0 &&
@@ -854,7 +858,7 @@ export function allVariantsInGroup(vg: VariantGroup) {
   return [...vg.variants];
 }
 
-export function ensureVariantSetting(tpl: TplNode, variants: Variant[]) {
+export function ensureVariantSetting(tpl: TplNode, variants: VariantCombo) {
   let vs = tryGetVariantSetting(tpl, variants);
   const rootTpl = $$$(tpl).root().maybeOneTpl();
   if (rootTpl) {
@@ -866,7 +870,7 @@ export function ensureVariantSetting(tpl: TplNode, variants: Variant[]) {
       !addingBaseToTplWithExistingBase(tpl, variants),
       "Cannot add base vs to tpl that already has base vs",
     );
-    tpl.vsettings.push(vs);
+    tpl.vsettings = [...tpl.vsettings, vs];
   }
   return vs;
 }
@@ -1197,7 +1201,11 @@ export function moveVariantGroup({
   fromIndex: number;
   toIndex: number;
 }) {
-  moveIndex(component.variantGroups, fromIndex, toIndex);
+  component.variantGroups = arrayMoveIndex(
+    component.variantGroups,
+    fromIndex,
+    toIndex,
+  );
   ensureComponentArenaRowsOrder(site, component);
 }
 
@@ -1214,14 +1222,18 @@ export function moveVariant({
   fromIndex: number;
   toIndex: number;
 }) {
-  moveIndex(variantGroup.variants, fromIndex, toIndex);
+  variantGroup.variants = arrayMoveIndex(
+    variantGroup.variants,
+    fromIndex,
+    toIndex,
+  );
   ensureComponentArenaColsOrder(site, component, variantGroup);
 }
 
-export function removeTplVariantSettings(tpl: TplNode, v: Variant[]) {
+export function removeTplVariantSettings(tpl: TplNode, v: VariantCombo) {
   const i = tpl.vsettings.findIndex((vs) => arrayEqIgnoreOrder(vs.variants, v));
   if (i !== -1) {
-    tpl.vsettings.splice(i, 1);
+    tpl.vsettings = arrayRemoveAt(tpl.vsettings, i);
   }
 }
 

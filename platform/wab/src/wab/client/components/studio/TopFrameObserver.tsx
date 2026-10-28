@@ -150,14 +150,13 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
         tagPrefix,
       ) => {
         await studioCtx.change(() => {
-          studioCtx.site.flags.usePlasmicTranslation = localization;
-          if (keyScheme && localization) {
-            studioCtx.site.flags.keyScheme = keyScheme;
-            studioCtx.site.flags.tagPrefix = tagPrefix;
-          } else {
-            studioCtx.site.flags.keyScheme = undefined;
-            studioCtx.site.flags.tagPrefix = undefined;
-          }
+          studioCtx.site.flags = {
+            ...studioCtx.site.flags,
+            usePlasmicTranslation: localization,
+            ...(keyScheme && localization
+              ? { keyScheme, tagPrefix }
+              : { keyScheme: undefined, tagPrefix: undefined }),
+          };
           notification.info({
             message: `Localization is now ${
               studioCtx.site.flags.usePlasmicTranslation ? "on" : "off"

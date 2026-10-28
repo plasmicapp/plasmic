@@ -8,7 +8,6 @@ import { ensureVariantSetting, mkBaseVariant } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import {
   allCustomFunctions,
-  componentToReferencers,
   componentToTplComponents,
   computedProjectFlags,
   flattenComponent,
@@ -22,7 +21,6 @@ import {
   getInvalidCodeComponentVariantsInComponent,
 } from "@/wab/shared/code-components/variants";
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
-import { arrayRemove } from "@/wab/shared/collections";
 import {
   CustomError,
   arrayEqIgnoreOrder,
@@ -36,7 +34,6 @@ import {
   maybe,
   mkShortId,
   objsEq,
-  removeWhere,
   swallow,
   switchType,
   tuple,
@@ -171,6 +168,7 @@ import {
   Site,
   State,
   StyleToken,
+  StyleTokenOverride,
   TargetType,
   Text,
   TplComponent,
@@ -196,6 +194,7 @@ import {
   isKnownTplRef,
   isKnownVirtualRenderExpr,
 } from "@/wab/shared/model/classes";
+import { instFieldValues } from "@/wab/shared/model/model-meta";
 import {
   convertTsToWabType,
   typeFactory,
@@ -626,7 +625,6 @@ interface SiteCtx {
     f: () => Result<void, E>,
     opts?: { noUndoRecord?: boolean },
   ): Promise<Result<void, E>>;
-  observeComponents(components: Component[]): boolean;
   getRootSubReact(): typeof React;
   tplMgr(): TplMgr;
   getPlumeSite(): Site | undefined;
@@ -1196,7 +1194,6 @@ async function addNewRegisteredComponents(
             // params looks up other new code components by name in
             // site.components (e.g. a slot's allowed components).
             newCodeComponents.forEach((c) => ctx.tplMgr().attachComponent(c));
-            ctx.observeComponents(newCodeComponents);
             // Fill in each new component's params, states, and slots from its
             // registration meta.
             for (const [meta, c] of newComponents) {
@@ -1213,7 +1210,6 @@ async function addNewRegisteredComponents(
             // dependency, which keeps the entry's args by param name, so the
             // params must exist first.
             newContexts.forEach((c) => ctx.tplMgr().attachComponent(c));
-            ctx.observeComponents(newContexts);
             return ok();
           }),
         { noUndoRecord: true },
@@ -1326,7 +1322,7 @@ async function fixCodeComponentsVariants(
   return safeTry<void, never>(async function* () {
     const removedSelectorsByComponent: [Component, string[]][] = [];
 
-    const componentsToObserve: Component[] = [];
+    const componentsToFix: Component[] = [];
 
     ctx.site.components.forEach((c) => {
       // We ignore the hostless code components roots here, to let this be handled by the server upgrade
@@ -1342,7 +1338,7 @@ async function fixCodeComponentsVariants(
 
         if (unregisterdKeys.length > 0) {
           removedSelectorsByComponent.push([c, unregisterdKeys]);
-          componentsToObserve.push(c);
+          componentsToFix.push(c);
         }
       }
     });
@@ -1353,11 +1349,9 @@ async function fixCodeComponentsVariants(
       );
     }
 
-    ctx.observeComponents(componentsToObserve);
-
     yield* await ctx.change(
       () => {
-        componentsToObserve.forEach((c) => {
+        componentsToFix.forEach((c) => {
           ensureOnlyValidCodeComponentVariantsInComponent(ctx.site, c);
         });
         return ok();
@@ -1439,7 +1433,6 @@ async function checkCodeComponentRefActions(ctx: SiteCtx) {
       }
     }
   }
-  ctx.observeComponents(componentsToClear.map(({ component }) => component));
   return ctx.change<never>(
     () => {
       for (const componentToClear of componentsToClear) {
@@ -1507,13 +1500,6 @@ async function refreshCodeComponentMetas(
           };
         });
 
-        ctx.observeComponents(
-          allComponentInstances.flatMap(({ allInstances }) =>
-            allInstances
-              .filter(({ tpl }) => !tpl.name)
-              .map(({ referencedComponent }) => referencedComponent),
-          ),
-        );
         allComponentInstances.forEach(({ allInstances }) => {
           allInstances.forEach(({ referencedComponent, tpl }) => {
             if (!tpl.name) {
@@ -1798,7 +1784,10 @@ async function checkParentComponents(ctx: SiteCtx) {
           );
           const removeSuperComp = (c: Component) => {
             if (c.superComp) {
-              removeWhere(c.superComp.subComps, (sub) => sub === c);
+              const superComp = c.superComp;
+              superComp.subComps = superComp.subComps.filter(
+                (sub) => sub !== c,
+              );
               c.superComp = null;
             }
           };
@@ -1809,7 +1798,7 @@ async function checkParentComponents(ctx: SiteCtx) {
             );
             if (parent && parent !== c.superComp) {
               removeSuperComp(c);
-              parent.subComps.push(c);
+              parent.subComps = [...parent.subComps, c];
               c.superComp = parent;
             } else if (!parent) {
               removeSuperComp(c);
@@ -1879,7 +1868,12 @@ export function compareComponentStatesWithMeta(
           // Code component states don't have implicit states and initial expressions
           // So it's enough to make a shallow comparison between the registered state
           // and the state saved in the model
-          if (!objsEq(omit(registered, "uid"), omit(s, "uid"))) {
+          if (
+            !objsEq(
+              omit(instFieldValues(registered), "uid"),
+              omit(instFieldValues(s), "uid"),
+            )
+          ) {
             return true;
           }
         }
@@ -1938,13 +1932,6 @@ function refreshComponentStates(ctx: SiteCtx) {
         }
       }
 
-      const changedComponents = Array.from(
-        new Set(stateChanges.map(({ component }) => component)),
-      );
-      const parentComponents = changedComponents.flatMap((c) =>
-        Array.from(componentToReferencers(ctx.site).get(c) ?? []),
-      );
-      ctx.observeComponents([...parentComponents, ...changedComponents]);
       stateChanges.forEach((changes) => {
         doUpdateComponentStates(ctx.site, changes.component, changes);
       });
@@ -2002,7 +1989,10 @@ function doUpdateComponentStates(
         },
       );
     }
-    Object.assign(updateState.before, omit(updateState.after, "uid"));
+    Object.assign(
+      updateState.before,
+      omit(instFieldValues(updateState.after), "uid"),
+    );
   });
 }
 
@@ -2063,17 +2053,10 @@ async function checkComponentPropsAndStates(
     yield* await ctx.change<CodeComponentPropsError>(
       () =>
         safeTry(function* () {
-          const changedComponents = Array.from(
-            new Set(changes.map(({ component }) => component)),
-          );
-          const parentComponents = changedComponents.flatMap((c) =>
-            Array.from(componentToReferencers(ctx.site).get(c) ?? []),
-          );
-          ctx.observeComponents([...parentComponents, ...changedComponents]);
           // First pass registers all new props (which are safe and needed
           // to instantiate `TplComponent`s in the default slot contents).
           newParams.forEach(({ component, param }) => {
-            component.params.push(param);
+            component.params = [...component.params, param];
             if (isCodeComponent(component)) {
               attachRenderableTplSlots(component);
             }
@@ -2400,11 +2383,11 @@ function updateChangedClassNameProp(
   for (const tpl of componentToTplComponents(ctx.site, component)) {
     for (const vs of tpl.vsettings) {
       if (!isKnownClassNamePropType(after.type)) {
-        removeWhere(vs.args, (arg) => arg.param === before);
+        vs.args = vs.args.filter((arg) => arg.param !== before);
       } else {
         for (const arg of vs.args) {
           if (arg.param === before && isKnownStyleExpr(arg.expr)) {
-            removeWhere(arg.expr.styles, (s) => shouldRemove(s));
+            arg.expr.styles = arg.expr.styles.filter((s) => !shouldRemove(s));
           }
         }
       }
@@ -2452,10 +2435,11 @@ function doUpdateComponentProps(
   hardUpdatedProps.forEach(({ before: p }) =>
     removeComponentParam(ctx.site, component, p),
   );
-  component.params.push(
+  component.params = [
+    ...component.params,
     ...addedProps,
     ...hardUpdatedProps.map(({ after }) => after),
-  );
+  ];
   xDifference(updatedProps, hardUpdatedProps).forEach(({ before, after }) => {
     if (isKnownClassNamePropType(before.type)) {
       updateChangedClassNameProp(ctx, component, before, after);
@@ -2474,7 +2458,7 @@ function doUpdateComponentProps(
     } else {
       // If a code component changed from PropParam to StateParam, we need to
       // update all references to point to the new type
-      component.params.push(after);
+      component.params = [...component.params, after];
 
       for (const inst of getTplComponentsInSite(ctx.site, component)) {
         for (const vs of inst.vsettings) {
@@ -4663,33 +4647,29 @@ async function upsertRegisteredTokens(
     ) {
       yield* await ctx.change<never>(
         () => {
-          const newTokens: StyleToken[] = [];
+          const newTokens: StyleToken[] = newTokenRegs.map((tokenReg) =>
+            createStyleTokenFromRegistration(tokenReg),
+          );
           const updatedTokens: StyleToken[] = [];
-          for (const tokenReg of newTokenRegs) {
-            const token = createStyleTokenFromRegistration(tokenReg);
-            site.styleTokens.push(token);
-            newTokens.push(token);
-          }
+          const removedOverrides = new Set<StyleTokenOverride>();
 
-          const removeToken = (token: StyleToken) => {
+          // Inlines the token's usages before it is removed from the site
+          const inlineTokenUsages = (token: StyleToken) => {
             const finalToken = toFinalToken(token, site);
             if (finalToken.override) {
               // Since the token usages will be flattened before deletion, we want to ensure the effective (overridden) value is used. (Varianted values are lost during flattening, so we only copy the value.)
               token.value = finalToken.value;
               // remove the associated override
-              arrayRemove(site.styleTokenOverrides, finalToken.override);
+              removedOverrides.add(finalToken.override);
             }
-            const [usages, summary] = extractTokenUsages(site, token);
-            ctx.observeComponents([
-              ...summary.components,
-              ...summary.frames.map((f) => f.container.component),
-            ]);
+            const [usages] = extractTokenUsages(site, token);
             for (const usage of usages) {
               changeTokenUsage(site, token, usage, "inline");
             }
-            arrayRemove(site.styleTokens, token);
           };
 
+          // Tokens whose type changed are removed and added back at the end
+          const readdedTokens: StyleToken[] = [];
           for (const tokenReg of updatedTokenRegs) {
             const existing = ensure(
               existingTokens.get(tokenReg.name),
@@ -4697,15 +4677,25 @@ async function upsertRegisteredTokens(
             );
             existing.value = tokenReg.value;
             if (existing.type !== registeredTypeToTokenType(tokenReg.type)) {
-              removeToken(existing);
-              site.styleTokens.push(existing);
+              inlineTokenUsages(existing);
+              readdedTokens.push(existing);
             }
             updatedTokens.push(existing);
           }
 
           for (const token of removedTokens) {
-            removeToken(token);
+            inlineTokenUsages(token);
           }
+
+          const droppedTokens = new Set([...readdedTokens, ...removedTokens]);
+          site.styleTokens = [
+            ...site.styleTokens.filter((t) => !droppedTokens.has(t)),
+            ...newTokens,
+            ...readdedTokens,
+          ];
+          site.styleTokenOverrides = site.styleTokenOverrides.filter(
+            (o) => !removedOverrides.has(o),
+          );
 
           fns.onUpdatedTokens?.({
             newTokens,
@@ -5118,13 +5108,11 @@ async function upsertRegisteredLibs(
       removedLibraries.size > 0
     ) {
       yield* await ctx.change<never>(() => {
-        const newLibraries: CodeLibrary[] = [];
+        const newLibraries: CodeLibrary[] = newLibraryRegs.map((registration) =>
+          createCodeLibraryFromRegistration(registration),
+        );
         const updatedLibraries: CodeLibrary[] = [];
-        for (const registration of newLibraryRegs) {
-          const lib = createCodeLibraryFromRegistration(registration);
-          site.codeLibraries.push(lib);
-          newLibraries.push(lib);
-        }
+        site.codeLibraries = [...site.codeLibraries, ...newLibraries];
 
         for (const registration of updatedLibraryRegs) {
           const existing = ensure(
@@ -5145,7 +5133,9 @@ async function upsertRegisteredLibs(
           updatedLibraries.push(existing);
         }
 
-        removeWhere(site.codeLibraries, (lib) => removedLibraries.has(lib));
+        site.codeLibraries = site.codeLibraries.filter(
+          (lib) => !removedLibraries.has(lib),
+        );
 
         fns.onUpdatedCodeLibraries?.({
           newLibraries,
@@ -5263,7 +5253,6 @@ async function refreshDefaultSlotContents(siteCtx: SiteCtx) {
         .filter(isTplSlot)
         .filter((slot) => slot.defaultContents.length > 0);
       if (slots.length > 0) {
-        siteCtx.observeComponents(siteCtx.site.components);
         // If there are any slots with default contents, then we fork them all first
         // before clearing the default contents
         forkAllTplCodeComponentVirtualArgs(siteCtx.site);

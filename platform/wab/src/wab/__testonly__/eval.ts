@@ -49,7 +49,10 @@ export const componentLib = {
       type: ComponentType.Plain,
     });
     const rootVs = ensureBaseVariantSetting(comp, comp.tplTree as TplTag);
-    rootVs.attrs.children = new VarRef({ variable: comp.params[0].variable });
+    rootVs.attrs = {
+      ...rootVs.attrs,
+      children: new VarRef({ variable: comp.params[0].variable }),
+    };
     return comp;
   })(),
   NumDisp: (() => {
@@ -70,7 +73,10 @@ export const componentLib = {
       type: ComponentType.Plain,
     });
     const rootVs = ensureBaseVariantSetting(comp, comp.tplTree as TplTag);
-    rootVs.attrs.children = new VarRef({ variable: comp.params[0].variable });
+    rootVs.attrs = {
+      ...rootVs.attrs,
+      children: new VarRef({ variable: comp.params[0].variable }),
+    };
     return comp;
   })(),
   CondVariantTagStyles: () => {

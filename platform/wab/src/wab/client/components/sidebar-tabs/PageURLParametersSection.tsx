@@ -47,7 +47,7 @@ import {
   extractQueryParamMetas,
 } from "@/wab/shared/utils/url-utils";
 import { Input, InputRef, Menu, Popover, Tooltip } from "antd";
-import { defer, isEqual, size } from "lodash";
+import { defer, isEqual, omit, size } from "lodash";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
 import React from "react";
@@ -167,14 +167,12 @@ export const PageURLParametersSection = observer(
     const mainDetailsSpec: DetailsSpec | undefined = maybeFirst(
       page.dataQueries.flatMap((query) => {
         const params = extractParamsFromPagePath(pageMeta.path);
-        if (
-          !(
-            query.op &&
-            ["getMany", "getList"].includes(query.op.opName) &&
-            params.length > 0 &&
-            query.op.templates.filters
-          )
-        ) {
+        if (!(
+          query.op &&
+          ["getMany", "getList"].includes(query.op.opName) &&
+          params.length > 0 &&
+          query.op.templates.filters
+        )) {
           return [];
         }
 
@@ -184,14 +182,12 @@ export const PageURLParametersSection = observer(
           tryCoerceString(query.op.templates.resource.value),
           JSON.parse,
         );
-        if (
-          !(
-            tableId &&
-            filtersBindings &&
-            filtersValue &&
-            size(filtersBindings) === size(params)
-          )
-        ) {
+        if (!(
+          tableId &&
+          filtersBindings &&
+          filtersValue &&
+          size(filtersBindings) === size(params)
+        )) {
           return [];
         }
         const filters = extractFiltersFromDefaultDataSourceQueries(query.op);
@@ -256,7 +252,7 @@ export const PageURLParametersSection = observer(
           <AddQueryParamButton
             onAdd={(key) =>
               void sc.change(() => {
-                pageMeta.query[key] = "value";
+                pageMeta.query = { ...pageMeta.query, [key]: "value" };
                 return ok();
               })
             }
@@ -289,10 +285,16 @@ export const PageURLParametersSection = observer(
                       isRowSelector: true,
                       onRowSelected: async (row) => {
                         await sc.changeUnsafe(() => {
-                          for (const p of mainDetailsSpec.pathParams) {
-                            // Make sure to convert these to strings, since query params are always strings.
-                            pageMeta.params[p] = valueAsString(row[p]);
-                          }
+                          // Make sure to convert these to strings, since query params are always strings.
+                          pageMeta.params = {
+                            ...pageMeta.params,
+                            ...Object.fromEntries(
+                              mainDetailsSpec.pathParams.map((p) => [
+                                p,
+                                valueAsString(row[p]),
+                              ]),
+                            ),
+                          };
                         });
                         close();
                       },
@@ -322,9 +324,14 @@ export const PageURLParametersSection = observer(
               value={param.previewValue}
               onCommit={(value) =>
                 void sc.change(() => {
-                  const previewValues =
-                    param.type === "Path" ? pageMeta.params : pageMeta.query;
-                  previewValues[param.key] = value;
+                  if (param.type === "Path") {
+                    pageMeta.params = {
+                      ...pageMeta.params,
+                      [param.key]: value,
+                    };
+                  } else {
+                    pageMeta.query = { ...pageMeta.query, [param.key]: value };
+                  }
                   return ok();
                 })
               }
@@ -332,7 +339,7 @@ export const PageURLParametersSection = observer(
                 param.type === "Query"
                   ? () =>
                       void sc.change(() => {
-                        delete pageMeta.query[param.key];
+                        pageMeta.query = omit(pageMeta.query, param.key);
                         return ok();
                       })
                   : undefined

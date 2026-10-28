@@ -38,7 +38,10 @@ describe("tryMerge entry assertion", () => {
 
   it("throws an AssertionError when the merged site differs from the ancestor", () => {
     const inputs = mergeInputs(singleComponentSite());
-    inputs.merged.userManagedFonts.push("Changed");
+    inputs.merged.userManagedFonts = [
+      ...inputs.merged.userManagedFonts,
+      "Changed",
+    ];
     expect(() => merge(inputs)).toThrow(AssertionError);
     expect(() => merge(inputs)).toThrow(
       "Initial merged site must be identical to ancestor site",

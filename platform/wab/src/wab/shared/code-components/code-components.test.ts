@@ -13,7 +13,7 @@ import {
   parseStyles,
   propTypeToWabType,
 } from "@/wab/shared/code-components/code-components";
-import { arrayRemove } from "@/wab/shared/collections";
+import { arrayWithout } from "@/wab/shared/collections";
 import { only, uncheckedCast } from "@/wab/shared/common";
 import { PlumeComponent } from "@/wab/shared/core/components";
 import { codeLit } from "@/wab/shared/core/exprs";
@@ -105,7 +105,7 @@ describe("code-components", () => {
     ]);
 
     site = createSite();
-    site.components.push(plumeComponent);
+    site.components = [...site.components, plumeComponent];
   });
 
   describe("getNewProps", () => {
@@ -130,8 +130,14 @@ describe("code-components", () => {
       ]);
     });
     it("returns missing params", () => {
-      arrayRemove(plumeComponent.params, plumeValueParam);
-      arrayRemove(plumeComponent.params, plumeAriaLabelParam);
+      plumeComponent.params = arrayWithout(
+        plumeComponent.params,
+        plumeValueParam,
+      );
+      plumeComponent.params = arrayWithout(
+        plumeComponent.params,
+        plumeAriaLabelParam,
+      );
       const paramNames = unwrap(
         getNewProps(site, plumeComponent, plumePluginComponentMeta),
       ).newProps.map((p) => p.variable.name);
@@ -141,8 +147,14 @@ describe("code-components", () => {
 
   describe("findDuplicateAriaParams", () => {
     it("returns empty array for 0 params", () => {
-      arrayRemove(plumeComponent.params, plumeAriaLabelParam);
-      arrayRemove(plumeComponent.params, plumeAriaLabelledByParam);
+      plumeComponent.params = arrayWithout(
+        plumeComponent.params,
+        plumeAriaLabelParam,
+      );
+      plumeComponent.params = arrayWithout(
+        plumeComponent.params,
+        plumeAriaLabelledByParam,
+      );
       expect(findDuplicateAriaParams(plumeComponent)).toBeEmpty();
     });
     it("returns empty array for 1 params", () => {
@@ -157,8 +169,11 @@ describe("code-components", () => {
       const dupAriaLabelledByParam = new PropParam(
         instFieldValues(plumeAriaLabelledByParam),
       );
-      plumeComponent.params.push(dupAriaLabelParam);
-      plumeComponent.params.push(dupAriaLabelledByParam);
+      plumeComponent.params = [
+        ...plumeComponent.params,
+        dupAriaLabelParam,
+        dupAriaLabelledByParam,
+      ];
       expect(findDuplicateAriaParams(plumeComponent)).toEqual([
         dupAriaLabelParam,
         dupAriaLabelledByParam,
@@ -177,8 +192,11 @@ describe("code-components", () => {
         new PropParam(instFieldValues(plumeAriaLabelledByParam)),
         new PropParam(instFieldValues(plumeAriaLabelledByParam)),
       ];
-      plumeComponent.params.push(...dupAriaLabelParams);
-      plumeComponent.params.push(...dupAriaLabelledByParams);
+      plumeComponent.params = [
+        ...plumeComponent.params,
+        ...dupAriaLabelParams,
+        ...dupAriaLabelledByParams,
+      ];
       expect(findDuplicateAriaParams(plumeComponent)).toEqual([
         ...dupAriaLabelParams,
         ...dupAriaLabelledByParams,
@@ -263,7 +281,6 @@ describe("addNewRegisteredComponents", () => {
         {},
       ),
       change: async (f) => f(),
-      observeComponents: () => true,
       getRootSubReact: () => {
         throw new Error("unused");
       },
@@ -336,13 +353,14 @@ describe("propTypeToWabType", () => {
   let site: Site;
   beforeEach(() => {
     site = createSite();
-    site.components.push(
+    site.components = [
+      ...site.components,
       mkCodeComponent(
         "MyComponent",
         { name: "MyComponent", importPath: "./my-component", props: {} },
         {},
       ),
-    );
+    ];
   });
 
   it("converts a string prop type", () => {

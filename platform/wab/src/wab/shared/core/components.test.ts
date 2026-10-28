@@ -75,7 +75,8 @@ describe("extractComponent", () => {
   ]);
 
   const root = component.tplTree! as TplTag;
-  root.vsettings.push(
+  root.vsettings = [
+    ...root.vsettings,
     mkVariantSetting({
       variants: [primary],
       styles: { background: "linear-gradient(blue, blue)" },
@@ -92,7 +93,7 @@ describe("extractComponent", () => {
       variants: [large],
       styles: { "padding-left": "20px" },
     }),
-  );
+  ];
 
   const tree1 = mkTplTagX(
     "div",
@@ -160,12 +161,13 @@ describe("extractComponent", () => {
   );
 
   const input = tree1.children[0] as TplTag;
-  input.vsettings.push(
+  input.vsettings = [
+    ...input.vsettings,
     mkVariantSetting({
       variants: [tplMgr.createPrivateStyleVariant(component, input, ["Hover"])],
       styles: { "font-weight": "bold" },
     }),
-  );
+  ];
 
   $$$(root).append(tree1);
 
@@ -384,13 +386,16 @@ describe("extractComponent", () => {
       name: "myServerQuery",
       op: undefined,
     });
-    localComponent.serverQueries.push(serverQuery);
+    localComponent.serverQueries = [
+      ...localComponent.serverQueries,
+      serverQuery,
+    ];
     const dataQuery = new ComponentDataQuery({
       uuid: mkShortId(),
       name: "myDataQuery",
       op: undefined,
     });
-    localComponent.dataQueries.push(dataQuery);
+    localComponent.dataQueries = [...localComponent.dataQueries, dataQuery];
 
     const localTree = mkTplTagX("div", {
       baseVariant: localBase,
@@ -580,7 +585,8 @@ describe("getCodeComponentImportName", () => {
 it("reports duplicate component names through the browser SDK", () => {
   const capture = vi.spyOn(Sentry, "captureException").mockReturnValue("test");
   const site = createSite();
-  site.components.push(
+  site.components = [
+    ...site.components,
     ...[1, 2].map(() =>
       mkComponent({
         name: "Duplicate",
@@ -588,7 +594,7 @@ it("reports duplicate component names through the browser SDK", () => {
         type: ComponentType.Plain,
       }),
     ),
-  );
+  ];
   Array.from(genSiteErrors(site));
   expect(capture).toHaveBeenCalledWith(
     expect.objectContaining({

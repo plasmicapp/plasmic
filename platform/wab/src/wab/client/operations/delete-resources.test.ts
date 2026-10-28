@@ -218,7 +218,7 @@ describe("deleteResourcesWithUsages", () => {
   it("is a no-op when given an empty resource list", async () => {
     const { studioCtx } = setup();
     const onDelete = vi.fn();
-    const changeObservedSpy = vi.spyOn(studioCtx, "changeObserved");
+    const changeSpy = vi.spyOn(studioCtx, "change");
 
     const result = await deleteResourcesWithUsages(studioCtx, [], onDelete, {
       behaviour: "delete-if-referenced",
@@ -226,10 +226,10 @@ describe("deleteResourcesWithUsages", () => {
     });
 
     expect(onDelete).not.toHaveBeenCalled();
-    expect(changeObservedSpy).not.toHaveBeenCalled();
+    expect(changeSpy).not.toHaveBeenCalled();
     assert(result.isOk(), "expected success");
     expect(result.value.deletedResources).toEqual([]);
     expect(result.value.messages).toEqual([]);
-    changeObservedSpy.mockRestore();
+    changeSpy.mockRestore();
   });
 });

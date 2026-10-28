@@ -36,7 +36,7 @@ import {
   tryGetOwnerSite,
 } from "@/wab/shared/core/tpls";
 import { isTagThemable } from "@/wab/shared/html";
-import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { componentSelector } from "@/wab/shared/mobx-util";
 import {
   Arg,
   Component,
@@ -95,7 +95,7 @@ export function getSlotArg(comp: TplComponent, param: Param) {
   return vs.args.find((arg) => arg.param === param);
 }
 
-export const getTplSlots = maybeComputedFn(function getTplSlots(
+export const getTplSlots = componentSelector(function getTplSlots(
   component: Component,
 ) {
   const slotParams = new Set(getSlotParams(component));
@@ -105,14 +105,14 @@ export const getTplSlots = maybeComputedFn(function getTplSlots(
   return flattenComponent(component).filter(isTplSlot) as TplSlot[];
 });
 
-export const getTplSlot = maybeComputedFn(function getTplSlot(
+export const getTplSlot = componentSelector(function getTplSlot(
   component: Component,
   variable: Var,
 ): TplSlot | undefined {
   return getTplSlots(component).filter((s) => s.param.variable === variable)[0];
 });
 
-export const getTplSlotByName = maybeComputedFn(function getTplSlotByName(
+export const getTplSlotByName = componentSelector(function getTplSlotByName(
   component: Component,
   name: string,
 ): TplSlot | undefined {
@@ -128,7 +128,7 @@ export function getTplSlotDescendants(node: TplNode) {
 /**
  * Returns true if the content of the slot param should be wrapped in DataCtxReader
  */
-export const shouldWrapSlotContentInDataCtxReader = maybeComputedFn(
+export const shouldWrapSlotContentInDataCtxReader = componentSelector(
   function shouldWrapSlotContentInDataCtxReader_(
     component: Component,
     slotParam: Param,

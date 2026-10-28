@@ -63,7 +63,8 @@ export function cloneInsertableTemplateArena(
     ];
 
     newFonts = new Set([...newFonts, ...seenFonts]);
-    newArena.children.push(
+    newArena.children = [
+      ...newArena.children,
       mkArenaFrame({
         site,
         name: c.name,
@@ -82,7 +83,7 @@ export function cloneInsertableTemplateArena(
         targetGlobalVariants: [],
         pinnedGlobalVariants: {},
       }),
-    );
+    ];
   });
 
   return { arena: newArena, seenFonts: newFonts };

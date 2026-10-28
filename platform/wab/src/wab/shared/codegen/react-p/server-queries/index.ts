@@ -182,11 +182,11 @@ export function ${componentName}(props: ${defaultPropsName}) {
  * Extract data token identifiers from server query expressions
  */
 export function getDataTokensFromServerQueries(
-  queries: ComponentServerQuery[],
+  queries: ReadonlyArray<ComponentServerQuery>,
 ): Set<string> {
   const tokenIdentifiers = queries
     .filter(isServerQueryWithOperation)
-    .flatMap((query): Expr[] =>
+    .flatMap((query): ReadonlyArray<Expr> =>
       isKnownCustomFunctionExpr(query.op) ? query.op.args : [query.op],
     )
     .flatMap(flattenExprs)

@@ -235,15 +235,13 @@ export function appendVisibilityStylesForTpl(
     const needsToOverrideOtherVs = !(
       // We don't need to worry about it if this is the base variant
       // (it never overrides anything),
-      (
-        isBaseVariant(vs.variants) ||
-        // We also don't need to worry about it if if all other variants
-        // are visible anyway
-        tpl.vsettings.every(
-          (vs2) =>
-            vs2 === vs ||
-            getVariantSettingVisibility(vs2) === TplVisibility.Visible,
-        )
+      isBaseVariant(vs.variants) ||
+      // We also don't need to worry about it if if all other variants
+      // are visible anyway
+      tpl.vsettings.every(
+        (vs2) =>
+          vs2 === vs ||
+          getVariantSettingVisibility(vs2) === TplVisibility.Visible,
       )
     );
 

@@ -6,7 +6,7 @@ import {
   createStyleTokenFromRegistration,
   mkCodeComponent,
 } from "@/wab/shared/code-components/code-components";
-import { arrayRemove } from "@/wab/shared/collections";
+import { arrayMoveIndex, arrayWithout } from "@/wab/shared/collections";
 import {
   assert,
   ensure,
@@ -16,7 +16,6 @@ import {
   last,
   mkShortId,
   only,
-  removeWhere,
   sorted,
   swallow,
   tuple,
@@ -88,6 +87,7 @@ import {
   TplTag,
   VariantedValue,
 } from "@/wab/shared/model/classes";
+import { instFieldValues } from "@/wab/shared/model/model-meta";
 import { typeFactory } from "@/wab/shared/model/model-util";
 import codeComponentsWithSameNameBundle from "@/wab/shared/site-diffs/__testonly__/bundles/code-components-with-same-name.json";
 import globalContextBundle from "@/wab/shared/site-diffs/__testonly__/bundles/global-context-merge.json";
@@ -137,7 +137,7 @@ describe("merging", () => {
   // This is to work around a bug in jest that throws max call stack size error when trying to print our conflict/model structure
   function shallow(x: ObjInst & { uuid: string }) {
     return Object.fromEntries(
-      Object.entries(x)
+      Object.entries(instFieldValues(x))
         .filter(([k, v]) => !isArray(v) && k !== "uid")
         .map(([k, v]) =>
           tuple(
@@ -152,19 +152,25 @@ describe("merging", () => {
     const rez = testMerge({
       ancestorSite: basicSite(),
       a: (site) => {
-        arrayRemove(site.styleTokens, (leftSubject = site.styleTokens[0]));
+        site.styleTokens = arrayWithout(
+          site.styleTokens,
+          (leftSubject = site.styleTokens[0]),
+        );
       },
       b: (site) => {
-        (site.components[0].tplTree as TplTag).vsettings[0].rs.values[
-          "line-height"
-        ] = mkTokenRef(site.styleTokens[0]);
+        const rs = (site.components[0].tplTree as TplTag).vsettings[0].rs;
+        rs.values = {
+          ...rs.values,
+          "line-height": mkTokenRef(site.styleTokens[0]),
+        };
         site.styleTokens[1].value = mkTokenRef(site.styleTokens[0]);
-        site.styleTokens[1].variantedValues.push(
+        site.styleTokens[1].variantedValues = [
+          ...site.styleTokens[1].variantedValues,
           new VariantedValue({
             value: mkTokenRef(site.styleTokens[0]),
             variants: [site.globalVariantGroups[0].variants[0]],
           }),
-        );
+        ];
       },
     });
     expect(rez).toMatchObject({
@@ -306,25 +312,27 @@ describe("merging", () => {
       ancestorSite: basicSite(),
       a: (site) => {
         const root = site.components[0].tplTree as TplTag;
-        root.vsettings.push(
+        root.vsettings = [
+          ...root.vsettings,
           mkVariantSetting({
             variants: [site.globalVariantGroups[0].variants[0]],
             styles: {
               color: "red",
             },
           }),
-        );
+        ];
       },
       b: (site) => {
         const root = site.components[0].tplTree as TplTag;
-        root.vsettings.push(
+        root.vsettings = [
+          ...root.vsettings,
           mkVariantSetting({
             variants: [site.globalVariantGroups[0].variants[0]],
             styles: {
               "font-size": "20px",
             },
           }),
-        );
+        ];
       },
     });
     expect(res).toMatchObject(
@@ -350,11 +358,13 @@ describe("merging", () => {
       ancestorSite: basicSite(),
       a: (site) => {
         const root = site.components[0].tplTree as TplTag;
-        (leftSubject = root).vsettings[0].rs.values["color"] = "red";
+        const rs = (leftSubject = root).vsettings[0].rs;
+        rs.values = { ...rs.values, color: "red" };
       },
       b: (site) => {
         const root = site.components[0].tplTree as TplTag;
-        (rightSubject = root).vsettings[0].rs.values["color"] = "blue";
+        const rs = (rightSubject = root).vsettings[0].rs;
+        rs.values = { ...rs.values, color: "blue" };
       },
       directConflictsPicks: ["right"],
     });
@@ -399,8 +409,11 @@ describe("merging", () => {
             }
           },
         );
-        tplTagA.vsettings[0].rs.values["background"] =
-          "linear-gradient(#EA0D0D, #EA0D0D)";
+        const rs = tplTagA.vsettings[0].rs;
+        rs.values = {
+          ...rs.values,
+          background: "linear-gradient(#EA0D0D, #EA0D0D)",
+        };
       },
       b: (site) => {
         let tplTagA;
@@ -411,8 +424,11 @@ describe("merging", () => {
             }
           },
         );
-        tplTagA.vsettings[0].rs.values["background"] =
-          "linear-gradient(#EEEEEE, #EEEEEE)";
+        const rs = tplTagA.vsettings[0].rs;
+        rs.values = {
+          ...rs.values,
+          background: "linear-gradient(#EEEEEE, #EEEEEE)",
+        };
       },
       directConflictsPicks: ["right"],
     });
@@ -458,11 +474,13 @@ describe("merging", () => {
       ancestorSite: basicSite(),
       a: (site) => {
         const root = site.components[0].tplTree as TplTag;
-        root.vsettings[0].rs.values["color"] = "red";
+        const rs = root.vsettings[0].rs;
+        rs.values = { ...rs.values, color: "red" };
       },
       b: (site) => {
         const root = site.components[0].tplTree as TplTag;
-        root.vsettings[0].rs.values["font-size"] = "20px";
+        const rs = root.vsettings[0].rs;
+        rs.values = { ...rs.values, "font-size": "20px" };
       },
     });
     expect(res).toMatchObject(
@@ -487,7 +505,7 @@ describe("merging", () => {
       (res = testMerge({
         ancestorSite: basicSite(),
         a: (site) => {
-          site.styleTokens.splice(0, 1);
+          site.styleTokens = site.styleTokens.slice(1);
         },
         b: (site) => {
           site.styleTokens[0].name = "x";
@@ -526,7 +544,7 @@ describe("merging", () => {
         ancestorSite: basicSite(),
         a: (site) => {
           (leftSubject = site.styleTokens[1]).name = "a";
-          site.styleTokens.splice(0, 1);
+          site.styleTokens = site.styleTokens.slice(1);
         },
         b: (site) => {
           (rightSubject = site.styleTokens[1]).name = "b";
@@ -561,7 +579,8 @@ describe("merging", () => {
 
   it("has no conflicts anywhere when creating harmless conflict and left got removed", () => {
     const ancSite = basicSite();
-    ancSite.arenas[0].children.push(
+    ancSite.arenas[0].children = [
+      ...ancSite.arenas[0].children,
       mkArenaFrame({
         site: ancSite,
         name: "",
@@ -571,12 +590,12 @@ describe("merging", () => {
         pinnedGlobalVariants: {},
         pinnedVariants: {},
       }),
-    );
+    ];
     expect(
       (res = testMerge({
         ancestorSite: ancSite,
         a: (site) => {
-          site.arenas[0].children.splice(0, 1);
+          site.arenas[0].children = site.arenas[0].children.slice(1);
         },
         b: (site) => {
           site.arenas[0].children[0].name = "aoeu";
@@ -1085,17 +1104,25 @@ describe("merging", () => {
           ancestorSite: basicSite(),
           a: (site) => {
             leftSubject = site.components[0];
-            (site.components[0].tplTree as TplTag).vsettings[0].attrs["a"] =
-              codeLit("1");
-            (site.components[0].tplTree as TplTag).vsettings[0].attrs["b"] =
-              codeLit("2");
+            {
+              const vs = (site.components[0].tplTree as TplTag).vsettings[0];
+              vs.attrs = { ...vs.attrs, a: codeLit("1") };
+            }
+            {
+              const vs = (site.components[0].tplTree as TplTag).vsettings[0];
+              vs.attrs = { ...vs.attrs, b: codeLit("2") };
+            }
           },
           b: (site) => {
             rightSubject = site.components[0];
-            (site.components[0].tplTree as TplTag).vsettings[0].attrs["a"] =
-              codeLit("1");
-            (site.components[0].tplTree as TplTag).vsettings[0].attrs["c"] =
-              codeLit("3");
+            {
+              const vs = (site.components[0].tplTree as TplTag).vsettings[0];
+              vs.attrs = { ...vs.attrs, a: codeLit("1") };
+            }
+            {
+              const vs = (site.components[0].tplTree as TplTag).vsettings[0];
+              vs.attrs = { ...vs.attrs, c: codeLit("3") };
+            }
           },
         })),
       ).toMatchObject({
@@ -1130,17 +1157,25 @@ describe("merging", () => {
           ancestorSite: basicSite(),
           a: (site) => {
             leftSubject = site.components[0].tplTree;
-            (site.components[0].tplTree as TplTag).vsettings[0].attrs["a"] =
-              codeLit("1");
-            (site.components[0].tplTree as TplTag).vsettings[0].attrs["b"] =
-              codeLit("2");
+            {
+              const vs = (site.components[0].tplTree as TplTag).vsettings[0];
+              vs.attrs = { ...vs.attrs, a: codeLit("1") };
+            }
+            {
+              const vs = (site.components[0].tplTree as TplTag).vsettings[0];
+              vs.attrs = { ...vs.attrs, b: codeLit("2") };
+            }
           },
           b: (site) => {
             rightSubject = site.components[0].tplTree;
-            (site.components[0].tplTree as TplTag).vsettings[0].attrs["a"] =
-              codeLit("11");
-            (site.components[0].tplTree as TplTag).vsettings[0].attrs["c"] =
-              codeLit("3");
+            {
+              const vs = (site.components[0].tplTree as TplTag).vsettings[0];
+              vs.attrs = { ...vs.attrs, a: codeLit("11") };
+            }
+            {
+              const vs = (site.components[0].tplTree as TplTag).vsettings[0];
+              vs.attrs = { ...vs.attrs, c: codeLit("3") };
+            }
           },
           directConflictsPicks: ["right"],
         })),
@@ -1182,12 +1217,26 @@ describe("merging", () => {
         (res = testMerge({
           ancestorSite: (ancestorSite = basicSite()),
           a: (site) => {
-            leftSubject = site.components[0].metadata["a"] = "1";
-            leftSubject = site.components[0].metadata["b"] = "2";
+            const component = site.components[0];
+            component.metadata = {
+              ...component.metadata,
+              a: (leftSubject = "1"),
+            };
+            component.metadata = {
+              ...component.metadata,
+              b: (leftSubject = "2"),
+            };
           },
           b: (site) => {
-            rightSubject = site.components[0].metadata["a"] = "1";
-            rightSubject = site.components[0].metadata["c"] = "3";
+            const component = site.components[0];
+            component.metadata = {
+              ...component.metadata,
+              a: (rightSubject = "1"),
+            };
+            component.metadata = {
+              ...component.metadata,
+              c: (rightSubject = "3"),
+            };
           },
         })),
       ).toMatchObject({
@@ -1204,13 +1253,15 @@ describe("merging", () => {
           ancestorSite: (ancestorSite = basicSite()),
           a: (site) => {
             leftSubject = site.components[0];
-            site.components[0].metadata["a"] = "1";
-            site.components[0].metadata["b"] = "2";
+            const component = site.components[0];
+            component.metadata = { ...component.metadata, a: "1" };
+            component.metadata = { ...component.metadata, b: "2" };
           },
           b: (site) => {
             rightSubject = site.components[0];
-            site.components[0].metadata["a"] = "11";
-            site.components[0].metadata["c"] = "3";
+            const component = site.components[0];
+            component.metadata = { ...component.metadata, a: "11" };
+            component.metadata = { ...component.metadata, c: "3" };
           },
           directConflictsPicks: ["right"],
         })),
@@ -1254,28 +1305,30 @@ describe("merging", () => {
           [leftSubject, leftSubject2] = site.components.slice(0, 2);
           for (const component of site.components.slice(0, 2)) {
             const root = component.tplTree as TplTag;
-            root.vsettings.push(
+            root.vsettings = [
+              ...root.vsettings,
               mkVariantSetting({
                 variants: [site.globalVariant],
                 styles: {
                   color: "red",
                 },
               }),
-            );
+            ];
           }
         },
         b: (site) => {
           [rightSubject, rightSubject2] = site.components.slice(0, 2);
           for (const component of site.components.slice(0, 2)) {
             const root = component.tplTree as TplTag;
-            root.vsettings.push(
+            root.vsettings = [
+              ...root.vsettings,
               mkVariantSetting({
                 variants: [site.globalVariant],
                 styles: {
                   color: "green",
                 },
               }),
-            );
+            ];
           }
         },
       }),
@@ -1366,14 +1419,14 @@ describe("merging", () => {
         testMerge({
           ancestorSite: basicSite(),
           a: (site) => {
-            (
-              (leftSubject = site.components[0]).tplTree as TplTag
-            ).vsettings[0].attrs["title"] = codeLit("0");
+            const vs = ((leftSubject = site.components[0]).tplTree as TplTag)
+              .vsettings[0];
+            vs.attrs = { ...vs.attrs, title: codeLit("0") };
           },
           b: (site) => {
-            (
-              (rightSubject = site.components[0]).tplTree as TplTag
-            ).vsettings[0].attrs["title"] = codeLit("0");
+            const vs = ((rightSubject = site.components[0]).tplTree as TplTag)
+              .vsettings[0];
+            vs.attrs = { ...vs.attrs, title: codeLit("0") };
           },
         }),
       ).toMatchObject({
@@ -1390,12 +1443,15 @@ describe("merging", () => {
         testMerge({
           ancestorSite: basicSite(),
           a: (site) => {
-            (leftSubject = site.userManagedFonts).push("a");
-            (leftSubject = site.userManagedFonts).push("b");
+            site.userManagedFonts = [...site.userManagedFonts, "a"];
+            leftSubject = site.userManagedFonts;
+            site.userManagedFonts = [...site.userManagedFonts, "b"];
+            leftSubject = site.userManagedFonts;
           },
           b: (site) => {
-            site.userManagedFonts.splice(0, 1);
-            (rightSubject = site.userManagedFonts).push("b");
+            site.userManagedFonts = site.userManagedFonts.slice(1);
+            site.userManagedFonts = [...site.userManagedFonts, "b"];
+            rightSubject = site.userManagedFonts;
           },
         }),
       ).toMatchObject({
@@ -1407,13 +1463,11 @@ describe("merging", () => {
     });
 
     it("handles conflicts on order-sensitive array of nested objects", () => {
-      const cyclicShift = (arr: any[], left: boolean) => {
+      const cyclicShift = <T>(arr: ReadonlyArray<T>, left: boolean): T[] => {
         if (left) {
-          const firstElement = arr.shift();
-          arr.push(firstElement);
+          return [...arr.slice(1), arr[0]];
         } else {
-          const lastElement = arr.pop();
-          arr.unshift(lastElement);
+          return [arr[arr.length - 1], ...arr.slice(0, -1)];
         }
       };
 
@@ -1440,12 +1494,12 @@ describe("merging", () => {
             const vg = site.components[0].variantGroups[0];
             // Also create a conflict on nested object!
             (leftSubject2 = vg.variants[1]).name = "a";
-            cyclicShift((leftSubject = vg).variants, true);
+            (leftSubject = vg).variants = cyclicShift(vg.variants, true);
           },
           b: (site) => {
             const vg = site.components[0].variantGroups[0];
             (rightSubject2 = vg.variants[1]).name = "b";
-            cyclicShift((rightSubject = vg).variants, false);
+            (rightSubject = vg).variants = cyclicShift(vg.variants, false);
           },
           directConflictsPicks: ["left", "right"],
         })),
@@ -1699,7 +1753,9 @@ describe("merging", () => {
           ancestorSite: (() => {
             const site = basicSite();
             const vgroup = site.globalVariantGroups[1];
-            (site.components[0].tplTree as TplTag).vsettings.push(
+            const root = site.components[0].tplTree as TplTag;
+            root.vsettings = [
+              ...root.vsettings,
               mkVariantSetting({
                 variants: [
                   vgroup.variants[0],
@@ -1707,7 +1763,7 @@ describe("merging", () => {
                   vgroup.variants[2],
                 ],
               }),
-            );
+            ];
             return site;
           })(),
           a: (site) => {
@@ -1752,15 +1808,17 @@ describe("merging", () => {
       res = testMerge({
         ancestorSite: basicSite(),
         a: (site) => {
-          site.styleTokens[0].variantedValues.push(
+          site.styleTokens[0].variantedValues = [
+            ...site.styleTokens[0].variantedValues,
             new VariantedValue({
               variants: [site.globalVariantGroups[0].variants[0]],
               value: "1",
             }),
-          );
+          ];
         },
         b: (site) => {
-          site.styleTokens[0].variantedValues.push(
+          site.styleTokens[0].variantedValues = [
+            ...site.styleTokens[0].variantedValues,
             new VariantedValue({
               variants: [
                 site.globalVariantGroups[0].variants[0],
@@ -1768,7 +1826,7 @@ describe("merging", () => {
               ],
               value: "2",
             }),
-          );
+          ];
         },
       });
       expect(res).toMatchObject({
@@ -1789,14 +1847,23 @@ describe("merging", () => {
       res = testMerge({
         ancestorSite: (() => {
           const site = basicSite();
-          site.mixins[0].rs.values["color"] = "#000";
+          site.mixins[0].rs.values = {
+            ...site.mixins[0].rs.values,
+            color: "#000",
+          };
           return site;
         })(),
         a: (site) => {
-          site.mixins[0].rs.values["color"] = "#aaa";
+          site.mixins[0].rs.values = {
+            ...site.mixins[0].rs.values,
+            color: "#aaa",
+          };
         },
         b: (site) => {
-          site.mixins[0].rs.values["color"] = "#bbb";
+          site.mixins[0].rs.values = {
+            ...site.mixins[0].rs.values,
+            color: "#bbb",
+          };
         },
         directConflictsPicks: ["right"],
       });
@@ -1810,7 +1877,8 @@ describe("merging", () => {
       res = testMerge({
         ancestorSite: basicSite(),
         a: (site) => {
-          (leftSubject = site.styleTokens[0]).variantedValues.push(
+          (leftSubject = site.styleTokens[0]).variantedValues = [
+            ...site.styleTokens[0].variantedValues,
             new VariantedValue({
               variants: [
                 site.globalVariantGroups[0].variants[0],
@@ -1818,10 +1886,11 @@ describe("merging", () => {
               ],
               value: "1",
             }),
-          );
+          ];
         },
         b: (site) => {
-          (rightSubject = site.styleTokens[0]).variantedValues.push(
+          (rightSubject = site.styleTokens[0]).variantedValues = [
+            ...site.styleTokens[0].variantedValues,
             new VariantedValue({
               variants: [
                 site.globalVariantGroups[0].variants[0],
@@ -1829,7 +1898,7 @@ describe("merging", () => {
               ],
               value: "2",
             }),
-          );
+          ];
         },
         directConflictsPicks: ["right"],
       });
@@ -1886,7 +1955,8 @@ describe("merging", () => {
             site.components.find((c) => c.name === "Button"),
             () => `Component "Button" not found`,
           );
-          cmp.tplTree.vsettings.push(
+          cmp.tplTree.vsettings = [
+            ...cmp.tplTree.vsettings,
             mkVariantSetting({
               variants: [
                 cmp.variantGroups[0].variants[0],
@@ -1896,7 +1966,7 @@ describe("merging", () => {
                 foo: codeLit(10),
               },
             }),
-          );
+          ];
           return site;
         })(),
         a: (site) => {
@@ -1911,14 +1981,15 @@ describe("merging", () => {
             site.components.find((c) => c.name === "Button"),
             () => `Component "Button" not found`,
           );
-          cmp.tplTree.vsettings.push(
+          cmp.tplTree.vsettings = [
+            ...cmp.tplTree.vsettings,
             mkVariantSetting({
               variants: [cmp.variantGroups[1].variants[0]],
               attrs: {
                 foo: codeLit(2),
               },
             }),
-          );
+          ];
           removeVariantGroup(site, cmp, cmp.variantGroups[0]);
         },
       });
@@ -1937,7 +2008,8 @@ describe("merging", () => {
 
     it("mergeKeyFn returns correct value", () => {
       const baseSite = basicSite();
-      baseSite.components[0].dataQueries.push(
+      baseSite.components[0].dataQueries = [
+        ...baseSite.components[0].dataQueries,
         new ComponentDataQuery({
           uuid: mkShortId(),
           name: "test-name",
@@ -1951,24 +2023,32 @@ describe("merging", () => {
             }),
           }),
         }),
-      );
+      ];
       res = testMerge({
         ancestorSite: baseSite,
         a: (site) => {
-          site.components[0].dataQueries[0].op!.queryInvalidation!.invalidationQueries.push(
+          const queryInvalidation =
+            site.components[0].dataQueries[0].op!.queryInvalidation!;
+          queryInvalidation.invalidationQueries = [
+            ...queryInvalidation.invalidationQueries,
             "testing-string-equal",
-          );
-          site.components[0].dataQueries[0].op!.queryInvalidation!.invalidationQueries.push(
+          ];
+          queryInvalidation.invalidationQueries = [
+            ...queryInvalidation.invalidationQueries,
             new QueryRef({ ref: site.components[0].dataQueries[0] }),
-          );
+          ];
         },
         b: (site) => {
-          site.components[0].dataQueries[0].op!.queryInvalidation!.invalidationQueries.push(
+          const queryInvalidation =
+            site.components[0].dataQueries[0].op!.queryInvalidation!;
+          queryInvalidation.invalidationQueries = [
+            ...queryInvalidation.invalidationQueries,
             new QueryRef({ ref: site.components[0].dataQueries[0] }),
-          );
-          site.components[0].dataQueries[0].op!.queryInvalidation!.invalidationQueries.push(
+          ];
+          queryInvalidation.invalidationQueries = [
+            ...queryInvalidation.invalidationQueries,
             "testing-string-equal",
-          );
+          ];
         },
       });
       expect(res).toMatchObject({
@@ -2209,11 +2289,11 @@ describe("merging", () => {
               tplTagA.children[indexA1 + 1].name === "A2",
               () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`,
             );
-            tplTagA.children[indexA1] = tplTagA.children.splice(
+            tplTagA.children = arrayMoveIndex(
+              tplTagA.children,
               indexA1 + 1,
-              1,
-              tplTagA.children[indexA1],
-            )[0];
+              indexA1,
+            );
           },
           b: () => {},
         }),
@@ -2243,11 +2323,11 @@ describe("merging", () => {
               tplTagA.children[indexA1 + 1].name === "A2",
               () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`,
             );
-            tplTagA.children[indexA1] = tplTagA.children.splice(
+            tplTagA.children = arrayMoveIndex(
+              tplTagA.children,
               indexA1 + 1,
-              1,
-              tplTagA.children[indexA1],
-            )[0];
+              indexA1,
+            );
           },
           b: (site) => {
             let tplTagA;
@@ -2266,11 +2346,11 @@ describe("merging", () => {
               tplTagA.children[indexA1 + 1].name === "A2",
               () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`,
             );
-            tplTagA.children[indexA1] = tplTagA.children.splice(
+            tplTagA.children = arrayMoveIndex(
+              tplTagA.children,
               indexA1 + 1,
-              1,
-              tplTagA.children[indexA1],
-            )[0];
+              indexA1,
+            );
           },
         }),
       ).toMatchObject({
@@ -2299,11 +2379,11 @@ describe("merging", () => {
               tplTagA.children[indexA1 + 1].name === "A2",
               () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`,
             );
-            tplTagA.children[indexA1] = tplTagA.children.splice(
+            tplTagA.children = arrayMoveIndex(
+              tplTagA.children,
               indexA1 + 1,
-              1,
-              tplTagA.children[indexA1],
-            )[0];
+              indexA1,
+            );
           },
           b: (site) => {
             let tplTagA;
@@ -2322,11 +2402,11 @@ describe("merging", () => {
               tplTagA.children[indexA2 + 1].name === "A3",
               () => `Expected A3 but got ${tplTagA.children[indexA2 + 1].name}`,
             );
-            tplTagA.children[indexA2] = tplTagA.children.splice(
+            tplTagA.children = arrayMoveIndex(
+              tplTagA.children,
               indexA2 + 1,
-              1,
-              tplTagA.children[indexA2],
-            )[0];
+              indexA2,
+            );
           },
           useLegacyResolveConflicts: true,
           directConflictsPicks: ["right"],
@@ -2365,11 +2445,11 @@ describe("merging", () => {
             tplTagA.children[indexA1 + 1].name === "A2",
             () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`,
           );
-          tplTagA.children[indexA1] = tplTagA.children.splice(
+          tplTagA.children = arrayMoveIndex(
+            tplTagA.children,
             indexA1 + 1,
-            1,
-            tplTagA.children[indexA1],
-          )[0];
+            indexA1,
+          );
         },
         b: (site) => {
           let tplTagA;
@@ -2388,11 +2468,11 @@ describe("merging", () => {
             tplTagA.children[indexA2 + 1].name === "A3",
             () => `Expected A3 but got ${tplTagA.children[indexA2 + 1].name}`,
           );
-          tplTagA.children[indexA2] = tplTagA.children.splice(
+          tplTagA.children = arrayMoveIndex(
+            tplTagA.children,
             indexA2 + 1,
-            1,
-            tplTagA.children[indexA2],
-          )[0];
+            indexA2,
+          );
         },
         directConflictsPicks: ["left"],
         useLegacyResolveConflicts: true,
@@ -2431,11 +2511,11 @@ describe("merging", () => {
             tplTagA.children[indexA1 + 1].name === "A2",
             () => `Expected A2 but got ${tplTagA.children[indexA1 + 1].name}`,
           );
-          tplTagA.children[indexA1] = tplTagA.children.splice(
+          tplTagA.children = arrayMoveIndex(
+            tplTagA.children,
             indexA1 + 1,
-            1,
-            tplTagA.children[indexA1],
-          )[0];
+            indexA1,
+          );
         },
         b: (site) => {
           let tplTagA;
@@ -2454,11 +2534,11 @@ describe("merging", () => {
             tplTagA.children[indexA2 + 1].name === "A3",
             () => `Expected A3 but got ${tplTagA.children[indexA2 + 1].name}`,
           );
-          tplTagA.children[indexA2] = tplTagA.children.splice(
+          tplTagA.children = arrayMoveIndex(
+            tplTagA.children,
             indexA2 + 1,
-            1,
-            tplTagA.children[indexA2],
-          )[0];
+            indexA2,
+          );
         },
         directConflictsPicks: ["right"],
         useLegacyResolveConflicts: true,
@@ -2497,22 +2577,25 @@ describe("merging", () => {
           () => `No slot arg for slot2`,
         );
         const baseVariant = getBaseVariant(comp);
-        const [node2, node3] = ensureKnownRenderExpr(slot2.expr).tpl;
-        ensureKnownRenderExpr(slot2.expr).tpl = [node3, node2];
-        ensureKnownRenderExpr(slot2.expr).tpl.unshift(
+        const renderExpr = ensureKnownRenderExpr(slot2.expr);
+        const [node2, node3] = renderExpr.tpl;
+        renderExpr.tpl = [node3, node2];
+        renderExpr.tpl = [
           mkTplTagX("div", {
             name: "prepend",
             baseVariant,
             variants: [mkVariantSetting({ variants: [baseVariant] })],
           }),
-        );
-        ensureKnownRenderExpr(slot2.expr).tpl.push(
+          ...renderExpr.tpl,
+        ];
+        renderExpr.tpl = [
+          ...renderExpr.tpl,
           mkTplTagX("div", {
             name: "append",
             baseVariant,
             variants: [mkVariantSetting({ variants: [baseVariant] })],
           }),
-        );
+        ];
         tplChildren(tplComp).forEach((child) => (child.parent = tplComp));
       },
       b: (site) => {
@@ -2717,7 +2800,8 @@ describe("merging", () => {
           (arg) => ({
             newChildren: [ensure(tplComp2, () => `tplComp2 is undefined`)],
             updateArg: () => {
-              ensureKnownRenderExpr(arg.expr).tpl.push(tplComp2);
+              const renderExpr = ensureKnownRenderExpr(arg.expr);
+              renderExpr.tpl = [...renderExpr.tpl, tplComp2];
             },
           }),
           { deepRemove: false },
@@ -2845,7 +2929,7 @@ describe("merging", () => {
       mkCodeComponent(name, { name, props: {}, importPath: "" }, {});
     const container = makeCodeComponent("Container");
     const child = makeCodeComponent("Child");
-    site.components.push(container, child);
+    site.components = [...site.components, container, child];
     const staleSlot = addSlotParam(site, container, "children");
     const slot = addSlotParam(site, container, "children");
     slot.variable.name = staleSlot.variable.name;
@@ -2884,7 +2968,7 @@ describe("merging", () => {
       contextArg,
       new Arg({ param: makeProp("removed"), expr: codeLit("removed") }),
     ];
-    site.globalContexts.push(context);
+    site.globalContexts = [...site.globalContexts, context];
 
     fixDuplicatedCodeComponents(site);
 
@@ -3435,13 +3519,14 @@ describe("merging", () => {
     const result = testMerge({
       ancestorSite: (() => {
         const site = basicSite({ tokens: {} });
-        site.styleTokens.push(
+        site.styleTokens = [
+          ...site.styleTokens,
           createStyleTokenFromRegistration({
             name: "registered-1",
             type: "line-height",
             value: "100",
           }),
-        );
+        ];
         return site;
       })(),
       a: (site, tplMgr) => {
@@ -3451,29 +3536,46 @@ describe("merging", () => {
           tokenType: "LineHeight",
           value: "3",
         });
-        ensureKnownTplTag(site.components[0].tplTree).vsettings[0].rs.values[
-          "line-height"
-        ] = mkTokenRef(site.styleTokens[0]);
-        site.styleTokens.push(
+        {
+          const rs = ensureKnownTplTag(site.components[0].tplTree).vsettings[0]
+            .rs;
+          rs.values = {
+            ...rs.values,
+            "line-height": mkTokenRef(site.styleTokens[0]),
+          };
+        }
+        site.styleTokens = [
+          ...site.styleTokens,
           createStyleTokenFromRegistration({
             name: "registered-1",
             type: "font-size",
             value: "101",
           }),
-        );
-        ensureKnownTplTag(site.components[0].tplTree).vsettings[0].rs.values[
-          "font-size"
-        ] = mkTokenRef(site.styleTokens[1]);
-        site.styleTokens.push(
+        ];
+        {
+          const rs = ensureKnownTplTag(site.components[0].tplTree).vsettings[0]
+            .rs;
+          rs.values = {
+            ...rs.values,
+            "font-size": mkTokenRef(site.styleTokens[1]),
+          };
+        }
+        site.styleTokens = [
+          ...site.styleTokens,
           createStyleTokenFromRegistration({
             name: "registered-2",
             type: "spacing",
             value: "102",
           }),
-        );
-        ensureKnownTplTag(site.components[0].tplTree).vsettings[0].rs.values[
-          "margin-top"
-        ] = mkTokenRef(site.styleTokens[2]);
+        ];
+        {
+          const rs = ensureKnownTplTag(site.components[0].tplTree).vsettings[0]
+            .rs;
+          rs.values = {
+            ...rs.values,
+            "margin-top": mkTokenRef(site.styleTokens[2]),
+          };
+        }
       },
       b: (site, tplMgr) => {
         site.styleTokens = [];
@@ -3482,29 +3584,46 @@ describe("merging", () => {
           tokenType: "LineHeight",
           value: "4",
         });
-        ensureKnownTplTag(site.components[1].tplTree).vsettings[0].rs.values[
-          "line-height"
-        ] = mkTokenRef(site.styleTokens[0]);
-        site.styleTokens.push(
+        {
+          const rs = ensureKnownTplTag(site.components[1].tplTree).vsettings[0]
+            .rs;
+          rs.values = {
+            ...rs.values,
+            "line-height": mkTokenRef(site.styleTokens[0]),
+          };
+        }
+        site.styleTokens = [
+          ...site.styleTokens,
           createStyleTokenFromRegistration({
             name: "registered-1",
             type: "font-size",
             value: "111",
           }),
-        );
-        ensureKnownTplTag(site.components[1].tplTree).vsettings[0].rs.values[
-          "font-size"
-        ] = mkTokenRef(site.styleTokens[1]);
-        site.styleTokens.push(
+        ];
+        {
+          const rs = ensureKnownTplTag(site.components[1].tplTree).vsettings[0]
+            .rs;
+          rs.values = {
+            ...rs.values,
+            "font-size": mkTokenRef(site.styleTokens[1]),
+          };
+        }
+        site.styleTokens = [
+          ...site.styleTokens,
           createStyleTokenFromRegistration({
             name: "registered-2",
             type: "spacing",
             value: "112",
           }),
-        );
-        ensureKnownTplTag(site.components[1].tplTree).vsettings[0].rs.values[
-          "margin-top"
-        ] = mkTokenRef(site.styleTokens[2]);
+        ];
+        {
+          const rs = ensureKnownTplTag(site.components[1].tplTree).vsettings[0]
+            .rs;
+          rs.values = {
+            ...rs.values,
+            "margin-top": mkTokenRef(site.styleTokens[2]),
+          };
+        }
       },
     });
     expect(result).toMatchObject({
@@ -3600,7 +3719,7 @@ describe("merging", () => {
           type: typeFactory["any"](),
           paramType: "prop",
         });
-        instantiatedComp.params.push(prop1);
+        instantiatedComp.params = [...instantiatedComp.params, prop1];
 
         const parentComp = tplMgr.addComponent({
           name: "ParentComp",
@@ -3631,7 +3750,7 @@ describe("merging", () => {
           type: typeFactory["any"](),
           paramType: "prop",
         });
-        newComp.params.push(prop1);
+        newComp.params = [...newComp.params, prop1];
         tplMgr.swapComponents(
           ensure(
             site.components.find((c) => c.name === "InstantiatedComp"),
@@ -3670,7 +3789,7 @@ describe("merging", () => {
           type: typeFactory["any"](),
           paramType: "prop",
         });
-        instantiatedComp.params.push(prop1);
+        instantiatedComp.params = [...instantiatedComp.params, prop1];
 
         const parentComp = tplMgr.addComponent({
           name: "ParentComp",
@@ -3721,7 +3840,7 @@ describe("merging", () => {
           type: typeFactory["any"](),
           paramType: "prop",
         });
-        newComp.params.push(prop1, prop2);
+        newComp.params = [...newComp.params, prop1, prop2];
         tplMgr.swapComponents(
           ensure(
             site.components.find((c) => c.name === "InstantiatedComp"),
@@ -3734,12 +3853,13 @@ describe("merging", () => {
             site.components.find((c) => c.name === "ParentComp")!.tplTree,
           ).children[0],
         );
-        tplComp.vsettings[0].args.push(
+        tplComp.vsettings[0].args = [
+          ...tplComp.vsettings[0].args,
           new Arg({
             expr: codeLit("expr2"),
             param: prop2,
           }),
-        );
+        ];
         const { valueParam, onChangeParam } = mkParamsForState({
           name: "state2",
           onChangeProp: "On state2 change",
@@ -3765,18 +3885,19 @@ describe("merging", () => {
           type: typeFactory["any"](),
           paramType: "prop",
         });
-        instantiated.params.push(prop2);
+        instantiated.params = [...instantiated.params, prop2];
         const tplComp = ensureKnownTplComponent(
           ensureKnownTplTag(
             site.components.find((c) => c.name === "ParentComp")!.tplTree,
           ).children[0],
         );
-        tplComp.vsettings[0].args.push(
+        tplComp.vsettings[0].args = [
+          ...tplComp.vsettings[0].args,
           new Arg({
             expr: codeLit("expr3"),
             param: prop2,
           }),
-        );
+        ];
         const { valueParam, onChangeParam } = mkParamsForState({
           name: "state3",
           onChangeProp: "On state3 change",
@@ -3815,18 +3936,21 @@ describe("merging", () => {
     const rez = testMerge({
       ancestorSite: (() => {
         const site = basicSite();
-        site.components[0].tplTree.vsettings[0].attrs["id"] = codeLit("expr1");
+        const vs = site.components[0].tplTree.vsettings[0];
+        vs.attrs = { ...vs.attrs, id: codeLit("expr1") };
         return site;
       })(),
       a: (site) => {
-        site.components[1].tplTree.vsettings[0].attrs["id"] =
-          site.components[0].tplTree.vsettings[0].attrs["id"];
-        delete site.components[0].tplTree.vsettings[0].attrs["id"];
+        const fromVs = site.components[0].tplTree.vsettings[0];
+        const toVs = site.components[1].tplTree.vsettings[0];
+        toVs.attrs = { ...toVs.attrs, id: fromVs.attrs["id"] };
+        fromVs.attrs = omit(fromVs.attrs, "id");
       },
       b: (site) => {
-        site.components[2].tplTree.vsettings[0].attrs["id"] =
-          site.components[0].tplTree.vsettings[0].attrs["id"];
-        delete site.components[0].tplTree.vsettings[0].attrs["id"];
+        const fromVs = site.components[0].tplTree.vsettings[0];
+        const toVs = site.components[2].tplTree.vsettings[0];
+        toVs.attrs = { ...toVs.attrs, id: fromVs.attrs["id"] };
+        fromVs.attrs = omit(fromVs.attrs, "id");
       },
     });
     expect(rez).toMatchObject({
@@ -3964,9 +4088,18 @@ describe("merging", () => {
             insertPt: new Pt(1500, 0),
           },
         );
-        frame.pinnedVariants[options.variants[0].uuid] = true;
-        frame.pinnedVariants[color.variants[0].uuid] = false;
-        frame.pinnedVariants[type.variants[0].uuid] = true;
+        frame.pinnedVariants = {
+          ...frame.pinnedVariants,
+          [options.variants[0].uuid]: true,
+        };
+        frame.pinnedVariants = {
+          ...frame.pinnedVariants,
+          [color.variants[0].uuid]: false,
+        };
+        frame.pinnedVariants = {
+          ...frame.pinnedVariants,
+          [type.variants[0].uuid]: true,
+        };
       },
       b: (site, tplMgr) => {
         const cmp = ensure(
@@ -4027,7 +4160,7 @@ describe("merging", () => {
           () => `VariantGroup "Color" not found`,
         );
         const vs = ensureVariantSetting(cmp.tplTree, [group.variants[0]]);
-        vs.rs.values["color"] = "red";
+        vs.rs.values = { ...vs.rs.values, color: "red" };
       },
       b: (site, tplMgr) => {
         const cmp = ensure(
@@ -4066,7 +4199,7 @@ describe("merging", () => {
           "Hover",
         ]);
         const vs = ensureVariantSetting(tpl, [styleVariant]);
-        vs.rs.values["color"] = "red";
+        vs.rs.values = { ...vs.rs.values, color: "red" };
       },
       b: (site) => {
         const cmp = ensure(
@@ -4103,7 +4236,7 @@ describe("merging", () => {
           "Hover",
         ]);
         const vs = ensureVariantSetting(tpl, [styleVariant]);
-        vs.rs.values["color"] = "red";
+        vs.rs.values = { ...vs.rs.values, color: "red" };
       },
       b: (site, tplMgr) => {
         const cmp = ensure(
@@ -4117,7 +4250,10 @@ describe("merging", () => {
           "Hover",
         ]);
         const vs = ensureVariantSetting(tpl, [styleVariant]);
-        vs.rs.values["background"] = "linear-gradient(#EA0D0D, #EA0D0D)";
+        vs.rs.values = {
+          ...vs.rs.values,
+          background: "linear-gradient(#EA0D0D, #EA0D0D)",
+        };
       },
     });
     const site = result.mergedSite;
@@ -4167,7 +4303,12 @@ describe("merging", () => {
           paramType: "prop",
         });
 
-        instantiatedComp.params.push(prop1, prop2, prop3);
+        instantiatedComp.params = [
+          ...instantiatedComp.params,
+          prop1,
+          prop2,
+          prop3,
+        ];
 
         const parentCompBaseVariant = getBaseVariant(parentComp);
 
@@ -4190,7 +4331,8 @@ describe("merging", () => {
         const tpl = ensureKnownTplComponent(
           ensureKnownTplTag(cmp.tplTree).children[0],
         );
-        tpl.vsettings[0].args.push(
+        tpl.vsettings[0].args = [
+          ...tpl.vsettings[0].args,
           new Arg({
             param: ensure(
               tpl.component.params.find((p) => p.variable.name === "prop2"),
@@ -4203,10 +4345,9 @@ describe("merging", () => {
               () => `Couldn't find arg for prop1`,
             ).expr,
           }),
-        );
-        removeWhere(
-          tpl.vsettings[0].args,
-          (arg) => arg.param.variable.name === "prop1",
+        ];
+        tpl.vsettings[0].args = tpl.vsettings[0].args.filter(
+          (arg) => arg.param.variable.name !== "prop1",
         );
       },
       b: (site) => {
@@ -4217,7 +4358,8 @@ describe("merging", () => {
         const tpl = ensureKnownTplComponent(
           ensureKnownTplTag(cmp.tplTree).children[0],
         );
-        tpl.vsettings[0].args.push(
+        tpl.vsettings[0].args = [
+          ...tpl.vsettings[0].args,
           new Arg({
             param: ensure(
               tpl.component.params.find((p) => p.variable.name === "prop3"),
@@ -4230,10 +4372,9 @@ describe("merging", () => {
               () => `Couldn't find arg for prop1`,
             ).expr,
           }),
-        );
-        removeWhere(
-          tpl.vsettings[0].args,
-          (arg) => arg.param.variable.name === "prop1",
+        ];
+        tpl.vsettings[0].args = tpl.vsettings[0].args.filter(
+          (arg) => arg.param.variable.name !== "prop1",
         );
       },
     });
@@ -4593,7 +4734,8 @@ describe("merging", () => {
         const token = site.styleTokens[0];
         const variant = site.globalVariantGroups[0].variants[0];
 
-        site.styleTokenOverrides.push(
+        site.styleTokenOverrides = [
+          ...site.styleTokenOverrides,
           new StyleTokenOverride({
             token,
             value: "9",
@@ -4604,12 +4746,13 @@ describe("merging", () => {
               }),
             ],
           }),
-        );
+        ];
       },
       b: (site) => {
         // Main Branch: Creates an array of style token overrides
         const token = site.styleTokens[0];
-        site.styleTokenOverrides.push(
+        site.styleTokenOverrides = [
+          ...site.styleTokenOverrides,
           new StyleTokenOverride({
             token,
             value: "11",
@@ -4620,7 +4763,7 @@ describe("merging", () => {
             value: "2000",
             variantedValues: [],
           }),
-        );
+        ];
       },
       directConflictsPicks: ["left"], // Select branch
     });
@@ -4651,19 +4794,21 @@ describe("merging", () => {
       a: (site) => {
         // Branch: Override same token's base value (no varianted values)
         const token = site.styleTokens[0];
-        site.styleTokenOverrides.push(
+        site.styleTokenOverrides = [
+          ...site.styleTokenOverrides,
           new StyleTokenOverride({
             token: token,
             value: "20",
             variantedValues: [],
           }),
-        );
+        ];
       },
       b: (site) => {
         // Main branch: Override token's varianted value (base is null)
         const token = site.styleTokens[0];
         const variant = site.globalVariantGroups[0].variants[0];
-        site.styleTokenOverrides.push(
+        site.styleTokenOverrides = [
+          ...site.styleTokenOverrides,
           new StyleTokenOverride({
             token,
             value: null,
@@ -4674,7 +4819,7 @@ describe("merging", () => {
               }),
             ],
           }),
-        );
+        ];
       },
       directConflictsPicks: ["left"], // Select branch
     });
@@ -4699,19 +4844,21 @@ describe("merging", () => {
       a: (site) => {
         // Branch: Override same token's base value (no varianted values)
         const token = site.styleTokens[0];
-        site.styleTokenOverrides.push(
+        site.styleTokenOverrides = [
+          ...site.styleTokenOverrides,
           new StyleTokenOverride({
             token: token,
             value: "20",
             variantedValues: [],
           }),
-        );
+        ];
       },
       b: (site) => {
         // Main branch: Override token's varianted value (base is null)
         const token = site.styleTokens[0];
         const variant = site.globalVariantGroups[0].variants[0];
-        site.styleTokenOverrides.push(
+        site.styleTokenOverrides = [
+          ...site.styleTokenOverrides,
           new StyleTokenOverride({
             token,
             value: null,
@@ -4722,7 +4869,7 @@ describe("merging", () => {
               }),
             ],
           }),
-        );
+        ];
       },
       directConflictsPicks: ["right"], // Select main
     });
@@ -4965,7 +5112,10 @@ describe("merging", () => {
         const baseVariant = getBaseVariant(component);
 
         tpl.name = "Newer A";
-        tpl.vsettings[0].attrs["id"] = codeLit("Dynamic ID");
+        tpl.vsettings[0].attrs = {
+          ...tpl.vsettings[0].attrs,
+          id: codeLit("Dynamic ID"),
+        };
         $$$(tpl).wrap(
           mkTplTagX("div", {
             name: "A-Wrapper",
@@ -5285,7 +5435,7 @@ describe("merging", () => {
           }),
         ],
       });
-      site.animationSequences.push(seq);
+      site.animationSequences = [...site.animationSequences, seq];
       return seq;
     }
 

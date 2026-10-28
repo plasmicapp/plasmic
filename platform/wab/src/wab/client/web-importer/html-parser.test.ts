@@ -1219,7 +1219,8 @@ describe("renameTokenVarNameToUuid", () => {
       name: colorPrimaryToken.name,
       value: "#00ff00",
     });
-    site.projectDependencies.push(
+    site.projectDependencies = [
+      ...site.projectDependencies,
       new ProjectDependency({
         name: "Design System",
         projectId: "design-system-project-id",
@@ -1228,7 +1229,7 @@ describe("renameTokenVarNameToUuid", () => {
         uuid: "design-system-uuid",
         site: depSite,
       }),
-    );
+    ];
 
     expect(
       renameTokenVarNameToUuid(

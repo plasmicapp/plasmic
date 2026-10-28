@@ -8,7 +8,9 @@ import {
   arrayRemoveAt,
   arrayReplaceAt,
   arrayReversed,
+  arrayWithout,
   matchOrder,
+  tryArrayWithout,
 } from "@/wab/shared/collections";
 
 describe("matchOrder", () => {
@@ -151,6 +153,31 @@ describe("Array manipulation functions", () => {
     it("should throw if element not found", () => {
       const arr = [1, 2, 3];
       expect(() => arrayRemove(arr, 4)).toThrow();
+    });
+  });
+
+  describe("arrayWithout", () => {
+    it("should return a copy without the first occurrence", () => {
+      const arr = [1, 2, 3, 2];
+      expect(arrayWithout(arr, 2)).toEqual([1, 3, 2]);
+      expect(arr).toEqual([1, 2, 3, 2]);
+    });
+
+    it("should throw if element not found", () => {
+      expect(() => arrayWithout([1, 2, 3], 4)).toThrow();
+    });
+  });
+
+  describe("tryArrayWithout", () => {
+    it("should return a copy without the first occurrence", () => {
+      const arr = [1, 2, 3, 2];
+      expect(tryArrayWithout(arr, 2)).toEqual([1, 3, 2]);
+      expect(arr).toEqual([1, 2, 3, 2]);
+    });
+
+    it("should return the same array if element not found", () => {
+      const arr = [1, 2, 3];
+      expect(tryArrayWithout(arr, 4)).toBe(arr);
     });
   });
 

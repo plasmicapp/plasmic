@@ -6,12 +6,12 @@ import {
 } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
+import { arrayWithout } from "@/wab/shared/collections";
 import {
   assert,
   assertNever,
   ensure,
   mkShortId,
-  remove,
   unexpected,
   uniqueName,
   withoutNils,
@@ -49,7 +49,6 @@ import {
   parseExpr,
   tryCodeWritesToGlobalVariable,
 } from "@/wab/shared/eval/expression-parser";
-import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import {
   Component,
   ComponentVariantGroup,
@@ -624,7 +623,6 @@ export function addImplicitStates(site: Site, component: Component) {
   const tplMgr = new TplMgr({ site });
   Tpls.findAllInstancesOfComponent(site, component).forEach(
     ({ referencedComponent, tpl }) => {
-      ensureComponentsObserved([referencedComponent]);
       if (!tpl.name) {
         // Auto-name TplComponents with public states.
         tplMgr.renameTpl(
@@ -655,21 +653,6 @@ export function* findRecursiveImplicitStates(site: Site, state: State) {
   }
 }
 
-/**
- * The components that mirror a state of `component` as an implicit state.
- * Renaming the state also rewrites their `$state` references.
- */
-export function findComponentsWithImplicitStatesOf(
-  site: Site,
-  component: Component,
-) {
-  return component.states.flatMap((state) =>
-    [...findRecursiveImplicitStates(site, state)].map(
-      (usage) => usage.component,
-    ),
-  );
-}
-
 export function removeImplicitStates(site: Site, state: State) {
   const usages = [...findRecursiveImplicitStates(site, state)];
   for (const { component: refComponent, state: refState } of usages) {
@@ -682,13 +665,13 @@ export function addComponentState(
   component: Component,
   state: State,
 ) {
-  component.states.push(state);
-  if (!component.params.includes(state.param)) {
-    component.params.push(state.param);
-  }
-  if (!component.params.includes(state.onChangeParam)) {
-    component.params.push(state.onChangeParam);
-  }
+  component.states = [...component.states, state];
+  component.params = [
+    ...component.params,
+    ...[state.param, state.onChangeParam].filter(
+      (p) => !component.params.includes(p),
+    ),
+  ];
   if (isPublicState(state)) {
     addImplicitStates(site, component);
   }
@@ -715,7 +698,7 @@ export function removeComponentStateOnly(
   if (!isPrivateState(state)) {
     removeImplicitStates(site, state);
   }
-  remove(component.states, state);
+  component.states = arrayWithout(component.states, state);
 }
 
 /**
@@ -1038,7 +1021,7 @@ export const DATA_SOURCE_ACTIONS = ["dataSourceOp", "invalidateDataQuery"];
 export const LOGIN_ACTIONS = ["login"];
 
 export interface ACTION_TYPE<P> {
-  function: ((args: NameArg[]) => string) | string;
+  function: ((args: ReadonlyArray<NameArg>) => string) | string;
   onSerialize?: (args: Expr) => Expr;
   parameters: {
     [parameter in DistributedKeyOf<P>]: {
@@ -1470,7 +1453,7 @@ export function isInteractionActionName(
 interface BuildInteractionArgsOptsByAction {
   customFunction: {
     /** Event-arg names to keep in scope for the code body. */
-    codeArgNames?: string[];
+    codeArgNames?: ReadonlyArray<string>;
   };
   updateVariable: {
     /** Component whose states the action references. */

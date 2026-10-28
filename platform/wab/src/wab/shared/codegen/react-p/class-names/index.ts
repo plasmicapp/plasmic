@@ -1,6 +1,7 @@
 import { DeepMap } from "@/wab/commons/deep-map";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import {
+  VariantCombo,
   VariantGroupType,
   isBaseRuleVariant,
   isBaseVariant,
@@ -44,7 +45,6 @@ import {
   Component,
   ComponentVariantGroup,
   TplNode,
-  Variant,
   VariantSetting,
 } from "@/wab/shared/model/classes";
 import { JsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
@@ -56,7 +56,7 @@ import { sortBy, uniqBy } from "lodash";
 import { shouldUsePlasmicImg } from "src/wab/shared/codegen/react-p/image";
 
 export function makeCssClassNameForVariantCombo(
-  variantCombo: Variant[],
+  variantCombo: VariantCombo,
   opts: {
     targetEnv: TargetEnv;
     prefix?: string;
@@ -78,7 +78,7 @@ export function makeCssClassNameForVariantCombo(
         }
         const variantName = toJsIdentifier(variant.name);
         if (!variant.parent) {
-          let keys: string[] | null | undefined;
+          let keys: readonly string[] | null | undefined;
           if (isCodeComponentVariant(variant)) {
             keys = variant.codeComponentVariantKeys;
           } else {

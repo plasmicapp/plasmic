@@ -28,6 +28,7 @@ import {
   isVariantSettingEmpty,
   tryGetVariantSetting,
 } from "@/wab/shared/Variants";
+import { isReadonlyArray } from "@/wab/shared/collections";
 import { maybe } from "@/wab/shared/common";
 import { isTplVariantable, summarizeTpl } from "@/wab/shared/core/tpls";
 import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
@@ -111,7 +112,7 @@ const VariantRow = observer(function VariantRow(props: VariantRowProps) {
 
   const contextMenuProps = useContextMenu({ menu });
 
-  const uiId = Array.isArray(variant)
+  const uiId = isReadonlyArray(variant)
     ? undefined
     : isGlobalVariant(variant)
       ? mkSiteScopedUiId({ typeTag: "GlobalVariant", uuid: variant.uuid })

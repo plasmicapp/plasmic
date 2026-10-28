@@ -65,7 +65,7 @@ import { unsetTplVariantableAttr } from "@/wab/shared/TplMgr";
 import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
 import { notification, Popover, Select } from "antd";
 import { RefSelectProps } from "antd/lib/select";
-import { keyBy, orderBy, uniq, without } from "lodash";
+import { keyBy, omit, orderBy, pickBy, uniq, without } from "lodash";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
 import React from "react";
@@ -220,17 +220,15 @@ function TplTagSection_(props: { tpl: TplTag; viewCtx: ViewCtx }) {
                     tpl.tag = tag;
 
                     if (tag === "input") {
-                      baseVs.attrs.type = codeLit("text");
+                      baseVs.attrs = { ...baseVs.attrs, type: codeLit("text") };
                     }
 
                     // Delete all attrs that don't apply to the new tag
                     const newAttrs = getEditableTagAttrs(viewCtx, tpl);
                     for (const vs of tpl.vsettings) {
-                      for (const attr of Object.keys(vs.attrs)) {
-                        if (!newAttrs.includes(attr)) {
-                          delete vs.attrs[attr];
-                        }
-                      }
+                      vs.attrs = pickBy(vs.attrs, (_expr, attr) =>
+                        newAttrs.includes(attr),
+                      );
                     }
                   });
                 }
@@ -658,7 +656,7 @@ export const HTMLAttributePropEditor = observer(
             ? undefined
             : () => {
                 viewCtx.change(() => {
-                  delete curSharedVS.attrs[attr];
+                  curSharedVS.attrs = omit(curSharedVS.attrs, attr);
                 });
               }
         }
@@ -682,10 +680,10 @@ export const HTMLAttributePropEditor = observer(
                   referencedParam.defaultExpr = clone(expr);
                 }
               }
-              targetVs.attrs[attr] = newExpr;
+              targetVs.attrs = { ...targetVs.attrs, [attr]: newExpr };
             } else {
               const targetVs = isKnownVarRef(expr) ? baseVs : curSharedVS;
-              delete targetVs.attrs[attr];
+              targetVs.attrs = omit(targetVs.attrs, attr);
             }
             onChange?.(newExpr);
           })

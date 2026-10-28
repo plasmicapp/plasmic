@@ -1,4 +1,4 @@
-import { remove } from "@/wab/shared/common";
+import { arrayWithout } from "@/wab/shared/collections";
 import { changeTokenUsage, extractTokenUsages } from "@/wab/shared/core/styles";
 import { Site, StyleToken } from "@/wab/shared/model/classes";
 
@@ -16,5 +16,5 @@ export function deleteStyleToken(opts: {
   for (const usage of usages) {
     changeTokenUsage(site, token, usage, "inline");
   }
-  remove(site.styleTokens, token);
+  site.styleTokens = arrayWithout(site.styleTokens, token);
 }

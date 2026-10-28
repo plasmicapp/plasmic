@@ -128,7 +128,7 @@ export const addNewColumn = (tpl: TplColumnsTag, vc: ViewCtx) => {
   redistributeColumnsSizes(tpl, vc.variantTplMgr());
 };
 
-export const prefixSum = (arr: number[]) => {
+export const prefixSum = (arr: ReadonlyArray<number>) => {
   return arr.map((_, idx) => {
     return arr.slice(0, idx + 1).reduce((p, v) => p + v, 0);
   });

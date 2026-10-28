@@ -475,7 +475,7 @@ describe("replaceNestedExprInExpr", () => {
       condExpr: null,
       parent: eventHandler,
     });
-    eventHandler.interactions.push(interaction);
+    eventHandler.interactions = [...eventHandler.interactions, interaction];
 
     const result = Tpls.replaceNestedExprInExpr(eventHandler, oldExpr, newExpr);
 
@@ -498,7 +498,7 @@ describe("replaceNestedExprInExpr", () => {
       conditionalMode: "expression",
       parent: eventHandler,
     });
-    eventHandler.interactions.push(interaction);
+    eventHandler.interactions = [...eventHandler.interactions, interaction];
 
     const result = Tpls.replaceNestedExprInExpr(eventHandler, oldExpr, newExpr);
 
@@ -529,7 +529,7 @@ describe("replaceNestedExprInExpr", () => {
       condExpr: null,
       parent: eventHandler,
     });
-    eventHandler.interactions.push(interaction);
+    eventHandler.interactions = [...eventHandler.interactions, interaction];
 
     const result = Tpls.replaceNestedExprInExpr(eventHandler, oldExpr, newExpr);
 
@@ -627,7 +627,7 @@ describe("replaceExprInComponent", () => {
       tplTree: Tpls.mkTplTagX("div"),
       type: ComponentType.Plain,
     });
-    component.dataQueries.push(dataQuery);
+    component.dataQueries = [...component.dataQueries, dataQuery];
 
     const result = Tpls.replaceExprInComponent(component, oldExpr, newExpr);
 
@@ -660,7 +660,7 @@ describe("replaceExprInComponent", () => {
       tplTree: Tpls.mkTplTagX("div"),
       type: ComponentType.Plain,
     });
-    component.serverQueries.push(serverQuery);
+    component.serverQueries = [...component.serverQueries, serverQuery];
 
     const result = Tpls.replaceExprInComponent(component, oldExpr, newExpr);
 

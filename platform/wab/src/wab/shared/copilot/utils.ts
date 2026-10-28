@@ -47,6 +47,7 @@ import {
   Rep,
   Site,
   TplNode,
+  Variant,
   isKnownEventHandler,
 } from "@/wab/shared/model/classes";
 import { parseJsCode } from "@/wab/shared/parser-utils";
@@ -150,7 +151,7 @@ export function getVariantsByUuids(
   });
 
   const variantMap = new Map(variantPool.map((v) => [v.uuid, v]));
-  const variants: VariantCombo = [];
+  const variants: Variant[] = [];
   const invalidUuids: string[] = [];
   for (const uuid of variantUuids) {
     const variant = variantMap.get(uuid);

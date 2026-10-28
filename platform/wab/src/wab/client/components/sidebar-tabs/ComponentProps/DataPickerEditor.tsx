@@ -159,7 +159,10 @@ export const InternalDataPickerEditor = observer(
                       ),
                       op: undefined,
                     });
-                    component.dataQueries.push(newQuery);
+                    component.dataQueries = [
+                      ...component.dataQueries,
+                      newQuery,
+                    ];
                     viewCtx.studioCtx.switchRightTab(RightTabKey.component);
                     viewCtx.studioCtx.newlyAddedQuery = newQuery;
                     setVisible(false);

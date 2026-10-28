@@ -191,7 +191,7 @@ function ServerQueriesSection_(props: {
           op: undefined,
         });
 
-        component.serverQueries.push(serverQuery);
+        component.serverQueries = [...component.serverQueries, serverQuery];
         return ok();
       }),
     );

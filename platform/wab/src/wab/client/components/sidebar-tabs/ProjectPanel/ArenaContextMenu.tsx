@@ -9,7 +9,6 @@ import {
   isMixedArena,
   isPageArena,
 } from "@/wab/shared/Arenas";
-import { componentsReferencerToPageHref } from "@/wab/shared/cached-selectors";
 import { assert, spawn } from "@/wab/shared/common";
 import {
   PageComponent,
@@ -27,27 +26,16 @@ export const deleteArenas = async (
   studioCtx: StudioCtx,
   arenas: AnyArena[],
 ) => {
-  const allRefs = arenas.flatMap((arena) =>
-    isDedicatedArena(arena) && isPageComponent(arena.component)
-      ? Array.from(
-          componentsReferencerToPageHref(studioCtx.site, arena.component),
-        )
-      : [],
-  );
-
-  await studioCtx.changeObserved(
-    () => allRefs,
-    () => {
-      for (const arena of arenas) {
-        if (isDedicatedArena(arena)) {
-          studioCtx.siteOps().tryRemoveComponent(arena.component);
-        } else if (isMixedArena(arena)) {
-          studioCtx.siteOps().removeMixedArena(arena);
-        }
+  await studioCtx.change(() => {
+    for (const arena of arenas) {
+      if (isDedicatedArena(arena)) {
+        studioCtx.siteOps().tryRemoveComponent(arena.component);
+      } else if (isMixedArena(arena)) {
+        studioCtx.siteOps().removeMixedArena(arena);
       }
-      return ok();
-    },
-  );
+    }
+    return ok();
+  });
 };
 
 /**
@@ -182,13 +170,10 @@ export function ArenaContextMenu({
   };
 
   const onConvertToPage = () =>
-    studioCtx.changeObserved(
-      () => [component!],
-      () => {
-        studioCtx.siteOps().convertComponentToPage(component!);
-        return ok();
-      },
-    );
+    studioCtx.change(() => {
+      studioCtx.siteOps().convertComponentToPage(component!);
+      return ok();
+    });
 
   const onFindReferences = () => {
     studioCtx.findReferencesComponent = component;
@@ -319,21 +304,12 @@ export function ArenaContextMenu({
                   <Menu.Item
                     key="delete-preserve-links"
                     onClick={async () =>
-                      studioCtx.changeObserved(
-                        () => [
-                          component,
-                          ...componentsReferencerToPageHref(
-                            studioCtx.site,
-                            component,
-                          ),
-                        ],
-                        () => {
-                          studioCtx.tplMgr().removeComponentGroup([component], {
-                            convertPageHrefToCode: true,
-                          });
-                          return ok();
-                        },
-                      )
+                      studioCtx.change(() => {
+                        studioCtx.tplMgr().removeComponentGroup([component], {
+                          convertPageHrefToCode: true,
+                        });
+                        return ok();
+                      })
                     }
                   >
                     <strong>Delete</strong> page, but convert PageHref to links

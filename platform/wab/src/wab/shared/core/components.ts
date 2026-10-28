@@ -48,7 +48,7 @@ import {
   toClassName,
   toVarName,
 } from "@/wab/shared/codegen/util";
-import { arrayRemove } from "@/wab/shared/collections";
+import { arrayWithout } from "@/wab/shared/collections";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -112,7 +112,6 @@ import {
   getFolderDisplayName,
   getFolderTrimmed,
 } from "@/wab/shared/folders/folders-util";
-import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import {
   ArenaFrame,
   Arg,
@@ -277,7 +276,7 @@ function mkRawComponent(props: Omit<ComponentParams, "uuid">) {
   const component = new Component({ uuid: mkShortId(), ...props });
   Tpls.trackComponentRoot(component);
   if (superComp) {
-    superComp.subComps.push(component);
+    superComp.subComps = [...superComp.subComps, component];
   }
   return component;
 }
@@ -1014,9 +1013,9 @@ export function findObjectsUsedInExprs(
   component: Component,
   tpl: TplTag | TplComponent,
 ): {
-  params: Param[];
-  queries: ComponentDataQuery[];
-  serverQueries: ComponentServerQuery[];
+  params: ReadonlyArray<Param>;
+  queries: ReadonlyArray<ComponentDataQuery>;
+  serverQueries: ReadonlyArray<ComponentServerQuery>;
   vars: string[];
 } {
   const infos: ParsedExprInfo[] = [];
@@ -1110,11 +1109,9 @@ export function extractComponent({
   // Remove empty variant settings, so we don't end up carrying over variants that
   // the extracted component doesn't care about
   for (const _tpl of flattenedVariantables) {
-    for (const vs of [..._tpl.vsettings]) {
-      if (!isBaseVariant(vs.variants) && isVariantSettingEmpty(vs)) {
-        arrayRemove(_tpl.vsettings, vs);
-      }
-    }
+    _tpl.vsettings = _tpl.vsettings.filter(
+      (vs) => isBaseVariant(vs.variants) || !isVariantSettingEmpty(vs),
+    );
   }
 
   // But some variant settings are empty but necessary (specifically,
@@ -1131,7 +1128,7 @@ export function extractComponent({
   // And now, we want to fix up all the VariantSettings in each tpl to point to
   // the new variants instead.
   const vsAndTpls = [...findVariantSettingsUnderTpl(clonedTpl)];
-  const oldToNewCombo = (variants: Variant[]) => {
+  const oldToNewCombo = (variants: VariantCombo) => {
     return variants.map((v) =>
       isGlobalVariant(v)
         ? v
@@ -1308,7 +1305,7 @@ export function extractComponent({
     }
   });
 
-  const newToOldCombo = (variants: Variant[]) => {
+  const newToOldCombo = (variants: VariantCombo) => {
     return variants.map((v) =>
       isGlobalVariant(v)
         ? v
@@ -1357,7 +1354,7 @@ export function extractComponent({
     }
   });
 
-  const oldVariantToTplVisibility = new Map<Variant[], TplVisibility>();
+  const oldVariantToTplVisibility = new Map<VariantCombo, TplVisibility>();
   tpl.vsettings.forEach((vs) => {
     if (hasVisibilitySetting(vs)) {
       oldVariantToTplVisibility.set(
@@ -1410,7 +1407,10 @@ export function extractComponent({
         // We also need to add containingParam back to containingComponent,
         // because it was removed when we removed this TplSlot "deeply"
 
-        containingComponent.params.push(containingParam);
+        containingComponent.params = [
+          ...containingComponent.params,
+          containingParam,
+        ];
         const newContainingComponentSlot = Tpls.mkSlot(
           containingParam,
           cloneSlotDefaultContents(tplSlot, [containingBaseVariant]),
@@ -1463,7 +1463,7 @@ export function extractComponent({
             type: Tpls.cloneType(containingParam.type) as any,
             paramType: paramToParamType(containingParam) as any,
           });
-          component.params.push(param);
+          component.params = [...component.params, param];
           jsNamesOfParamsAlreadyExtracted.add(toVarName(param.variable.name));
           return param;
         }
@@ -1485,12 +1485,13 @@ export function extractComponent({
           tplComponent,
           newToOldCombo(varRef.vs.variants),
         );
-        vs.args.push(
+        vs.args = [
+          ...vs.args,
           new Arg({
             param: newParam,
             expr: new VarRef({ variable: containingParam.variable }),
           }),
-        );
+        ];
       } else {
         removeComponentParam(
           Tpls.getOwnerSite(containingComponent),
@@ -1528,7 +1529,7 @@ export function extractComponent({
       type: Tpls.cloneType(containingParam.type) as any,
       paramType: newParamType as any,
     });
-    component.params.push(newParam);
+    component.params = [...component.params, newParam];
     jsNamesOfParamsAlreadyExtracted.add(toVarName(newParam.variable.name));
 
     const isSafeInitialExpr = (expr: Expr) => {
@@ -1564,12 +1565,13 @@ export function extractComponent({
             fallback: undefined,
           })
         : new VarRef({ variable: containingParam.variable });
-    vs.args.push(
+    vs.args = [
+      ...vs.args,
       new Arg({
         param: newParam,
         expr: newExpr,
       }),
-    );
+    ];
     if (isKnownStateParam(containingParam)) {
       replaceDollarVarWithPropInCodeExprs(
         component.tplTree,
@@ -1588,11 +1590,12 @@ export function extractComponent({
       type: typeFactory.any(),
       paramType: "prop",
     });
-    component.params.push(newParam);
+    component.params = [...component.params, newParam];
     jsNamesOfParamsAlreadyExtracted.add(toVarName(newParam.variable.name));
     const vs = ensureVariantSetting(tplComponent, [containingBaseVariant]);
     // Pass <varType>.<name> into extracted component $props.<name>.
-    vs.args.push(
+    vs.args = [
+      ...vs.args,
       new Arg({
         param: newParam,
         expr: new ObjectPath({
@@ -1600,7 +1603,7 @@ export function extractComponent({
           fallback: undefined,
         }),
       }),
-    );
+    ];
     // Refactor usages of <varType>.<name> to $props.<name>.
     replaceDollarVarWithPropInCodeExprs(
       component.tplTree,
@@ -1637,9 +1640,11 @@ export function extractComponent({
       type: typeFactory.any(),
       paramType: "prop",
     });
-    component.params.push(newParam);
+    component.params = [...component.params, newParam];
     jsNamesOfParamsAlreadyExtracted.add(toVarName(newParam.variable.name));
-    tplComponent.vsettings[0].args.push(
+    const baseVs = tplComponent.vsettings[0];
+    baseVs.args = [
+      ...baseVs.args,
       new Arg({
         param: newParam,
         expr: new ObjectPath({
@@ -1647,7 +1652,7 @@ export function extractComponent({
           fallback: undefined,
         }),
       }),
-    );
+    ];
     replaceVarWithPropInCodeExprs(
       component.tplTree,
       varName,
@@ -1675,7 +1680,7 @@ export function extractComponent({
     ]);
 
     oldVariantToTplVisibility.forEach(
-      (_tplVisibility: TplVisibility, variants: Variant[]) => {
+      (_tplVisibility: TplVisibility, variants: VariantCombo) => {
         setTplVisibility(tplComponent, variants, _tplVisibility);
       },
     );
@@ -1900,7 +1905,7 @@ export function addSlotParam(
     exportType: Lang.ParamExportType.External,
     paramType: "slot",
   });
-  component.params.push(slotParam);
+  component.params = [...component.params, slotParam];
   return slotParam;
 }
 
@@ -1943,7 +1948,6 @@ export function removeComponentParam(
     removeComponentStateOnly(site, component, state);
   }
 
-  ensureComponentsObserved([component]);
   const group = findVariantGroupForParam(component, param);
   if (group) {
     // Remove all VariantSettings referencing this group
@@ -1952,13 +1956,12 @@ export function removeComponentParam(
         findVariantSettingsUnderTpl(comp.tplTree),
       )) {
         if (vs.variants.some((v) => group.variants.includes(v))) {
-          ensureComponentsObserved([comp]);
-          arrayRemove(tpl.vsettings, vs);
+          tpl.vsettings = arrayWithout(tpl.vsettings, vs);
         }
       }
     }
     // remove the VariantGroup
-    arrayRemove(component.variantGroups, group);
+    component.variantGroups = arrayWithout(component.variantGroups, group);
 
     // Remove references to this group and its variants from arenas
     removeVariantGroupFromArenas(site, group, component);
@@ -1983,9 +1986,6 @@ export function removeComponentParam(
     for (const vs of inst.vsettings) {
       for (const arg of [...vs.args]) {
         if (arg.param === param) {
-          if (!isContextCodeComponent(component)) {
-            ensureComponentsObserved([$$$(inst).owningComponent()]);
-          }
           // If we're removing a slot prop, we first explicitly remove
           // the tpl nodes passed in as arg, so that we can deal with invariants
           // maintained by $$$.remove() -- for example, if the slot prop
@@ -1995,14 +1995,14 @@ export function removeComponentParam(
               $$$(subtpl).remove({ deep: true }),
             );
           }
-          arrayRemove(vs.args, arg);
+          vs.args = arrayWithout(vs.args, arg);
         }
       }
     }
   }
 
   // Finally, really remove the Param
-  arrayRemove(component.params, param);
+  component.params = arrayWithout(component.params, param);
 }
 
 /**
@@ -2072,7 +2072,7 @@ export function* findVarRefs(tpl: TplNode) {
             expr: subExpr,
             var: subExpr.variable,
             remove() {
-              delete vs.attrs[attr];
+              vs.attrs = L.omit(vs.attrs, attr);
             },
           };
         }
@@ -2088,7 +2088,7 @@ export function* findVarRefs(tpl: TplNode) {
             expr: subExpr,
             var: subExpr.variable,
             remove() {
-              arrayRemove(vs.args, arg);
+              vs.args = arrayWithout(vs.args, arg);
             },
           };
         }
@@ -2160,7 +2160,7 @@ export function findStateForOnChangeParam(component: Component, param: Param) {
 export class VariantGroupArg {
   constructor(
     readonly vg: VariantGroup,
-    readonly variants: Variant[],
+    readonly variants: VariantCombo,
   ) {}
 }
 
@@ -2178,7 +2178,7 @@ export function tryGetVariantGroupValueFromArg(
   );
 }
 
-export function mkVariantGroupArgExpr(variants: Variant[]) {
+export function mkVariantGroupArgExpr(variants: VariantCombo) {
   return new VariantsRef({ variants });
 }
 
@@ -2427,7 +2427,7 @@ export function isPageFrame(frame: ArenaFrame) {
  * Sorts components alphabetically, but with sub-components ordered
  * immediately after their super-components
  */
-export function sortComponentsByName(comps: Component[]) {
+export function sortComponentsByName(comps: ReadonlyArray<Component>) {
   const result: Component[] = [];
 
   const addComp = (comp: Component) => {
@@ -2534,11 +2534,11 @@ export function addOrEditComponentMetadata(
   key: string,
   value: string,
 ) {
-  component.metadata[key] = value;
+  component.metadata = { ...component.metadata, [key]: value };
 }
 
 export function removeComponentMetadata(component: Component, key: string) {
-  delete component.metadata[key];
+  component.metadata = L.omit(component.metadata, key);
 }
 
 export function getRepetitionElementName(dataRep: Rep) {

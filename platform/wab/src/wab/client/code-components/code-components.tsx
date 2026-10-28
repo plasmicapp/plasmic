@@ -48,7 +48,6 @@ import {
   assignReadonly,
   ensure,
   ensureInstance,
-  removeWhere,
   safeCast,
   switchType,
   unexpected,
@@ -387,7 +386,15 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
 
       const clearSite = async () => {
         await studioCtx.change(() => {
-          const emptySite: Omit<WritablePart<Site>, "uid" | "typeTag"> = {
+          // Every field except the Const ones, whose setters are private
+          const emptySite: Omit<
+            WritablePart<Site>,
+            | "uid"
+            | "typeTag"
+            | "globalVariant"
+            | "themes"
+            | "hostLessPackageInfo"
+          > = {
             components: [],
             arenas: [],
             pageArenas: [],
@@ -555,8 +562,8 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
             .filter(isCodeComponent)
             .forEach((c) => (c.codeComponentMeta.isHostLess = true));
           studioCtx.site.components.forEach((c) => deletedComponents.delete(c));
-          removeWhere(studioCtx.site.globalContexts, (tpl) =>
-            deletedComponents.has(tpl.component),
+          studioCtx.site.globalContexts = studioCtx.site.globalContexts.filter(
+            (tpl) => !deletedComponents.has(tpl.component),
           );
           return ok();
         },

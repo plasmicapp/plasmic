@@ -47,7 +47,7 @@ export function useAnimations(options: UseAnimationsOptions) {
   const isAnimationPlaying =
     focusedTpl && studioCtx.styleMgrBcast.hasActiveAnimationPreview(focusedTpl);
 
-  const playAnimations = (previewAnimations: Animation[]) => {
+  const playAnimations = (previewAnimations: ReadonlyArray<Animation>) => {
     if (previewAnimations.length === 0 || isDisabled || !focusedTpl) {
       return;
     }
@@ -65,7 +65,9 @@ export function useAnimations(options: UseAnimationsOptions) {
     }
   };
 
-  const triggerAnimationPreviewOnUpdate = (previewAnimations: Animation[]) => {
+  const triggerAnimationPreviewOnUpdate = (
+    previewAnimations: ReadonlyArray<Animation>,
+  ) => {
     stopAnimations();
     playAnimations(previewAnimations);
   };

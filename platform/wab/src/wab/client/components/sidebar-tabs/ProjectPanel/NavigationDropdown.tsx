@@ -564,11 +564,15 @@ function NavigationDropdown_(
                         .join("/")}`,
                     );
                   // Make sure to convert these to strings, since query params are always strings (not numbers etc.).
-                  for (const field of lookupFields) {
-                    page.pageMeta.params[field] = valueAsString(
-                      initialValues[field],
-                    );
-                  }
+                  page.pageMeta.params = {
+                    ...page.pageMeta.params,
+                    ...Object.fromEntries(
+                      lookupFields.map((field) => [
+                        field,
+                        valueAsString(initialValues[field]),
+                      ]),
+                    ),
+                  };
 
                   // Find first h1 or insert h1 into first page section within main slot or root.
                   function createH1() {

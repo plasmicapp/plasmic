@@ -67,7 +67,7 @@ export async function migrate(
     if (existing) {
       existing.style = cloneMixin(themeStyle.style);
     } else {
-      activeTheme.styles.push(cloneThemeStyle(themeStyle));
+      activeTheme.styles = [...activeTheme.styles, cloneThemeStyle(themeStyle)];
     }
   }
 

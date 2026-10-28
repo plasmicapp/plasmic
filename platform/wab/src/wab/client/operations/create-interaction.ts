@@ -86,7 +86,7 @@ export function createInteraction(opts: {
     opts.name,
     interactionArgsResult.value,
   );
-  eventHandler.interactions.push(interaction);
+  eventHandler.interactions = [...eventHandler.interactions, interaction];
   if (!existing) {
     setEventHandlerByEventKey(tpl, key, eventHandler);
   }

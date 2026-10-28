@@ -198,7 +198,7 @@ describe("built-in interaction actions", () => {
       const fixture = setup();
       const emailInput = Tpls.mkTplTagX("input", {});
       emailInput.name = "email";
-      fixture.pageRoot.children.push(emailInput);
+      fixture.pageRoot.children = [...fixture.pageRoot.children, emailInput];
       emailInput.parent = fixture.pageRoot;
       const state = mkValueStateForTextInput(
         emailInput,
@@ -234,7 +234,7 @@ describe("built-in interaction actions", () => {
       const fixture = setup();
       const emailInput = Tpls.mkTplTagX("input", {});
       emailInput.name = "email";
-      fixture.pageRoot.children.push(emailInput);
+      fixture.pageRoot.children = [...fixture.pageRoot.children, emailInput];
       emailInput.parent = fixture.pageRoot;
       const vs = ensureVariantSetting(emailInput, [
         getBaseVariant(fixture.page),

@@ -112,7 +112,7 @@ export function extractUsedGlobalVariantsForTokens(
 
 export function extractUsedTokensForComponents(
   site: Site,
-  components: Component[],
+  components: ReadonlyArray<Component>,
   opts: {
     expandMixins: boolean;
     derefTokens: boolean;
@@ -219,7 +219,7 @@ function collectUsedTokensForTokenValue(
 }
 
 export function extractUsedTokensForTokens(
-  tokens: StyleToken[],
+  tokens: ReadonlyArray<StyleToken>,
   site: Site,
   opts: {
     derefTokens: boolean;
@@ -244,7 +244,7 @@ export function extractUsedTokensForTokens(
 }
 
 export function extractUsedTokensForTokenOverrides(
-  overrides: StyleTokenOverride[],
+  overrides: ReadonlyArray<StyleTokenOverride>,
   site: Site,
   opts: {
     derefTokens: boolean;
@@ -271,7 +271,7 @@ export function extractUsedTokensForTokenOverrides(
 }
 
 export function extractUsedTokensForMixins(
-  mixins: Mixin[],
+  mixins: ReadonlyArray<Mixin>,
   site: Site,
   opts: {
     derefTokens: boolean;

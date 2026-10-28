@@ -13,7 +13,6 @@ import {
   assert,
   ensure,
   intersectSets,
-  removeWhere,
   unexpected,
   xDifference,
   xGroupBy,
@@ -352,8 +351,10 @@ function fixPlumeComponents(site: Site) {
           const deletedStates = duplicatedStates.filter((s) => s !== realState);
           deletedStates.forEach((deletedState) => {
             oldToNewState.set(deletedState, realState);
-            removeWhere(component.states, (state) => state === deletedState);
           });
+          component.states = component.states.filter(
+            (state) => !deletedStates.includes(state),
+          );
         });
     });
   // Fix `state.implicitState` references

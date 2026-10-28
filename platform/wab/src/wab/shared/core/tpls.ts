@@ -96,6 +96,7 @@ import {
 import type { ProjectId } from "@/wab/shared/ApiSchema";
 import { isAdvancedProp } from "@/wab/shared/code-components/code-components";
 import { makeShortProjectId, toVarName } from "@/wab/shared/codegen/util";
+import { arrayReplaceAt } from "@/wab/shared/collections";
 import {
   assert,
   check,
@@ -372,7 +373,7 @@ export function mkTplTag(
           )
         : {};
     check(!attrs.class);
-    L.merge(vs.attrs, attrs);
+    vs.attrs = { ...vs.attrs, ...attrs };
 
     if (opts.dataRep) {
       vs.dataRep = opts.dataRep;
@@ -802,7 +803,7 @@ export function cloneTagSettings(
   };
 }
 
-export function cloneArgs(args: Array<Arg>) {
+export function cloneArgs(args: ReadonlyArray<Arg>) {
   return [...args].map(
     (arg) =>
       new Arg({
@@ -2013,7 +2014,7 @@ export function mkDataTokenExprText(
 /**
  * Builds a Map from Param to owning Component
  */
-export function buildParamToComponent(components: Component[]) {
+export function buildParamToComponent(components: ReadonlyArray<Component>) {
   const map = new Map<Param, Component>();
   for (const component of components) {
     for (const param of component.params) {
@@ -2261,7 +2262,7 @@ function rulesetHasOnlyStyles(
 
 export function detectComponentCycle(
   destOwner: Component,
-  newItems: TplNode[],
+  newItems: ReadonlyArray<TplNode>,
 ) {
   if (newItems.length === 0) {
     // Early exit if no newItems to check against
@@ -2354,7 +2355,7 @@ export function duplicateMarkerTpl(text: RawText, tpl: TplNode) {
         length: marker.length,
         tpl: newTpl,
       });
-      text.markers.push(newMarker);
+      text.markers = [...text.markers, newMarker];
 
       // Fix text.
       const start = text.text.slice(0, marker.position);
@@ -2506,7 +2507,7 @@ export function replaceNestedExprInExpr(
   if (isKnownTemplatedString(expr)) {
     for (let i = 0; i < expr.text.length; i++) {
       if (expr.text[i] === nestedExpr) {
-        expr.text[i] = newExpr;
+        expr.text = arrayReplaceAt(expr.text, i, newExpr);
         return true;
       }
     }
@@ -2527,7 +2528,7 @@ export function replaceNestedExprInExpr(
   if (isKnownPageHref(expr)) {
     for (const [key, value] of Object.entries(expr.query)) {
       if (value === nestedExpr) {
-        expr.query[key] = newExpr;
+        expr.query = { ...expr.query, [key]: newExpr };
         return true;
       }
       if (replaceNestedExprInExpr(value, nestedExpr, newExpr)) {
@@ -2587,7 +2588,7 @@ export function replaceNestedExprInExpr(
   if (isKnownCompositeExpr(expr)) {
     for (const [key, subExpr] of Object.entries(expr.substitutions)) {
       if (subExpr === nestedExpr) {
-        expr.substitutions[key] = newExpr;
+        expr.substitutions = { ...expr.substitutions, [key]: newExpr };
         return true;
       }
       if (replaceNestedExprInExpr(subExpr, nestedExpr, newExpr)) {
@@ -2668,7 +2669,7 @@ export function replaceExprInNode(
     // Check attrs (e.g. html attributes, interactions)
     for (const [attrName, attrExpr] of Object.entries(vs.attrs)) {
       if (attrExpr === oldExpr) {
-        vs.attrs[attrName] = newExpr;
+        vs.attrs = { ...vs.attrs, [attrName]: newExpr };
         return true;
       }
       if (replaceNestedExprInExpr(attrExpr, oldExpr, newExpr)) {
@@ -3020,19 +3021,18 @@ export function setEventHandlerByEventKey(
 ) {
   const baseVs = ensureBaseVariantSetting(tpl);
   if (isEventHandlerKeyForAttr(key)) {
-    baseVs.attrs[key.attr] = expr;
+    baseVs.attrs = { ...baseVs.attrs, [key.attr]: expr };
   } else if (isEventHandlerKeyForParam(key)) {
     const arg = baseVs.args.find((iarg) => iarg.param === key.param);
     if (arg) {
       arg.expr = expr;
     } else {
-      [
-        baseVs.args.push(
-          new Arg({
-            param: key.param,
-            expr,
-          }),
-        ),
+      baseVs.args = [
+        ...baseVs.args,
+        new Arg({
+          param: key.param,
+          expr,
+        }),
       ];
     }
   } else {

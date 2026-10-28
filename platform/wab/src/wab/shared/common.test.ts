@@ -1016,7 +1016,7 @@ describe("isEqualWithoutKeys", () => {
 
     it("pushed font", () => {
       const siteCopy = fresh();
-      siteCopy.userManagedFonts.push("x");
+      siteCopy.userManagedFonts = [...siteCopy.userManagedFonts, "x"];
       check(fresh(), siteCopy, false);
     });
 
@@ -1050,7 +1050,7 @@ describe("isEqualWithoutKeys", () => {
 
     it("reordered array", () => {
       const siteCopy = fresh();
-      siteCopy.components.reverse();
+      siteCopy.components = [...siteCopy.components].reverse();
       check(fresh(), siteCopy, false);
     });
 

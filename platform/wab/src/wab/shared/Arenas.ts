@@ -1,5 +1,5 @@
 import { ArenaRef, ArenaType } from "@/wab/shared/ApiSchema";
-import { arrayRemove, arrayReversed } from "@/wab/shared/collections";
+import { arrayReversed } from "@/wab/shared/collections";
 import {
   assert,
   ensure,
@@ -84,7 +84,7 @@ import {
   isScreenVariant,
   VariantCombo,
 } from "@/wab/shared/Variants";
-import { has, isEmpty, keyBy, orderBy, uniq } from "lodash";
+import { isEmpty, keyBy, omit, orderBy, uniq } from "lodash";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { IObservableValue, observable } from "mobx";
 
@@ -401,7 +401,7 @@ export function deriveInitFrameSettings(
 
 export function removeVariantsFromArenas(
   site: Site,
-  variants: Variant[],
+  variants: VariantCombo,
   component: Component | undefined,
 ) {
   if (component) {
@@ -430,20 +430,20 @@ export function removeVariantsFromArenas(
   }
 
   // Next, remove references to these variants from leftover frames
+  const variantUuids = variants.map((variant) => variant.uuid);
+  const removed = new Set(variants);
+  const withoutVariants = (targetVariants: VariantCombo) =>
+    targetVariants.filter((v) => !removed.has(v));
   for (const frame of getAllSiteFrames(site)) {
-    const pinnedVariants = component
-      ? frame.pinnedVariants
-      : frame.pinnedGlobalVariants;
-    const targetVariants = component
-      ? frame.targetVariants
-      : frame.targetGlobalVariants;
-    for (const variant of variants) {
-      if (has(pinnedVariants, variant.uuid)) {
-        delete pinnedVariants[variant.uuid];
-      }
-      if (targetVariants.includes(variant)) {
-        arrayRemove(targetVariants, variant);
-      }
+    if (component) {
+      frame.pinnedVariants = omit(frame.pinnedVariants, variantUuids);
+      frame.targetVariants = withoutVariants(frame.targetVariants);
+    } else {
+      frame.pinnedGlobalVariants = omit(
+        frame.pinnedGlobalVariants,
+        variantUuids,
+      );
+      frame.targetGlobalVariants = withoutVariants(frame.targetGlobalVariants);
     }
   }
 }
@@ -662,12 +662,14 @@ export function ensureCustomFrameForActivatedVariants(
         viewMode: getComponentArenaBaseFrameViewMode(arena),
       });
   if (arena.customMatrix.rows.length === 0) {
-    arena.customMatrix.rows.push(
+    arena.customMatrix.rows = [
+      ...arena.customMatrix.rows,
       new ArenaFrameRow({ cols: [], rowKey: undefined }),
-    );
+    ];
   }
   const cell = new ArenaFrameCell({ frame, cellKey: combo });
-  arena.customMatrix.rows[0].cols.push(cell);
+  const firstRow = arena.customMatrix.rows[0];
+  firstRow.cols = [...firstRow.cols, cell];
 
   ensureActivatedScreenVariantsForCustomCell(site, cell);
 

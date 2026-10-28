@@ -50,7 +50,10 @@ describe("deleteComponentState", () => {
     const { site, component, state } = setupWithState();
     const root = component.tplTree as TplTag;
     const vs = ensureVariantSetting(root, [getBaseVariant(component)]);
-    vs.attrs["title"] = customCode(`$state.${getStateVarName(state)}`);
+    vs.attrs = {
+      ...vs.attrs,
+      title: customCode(`$state.${getStateVarName(state)}`),
+    };
 
     const result = deleteComponentState(state, { site, component });
 
@@ -80,7 +83,10 @@ describe("deleteComponentState", () => {
     assert(implicitState, "expected an implicit state on the page");
     const pageRoot = page.tplTree as TplTag;
     const vs = ensureVariantSetting(pageRoot, [getBaseVariant(page)]);
-    vs.attrs["title"] = customCode(`$state.${getStateVarName(implicitState)}`);
+    vs.attrs = {
+      ...vs.attrs,
+      title: customCode(`$state.${getStateVarName(implicitState)}`),
+    };
 
     const result = deleteComponentState(created.value, {
       site,

@@ -193,7 +193,7 @@ export class StyleMgr {
     {
       tpl: TplNode;
       valKey: string;
-      animations: Animation[];
+      animations: ReadonlyArray<Animation>;
       /** The valOwner key used to scope the animation CSS selector to the specific frame */
       frameValOwnerKey: string;
     }
@@ -893,7 +893,7 @@ export class StyleMgr {
    */
   private generateAnimationPreviewRules(
     valKey: string,
-    animations: Animation[],
+    animations: ReadonlyArray<Animation>,
     frameValOwnerKey: string,
   ): string {
     const rules: string[] = [];
@@ -938,7 +938,10 @@ export class StyleMgr {
    *        getAnimationsFromDefinedIndicatorType() which properly handles
    *        inherited animations from other variants (e.g., base variant).
    */
-  async playAnimationPreview(tpl: TplNode, animations: Animation[]) {
+  async playAnimationPreview(
+    tpl: TplNode,
+    animations: ReadonlyArray<Animation>,
+  ) {
     const focusedViewCtx = this.studioCtx.focusedViewCtx();
     if (!focusedViewCtx || animations.length === 0) {
       return;

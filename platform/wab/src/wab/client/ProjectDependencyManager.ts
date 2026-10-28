@@ -275,7 +275,10 @@ export class ProjectDependencyManager {
     // Create the Site model
     await this._sc.changeUnsafe(() => {
       // Add it to the Site
-      this._sc.site.projectDependencies.push(projectDependency);
+      this._sc.site.projectDependencies = [
+        ...this._sc.site.projectDependencies,
+        projectDependency,
+      ];
 
       // If project A imports B, B imports C, B.X is a component with default slot
       // contents using C.Y, then from project A, if I instantiate a B.X, I will have
@@ -283,7 +286,7 @@ export class ProjectDependencyManager {
       // instances like usual (copying them, moving them out of the component, etc),
       // so I effectively can use C.Y as any normal component instance, so I should
       // have a direct dep on C as well.
-      L.uniq([
+      const transitiveDeps = L.uniq([
         ...extractTransitiveDepsFromComponentDefaultSlots(
           this._sc.site,
           projectDependency.site.components.filter((c) =>
@@ -291,9 +294,11 @@ export class ProjectDependencyManager {
           ),
         ),
         ...extractTransitiveHostLessPackages(this._sc.site),
-      ]).forEach((dep) => {
-        this._sc.site.projectDependencies.push(dep);
-      });
+      ]);
+      this._sc.site.projectDependencies = [
+        ...this._sc.site.projectDependencies,
+        ...transitiveDeps,
+      ];
 
       // Copy the Global Contexts from the imported project only if the current project
       // does not have the same global context
@@ -385,7 +390,10 @@ export class ProjectDependencyManager {
       !this._dependencyMap[dep.pkgId],
       "Must not be an existing direct dep",
     );
-    this._sc.site.projectDependencies.push(dep);
+    this._sc.site.projectDependencies = [
+      ...this._sc.site.projectDependencies,
+      dep,
+    ];
     this._trackDep(dep);
     this._sc.styleMgrBcast.installDepStyles(dep);
   }

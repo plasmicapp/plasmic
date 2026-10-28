@@ -12,7 +12,7 @@ import {
   maybePropTypeToDisplayName,
   StudioPropType,
 } from "@/wab/shared/code-components/code-components";
-import { arrayRemove } from "@/wab/shared/collections";
+import { arrayWithout } from "@/wab/shared/collections";
 import { assert } from "@/wab/shared/common";
 import {
   clone as cloneExpr,
@@ -222,13 +222,16 @@ export function FormValidationRulesEditor(
                         const newExpr = props.value
                           ? cloneExpr(props.value)
                           : new CollectionExpr({ exprs: [] });
-                        const mapExpr = ensureKnownMapExpr(
+                        const ruleExpr = ensureKnownMapExpr(
                           newExpr.exprs[index],
-                        ).mapExpr;
+                        );
                         if (!argExpr) {
-                          delete mapExpr[argName];
+                          ruleExpr.mapExpr = omit(ruleExpr.mapExpr, argName);
                         } else {
-                          mapExpr[argName] = argExpr;
+                          ruleExpr.mapExpr = {
+                            ...ruleExpr.mapExpr,
+                            [argName]: argExpr,
+                          };
                         }
                         props.onChange(newExpr);
                       }}
@@ -236,7 +239,7 @@ export function FormValidationRulesEditor(
                         if (!clonedExpr) {
                           return;
                         }
-                        arrayRemove(clonedExpr.exprs, rule);
+                        clonedExpr.exprs = arrayWithout(clonedExpr.exprs, rule);
                         props.onChange(clonedExpr);
                       }}
                       rule={rule.mapExpr}
@@ -250,13 +253,14 @@ export function FormValidationRulesEditor(
                   const newExpr = props.value
                     ? cloneExpr(props.value)
                     : new CollectionExpr({ exprs: [] });
-                  newExpr.exprs.push(
+                  newExpr.exprs = [
+                    ...newExpr.exprs,
                     new MapExpr({
                       mapExpr: {
                         ruleType: codeLit("required"),
                       },
                     }),
-                  );
+                  ];
                   props.onChange(newExpr);
                 }}
                 type={"primary"}

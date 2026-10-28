@@ -1,6 +1,6 @@
 import { componentToDeepReferenced } from "@/wab/shared/cached-selectors";
 import { ensureOnlyValidCodeComponentVariantsInComponent } from "@/wab/shared/code-components/variants";
-import { arrayRemove } from "@/wab/shared/collections";
+import { arrayWithout } from "@/wab/shared/collections";
 import { assert, isNonNil } from "@/wab/shared/common";
 import {
   ensureCorrectImplicitStates,
@@ -128,7 +128,7 @@ export function makeComponentSwapper(
             // a slot arg
             $$$(arg.expr.tpl).remove({ deep: true });
           }
-          arrayRemove(vs.args, arg);
+          vs.args = arrayWithout(vs.args, arg);
         } else if (
           isKnownStateParam(toParam) &&
           toVariantGroupParams.has(toParam)

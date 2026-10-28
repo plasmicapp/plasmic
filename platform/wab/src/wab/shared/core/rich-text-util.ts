@@ -35,14 +35,16 @@ export type NormalizedMarker = {
 >;
 
 export function normalizeMarkers(
-  markers: Marker[],
+  unsortedMarkers: ReadonlyArray<Marker>,
   length: number,
   isInline?: boolean,
 ): Array<NormalizedMarker> {
   const newMarkers: NormalizedMarker[] = [];
   let lastInsertedMarker = 0;
 
-  markers = markers.slice().sort((a, b) => a.position - b.position);
+  const markers = unsortedMarkers
+    .slice()
+    .sort((a, b) => a.position - b.position);
   for (const marker of markers) {
     // The check for "isInline" is to mimic Slate behavior. When it wraps
     // a snippet into a TplTag, it might add or not a {text: ""} to the

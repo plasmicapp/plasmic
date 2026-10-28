@@ -1849,7 +1849,7 @@ function maybeUnwrapFragments(
 
 function computeRenderedArg(
   param: Param,
-  tpls: TplNode[],
+  tpls: ReadonlyArray<TplNode>,
   ctx: RenderingCtx,
   envOverrides: Partial<CanvasEnv>,
 ) {

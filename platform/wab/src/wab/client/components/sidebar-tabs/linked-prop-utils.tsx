@@ -7,7 +7,7 @@ import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import WarningIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { arrayRemove } from "@/wab/shared/collections";
+import { arrayWithout } from "@/wab/shared/collections";
 import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { codeLit, tryExtractJson } from "@/wab/shared/core/exprs";
 import { cloneType, findAllInstancesOfComponent } from "@/wab/shared/core/tpls";
@@ -136,7 +136,7 @@ export async function reconcileLinkedProp(opts: {
         if (coerced) {
           argItem.expr = coerced;
         } else {
-          arrayRemove(ivs.args, argItem);
+          ivs.args = arrayWithout(ivs.args, argItem);
         }
       }
     }

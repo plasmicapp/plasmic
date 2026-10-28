@@ -80,7 +80,7 @@ function getSlotParamContent(
   };
 }
 
-function uuidsOfFlattenedTpls(tpls: TplNode[]) {
+function uuidsOfFlattenedTpls(tpls: ReadonlyArray<TplNode>) {
   return tpls.flatMap((tpl) => flattenTpls(tpl).map(({ uuid }) => uuid));
 }
 

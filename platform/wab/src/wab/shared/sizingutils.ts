@@ -56,7 +56,6 @@ import {
   Component,
   TplComponent,
   TplNode,
-  Variant,
   VariantSetting,
   isKnownTplTag,
 } from "@/wab/shared/model/classes";
@@ -408,7 +407,7 @@ export function getTplComponentDefaultSize(
  */
 export function getTplComponentDefaultSizeByActiveVariants(
   tpl: TplComponent,
-  activeVariants: Variant[],
+  activeVariants: VariantCombo,
 ) {
   const component = tpl.component;
   const activeComponentVariants = getTplComponentActiveVariantsByVs(
@@ -424,7 +423,7 @@ export function getTplComponentDefaultSizeByActiveVariants(
 
 export function isStretchyComponent(
   component: Component,
-  variants: Variant[] = [],
+  variants: VariantCombo = [],
 ) {
   variants = ensureValidCombo(component, variants);
 
@@ -457,7 +456,7 @@ export function isStretchyComponent(
 function getComponentDefaultSize_(
   component: Component,
   // activeVariants are either variants of Component or global variants
-  activeVariants: Variant[],
+  activeVariants: VariantCombo,
 ) {
   const root = component.tplTree;
   if (!isTplVariantable(root)) {

@@ -64,7 +64,7 @@ export interface VariantsController {
   onToggleTargetingOfActiveVariants: () => void;
   getPinState: (variant: Variant) => VariantPinState | undefined;
   getActiveNonBaseVariants(): Variant[];
-  getTargetedVariants(): Variant[];
+  getTargetedVariants(): VariantCombo;
   isActive: (variant: Variant) => boolean | undefined;
   isTargeted: (variant: Variant) => boolean;
   canChangeActiveVariants: () => boolean;

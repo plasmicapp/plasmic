@@ -18,7 +18,7 @@ import {
   tryGetPrivateStyleVariant,
 } from "@/wab/shared/Variants";
 import { CodeComponentsRegistry } from "@/wab/shared/code-components/code-components";
-import { arrayRemove } from "@/wab/shared/collections";
+import { arrayReplaceAt } from "@/wab/shared/collections";
 import { redistributeColumnsSizes } from "@/wab/shared/columns-utils";
 import { assert, ensure, ensureInstance, maybe } from "@/wab/shared/common";
 import {
@@ -713,15 +713,15 @@ function fixupPastedTpl(newItem: TplNode, ctx: PasteTplCtx) {
           // Reuse the cloned version if it already exists.
           const variant = clonedPrivateStyleVariants.get(privateSVKey);
           if (variant) {
-            vs.variants[index] = variant;
+            vs.variants = arrayReplaceAt(vs.variants, index, variant);
             return;
           }
           if (privateSV.forTpl !== newNode) {
             const clonedPrivateSV = cloneVariant(privateSV);
             clonedPrivateSV.forTpl = newNode;
-            component.variants.push(clonedPrivateSV);
+            component.variants = [...component.variants, clonedPrivateSV];
             clonedPrivateStyleVariants.set(privateSVKey, clonedPrivateSV);
-            vs.variants[index] = clonedPrivateSV;
+            vs.variants = arrayReplaceAt(vs.variants, index, clonedPrivateSV);
           }
         }
       });
@@ -1080,7 +1080,7 @@ export function adoptParentContainerStyleForVariant(
  */
 export function adoptFreePositionType(
   node: TplTag | TplComponent,
-  variants: Variant[],
+  variants: VariantCombo,
   ctx: InsertTplCtx,
   parentOffset?: Pt | "current",
 ) {
@@ -1302,11 +1302,13 @@ export function convertTextBlockToContainer(
       }
     }
 
-    for (const mixin of vs.rs.mixins) {
-      if (hasTypography(RSH(mixin.rs, container))) {
-        childVs.rs.mixins.push(mixin);
-        arrayRemove(vs.rs.mixins, mixin);
-      }
+    // Move typography mixins from the parent to the child
+    const movedMixins = vs.rs.mixins.filter((mixin) =>
+      hasTypography(RSH(mixin.rs, container)),
+    );
+    if (movedMixins.length > 0) {
+      childVs.rs.mixins = [...childVs.rs.mixins, ...movedMixins];
+      vs.rs.mixins = vs.rs.mixins.filter((m) => !movedMixins.includes(m));
     }
   }
 

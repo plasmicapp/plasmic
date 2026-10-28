@@ -101,6 +101,6 @@ export function createComponentProp(opts: {
     advanced: opts.advanced ?? false,
     isLocalizable: opts.isLocalizable ?? false,
   });
-  component.params.push(param);
+  component.params = [...component.params, param];
   return ok(param);
 }

@@ -13,12 +13,12 @@ import {
   ensureKnownTplComponent,
 } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
-import { BaseRuntime } from "@/wab/shared/model/model-meta";
+import { MetaRuntime } from "@/wab/shared/model/model-meta";
 import { typeFactory } from "@/wab/shared/model/model-util";
 
 // Equality comparator that uses class metadata to guide its crawling
 export class Comparator {
-  _rt: BaseRuntime;
+  _rt: MetaRuntime;
   constructor(rt = meta) {
     this._rt = rt;
   }
@@ -90,13 +90,14 @@ describe("bundler", () => {
     expect(cmp.deepEq(component, instance)).toBe(false);
     expect(instance3.component).toBe(component3);
 
-    component3.params.push(
+    component3.params = [
+      ...component3.params,
       mkParam({
         name: "className2",
         type: typeFactory.text(),
         paramType: "prop",
       }),
-    );
+    ];
   });
 });
 
@@ -168,13 +169,15 @@ function mkNestedTpls(instances: number): TplTag {
   // Split remaining instances evenly among 3 children
   const instancesPerChild = Math.floor((instances - 1) / 3);
   const instancesRemaining = (instances - 1) % 3;
+  const children: TplTag[] = [];
   if (instancesPerChild > 0) {
-    tag.children.push(mkNestedTpls(instancesPerChild));
-    tag.children.push(mkNestedTpls(instancesPerChild));
+    children.push(mkNestedTpls(instancesPerChild));
+    children.push(mkNestedTpls(instancesPerChild));
   }
   if (instancesPerChild + instancesRemaining > 0) {
-    tag.children.push(mkNestedTpls(instancesPerChild + instancesRemaining));
+    children.push(mkNestedTpls(instancesPerChild + instancesRemaining));
   }
+  tag.children = [...tag.children, ...children];
 
   return tag;
 }

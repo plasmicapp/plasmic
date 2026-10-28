@@ -491,7 +491,7 @@ function buildExtractToMixins(
           : mixinOrName;
       sc.tplMgr().extractToMixin(mixin, names, expsProvider.targetExp());
       if (!rs.mixins.includes(mixin)) {
-        rs.mixins.push(mixin);
+        rs.mixins = [...rs.mixins, mixin];
       }
     });
   };
@@ -829,7 +829,7 @@ function StylePanelSection_(
               if (!isMixin) {
                 const targetRs = expsProvider.targetRs();
                 if (!targetRs.mixins.includes(mixin)) {
-                  targetRs.mixins.push(mixin);
+                  targetRs.mixins = [...targetRs.mixins, mixin];
                 }
               }
             });

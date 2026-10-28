@@ -666,7 +666,10 @@ const getTreeNodeChildren = computedFn(
     item: TplNode | SlotSelection,
     componentFrameNum: number,
     ownerTplComponent: TplComponent,
-  ): { children: (TplNode | SlotSelection)[]; childrenFrameNum: number } {
+  ): {
+    children: ReadonlyArray<TplNode | SlotSelection>;
+    childrenFrameNum: number;
+  } {
     return switchType(item)
       .when(TplTag, (tpl) => {
         const childrenFrameNum = componentFrameNum;

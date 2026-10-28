@@ -13,6 +13,7 @@ import { ARENA_CAP } from "@/wab/shared/Labels";
 import { getSlotArgs } from "@/wab/shared/SlotUtils";
 import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
 import {
+  VariantCombo,
   isGlobalVariant,
   isGlobalVariantGroup,
   isMediaQueryVariantGroup,
@@ -27,15 +28,13 @@ import {
   flattenComponent,
 } from "@/wab/shared/cached-selectors";
 import { makeShortProjectId } from "@/wab/shared/codegen/util";
-import { Dict } from "@/wab/shared/collections";
+import { Dict, arrayReplaceAt, arrayWithout } from "@/wab/shared/collections";
 import {
   assert,
   ensure,
   maybe,
   mergeMaps,
   mkShortId,
-  remove,
-  removeWhere,
   strictZip,
   switchType,
   tuple,
@@ -207,6 +206,8 @@ import { getMatchingPagePathParams } from "@/wab/shared/utils/url-utils";
 import { keyBy } from "lodash";
 import escapeRegExp from "lodash/escapeRegExp";
 import keys from "lodash/keys";
+import mapValues from "lodash/mapValues";
+import omit from "lodash/omit";
 import orderBy from "lodash/orderBy";
 import pick from "lodash/pick";
 import { Result, err, ok } from "neverthrow";
@@ -261,7 +262,7 @@ export function createSite(params: Partial<SiteParams> = {}) {
 
 function addDummyArena(site: Site) {
   const arena = mkMixedArena(ARENA_CAP + " 1");
-  site.arenas.push(arena);
+  site.arenas = [...site.arenas, arena];
 }
 
 function clonePageArena(
@@ -290,7 +291,9 @@ function clonePageArena(
     return rowKey;
   };
 
-  const getNewCellKey = (cellKey: Variant | Variant[] | null | undefined) => {
+  const getNewCellKey = (
+    cellKey: Variant | VariantCombo | null | undefined,
+  ) => {
     if (!cellKey) {
       return cellKey;
     }
@@ -380,8 +383,8 @@ function cloneArenaFrameGrid(
       rowKey: Variant | null | undefined,
     ) => Variant | null | undefined;
     getNewCellKey?: (
-      cellKey: Variant | Variant[] | null | undefined,
-    ) => Variant | Variant[] | null | undefined;
+      cellKey: Variant | VariantCombo | null | undefined,
+    ) => Variant | VariantCombo | null | undefined;
   },
 ) {
   return new ArenaFrameGrid({
@@ -434,7 +437,9 @@ function cloneComponentArena(
     );
   };
 
-  const getNewCellKey = (cellKey: Variant | Variant[] | null | undefined) => {
+  const getNewCellKey = (
+    cellKey: Variant | VariantCombo | null | undefined,
+  ) => {
     if (!cellKey) {
       return cellKey;
     }
@@ -674,10 +679,9 @@ export function cloneSite(fromSite: Site) {
   };
 
   const fixRefsForRuleset = (rs: RuleSet) => {
-    for (const key of Object.keys(rs.values)) {
-      rs.values[key] = getNewMaybeTokenRefValue(rs.values[key]);
-      rs.values[key] = getNewMaybeImageAssetRefValue(rs.values[key]);
-    }
+    rs.values = mapValues(rs.values, (value) =>
+      getNewMaybeImageAssetRefValue(getNewMaybeTokenRefValue(value)),
+    );
   };
 
   const fixRefsForVariantedStyle = (
@@ -688,11 +692,9 @@ export function cloneSite(fromSite: Site) {
         getNewMixin(m),
       );
     }
-    for (let i = 0; i < variantedStyle.variants.length; i++) {
-      variantedStyle.variants[i] =
-        oldToNewGlobalVariant.get(variantedStyle.variants[i]) ??
-        variantedStyle.variants[i];
-    }
+    variantedStyle.variants = variantedStyle.variants.map(
+      (v) => oldToNewGlobalVariant.get(v) ?? v,
+    );
     if (isKnownVariantedValue(variantedStyle)) {
       variantedStyle.value = getNewMaybeTokenRefValue(variantedStyle.value);
     } else {
@@ -1270,10 +1272,10 @@ export function fixDataTokenProjectRefs(
     if (isKnownObjectPath(expr)) {
       const path = expr.path;
       if (isPathDataToken(path) && path[0].includes(oldShortId)) {
-        expr.path[0] = replaceDataTokenProjectId(
-          path[0],
-          oldShortId,
-          newShortId,
+        expr.path = arrayReplaceAt(
+          path,
+          0,
+          replaceDataTokenProjectId(path[0], oldShortId, newShortId),
         );
       }
     } else if (isKnownCustomCode(expr) && expr.code.includes(oldShortId)) {
@@ -1560,12 +1562,11 @@ export function removeReferencingTypeInstances(
     // Remove references from slot params
     for (const p of c.params) {
       if (isRenderableType(p.type)) {
-        removeWhere(
-          p.type.params,
-          (t) => isKnownComponentInstance(t) && t.component === comp,
+        p.type.params = p.type.params.filter(
+          (t) => !(isKnownComponentInstance(t) && t.component === comp),
         );
       } else if (isRenderFuncType(p.type)) {
-        removeWhere(p.type.allowed, (t) => t.component === comp);
+        p.type.allowed = p.type.allowed.filter((t) => t.component !== comp);
       }
     }
   }
@@ -1650,7 +1651,7 @@ function replacePageLinks(
               interaction.interactionName = `Go to ${newArgExpr.page.name}`;
             }
           } else {
-            remove(interaction.args, arg);
+            interaction.args = arrayWithout(interaction.args, arg);
           }
         }
       }
@@ -1679,9 +1680,9 @@ function replacePageLinks(
           } else {
             const newExpr = getNewExpr(expr);
             if (newExpr) {
-              vs.attrs[attr] = newExpr;
+              vs.attrs = { ...vs.attrs, [attr]: newExpr };
             } else {
-              delete vs.attrs[attr];
+              vs.attrs = omit(vs.attrs, attr);
             }
           }
         }
@@ -1693,7 +1694,7 @@ function replacePageLinks(
             if (newExpr) {
               vsArg.expr = newExpr;
             } else {
-              remove(vs.args, vsArg);
+              vs.args = arrayWithout(vs.args, vsArg);
             }
           }
         }
@@ -2234,11 +2235,9 @@ export function ensureScreenVariantsOrderOnMatrices(site: Site) {
   for (const arena of getSiteArenas(site)) {
     if (isPageArena(arena)) {
       for (const row of arena.matrix.rows) {
-        const orderedCols = orderBy(row.cols, (it) => it.frame.width, [
+        row.cols = orderBy(row.cols, (it) => it.frame.width, [
           strategy === ResponsiveStrategy.mobileFirst ? "asc" : "desc",
         ]);
-
-        row.cols.splice(0, row.cols.length, ...orderedCols);
       }
     } else if (isComponentArena(arena) && site.activeScreenVariantGroup) {
       ensureComponentArenaColsOrder(

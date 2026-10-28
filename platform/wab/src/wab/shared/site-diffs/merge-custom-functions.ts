@@ -1,4 +1,3 @@
-import { removeWhere } from "@/wab/shared/common";
 import { fixCustomFunctionExpr } from "@/wab/shared/core/custom-functions";
 import { customFunctionId } from "@/wab/shared/core/query-ids";
 import {
@@ -32,7 +31,9 @@ export function fixDuplicatedCustomFunctions(mergedSite: Site) {
   walkModelTree(createNodeCtx(mergedSite))
     .filter(isKnownCustomFunctionExpr)
     .forEach((expr) => fixCustomFunctionExpr(toFunctions, expr));
-  removeWhere(mergedSite.customFunctions, (f) => toFunctions.has(f));
+  mergedSite.customFunctions = mergedSite.customFunctions.filter(
+    (f) => !toFunctions.has(f),
+  );
 }
 
 /**
@@ -41,11 +42,11 @@ export function fixDuplicatedCustomFunctions(mergedSite: Site) {
  */
 export function fixDuplicatedCodeLibraries(mergedSite: Site) {
   const names = new Set<string>();
-  removeWhere(mergedSite.codeLibraries, (lib) => {
+  mergedSite.codeLibraries = mergedSite.codeLibraries.filter((lib) => {
     if (names.has(lib.name)) {
-      return true;
+      return false;
     }
     names.add(lib.name);
-    return false;
+    return true;
   });
 }

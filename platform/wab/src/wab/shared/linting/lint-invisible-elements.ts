@@ -1,7 +1,7 @@
 import { flattenComponent } from "@/wab/shared/cached-selectors";
 import { InvisibleElementLintIssue } from "@/wab/shared/linting/lint-types";
 import { lintIssuesEquals } from "@/wab/shared/linting/lint-utils";
-import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { componentSelector, maybeComputedFn } from "@/wab/shared/mobx-util";
 import { Component, Site, TplNode } from "@/wab/shared/model/classes";
 import { isAlwaysInvisibleTpl } from "@/wab/shared/visibility-utils";
 
@@ -22,7 +22,7 @@ export const lintInvisibleElements = maybeComputedFn(
   },
 );
 
-const lintComponent = maybeComputedFn(
+const lintComponent = componentSelector(
   function lintComponent(component: Component) {
     const issues: InvisibleElementLintIssue[] = [];
     for (const tpl of flattenComponent(component)) {

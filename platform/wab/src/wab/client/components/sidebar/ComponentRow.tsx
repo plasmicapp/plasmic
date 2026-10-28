@@ -46,6 +46,7 @@ import { isTplComponent } from "@/wab/shared/core/tpls";
 import { Component } from "@/wab/shared/model/classes";
 import { mkProjectLocation } from "@/wab/shared/route/app-routes";
 import { Menu, Popover, notification } from "antd";
+import { omit } from "lodash";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
 import * as React from "react";
@@ -285,13 +286,10 @@ function buildPlasmicComponentMenuItems(
         <Menu.Item
           key="convert_to_page"
           onClick={() =>
-            studioCtx.changeObserved(
-              () => [component],
-              () => {
-                studioCtx.siteOps().convertComponentToPage(component);
-                return ok();
-              },
-            )
+            studioCtx.change(() => {
+              studioCtx.siteOps().convertComponentToPage(component);
+              return ok();
+            })
           }
         >
           <strong>Convert</strong> to page
@@ -474,7 +472,10 @@ function buildCommonComponentMenuItems(
           key="demote-default-kind"
           onClick={async () => {
             await studioCtx.change(() => {
-              delete studioCtx.site.defaultComponents[kind];
+              studioCtx.site.defaultComponents = omit(
+                studioCtx.site.defaultComponents,
+                kind,
+              );
               return ok();
             });
           }}
@@ -513,7 +514,7 @@ function genComponentSwapMenuItem(
     spawn(studioCtx.siteOps().swapComponents(component, toComp));
   };
   const pushComps = (
-    comps: Component[],
+    comps: ReadonlyArray<Component>,
     push: (x: React.ReactElement) => void,
     includeCodeComponents: boolean,
   ) => {

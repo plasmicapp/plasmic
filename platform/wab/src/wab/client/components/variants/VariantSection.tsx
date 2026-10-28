@@ -16,10 +16,13 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicVariantSection";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { isStyleOrCodeComponentVariant } from "@/wab/shared/Variants";
+import {
+  VariantCombo,
+  isStyleOrCodeComponentVariant,
+} from "@/wab/shared/Variants";
 import { spawn } from "@/wab/shared/common";
 import { isTplCodeComponent } from "@/wab/shared/core/tpls";
-import { Component, Variant } from "@/wab/shared/model/classes";
+import { Component } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
 import * as React from "react";
@@ -115,7 +118,7 @@ export function makeReadOnlySection(opts: {
   icon: React.ReactNode;
   title: React.ReactNode;
   onClickSettings?: () => void;
-  variants: Variant[];
+  variants: VariantCombo;
   key: string;
   showIcon?: boolean;
   component?: Component;

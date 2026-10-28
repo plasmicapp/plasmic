@@ -1,22 +1,17 @@
-import {
-  arrayEqIgnoreOrder,
-  mkShortId,
-  remove,
-  removeWhere,
-  switchType,
-} from "@/wab/shared/common";
+import { arrayWithout } from "@/wab/shared/collections";
+import { arrayEqIgnoreOrder, mkShortId, switchType } from "@/wab/shared/common";
 import { cloneVariantedValue } from "@/wab/shared/core/styles";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
   DataToken,
+  isKnownStyleToken,
   Site,
   StyleToken,
   StyleTokenOverride,
   Token,
-  Variant,
   VariantedValue,
-  isKnownStyleToken,
 } from "@/wab/shared/model/classes";
+import { VariantCombo } from "@/wab/shared/Variants";
 
 export type FinalToken<T extends Token> =
   MutableToken<T> | OverrideableToken<T> | ImmutableToken<T>;
@@ -61,7 +56,7 @@ export abstract class BaseToken<T extends Token> {
 
   protected static setVariantedValue<T extends Token>(
     tokenOrOverride: T | StyleTokenOverride,
-    variants: Variant[],
+    variants: VariantCombo,
     value: string,
   ): void {
     const variantedValue = tokenOrOverride.variantedValues.find((v) =>
@@ -70,21 +65,22 @@ export abstract class BaseToken<T extends Token> {
     if (variantedValue) {
       variantedValue.value = value;
     } else {
-      tokenOrOverride.variantedValues.push(
+      tokenOrOverride.variantedValues = [
+        ...tokenOrOverride.variantedValues,
         new VariantedValue({
           variants,
           value,
         }),
-      );
+      ];
     }
   }
 
   protected static removeVariantedValue<T extends Token>(
     tokenOrOverride: T | StyleTokenOverride,
-    variants: Variant[],
+    variants: VariantCombo,
   ): void {
-    removeWhere(tokenOrOverride.variantedValues, (v) =>
-      arrayEqIgnoreOrder(v.variants, variants),
+    tokenOrOverride.variantedValues = tokenOrOverride.variantedValues.filter(
+      (v) => !arrayEqIgnoreOrder(v.variants, variants),
     );
   }
 }
@@ -100,21 +96,19 @@ export class MutableToken<T extends Token> extends BaseToken<T> {
     this.removeExtraneousValues();
   }
 
-  setVariantedValue(variants: Variant[], value: string): void {
+  setVariantedValue(variants: VariantCombo, value: string): void {
     BaseToken.setVariantedValue(this.base, variants, value);
     this.removeExtraneousValues();
   }
 
-  removeVariantedValue(variants: Variant[]): void {
+  removeVariantedValue(variants: VariantCombo): void {
     BaseToken.removeVariantedValue(this.base, variants);
   }
 
   private removeExtraneousValues(): void {
-    this.variantedValues.forEach((v) => {
-      if (v.value === this.base.value) {
-        remove(this.base.variantedValues, v);
-      }
-    });
+    this.base.variantedValues = this.base.variantedValues.filter(
+      (v) => v.value !== this.base.value,
+    );
   }
 }
 
@@ -158,7 +152,7 @@ export class OverrideableToken<T extends Token> extends BaseToken<T> {
     this.removeExtraneousValues();
   }
 
-  setVariantedValue(variants: Variant[], value: string) {
+  setVariantedValue(variants: VariantCombo, value: string) {
     const override = this.upsertStyleTokenOverride();
     BaseToken.setVariantedValue(override, variants, value);
     this.removeExtraneousValues();
@@ -202,7 +196,7 @@ export class OverrideableToken<T extends Token> extends BaseToken<T> {
   }
 
   /** Returns true if override no longer exists. */
-  removeVariantedValue(variants: Variant[]): boolean {
+  removeVariantedValue(variants: VariantCombo): boolean {
     const override = this.override;
     if (!override) {
       return true;
@@ -224,7 +218,10 @@ export class OverrideableToken<T extends Token> extends BaseToken<T> {
       value: null,
       variantedValues: [],
     });
-    this.site.styleTokenOverrides.push(newOverride);
+    this.site.styleTokenOverrides = [
+      ...this.site.styleTokenOverrides,
+      newOverride,
+    ];
     return newOverride;
   }
 
@@ -236,7 +233,10 @@ export class OverrideableToken<T extends Token> extends BaseToken<T> {
     }
 
     if (!override.value && override.variantedValues.length === 0) {
-      remove(this.site.styleTokenOverrides, override);
+      this.site.styleTokenOverrides = arrayWithout(
+        this.site.styleTokenOverrides,
+        override,
+      );
       return true;
     } else {
       return false;
@@ -282,7 +282,9 @@ const tokenMembership = maybeComputedFn(
   (site: Site, type: "styleTokens" | "dataTokens") => ({
     local: new Set<Token>(site[type]),
     direct: new Set<Token>(
-      site.projectDependencies.flatMap((dep): Token[] => dep.site[type]),
+      site.projectDependencies.flatMap(
+        (dep): readonly Token[] => dep.site[type],
+      ),
     ),
   }),
 );

@@ -43,7 +43,7 @@ import {
   extractUsedTokensForProjectCss,
   extractUsedTokensForTokens,
 } from "@/wab/shared/codegen/style-tokens";
-import { arrayRemove } from "@/wab/shared/collections";
+import { arrayReplaceAt, arrayWithout } from "@/wab/shared/collections";
 import {
   assert,
   assignReadonly,
@@ -116,7 +116,6 @@ import {
   replaceTplTreeByEmptyBox,
 } from "@/wab/shared/core/tpls";
 import { HostLessPackageInfo } from "@/wab/shared/devflags";
-import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import {
   AnimationSequence,
   ArenaFrame,
@@ -136,6 +135,7 @@ import {
   StyleToken,
   StyleTokenOverride,
   Theme,
+  TplComponent,
   TplNode,
   TplSlot,
   Variant,
@@ -161,7 +161,7 @@ import {
   renameParamAndFixExprs,
   renameTplAndFixExprs,
 } from "@/wab/shared/refactoring";
-import { isArray, keys, last, uniqBy } from "lodash";
+import { isArray, keys, last, mapValues, omit, omitBy, uniqBy } from "lodash";
 
 export type DependencyWalkScope = "all" | "direct";
 
@@ -267,7 +267,7 @@ export function getLeafProjectIdForHostLessPackageMeta(
 
 export function isHostlessPackageInstalled(
   meta: HostLessPackageInfo,
-  deps: ProjectDependency[],
+  deps: ReadonlyArray<ProjectDependency>,
 ) {
   const leafId = getLeafProjectIdForHostLessPackageMeta(meta);
   return deps.some((dep) => leafId === dep.projectId);
@@ -328,13 +328,15 @@ export function syncGlobalContexts(
   projectDependency: ProjectDependency,
   site: Site,
 ) {
-  projectDependency.site.globalContexts.forEach((gc) => {
-    if (
-      !site.globalContexts.find((to) => to.component.name === gc.component.name)
-    ) {
-      site.globalContexts.push(clone(gc));
+  const names = new Set(site.globalContexts.map((gc) => gc.component.name));
+  const missing: TplComponent[] = [];
+  for (const gc of projectDependency.site.globalContexts) {
+    if (!names.has(gc.component.name)) {
+      names.add(gc.component.name);
+      missing.push(clone(gc));
     }
-  });
+  }
+  site.globalContexts = [...site.globalContexts, ...missing];
 }
 
 export function extractTransitiveDepsFromMixins(
@@ -506,7 +508,7 @@ function getOrCloneNewAsset(
 function getNewMaybeImageAssetRefValue(
   tplMgr: TplMgr,
   value: string,
-  oldAssets: ImageAsset[],
+  oldAssets: ReadonlyArray<ImageAsset>,
   oldToNewAsset: Map<ImageAsset, ImageAsset | undefined>,
 ) {
   if (!hasAssetRefs(value)) {
@@ -527,17 +529,20 @@ function getNewMaybeImageAssetRefValue(
 function fixImageAssetRefsForRuleset(
   tplMgr: TplMgr,
   rs: RuleSet,
-  oldAssets: ImageAsset[],
+  oldAssets: ReadonlyArray<ImageAsset>,
   oldToNewAsset: Map<ImageAsset, ImageAsset | undefined>,
 ) {
   const val = rs.values["background"];
   if (val) {
-    rs.values["background"] = getNewMaybeImageAssetRefValue(
-      tplMgr,
-      val,
-      oldAssets,
-      oldToNewAsset,
-    );
+    rs.values = {
+      ...rs.values,
+      background: getNewMaybeImageAssetRefValue(
+        tplMgr,
+        val,
+        oldAssets,
+        oldToNewAsset,
+      ),
+    };
   }
 }
 
@@ -559,7 +564,7 @@ function fixAssetRefForExpr(
 function fixImageAssetRefsForTpl(
   tplMgr: TplMgr,
   tpl: TplNode,
-  oldAssets: ImageAsset[],
+  oldAssets: ReadonlyArray<ImageAsset>,
   oldToNewAsset: Map<ImageAsset, ImageAsset | undefined>,
 ) {
   if (isTplImage(tpl)) {
@@ -581,7 +586,7 @@ function fixImageAssetRefsForTpl(
 export function fixImageAssetRefsForClonedTemplateComponent(
   tplMgr: TplMgr,
   component: Component,
-  oldAssets: ImageAsset[],
+  oldAssets: ReadonlyArray<ImageAsset>,
 ) {
   const oldToNewAsset = new Map<ImageAsset, ImageAsset | undefined>(
     oldAssets.map((asset) => tuple(asset, undefined)),
@@ -621,7 +626,7 @@ function ensureDirectDep(
       }.  They must match up.`,
     );
   }
-  site.projectDependencies.push(dep);
+  site.projectDependencies = [...site.projectDependencies, dep];
 }
 
 /**
@@ -914,7 +919,6 @@ function upgradeProjectDep(
     if (!newComp) {
       const componentName = tplMgr.getUniqueComponentName(oldComp.name);
       const res = tplMgr.cloneComponent(oldComp, componentName, true);
-      ensureComponentsObserved([res.component]);
       newComp = res.component;
       oldToNewComp.set(oldComp, newComp);
       mapParams(oldComp, newComp);
@@ -1126,7 +1130,10 @@ function upgradeProjectDep(
         }
 
         // Delete the override.
-        arrayRemove(site.styleTokenOverrides, override);
+        site.styleTokenOverrides = arrayWithout(
+          site.styleTokenOverrides,
+          override,
+        );
       }
       // We cannot handle the "token NOT removed" case on the first pass here,
       // since it could call `getOrCloneNewToken`, messing up the cloning and
@@ -1187,7 +1194,7 @@ function upgradeProjectDep(
             // remove the arg.  We remove it from interaction.args,
             // and return `false` from this function, as we've "fixed it"
             // and don't need to remove the root arg or attr.
-            arrayRemove(interaction.args, arg);
+            interaction.args = arrayWithout(interaction.args, arg);
           }
         }
       }
@@ -1202,12 +1209,9 @@ function upgradeProjectDep(
    * new image / token / mixins in a RuleSet
    */
   const fixRefsForRuleset = (rs: RuleSet) => {
-    for (const key of Object.keys(rs.values)) {
-      const val = rs.values[key];
-      if (val) {
-        rs.values[key] = getNewMaybeTokenRefValue(val);
-      }
-    }
+    rs.values = mapValues(rs.values, (val) =>
+      val ? getNewMaybeTokenRefValue(val) : val,
+    );
 
     fixImageAssetRefsForRuleset(tplMgr, rs, oldAssets, oldToNewAsset);
 
@@ -1337,16 +1341,8 @@ function upgradeProjectDep(
         );
       }
       fixRefsForRuleset(vs.rs);
-      for (const [attr, expr] of [...Object.entries(vs.attrs)]) {
-        if (shouldDeletePageHRef(expr)) {
-          delete vs.attrs[attr];
-        }
-      }
-      for (const arg of [...vs.args]) {
-        if (shouldDeletePageHRef(arg.expr)) {
-          arrayRemove(vs.args, arg);
-        }
-      }
+      vs.attrs = omitBy(vs.attrs, (expr) => shouldDeletePageHRef(expr));
+      vs.args = vs.args.filter((arg) => !shouldDeletePageHRef(arg.expr));
 
       if (
         isBaseVariant(vs.variants) &&
@@ -1467,7 +1463,7 @@ function upgradeProjectDep(
                 }
               });
             }
-            arrayRemove(vs.args, arg);
+            vs.args = arrayWithout(vs.args, arg);
             continue;
           }
           arg.param = newParam;
@@ -1623,9 +1619,11 @@ function upgradeProjectDep(
     });
   };
 
-  // Fix up all components and TplNodes
-  for (const component of site.components) {
-    fixComponent(component);
+  // Fix up all components and TplNodes. We re-read `site.components` on each
+  // iteration, because fixing a component may clone other components into the
+  // site, and those need fixing too.
+  for (let i = 0; i < site.components.length; i++) {
+    fixComponent(site.components[i]);
   }
 
   site.globalContexts = site.globalContexts.filter(
@@ -1645,7 +1643,10 @@ function upgradeProjectDep(
       tuple(oldv.uuid, newv?.uuid),
     ),
   );
-  const fixGlobalPinMap = (pinMap: Record<string, boolean>) => {
+  const fixGlobalPinMap = (
+    oldPinMap: Readonly<Record<string, boolean>>,
+  ): Record<string, boolean> => {
+    const pinMap = { ...oldPinMap };
     for (const key of keys(pinMap)) {
       if (oldToNewGlobalVariantUuid.has(key)) {
         // This is an old global variant uuid
@@ -1658,6 +1659,7 @@ function upgradeProjectDep(
         }
       }
     }
+    return pinMap;
   };
 
   const fixArenaGrid = (grid: ArenaFrameGrid) => {
@@ -1671,7 +1673,7 @@ function upgradeProjectDep(
               cell.cellKey = newVariant;
             } else {
               // The referenced variant no longer exists; delete it
-              arrayRemove(row.cols, cell);
+              row.cols = arrayWithout(row.cols, cell);
               return;
             }
           }
@@ -1686,7 +1688,7 @@ function upgradeProjectDep(
             );
             if (newCellKey.length !== cellKey.length) {
               // Some referenced global variant no longer exists; delete it
-              arrayRemove(row.cols, cell);
+              row.cols = arrayWithout(row.cols, cell);
             } else {
               cell.cellKey = newCellKey;
             }
@@ -1704,7 +1706,7 @@ function upgradeProjectDep(
             row.rowKey = newGroup;
           } else {
             // The referenced group no longer exists; delete it
-            arrayRemove(grid.rows, row);
+            grid.rows = arrayWithout(grid.rows, row);
             return;
           }
         }
@@ -1715,7 +1717,7 @@ function upgradeProjectDep(
             row.rowKey = newVariant;
           } else {
             // The referenced variant no longer exists; delete it
-            arrayRemove(grid.rows, row);
+            grid.rows = arrayWithout(grid.rows, row);
             return;
           }
         }
@@ -1753,7 +1755,7 @@ function upgradeProjectDep(
 
       fixTpl(frame.container, frame);
 
-      fixGlobalPinMap(frame.pinnedGlobalVariants);
+      frame.pinnedGlobalVariants = fixGlobalPinMap(frame.pinnedGlobalVariants);
       frame.targetGlobalVariants = withoutNils(
         frame.targetGlobalVariants.map((v) =>
           oldToNewGlobalVariant.has(v) ? getOrCloneOldGlobalVariant(v) : v,
@@ -1808,9 +1810,12 @@ function upgradeProjectDep(
     if (oldToNewComp.has(c)) {
       const newComponent = oldToNewComp.get(c);
       if (newComponent) {
-        site.defaultComponents[kind] = newComponent;
+        site.defaultComponents = {
+          ...site.defaultComponents,
+          [kind]: newComponent,
+        };
       } else {
-        delete site.defaultComponents[kind];
+        site.defaultComponents = omit(site.defaultComponents, kind);
       }
     }
   });
@@ -1838,8 +1843,12 @@ function upgradeProjectDep(
   // Finally, swap out oldDep with newDep
   if (newDep) {
     const index = site.projectDependencies.indexOf(oldDep);
-    site.projectDependencies[index] = newDep;
+    site.projectDependencies = arrayReplaceAt(
+      site.projectDependencies,
+      index,
+      newDep,
+    );
   } else {
-    arrayRemove(site.projectDependencies, oldDep);
+    site.projectDependencies = arrayWithout(site.projectDependencies, oldDep);
   }
 }

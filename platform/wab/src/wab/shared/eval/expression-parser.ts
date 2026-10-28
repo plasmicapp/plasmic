@@ -684,7 +684,7 @@ export function replaceVarWithProp(
   return generateCode(ast);
 }
 
-export function pathToString(path: (string | number)[]) {
+export function pathToString(path: ReadonlyArray<string | number>) {
   return (
     path
       .map((s, idx) => {
@@ -701,8 +701,8 @@ export function pathToString(path: (string | number)[]) {
 }
 
 export function isPathDataToken(
-  path: (string | number | undefined)[],
-): path is string[] {
+  path: ReadonlyArray<string | number | undefined>,
+): path is readonly string[] {
   return typeof path[0] === "string" && path[0].startsWith("$dataTokens_");
 }
 
@@ -1248,16 +1248,16 @@ export function transformDataTokensToDisplay(
  * Handles flat identifier with potential nested properties.
  */
 export function transformDataTokenPathToDisplay(
-  path: (string | number)[],
+  path: ReadonlyArray<string | number>,
   site: Site,
   projectId: ProjectId,
 ): (string | number)[] {
   if (path.length === 0 || typeof path[0] !== "string") {
-    return path;
+    return [...path];
   }
   const parsed = parseDataTokenIdentifier(path[0]);
   if (!parsed) {
-    return path;
+    return [...path];
   }
   const { projectShortId, tokenName } = parsed;
 
@@ -1274,14 +1274,14 @@ export function transformDataTokenPathToDisplay(
       return ["$dataTokens", toVarName(depName), tokenName, ...nestedProps];
     }
   }
-  return path;
+  return [...path];
 }
 
 /**
  * Transform data tokens in a path to display format, then convert the path to string.
  */
 export function pathToDisplayString(
-  path: (string | number)[],
+  path: ReadonlyArray<string | number>,
   site: Site,
   projectId: ProjectId,
 ): string {

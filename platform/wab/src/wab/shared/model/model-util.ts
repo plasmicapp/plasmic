@@ -104,12 +104,12 @@ export const typeFactory = {
   dateString: () => new DateString({ name: "dateString" }),
   dateRangeStrings: () => new DateRangeStrings({ name: "dateRangeStrings" }),
   classNamePropType: (
-    selectors: {
+    selectors: ReadonlyArray<{
       selector: string;
       label?: string | null;
-      defaultStyles?: Record<string, string>;
-    }[],
-    defaultStyles: Record<string, string>,
+      defaultStyles?: Readonly<Record<string, string>>;
+    }>,
+    defaultStyles: Readonly<Record<string, string>>,
   ) =>
     new ClassNamePropType({
       name: "className",
@@ -203,7 +203,9 @@ export function isOptionsType(type: Type): type is Choice | MultiChoice {
  * `{ value, label }` objects — into a consistent `{ value, label }` shape.
  */
 export function normalizeToChoiceObjects(
-  options: Array<ChoiceValue | { [key: string]: ChoiceValue }>,
+  options: ReadonlyArray<
+    ChoiceValue | Readonly<{ [key: string]: ChoiceValue }>
+  >,
 ): { value: ChoiceValue; label: string }[] {
   return options.map((o) => {
     const isObj = typeof o === "object";
@@ -511,7 +513,8 @@ export function typesEqual(t1: Type, t2: Type): boolean {
       if (t1.params.length !== t2.params.length) {
         return false;
       }
-      const params: (ComponentInstance | PlumeInstance | ArgType)[] = t1.params;
+      const params: ReadonlyArray<ComponentInstance | PlumeInstance | ArgType> =
+        t1.params;
       return params.every(
         // TODO: ignore order for union types
         (p, i) => !!t2.params[i] && typesEqual(p, t2.params[i]),

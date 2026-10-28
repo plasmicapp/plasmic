@@ -14,7 +14,8 @@ import { mkDefaultInteraction } from "@/wab/client/state-management/interactions
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { HighlightInteractionRequest } from "@/wab/shared/code-components/code-components";
-import { moveIndex, remove, spawn } from "@/wab/shared/common";
+import { arrayMoveIndex, arrayWithout } from "@/wab/shared/collections";
+import { spawn } from "@/wab/shared/common";
 import {
   EventHandlerKeyType,
   KeyedEventHandler,
@@ -86,7 +87,7 @@ function HandlerSection_(
     spawn(
       sc.change(() => {
         ensureGenericFuncTypes(eventHandler, keyedEventHandler.key);
-        eventHandler.interactions.push(interaction);
+        eventHandler.interactions = [...eventHandler.interactions, interaction];
         onChange(eventHandler);
         return ok();
       }),
@@ -104,7 +105,10 @@ function HandlerSection_(
             spawn(
               sc.change(() => {
                 if (maybeEventHandler) {
-                  remove(maybeEventHandler.interactions, interaction);
+                  maybeEventHandler.interactions = arrayWithout(
+                    maybeEventHandler.interactions,
+                    interaction,
+                  );
                 }
                 return ok();
               }),
@@ -180,7 +184,11 @@ function HandlerSection_(
                   maybeEventHandler,
                   keyedEventHandler.key,
                 );
-                moveIndex(maybeEventHandler.interactions, fromIndex, toIndex);
+                maybeEventHandler.interactions = arrayMoveIndex(
+                  maybeEventHandler.interactions,
+                  fromIndex,
+                  toIndex,
+                );
               }
               return ok();
             }),

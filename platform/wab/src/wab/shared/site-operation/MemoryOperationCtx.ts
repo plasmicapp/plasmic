@@ -1,6 +1,5 @@
 import { Site } from "@/wab/shared/model/classes";
 import { OperationCtx } from "@/wab/shared/site-operation/OperationCtx";
-import { Safe } from "@/wab/shared/site-operation/safe";
 
 /**
  * In-memory implementation that's easy to use in /shared
@@ -13,7 +12,7 @@ import { Safe } from "@/wab/shared/site-operation/safe";
 export class MemoryOperationCtx implements OperationCtx {
   constructor(private readonly _site: Site) {}
 
-  site(): Safe<Site> {
+  site(): Site {
     return this._site;
   }
 

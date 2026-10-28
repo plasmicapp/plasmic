@@ -179,19 +179,23 @@ export async function createSiteForHostlessProject(
       CodeComponentMeta<any> | GlobalContextMeta<any>
     >();
 
-    [...registeredComponents, ...registeredContexts].forEach(({ meta }) => {
-      const component = mkCodeComponent(meta.name, meta, {});
-      component.codeComponentMeta.isHostLess = true;
+    const newComponents = [...registeredComponents, ...registeredContexts].map(
+      ({ meta }) => {
+        const component = mkCodeComponent(meta.name, meta, {});
+        component.codeComponentMeta.isHostLess = true;
 
-      site.components.push(component);
-      componentToMeta.set(component, meta);
-    });
+        componentToMeta.set(component, meta);
+        return component;
+      },
+    );
+    site.components = [...site.components, ...newComponents];
 
-    site.globalContexts.push(
+    site.globalContexts = [
+      ...site.globalContexts,
       ...site.components
         .filter(isContextCodeComponent)
         .map((component) => mkTplComponent(component, site.globalVariant)),
-    );
+    ];
 
     // add props and default value to slots
     site.components.filter(isCodeComponent).forEach((c) => {
@@ -223,15 +227,19 @@ export async function createSiteForHostlessProject(
       .filter(isCodeComponent)
       .forEach((c) => (c.codeComponentMeta.isHostLess = true));
 
-    for (const tokenReg of registeredTokens) {
-      const token = createStyleTokenFromRegistration(tokenReg);
-      site.styleTokens.push(token);
-    }
+    site.styleTokens = [
+      ...site.styleTokens,
+      ...registeredTokens.map((tokenReg) =>
+        createStyleTokenFromRegistration(tokenReg),
+      ),
+    ];
 
-    for (const functionReg of registeredFunctions) {
-      const customFunction = createCustomFunctionFromRegistration(functionReg);
-      site.customFunctions.push(customFunction);
-    }
+    site.customFunctions = [
+      ...site.customFunctions,
+      ...registeredFunctions.map((functionReg) =>
+        createCustomFunctionFromRegistration(functionReg),
+      ),
+    ];
   });
 
   return site;
@@ -301,7 +309,6 @@ export async function updateHostlessPackage(
     const result = await syncCodeComponents(
       {
         change: async (f) => f(),
-        observeComponents: (_) => true,
         codeComponentsRegistry: new CodeComponentsRegistry(
           globalThis,
           getBuiltinComponentRegistrations(),

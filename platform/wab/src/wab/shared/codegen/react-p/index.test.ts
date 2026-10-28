@@ -20,6 +20,7 @@ import {
 import { genLocalizationStringsForProject } from "@/wab/shared/localization";
 import {
   Component,
+  Expr,
   ImageAsset,
   ImageAssetRef,
   TplNode,
@@ -60,7 +61,7 @@ describe("serializeTplTagBase", () => {
         return root;
       },
     });
-    site.components.push(component);
+    site.components = [...site.components, component];
 
     const { readFromProject } = await codegen(dir.name, site);
     const renderModule = readFromProject("PlasmicButtons.tsx");
@@ -123,7 +124,7 @@ describe("serializeTplTagBase", () => {
         return root;
       },
     });
-    site.components.push(component);
+    site.components = [...site.components, component];
 
     const addVariant = (groupName: string, variantName: string) =>
       tplMgr.createVariant(
@@ -136,17 +137,21 @@ describe("serializeTplTagBase", () => {
     const otherVariant = addVariant("otherGroup", "otherVariant");
     const testVariant = addVariant("testGroup", "testVariant");
     const [swapped, , , overridden, captioned] = imgs;
-    ensureVariantSetting(swapped, [testVariant]).attrs["src"] =
-      new ImageAssetRef({ asset: canoe });
-    ensureVariantSetting(swapped, [otherVariant]).attrs["alt"] =
-      codeLit("Our bike, on sale");
-    ensureVariantSetting(overridden, [testVariant]).attrs["alt"] = codeLit(
-      "A bicycle, close up",
-    );
-    ensureVariantSetting(captioned, [testVariant]).attrs["src"] =
-      new ImageAssetRef({ asset: canoe });
+    const setAttr = (
+      tpl: TplNode,
+      variant: Variant,
+      attr: string,
+      expr: Expr,
+    ) => {
+      const vs = ensureVariantSetting(tpl, [variant]);
+      vs.attrs = { ...vs.attrs, [attr]: expr };
+    };
+    setAttr(swapped, testVariant, "src", new ImageAssetRef({ asset: canoe }));
+    setAttr(swapped, otherVariant, "alt", codeLit("Our bike, on sale"));
+    setAttr(overridden, testVariant, "alt", codeLit("A bicycle, close up"));
+    setAttr(captioned, testVariant, "src", new ImageAssetRef({ asset: canoe }));
 
-    site.flags.usePlasmicTranslation = true;
+    site.flags = { ...site.flags, usePlasmicTranslation: true };
     const { importFromProject } = await codegen(dir.name, site);
 
     const Gallery = (await importFromProject("Gallery.js")).default;
@@ -383,7 +388,7 @@ describe("makeCssClassNameForVariantCombo", () => {
           paramType: ParamTypes.State,
         }),
       });
-      component.variantGroups.push(variantGroup);
+      component.variantGroups = [...component.variantGroups, variantGroup];
 
       variant1 = mkVariant({
         uuid: "var1",
@@ -395,7 +400,7 @@ describe("makeCssClassNameForVariantCombo", () => {
         name: "Variant 2",
         parent: variantGroup,
       });
-      component.variants.push(variant1, variant2);
+      component.variants = [...component.variants, variant1, variant2];
     });
     it("works for 1 component variant", () => {
       expectMakeCssClassNameForVariantCombo(
@@ -438,7 +443,10 @@ describe("makeCssClassNameForVariantCombo", () => {
         name: "Desktop",
         parent: screenVariantGroup,
       });
-      screenVariantGroup.variants.push(mobileVariant);
+      screenVariantGroup.variants = [
+        ...screenVariantGroup.variants,
+        mobileVariant,
+      ];
     });
     it("works for 1 global variant", () => {
       expectMakeCssClassNameForVariantCombo(

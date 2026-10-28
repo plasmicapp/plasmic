@@ -204,7 +204,10 @@ describe("updateComponentState", () => {
     assert(implicitState, "expected an implicit state on the page");
     const pageRoot = page.tplTree as TplTag;
     const vs = ensureVariantSetting(pageRoot, [getBaseVariant(page)]);
-    vs.attrs["title"] = customCode(`$state.${getStateVarName(implicitState)}`);
+    vs.attrs = {
+      ...vs.attrs,
+      title: customCode(`$state.${getStateVarName(implicitState)}`),
+    };
 
     const result = updateComponentState(state, { accessType: "private" }, opts);
 

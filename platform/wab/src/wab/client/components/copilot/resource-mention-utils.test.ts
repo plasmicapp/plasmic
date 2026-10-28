@@ -95,12 +95,12 @@ function mkTestSite() {
     projectDependencies: [transitive.dep],
   });
   runInAction(() => {
-    site.components.push(component, page, codeComponent);
-    site.styleTokens.push(token, registeredToken);
-    screenGroup.variants.push(screenVariant);
-    site.globalVariantGroups.push(variantGroup);
-    site.animationSequences.push(animation);
-    site.projectDependencies.push(imported.dep);
+    site.components = [...site.components, component, page, codeComponent];
+    site.styleTokens = [...site.styleTokens, token, registeredToken];
+    screenGroup.variants = [...screenGroup.variants, screenVariant];
+    site.globalVariantGroups = [...site.globalVariantGroups, variantGroup];
+    site.animationSequences = [...site.animationSequences, animation];
+    site.projectDependencies = [...site.projectDependencies, imported.dep];
   });
   // Registers the components in the maps `getOwnerSite` reads, which a site
   // built by hand misses; without it `getEffectiveVariantSetting` throws.
@@ -184,11 +184,14 @@ function mkTestDep(
     parent: site.globalVariantGroups[0],
   });
   runInAction(() => {
-    site.components.push(component, page, codeComponent);
-    site.styleTokens.push(token, registeredToken);
-    site.animationSequences.push(animation);
-    site.globalVariantGroups.push(variantGroup);
-    site.globalVariantGroups[0].variants.push(screenVariant);
+    site.components = [...site.components, component, page, codeComponent];
+    site.styleTokens = [...site.styleTokens, token, registeredToken];
+    site.animationSequences = [...site.animationSequences, animation];
+    site.globalVariantGroups = [...site.globalVariantGroups, variantGroup];
+    site.globalVariantGroups[0].variants = [
+      ...site.globalVariantGroups[0].variants,
+      screenVariant,
+    ];
   });
   const dep = new ProjectDependency({
     name: `${name} project`,

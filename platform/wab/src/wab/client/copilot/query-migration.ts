@@ -39,7 +39,7 @@ export function makeLegacyQueryMigrationPrompt(
 
 export function makeAllLegacyQueriesMigrationPrompt(
   component: ComponentIdentity,
-  queries: LegacyQueryIdentity[],
+  queries: ReadonlyArray<LegacyQueryIdentity>,
 ): string {
   const subject =
     queries.length === 1

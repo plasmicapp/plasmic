@@ -18,12 +18,9 @@ import { generateSiteFromBundle } from "@/wab/shared/__testonly__/site-tests-uti
 import { Bundle } from "@/wab/shared/bundler";
 import { withoutNils } from "@/wab/shared/common";
 import { AiIdentity } from "@/wab/shared/copilot/copilot-tool-types";
-import { ComponentType, mkComponent } from "@/wab/shared/core/components";
-import { ParamExportType, mkParam } from "@/wab/shared/core/lang";
+import { ComponentType } from "@/wab/shared/core/components";
 import { getDedicatedArena } from "@/wab/shared/core/sites";
-import { mkSlot, mkTplTag } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { typeFactory } from "@/wab/shared/model/model-util";
 import { ok } from "neverthrow";
 
 import _bundle from "@/wab/shared/web-exporter/bundles/starter-project-desktop-first.json";
@@ -31,43 +28,36 @@ import _bundle from "@/wab/shared/web-exporter/bundles/starter-project-desktop-f
 const TEAM_ID = "team123" as TeamId;
 
 describe("model change queue failures", () => {
-  it.each(["change", "changeObserved"] as const)(
-    "%s rejects, rolls back, and continues processing after a thrown error",
-    async (method) => {
-      const { studioCtx } = fakeStudioCtx();
-      try {
-        const component = await studioCtx.changeUnsafe(() =>
-          studioCtx.addComponent("Original", {
-            type: ComponentType.Plain,
-            noSwitchArena: true,
-          }),
-        );
-        const failure = new Error("change failed");
-        const change = () => {
-          component.name = "Rolled back";
-          throw failure;
-        };
-        const failed =
-          method === "change"
-            ? studioCtx.change(change)
-            : studioCtx.changeObserved(() => [component], change);
-        await expect(failed).rejects.toBe(failure);
-        expect(component.name).toBe("Original");
+  it("change rejects, rolls back, and continues processing after a thrown error", async () => {
+    const { studioCtx } = fakeStudioCtx();
+    try {
+      const component = await studioCtx.changeUnsafe(() =>
+        studioCtx.addComponent("Original", {
+          type: ComponentType.Plain,
+          noSwitchArena: true,
+        }),
+      );
+      const failure = new Error("change failed");
+      const change = () => {
+        component.name = "Rolled back";
+        throw failure;
+      };
+      const failed = studioCtx.change(change);
+      await expect(failed).rejects.toBe(failure);
+      expect(component.name).toBe("Original");
 
-        await expect(
-          studioCtx.change(() => {
-            component.name = "Recovered";
-            return ok("done");
-          }),
-        ).resolves.toEqual(ok("done"));
-        expect(component.name).toBe("Recovered");
-        expect(studioCtx.hasPendingModelChanges()).toBe(false);
-      } finally {
-        studioCtx.dispose();
-      }
-    },
-    5000,
-  );
+      await expect(
+        studioCtx.change(() => {
+          component.name = "Recovered";
+          return ok("done");
+        }),
+      ).resolves.toEqual(ok("done"));
+      expect(component.name).toBe("Recovered");
+      expect(studioCtx.hasPendingModelChanges()).toBe(false);
+    } finally {
+      studioCtx.dispose();
+    }
+  }, 5000);
 });
 
 function mockTeam(overrides: Partial<ApiTeam>): ApiTeam {
@@ -278,45 +268,6 @@ describe("background arenas", () => {
     } finally {
       DEVFLAGS.liveArenas = savedLiveArenas;
     }
-  });
-});
-
-describe("attachComponent", () => {
-  afterEach(() => {
-    delete (window as any).studioCtx;
-  });
-
-  it("observes sub components attached during a change", async () => {
-    const { studioCtx } = fakeStudioCtx();
-    (window as any).studioCtx = studioCtx;
-
-    const select = mkComponent({
-      name: "Select",
-      tplTree: mkTplTag("div"),
-      type: ComponentType.Plain,
-    });
-    const children = mkParam({
-      name: "children",
-      type: typeFactory.renderable(),
-      exportType: ParamExportType.External,
-      paramType: "slot",
-    });
-    const option = mkComponent({
-      name: "Option",
-      params: [children],
-      tplTree: mkTplTag("div", mkSlot(children)),
-      type: ComponentType.Plain,
-      superComp: select,
-    });
-
-    await studioCtx.changeUnsafe(() => {
-      studioCtx.tplMgr().attachComponent(select);
-    });
-
-    expect(studioCtx.site.components).toEqual(
-      expect.arrayContaining([select, option]),
-    );
-    expect(studioCtx.observeComponents([select, option])).toBe(false);
   });
 });
 

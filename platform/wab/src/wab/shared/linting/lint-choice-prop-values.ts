@@ -12,7 +12,7 @@ import { ComponentEvalContext } from "@/wab/shared/core/val-nodes";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { ChoicePropValuesLintIssue } from "@/wab/shared/linting/lint-types";
 import { lintIssuesEquals } from "@/wab/shared/linting/lint-utils";
-import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { coarseSelector, maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
   Component,
   isKnownExpr,
@@ -80,7 +80,7 @@ export const getChoicePropOptions = (
   return undefined;
 };
 
-const lintComponent = maybeComputedFn(
+const lintComponent = coarseSelector(
   function lintComponent(studioCtx: StudioCtx, component: Component) {
     const issues: ChoicePropValuesLintIssue[] = [];
     const exprCtx: ExprCtx = {

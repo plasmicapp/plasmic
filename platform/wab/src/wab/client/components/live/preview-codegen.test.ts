@@ -188,7 +188,7 @@ it("builds a 404 for a root deleted while it is previewed", () => {
     ctx.site.components.find((c) => c.pageMeta),
     "fixture has a page",
   );
-  ctx.site.components.splice(ctx.site.components.indexOf(page), 1);
+  ctx.site.components = ctx.site.components.filter((c) => c !== page);
   const result = buildPreviewUpdate(ctx, {
     component: page,
     previewPath: "/deleted",

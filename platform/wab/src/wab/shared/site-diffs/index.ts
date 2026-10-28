@@ -770,8 +770,8 @@ interface DiffSpec {
 function genericCheck<T extends AllowedSemVerSiteElement>(
   prev: Site,
   curr: Site,
-  a: Array<T>,
-  b: Array<T>,
+  a: ReadonlyArray<T>,
+  b: ReadonlyArray<T>,
   keySelector: (o: T) => string,
   valueSelectors: {
     selector: (o: T, site: Site) => string;
@@ -976,8 +976,8 @@ function checkIndirectTplUsage(
 function checkVariantGroups(
   prev: Site,
   curr: Site,
-  aVgs: Array<VariantGroup>,
-  bVgs: Array<VariantGroup>,
+  aVgs: ReadonlyArray<VariantGroup>,
+  bVgs: ReadonlyArray<VariantGroup>,
   parentComponent: "global" | ParentComponent,
 ): ChangeLogEntry[] {
   const partialResults: ChangeLogEntry[] = [];

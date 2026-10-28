@@ -2,7 +2,7 @@ import {
   extractUsedIconAssetsForComponents,
   extractUsedPictureAssetsForComponents,
 } from "@/wab/shared/codegen/image-assets";
-import { mergeSets, removeWhere } from "@/wab/shared/common";
+import { mergeSets } from "@/wab/shared/common";
 import { Site } from "@/wab/shared/model/classes";
 
 export function pruneUnusedImageAssets(site: Site) {
@@ -17,6 +17,6 @@ export function pruneUnusedImageAssets(site: Site) {
 
   const unusedAssets = new Set(site.imageAssets.filter((x) => !assets.has(x)));
 
-  removeWhere(site.imageAssets, (x) => unusedAssets.has(x));
+  site.imageAssets = site.imageAssets.filter((x) => !unusedAssets.has(x));
   return unusedAssets;
 }

@@ -77,9 +77,10 @@ function setupMerge(
   const slot = mkSlot(addSlotParam(depSite, wrapper, "children"));
   slot.vsettings = [mkVariantSetting({ variants: [getBaseVariant(wrapper)] })];
   $$$(wrapper.tplTree).append(slot);
-  wrapper.params.push(
+  wrapper.params = [
+    ...wrapper.params,
     mkParam({ name: "title", type: typeFactory.text(), paramType: "prop" }),
-  );
+  ];
   const oldDep = new ProjectDependency({
     name: "Library",
     projectId: "lib",
@@ -89,16 +90,17 @@ function setupMerge(
     site: depSite,
   });
   const site = createSite();
-  site.projectDependencies.push(oldDep);
+  site.projectDependencies = [...site.projectDependencies, oldDep];
   const mgr = new TplMgr({ site });
   const leafMgr = importedLeaf ? new TplMgr({ site: depSite }) : mgr;
   const leaf = leafMgr.addComponent({
     name: "Leaf",
     type: ComponentType.Plain,
   });
-  leaf.params.push(
+  leaf.params = [
+    ...leaf.params,
     mkParam({ name: "data", type: typeFactory.any(), paramType: "prop" }),
-  );
+  ];
   leafMgr.createVariantGroup({
     component: leaf,
     name: "isActive",
@@ -149,7 +151,8 @@ function setupMerge(
   const upgraded = upgradeSide === "left" ? left : right;
   upgradeProjectDeps(upgraded, [{ oldDep, newDep }]);
   const instance = findInstance(upgraded, "wrapper");
-  instance.vsettings[0].args.push(
+  instance.vsettings[0].args = [
+    ...instance.vsettings[0].args,
     new Arg({
       param: ensure(
         instance.component.params.find((p) => p.variable.name === "title"),
@@ -157,7 +160,7 @@ function setupMerge(
       ),
       expr: codeLit("Updated wrapper"),
     }),
-  );
+  ];
   // Model edits in these tests bypass Studio's timestamp tracking.
   left.components.forEach((c) => (c.updatedAt = 1));
   right.components.forEach((c) => (c.updatedAt = 2));
@@ -188,14 +191,15 @@ function setData(site: Site, value: string, dynamic: boolean) {
     leaf.component.params.find((p) => p.variable.name === "data"),
     "Missing data",
   );
-  leaf.vsettings[0].args.push(
+  leaf.vsettings[0].args = [
+    ...leaf.vsettings[0].args,
     new Arg({
       param,
       expr: dynamic
         ? new ObjectPath({ path: ["$q", value, "data"], fallback: null })
         : codeLit(value),
     }),
-  );
+  ];
 }
 
 for (const upgradeSide of ["left", "right"] as const) {
@@ -210,12 +214,13 @@ for (const upgradeSide of ["left", "right"] as const) {
           leaf.component.variantGroups[0],
           "Missing variant group",
         );
-        leaf.vsettings[0].args.push(
+        leaf.vsettings[0].args = [
+          ...leaf.vsettings[0].args,
           new Arg({
             param: group.param,
             expr: new VariantsRef({ variants: group.variants }),
           }),
-        );
+        ];
         const result = fixture.merge();
         expect(result.status).toBe("merged");
         const args = findInstance(result.mergedSite, "leaf").vsettings[0].args;
@@ -377,7 +382,7 @@ function setupKitReleasesMerge(
   });
 
   const site = createSite();
-  site.projectDependencies.push(dep1);
+  site.projectDependencies = [...site.projectDependencies, dep1];
   const mgr = new TplMgr({ site });
   const page = mgr.addComponent({ name: "Page", type: ComponentType.Page });
   const baseVariant = getBaseVariant(page);
@@ -425,7 +430,7 @@ function setupKitReleasesMerge(
   const mkAlign = () =>
     mkParam({ name: "align", type: typeFactory.text(), paramType: "prop" });
   if (recreateAlign) {
-    intro2.params.push(mkAlign());
+    intro2.params = [...intro2.params, mkAlign()];
   }
   bundler.bundle(dep2, "kit-2.0.0", "");
   const dep3 = release(dep2, "3.0.0");
@@ -433,7 +438,7 @@ function setupKitReleasesMerge(
   if (recreateAlign) {
     intro3.params = intro3.params.filter((p) => p.variable.name !== "align");
   }
-  intro3.params.push(mkAlign());
+  intro3.params = [...intro3.params, mkAlign()];
   bundler.bundle(dep3, "kit-3.0.0", "");
 
   const bundle = bundler.bundle(site, "initial", "");
@@ -456,7 +461,9 @@ function setupKitReleasesMerge(
   }
   const setAlign = (branch: Site, value: string) => {
     const intro = findInstance(branch, "intro");
-    intro.vsettings[0].args.push(
+    const vs = intro.vsettings[0];
+    vs.args = [
+      ...vs.args,
       new Arg({
         param: ensure(
           intro.component.params.find((p) => p.variable.name === "align"),
@@ -464,7 +471,7 @@ function setupKitReleasesMerge(
         ),
         expr: codeLit(value),
       }),
-    );
+    ];
   };
   setAlign(left, "center");
   if (rightAlign) {
@@ -652,9 +659,10 @@ it("moves content into a local component's slot that the other branch deleted an
     getBaseVariant(findComponent(right, "Page")),
   ]);
   rightText.parent = rightCard;
-  ensureKnownRenderExpr(rightCard.vsettings[0].args[0].expr).tpl.push(
-    rightText,
+  const rightSlotExpr = ensureKnownRenderExpr(
+    rightCard.vsettings[0].args[0].expr,
   );
+  rightSlotExpr.tpl = [...rightSlotExpr.tpl, rightText];
 
   left.components.forEach((c) => (c.updatedAt = 1));
   right.components.forEach((c) => (c.updatedAt = 2));
@@ -761,7 +769,7 @@ function setupRecreatedTitleMerge({
   });
   const mkTitle = () =>
     mkParam({ name: "title", type: typeFactory.text(), paramType: "prop" });
-  kitIntro.params.push(mkTitle());
+  kitIntro.params = [...kitIntro.params, mkTitle()];
   const dep1 = new ProjectDependency({
     name: "Kit",
     projectId: "kit",
@@ -780,11 +788,11 @@ function setupRecreatedTitleMerge({
   dep2.version = "2.0.0";
   const intro2 = findComponent(dep2.site, "Intro");
   intro2.params = intro2.params.filter((p) => p.variable.name !== "title");
-  intro2.params.push(mkTitle());
+  intro2.params = [...intro2.params, mkTitle()];
   bundler.bundle(dep2, "kit-2.0.0", "");
 
   const site = createSite();
-  site.projectDependencies.push(dep1);
+  site.projectDependencies = [...site.projectDependencies, dep1];
   const mgr = new TplMgr({ site });
   const page = mgr.addComponent({ name: "Page", type: ComponentType.Page });
   const intro = mkTplComponentX({
@@ -798,12 +806,16 @@ function setupRecreatedTitleMerge({
       name: "Dark",
       optionsType: VariantOptionsType.standalone,
     });
-    intro.vsettings.push(mkVariantSetting({ variants: group.variants }));
+    intro.vsettings = [
+      ...intro.vsettings,
+      mkVariantSetting({ variants: group.variants }),
+    ];
   }
   if (ancestorTitle !== undefined) {
-    intro.vsettings[0].args.push(
+    intro.vsettings[0].args = [
+      ...intro.vsettings[0].args,
       new Arg({ param: kitIntro.params[0], expr: codeLit(ancestorTitle) }),
-    );
+    ];
   }
   $$$(page.tplTree).append(intro);
   const bundle = bundler.bundle(site, "initial", "");
@@ -830,7 +842,9 @@ function setupRecreatedTitleMerge({
       existing.expr = codeLit(value);
       return;
     }
-    branchIntro.vsettings[vsIndex].args.push(
+    const vs = branchIntro.vsettings[vsIndex];
+    vs.args = [
+      ...vs.args,
       new Arg({
         param: ensure(
           branchIntro.component.params.find((p) => p.variable.name === "title"),
@@ -838,7 +852,7 @@ function setupRecreatedTitleMerge({
         ),
         expr: codeLit(value),
       }),
-    );
+    ];
   };
   if (leftTitle !== undefined) {
     setTitle(left, leftTitle);
@@ -1006,7 +1020,7 @@ function setupDefaultLabelMerge({
   bundler.bundle(dep2, "kit-2.0.0", "");
 
   const site = createSite();
-  site.projectDependencies.push(dep1);
+  site.projectDependencies = [...site.projectDependencies, dep1];
   const mgr = new TplMgr({ site });
   const page = mgr.addComponent({ name: "Page", type: ComponentType.Page });
   const link = mkTplComponentX({

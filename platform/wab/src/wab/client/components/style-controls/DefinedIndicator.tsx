@@ -50,7 +50,7 @@ import {
   unclearableBaseStyleProps,
 } from "@/wab/shared/Variants";
 import { computedProjectFlags } from "@/wab/shared/cached-selectors";
-import { arrayRemove } from "@/wab/shared/collections";
+import { arrayWithout } from "@/wab/shared/collections";
 import { cx, ensure, ensureArray, spawn, swallow } from "@/wab/shared/common";
 import { BackgroundLayer, NoneBackground } from "@/wab/shared/core/bg-styles";
 import {
@@ -968,7 +968,11 @@ export const VariantSettingPopoverContent = observer(
                   key={attr}
                   title={getLabelForAttr(attr)}
                   type="target"
-                  onClear={() => viewCtx.change(() => delete vs.attrs[attr])}
+                  onClear={() =>
+                    viewCtx.change(() => {
+                      vs.attrs = L.omit(vs.attrs, attr);
+                    })
+                  }
                 >
                   <SourceValue
                     site={site}
@@ -989,7 +993,11 @@ export const VariantSettingPopoverContent = observer(
               key={arg.uid}
               title={arg.param.variable.name}
               type="target"
-              onClear={() => viewCtx.change(() => arrayRemove(vs.args, arg))}
+              onClear={() =>
+                viewCtx.change(() => {
+                  vs.args = arrayWithout(vs.args, arg);
+                })
+              }
             >
               <SourceValue
                 site={site}

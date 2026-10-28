@@ -190,7 +190,7 @@ import { isBaseVariant } from "@/wab/shared/Variants";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
 import { ChoiceValue } from "@plasmicapp/host";
 import { Menu, Tooltip } from "antd";
-import { capitalize, isString, keyBy } from "lodash";
+import { capitalize, isString, keyBy, omit } from "lodash";
 import { observer } from "mobx-react";
 import React, { useMemo } from "react";
 
@@ -621,7 +621,7 @@ interface PropEditorRowProps {
   propType: StudioPropType<any>;
   layout?: "horizontal" | "vertical";
   attr: string;
-  enumValues?: ChoiceValue[];
+  enumValues?: ReadonlyArray<ChoiceValue>;
   disableLinkToProp?: boolean;
   disableDynamicValue?: boolean;
   disableFallback?: boolean;
@@ -1446,9 +1446,9 @@ function PageHrefRows({
       VarRef,
     );
     if (type === "Path") {
-      newExpr.params[props.param] = newValue;
+      newExpr.params = { ...newExpr.params, [props.param]: newValue };
     } else if (type === "Query") {
-      newExpr.query[props.param] = newValue;
+      newExpr.query = { ...newExpr.query, [props.param]: newValue };
     } else if (type === "Fragment") {
       newExpr.fragment = newValue;
     }
@@ -1458,9 +1458,9 @@ function PageHrefRows({
   const deletePageHrefField = (props: DeletePageHrefProps) => {
     const newExpr = clone(expr);
     if (props.type === "Path") {
-      delete newExpr.params[props.param];
+      newExpr.params = omit(newExpr.params, props.param);
     } else if (props.type === "Query") {
-      delete newExpr.query[props.param];
+      newExpr.query = omit(newExpr.query, props.param);
     } else if (props.type === "Fragment") {
       newExpr.fragment = null;
     }
@@ -1527,7 +1527,10 @@ function PageHrefRows({
           pageQuery={meta.query}
           onAdd={(key) => {
             const newExpr = clone(expr);
-            newExpr.query[key] = new TemplatedString({ text: [""] });
+            newExpr.query = {
+              ...newExpr.query,
+              [key]: new TemplatedString({ text: [""] }),
+            };
             onChange(maybeWrapExpr(newExpr));
           }}
         >

@@ -87,7 +87,10 @@ describe("VariantedStylesHelper", () => {
         uuid: "theme-uuid",
         site: depSite,
       });
-      site.projectDependencies.push(projectDependency);
+      site.projectDependencies = [
+        ...site.projectDependencies,
+        projectDependency,
+      ];
 
       // Active variant is localDarkVariant, but token has varianted value for depDarkVariant
       const vsh = new VariantedStylesHelper(site, [localDarkVariant]);

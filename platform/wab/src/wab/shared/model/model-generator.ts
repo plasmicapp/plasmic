@@ -14,7 +14,7 @@ import assignIn from "lodash/assignIn";
 import difference from "lodash/difference";
 import flattenDeep from "lodash/flattenDeep";
 
-export const parse = (x: /*TWZ*/ string) => modelPegParser.parse(clean(x));
+export const parse = (x: string) => modelPegParser.parse(clean(x));
 
 export function clean(x: string) {
   let i;
@@ -97,7 +97,7 @@ ast.type = (t: {
 
 ast.field = ({
   name,
-  type /*TWZ*/,
+  type,
   annotations,
 }:
   | {
@@ -142,21 +142,39 @@ export function writeTypescriptClasses(schema: string, classesPath: string) {
   const meta = new MetaRuntime(classes, 0);
 
   const classCodeParts = Array.from(classes).map((cls) => {
-    const fields = meta
-      .allFields(cls)
-      .map(
-        (field) =>
-          `${field.annotations.includes("Const") ? "readonly " : ""}${
-            field.name
-          }${field.annotations.includes("Transient") ? "?" : ""}: ${toTs(
-            field.type,
-          )}${field.annotations.includes("Transient") ? " = null" : ""}${
-            field.annotations ? ` /* ${field.annotations} */` : ""
-          }`,
-      );
-    const fieldsList = Array.from(fields)
+    // Each class has an accessor for each field it declares; see MetaRuntime
+    // and TrackingMetaRuntime in tracking.ts. The getter calls
+    // meta.reportRead and reads `$v` itself, so that each field has its own
+    // inline cache; the setter writes through meta.writeField. The setter of
+    // a Const field is private, so that typed code can't write it, while
+    // generic code (e.g. the bundler, undo) still can.
+    //
+    // Each class also has a static `$field_<name>` holding the Field of each
+    // field it declares, which its setter passes to meta.writeField, so that
+    // it needn't look the field up by name.
+    const fieldStatic = (field: Field) => `$field_${field.name}`;
+    const fieldStatics = cls.fields
       .map((field) => {
-        return `${field};`;
+        const name = JSON.stringify(field.name);
+        return `static readonly ${fieldStatic(field)}: Field = ensure(
+    Base${cls.name}.$fields.find((f) => f.name === ${name}),
+    ${JSON.stringify(`${cls.name} has no field ${field.name}`)},
+  );`;
+      })
+      .join("\n");
+    const accessors = cls.fields
+      .map((field) => {
+        const type = `${toTs(field.type)}${
+          field.annotations.includes("Transient") ? " | null | undefined" : ""
+        }`;
+        const name = JSON.stringify(field.name);
+        const getter = `get ${field.name}(): ${type} { meta.reportRead(this, ${name}); return (this as any).$v.${field.name}; }`;
+        const setter = `${
+          field.annotations.includes("Const") ? "private " : ""
+        }set ${field.name}(value: ${type}) { meta.writeField(this, Base${cls.name}.${fieldStatic(field)}, value); }`;
+        return `${
+          field.annotations.length > 0 ? `/* ${field.annotations} */\n` : ""
+        }${getter}\n${setter}`;
       })
       .join("\n");
     const params = meta
@@ -201,11 +219,6 @@ export function writeTypescriptClasses(schema: string, classesPath: string) {
   // eslint-disable-next-line no-restricted-syntax
   return x instanceof Base${cls.name};
 }`;
-    const discriminator = isAbstract
-      ? ``
-      : `export function isExactly${cls.name}(x: any): x is ${
-          cls.name
-        } { return x?.['typeTag'] === ${JSON.stringify(cls.name)}; }`;
     // In ensureMaybeKnownX, for some reason, can't just do assert(!x || isKnownX(x)). TS generics not happy.
     const ensures = `
     export function ensureKnown${cls.name}<T>(x: ${typeSig}): ${cls.name} {
@@ -236,30 +249,30 @@ export function writeTypescriptClasses(schema: string, classesPath: string) {
     return `\
 ${union}
 ${isKnowns}
-${discriminator}
 ${ensures}
 export type ${cls.name} = Known${cls.name};
 export interface ${cls.name}Params {
   ${paramsList}
 }
 
-abstract class Base${cls.name} ${
-      cls.base != null ? `extends Base${cls.base}` : ""
+abstract class Base${cls.name} extends ${
+      cls.base != null ? `Base${cls.base}` : "ModelInst"
     } {
   ${typestamp}
-  constructor(args: ${cls.name}Params | Sentinel) {
-    ${cls.base != null ? "super(sentinel);" : ""}
-    if (args !== sentinel) {
-      meta.initializers.${cls.name}(this, args);
-    }
-  }
-  uid: number;
-  ${fieldsList}
+  static readonly $fields = meta.allFields(meta.clsByName[${JSON.stringify(
+    cls.name,
+  )}]);
+  ${fieldStatics}
+  ${accessors}
 }
 ${
   !isAbstract
     ? `class Cls${cls.name} extends Base${cls.name} {
-    ${typeTag}
+  constructor(args: ${cls.name}Params) {
+    super();
+    meta.initializers.${cls.name}(this, args);
+  }
+  ${typeTag}
 }`
     : ""
 }
@@ -268,11 +281,15 @@ export const ${cls.name} = ${isAbstract ? "Base" : "Cls"}${cls.name};
 `;
   });
   const classCode = `\
-import {meta} from "@/wab/shared/model/classes-metas";
-import {assert, mkUnexpectedTypeMsg} from "@/wab/shared/common";
-class Sentinel { tag: 'SENTINEL' = 'SENTINEL' };
-const sentinel = new Sentinel();
+import {meta as classesMeta} from "@/wab/shared/model/classes-metas";
+import {Field, ModelInst} from "@/wab/shared/model/model-meta";
+import {assert, ensure, mkUnexpectedTypeMsg} from "@/wab/shared/common";
 import type { ReactElement } from "react";
+
+// The accessors use a module-local binding of meta, because bundlers compile
+// an imported binding to a getter call on every access
+const meta = classesMeta;
+
 ${classCodeParts.join("\n")}\
 export type Val = string | number | {};
 export const justClasses = { ${classes
@@ -286,7 +303,6 @@ export type ObjInst = ${classes.map((cls) => cls.name).join(" | ")};
 
 export function writeClassesMetas(schema: string, outfile: string) {
   const classes = transform(parse(schema));
-  const meta = new MetaRuntime(classes, 0);
   const makeType = (type: Type) => `new Type({
     type: "${type.type}", params: [
       ${type.params
@@ -294,19 +310,9 @@ export function writeClassesMetas(schema: string, outfile: string) {
         .join(", ")}
     ]
   })`;
-  const classesStruct = Object.fromEntries(
-    classes.map((cls) =>
-      tuple(cls.name, {
-        // eslint-disable-next-line @typescript-eslint/no-misused-spread -- serializes the class's own fields
-        ...cls,
-        fields: Object.fromEntries(
-          meta.allFields(cls).map((field) => tuple(field.name, field)),
-        ),
-      }),
-    ),
-  );
   const metaCode = `
-  import {Class, Field, Type, MetaRuntime} from "@/wab/shared/model/model-meta";
+  import {Class, Field, Type} from "@/wab/shared/model/model-meta";
+  import {TrackingMetaRuntime} from "@/wab/shared/model/tracking";
   const CLASSES = [
     ${classes
       .map(
@@ -331,8 +337,7 @@ export function writeClassesMetas(schema: string, outfile: string) {
       )
       .join(", ")}
   ];
-  export const CLASSES_STRUCT = ${JSON.stringify(classesStruct)} as const;
-  export const meta = new MetaRuntime(CLASSES, 3000000);
+  export const meta = new TrackingMetaRuntime(CLASSES, 3000000);
   export const modelSchemaHash = ${simpleHash(clean(schema))};
 `;
   fs.writeFileSync(outfile, metaCode);

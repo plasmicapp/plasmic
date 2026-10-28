@@ -9,7 +9,7 @@ import AlertIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon_
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { swallowClick } from "@/wab/commons/components/ReactUtil";
-import { arrayRemove } from "@/wab/shared/collections";
+import { arrayWithout } from "@/wab/shared/collections";
 import { Menu, notification, Tooltip } from "antd";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
@@ -43,7 +43,10 @@ function _UserManagedFontsPanel(props: {}) {
               key="delete"
               onClick={async () =>
                 sc.changeUnsafe(() => {
-                  arrayRemove(sc.site.userManagedFonts, font);
+                  sc.site.userManagedFonts = arrayWithout(
+                    sc.site.userManagedFonts,
+                    font,
+                  );
                 })
               }
             >
@@ -109,7 +112,7 @@ function _UserManagedFontsPanel(props: {}) {
       return;
     }
     await sc.changeUnsafe(() => {
-      sc.site.userManagedFonts.push(newFont);
+      sc.site.userManagedFonts = [...sc.site.userManagedFonts, newFont];
     });
     await sc.fontManager.addUserManagedFont(newFont);
   };

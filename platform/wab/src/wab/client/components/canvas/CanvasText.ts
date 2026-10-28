@@ -64,6 +64,7 @@ import {
   TplNode,
   TplTag,
 } from "@/wab/shared/model/classes";
+import { instFieldValues } from "@/wab/shared/model/model-meta";
 import isHotkey from "is-hotkey";
 import { camelCase, isEqual, kebabCase } from "lodash";
 import React, { CSSProperties } from "react";
@@ -1578,7 +1579,7 @@ function tplToSlateNodes(
             marker.position < maxMarkerPosition,
         )
         .map((marker) =>
-          Object.assign({}, marker, {
+          Object.assign({}, instFieldValues(marker), {
             position: marker.position - minMarkerPosition,
           }),
         );

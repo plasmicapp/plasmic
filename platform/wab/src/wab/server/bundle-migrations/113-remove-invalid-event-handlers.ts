@@ -12,12 +12,13 @@ import {
 } from "@/wab/shared/core/exprs";
 import { flattenTpls, isAttrEventHandler } from "@/wab/shared/core/tpls";
 import {
+  Arg,
   Expr,
   isKnownEventHandler,
   isKnownFunctionType,
   isKnownVarRef,
 } from "@/wab/shared/model/classes";
-import { remove } from "lodash";
+import { omit } from "lodash";
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();
   const { site, siteOrProjectDep } = await unbundleSite(
@@ -36,7 +37,8 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   for (const component of getAllComponentsInTopologicalOrder(site)) {
     for (const tpl of flattenTpls(component.tplTree)) {
       for (const vs of tpl.vsettings) {
-        for (const [attr, expr] of [...Object.entries(vs.attrs)]) {
+        const invalidAttrs: string[] = [];
+        for (const [attr, expr] of Object.entries(vs.attrs)) {
           if (!isAttrEventHandler(attr)) {
             continue;
           }
@@ -50,10 +52,12 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
             }
           }
           if (!isExprValidForEventHandler(expr)) {
-            delete vs.attrs[attr];
+            invalidAttrs.push(attr);
           }
         }
-        for (const arg of [...vs.args]) {
+        vs.attrs = omit(vs.attrs, invalidAttrs);
+        const invalidArgs = new Set<Arg>();
+        for (const arg of vs.args) {
           if (isKnownFunctionType(arg.param.type)) {
             if (isKnownVarRef(arg.expr)) {
               const param = ensure(
@@ -65,10 +69,11 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
               }
             }
             if (!isExprValidForEventHandler(arg.expr)) {
-              remove(vs.args, arg);
+              invalidArgs.add(arg);
             }
           }
         }
+        vs.args = vs.args.filter((arg) => !invalidArgs.has(arg));
       }
     }
   }

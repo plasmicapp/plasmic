@@ -20,14 +20,8 @@ import {
 } from "@/wab/shared/code-components/code-components";
 import { makeGlobalContextPropName } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { paramToVarName } from "@/wab/shared/codegen/util";
-import {
-  ensure,
-  isOneOf,
-  maybe,
-  moveIndex,
-  spawn,
-  swallow,
-} from "@/wab/shared/common";
+import { arrayMoveIndex } from "@/wab/shared/collections";
+import { ensure, isOneOf, maybe, spawn, swallow } from "@/wab/shared/common";
 import {
   findVariantGroupForParam,
   getComponentDisplayName,
@@ -142,7 +136,7 @@ const ContextsList = observer(function ContextsList_(props: {
       onReordered={(fromIndex, toIndex) =>
         studioCtx.changeUnsafe(() => {
           const globalContexts = studioCtx.site.globalContexts;
-          moveIndex(
+          studioCtx.site.globalContexts = arrayMoveIndex(
             globalContexts,
             globalContexts.indexOf(filteredRows[fromIndex].tpl),
             globalContexts.indexOf(filteredRows[toIndex].tpl),

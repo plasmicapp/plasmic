@@ -21,7 +21,11 @@ import {
   ProjectDependency,
 } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
-import { Type, isWeakRefField } from "@/wab/shared/model/model-meta";
+import {
+  Type,
+  instFieldValues,
+  isWeakRefField,
+} from "@/wab/shared/model/model-meta";
 import { NodeCtx } from "@/wab/shared/model/model-tree-util";
 import {
   mergeComponentUpdatedAt,
@@ -111,7 +115,7 @@ export type FieldConflictDescriptorMeta<
       conflictType: "contents";
       excludeFromClone: (v: Cls[P]) => boolean;
     }
-  | (NonNullable<Cls[P]> extends Array<infer E>
+  | (NonNullable<Cls[P]> extends ReadonlyArray<infer E>
       ? | { arrayType: "atomic" }
         | ({
             arrayType: "ordered" | "unordered";
@@ -202,7 +206,7 @@ function shallowCloneArrayValuesAndAddToBundle<
   T extends classes.ObjInst | string | number | boolean | null | undefined,
   U extends new (arg: any) => any,
 >(
-  vals: T[],
+  vals: readonly T[],
   parent: classes.ObjInst,
   bundler: Bundler,
   types: U[],
@@ -219,7 +223,10 @@ function shallowCloneArrayValuesAndAddToBundle<
     assert(bundler.addrOf(v) != null, () => `Value ${v} has no address`);
     let typeCond: any = switchType(v);
     types.forEach((t) => {
-      typeCond = typeCond.when(t, (typedValue) => new t(typedValue));
+      typeCond = typeCond.when(
+        t,
+        (typedValue) => new t(instFieldValues(typedValue)),
+      );
     });
     const cloned: T & classes.ObjInst = typeCond.result();
     // Besides cloning the array values, we need to make sure the instance

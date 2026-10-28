@@ -48,7 +48,10 @@ export function getHostLessPkg(pkg: string, version: string) {
   return fetchHostLessPkg(pkg, version);
 }
 
-export async function getSortedHostLessPkgs(pkgs: string[], version: string) {
+export async function getSortedHostLessPkgs(
+  pkgs: ReadonlyArray<string>,
+  version: string,
+) {
   const sortedPkgs = sortAs(pkgs, fstPartyHostLessComponents, (t) => t);
   return await Promise.all(
     sortedPkgs.map(async (pkg) => [pkg, await fetchHostLessPkg(pkg, version)]),

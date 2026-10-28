@@ -50,7 +50,7 @@ describe("list-item drops", () => {
       });
       if (hasChild) {
         const content = Tpls.mkTplTagX("div", {});
-        item.children.push(content);
+        item.children = [...item.children, content];
         content.parent = item;
         selectable.children.push(
           new ValTag({

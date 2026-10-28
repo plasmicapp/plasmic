@@ -438,14 +438,7 @@ export class Bundler {
   _uid2addr: Map<number, Addr>;
   private _uuid2root: Map<string, classesModule.ObjInst>;
 
-  /**
-   * looseMode means skip checking of fields and ignore missing xrefs (leaving the references in place)
-   */
-  constructor(
-    rt = meta,
-    classes = classesModule,
-    private looseMode = false,
-  ) {
+  constructor(rt = meta, classes = classesModule) {
     this._rt = rt;
     this._instUtil = new InstUtil(rt, classes.justClasses);
     this._realClasses = classes;
@@ -496,7 +489,7 @@ export class Bundler {
           !f.annotations.includes("Transient"),
       )
       .map((f) => {
-        const val = this._rt.readField(inst, f.name);
+        const val = inst[f.name];
         if (!opts?.noTypeCheck) {
           assert(conformsToType(val, f.type, this._instUtil), () =>
             `Expected type ${toTs(f.type)} for field ${cls.name}.${
@@ -682,9 +675,6 @@ export class Bundler {
       localAddr2inst.get(addr) ?? this._addr2inst.get(addr);
     const localUid2addr = new Map<number, Addr>();
     const missingXrefError = (xref) => {
-      if (this.looseMode) {
-        return xref;
-      }
       throw new Error(
         `Missing xref (${xref.uuid}, ${
           xref.iid
@@ -692,10 +682,11 @@ export class Bundler {
       );
     };
 
-    // For incremental unbundling, the tree might already be observed by mobx
-    // so we want to delay fixing fields from those instances until the new
-    // instances are correct (in order to avoid mobx from seeing those fixes
-    // as model changes).
+    // For incremental unbundling, existing instances may already be tracked,
+    // and writing a new instance into one of their fields tracks it at once.
+    // So fix the fields of existing instances only after the new instances
+    // are complete, so that the tracker doesn't link placeholder refs or
+    // record the fixes as model changes.
     // See https://app.clubhouse.io/plasmic/story/17655/crash-when-syncing-changes-from-other-users
     const delayedIids = new Set(
       partial
@@ -718,15 +709,11 @@ export class Bundler {
         const addr = { uuid, iid };
         let inst = addr2inst(addrKey(addr));
         if (!inst) {
-          inst = (
-            this.looseMode
-              ? Object.assign(
-                  Object.create(realClass.prototype),
-                  { uid: Math.random() },
-                  json,
-                )
-              : new realClass(json)
-          ) as classesModule.ObjInst;
+          assert(
+            !this._rt.isAbstract(this._rt.clsByName[json.__type]),
+            () => `Cannot instantiate abstract class ${json.__type}`,
+          );
+          inst = new realClass(json) as classesModule.ObjInst;
           localAddr2inst.set(addrKey(addr), inst);
         } else {
           assert(
@@ -825,18 +812,10 @@ export class Bundler {
         }
         // If we are loading partial changes, we might avoid unnecessary
         // assignments as they could be seen as model changes
-        if (!partial || this._rt.readField(inst, field.name) !== value) {
-          if (
-            partial &&
-            Array.isArray(value) &&
-            Array.isArray(inst[field.name])
-          ) {
-            // Updating the contents of an array field - keep the same object
-            // so we can reconcile.
-            inst[field.name].splice(0, inst[field.name].length, ...value);
-          } else {
-            this._rt.writeField(inst, field.name, value);
-          }
+        // An assigned collection is recorded as its difference from the
+        // current one
+        if (!partial || inst[field.name] !== value) {
+          inst[field.name] = value;
         }
       }
     }

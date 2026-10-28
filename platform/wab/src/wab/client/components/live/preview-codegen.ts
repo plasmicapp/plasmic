@@ -77,6 +77,7 @@ import { CssVarResolver } from "@/wab/shared/core/styles";
 import { getOwnerSite } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { LocalizationConfig } from "@/wab/shared/localization";
+import { trackCoarsely } from "@/wab/shared/mobx-util";
 import {
   Component,
   ImageAsset,
@@ -558,14 +559,15 @@ function getComponentProjectConfig(
 }
 
 // For the expensive parts of code-gen, we use computedFn to keep a cache of
-// outputs as long as the model objects haven't changed.  We use keepAlive
+// outputs as long as the model objects haven't changed.  Code-gen reads most of
+// a component, so these track the model coarsely (see trackCoarsely()).  We use keepAlive
 // so that even when we're not currently using a component, we hold onto the
 // generated code for it.  We're not worried about memory leak because the only
 // time a component's code becomes useless for this purpose is when we delete it,
 // which is rare.
 
 const createProjectOutput = computedFn(
-  function createProjectOutput(
+  trackCoarsely(function createProjectOutput(
     site: Site,
     projectId: ProjectId,
     projectName: string,
@@ -614,12 +616,12 @@ const createProjectOutput = computedFn(
       "latest",
       exportOpts,
     );
-  },
+  }),
   { name: "createProjectOutput", keepAlive: true, equals: comparer.structural },
 );
 
 const createComponentOutput = computedFn(
-  function createComponentOutput(
+  trackCoarsely(function createComponentOutput(
     studioCtx: PreviewCodegenContext,
     component: Component,
     projectConfig: ProjectConfig,
@@ -688,7 +690,7 @@ const createComponentOutput = computedFn(
       exportOpts,
       computeSerializerSiteContext(studioCtx.site),
     );
-  },
+  }),
   { name: "createComponentMods", keepAlive: true, equals: comparer.structural },
 );
 

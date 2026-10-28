@@ -54,16 +54,14 @@ export type DeleteResourcesResult<R extends DeletableResource> = Result<
 >;
 
 export type DeleteBehaviour =
-  | "confirm-if-referenced"
-  | "delete-if-referenced"
-  | "error-if-referenced";
+  "confirm-if-referenced" | "delete-if-referenced" | "error-if-referenced";
 
 export interface DeleteResourcesOpts {
   behaviour?: DeleteBehaviour;
 }
 /**
- * Generic resource deletion utility that handles changeObserved coordination,
- * optional confirmation dialogs, and structured error/success reporting.
+ * Generic resource deletion utility that handles optional confirmation
+ * dialogs, and structured error/success reporting.
  */
 export async function deleteResourcesWithUsages<R extends DeletableResource>(
   studioCtx: StudioCtx,
@@ -124,28 +122,17 @@ export async function deleteResourcesWithUsages<R extends DeletableResource>(
 
   // Delete all resources that were passed in
   if (resourcesWithUsage.length > 0) {
-    const affectedComponentsSet = new Set(
-      resourcesWithUsage.flatMap(({ usageSummary }) => [
-        ...(usageSummary.components ?? []),
-        ...(usageSummary.frames ?? []).map((f) => f.container.component),
-      ]),
-    );
-    const affectedComponents = Array.from(affectedComponentsSet);
-
-    await studioCtx.changeObserved<never, void>(
-      () => affectedComponents,
-      () => {
-        for (const { resource } of resourcesWithUsage) {
-          onDelete(resource);
-          messages.push(
-            `Deleted ${deleteLabel} "${getDeletableResourceLabel(
-              resource,
-            )}" (uuid: ${resource.uuid}).`,
-          );
-        }
-        return ok();
-      },
-    );
+    await studioCtx.change<never, void>(() => {
+      for (const { resource } of resourcesWithUsage) {
+        onDelete(resource);
+        messages.push(
+          `Deleted ${deleteLabel} "${getDeletableResourceLabel(
+            resource,
+          )}" (uuid: ${resource.uuid}).`,
+        );
+      }
+      return ok();
+    });
   }
 
   return ok({

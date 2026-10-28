@@ -198,7 +198,7 @@ export function serializeVariantGroupMembersType(vg: VariantGroup) {
 
 export function extractUsedGlobalVariantsForComponents(
   site: Site,
-  components: Component[],
+  components: ReadonlyArray<Component>,
   usePlasmicImg: boolean,
   allTokensDict?: Readonly<{ [uuid: string]: FinalToken<StyleToken> }>,
 ) {
@@ -235,7 +235,7 @@ export function extractUsedGlobalVariantsForComponents(
 
 export function extractUsedGlobalVariantsForNodes(
   site: Site,
-  nodes: TplNode[],
+  nodes: ReadonlyArray<TplNode>,
   usePlasmicImg: boolean,
 ) {
   const usedGlobalVariants = new Set<Variant>();

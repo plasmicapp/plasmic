@@ -5,7 +5,7 @@ import L from "lodash";
 
 export function getAnimationsFromDefinedIndicatorType(
   definedIndicator: DefinedIndicatorType,
-): Animation[] {
+): ReadonlyArray<Animation> {
   switch (definedIndicator.source) {
     case "none":
       return [];

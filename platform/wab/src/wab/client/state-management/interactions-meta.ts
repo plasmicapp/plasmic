@@ -171,7 +171,8 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
           const { spec, isImplicitStateArray } =
             ctx.viewCtx.canvasCtx.Sub.reactWeb.getStateSpecInPlasmicProxy(
               data,
-              variablePath.path,
+              // A copy: the canvas API takes a mutable path.
+              [...variablePath.path],
             ) ?? {};
           const variableType = spec
             ? spec.variableType

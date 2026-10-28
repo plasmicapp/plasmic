@@ -83,6 +83,7 @@ import {
   ensureKnownTplComponent,
   isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
+import { isCurrentDerivationCoarse } from "@/wab/shared/model/tracking";
 import { makeReadonlySizeAwareExpProxy } from "@/wab/shared/sizingutils";
 import {
   VariantComboSorter,
@@ -140,11 +141,13 @@ export class EffectiveVariantSetting {
 
   constructor(
     private tpl: TplNode,
-    public variantSettings: VariantSetting[],
+    public variantSettings: ReadonlyArray<VariantSetting>,
     private site?: Site,
-    activeVariants?: Variant[],
+    activeVariants?: VariantCombo,
   ) {
-    if (isObservable(tpl)) {
+    // In a coarse selector, read through instead: our own computeds would track
+    // fields one by one, and be kept alive for every tpl the selector reads.
+    if (isObservable(tpl) && !isCurrentDerivationCoarse()) {
       makeObservable(this, {
         rs: computed,
         dataRep: computed,
@@ -185,7 +188,7 @@ export class EffectiveVariantSetting {
   /**
    * Array of Args merged across VariantSettings stack
    */
-  get args(): DeepReadonlyArray<Arg> {
+  get args(): ReadonlyArray<Arg> {
     const vss = this.variantSettings;
     if (vss.length === 0) {
       return [];
@@ -936,7 +939,7 @@ export function getEffectiveVariantSetting(
  */
 export function getEffectiveVariantSettingForInsertable(
   tpl: TplNode,
-  activeVariants: Variant[],
+  activeVariants: VariantCombo,
   component: Component,
   site: Site,
 ): EffectiveVariantSetting {
@@ -950,7 +953,7 @@ export function getEffectiveVariantSettingForInsertable(
 
 export function getActiveVariantsInArg(
   component: Component,
-  args: DeepReadonlyArray<Arg>,
+  args: ReadonlyArray<Arg>,
 ) {
   return args.flatMap((arg) => {
     return isKnownVariantsRef(arg.expr) ? arg.expr.variants : [];

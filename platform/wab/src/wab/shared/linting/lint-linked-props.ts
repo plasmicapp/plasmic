@@ -8,7 +8,7 @@ import {
 import { isLinkCompatible } from "@/wab/shared/linked-props";
 import { LinkedPropDriftLintIssue } from "@/wab/shared/linting/lint-types";
 import { lintIssuesEquals } from "@/wab/shared/linting/lint-utils";
-import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { componentSelector, maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
   Arg,
   Component,
@@ -35,7 +35,7 @@ export const lintLinkedProps = maybeComputedFn(
   },
 );
 
-const lintComponent = maybeComputedFn(
+const lintComponent = componentSelector(
   function lintComponent(component: Component) {
     const issues: LinkedPropDriftLintIssue[] = [];
     for (const tpl of flattenComponent(component)) {

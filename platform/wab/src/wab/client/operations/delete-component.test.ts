@@ -86,7 +86,7 @@ describe("deleteComponent", () => {
       type: ComponentType.Plain,
     });
     sub.superComp = parent;
-    parent.subComps.push(sub);
+    parent.subComps = [...parent.subComps, sub];
 
     const result = await runDeleteOperation(sub);
 

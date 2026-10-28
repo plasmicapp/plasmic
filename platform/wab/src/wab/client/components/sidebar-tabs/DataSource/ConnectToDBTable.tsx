@@ -306,7 +306,7 @@ async function mkDefaultSubmit(
       }),
     ],
   });
-  eventHandler.interactions.push(interaction);
+  eventHandler.interactions = [...eventHandler.interactions, interaction];
   return eventHandler;
 }
 

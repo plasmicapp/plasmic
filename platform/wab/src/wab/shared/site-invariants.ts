@@ -64,7 +64,7 @@ import {
   tplChildren,
 } from "@/wab/shared/core/tpls";
 import { parseCss } from "@/wab/shared/css";
-import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { maybeComputedFn, siteSelector } from "@/wab/shared/mobx-util";
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import {
   ArenaFrame,
@@ -228,7 +228,7 @@ function* _genStyleTokenErrors(
   }
 }
 
-const genComponentErrors = maybeComputedFn((site: Site, component: Component) =>
+const genComponentErrors = siteSelector((site: Site, component: Component) =>
   Array.from(_genComponentErrors(site, component)),
 );
 
@@ -601,10 +601,10 @@ export const isInvalidDimValue = (v: string) => {
   );
 };
 
-const genTplErrors = maybeComputedFn(
-  (site: Site, component: Component, tpl: TplNode) =>
-    Array.from(_genTplErrors(site, component, tpl)),
-);
+// Not cached per tpl: genComponentErrors depends on the whole component anyway
+function genTplErrors(site: Site, component: Component, tpl: TplNode) {
+  return _genTplErrors(site, component, tpl);
+}
 
 function getTplName(tpl: TplNode | undefined | null) {
   if (!tpl) {

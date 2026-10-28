@@ -1,5 +1,5 @@
 import {
-  coalesce,
+  assert,
   ensure,
   filterMapTruthy,
   isEqualWithoutKeys,
@@ -48,27 +48,11 @@ export class Type {
   }
 }
 
-class AbstractMethodError extends Error {}
-
-export class BaseRuntime {
+export class MetaRuntime {
   schema: Class[];
   nextUid: number;
   clsByName: { [name: string]: Class };
   class2subclasses: Map<Class, Class[]>;
-
-  constructor(schema1: Class[], nextUid: number) {
-    this.schema = schema1;
-    this.nextUid = nextUid;
-    this.clsByName = Object.fromEntries(
-      this.schema.map((cls: /*TWZ*/ Class) => tuple(cls.name, cls)),
-    );
-    this.class2subclasses = multimap(
-      filterMapTruthy(
-        schema1,
-        (cls) => cls.base && tuple(this.clsByName[cls.base], cls),
-      ),
-    );
-  }
 
   getStrictSubclasses(cls: Class) {
     return this.class2subclasses.get(cls) ?? [];
@@ -78,16 +62,6 @@ export class BaseRuntime {
     return this.getStrictSubclasses(cls).length > 0 && !cls.concrete;
   }
 
-  allFields(cls: Class): Field[] {
-    return coalesce(
-      cls != null
-        ? cls.fields.concat(
-            cls.base ? this.allFields(this.clsByName[cls.base]) : [],
-          )
-        : undefined,
-      () => [],
-    );
-  }
   getFieldByName(clsName: string, fieldName: string) {
     return ensure(
       this.allFields(this.clsByName[clsName]).find((f) => f.name === fieldName),
@@ -125,16 +99,27 @@ export class BaseRuntime {
     return (this.nextUid = newNextUid);
   }
 
-  readField(x, f) {
-    throw new AbstractMethodError();
+  /**
+   * Gives a new inst its record of field values, `$v`. It is not writable, so
+   * that e.g. `Object.assign(inst, otherInst)` throws instead of making two
+   * insts share a record.
+   */
+  initInst(inst: ModelInst, vals: Record<string, any>): void {
+    Object.defineProperty(inst, "$v", {
+      value: vals,
+      enumerable: true,
+      writable: false,
+    });
   }
 
-  writeField(x, f, y?) {
-    throw new AbstractMethodError();
+  reportRead(_inst: ModelInst, _name: string): void {
+    // Field reads aren't tracked
   }
-}
 
-export class MetaRuntime extends BaseRuntime {
+  writeField(inst: ModelInst, field: Field, value: unknown): void {
+    (inst as InternalModelInst).$v[field.name] = value;
+  }
+
   initializers: {
     [name: string]: (inst: any, args: any) => any;
   };
@@ -142,45 +127,68 @@ export class MetaRuntime extends BaseRuntime {
   private clsToFieldsCache = new Map<Class, Field[]>();
   private clsToFieldKeysCache = new Map<Class, Set<string>>();
   private clsToTransientFieldKeysCache = new Map<Class, Set<string>>();
+  private clsToValsTemplateCache = new Map<Class, Record<string, any>>();
   private strict: boolean = true;
 
   constructor(schema: Class[], nextUid: number) {
-    super(schema, nextUid);
+    this.schema = schema;
+    this.nextUid = nextUid;
+    this.clsByName = Object.fromEntries(
+      this.schema.map((cls: Class) => tuple(cls.name, cls)),
+    );
+    this.class2subclasses = multimap(
+      filterMapTruthy(
+        schema,
+        (cls) => cls.base && tuple(this.clsByName[cls.base], cls),
+      ),
+    );
 
     this.initializers = Object.fromEntries(
-      this.schema.map((cls: /*TWZ*/ Class) =>
-        tuple(cls.name, (inst: ObjInstBase, args: Partial<ObjInstBase>) => {
-          if (this.isAbstract(cls)) {
-            throw new Error("cannot instantiate abstract class");
-          }
-          if (args == null) {
-            args = {};
-          }
-          try {
-            checkEqKeys(
-              args,
-              this.allFieldKeys(cls),
-              this.allTransientFieldKeys(cls),
-              cls.name,
-            );
-          } catch (e) {
-            if (this.strict) {
-              throw e;
-            } else {
-              console.warn(`Error instantiating ${cls.name}: ${e}`);
+      this.schema.map((cls: Class) =>
+        tuple(
+          cls.name,
+          (inst: ModelInst, args: Record<string, any> | undefined) => {
+            if (args == null) {
+              args = {};
             }
-          }
-          inst = Object.assign(inst, args);
+            assert(
+              !isModelInst(args),
+              () =>
+                `Constructing a ${cls.name} from another inst; pass instFieldValues(inst) instead`,
+            );
+            try {
+              checkEqKeys(
+                args,
+                this.allFieldKeys(cls),
+                this.allTransientFieldKeys(cls),
+                cls.name,
+              );
+            } catch (e) {
+              if (this.strict) {
+                throw e;
+              } else {
+                console.warn(`Error instantiating ${cls.name}: ${e}`);
+              }
+            }
+            // Copy the class's template, so that all insts of a class share one
+            // shape. The inst isn't tracked yet, so skip the setters.
+            const vals = { ...this.valsTemplate(cls) };
+            const fieldKeys = this.allFieldKeys(cls);
+            for (const key of Object.keys(args)) {
+              if (fieldKeys.has(key)) {
+                vals[key] = args[key];
+              } else if (key !== "__type") {
+                // If args was from a json bundle, then it will have the __type
+                // field, which we leave out of our instance.
+                inst[key] = args[key];
+              }
+            }
+            this.initInst(inst, vals);
 
-          // If this args was from json bundle, then it will have the __type field.
-          // We remove it from our instance.
-          if ("__type" in args) {
-            delete inst["__type"];
-          }
-
-          inst.uid = this.mkUid();
-          return inst;
-        }),
+            inst.uid = this.mkUid();
+            return inst;
+          },
+        ),
       ),
     );
   }
@@ -198,7 +206,7 @@ export class MetaRuntime extends BaseRuntime {
         ...cls.fields,
         ...(cls.base ? this.allFields(this.clsByName[cls.base]) : []),
       ],
-      (f: /*TWZ*/ Field) => f.name,
+      (f: Field) => f.name,
     );
     this.clsToFieldsCache.set(cls, fields);
     return fields;
@@ -236,12 +244,19 @@ export class MetaRuntime extends BaseRuntime {
     return fieldKeys;
   }
 
-  readField(x: ObjInstBase, f: /*TWZ*/ string) {
-    return x[f];
-  }
-
-  writeField(x: ObjInstBase, f: /*TWZ*/ string, y: any) {
-    return (x[f] = y);
+  /** The initial field values of an inst of `cls` */
+  private valsTemplate(cls: Class) {
+    let template = this.clsToValsTemplateCache.get(cls);
+    if (!template) {
+      template = {};
+      for (const field of this.allFields(cls)) {
+        template[field.name] = field.annotations.includes("Transient")
+          ? null
+          : undefined;
+      }
+      this.clsToValsTemplateCache.set(cls, template);
+    }
+    return template;
   }
 
   setStrict(strict: boolean) {
@@ -249,9 +264,33 @@ export class MetaRuntime extends BaseRuntime {
   }
 }
 
-// A Bundle is a JSON object containing {root: Int, map: Map[Int, Obj]}.
-export interface ObjInstBase {
-  uid: number;
+// Model insts
+
+/**
+ * Base class of all model classes. The generated subclasses declare
+ * `static $fields` (all fields, including inherited ones) and an accessor per
+ * field they declare, which call `meta.reportRead` and `meta.writeField`.
+ *
+ * An inst's own internal properties are left out of its type (e.g. out of
+ * `keyof`); see `InternalModelInst` and `InternalTrackedModelInst` in
+ * tracking.ts.
+ */
+export abstract class ModelInst {
+  static readonly $fields: readonly Field[] = [];
+  declare uid: number;
+}
+
+/** Internal representation. Includes `$v` where field values actually live. */
+export interface InternalModelInst extends ModelInst {
+  readonly $v: Record<string, any>;
+}
+
+export function isModelInst(x: any): x is ModelInst {
+  return x instanceof ModelInst;
+}
+
+export function instFields(inst: ModelInst): readonly Field[] {
+  return (inst.constructor as typeof ModelInst).$fields;
 }
 
 /** An inst's field values as plain properties, unlike a spread of its type */
@@ -259,12 +298,15 @@ export type FieldValues<T> = { [K in keyof T]: T[K] };
 
 /**
  * A plain object with the inst's field values. Use it instead of spreading an
- * inst, so that copies keep working if fields stop being own properties.
+ * inst, which copies no field values since they aren't own properties.
  */
-export function instFieldValues<T extends ObjInstBase>(
-  inst: T,
-): FieldValues<T> {
-  return Object.assign({}, inst);
+export function instFieldValues<T extends ModelInst>(inst: T): FieldValues<T> {
+  // Read through the accessors, so that mobx derivations track the reads
+  const values: Record<string, any> = { uid: inst.uid };
+  for (const field of instFields(inst)) {
+    values[field.name] = inst[field.name];
+  }
+  return values as FieldValues<T>;
 }
 
 export function isStrongRefField(f: Field) {
@@ -327,9 +369,9 @@ export function toTs(type: Type) {
     case "Bool":
       return simple("boolean");
     case "List":
-      return simple("Array");
+      return simple("ReadonlyArray");
     case "Set":
-      return simple("Array");
+      return simple("ReadonlyArray");
     case "Lit":
       return simple("number | string | null | undefined");
     case "Any":
@@ -337,7 +379,7 @@ export function toTs(type: Type) {
     case "Optional":
       return `${renderedParams} | null | undefined`;
     case "Map":
-      return `{ [key: ${renderedParams[0]}]: ${renderedParams[1]}; }`;
+      return `Readonly<Record<${renderedParams[0]}, ${renderedParams[1]}>>`;
     case "Or":
       return renderedParams.join(" | ");
     case "StringLiteral":

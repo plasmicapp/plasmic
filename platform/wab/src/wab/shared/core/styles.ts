@@ -207,8 +207,8 @@ export class CssVarResolver {
   private mixins: Map<string, Mixin>;
   constructor(
     tokens: ReadonlyArray<FinalToken<StyleToken>>,
-    mixins: Mixin[],
-    assets: ImageAsset[],
+    mixins: ReadonlyArray<Mixin>,
+    assets: ReadonlyArray<ImageAsset>,
     private readonly activeTheme: Theme | undefined | null,
     private readonly opts: {
       keepAssetRefs?: boolean;
@@ -562,7 +562,7 @@ export function mkThemeStyleRule(
 export function tplMatchThemeStyle(
   s: ThemeStyle,
   tpl: TplTag,
-  vsettings: VariantSetting[],
+  vsettings: ReadonlyArray<VariantSetting>,
 ): boolean {
   const [styleTag, stylePseudoClass] = s.selector.split(":");
   if (tpl.tag !== styleTag) {
@@ -1047,7 +1047,9 @@ export function makePlasmicAnimationCssVarName(
  * is declared on `.plasmic_default_styles` inside `plasmic.css` (a non-module file),
  * so the keyframe name itself isn't auto-scoped due to css-modules.
  */
-export function generateAnimationPropValue(animations: Animation[]) {
+export function generateAnimationPropValue(
+  animations: ReadonlyArray<Animation>,
+) {
   if (animations.length === 0) {
     return null;
   }
@@ -2105,7 +2107,7 @@ const genMixinVarsRules = (
 
 export const makeMixinVarsRules = (
   site: Site,
-  mixins: Mixin[],
+  mixins: ReadonlyArray<Mixin>,
   rootCssSelector: string,
   opts: {
     targetEnv: TargetEnv;
@@ -2328,9 +2330,9 @@ export const makeCssTokenVarsRuleSets = (
 export const mkCssVarsRuleForCanvas = (
   site: Site,
   tokens: ReadonlyArray<FinalToken<StyleToken>>,
-  mixins: Mixin[],
-  themes: Theme[],
-  assets: ImageAsset[],
+  mixins: ReadonlyArray<Mixin>,
+  themes: ReadonlyArray<Theme>,
+  assets: ReadonlyArray<ImageAsset>,
   activeTheme: Theme | null | undefined,
 ) => {
   const rootSelector = `.plasmic-tokens`;
@@ -2821,10 +2823,12 @@ export function changeTokenUsage(
       ? token.value
       : tokenTypeDefaults(token.type);
   if (usage.type === "rule") {
-    usage.rs.values[usage.prop] = replaceAllTokenRefs(
-      usage.value,
-      (tokenId: string) => (tokenId === token.uuid ? replaced : undefined),
-    );
+    usage.rs.values = {
+      ...usage.rs.values,
+      [usage.prop]: replaceAllTokenRefs(usage.value, (tokenId: string) =>
+        tokenId === token.uuid ? replaced : undefined,
+      ),
+    };
   } else if (usage.type === "styleToken") {
     usage.styleToken.value = replaced;
   } else if (usage.type === "styleTokenOverride") {
@@ -3172,7 +3176,7 @@ const DEFAULT_STYLES_CODE_COMPONENT_STYLE_PROPS = [
  */
 export function makeDefaultStyleValuesDict(
   site: Site,
-  activeGlobalVariants: Variant[],
+  activeGlobalVariants: VariantCombo,
   resolver = makeTokenRefResolver(site),
 ) {
   const theme = site.activeTheme;

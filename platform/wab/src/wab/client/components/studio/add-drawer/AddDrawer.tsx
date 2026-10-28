@@ -64,7 +64,6 @@ import {
   ensureArray,
   hackyCast,
   mkShortId,
-  replaceAll,
   spawn,
   withoutNils,
 } from "@/wab/shared/common";
@@ -473,7 +472,7 @@ export function createAddComponentPreset(
       const tpl = Tpls.clone(preset.tpl);
       const targetVariants = [vc.variantTplMgr().getBaseVariantForNewNode()];
       [...Tpls.findVariantSettingsUnderTpl(tpl)].forEach(([vs]) => {
-        replaceAll(vs.variants, targetVariants);
+        vs.variants = [...targetVariants];
       });
       return tpl;
     },
@@ -823,7 +822,7 @@ async function createDraftQueryForFunction(
       name: studioCtx.tplMgr().getUniqueServerQueryName(component, "Query"),
       op,
     });
-    component.serverQueries.push(newQuery);
+    component.serverQueries = [...component.serverQueries, newQuery];
     return ok(newQuery);
   });
   return result.isErr() ? undefined : result.value;
@@ -969,7 +968,10 @@ async function installHostlessPkgs(sc: StudioCtx, projectIds: string[]) {
           (dep) => dep.pkgId === projectDependency.pkgId,
         )
       ) {
-        sc.site.projectDependencies.push(projectDependency);
+        sc.site.projectDependencies = [
+          ...sc.site.projectDependencies,
+          projectDependency,
+        ];
         syncGlobalContexts(projectDependency, sc.site);
         sc.projectDependencyManager.syncDirectDeps();
         maybeShowGlobalContextNotification(sc, projectDependency);

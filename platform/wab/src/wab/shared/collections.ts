@@ -46,9 +46,7 @@ export function matchOrder<T, K>(
 
 // Array manipulation functions
 
-export function isReadonlyArray<T>(v: any): v is ReadonlyArray<T> {
-  return Array.isArray(v);
-}
+export { isReadonlyArray } from "@/wab/shared/common";
 
 export function arrayInsertAt<T>(
   array: ReadonlyArray<T>,
@@ -103,7 +101,11 @@ export function spanWhile<T, K>(xs: T[], keyfn: (x: T) => K): [T[], T[]] {
   return [taken, rest];
 }
 
-export function arrayReplaceAt<T>(value: T[], index: number, x: T): T[] {
+export function arrayReplaceAt<T>(
+  value: ReadonlyArray<T>,
+  index: number,
+  x: T,
+): T[] {
   return value.map((item, i) => (i === index ? x : item));
 }
 
@@ -145,6 +147,28 @@ export function arrayRemove<T>(xs: T[], x: T) {
   } else {
     assert(false, "Could not find element in array to remove");
   }
+}
+
+/**
+ * Returns a copy of `xs` without the first occurrence of `x`, which must be
+ * in it. The non-mutating counterpart of `arrayRemove`.
+ */
+export function arrayWithout<T>(xs: ReadonlyArray<T>, x: T): T[] {
+  const i = xs.indexOf(x);
+  assert(i !== -1, "Could not find element in array to remove");
+  return arrayRemoveAt(xs, i);
+}
+
+/**
+ * Returns a copy of `xs` without the first occurrence of `x`, or `xs` itself
+ * if `x` isn't in it. The non-mutating counterpart of `tryRemove`.
+ */
+export function tryArrayWithout<T>(
+  xs: ReadonlyArray<T>,
+  x: T,
+): ReadonlyArray<T> {
+  const i = xs.indexOf(x);
+  return i === -1 ? xs : arrayRemoveAt(xs, i);
 }
 
 export function arrayReversed<T>(xs: ReadonlyArray<T>) {

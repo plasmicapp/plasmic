@@ -157,7 +157,7 @@ describe("insertTplAsChild", () => {
       const root = Tpls.mkTplTagX("div", {}, list);
       const result = setup(root);
       const text = result.vtm.mkTplInlinedText("Parent item", "div");
-      content.children.push(text);
+      content.children = [...content.children, text];
       text.parent = content;
       result.vtm.ensureBaseVariantSetting(item).rs.values = {
         display: "list-item",
@@ -229,7 +229,7 @@ describe("insertTplAsChild", () => {
     it("PLA-12899 reparent nested list stays in normal flow", () => {
       const { ctx, vtm, root, list, item, nextItem, content, text, nested } =
         setupList();
-      root.children.push(nested);
+      root.children = [...root.children, nested];
       nested.parent = root;
       vtm.ensureBaseVariantSetting(nested).rs.values = { position: "relative" };
 
@@ -310,7 +310,7 @@ describe("insertTplAsChild", () => {
         params: [headerParam, childrenParam],
         codeComponentMeta: {} as CodeComponentMeta,
       });
-      site.components.push(panel);
+      site.components = [...site.components, panel];
       const panelInstance = Tpls.mkTplComponentX({
         component: panel,
         baseVariant: getBaseVariant(component),
@@ -580,9 +580,9 @@ describe("canInsertTplAsChild", () => {
         paramType: "slot",
       }),
     );
-    component.params.push(paramA);
+    component.params = [...component.params, paramA];
     const slotA = Tpls.mkSlot(paramA, [slotContent]);
-    root.children.push(slotA);
+    root.children = [...root.children, slotA];
     slotA.parent = root;
 
     const paramB = mkParam({
@@ -608,9 +608,9 @@ describe("canInsertTplAsChild", () => {
         paramType: "slot",
       }),
     );
-    component.params.push(param);
+    component.params = [...component.params, param];
     const slot = Tpls.mkSlot(param);
-    root.children.push(slot);
+    root.children = [...root.children, slot];
     slot.parent = root;
 
     const moved = Tpls.mkTplTagX("span", {});

@@ -121,8 +121,8 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
 
     const editableAssets = new Set(studioCtx.site.imageAssets);
 
-    const makeAssetsItems = (assets: ImageAsset[]) => {
-      assets = assets.filter(
+    const makeAssetsItems = (allAssets: ReadonlyArray<ImageAsset>) => {
+      let assets = allAssets.filter(
         (asset) =>
           asset.type === type &&
           (matcher.matches(asset.name) || justAdded === asset),

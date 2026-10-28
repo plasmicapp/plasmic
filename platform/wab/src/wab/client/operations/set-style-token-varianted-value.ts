@@ -1,6 +1,7 @@
+import { VariantCombo } from "@/wab/shared/Variants";
 import { ImmutableToken, toFinalToken } from "@/wab/shared/core/tokens";
 import { GenericError } from "@/wab/shared/error-handling";
-import { Site, StyleToken, Variant } from "@/wab/shared/model/classes";
+import { Site, StyleToken } from "@/wab/shared/model/classes";
 import { Result, err, ok } from "neverthrow";
 
 export type SetStyleTokenVariantedValueResult = Result<void, GenericError>;
@@ -23,7 +24,7 @@ export type SetStyleTokenVariantedValueResult = Result<void, GenericError>;
 export function setStyleTokenVariantedValue(opts: {
   site: Site;
   token: StyleToken;
-  variants: Variant[];
+  variants: VariantCombo;
   value: string | null;
 }): SetStyleTokenVariantedValueResult {
   const { site, token, variants, value } = opts;

@@ -237,7 +237,6 @@ import {
   TplNode,
   TplSlot,
   TplTag,
-  Variant,
   VariantSetting,
   isKnownArenaFrame,
   isKnownExprText,
@@ -847,7 +846,7 @@ export class ViewOps {
       Tpls.isTplContainer(tpl) &&
       !Tpls.isCodeComponentRoot(tpl)
     ) {
-      const doit = (reorderedChildren?: TplNode[]) => {
+      const doit = (reorderedChildren?: ReadonlyArray<TplNode>) => {
         this.viewCtx().change(() => {
           this.convertContainerType(tpl, desiredDir, reorderedChildren);
         });
@@ -1235,7 +1234,7 @@ export class ViewOps {
       tpl: TplTag,
       targetVs: VariantSetting,
       newText: RichText | RawTextLike | undefined,
-      newChildren?: TplNode[],
+      newChildren?: ReadonlyArray<TplNode>,
     ) {
       const uuidToTpl = new Map<string, TplNode>();
       for (const child of tpl.children) {
@@ -2394,7 +2393,7 @@ export class ViewOps {
           (v) => isGlobalVariant(v) || isPrivateStyleVariant(v),
         )),
     );
-    const effectiveVsMap = new Map<Variant[], EffectiveVariantSetting>();
+    const effectiveVsMap = new Map<VariantCombo, EffectiveVariantSetting>();
     for (const vs of preservedVSettings) {
       if (vs.variants.length === 0) {
         continue;
@@ -3660,7 +3659,7 @@ export class ViewOps {
    */
   adoptFreePositionType(
     node: TplTag | TplComponent,
-    variants: Variant[],
+    variants: VariantCombo,
     parentOffset?: Pt | "current",
   ) {
     adoptFreePositionTypeOp(node, variants, this.insertTplCtx(), parentOffset);
@@ -3702,7 +3701,7 @@ export class ViewOps {
   convertContainerType(
     tpl: TplTag,
     type: ContainerType,
-    reorderedChildren: TplNode[] | undefined,
+    reorderedChildren: ReadonlyArray<TplNode> | undefined,
   ) {
     const layoutChildren = $$$(tpl)
       .children()
@@ -3813,7 +3812,7 @@ export class ViewOps {
         continue;
       }
 
-      delete vs.attrs.src;
+      vs.attrs = L.omit(vs.attrs, "src");
 
       let imageUri: string | undefined = undefined;
       if (isKnownImageAssetRef(srcAttr)) {

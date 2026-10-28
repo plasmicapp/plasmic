@@ -65,7 +65,7 @@ describe("deleteTpl", () => {
       paramType: "prop",
       defaultExpr: new TplRef({ tpl: target }),
     });
-    component.params.push(param);
+    component.params = [...component.params, param];
 
     const result = deleteTpl([target], { component, site, vtm });
 
@@ -157,7 +157,7 @@ describe("deleteTpl", () => {
       paramType: "prop",
       defaultExpr: new TplRef({ tpl: listContainer }),
     });
-    component.params.push(param);
+    component.params = [...component.params, param];
 
     const result = deleteTpl([listItem], { component, site, vtm });
 

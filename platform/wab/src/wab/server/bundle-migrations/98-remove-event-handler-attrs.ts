@@ -7,6 +7,7 @@ import { Bundler } from "@/wab/shared/bundler";
 import { isRealCodeExpr } from "@/wab/shared/core/exprs";
 import { flattenTpls, isAttrEventHandler } from "@/wab/shared/core/tpls";
 import { isKnownEventHandler, isKnownVarRef } from "@/wab/shared/model/classes";
+import { omit } from "lodash";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();
@@ -28,7 +29,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
             !isRealCodeExpr(expr)
           ) {
             // event handler is just a string
-            delete vs.attrs[attr];
+            vs.attrs = omit(vs.attrs, attr);
           }
         }
       }

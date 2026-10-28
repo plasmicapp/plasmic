@@ -29,7 +29,7 @@ import React from "react";
 
 interface ColumnSizeDragState {
   index: number;
-  cols: number[];
+  cols: ReadonlyArray<number>;
 }
 
 export const ColumnsSizeControls = observer(
@@ -94,7 +94,7 @@ export const ColumnSizeControlDraggables = observer(
   function ColumnSizeControlDraggables(props: {
     tpl: TplColumnsTag;
     viewCtx: ViewCtx;
-    sizes: number[];
+    sizes: ReadonlyArray<number>;
     dragState: ColumnSizeDragState | undefined;
     width: number;
     zoom: number;

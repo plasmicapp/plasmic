@@ -147,12 +147,13 @@ const StyleExprPopup = observer(function StyleExprPopup(props: {
       if (!expr.styles.find((s) => s.selector === selector)) {
         spawn(
           studioCtx.changeUnsafe(() => {
-            expr.styles.push(
+            expr.styles = [
+              ...expr.styles,
               mkSelectorRuleSet({
                 selector,
                 isBase: false,
               }),
-            );
+            ];
           }),
         );
       }

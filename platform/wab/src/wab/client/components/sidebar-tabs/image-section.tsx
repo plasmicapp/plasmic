@@ -6,8 +6,8 @@ import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/Component
 import { FallbackEditor } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import { ContentPanelSection } from "@/wab/client/components/sidebar-tabs/image-content-section";
 import {
-  LinkedPropIndicator,
   LinkToPropMenuItem,
+  LinkedPropIndicator,
   UnlinkFromPropMenuItem,
 } from "@/wab/client/components/sidebar-tabs/linked-prop-utils";
 import {
@@ -21,6 +21,10 @@ import {
   TplExpsProvider,
 } from "@/wab/client/components/style-controls/StyleComponent";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { isCodeComponentSlot } from "@/wab/shared/SlotUtils";
+import { unsetTplVariantableAttr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { ensureVariantSetting, isGlobalVariant } from "@/wab/shared/Variants";
 import { assert, ensureInstance } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
@@ -42,33 +46,31 @@ import { getTagAttrForImageAsset } from "@/wab/shared/core/image-assets";
 import { typographyCssProps } from "@/wab/shared/core/style-props";
 import { getTplComponentsInSite } from "@/wab/shared/core/tpls";
 import {
-  computeDefinedIndicator,
   DefinedIndicatorType,
+  computeDefinedIndicator,
 } from "@/wab/shared/defined-indicator";
 import {
   Component,
   CustomCode,
-  ensureKnownTplTag,
   Expr,
   ImageAsset,
   ImageAssetRef,
-  isKnownCustomCode,
-  isKnownImageAsset,
-  isKnownImageAssetRef,
-  isKnownObjectPath,
   ObjectPath,
   Param,
   TplSlot,
   TplTag,
-  VariantSetting,
   VarRef,
+  VariantSetting,
+  ensureKnownTplTag,
+  isKnownCustomCode,
+  isKnownImageAsset,
+  isKnownImageAssetRef,
+  isKnownObjectPath,
+  isKnownVarRef,
 } from "@/wab/shared/model/classes";
 import { isImageType, typeFactory } from "@/wab/shared/model/model-util";
-import { isCodeComponentSlot } from "@/wab/shared/SlotUtils";
-import { unsetTplVariantableAttr } from "@/wab/shared/TplMgr";
-import { $$$ } from "@/wab/shared/TplQuery";
-import { ensureVariantSetting, isGlobalVariant } from "@/wab/shared/Variants";
 import { Alert, Menu } from "antd";
+import { omit } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -143,7 +145,7 @@ export const ImageSection = observer(function ImageSection(props: {
         });
     viewCtx.change(() => {
       if (targetVs) {
-        targetVs.attrs[attr] = newExpr;
+        targetVs.attrs = { ...targetVs.attrs, [attr]: newExpr };
       }
     });
     setShowFallback(true);
@@ -236,7 +238,7 @@ export const ImageSection = observer(function ImageSection(props: {
                     );
                     viewCtx.change(() => {
                       if (targetVs) {
-                        targetVs.attrs[attr] = newExpr;
+                        targetVs.attrs = { ...targetVs.attrs, [attr]: newExpr };
                       }
                     });
                   }}
@@ -248,9 +250,12 @@ export const ImageSection = observer(function ImageSection(props: {
                             isKnownObjectPath(expr)) &&
                           expr.fallback
                         ) {
-                          targetVs.attrs[attr] = expr.fallback;
+                          targetVs.attrs = {
+                            ...targetVs.attrs,
+                            [attr]: expr.fallback,
+                          };
                         } else {
-                          delete targetVs.attrs[attr];
+                          targetVs.attrs = omit(targetVs.attrs, attr);
                         }
                       }
                     });
@@ -278,7 +283,7 @@ export const ImageSection = observer(function ImageSection(props: {
                     CustomCode,
                   );
                   newExpr.fallback = undefined;
-                  targetVs.attrs[attr] = newExpr;
+                  targetVs.attrs = { ...targetVs.attrs, [attr]: newExpr };
                 })
               }
             >
@@ -306,7 +311,7 @@ export const ImageSection = observer(function ImageSection(props: {
                       assert(!isIcon, "Unexpected instance of image asset");
                       newExpr.fallback = codeLit(picked);
                     }
-                    targetVs.attrs[attr] = newExpr;
+                    targetVs.attrs = { ...targetVs.attrs, [attr]: newExpr };
                   })
                 }
                 keepOpen={false}
@@ -341,10 +346,16 @@ export const ImageSection = observer(function ImageSection(props: {
               onPicked={(picked) =>
                 studioCtx.changeUnsafe(() => {
                   if (isKnownImageAsset(picked)) {
-                    targetVs.attrs[attr] = new ImageAssetRef({ asset: picked });
+                    targetVs.attrs = {
+                      ...targetVs.attrs,
+                      [attr]: new ImageAssetRef({ asset: picked }),
+                    };
                   } else {
                     assert(!isIcon, "Unexpected instance of image asset");
-                    targetVs.attrs[attr] = codeLit(picked);
+                    targetVs.attrs = {
+                      ...targetVs.attrs,
+                      [attr]: codeLit(picked),
+                    };
                   }
                 })
               }
@@ -471,7 +482,9 @@ function linkImageAttrToParam(
         vtm.setArgUnderVariantSetting(
           instTpl,
           param.variable,
-          new ImageAssetRef(vs.attrs[attr] as ImageAssetRef),
+          new ImageAssetRef({
+            asset: (vs.attrs[attr] as ImageAssetRef).asset,
+          }),
           ensureVariantSetting(instTpl, vs.variants),
         );
       });
@@ -479,7 +492,7 @@ function linkImageAttrToParam(
   }
 
   unsetTplVariantableAttr(tpl, attr);
-  baseVs.attrs[attr] = varRef;
+  baseVs.attrs = { ...baseVs.attrs, [attr]: varRef };
 }
 
 /**
@@ -562,9 +575,12 @@ function makeImageMenu({
               viewCtx.change(() => {
                 const defaultValue = referencedParam.defaultExpr;
                 if (isStaticImageExpr(defaultValue)) {
-                  baseVs.attrs[attr] = clone(defaultValue);
+                  baseVs.attrs = {
+                    ...baseVs.attrs,
+                    [attr]: clone(defaultValue),
+                  };
                 } else {
-                  delete baseVs.attrs[attr];
+                  baseVs.attrs = omit(baseVs.attrs, attr);
                 }
               })
             }
@@ -622,9 +638,12 @@ function makeImageMenu({
                     (isKnownCustomCode(expr) || isKnownObjectPath(expr)) &&
                     expr.fallback
                   ) {
-                    targetVs.attrs[attr] = expr.fallback;
+                    targetVs.attrs = {
+                      ...targetVs.attrs,
+                      [attr]: expr.fallback,
+                    };
                   } else {
-                    delete targetVs.attrs[attr];
+                    targetVs.attrs = omit(targetVs.attrs, attr);
                   }
                 }
               });
@@ -645,7 +664,7 @@ function makeImageMenu({
           onClick={() =>
             viewCtx.change(() => {
               if (targetVs) {
-                delete targetVs.attrs[attr];
+                targetVs.attrs = omit(targetVs.attrs, attr);
               }
             })
           }

@@ -4,7 +4,7 @@ export type Lookup<Path, T = Site> = Path extends []
   ? T extends infer U | undefined
     ? U
     : T
-  : T extends object[]
+  : T extends readonly object[]
     ? Path extends ["_", ...infer R]
       ? Lookup<R, T[number]>
       : never
@@ -22,7 +22,9 @@ export type PathSelector<
       [P in keyof C]: PathSelector<T, C[P], [...Path, P]>;
     }
   : C) &
-  (C extends any[] ? { _: PathSelector<T, C[number], [...Path, "_"]> } : {}) & {
+  (C extends readonly any[]
+    ? { _: PathSelector<T, C[number], [...Path, "_"]> }
+    : {}) & {
     getPath(): Path;
   };
 

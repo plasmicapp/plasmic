@@ -15,10 +15,10 @@ import {
   isScreenVariant,
 } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
+import { arrayWithout } from "@/wab/shared/collections";
 import {
   arrayEqIgnoreOrder,
   assert,
-  remove,
   switchType,
   unexpected,
   withoutNils,
@@ -82,8 +82,8 @@ export function ensureTplWithBaseAndScreenVariants(
   targetBaseVariant: Variant,
   screenVariant: Variant | undefined,
 ) {
-  // Create a new array, since we can mutate tpl.vsettings
-  for (const vs of [...tpl.vsettings]) {
+  const removedVsettings = new Set<VariantSetting>();
+  for (const vs of tpl.vsettings) {
     // Fix the variant references
     if (isBaseVariant(vs.variants)) {
       vs.variants = [targetBaseVariant];
@@ -92,11 +92,14 @@ export function ensureTplWithBaseAndScreenVariants(
       vs.variants = [screenVariant];
     } else {
       // Remove non-base/screen variant settings
-      remove(tpl.vsettings, vs);
+      removedVsettings.add(vs);
       console.warn(
         `Node ${tpl.uuid} has a non-base/screen variant. Please remove this from the source project.`,
       );
     }
+  }
+  if (removedVsettings.size > 0) {
+    tpl.vsettings = tpl.vsettings.filter((vs) => !removedVsettings.has(vs));
   }
 
   if (tpl.vsettings.length > 2) {
@@ -104,7 +107,7 @@ export function ensureTplWithBaseAndScreenVariants(
       "Tpl node has more than 2 variant settings. Removing extra variant settings",
       tpl,
     );
-    tpl.vsettings.splice(2);
+    tpl.vsettings = tpl.vsettings.slice(0, 2);
   }
 }
 
@@ -136,7 +139,7 @@ export function fixGlobalVariants(
         (vs2) => vs2 !== vs && arrayEqIgnoreOrder(vs2.variants, vs.variants),
       )
     ) {
-      remove(tpl.vsettings, vs);
+      tpl.vsettings = arrayWithout(tpl.vsettings, vs);
     }
   }
 }
@@ -611,12 +614,9 @@ function getFixedExpr(
       .when([PageHref], (_expr) => null)
       .when([EventHandler], (_expr) => {
         for (const interaction of _expr.interactions) {
-          for (const arg of [...interaction.args]) {
-            const fixedExpr = getFixedExpr(ctx, arg.expr, helpers);
-            if (!fixedExpr) {
-              remove(interaction.args, arg);
-            }
-          }
+          interaction.args = interaction.args.filter(
+            (arg) => !!getFixedExpr(ctx, arg.expr, helpers),
+          );
         }
         // Remove interactions that have no args left
         _expr.interactions = _expr.interactions.filter(
@@ -676,7 +676,7 @@ function getFixedExpr(
               }
               return acc;
             },
-            {} as CompositeExpr["substitutions"],
+            {} as Record<string, Expr>,
           ),
         });
       })
@@ -692,25 +692,23 @@ export function fixTplTreeExprs(
 ) {
   const { invalidExprNames } = ctx;
 
-  for (const arg of [...vs.args]) {
+  vs.args = vs.args.filter((arg) => {
     const fixedExpr = getFixedExpr(ctx, arg.expr, helpers);
     if (!fixedExpr) {
-      remove(vs.args, arg);
-    } else {
-      arg.expr = fixedExpr;
+      return false;
     }
-  }
+    arg.expr = fixedExpr;
+    return true;
+  });
 
-  for (const attrName of Object.keys(vs.attrs)) {
-    const attr = vs.attrs[attrName];
+  const fixedAttrs: Record<string, Expr> = {};
+  for (const [attrName, attr] of Object.entries(vs.attrs)) {
     const fixedExpr = getFixedExpr(ctx, attr, helpers);
-
-    if (!fixedExpr) {
-      delete vs.attrs[attrName];
-    } else {
-      vs.attrs[attrName] = fixedExpr;
+    if (fixedExpr) {
+      fixedAttrs[attrName] = fixedExpr;
     }
   }
+  vs.attrs = fixedAttrs;
 
   if (isKnownExprText(vs.text)) {
     if (isInvalidTextOrDynamicExpression(vs.text.expr, invalidExprNames)) {
@@ -722,7 +720,7 @@ export function fixTplTreeExprs(
   if (vs.dataCond) {
     if (isInvalidTextOrDynamicExpression(vs.dataCond, invalidExprNames)) {
       // We may not be able to resolve the condition, just remove it
-      delete vs.dataCond;
+      vs.dataCond = undefined;
     }
   }
 

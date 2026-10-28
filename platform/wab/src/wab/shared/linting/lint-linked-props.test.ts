@@ -40,19 +40,21 @@ function siteWithLink(
     tplTree: (base) => {
       const tplComps = Array.from({ length: instances }, () => {
         const tplComp = mkTplComponent(inner, base);
-        tplComp.vsettings[0].args.push(
+        const vs = tplComp.vsettings[0];
+        vs.args = [
+          ...vs.args,
           new Arg({
             param: innerParam,
             expr: new VarRef({ variable: outerParam.variable }),
           }),
-        );
+        ];
         return tplComp;
       });
       return mkTplTag("div", tplComps);
     },
   });
   const site = createSite();
-  site.components.push(inner, outer);
+  site.components = [...site.components, inner, outer];
   return { site, inner, innerParam, outer, outerParam };
 }
 
@@ -91,17 +93,19 @@ function siteWithVariantLink(opts: {
     params: [outerParam],
     tplTree: (base) => {
       const tplComp = mkTplComponent(inner, base);
-      tplComp.vsettings[0].args.push(
+      const vs = tplComp.vsettings[0];
+      vs.args = [
+        ...vs.args,
         new Arg({
           param: groupParam,
           expr: new VarRef({ variable: outerParam.variable }),
         }),
-      );
+      ];
       return mkTplTag("div", [tplComp]);
     },
   });
   const site = createSite();
-  site.components.push(inner, outer);
+  site.components = [...site.components, inner, outer];
   return { site, inner, groupParam, outer, outerParam };
 }
 

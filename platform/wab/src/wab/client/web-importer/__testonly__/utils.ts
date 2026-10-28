@@ -24,7 +24,8 @@ import { typeFactory } from "@/wab/shared/model/model-util";
 export function createComponentTestSite(): Site {
   const site = createSite();
 
-  site.components.push(
+  site.components = [
+    ...site.components,
     mkComponent({
       name: "Button",
       type: ComponentType.Plain,
@@ -191,7 +192,7 @@ export function createComponentTestSite(): Site {
       ],
       tplTree: mkTplTagX("div"),
     }),
-  );
+  ];
 
   return site;
 }

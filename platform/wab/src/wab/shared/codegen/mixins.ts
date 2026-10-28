@@ -2,7 +2,9 @@ import { xAddAll } from "@/wab/shared/common";
 import { flattenTpls } from "@/wab/shared/core/tpls";
 import { Component, Mixin, TplNode } from "@/wab/shared/model/classes";
 
-export function extractUsedMixinsForComponents(components: Component[]) {
+export function extractUsedMixinsForComponents(
+  components: ReadonlyArray<Component>,
+) {
   const mixins = new Set<Mixin>();
   for (const component of components) {
     for (const tpl of flattenTpls(component.tplTree)) {

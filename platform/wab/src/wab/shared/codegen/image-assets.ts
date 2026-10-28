@@ -52,7 +52,7 @@ import { makeImportedPictureRef } from "src/wab/shared/codegen/react-p/image";
 
 export function extractUsedIconAssetsForComponents(
   site: Site,
-  components: Component[],
+  components: ReadonlyArray<Component>,
 ) {
   const assets = new Set<ImageAsset>();
   for (const component of components) {
@@ -118,7 +118,7 @@ export function collectUsedImageAssetsByExpr(
 
 export function extractUsedPictureAssetsForComponents(
   site: Site,
-  components: Component[],
+  components: ReadonlyArray<Component>,
   opts:
     | { includeRuleSets: false }
     | { includeRuleSets: true; expandMixins: boolean },
@@ -198,7 +198,7 @@ export function collectUsedPictureAssetsForTpl(
 
 export function extractUsedPictureAssetsFromMixins(
   site: Site,
-  mixins: Mixin[],
+  mixins: ReadonlyArray<Mixin>,
 ) {
   const allAssets = L.keyBy(
     allImageAssets(site, { includeDeps: "all" }),

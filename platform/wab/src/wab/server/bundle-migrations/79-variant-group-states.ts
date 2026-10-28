@@ -24,7 +24,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
           variantGroup: vg,
           onChangeParam: undefined as any,
         });
-        component.states.push(state);
+        component.states = [...component.states, state];
         (vg as any).linkedState = state;
       } else {
         (vg.linkedState as any).param = vg.param;

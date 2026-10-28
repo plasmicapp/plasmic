@@ -1032,7 +1032,9 @@ function changeTogglesStyle(
       throw new Error(`Unexpected change type ${change.type}`);
     }
   } else if (isKnownRuleSet(last.inst) && last.field === "mixins") {
-    const mixinsToRules = (mixins: Mixin[]): Record<string, string> =>
+    const mixinsToRules = (
+      mixins: ReadonlyArray<Mixin>,
+    ): Record<string, string> =>
       Object.assign({}, ...mixins.map((m) => m.rs.values));
     // Update to RuleSet.mixins
     if (change.type === "array-splice") {

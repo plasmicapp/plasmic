@@ -428,8 +428,8 @@ function _MixinsPanel() {
     setFindReferenceMixin(mixin);
   };
 
-  const makeMixinsItems = (mixins: Mixin[]) => {
-    mixins = mixins.filter(
+  const makeMixinsItems = (allMixins: ReadonlyArray<Mixin>) => {
+    let mixins = allMixins.filter(
       (mixin) => matcher.matches(mixin.name) || justAdded === mixin,
     );
     mixins = naturalSort(mixins, (mixin) => mixin.name);

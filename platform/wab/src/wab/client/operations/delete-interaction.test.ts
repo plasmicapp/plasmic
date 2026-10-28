@@ -72,9 +72,10 @@ describe("deleteInteraction", () => {
 
   it("removes the arg slot for component instance handlers", () => {
     const fixture = setup();
-    fixture.button.params.push(
+    fixture.button.params = [
+      ...fixture.button.params,
       mkParam({ name: "onSave", type: typeFactory.func(), paramType: "prop" }),
-    );
+    ];
     const created = createInteraction({
       component: fixture.page,
       tpl: fixture.instance,

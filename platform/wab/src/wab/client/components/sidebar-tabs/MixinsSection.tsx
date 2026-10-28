@@ -8,8 +8,8 @@ import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { MIXINS_CAP, MIXIN_CAP } from "@/wab/shared/Labels";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { tryGetVariantSetting } from "@/wab/shared/Variants";
-import { arrayInsert } from "@/wab/shared/collections";
-import { ensure, removeAt } from "@/wab/shared/common";
+import { arrayMoveIndex } from "@/wab/shared/collections";
+import { ensure } from "@/wab/shared/common";
 import { allMixins, isEditable } from "@/wab/shared/core/sites";
 import { isTplTag, isTplVariantable } from "@/wab/shared/core/tpls";
 import {
@@ -169,11 +169,10 @@ export const MixinsSection = observer(function (props: {
         onFocusItem={(item) => setEditMixin(ensureKnownMixin(item))}
         onReorder={(fromIndex, toIndex) => {
           viewCtx.change(() => {
-            const moved = removeAt(targetVs.rs.mixins, fromIndex);
-            arrayInsert(
+            targetVs.rs.mixins = arrayMoveIndex(
               targetVs.rs.mixins,
-              moved,
-              toIndex < fromIndex ? toIndex : toIndex,
+              fromIndex,
+              toIndex,
             );
           });
         }}

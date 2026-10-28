@@ -520,7 +520,7 @@ const getNodeToTplNode = (
       const { indexOfSibling } = getLayoutParent(node);
       if (indexOfSibling !== -1) {
         const tplParent = ensureKnownTplTag(tplChildren[indexOfSibling]);
-        tplParent.children.push(tpl);
+        tplParent.children = [...tplParent.children, tpl];
         tpl.parent = tplParent;
       } else {
         newChildren.push(adjustedTpl);

@@ -267,7 +267,6 @@ import {
 import { tryExtractJson } from "@/wab/shared/core/exprs";
 import { JsonValue } from "@/wab/shared/core/lang";
 import {
-  ComponentContext,
   ModelChange,
   RecordedChanges,
   emptyRecordedChanges,
@@ -942,37 +941,6 @@ export class StudioCtx extends WithDbCtx {
         },
         { name: "StudioCtx.fixRecentArenas" },
       ),
-      autorun(
-        () => {
-          const currentArena = this.currentArena;
-          if (!currentArena) {
-            return;
-          }
-          const componentsToObserve = isDedicatedArena(currentArena)
-            ? [currentArena.component]
-            : currentArena.children.map((child) => child.container.component);
-          this.dbCtx().maybeObserveComponents(
-            componentsToObserve,
-            ComponentContext.Arena,
-          );
-        },
-        { name: "StudioCtx.observeCurrentArena" },
-      ),
-      autorun(
-        () => {
-          const currentViewCtxComponent =
-            this.focusedViewCtx()?.currentComponent();
-          if (!currentViewCtxComponent) {
-            return;
-          }
-          const componentsToObserve = [currentViewCtxComponent];
-          this.dbCtx().maybeObserveComponents(
-            componentsToObserve,
-            ComponentContext.View,
-          );
-        },
-        { name: "StudioCtx.observeCurrentViewCtx" },
-      ),
       autorun(() => {
         if (!isHostLessPackage(this.site)) {
           this.updatePkgsList(usedHostLessPkgs(this.site));
@@ -1350,19 +1318,6 @@ export class StudioCtx extends WithDbCtx {
     return this._change(f, opts);
   }
 
-  /**
-   * Observes a list of component before applying the changes
-   */
-  async changeObserved<E = never, T = void>(
-    c: () => Component[],
-    f: () => Result<T, E>,
-    opts: StudioChangeOpts = {},
-  ): Promise<Result<T, E>> {
-    const changedComponents = c();
-    this.dbCtx().maybeObserveComponents(changedComponents);
-    return this._change(f, opts);
-  }
-
   async _change<E = never, T = void>(
     f: () => Result<T, E>,
     opts: StudioChangeOpts = {},
@@ -1547,10 +1502,6 @@ export class StudioCtx extends WithDbCtx {
     });
 
     return ok();
-  }
-
-  observeComponents(components: Component[]) {
-    return this.dbCtx().maybeObserveComponents(components);
   }
 
   private _isDocs = observable.box(false);
@@ -5163,7 +5114,10 @@ export class StudioCtx extends WithDbCtx {
       const canvasCtx = viewCtx.canvasCtx;
       this.styleMgr.upsertStyleSheets(canvasCtx.$doc()[0], viewCtx.component);
     },
-    playAnimationPreview: (tpl: TplNode, animations: Animation[]) => {
+    playAnimationPreview: (
+      tpl: TplNode,
+      animations: ReadonlyArray<Animation>,
+    ) => {
       return this.styleMgr.playAnimationPreview(tpl, animations);
     },
     stopAnimationPreview: (tpl: TplNode) => {
@@ -6783,22 +6737,11 @@ export class StudioCtx extends WithDbCtx {
     }
     const hasUnsavedChanges = this.hasUnsavedChanges();
     if (updatedModel.data) {
-      const { data, depPkgs, deletedIids, modifiedComponentIids } =
-        updatedModel;
+      // TODO: modifiedComponentIids is unused, since the whole site is tracked;
+      // remove it from the API in a two-phase protocol change.
+      const { data, depPkgs, deletedIids } = updatedModel;
       try {
         this._isRefreshing = true;
-
-        this.dbCtx().maybeObserveComponents(
-          withoutNils(
-            modifiedComponentIids.map((c) => {
-              const compInst = this.bundler().objByAddr({
-                uuid: projectId,
-                iid: c,
-              });
-              return classes.isKnownComponent(compInst) ? compInst : undefined;
-            }),
-          ),
-        );
 
         const undoAndRecord = (changes: RecordedChanges) =>
           this.recorder.withRecording(() => undoChanges(changes.changes));

@@ -16,6 +16,7 @@ import { validateStylesForTpl } from "@/wab/shared/core/style-props-tpl";
 import { normProp } from "@/wab/shared/css";
 import { GenericError } from "@/wab/shared/error-handling";
 import { TplNode, VariantSetting } from "@/wab/shared/model/classes";
+import { omit } from "lodash";
 import { Result, err, ok } from "neverthrow";
 
 /**
@@ -56,9 +57,9 @@ export function applySanitizedTplStyles(opts: {
 
   const styleAttr = { ...remaining, ...unsafe };
   if (Object.keys(styleAttr).length > 0) {
-    vs.attrs["style"] = codeLit(styleAttr);
+    vs.attrs = { ...vs.attrs, style: codeLit(styleAttr) };
   } else if (existing) {
-    delete vs.attrs["style"];
+    vs.attrs = omit(vs.attrs, "style");
   }
 
   return { applied: valid, invalid: Object.keys(invalid).map(normProp) };
@@ -138,9 +139,9 @@ export function setTplStyles(
   }
   if (changes.remove.length > 0) {
     if (Object.keys(unsafeStyles).length > 0) {
-      vs.attrs["style"] = codeLit(unsafeStyles);
+      vs.attrs = { ...vs.attrs, style: codeLit(unsafeStyles) };
     } else {
-      delete vs.attrs["style"];
+      vs.attrs = omit(vs.attrs, "style");
     }
   }
 

@@ -133,22 +133,19 @@ describe("TplMgr", () => {
     const multiV3 = mgr.createVariant(component, groupMulti);
 
     const componentRoot = ensureKnownTplTag(component.tplTree);
-    let vs1, vs2, vs3, vs4, vs5;
-    componentRoot.vsettings.push(
-      (vs1 = mkVariantSetting({ variants: [singleV1] })),
-    );
-    componentRoot.vsettings.push(
-      (vs2 = mkVariantSetting({ variants: [singleV2] })),
-    );
-    componentRoot.vsettings.push(
-      (vs3 = mkVariantSetting({ variants: [multiV1] })),
-    );
-    componentRoot.vsettings.push(
-      (vs4 = mkVariantSetting({ variants: [multiV2] })),
-    );
-    componentRoot.vsettings.push(
-      (vs5 = mkVariantSetting({ variants: [multiV2, screenV1] })),
-    );
+    const vs1 = mkVariantSetting({ variants: [singleV1] });
+    const vs2 = mkVariantSetting({ variants: [singleV2] });
+    const vs3 = mkVariantSetting({ variants: [multiV1] });
+    const vs4 = mkVariantSetting({ variants: [multiV2] });
+    const vs5 = mkVariantSetting({ variants: [multiV2, screenV1] });
+    componentRoot.vsettings = [
+      ...componentRoot.vsettings,
+      vs1,
+      vs2,
+      vs3,
+      vs4,
+      vs5,
+    ];
 
     const rootComponent = mkComponent({
       tplTree: mkTplTagX("div", {}),
@@ -171,7 +168,7 @@ describe("TplMgr", () => {
         }),
       ],
     });
-    root.children.push(tpl1);
+    root.children = [...root.children, tpl1];
 
     const tpl2 = mkTplComponentX({
       component,
@@ -187,7 +184,7 @@ describe("TplMgr", () => {
         }),
       ],
     });
-    root.children.push(tpl2);
+    root.children = [...root.children, tpl2];
 
     const getArg = (tpl: TplComponent, group: VariantGroup) => {
       return tpl.vsettings[0].args.find((a) => a.param === group.param);
@@ -261,7 +258,7 @@ describe("TplMgr.updateVariantGroupMulti", () => {
           }),
         ],
       });
-      containingRoot.children.push(tpl);
+      containingRoot.children = [...containingRoot.children, tpl];
       return tpl;
     };
 
@@ -282,7 +279,7 @@ describe("TplMgr.updateVariantGroupMulti", () => {
           [variant2.uuid]: true,
         },
       });
-      site.arenas.push(mkMixedArena("Test arena", [frame]));
+      site.arenas = [...site.arenas, mkMixedArena("Test arena", [frame])];
       return frame;
     };
 
@@ -392,8 +389,8 @@ describe("TplMgr.removeComponentServerQuery", () => {
     });
     const root = ensureKnownTplTag(component.tplTree);
     const vs = mkVariantSetting({ variants: [ensureBaseVariant(component)] });
-    vs.attrs["onClick"] = expr;
-    root.vsettings.push(vs);
+    vs.attrs = { ...vs.attrs, onClick: expr };
+    root.vsettings = [...root.vsettings, vs];
 
     return { mgr, component, expr };
   }
@@ -446,8 +443,11 @@ describe("TplMgr.changePagePath", () => {
 
   it("keeps pageMeta.params in path order when params are added", () => {
     const { mgr, page } = mkPage("/[a]/[b]");
-    page.pageMeta.params.a = "aValue";
-    page.pageMeta.params.b = "bValue";
+    page.pageMeta.params = {
+      ...page.pageMeta.params,
+      a: "aValue",
+      b: "bValue",
+    };
 
     mgr.changePagePath(page, "/[c]/[a]/[b]");
 
@@ -461,9 +461,12 @@ describe("TplMgr.changePagePath", () => {
 
   it("reorders and drops params to match the new path", () => {
     const { mgr, page } = mkPage("/[a]/[b]/[c]");
-    page.pageMeta.params.a = "aValue";
-    page.pageMeta.params.b = "bValue";
-    page.pageMeta.params.c = "cValue";
+    page.pageMeta.params = {
+      ...page.pageMeta.params,
+      a: "aValue",
+      b: "bValue",
+      c: "cValue",
+    };
 
     mgr.changePagePath(page, "/[c]/[a]");
 

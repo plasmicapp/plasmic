@@ -39,7 +39,7 @@ describe("deleteComponentProp", () => {
     const param = findParam("label");
     const root = button.tplTree as TplTag;
     const rootVs = ensureVariantSetting(root, [getBaseVariant(button)]);
-    rootVs.attrs["title"] = customCode("$props.label");
+    rootVs.attrs = { ...rootVs.attrs, title: customCode("$props.label") };
 
     const result = deleteComponentProp(param, opts);
 

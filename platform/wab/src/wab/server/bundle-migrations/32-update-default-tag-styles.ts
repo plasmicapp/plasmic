@@ -93,7 +93,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
     if (existing) {
       existing.style = cloneMixin(themeStyle.style);
     } else {
-      activeTheme.styles.push(cloneThemeStyle(themeStyle));
+      activeTheme.styles = [...activeTheme.styles, cloneThemeStyle(themeStyle)];
     }
   }
 

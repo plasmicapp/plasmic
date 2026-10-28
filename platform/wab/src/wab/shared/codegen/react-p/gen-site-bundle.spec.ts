@@ -46,12 +46,13 @@ describe("getCodeComponentsUsedByExport", () => {
       "UnrelatedComponent",
       unrelatedCodeComponent,
     );
-    site.components.push(
+    site.components = [
+      ...site.components,
       selectedComponent,
       unrelatedComponent,
       selectedCodeComponent,
       unrelatedCodeComponent,
-    );
+    ];
 
     const components = getSiteComponentsToExport(site, {
       componentIdOrNames: [selectedComponent.uuid],

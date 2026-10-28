@@ -1,9 +1,14 @@
-import { arrayRemove } from "@/wab/shared/collections";
 import { ensure } from "@/wab/shared/common";
 import { isPageComponent } from "@/wab/shared/core/components";
 import { convertHrefExprToCodeExpr } from "@/wab/shared/core/exprs";
 import { flattenTpls } from "@/wab/shared/core/tpls";
-import { isKnownPageHref, PageHref, Site } from "@/wab/shared/model/classes";
+import {
+  Arg,
+  Expr,
+  isKnownPageHref,
+  PageHref,
+  Site,
+} from "@/wab/shared/model/classes";
 
 /**
  * Fixes any PageHref in Site to point to local pages. At this point,
@@ -36,26 +41,30 @@ export function fixPageHrefsToLocal(site: Site) {
 
     for (const tpl of flattenTpls(comp.tplTree)) {
       for (const vsettings of tpl.vsettings) {
-        for (const arg of [...vsettings.args]) {
+        const newArgs: Arg[] = [];
+        for (const arg of vsettings.args) {
           if (isKnownPageHref(arg.expr) && arg.expr.page) {
             const swapped = swap(arg.expr);
-            if (swapped) {
-              arg.expr = swapped;
-            } else {
-              arrayRemove(vsettings.args, arg);
+            if (!swapped) {
+              continue;
             }
+            arg.expr = swapped;
           }
+          newArgs.push(arg);
         }
+        vsettings.args = newArgs;
+        const newAttrs: Record<string, Expr> = {};
         for (const [attr, expr] of Object.entries(vsettings.attrs)) {
           if (isKnownPageHref(expr) && expr.page) {
             const swapped = swap(expr);
             if (swapped) {
-              vsettings.attrs[attr] = swapped;
-            } else {
-              delete vsettings.attrs[attr];
+              newAttrs[attr] = swapped;
             }
+          } else {
+            newAttrs[attr] = expr;
           }
         }
+        vsettings.attrs = newAttrs;
       }
     }
   }

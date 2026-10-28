@@ -77,6 +77,7 @@ import {
   Site,
   TplTag,
 } from "@/wab/shared/model/classes";
+import { instFieldValues } from "@/wab/shared/model/model-meta";
 import { convertToFunction } from "@/wab/shared/parser-utils";
 import { renameDataTokenInExpr } from "@/wab/shared/refactoring";
 import { smartHumanize } from "@/wab/shared/strs";
@@ -91,7 +92,6 @@ import type { SetRequired } from "type-fest";
 import { cleanDataForPreview } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerCodeEditorLayout";
 import { prepareEnvForDataPicker } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import DataQueryCodeEditorLayout from "@/wab/client/components/sidebar-tabs/DataBinding/DataQueryCodeEditorLayout";
-import { instFieldValues } from "@/wab/shared/model/model-meta";
 const LazyValuePreview = React.lazy(async () => {
   const mod = await import("@/wab/client/components/coding/CodePreview");
   return { default: mod.ValuePreview };
@@ -410,7 +410,7 @@ export const ServerQueryOpDraftForm = observer(
 
     // Rebuild fnExpr with `mkArgs` applied to the current args and commit it.
     const commitFnExprArgs = React.useCallback(
-      (mkArgs: (args: FunctionArg[]) => FunctionArg[]) => {
+      (mkArgs: (args: ReadonlyArray<FunctionArg>) => FunctionArg[]) => {
         if (value.fnExpr) {
           onChange({
             queryName: value.queryName,

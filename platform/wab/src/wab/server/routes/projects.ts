@@ -292,7 +292,7 @@ export async function createProjectWithHostlessPackages(
       hostLessPackageInfo,
       bundler,
     );
-    site.projectDependencies.push(projectDependency);
+    site.projectDependencies = [...site.projectDependencies, projectDependency];
     hostLessProjectIds.push(projectDependency.projectId);
 
     syncGlobalContexts(projectDependency, site);

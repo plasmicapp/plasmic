@@ -12,6 +12,7 @@ import {
 } from "@/wab/shared/Arenas";
 import { FramePinManager } from "@/wab/shared/PinManager";
 import {
+  VariantCombo,
   ensureValidCombo,
   ensureVariantSetting,
   getBaseVariant,
@@ -29,15 +30,13 @@ import {
   usedGlobalVariantGroups,
 } from "@/wab/shared/cached-selectors";
 import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
-import { arrayRemove } from "@/wab/shared/collections";
+import { arrayInsertAt, arrayWithout } from "@/wab/shared/collections";
 import {
   assert,
   ensure,
   ensureArray,
   ensureArrayOfInstances,
   partitions,
-  remove,
-  replaceAll,
   setsEq,
   sortAs,
 } from "@/wab/shared/common";
@@ -194,7 +193,7 @@ export function makeComponentArenaFrame({
 }: {
   site: Site;
   component: Component;
-  variants: Variant[];
+  variants: VariantCombo;
   width: number;
   height: number;
   viewMode?: FrameViewMode;
@@ -249,29 +248,25 @@ export function ensureCellKey(cell: ArenaFrameCell) {
 
 export function removeFramesFromComponentArenaForVariants(
   arena: ComponentArena,
-  variants: Variant[],
+  variants: VariantCombo,
 ) {
   // We only do this for managed artboards (arena.matrix.rows).
   // For custom artboards, we will just stop targeting / pinning
   // the removed variant, as we do for all artboards
-  for (const row of [...arena.matrix.rows]) {
-    for (const cell of [...row.cols]) {
-      if (cell.cellKey && variants.includes(ensureKnownVariant(cell.cellKey))) {
-        arrayRemove(row.cols, cell);
-      }
-    }
+  for (const row of arena.matrix.rows) {
+    row.cols = row.cols.filter(
+      (cell) =>
+        !(cell.cellKey && variants.includes(ensureKnownVariant(cell.cellKey))),
+    );
   }
 
   for (const row of arena.customMatrix.rows) {
-    for (const cell of [...row.cols]) {
-      if (
-        ensureArrayOfInstances(ensureCellKey(cell), Variant).some((v) =>
+    row.cols = row.cols.filter(
+      (cell) =>
+        !ensureArrayOfInstances(ensureCellKey(cell), Variant).some((v) =>
           variants.includes(v),
-        )
-      ) {
-        arrayRemove(row.cols, cell);
-      }
-    }
+        ),
+    );
   }
 }
 
@@ -279,11 +274,7 @@ export function removeManagedFramesFromComponentArenaForVariantGroup(
   arena: ComponentArena,
   group: VariantGroup,
 ) {
-  for (const row of [...arena.matrix.rows]) {
-    if (row.rowKey === group) {
-      arrayRemove(arena.matrix.rows, row);
-    }
-  }
+  arena.matrix.rows = arena.matrix.rows.filter((row) => row.rowKey !== group);
 }
 
 export function removeCustomComponentFrame(
@@ -293,7 +284,7 @@ export function removeCustomComponentFrame(
   for (const row of arena.customMatrix.rows) {
     const cell = row.cols.find((c) => c.frame === frame);
     if (cell) {
-      arrayRemove(row.cols, cell);
+      row.cols = arrayWithout(row.cols, cell);
     }
   }
 }
@@ -316,12 +307,12 @@ export function removeSuperOrGlobalVariantComponentFrame(
 
   const cell = row?.cols.find((c) => c.frame === frame);
 
-  if (cell) {
-    arrayRemove(row!.cols, cell);
+  if (row && cell) {
+    row.cols = arrayWithout(row.cols, cell);
   }
 
   if (row?.cols.length === 0) {
-    arrayRemove(arena.matrix.rows, row);
+    arena.matrix.rows = arrayWithout(arena.matrix.rows, row);
   }
 }
 
@@ -440,7 +431,7 @@ export function ensureManagedFrameForVariantInComponentArena(
     viewMode: getComponentArenaBaseFrameViewMode(arena),
   });
   const newCell = new ArenaFrameCell({ frame, cellKey: variant });
-  row.cols.push(newCell);
+  row.cols = [...row.cols, newCell];
   if (isScreenVariant(variant)) {
     ensureActivatedScreenVariantsForTargetScreenVariant(site, frame, variant);
     ensureComponentArenaColsOrder(
@@ -498,17 +489,19 @@ export function addCustomComponentFrame(
     `Frame and arena must match`,
   );
   if (arena.customMatrix.rows.length === 0) {
-    arena.customMatrix.rows.push(
+    arena.customMatrix.rows = [
+      ...arena.customMatrix.rows,
       new ArenaFrameRow({ cols: [], rowKey: undefined }),
-    );
+    ];
   }
   const activeVariants = getActivatedVariantsForFrame(site, frame);
   const cell = new ArenaFrameCell({ frame, cellKey: [...activeVariants] });
 
+  const firstRow = arena.customMatrix.rows[0];
   if (position !== undefined && position >= 0) {
-    arena.customMatrix.rows[0].cols.splice(position, 0, cell);
+    firstRow.cols = arrayInsertAt(firstRow.cols, cell, position);
   } else {
-    arena.customMatrix.rows[0].cols.push(cell);
+    firstRow.cols = [...firstRow.cols, cell];
   }
 
   // Turn frame into position-managed frame
@@ -577,7 +570,7 @@ export function ensureRowForVariantGroupInComponentArena(
     });
     if (isGlobalVariantGroup(group)) {
       // always insert global variant groups at the end
-      arena.matrix.rows.push(row);
+      arena.matrix.rows = [...arena.matrix.rows, row];
     } else {
       // for component variant groups, always insert before global variant groups
       const index = arena.matrix.rows.findIndex(
@@ -585,9 +578,9 @@ export function ensureRowForVariantGroupInComponentArena(
           r.rowKey && isGlobalVariantGroup(ensureKnownVariantGroup(r.rowKey)),
       );
       if (index >= 0) {
-        arena.matrix.rows.splice(index, 0, row);
+        arena.matrix.rows = arrayInsertAt(arena.matrix.rows, row, index);
       } else {
-        arena.matrix.rows.push(row);
+        arena.matrix.rows = [...arena.matrix.rows, row];
       }
     }
 
@@ -760,9 +753,10 @@ export function ensureComponentArenaColsOrder(
     const row = getRowForVariantGroupInComponentArena(arena, group);
 
     if (row) {
-      replaceAll(
+      row.cols = sortAs(
         row.cols,
-        sortAs(row.cols, getOrderedVariants(site, group), (c) => c.cellKey),
+        getOrderedVariants(site, group),
+        (c) => c.cellKey,
       );
     }
   }
@@ -772,16 +766,15 @@ export function ensureComponentArenaRowsOrder(
   site: Site,
   component: Component,
 ) {
-  const arenaRows = getComponentArena(site, component)?.matrix.rows;
+  const arena = getComponentArena(site, component);
 
-  if (arenaRows) {
+  if (arena) {
     const variantGroupPositionByUid = Object.fromEntries(
       component.variantGroups.map((it, i) => [it.uid, i]),
     );
-    const orderedRows = orderBy(arenaRows, (it) =>
+    arena.matrix.rows = orderBy(arena.matrix.rows, (it) =>
       it.rowKey ? variantGroupPositionByUid[it.rowKey.uid] : 0,
     );
-    arenaRows.splice(0, arenaRows.length, ...orderedRows);
   }
 }
 
@@ -803,12 +796,14 @@ export function moveVariantCellInComponentArena(
 
   const cell = oldRow?.cols.find((c) => c.cellKey === variant);
 
-  if (!cell) {
+  if (!oldRow || !cell) {
     return;
   }
 
-  remove(oldRow?.cols ?? [], cell);
-  newRow?.cols.push(cell);
+  oldRow.cols = arrayWithout(oldRow.cols, cell);
+  if (newRow) {
+    newRow.cols = [...newRow.cols, cell];
+  }
 
   ensureComponentArenaColsOrder(site, component, oldParent);
   ensureComponentArenaColsOrder(site, component, newParent);

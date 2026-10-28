@@ -55,6 +55,7 @@ import { mkSiteScopedUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { isStylePropSet } from "@/wab/client/utils/style-utils";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { arrayRemoveAt } from "@/wab/shared/collections";
 import { spawn } from "@/wab/shared/common";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import {
@@ -113,7 +114,7 @@ const AnimationSequenceEditModal = observer(
               percentage: 0,
               rs: mkRuleSet({}),
             });
-            sequence.keyframes.push(defaultKeyframe);
+            sequence.keyframes = [...sequence.keyframes, defaultKeyframe];
             setSelectedKeyframe(defaultKeyframe);
             return ok();
           }),
@@ -160,7 +161,10 @@ const AnimationSequenceEditModal = observer(
                   studioCtx.change(() => {
                     const keyframeIndex = sequence.keyframes.indexOf(keyframe);
                     if (keyframeIndex > -1) {
-                      sequence.keyframes.splice(keyframeIndex, 1);
+                      sequence.keyframes = arrayRemoveAt(
+                        sequence.keyframes,
+                        keyframeIndex,
+                      );
                     }
                     // If we deleted the selected keyframe, select another one
                     if (
@@ -193,7 +197,7 @@ const AnimationSequenceEditModal = observer(
                         studioCtx.change(() => {
                           selectedKeyframe.percentage = numVal;
                           // Sort keyframes by percentage to maintain order
-                          sequence.keyframes.sort(
+                          sequence.keyframes = [...sequence.keyframes].sort(
                             (a, b) => a.percentage - b.percentage,
                           );
                           return ok();
@@ -467,9 +471,9 @@ export const AnimationSequencesPanel = observer(
     };
 
     const makeAnimationSequencesItems = (
-      animationSequences: AnimationSequence[],
+      allAnimationSequences: ReadonlyArray<AnimationSequence>,
     ) => {
-      animationSequences = animationSequences.filter(
+      let animationSequences = allAnimationSequences.filter(
         (animationSequence) =>
           matcher.matches(animationSequence.name) ||
           justAdded === animationSequence,

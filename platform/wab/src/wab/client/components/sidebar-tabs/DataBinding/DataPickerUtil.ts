@@ -368,7 +368,7 @@ export function getContextDependentValuesForImplicitState(
 
 export function extractExpectedValues(
   propType: StudioPropType<any>,
-  enumValues: ChoiceValue[] | undefined,
+  enumValues: ReadonlyArray<ChoiceValue> | undefined,
 ) {
   if (typeof propType === "object") {
     if ("exprHint" in propType) {

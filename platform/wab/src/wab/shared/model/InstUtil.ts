@@ -1,7 +1,12 @@
 import { ensure, tuple, xor } from "@/wab/shared/common";
 import * as classes from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
-import { Class, Field, MetaRuntime } from "@/wab/shared/model/model-meta";
+import {
+  Class,
+  Field,
+  MetaRuntime,
+  isModelInst,
+} from "@/wab/shared/model/model-meta";
 import L from "lodash";
 
 export class InstUtil {
@@ -23,7 +28,7 @@ export class InstUtil {
   }
 
   isObjInst(inst: any): inst is classes.ObjInst {
-    return !!inst && !!this.tryGetInstClass(inst);
+    return isModelInst(inst);
   }
 
   getInstClass(inst: classes.ObjInst) {
@@ -78,10 +83,7 @@ export class InstUtil {
             .allFields(this.getInstClass(x))
             .map((f) =>
               f.name !== "uuid" || !ignoreUuidsAndNils
-                ? fcmp(
-                    this.meta.readField(x, f.name),
-                    this.meta.readField(y, f.name),
-                  )
+                ? fcmp(x[f.name], y[f.name])
                 : true,
             )
             .every(L.identity);

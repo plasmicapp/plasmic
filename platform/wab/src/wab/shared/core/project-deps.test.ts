@@ -341,7 +341,10 @@ describe("upgradeProjectDeps", () => {
       styleTokens: [oldDepToken],
     });
     oldVariant.parent = oldDepSite.activeScreenVariantGroup!;
-    oldDepSite.activeScreenVariantGroup!.variants.push(oldVariant);
+    oldDepSite.activeScreenVariantGroup!.variants = [
+      ...oldDepSite.activeScreenVariantGroup!.variants,
+      oldVariant,
+    ];
 
     const oldDep = new ProjectDependency({
       name: "DesignSystem",
@@ -375,7 +378,10 @@ describe("upgradeProjectDeps", () => {
       styleTokens: [newDepToken],
     });
     newVariant.parent = newDepSite.activeScreenVariantGroup!;
-    newDepSite.activeScreenVariantGroup!.variants.push(newVariant);
+    newDepSite.activeScreenVariantGroup!.variants = [
+      ...newDepSite.activeScreenVariantGroup!.variants,
+      newVariant,
+    ];
 
     const newDep = new ProjectDependency({
       name: "DesignSystem",
@@ -470,7 +476,7 @@ describe("upgradeProjectDeps", () => {
       (group as any).uuid = groupUuid;
 
       const depSite = createSite();
-      depSite.globalVariantGroups.push(group);
+      depSite.globalVariantGroups = [...depSite.globalVariantGroups, group];
 
       return {
         variant,
@@ -501,7 +507,7 @@ describe("upgradeProjectDeps", () => {
       tplTree: mkTplTagX("div"),
       type: ComponentType.Plain,
     });
-    mainSite.components.push(component);
+    mainSite.components = [...mainSite.components, component];
     trackComponentSite(component, mainSite);
     trackComponentRoot(component);
 
@@ -511,7 +517,7 @@ describe("upgradeProjectDeps", () => {
     RSH(vs.rs, component.tplTree).set("color", "red");
 
     const arena = mkComponentArena({ site: mainSite, component });
-    mainSite.componentArenas.push(arena);
+    mainSite.componentArenas = [...mainSite.componentArenas, arena];
 
     // Verify initial state: a matrix frame targets the OLD variant
     const depFrames = getArenaFrames(arena).filter((f) =>
@@ -554,7 +560,7 @@ describe("upgradeProjectDeps", () => {
       (group as any).uuid = groupUuid;
       if (opts.withVariant) {
         variant.parent = group;
-        group.variants.push(variant);
+        group.variants = [...group.variants, variant];
       }
 
       return {
@@ -591,7 +597,7 @@ describe("upgradeProjectDeps", () => {
       tplTree: columns,
       type: ComponentType.Plain,
     });
-    mainSite.components.push(component);
+    mainSite.components = [...mainSite.components, component];
     trackComponentSite(component, mainSite);
     trackComponentRoot(component);
 
@@ -654,7 +660,7 @@ describe("upgradeProjectDeps", () => {
       type: typeFactory.text(),
       paramType: "prop",
     });
-    kit3.intro.params.push(align);
+    kit3.intro.params = [...kit3.intro.params, align];
 
     const site = createSite({ projectDependencies: [kit1.dep] });
     const page = new TplMgr({ site }).addComponent({
@@ -676,9 +682,10 @@ describe("upgradeProjectDeps", () => {
 
   test("keeps an arg on a future version's param until the upgrade to that version", () => {
     const { site, intro, kit1, kit2, kit3, align } = setupIntroUpgrades();
-    intro.vsettings[0].args.push(
+    intro.vsettings[0].args = [
+      ...intro.vsettings[0].args,
       new Arg({ param: align, expr: codeLit("center") }),
-    );
+    ];
 
     upgradeProjectDeps(site, [
       { oldDep: kit1.dep, newDep: kit2.dep, futureDeps: [kit3.dep] },
@@ -698,9 +705,10 @@ describe("upgradeProjectDeps", () => {
       type: typeFactory.text(),
       paramType: "prop",
     });
-    intro.vsettings[0].args.push(
+    intro.vsettings[0].args = [
+      ...intro.vsettings[0].args,
       new Arg({ param: orphan, expr: codeLit("lost") }),
-    );
+    ];
 
     upgradeProjectDeps(site, [
       { oldDep: kit1.dep, newDep: kit2.dep, futureDeps: [kit3.dep] },

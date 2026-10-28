@@ -486,7 +486,10 @@ export function removeWhere<T>(xs: T[], f: (x: T) => boolean) {
   return xs;
 }
 
-export function isSubList<T>(list: T[], maybeSubList: T[]) {
+export function isSubList<T>(
+  list: ReadonlyArray<T>,
+  maybeSubList: ReadonlyArray<T>,
+) {
   return maybeSubList.every((x) => list.includes(x));
 }
 
@@ -587,7 +590,7 @@ export function lastWhere<T>(
   return tuple(null, -1);
 }
 
-export const withoutNils = <T>(xs: Array<T | undefined | null>): T[] =>
+export const withoutNils = <T>(xs: ReadonlyArray<T | undefined | null>): T[] =>
   xs.filter((x): x is T => x != null);
 
 export const withoutFalsy = <T>(xs: Array<T | Falsy>): T[] =>
@@ -1004,7 +1007,7 @@ export function xExtend<K, V>(dst: Map<K, V>, ...srcs: Map<K, V>[]) {
   return dst;
 }
 
-export function xGroupBy<K, V>(list: V[], keyFunc: (v: V) => K) {
+export function xGroupBy<K, V>(list: ReadonlyArray<V>, keyFunc: (v: V) => K) {
   const map = new Map<K, V[]>();
   for (const val of list) {
     const key = keyFunc(val);
@@ -1119,7 +1122,7 @@ export function ensureNonEmpty<T>(xs: T[]): T[] {
   return xs;
 }
 
-export function strictFind<T>(xs: T[], pred: (cc: T) => boolean) {
+export function strictFind<T>(xs: ReadonlyArray<T>, pred: (cc: T) => boolean) {
   return ensure(xs.find(pred), "Failed to find");
 }
 
@@ -1279,10 +1282,21 @@ export function groupConsecBy<T, K>(
   return groups;
 }
 
-export function ensureArray<T>(x: T | T[] | undefined): T[] {
+/** `Array.isArray`, which also narrows a `ReadonlyArray` */
+export function isReadonlyArray<T>(v: any): v is ReadonlyArray<T> {
+  return Array.isArray(v);
+}
+
+export function ensureArray<T>(x: T | T[] | undefined): T[];
+export function ensureArray<T>(
+  x: T | ReadonlyArray<T> | undefined,
+): ReadonlyArray<T>;
+export function ensureArray<T>(
+  x: T | ReadonlyArray<T> | undefined,
+): ReadonlyArray<T> {
   if (x == null) {
     return [];
-  } else if (Array.isArray(x)) {
+  } else if (isReadonlyArray<T>(x)) {
     return x;
   } else {
     return [x];
@@ -1299,7 +1313,7 @@ export function maybeArray<T, U>(xs: T[] | T, f: (ys: T[]) => U[]): U[] | U {
   }
 }
 
-export function only<T>(xs: T[]): T {
+export function only<T>(xs: ReadonlyArray<T>): T {
   if (xs.length !== 1) {
     throw new Error(`xs: ${xs}`);
   }
@@ -1366,7 +1380,7 @@ export function simpleWords(text: string) {
 export const tuple = <T extends any[]>(...args: T): T => args;
 
 export function filterMapTruthy<T, U>(
-  xs: T[],
+  xs: ReadonlyArray<T>,
   f: (x: T, i: number) => U | Falsy,
 ): U[] {
   return xs.map(f).filter((x) => x) as U[];
@@ -2294,7 +2308,11 @@ export function moveIndex<T>(array: T[], fromIndex: number, toIndex: number) {
  * in the `targetArray`, with `key` mapping elements of `array`
  * to `targetArray`
  */
-export function sortAs<T, U>(array: T[], targetArray: U[], key: (t: T) => U) {
+export function sortAs<T, U>(
+  array: ReadonlyArray<T>,
+  targetArray: ReadonlyArray<U>,
+  key: (t: T) => U,
+) {
   const indices = new Map(targetArray.map((u, i) => tuple(u, i)));
   return sortBy(array, (t) => indices.get(key(t)));
 }
@@ -2303,7 +2321,7 @@ export function sorted<T>(array: T[]) {
   return sortBy(array, strictIdentity);
 }
 
-export function sortBy<T, K>(array: T[], keyFn: (t: T) => K) {
+export function sortBy<T, K>(array: ReadonlyArray<T>, keyFn: (t: T) => K) {
   const sorter = (a: T, b: T) => {
     const aKey = keyFn(a);
     const bKey = keyFn(b);
@@ -2312,7 +2330,10 @@ export function sortBy<T, K>(array: T[], keyFn: (t: T) => K) {
   return array.slice().sort(sorter);
 }
 
-export function sortByKeys<T, K extends any[]>(array: T[], keyFn: (t: T) => K) {
+export function sortByKeys<T, K extends any[]>(
+  array: ReadonlyArray<T>,
+  keyFn: (t: T) => K,
+) {
   const sorter = (a: T, b: T) => {
     const aKeys = keyFn(a);
     const bKeys = keyFn(b);
@@ -2440,7 +2461,7 @@ export function arrayOf<T>(count: number, factory: () => T) {
 }
 
 export function partitions<T>(
-  values: T[],
+  values: ReadonlyArray<T>,
   predicates: ((val: T) => boolean)[],
 ) {
   const results = arrayOf(predicates.length + 1, () => [] as T[]);

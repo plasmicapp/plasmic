@@ -4,7 +4,7 @@ import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { getBaseVariant, mkVariantSetting } from "@/wab/shared/Variants";
 import { Bundler } from "@/wab/shared/bundler";
-import { arrayRemove } from "@/wab/shared/collections";
+import { arrayWithout } from "@/wab/shared/collections";
 import { ensure, jsonClone, mkUuid } from "@/wab/shared/common";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import { createSite, writeable } from "@/wab/shared/core/sites";
@@ -56,25 +56,19 @@ async function observedTestMerge({
   const aUuid = mkUuid();
   const draftASite = bundler.unbundle(jsonClone(bundle), aUuid) as Site;
   const { studioCtx: studioCtxA } = fakeStudioCtx({ site: draftASite });
-  await studioCtxA.changeObserved(
-    () => draftASite.components,
-    () => {
-      a(draftASite, new TplMgr({ site: draftASite }));
-      return ok();
-    },
-  );
+  await studioCtxA.change(() => {
+    a(draftASite, new TplMgr({ site: draftASite }));
+    return ok();
+  });
   studioCtxA.dispose();
 
   const bUuid = mkUuid();
   const draftBSite = bundler.unbundle(jsonClone(bundle), bUuid) as Site;
   const { studioCtx: studioCtxB } = fakeStudioCtx({ site: draftBSite });
-  await studioCtxB.changeObserved(
-    () => draftBSite.components,
-    () => {
-      b(draftBSite, new TplMgr({ site: draftBSite }));
-      return ok();
-    },
-  );
+  await studioCtxB.change(() => {
+    b(draftBSite, new TplMgr({ site: draftBSite }));
+    return ok();
+  });
   studioCtxB.dispose();
 
   const finalABundle = bundler.bundle(draftASite, aUuid, lastBundleVersion);
@@ -114,29 +108,33 @@ describe("Optimized merging with updatedAt", () => {
         return comp;
       }
 
-      ancestorSite.components.push(mkComponentWithUpdatedAt("c1", null));
-      leftSite.components.push(mkComponentWithUpdatedAt("c1", null));
-      rightSite.components.push(mkComponentWithUpdatedAt("c1", null));
-
-      ancestorSite.components.push(mkComponentWithUpdatedAt("c2", null));
-      leftSite.components.push(mkComponentWithUpdatedAt("c2", 1));
-      rightSite.components.push(mkComponentWithUpdatedAt("c2", 2));
-
-      ancestorSite.components.push(mkComponentWithUpdatedAt("c3", 1));
-      leftSite.components.push(mkComponentWithUpdatedAt("c3", 1));
-      rightSite.components.push(mkComponentWithUpdatedAt("c3", 2));
-
-      ancestorSite.components.push(mkComponentWithUpdatedAt("c4", 1));
-      leftSite.components.push(mkComponentWithUpdatedAt("c4", 2));
-      rightSite.components.push(mkComponentWithUpdatedAt("c4", 1));
-
-      ancestorSite.components.push(mkComponentWithUpdatedAt("c5", 1));
-      leftSite.components.push(mkComponentWithUpdatedAt("c5", 2));
-      rightSite.components.push(mkComponentWithUpdatedAt("c5", 2));
-
-      ancestorSite.components.push(mkComponentWithUpdatedAt("c6", 2));
-      leftSite.components.push(mkComponentWithUpdatedAt("c6", 2));
-      rightSite.components.push(mkComponentWithUpdatedAt("c6", 2));
+      ancestorSite.components = [
+        ...ancestorSite.components,
+        mkComponentWithUpdatedAt("c1", null),
+        mkComponentWithUpdatedAt("c2", null),
+        mkComponentWithUpdatedAt("c3", 1),
+        mkComponentWithUpdatedAt("c4", 1),
+        mkComponentWithUpdatedAt("c5", 1),
+        mkComponentWithUpdatedAt("c6", 2),
+      ];
+      leftSite.components = [
+        ...leftSite.components,
+        mkComponentWithUpdatedAt("c1", null),
+        mkComponentWithUpdatedAt("c2", 1),
+        mkComponentWithUpdatedAt("c3", 1),
+        mkComponentWithUpdatedAt("c4", 2),
+        mkComponentWithUpdatedAt("c5", 2),
+        mkComponentWithUpdatedAt("c6", 2),
+      ];
+      rightSite.components = [
+        ...rightSite.components,
+        mkComponentWithUpdatedAt("c1", null),
+        mkComponentWithUpdatedAt("c2", 2),
+        mkComponentWithUpdatedAt("c3", 2),
+        mkComponentWithUpdatedAt("c4", 1),
+        mkComponentWithUpdatedAt("c5", 2),
+        mkComponentWithUpdatedAt("c6", 2),
+      ];
 
       const updatedComponents = inferUpdatedComponents(
         ancestorSite,
@@ -160,30 +158,32 @@ describe("Optimized merging with updatedAt", () => {
         ancestorSite: () => {
           const site = basicSite();
           tokenRef = mkTokenRef(site.styleTokens[0]);
-          (site.components[0].tplTree as TplTag).vsettings[0].rs.values[
-            "line-height"
-          ] = tokenRef;
+          const rs = (site.components[0].tplTree as TplTag).vsettings[0].rs;
+          rs.values = { ...rs.values, "line-height": tokenRef };
           return site;
         },
         // Removing referenced token in the ancestor branch, normally this would trigger changes in the reference
         // but since it's not observed, it won't be considered updated
         a: (site) => {
-          arrayRemove(site.styleTokens, site.styleTokens[0]);
+          site.styleTokens = arrayWithout(
+            site.styleTokens,
+            site.styleTokens[0],
+          );
 
           // Manually fixing the token reference, because token operations are in site ops, which are client side only
           // (e.g it triggers some modals for the user to confirm)
-          (site.components[0].tplTree as TplTag).vsettings[0].rs.values[
-            "line-height"
-          ] = "1";
+          const rs = (site.components[0].tplTree as TplTag).vsettings[0].rs;
+          rs.values = { ...rs.values, "line-height": "1" };
         },
         b: (site) => {
           site.styleTokens[1].value = mkTokenRef(site.styleTokens[0]);
-          site.styleTokens[1].variantedValues.push(
+          site.styleTokens[1].variantedValues = [
+            ...site.styleTokens[1].variantedValues,
             new VariantedValue({
               value: mkTokenRef(site.styleTokens[0]),
               variants: [site.globalVariantGroups[0].variants[0]],
             }),
-          );
+          ];
         },
         changeUpdatedAt: false,
       });
@@ -270,28 +270,30 @@ describe("Optimized merging with updatedAt", () => {
         ancestorSite: () => {
           const site = basicSite();
           tokenRef = mkTokenRef(site.styleTokens[0]);
-          (site.components[0].tplTree as TplTag).vsettings[0].rs.values[
-            "line-height"
-          ] = tokenRef;
+          const rs = (site.components[0].tplTree as TplTag).vsettings[0].rs;
+          rs.values = { ...rs.values, "line-height": tokenRef };
           initialUpdatedAt = site.components[0].updatedAt;
           return site;
         },
-        // Removing referenced token in the ancestor branch, normally this would trigger changes in the reference
-        // but since it's not observed, it won't be considered updated
+        // Removing the referenced token and fixing its reference by hand. The
+        // site is observed, so the component is considered updated.
         a: (site) => {
-          arrayRemove(site.styleTokens, site.styleTokens[0]);
-          (site.components[0].tplTree as TplTag).vsettings[0].rs.values[
-            "line-height"
-          ] = "1";
+          site.styleTokens = arrayWithout(
+            site.styleTokens,
+            site.styleTokens[0],
+          );
+          const rs = (site.components[0].tplTree as TplTag).vsettings[0].rs;
+          rs.values = { ...rs.values, "line-height": "1" };
         },
         b: (site) => {
           site.styleTokens[1].value = mkTokenRef(site.styleTokens[0]);
-          site.styleTokens[1].variantedValues.push(
+          site.styleTokens[1].variantedValues = [
+            ...site.styleTokens[1].variantedValues,
             new VariantedValue({
               value: mkTokenRef(site.styleTokens[0]),
               variants: [site.globalVariantGroups[0].variants[0]],
             }),
-          );
+          ];
         },
       });
 

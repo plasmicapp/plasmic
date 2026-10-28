@@ -1,48 +1,63 @@
 import {
-  clearGlobalObservable,
   disposeOwnedComputedFns,
-  makeGlobalObservable,
+  keyedComputedFn,
   maybeComputedFn,
-  mutateGlobalObservable,
   ownedComputedFn,
 } from "@/wab/shared/mobx-util";
 import { configure, observable, onBecomeUnobserved } from "mobx";
 
-describe("Global Observable", () => {
+describe("maybeComputedFn", () => {
   beforeAll(() => {
     configure({ enforceActions: "never" });
   });
-  it("works with maybeComputedFn when created before", () => {
-    makeGlobalObservable();
+
+  it("caches when an arg is observable", () => {
     let runCounter = 0;
-    const fixedObservable = observable.box(0);
-    const cachedFn = maybeComputedFn((_) => {
+    const box = observable.box(0);
+    const cachedFn = maybeComputedFn((b: typeof box) => {
       runCounter = runCounter + 1;
+      return b.get();
     });
-    cachedFn(fixedObservable);
-    cachedFn(fixedObservable);
-    mutateGlobalObservable();
-    cachedFn(fixedObservable);
-    cachedFn(fixedObservable);
+    expect(cachedFn(box)).toBe(0);
+    expect(cachedFn(box)).toBe(0);
+    expect(runCounter).toBe(1);
+    box.set(1);
+    expect(cachedFn(box)).toBe(1);
+    expect(cachedFn(box)).toBe(1);
     expect(runCounter).toBe(2);
   });
 
-  it("does not work with maybeComputedFn when not created", () => {
+  it("does not cache when no arg is observable", () => {
     let runCounter = 0;
-    const fixedObservable = observable.box(0);
-    const cachedFn = maybeComputedFn((_) => {
+    const cachedFn = maybeComputedFn((_: object) => {
       runCounter = runCounter + 1;
     });
-    cachedFn(fixedObservable);
-    cachedFn(fixedObservable);
-    mutateGlobalObservable();
-    cachedFn(fixedObservable);
-    cachedFn(fixedObservable);
-    expect(runCounter).toBe(1);
+    const arg = {};
+    cachedFn(arg);
+    cachedFn(arg);
+    expect(runCounter).toBe(2);
   });
+});
 
-  afterEach(() => {
-    clearGlobalObservable();
+describe("keyedComputedFn", () => {
+  it("caches by key when an arg is observable", () => {
+    let runCounter = 0;
+    const box = observable.box(0);
+    const cachedFn = keyedComputedFn(
+      (b: typeof box, _key: string) => {
+        runCounter = runCounter + 1;
+        return b.get();
+      },
+      { keyFn: (_b, key) => key },
+    );
+    cachedFn(box, "a");
+    cachedFn(box, "a");
+    expect(runCounter).toBe(1);
+    cachedFn(box, "b");
+    expect(runCounter).toBe(2);
+    box.set(1);
+    expect(cachedFn(box, "a")).toBe(1);
+    expect(runCounter).toBe(3);
   });
 });
 

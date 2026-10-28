@@ -1,3 +1,4 @@
+import { isReadonlyArray, tryArrayWithout } from "@/wab/shared/collections";
 import * as common from "@/wab/shared/common";
 import {
   assert,
@@ -11,7 +12,6 @@ import {
   maybe,
   only,
   remove,
-  removeWhere,
   replace,
   replaceAll,
   replaceMultiple,
@@ -88,10 +88,11 @@ import { notification } from "antd";
 import L from "lodash";
 
 type TplNodeOrSlot = TplNode | SlotSelection;
-export type TplQueryInput = TplQuery | TplNodeOrSlot | TplNodeOrSlot[];
+export type TplQueryInput =
+  TplQuery | TplNodeOrSlot | ReadonlyArray<TplNodeOrSlot>;
 
 type UpdateSlotArgSpec = {
-  newChildren: TplNode[];
+  newChildren: ReadonlyArray<TplNode>;
   updateArg: () => void;
 };
 
@@ -103,12 +104,13 @@ export class TplQuery {
   readonly nodes: (TplNode | SlotSelection)[];
 
   constructor(input: TplQueryInput) {
-    this.nodes = switchType(input)
-      .when(TplNode, (x) => [x])
-      .when(SlotSelection, (x) => [x])
-      .when(Array, (x: TplNodeOrSlot[]) => L.uniq(x))
-      .when(TplQuery, (x: TplQuery) => x.nodes)
-      .result();
+    this.nodes = isReadonlyArray<TplNodeOrSlot>(input)
+      ? L.uniq(input)
+      : switchType(input)
+          .when(TplNode, (x) => [x])
+          .when(SlotSelection, (x) => [x])
+          .when(TplQuery, (x: TplQuery) => x.nodes)
+          .result();
   }
 
   private getTplComponent() {
@@ -146,7 +148,7 @@ export class TplQuery {
    */
   private static _updateParentSlotContaining(
     child: TplNode,
-    newChildren: TplNode[],
+    newChildren: ReadonlyArray<TplNode>,
     mutate: (children: TplNode[]) => void,
     opts: { deepRemove: boolean },
   ) {
@@ -186,7 +188,7 @@ export class TplQuery {
    */
   private static _updateChildren(
     parent: TplNode | SlotSelection,
-    newChildren: TplNode[],
+    newChildren: ReadonlyArray<TplNode>,
     func: (children: TplNode[]) => void,
     opts: { deepRemove: boolean },
   ) {
@@ -196,18 +198,32 @@ export class TplQuery {
       .when(SlotSelection, (p) => {
         updateSlot(p.toTplSlotSelection().tpl, p.slotParam.variable.name);
       })
-      .when(TplTag, (p: /*TWZ*/ TplTag) => {
-        TplQuery._updateChildArray(p, p.children, newChildren, func, opts);
+      .when(TplTag, (p: TplTag) => {
+        TplQuery._updateChildArrayDynamic(
+          p,
+          () => p.children,
+          newChildren,
+          () => {
+            const children = [...p.children];
+            func(children);
+            p.children = children;
+          },
+          opts,
+        );
       })
       .when(TplComponent, (p) => {
         updateSlot(p, "children");
       })
       .when(TplSlot, (p) => {
-        TplQuery._updateChildArray(
+        TplQuery._updateChildArrayDynamic(
           p,
-          p.defaultContents,
+          () => p.defaultContents,
           newChildren,
-          func,
+          () => {
+            const children = [...p.defaultContents];
+            func(children);
+            p.defaultContents = children;
+          },
           opts,
         );
       })
@@ -222,7 +238,7 @@ export class TplQuery {
   private static _updateSlot(
     parent: TplComponent,
     slotName: string,
-    newChildren: TplNode[],
+    newChildren: ReadonlyArray<TplNode>,
     func: (children: TplNode[]) => void,
     opts: { deepRemove: boolean },
   ) {
@@ -237,24 +253,15 @@ export class TplQuery {
           tpl: isKnownRenderExpr(arg.expr) ? arg.expr.tpl.slice(0) : [],
         });
         const expr = ensureKnownRenderExpr(arg.expr);
-        return { newChildren, updateArg: () => func(expr.tpl) };
+        return {
+          newChildren,
+          updateArg: () => {
+            const tpl = [...expr.tpl];
+            func(tpl);
+            expr.tpl = tpl;
+          },
+        };
       },
-      opts,
-    );
-  }
-
-  private static _updateChildArray(
-    parent: TplNode,
-    children: TplNode[],
-    newChildren: TplNode[],
-    func: (children: TplNode[]) => void,
-    opts: { deepRemove: boolean },
-  ) {
-    this._updateChildArrayDynamic(
-      parent,
-      () => children,
-      newChildren,
-      () => func(children),
       opts,
     );
   }
@@ -275,8 +282,8 @@ export class TplQuery {
    */
   private static _updateChildArrayDynamic(
     parent: TplNode,
-    getChildren: () => TplNode[],
-    newChildren: TplNode[],
+    getChildren: () => ReadonlyArray<TplNode>,
+    newChildren: ReadonlyArray<TplNode>,
     func: () => void,
     opts: {
       skipCycleCheck?: boolean;
@@ -324,7 +331,7 @@ export class TplQuery {
 
   private static checkComponentCycles(
     destOwningComponent: Component,
-    newChildren: TplNode[],
+    newChildren: ReadonlyArray<TplNode>,
   ) {
     if (detectComponentCycle(destOwningComponent, newChildren)) {
       throw new ComponentCycleUserError();
@@ -369,15 +376,19 @@ export class TplQuery {
     if (node.parent) {
       switchType(node.parent)
         .when(TplTag, (parent) => {
-          common.tryRemove(parent.children, node);
+          parent.children = tryArrayWithout(parent.children, node);
         })
         .when(TplSlot, (parent) => {
-          common.tryRemove(parent.defaultContents, node);
+          parent.defaultContents = tryArrayWithout(
+            parent.defaultContents,
+            node,
+          );
         })
         .when(TplComponent, (parent) => {
           const arg = $$$(parent).tryGetArgContainingTpl(node);
           if (arg && isKnownRenderExpr(arg.expr)) {
-            common.tryRemove(arg.expr.tpl, node);
+            const expr = arg.expr;
+            expr.tpl = tryArrayWithout(expr.tpl, node);
           }
         })
         .result();
@@ -777,13 +788,13 @@ export class TplQuery {
     return this;
   }
 
-  replaceWithMultiple(replacements: TplNode[]) {
+  replaceWithMultiple(replacements: ReadonlyArray<TplNode>) {
     assert(this.nodes.length <= 1, () => "only works for single selected node");
     const node = ensureKnownTplNode(only(this.nodes));
     TplQuery._updateParentSlotContaining(
       node,
       replacements,
-      (children) => replaceMultiple(children, node, replacements),
+      (children) => replaceMultiple(children, node, [...replacements]),
       { deepRemove: true },
     );
     return this;
@@ -942,12 +953,15 @@ export class TplQuery {
     return vs ? vs.args : [];
   }
 
-  getBaseArgs() {
-    const vs = ensure(
+  private getBaseComponentVariantSetting() {
+    return ensure(
       tryGetBaseVariantSetting(this.getTplComponent()),
       () => `Expected base variant settings to exist`,
     );
-    return vs.args;
+  }
+
+  getBaseArgs() {
+    return this.getBaseComponentVariantSetting().args;
   }
 
   readBaseAttrs() {
@@ -1002,6 +1016,11 @@ export class TplQuery {
     );
   }
 
+  private appendBaseArg(arg: Arg) {
+    const vs = this.getBaseComponentVariantSetting();
+    vs.args = [...vs.args, arg];
+  }
+
   updateSlotArg(
     argName: string,
     func: (arg: Arg) => UpdateSlotArgSpec,
@@ -1027,7 +1046,7 @@ export class TplQuery {
       () => {
         spec.updateArg();
         if (!maybeArg) {
-          this.getBaseArgs().push(arg);
+          this.appendBaseArg(arg);
         }
       },
       opts,
@@ -1037,10 +1056,9 @@ export class TplQuery {
 
   tryDelSlotArg(argName) {
     check(this.isSlot(argName));
-    return removeWhere(
-      this.getBaseArgs(),
-      (arg) => arg.param.variable.name === argName,
-    );
+    const vs = this.getBaseComponentVariantSetting();
+    vs.args = vs.args.filter((arg) => arg.param.variable.name !== argName);
+    return vs.args;
   }
 
   param(paramName) {

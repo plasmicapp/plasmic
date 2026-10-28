@@ -76,7 +76,7 @@ export function basicSite({
     }
   }
 
-  site.userManagedFonts.push("MyFont");
+  site.userManagedFonts = [...site.userManagedFonts, "MyFont"];
 
   tplMgr.addImageAsset({
     type: ImageAssetType.Picture,

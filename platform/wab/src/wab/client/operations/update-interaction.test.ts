@@ -89,7 +89,7 @@ describe("updateInteraction", () => {
     const { page, first, second } = setupWithSteps();
     const handler = first.parent;
     const other = mkInteraction(handler, "dataSourceOp", "Fetch data", {});
-    handler.interactions.push(other);
+    handler.interactions = [...handler.interactions, other];
 
     expect(
       updateInteraction(page, other, {

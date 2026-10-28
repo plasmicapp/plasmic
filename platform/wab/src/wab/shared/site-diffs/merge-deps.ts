@@ -22,6 +22,7 @@ export function fixProjectDependencies(
 
   // Each entry contains a list of updates to run sequentially
   const updates: [ProjectDependency, ProjectDependency | undefined][][] = [];
+  const newDeps: ProjectDependency[] = [];
 
   allDeps.forEach((pkgId) => {
     const ancestorDep = ancestorDeps.get(pkgId);
@@ -93,11 +94,12 @@ export function fixProjectDependencies(
       } else {
         const newDep = maybeLeft || maybeRight;
         if (newDep) {
-          merged.projectDependencies.push(newDep);
+          newDeps.push(newDep);
         }
       }
     }
   });
+  merged.projectDependencies = [...merged.projectDependencies, ...newDeps];
 
   while (updates.length > 0) {
     // Get the next list of updates
@@ -110,23 +112,23 @@ export function fixProjectDependencies(
     removeWhere(updates, (list) => list.length === 0);
 
     // Fix merged.projectDependencies so it contains only the `oldVersion`
-    removeWhere(
-      merged.projectDependencies,
+    const keptDeps = merged.projectDependencies.filter(
       (dep) =>
-        !!nextUpdateRound.find(
+        !nextUpdateRound.find(
           ({ oldDep }) =>
             oldDep.pkgId === dep.pkgId && oldDep.version !== dep.version,
         ),
     );
-    nextUpdateRound.forEach(({ oldDep }) => {
-      if (
-        !merged.projectDependencies.find(
-          (dep) => oldDep.pkgId === dep.pkgId && oldDep.version === dep.version,
-        )
-      ) {
-        merged.projectDependencies.push(oldDep);
+    const isKept = (oldDep: ProjectDependency) =>
+      keptDeps.some(
+        (dep) => oldDep.pkgId === dep.pkgId && oldDep.version === dep.version,
+      );
+    for (const { oldDep } of nextUpdateRound) {
+      if (!isKept(oldDep)) {
+        keptDeps.push(oldDep);
       }
-    });
+    }
+    merged.projectDependencies = keptDeps;
 
     // Upgrade `oldVersion` to `newVersion`
     upgradeProjectDeps(merged, nextUpdateRound);

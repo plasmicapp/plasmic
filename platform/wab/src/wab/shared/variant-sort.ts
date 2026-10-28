@@ -51,7 +51,7 @@ export function sortedVariantCombos(
 }
 
 export function sortedVariantSettings(
-  vsettings: VariantSetting[],
+  vsettings: ReadonlyArray<VariantSetting>,
   sorter: VariantComboSorter,
 ) {
   return sortByKeys(vsettings, (vs) => sorter(vs.variants));
@@ -156,7 +156,7 @@ export function isAncestorScreenVariant(
  * given the activeCombo, and returns them in sorted order
  */
 export function sortedVariantSettingStack(
-  vsettings: VariantSetting[],
+  vsettings: ReadonlyArray<VariantSetting>,
   activeCombo: VariantCombo,
   sorter: VariantComboSorter,
 ) {
@@ -168,7 +168,7 @@ export function sortedVariantSettingStack(
 }
 
 export function getDependentVariantSettings(
-  vsettings: VariantSetting[],
+  vsettings: ReadonlyArray<VariantSetting>,
   combo: VariantCombo,
   ignorePrivateStyleVariants = true,
 ) {
@@ -198,6 +198,7 @@ export const makeGlobalVariantComboSorter = maybeComputedFn(
     const globalVariantRanks = xIndexMap([
       ...site.projectDependencies.flatMap((dep) =>
         dep.site.globalVariantGroups
+          .slice()
           .sort(compareGlobalVariantGroup)
           .flatMap((vg) => sortedGlobalVariants(site, vg)),
       ),
@@ -261,7 +262,7 @@ export const makeVariantComboSorter = maybeComputedFn(
 
 export function partitionVariants(
   component: Component,
-  variants: Variant[],
+  variants: VariantCombo,
   ensureBase?: boolean,
 ) {
   const [

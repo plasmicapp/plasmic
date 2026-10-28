@@ -103,12 +103,13 @@ describe("FocusHeuristics", function () {
   });
 
   const site = createSite();
-  site.components.push(
+  site.components = [
+    ...site.components,
     componentB,
     componentA,
     slottedComponent,
     nestingSlottedComponent,
-  );
+  ];
 
   beforeEach(function () {
     evalTpl = function (

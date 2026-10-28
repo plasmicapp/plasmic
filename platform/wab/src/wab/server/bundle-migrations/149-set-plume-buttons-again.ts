@@ -39,12 +39,13 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
         if (!arg) {
           // If nothing specified so far, then explicitly set it to
           // true to preserve previous behavior
-          baseVs.args.push(
+          baseVs.args = [
+            ...baseVs.args,
             new Arg({
               param,
               expr: codeLit(true),
             }),
-          );
+          ];
         }
       }
     }

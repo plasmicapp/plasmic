@@ -12,7 +12,7 @@ export const extractGlobalVariantSplitContent = (split: Split) => {
   return undefined;
 };
 export const findMatchingSplitToGroup = (
-  splits: Split[],
+  splits: ReadonlyArray<Split>,
   group: VariantGroup,
 ) => {
   return splits.find((split) => {

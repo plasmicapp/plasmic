@@ -48,12 +48,13 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
       }
       if (!modeArg) {
         // set to undefined
-        baseVs.args.push(
+        baseVs.args = [
+          ...baseVs.args,
           new Arg({
             param: modeParam,
             expr: codeLit(undefined),
           }),
-        );
+        ];
       }
     }
   }

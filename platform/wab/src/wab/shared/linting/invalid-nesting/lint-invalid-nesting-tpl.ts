@@ -21,7 +21,7 @@ import {
 } from "@/wab/shared/linting/invalid-nesting/reactValidateDomNesting";
 import { InvalidTplNestingLintIssue } from "@/wab/shared/linting/lint-types";
 import { lintIssuesEquals } from "@/wab/shared/linting/lint-utils";
-import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import { componentSelector, maybeComputedFn } from "@/wab/shared/mobx-util";
 import { getSlotArgs } from "@/wab/shared/SlotUtils";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { comparer } from "mobx";
@@ -58,7 +58,7 @@ interface ComponentAncestorInfo {
   infoBySlot: Map<string, AncestorTplInfo>;
 }
 
-const getAncestorInfoOfComponent = maybeComputedFn(
+const getAncestorInfoOfComponent = componentSelector(
   function getAncestorInfoOfComponent(
     component: Component,
   ): ComponentAncestorInfo {
@@ -121,7 +121,7 @@ const getAncestorInfoOfComponent = maybeComputedFn(
  * should only list issues that happen because of the structure of component.tplTree
  * so component.tplTree is what implies in the relation of ancestor/descendant
  */
-const lintComponent = maybeComputedFn(
+const lintComponent = componentSelector(
   function lintComponent(component: Component) {
     const issues: InvalidTplNestingLintIssue[] = [];
 

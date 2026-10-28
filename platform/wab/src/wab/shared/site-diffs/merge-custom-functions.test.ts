@@ -43,7 +43,7 @@ function registerFunction(site: Site, importPath = "./quote") {
     isQuery: true,
     isMutation: false,
   });
-  site.customFunctions.push(fn);
+  site.customFunctions = [...site.customFunctions, fn];
   return fn;
 }
 
@@ -60,12 +60,13 @@ function getComponent(site: Site) {
 }
 
 function addQuery(site: Site) {
-  getComponent(site).serverQueries.push(
+  getComponent(site).serverQueries = [
+    ...getComponent(site).serverQueries,
     mkServerQuery(
       "quote",
       new CustomFunctionExpr({ func: getFunction(site), args: [] }),
     ),
-  );
+  ];
 }
 
 /**
@@ -106,14 +107,15 @@ function resyncParam(site: Site) {
   getFunction(site).params = [typeFactory.arg("id", typeFactory.num())];
 }
 
-function getRootAttrs(site: Site) {
-  return only(ensureKnownTplTag(getComponent(site).tplTree).vsettings).attrs;
+function getRootVs(site: Site) {
+  return only(ensureKnownTplTag(getComponent(site).tplTree).vsettings);
 }
 
 /** Calls `getQuote` from an onClick interaction on the component's root. */
 function addInteraction(site: Site) {
   const handler = new EventHandler({ interactions: [] });
-  handler.interactions.push(
+  handler.interactions = [
+    ...handler.interactions,
     new Interaction({
       uuid: mkShortId(),
       interactionName: "Get quote",
@@ -128,8 +130,9 @@ function addInteraction(site: Site) {
         }),
       ],
     }),
-  );
-  getRootAttrs(site).onClick = handler;
+  ];
+  const vs = getRootVs(site);
+  vs.attrs = { ...vs.attrs, onClick: handler };
 }
 
 function getQuery(site: Site, name: string) {
@@ -142,7 +145,8 @@ function getQuery(site: Site, name: string) {
 /** Refreshes the `name` query from an onClick "Refresh data" interaction. */
 function addRefresh(site: Site, name: string) {
   const handler = new EventHandler({ interactions: [] });
-  handler.interactions.push(
+  handler.interactions = [
+    ...handler.interactions,
     new Interaction({
       uuid: mkShortId(),
       interactionName: "Refresh quote",
@@ -160,25 +164,27 @@ function addRefresh(site: Site, name: string) {
         }),
       ],
     }),
-  );
-  getRootAttrs(site).onClick = handler;
+  ];
+  const vs = getRootVs(site);
+  vs.attrs = { ...vs.attrs, onClick: handler };
 }
 
 function getRefreshedQueries(site: Site) {
-  const handler = ensureKnownEventHandler(getRootAttrs(site).onClick);
+  const handler = ensureKnownEventHandler(getRootVs(site).attrs.onClick);
   return ensureKnownQueryInvalidationExpr(
     only(only(handler.interactions).args).expr,
   ).invalidationQueries;
 }
 
 function useParam(site: Site, code: string) {
-  getQueryOp(site).args.push(
+  getQueryOp(site).args = [
+    ...getQueryOp(site).args,
     new FunctionArg({
       uuid: mkShortId(),
       argType: only(getFunction(site).params),
       expr: codeLit(code),
     }),
-  );
+  ];
 }
 
 describe("merging custom function params", () => {
@@ -247,7 +253,8 @@ describe("merging registrations added on both branches", () => {
 
   it("keeps one copy of a library", () => {
     const registerLibrary = (site: Site) =>
-      site.codeLibraries.push(
+      (site.codeLibraries = [
+        ...site.codeLibraries,
         new CodeLibrary({
           name: "lodash",
           importPath: "lodash",
@@ -256,7 +263,7 @@ describe("merging registrations added on both branches", () => {
           namedImport: null,
           isSyntheticDefaultImport: false,
         }),
-      );
+      ]);
     const result = testMerge({
       ancestorSite: ancestorSite({ withQuery: false }),
       a: registerLibrary,
@@ -275,7 +282,8 @@ describe("merging registrations added on both branches", () => {
         useParam(site, "1");
       },
       b: (site) => {
-        site.customFunctions.push(
+        site.customFunctions = [
+          ...site.customFunctions,
           new CustomFunction({
             namespace: null,
             importName: "getOrder",
@@ -286,7 +294,7 @@ describe("merging registrations added on both branches", () => {
             isQuery: true,
             isMutation: false,
           }),
-        );
+        ];
       },
     });
     expect(result).toMatchObject({ status: "merged" });
@@ -346,7 +354,7 @@ describe("merging a function removed on one branch", () => {
     });
     expect(result).toMatchObject({ status: "merged" });
     const handler = ensureKnownEventHandler(
-      getRootAttrs(result.mergedSite).onClick,
+      getRootVs(result.mergedSite).attrs.onClick,
     );
     expect(only(handler.interactions).args).toEqual([]);
   });
@@ -370,12 +378,13 @@ describe("merging a query removed on one branch", () => {
     const result = testMerge({
       ancestorSite: () => {
         const site = ancestorSite();
-        getComponent(site).serverQueries.push(
+        getComponent(site).serverQueries = [
+          ...getComponent(site).serverQueries,
           mkServerQuery(
             "otherQuote",
             new CustomFunctionExpr({ func: getFunction(site), args: [] }),
           ),
-        );
+        ];
         return site;
       },
       a: (site) => {

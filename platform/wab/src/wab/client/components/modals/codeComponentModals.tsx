@@ -509,9 +509,9 @@ export function notifyInvalidImportName(components: string[]) {
 
 interface HostLessPackageInfo {
   name: string;
-  npmPkg: string[];
-  cssImport: string[];
-  deps: string[];
+  npmPkg: readonly string[];
+  cssImport: readonly string[];
+  deps: readonly string[];
   minimumReactVersion?: string | null;
 }
 

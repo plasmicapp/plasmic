@@ -73,7 +73,7 @@ export async function showPlasmicImgModal(studioCtx: StudioCtx) {
   });
   if (res) {
     await studioCtx.change<never>(() => {
-      studioCtx.site.flags.usePlasmicImg = true;
+      studioCtx.site.flags = { ...studioCtx.site.flags, usePlasmicImg: true };
       return ok();
     });
     const saveResult = await studioCtx.save();

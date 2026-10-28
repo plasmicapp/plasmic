@@ -23,8 +23,8 @@ export async function promptExtractComponent(props: {
   site: Site;
   containingComponent: Component;
   linkedParams: Param[];
-  queriesToCreateProps: ComponentDataQuery[];
-  serverQueriesToCreateProps: ComponentServerQuery[];
+  queriesToCreateProps: ReadonlyArray<ComponentDataQuery>;
+  serverQueriesToCreateProps: ReadonlyArray<ComponentServerQuery>;
 }) {
   return showTemporaryPrompt<ExtractComponentResponse>((onSubmit, onCancel) => (
     <Modal
@@ -50,8 +50,8 @@ export function ExtractComponentForm(props: {
   site: Site;
   containingComponent: Component;
   linkedParams: Param[];
-  queriesToCreateProps: ComponentDataQuery[];
-  serverQueriesToCreateProps: ComponentServerQuery[];
+  queriesToCreateProps: ReadonlyArray<ComponentDataQuery>;
+  serverQueriesToCreateProps: ReadonlyArray<ComponentServerQuery>;
   onSubmit: (resp: ExtractComponentResponse) => void;
   onCancel: () => void;
 }) {

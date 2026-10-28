@@ -1,4 +1,8 @@
-import { ensureValidCombo, isPrivateStyleVariant } from "@/wab/shared/Variants";
+import {
+  VariantCombo,
+  ensureValidCombo,
+  isPrivateStyleVariant,
+} from "@/wab/shared/Variants";
 import {
   arrayEqIgnoreOrder,
   filterMapKeys,
@@ -7,8 +11,6 @@ import {
   mergeMaps,
   partitionMap,
   partitions,
-  replaceAll,
-  replaceObj,
   tuple,
   withoutNils,
 } from "@/wab/shared/common";
@@ -30,12 +32,12 @@ import { computed, observable } from "mobx";
  * visibility pins for each variant in mobx observables.
  */
 export abstract class VariantFrame {
-  abstract getTargetVariants(): Variant[];
+  abstract getTargetVariants(): VariantCombo;
   abstract getPinnedVariants(): Map<Variant, boolean>;
-  protected abstract _setTargetVariants(variants: Variant[]): void;
+  protected abstract _setTargetVariants(variants: VariantCombo): void;
   protected abstract _setPinnedVariants(pins: Map<Variant, boolean>): void;
 
-  setTargetVariants(variants: Variant[]) {
+  setTargetVariants(variants: VariantCombo) {
     if (!arrayEqIgnoreOrder(variants, this.getTargetVariants())) {
       this._setTargetVariants(variants);
     }
@@ -51,7 +53,7 @@ export abstract class VariantFrame {
    * Remove references to all variants that are not in the
    * argument list.
    */
-  keepOnlyVariants(variants: Variant[]) {
+  keepOnlyVariants(variants: VariantCombo) {
     this.setTargetVariants(
       this.getTargetVariants().filter((v) => variants.includes(v)),
     );
@@ -114,7 +116,7 @@ export class GlobalVariantFrame extends VariantFrame {
     super();
   }
 
-  getTargetVariants(): Variant[] {
+  getTargetVariants(): VariantCombo {
     return [...this.frame.targetGlobalVariants];
   }
 
@@ -128,12 +130,12 @@ export class GlobalVariantFrame extends VariantFrame {
     );
   }
 
-  protected _setTargetVariants(variants: Variant[]): void {
-    replaceAll(this.frame.targetGlobalVariants, variants);
+  protected _setTargetVariants(variants: VariantCombo): void {
+    this.frame.targetGlobalVariants = [...variants];
   }
 
   protected _setPinnedVariants(pins: Map<Variant, boolean>): void {
-    replaceObj(this.frame.pinnedGlobalVariants, makePlainPins(pins));
+    this.frame.pinnedGlobalVariants = makePlainPins(pins);
   }
 
   private getVariant(id: string): Variant | undefined {
@@ -203,7 +205,7 @@ export class TransientComponentVariantFrame extends ComponentVariantFrame {
     super();
   }
 
-  getTargetVariants(): Variant[] {
+  getTargetVariants(): VariantCombo {
     return ensureValidCombo(this.component, this._targetVariants);
   }
 
@@ -211,8 +213,8 @@ export class TransientComponentVariantFrame extends ComponentVariantFrame {
     return this._pinnedVariants;
   }
 
-  protected _setTargetVariants(variants: Variant[]): void {
-    this._targetVariants.replace(variants);
+  protected _setTargetVariants(variants: VariantCombo): void {
+    this._targetVariants.replace([...variants]);
   }
 
   protected _setPinnedVariants(pins: Map<Variant, boolean>): void {
@@ -248,7 +250,7 @@ export class RootComponentVariantFrame extends ComponentVariantFrame {
     return this.frame.container.component;
   }
 
-  getTargetVariants(): Variant[] {
+  getTargetVariants(): VariantCombo {
     return [...this.frame.targetVariants, ...this._privateTargetVariants];
   }
   getPinnedVariants(): Map<Variant, boolean> {
@@ -263,17 +265,17 @@ export class RootComponentVariantFrame extends ComponentVariantFrame {
       this._privatePinnedVariants,
     );
   }
-  protected _setTargetVariants(variants: Variant[]): void {
+  protected _setTargetVariants(variants: VariantCombo): void {
     const [privates, nonprivates] = partitions(variants, [
       isPrivateStyleVariant,
     ]);
     this._privateTargetVariants.replace(privates);
-    replaceAll(this.frame.targetVariants, nonprivates);
+    this.frame.targetVariants = nonprivates;
   }
   protected _setPinnedVariants(pins: Map<Variant, boolean>): void {
     const [privates, nonprivates] = partitionMap(pins, [isPrivateStyleVariant]);
     this._privatePinnedVariants.replace(privates);
-    replaceObj(this.frame.pinnedVariants, makePlainPins(nonprivates));
+    this.frame.pinnedVariants = makePlainPins(nonprivates);
   }
 
   private allComponentVariants = computed(() =>

@@ -70,11 +70,14 @@ describe("Component Serialization", () => {
       selectors: [":hover"],
       forTpl: tpl,
     });
-    component.variants.push(hover);
+    component.variants = [...component.variants, hover];
 
     const vs = ensureVariantSetting(tpl, [hover]);
-    vs.attrs["aria-label"] = codeLit("Hover label");
-    vs.attrs.id = codeLit("html-id");
+    vs.attrs = {
+      ...vs.attrs,
+      "aria-label": codeLit("Hover label"),
+      id: codeLit("html-id"),
+    };
 
     const result = buildComponentResource(component, { site });
     // Base tree keeps the tpl's own id and base attr.
@@ -101,7 +104,7 @@ describe("Component Serialization", () => {
       selectors: [":hover"],
       forTpl: tpl,
     });
-    component.variants.push(hover);
+    component.variants = [...component.variants, hover];
 
     // Hidden in the base variant, explicitly revealed by the variant.
     setTplVisibility(
@@ -188,7 +191,7 @@ describe("Component Serialization", () => {
       });
       const tpl = component.tplTree as TplTag;
       const vs = ensureVariantSetting(tpl, [getBaseVariant(component)]);
-      vs.attrs.href = codeToDynExpr("currentItem.url");
+      vs.attrs = { ...vs.attrs, href: codeToDynExpr("currentItem.url") };
 
       const output = tplToHtml(tpl, site);
       expect(output).toContain(`href="{{ currentItem.url }}"`);
@@ -256,7 +259,7 @@ describe("Component Serialization", () => {
         type: typeFactory.text(),
         paramType: "prop",
       });
-      inner.params.push(labelParam);
+      inner.params = [...inner.params, labelParam];
 
       const host = mkComponent({
         name: "Host",
@@ -292,7 +295,8 @@ describe("Component Serialization", () => {
         type: "Color",
         value: "#000000",
       });
-      component.params.push(
+      component.params = [
+        ...component.params,
         mkParam({
           name: "icon",
           type: typeFactory.img(),
@@ -305,7 +309,7 @@ describe("Component Serialization", () => {
           paramType: "prop",
           defaultExpr: new StyleTokenRef({ token }),
         }),
-      );
+      ];
 
       const resource = buildComponentResource(component, { site });
       expect(resource.props).toMatchObject([

@@ -186,8 +186,12 @@ describe("serializeServerQueryTree", () => {
       accessType: "private",
       variableType: "number",
     });
-    childComponent.states.push(childState);
-    childComponent.params.push(valueParam, onChangeParam);
+    childComponent.states = [...childComponent.states, childState];
+    childComponent.params = [
+      ...childComponent.params,
+      valueParam,
+      onChangeParam,
+    ];
 
     const childNode: ServerComponentNode = {
       type: "component",

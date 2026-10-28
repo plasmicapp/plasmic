@@ -87,9 +87,6 @@ export async function deleteVariant(
     }
   }
 
-  // deleteResourcesWithUsages only observes the components using the variant,
-  // but removing it also edits the owning component's tpl tree.
-  studioCtx.observeComponents([component]);
   const usageSummary = extractVariantUsages(site, variant, component);
   const usageCount =
     usageSummary.components.length + usageSummary.frames.length;

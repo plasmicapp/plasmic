@@ -362,7 +362,8 @@ describe("cloneSite", () => {
       type: ComponentType.Page,
       tplTree: mkTplTagX("div"),
     });
-    component.serverQueries.push(
+    component.serverQueries = [
+      ...component.serverQueries,
       new ComponentServerQuery({
         uuid: mkShortId(),
         name: "query",
@@ -377,7 +378,7 @@ describe("cloneSite", () => {
           ],
         }),
       }),
-    );
+    ];
     const sourceSite = createSiteWithDefaults({
       components: [component],
       customFunctions: [customFunction],

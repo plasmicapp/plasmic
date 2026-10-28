@@ -2309,7 +2309,7 @@ function serializeTplComponent(ctx: SerializerBaseContext, node: TplComponent) {
 export function serializeTplSlotArgsAsArray(
   ctx: SerializerBaseContext,
   param: Param,
-  nodes: TplNode[],
+  nodes: ReadonlyArray<TplNode>,
 ) {
   // If possible to serialize as a string prop, do so
   const asStringProp = maybeSerializeAsStringProp(ctx, nodes);
@@ -2323,7 +2323,7 @@ export function serializeTplSlotArgsAsArray(
 
 export function maybeSerializeAsStringProp(
   ctx: SerializerBaseContext,
-  nodes: TplNode[],
+  nodes: ReadonlyArray<TplNode>,
 ) {
   if (
     nodes.length === 1 &&
@@ -2407,7 +2407,7 @@ function serializeTplSlot(ctx: SerializerBaseContext, node: TplSlot) {
  */
 function serializeTplNodesAsArray(
   ctx: SerializerBaseContext,
-  nodes: TplNode[],
+  nodes: ReadonlyArray<TplNode>,
 ) {
   return nodes.map((child) => ctx.serializeTplNode(ctx, child));
 }

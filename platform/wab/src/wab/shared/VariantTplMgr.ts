@@ -25,8 +25,8 @@ import {
 } from "@/wab/shared/cached-selectors";
 import {
   arrayMoveIndex,
-  arrayRemove,
   arrayReversed,
+  arrayWithout,
 } from "@/wab/shared/collections";
 import {
   arrayEqIgnoreOrder,
@@ -85,7 +85,6 @@ import {
   adaptEffectiveVariantSetting,
 } from "@/wab/shared/effective-variant-setting";
 import { CanvasEnv, tryEvalExpr } from "@/wab/shared/eval";
-import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import {
   Animation,
   Arg,
@@ -158,7 +157,7 @@ export class VariantTplMgr {
       !addingBaseToTplWithExistingBase(tpl, variant),
       "Trying to add base vs to tpl with existing base vs",
     );
-    tpl.vsettings.push(baseVs);
+    tpl.vsettings = [...tpl.vsettings, baseVs];
 
     return baseVs;
   }
@@ -622,8 +621,6 @@ export class VariantTplMgr {
       component === this.getOwningComponentForNewNode(),
       `Cannot to edit element outside of current component context`,
     );
-    ensureComponentsObserved([component]);
-
     variantCombo = ensureValidCombo(component, variantCombo);
     this._ensureBaseRuleVariantSetting(tpl, variantCombo, component);
 
@@ -660,7 +657,7 @@ export class VariantTplMgr {
         }`;
       });
 
-      tpl.vsettings.push(vs);
+      tpl.vsettings = [...tpl.vsettings, vs];
     }
     return vs;
   }
@@ -1000,7 +997,7 @@ export class VariantTplMgr {
   applyMixin(tpl: TplNode, mixin: Mixin, variantCombo?: VariantCombo) {
     const vs = this.ensureVariantSetting(tpl, variantCombo);
     if (!vs.rs.mixins.includes(mixin)) {
-      vs.rs.mixins.push(mixin);
+      vs.rs.mixins = [...vs.rs.mixins, mixin];
     }
 
     // Clear all style props set by mixin from targetVs.rs.children, because
@@ -1011,7 +1008,7 @@ export class VariantTplMgr {
 
   removeMixin(tpl: TplNode, mixin: Mixin, variantCombo?: VariantCombo) {
     const vs = this.ensureVariantSetting(tpl, variantCombo);
-    arrayRemove(vs.rs.mixins, mixin);
+    vs.rs.mixins = arrayWithout(vs.rs.mixins, mixin);
   }
 
   /**
@@ -1021,7 +1018,7 @@ export class VariantTplMgr {
     tpl: TplTag,
     variantCombo: VariantCombo,
   ): {
-    animations: Animation[];
+    animations: ReadonlyArray<Animation>;
     definedIndicator: DefinedIndicatorType;
     shouldCloneAnimationsFromOtherVariants: boolean;
   } {
@@ -1102,11 +1099,12 @@ export class VariantTplMgr {
 
     const filteredAnimations = animations.filter((a) => a !== animation);
 
-    vs.rs.animations = shouldCloneAnimationsFromOtherVariants
+    const newAnimations = shouldCloneAnimationsFromOtherVariants
       ? filteredAnimations.map((anim) => cloneAnimation(anim))
       : filteredAnimations;
+    vs.rs.animations = newAnimations;
 
-    return vs.rs.animations;
+    return newAnimations;
   }
 
   /**
@@ -1142,7 +1140,7 @@ export class VariantTplMgr {
   ensureAnimationsForEditing(
     tpl: TplTag,
     variantCombo?: VariantCombo,
-  ): Animation[] {
+  ): ReadonlyArray<Animation> {
     variantCombo = variantCombo ?? this.getTargetVariantComboForNode(tpl);
     const vs = this.ensureVariantSetting(tpl, variantCombo);
 
@@ -1150,8 +1148,9 @@ export class VariantTplMgr {
       this.getAnimationInfoForVariantCombo(tpl, variantCombo);
 
     if (shouldCloneAnimationsFromOtherVariants) {
-      vs.rs.animations = animations.map((anim) => cloneAnimation(anim));
-      return vs.rs.animations;
+      const clonedAnimations = animations.map((anim) => cloneAnimation(anim));
+      vs.rs.animations = clonedAnimations;
+      return clonedAnimations;
     }
 
     return animations;
@@ -1214,7 +1213,7 @@ export function ensureBaseVariantSetting(component: Component, tpl: TplNode) {
     !addingBaseToTplWithExistingBase(tpl, variant),
     "Trying to add base vs to tpl with existing base vs",
   );
-  tpl.vsettings.push(baseVs);
+  tpl.vsettings = [...tpl.vsettings, baseVs];
 
   return baseVs;
 }

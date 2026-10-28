@@ -7,7 +7,7 @@ import {
   updateAutoDerivedFrameHeight,
 } from "@/wab/shared/Arenas";
 import { usedGlobalVariantGroups } from "@/wab/shared/cached-selectors";
-import { arrayInsert, arrayRemove } from "@/wab/shared/collections";
+import { arrayInsertAt } from "@/wab/shared/collections";
 import {
   ensure,
   ensureArrayOfInstances,
@@ -46,9 +46,9 @@ import {
   isScreenVariant,
   isScreenVariantGroup,
   makeVariantName,
+  VariantCombo,
 } from "@/wab/shared/Variants";
 import { orderBy } from "lodash";
-import type { IObservableArray } from "mobx";
 
 export function mkPageArena({
   component,
@@ -133,26 +133,21 @@ function makeFrameRow(site: Site, component: Component, variant: Variant) {
 
 export function removeManagedFramesFromPageArenaForVariants(
   arena: PageArena,
-  variants: Variant[],
+  variants: VariantCombo,
 ) {
   // We only do this for managed artboards (arena.matrix.rows).
   // For custom artboards, we will just stop targeting / pinning
   // the removed variant, as we do for all artboards
-  for (const row of [...arena.matrix.rows]) {
-    if (row.rowKey && variants.includes(row.rowKey as any)) {
-      arrayRemove(arena.matrix.rows, row);
-    }
-  }
+  arena.matrix.rows = arena.matrix.rows.filter(
+    (row) => !(row.rowKey && variants.includes(row.rowKey as any)),
+  );
   for (const row of arena.customMatrix.rows) {
-    for (const cell of [...row.cols]) {
-      if (
-        ensureArrayOfInstances(ensureCellKey(cell), Variant).some((v) =>
+    row.cols = row.cols.filter(
+      (cell) =>
+        !ensureArrayOfInstances(ensureCellKey(cell), Variant).some((v) =>
           variants.includes(v),
-        )
-      ) {
-        arrayRemove(row.cols, cell);
-      }
-    }
+        ),
+    );
   }
 }
 
@@ -160,15 +155,14 @@ export function removeManagedFramesFromPageArenaForVariantGroup(
   arena: PageArena,
   group: VariantGroup,
 ) {
-  for (const row of [...arena.matrix.rows]) {
-    if (
-      row.rowKey &&
-      isKnownVariant(row.rowKey) &&
-      group.variants.includes(row.rowKey)
-    ) {
-      arrayRemove(arena.matrix.rows, row);
-    }
-  }
+  arena.matrix.rows = arena.matrix.rows.filter(
+    (row) =>
+      !(
+        row.rowKey &&
+        isKnownVariant(row.rowKey) &&
+        group.variants.includes(row.rowKey)
+      ),
+  );
 }
 
 export function syncPageArenaFrameSize(
@@ -240,9 +234,9 @@ export function ensureManagedRowForVariantInPageArena(
     (i) => i > newVariantIndex,
   );
   if (insertionIndex >= 0) {
-    arena.matrix.rows.splice(insertionIndex, 0, row);
+    arena.matrix.rows = arrayInsertAt(arena.matrix.rows, row, insertionIndex);
   } else {
-    arena.matrix.rows.push(row);
+    arena.matrix.rows = [...arena.matrix.rows, row];
   }
 
   return row;
@@ -288,7 +282,7 @@ export function addScreenSizeToPageArenas({
         height,
       );
 
-      arrayInsert(
+      arenaRow.cols = arrayInsertAt(
         arenaRow.cols,
         new ArenaFrameCell({
           frame: newArenaFrame,
@@ -312,7 +306,7 @@ export function reorderPageArenaCols(site: Site) {
 
   site.pageArenas.forEach((arena) => {
     arena.matrix.rows.forEach((arenaRow) => {
-      const originalCols = arenaRow.cols as IObservableArray;
+      const originalCols = arenaRow.cols;
 
       const orderedCols = orderBy(originalCols, (it) => it.frame.width, [
         direction,
@@ -335,7 +329,7 @@ export function reorderPageArenaCols(site: Site) {
         }
       });
 
-      originalCols.replace(orderedCols);
+      arenaRow.cols = orderedCols;
     });
   });
 

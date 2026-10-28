@@ -16,7 +16,6 @@ import {
   toDataTokenDisplayValue,
   toDataTokenStoredValue,
 } from "@/wab/commons/DataToken";
-import { componentsReferencingDataToken } from "@/wab/shared/cached-selectors";
 import { DataToken } from "@/wab/shared/model/classes";
 import { isNil } from "lodash";
 import { observer } from "mobx-react";
@@ -112,19 +111,10 @@ export const DataTokenEditModal = observer(function DataTokenEditModal(props: {
         defaultValue={token.name}
         onValueChange={(name) => {
           const projectId = studioCtx.siteInfo.id;
-          return studioCtx.changeObserved(
-            () => [
-              ...componentsReferencingDataToken(
-                projectId,
-                studioCtx.site,
-                token,
-              ),
-            ],
-            () => {
-              studioCtx.tplMgr().renameDataToken(projectId, token, name);
-              return ok();
-            },
-          );
+          return studioCtx.change(() => {
+            studioCtx.tplMgr().renameDataToken(projectId, token, name);
+            return ok();
+          });
         }}
         placeholder={"(unnamed token)"}
         autoFocus={defaultEditingName}

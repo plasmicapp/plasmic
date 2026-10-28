@@ -1,156 +1,86 @@
-import { arrayRemove } from "@/wab/shared/collections";
-import { ensure, hackyCast } from "@/wab/shared/common";
+import { arrayReplaceAt } from "@/wab/shared/collections";
+import { ensure } from "@/wab/shared/common";
+import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import {
   ChangeRecorder,
   ModelChange,
   observeModel,
 } from "@/wab/shared/core/observable-model";
-import { InstUtil } from "@/wab/shared/model/InstUtil";
-import { parse, transform } from "@/wab/shared/model/model-generator";
-import { MetaRuntime, ObjInstBase } from "@/wab/shared/model/model-meta";
-import L from "lodash";
-import { Lambda } from "mobx";
+import { createSite } from "@/wab/shared/core/sites";
+import { mkRuleSet } from "@/wab/shared/core/styles";
+import { mkTplTagX } from "@/wab/shared/core/tpls";
+import {
+  Component,
+  CustomCode,
+  Mixin,
+  ObjectPath,
+  Site,
+  TplNode,
+  TplTag,
+  Variant,
+} from "@/wab/shared/model/classes";
+import {
+  ensureBaseVariantSetting,
+  ensureVariantSetting,
+} from "@/wab/shared/Variants";
+import { omit } from "lodash";
+import { autorun, Lambda } from "mobx";
 
-class Sentinel {
-  tag = "SENTINEL" as const;
-}
-const sentinel = new Sentinel();
-
-const schema = `
-Node
-  @WeakRef parent: Node?
-  Attribute
-    key: String
-    value: String
-  TextNode
-    text: String
-    attrs: [Attribute]
-  TagNode
-    name: String
-    tag: String
-    children: [Node]
-    @WeakRef children2: [Node]
-    attrs: Map[String, Expr]
-    nicknames: [String]
-    rootExpr: Expr?
-    @WeakRef attrs2: Map[String, List[Expr]]
-    attrs3: Map[String, List[Expr]]
-Expr
-  value: String | Node
-  `;
-const meta = new MetaRuntime(transform(parse(schema)), 300000);
-abstract class Node {
-  constructor(args) {
-    if (args !== sentinel) {
-      meta.initializers.Node(this, args);
-    }
-  }
-  uid: number;
-  parent: Node | undefined | null;
-}
-
-class Attribute extends Node {
-  constructor(args) {
-    super(sentinel);
-    if (args !== sentinel) {
-      meta.initializers.Attribute(this, args);
-    }
-  }
-  uid: number;
-  parent: Node | undefined | null;
-  key: string;
-  value: string;
+/**
+ * A site with one component, whose root tpl has no children. `mkTag` makes a
+ * tpl with a base variant setting, to add to the tree.
+ */
+function mkSite() {
+  const site = createSite();
+  let base: Variant | undefined;
+  const component: Component = mkComponent({
+    name: "Component",
+    type: ComponentType.Plain,
+    tplTree: (baseVariant) => {
+      base = baseVariant;
+      const tag = mkTplTagX("div", { name: "root" });
+      ensureVariantSetting(tag, [baseVariant]);
+      return tag;
+    },
+  });
+  site.components = [...site.components, component];
+  const root = component.tplTree as TplTag;
+  const mkTag = (name: string, parent?: TplNode) => {
+    const tag = mkTplTagX("div", { name });
+    ensureVariantSetting(tag, [
+      ensure(base, "mkComponent made a base variant"),
+    ]);
+    tag.parent = parent ?? null;
+    return tag;
+  };
+  // The path to a field of the root tpl starts with these
+  const rootPath = [
+    { inst: site, field: "components" },
+    { inst: component, field: "tplTree" },
+  ];
+  return { site, component, root, mkTag, rootPath };
 }
 
-class TextNode extends Node {
-  constructor(args) {
-    super(sentinel);
-    if (args !== sentinel) {
-      meta.initializers.TextNode(this, args);
-    }
-  }
-  uid: number;
-  parent: Node | undefined | null;
-  attrs: Array<Attribute>;
-  text: string;
+const vs = (tpl: TplNode) => ensureBaseVariantSetting(tpl);
+
+function mkCode(code: string) {
+  return new CustomCode({ code, fallback: null });
 }
 
-function mkText(opts: {
-  text: string;
-  parent?: Node;
-  attrs?: Array<Attribute>;
-}) {
-  return new TextNode(L.defaults(opts, { parent: null, attrs: [] }));
-}
-
-class TagNode extends Node {
-  constructor(args) {
-    super(sentinel);
-    if (args !== sentinel) {
-      meta.initializers.TagNode(this, args);
-    }
-  }
-  uid: number;
-  parent: Node | undefined | null;
-  name: string;
-  tag: string;
-  children: Array<Node>;
-  children2: Array<Node>;
-  nicknames: Array<string>;
-  attrs: { [key: string]: Expr };
-  attrs2: { [key: string]: Array<Expr> };
-  attrs3: { [key: string]: Array<Expr> };
-  rootExpr: Expr | undefined | null;
-}
-
-function mkTag(opts: {
-  name: string;
-  tag: string;
-  parent?: Node;
-  children?: Node[];
-  nicknames?: string[];
-  attrs?: Record<string, Expr>;
-  rootExpr?: Expr;
-}) {
-  return new TagNode(
-    L.defaults(opts, {
-      parent: null,
-      children: [],
-      children2: [],
-      nicknames: [],
-      attrs: {},
-      rootExpr: null,
-      attrs2: {},
-      attrs3: {},
-    }),
-  );
-}
-
-class Expr {
-  constructor(args) {
-    if (args !== sentinel) {
-      meta.initializers.Expr(this, args);
-    }
-  }
-  uid: number;
-  value: string | Node;
-}
-
-const instUtil = new InstUtil(meta, {
-  Node,
-  TextNode,
-  Attribute,
-  TagNode,
-  Expr,
-});
-
-function mkExpr(opts: { value?: string | Node }) {
-  return new Expr(L.defaults(opts, {}));
+function mkMixin(name: string) {
+  return new Mixin({
+    name,
+    rs: mkRuleSet({}),
+    preview: undefined,
+    uuid: name,
+    forTheme: false,
+    variantedRs: [],
+  });
 }
 
 describe("observeModel", () => {
-  const testInst = (
-    inst: ObjInstBase,
+  const testSite = (
+    site: Site,
     doWork: (prune: Lambda) => void,
     checkEvents: (
       events: ModelChange[],
@@ -159,10 +89,11 @@ describe("observeModel", () => {
     ) => void,
   ) => {
     const events: ModelChange[] = [];
-    const { dispose, prune } = observeModel(hackyCast(inst), {
-      instUtil,
+    const tracker = observeModel(site, {
       listener: (event) => events.push(event),
     });
+    const dispose = () => tracker.dispose();
+    const prune = () => tracker.prune();
     doWork(prune);
     prune();
     checkEvents(events, dispose, prune);
@@ -170,26 +101,26 @@ describe("observeModel", () => {
   };
 
   it("should work with primitive fields", () => {
-    const node = mkTag({ name: "hi", tag: "div" });
+    const { site, root, rootPath } = mkSite();
 
-    testInst(
-      node,
+    testSite(
+      site,
       () => {
-        node.name = "ohhai";
-        node.tag = "img";
+        root.name = "ohhai";
+        root.tag = "img";
       },
       (events, dispose) => {
         expect(events.length).toEqual(2);
         expect(events[0]).toMatchObject({
-          path: [{ inst: node, field: "name" }],
-          changeNode: { inst: node, field: "name" },
+          path: [...rootPath, { inst: root, field: "name" }],
+          changeNode: { inst: root, field: "name" },
           type: "update",
-          oldValue: "hi",
+          oldValue: "root",
           newValue: "ohhai",
         });
         expect(events[1]).toMatchObject({
-          path: [{ inst: node, field: "tag" }],
-          changeNode: { inst: node, field: "tag" },
+          path: [...rootPath, { inst: root, field: "tag" }],
+          changeNode: { inst: root, field: "tag" },
           type: "update",
           oldValue: "div",
           newValue: "img",
@@ -199,221 +130,216 @@ describe("observeModel", () => {
         events.length = 0;
         dispose();
 
-        node.name = "what";
-        node.tag = "okay";
+        root.name = "what";
+        root.tag = "okay";
         expect(events.length).toEqual(0);
       },
     );
   });
 
   it("should work with instance fields", () => {
-    const node = mkTag({ name: "hi", tag: "div" });
-    const firstExpr = mkExpr({ value: "hello" });
+    const { site, root, rootPath } = mkSite();
+    const rootVs = vs(root);
+    const vsPath = [
+      ...rootPath,
+      { inst: root, field: "vsettings" },
+      { inst: rootVs, field: "dataCond" },
+    ];
+    const firstCode = mkCode("hello");
+    const secondCode = mkCode("another one");
 
-    testInst(
-      node,
+    testSite(
+      site,
       (prune) => {
         // Setting a rich field
-        node.rootExpr = firstExpr;
+        rootVs.dataCond = firstCode;
 
         // Setting a field of rich field object
-        node.rootExpr.value = "goodbye";
+        firstCode.code = "goodbye";
 
         // Setting a rich field to another object
-        node.rootExpr = mkExpr({ value: "another one" });
+        rootVs.dataCond = secondCode;
 
         // New object's updates are automatically tracked as well
-        node.rootExpr.value = "another one 2";
+        secondCode.code = "another one 2";
 
         // But the removed object is no longer tracked
         prune();
-        firstExpr.value = "invisible";
+        firstCode.code = "invisible";
       },
       (events, dispose) => {
         expect(events.length).toBe(4);
 
         expect(events[0]).toMatchObject({
           type: "update",
-          path: [{ inst: node, field: "rootExpr" }],
-          changeNode: { inst: node, field: "rootExpr" },
-          newValue: firstExpr,
+          path: vsPath,
+          changeNode: { inst: rootVs, field: "dataCond" },
+          newValue: firstCode,
         });
 
         expect(events[1]).toMatchObject({
           type: "update",
-          path: [
-            { inst: node, field: "rootExpr" },
-            { inst: firstExpr, field: "value" },
-          ],
-          changeNode: { inst: firstExpr, field: "value" },
+          path: [...vsPath, { inst: firstCode, field: "code" }],
+          changeNode: { inst: firstCode, field: "code" },
           oldValue: "hello",
           newValue: "goodbye",
         });
 
         expect(events[2]).toMatchObject({
           type: "update",
-          path: [{ inst: node, field: "rootExpr" }],
-          changeNode: { inst: node, field: "rootExpr" },
-          oldValue: firstExpr,
-          newValue: node.rootExpr,
+          path: vsPath,
+          changeNode: { inst: rootVs, field: "dataCond" },
+          oldValue: firstCode,
+          newValue: secondCode,
         });
 
         expect(events[3]).toMatchObject({
           type: "update",
-          path: [
-            { inst: node, field: "rootExpr" },
-            { inst: node.rootExpr, field: "value" },
-          ],
-          changeNode: { inst: node.rootExpr, field: "value" },
+          path: [...vsPath, { inst: secondCode, field: "code" }],
+          changeNode: { inst: secondCode, field: "code" },
           oldValue: "another one",
           newValue: "another one 2",
         });
 
         events.length = 0;
         dispose();
-        ensure(node.rootExpr, "").value = "no one cares";
-        node.rootExpr = mkExpr({ value: "no one cares here either" });
-        firstExpr.value = "definitely no one cares";
+        secondCode.code = "no one cares";
+        rootVs.dataCond = mkCode("no one cares here either");
+        firstCode.code = "definitely no one cares";
         expect(events.length).toBe(0);
       },
     );
   });
 
   it("should work with array fields", () => {
-    const node = mkTag({ name: "hi", tag: "div" });
-    let ohhaiChild, whyNotChild, yesNotChild, replaceChild;
+    const { site, root, mkTag, rootPath } = mkSite();
+    const fontsPath = [{ inst: site, field: "userManagedFonts" }];
+    const childrenPath = [...rootPath, { inst: root, field: "children" }];
+    const ohhaiChild = mkTag("OHHAI", root);
+    const whyNotChild = mkTag("Why not", root);
+    const yesNotChild = mkTag("Yes not", root);
+    const replaceChild = mkTag("replaced!", root);
 
-    testInst(
-      node,
+    testSite(
+      site,
       (prune) => {
         // primitive array
-        node.nicknames.push("my-node");
-        node.nicknames.push("favorite", "favorites2");
-        arrayRemove(node.nicknames, "my-node");
-        node.nicknames[1] = "whatevs";
+        site.userManagedFonts = [...site.userManagedFonts, "my-font"];
+        site.userManagedFonts = [
+          ...site.userManagedFonts,
+          "favorite",
+          "favorites2",
+        ];
+        site.userManagedFonts = site.userManagedFonts.filter(
+          (n) => n !== "my-font",
+        );
+        site.userManagedFonts = arrayReplaceAt(
+          site.userManagedFonts,
+          1,
+          "whatevs",
+        );
 
         // rich array
         // add single
-        node.children.push(
-          (ohhaiChild = mkText({ text: "OHHAI", parent: node })),
-        );
+        root.children = [...root.children, ohhaiChild];
         // add multiple
-        node.children.splice(
-          0,
-          0,
-          (whyNotChild = mkText({ text: "Why not", parent: node })),
-          (yesNotChild = mkText({ text: "Yes not", parent: node })),
-        );
+        root.children = [whyNotChild, yesNotChild, ...root.children];
         // setting array element
-        node.children[1] = replaceChild = mkText({
-          text: "replaced!",
-          parent: node,
-        });
+        root.children = arrayReplaceAt(root.children, 1, replaceChild);
         // setting array element prop
-        (node.children[2] as TextNode).text = "ohhai 2";
+        ohhaiChild.name = "ohhai 2";
         // setting array element prop of new element
-        (node.children[1] as TextNode).text = "replaced! 2";
+        replaceChild.name = "replaced! 2";
         // remove item
-        arrayRemove(node.children, ohhaiChild);
+        root.children = root.children.filter((c) => c !== ohhaiChild);
         prune();
-        (ohhaiChild as TextNode).text = "OHHAI 2";
+        ohhaiChild.name = "OHHAI 2";
       },
       (events, dispose) => {
         expect(events.length).toBe(10);
 
         expect(events[0]).toMatchObject({
-          path: [{ inst: node, field: "nicknames" }],
-          changeNode: { inst: node, field: "nicknames" },
+          path: fontsPath,
+          changeNode: { inst: site, field: "userManagedFonts" },
           type: "array-splice",
           index: 0,
-          object: node.nicknames,
-          added: ["my-node"],
+          object: ["my-font"],
+          added: ["my-font"],
           removed: [],
         });
 
         expect(events[1]).toMatchObject({
-          path: [{ inst: node, field: "nicknames" }],
-          changeNode: { inst: node, field: "nicknames" },
+          path: fontsPath,
           type: "array-splice",
           index: 1,
-          object: node.nicknames,
+          object: ["my-font", "favorite", "favorites2"],
           added: ["favorite", "favorites2"],
           removed: [],
         });
 
         expect(events[2]).toMatchObject({
-          path: [{ inst: node, field: "nicknames" }],
-          changeNode: { inst: node, field: "nicknames" },
+          path: fontsPath,
           type: "array-splice",
           index: 0,
-          object: node.nicknames,
+          object: ["favorite", "favorites2"],
           added: [],
-          removed: ["my-node"],
+          removed: ["my-font"],
         });
 
+        // Replacing an item is a splice of that item
         expect(events[3]).toMatchObject({
-          path: [{ inst: node, field: "nicknames" }],
-          changeNode: { inst: node, field: "nicknames" },
-          type: "array-update",
+          path: fontsPath,
+          type: "array-splice",
           index: 1,
-          object: node.nicknames,
-          oldValue: "favorites2",
-          newValue: "whatevs",
+          object: ["favorite", "whatevs"],
+          added: ["whatevs"],
+          removed: ["favorites2"],
         });
 
         expect(events[4]).toMatchObject({
-          path: [{ inst: node, field: "children" }],
-          changeNode: { inst: node, field: "children" },
+          path: childrenPath,
+          changeNode: { inst: root, field: "children" },
           type: "array-splice",
           index: 0,
-          object: node.children,
+          object: [ohhaiChild],
           added: [ohhaiChild],
         });
 
         expect(events[5]).toMatchObject({
-          path: [{ inst: node, field: "children" }],
-          changeNode: { inst: node, field: "children" },
+          path: childrenPath,
           type: "array-splice",
           index: 0,
-          object: node.children,
+          object: [whyNotChild, yesNotChild, ohhaiChild],
           added: [whyNotChild, yesNotChild],
         });
 
         expect(events[6]).toMatchObject({
-          path: [{ inst: node, field: "children" }],
-          changeNode: { inst: node, field: "children" },
-          type: "array-update",
+          path: childrenPath,
+          type: "array-splice",
           index: 1,
-          object: node.children,
-          oldValue: yesNotChild,
-          newValue: replaceChild,
+          object: [whyNotChild, replaceChild, ohhaiChild],
+          added: [replaceChild],
+          removed: [yesNotChild],
         });
 
         expect(events[7]).toMatchObject({
-          path: [
-            { inst: node, field: "children" },
-            { inst: ohhaiChild, field: "text" },
-          ],
-          changeNode: { inst: ohhaiChild, field: "text" },
+          path: [...childrenPath, { inst: ohhaiChild, field: "name" }],
+          changeNode: { inst: ohhaiChild, field: "name" },
           type: "update",
           oldValue: "OHHAI",
           newValue: "ohhai 2",
         });
 
         expect(events[8]).toMatchObject({
-          path: [
-            { inst: node, field: "children" },
-            { inst: replaceChild, field: "text" },
-          ],
-          changeNode: { inst: replaceChild, field: "text" },
+          path: [...childrenPath, { inst: replaceChild, field: "name" }],
+          changeNode: { inst: replaceChild, field: "name" },
           type: "update",
           oldValue: "replaced!",
           newValue: "replaced! 2",
         });
 
         expect(events[9]).toMatchObject({
-          path: [{ inst: node, field: "children" }],
-          changeNode: { inst: node, field: "children" },
+          path: childrenPath,
           type: "array-splice",
           index: 2,
           added: [],
@@ -422,82 +348,82 @@ describe("observeModel", () => {
 
         dispose();
         events.length = 0;
-        (node.children[1] as TextNode).text = "blahblah";
-        node.children.push(mkText({ text: "blah2" }));
+        replaceChild.name = "blahblah";
+        root.children = [...root.children, mkTag("blah2", root)];
         expect(events.length).toBe(0);
       },
     );
   });
 
   it("should work with two arrays referencing same elements", () => {
-    const node = mkTag({ name: "hi", tag: "div" });
-    let child;
+    const { site, root } = mkSite();
+    const mixin = mkMixin("mixin");
+    const rs = vs(root).rs;
 
-    testInst(
-      node,
+    testSite(
+      site,
       () => {
-        node.children.push(
-          (child = mkText({
-            text: "foo",
-            parent: node,
-            attrs: [new Attribute({ key: "foo", value: "foo", parent: null })],
-          })),
-        );
-        node.children2.push(child);
-        const removed = node.children2.splice(0, 1);
-        node.children2.splice(0, 0, ...removed);
+        // site.mixins owns the mixin, and rs.mixins only refers to it
+        site.mixins = [...site.mixins, mixin];
+        rs.mixins = [...rs.mixins, mixin];
+        const removed = rs.mixins.slice(0, 1);
+        rs.mixins = rs.mixins.slice(1);
+        rs.mixins = [...removed, ...rs.mixins];
 
-        (node.children[0] as TextNode).attrs[0].value = "foofoofoo";
+        mixin.name = "mixin 2";
       },
-      (events, dispose) => {
+      (events) => {
         expect(events.length).toBe(5);
-        dispose();
+        // The change is reported through the owner only
+        expect(events[4]).toMatchObject({
+          path: [
+            { inst: site, field: "mixins" },
+            { inst: mixin, field: "name" },
+          ],
+          newValue: "mixin 2",
+        });
       },
     );
   });
 
   it("should work with map fields", () => {
-    const node = mkTag({ name: "hi", tag: "div" });
-    let myClass, yup, yupText, nope, cs, c1, c2, c3;
-    testInst(
-      node,
-      () => {
-        node.attrs["className"] = myClass = mkExpr({ value: "my-class" });
-        node.attrs["stuff"] = yup = mkExpr({
-          value: (yupText = mkText({ text: "Yup", parent: node })),
-        });
-        (node.attrs["stuff"].value as TextNode).text = "Yup 2";
-        node.attrs["stuff"] = nope = mkExpr({
-          value: mkText({ text: "Nope" }),
-        });
-        delete node.attrs["className"];
+    const { site, root, rootPath } = mkSite();
+    const rootVs = vs(root);
+    const attrsPath = [
+      ...rootPath,
+      { inst: root, field: "vsettings" },
+      { inst: rootVs, field: "attrs" },
+    ];
+    const myClass = mkCode("my-class");
+    const yupCode = mkCode("Yup");
+    const yup = new ObjectPath({ path: ["yup"], fallback: yupCode });
+    const nope = new ObjectPath({ path: ["nope"], fallback: mkCode("Nope") });
 
-        node.attrs3["className"] = cs = [
-          (c1 = mkExpr({ value: "c1" })),
-          (c2 = mkExpr({ value: "c2" })),
-        ];
-        node.attrs3["className"][1] = c3 = mkExpr({
-          value: mkText({ text: "c3" }),
-        });
-        (node.attrs3["className"][1].value as TextNode).text = "c3 2";
+    testSite(
+      site,
+      () => {
+        rootVs.attrs = { ...rootVs.attrs, className: myClass };
+        rootVs.attrs = { ...rootVs.attrs, stuff: yup };
+        yupCode.code = "Yup 2";
+        rootVs.attrs = { ...rootVs.attrs, stuff: nope };
+        rootVs.attrs = omit(rootVs.attrs, "className");
       },
       (events, dispose) => {
-        expect(events.length).toBe(8);
+        expect(events.length).toBe(5);
 
         expect(events[0]).toMatchObject({
           type: "obj-add",
-          path: [{ inst: node, field: "attrs" }],
-          changeNode: { inst: node, field: "attrs" },
-          object: node.attrs,
+          path: attrsPath,
+          changeNode: { inst: rootVs, field: "attrs" },
+          object: { className: myClass },
           key: "className",
           newValue: myClass,
         });
 
         expect(events[1]).toMatchObject({
           type: "obj-add",
-          path: [{ inst: node, field: "attrs" }],
-          changeNode: { inst: node, field: "attrs" },
-          object: node.attrs,
+          path: attrsPath,
+          object: { className: myClass, stuff: yup },
           key: "stuff",
           newValue: yup,
         });
@@ -505,20 +431,19 @@ describe("observeModel", () => {
         expect(events[2]).toMatchObject({
           type: "update",
           path: [
-            { inst: node, field: "attrs" },
-            { inst: yup, field: "value" },
-            { inst: yupText, field: "text" },
+            ...attrsPath,
+            { inst: yup, field: "fallback" },
+            { inst: yupCode, field: "code" },
           ],
-          changeNode: { inst: yupText, field: "text" },
+          changeNode: { inst: yupCode, field: "code" },
           oldValue: "Yup",
           newValue: "Yup 2",
         });
 
         expect(events[3]).toMatchObject({
           type: "obj-update",
-          path: [{ inst: node, field: "attrs" }],
-          changeNode: { inst: node, field: "attrs" },
-          object: node.attrs,
+          path: attrsPath,
+          object: { className: myClass, stuff: nope },
           key: "stuff",
           newValue: nope,
           oldValue: yup,
@@ -526,272 +451,374 @@ describe("observeModel", () => {
 
         expect(events[4]).toMatchObject({
           type: "obj-delete",
-          path: [{ inst: node, field: "attrs" }],
-          changeNode: { inst: node, field: "attrs" },
-          object: node.attrs,
+          path: attrsPath,
+          object: { stuff: nope },
           key: "className",
           oldValue: myClass,
         });
 
-        expect(events[5]).toMatchObject({
-          type: "obj-add",
-          path: [{ inst: node, field: "attrs3" }],
-          changeNode: { inst: node, field: "attrs3" },
-          object: node.attrs3,
-          key: "className",
-          newValue: node.attrs3["className"],
-        });
-
-        expect(events[6]).toMatchObject({
-          type: "array-update",
-          path: [{ inst: node, field: "attrs3" }],
-          changeNode: { inst: node, field: "attrs3" },
-          object: node.attrs3["className"],
-          index: 1,
-          newValue: c3,
-        });
-
-        expect(events[7]).toMatchObject({
-          type: "update",
-          path: [
-            { inst: node, field: "attrs3" },
-            { inst: c3, field: "value" },
-            { inst: c3.value, field: "text" },
-          ],
-          changeNode: { inst: c3.value, field: "text" },
-          oldValue: "c3",
-          newValue: "c3 2",
-        });
-
         dispose();
         events.length = 0;
-        node.attrs["stuff"] = mkExpr({ value: mkText({ text: "Nope 2" }) });
-        (node.attrs3["className"][1].value as TextNode).text = "c3 3";
-        delete node.attrs["stuff"];
+        rootVs.attrs = { ...rootVs.attrs, stuff: mkCode("Nope 2") };
+        rootVs.attrs = omit(rootVs.attrs, "stuff");
         expect(events.length).toBe(0);
       },
     );
   });
 
-  it("should work with multiple references to same inst", () => {
-    const node = mkTag({ name: "hi", tag: "div" });
-    const child1 = mkTag({ name: "child1", tag: "div", parent: node });
-    const child2 = mkTag({ name: "child2", tag: "div", parent: node });
-    node.children.push(child1, child2);
-    const expr = mkExpr({ value: "happy" });
-    child1.attrs["blah"] = expr;
-    child2.attrs2["blah2"] = [expr];
+  it("reports assigning a collection as the difference", () => {
+    const { site, root, mkTag, rootPath } = mkSite();
+    const rootVs = vs(root);
+    const a = mkTag("a", root);
+    const b = mkTag("b", root);
+    const c = mkTag("c", root);
+    const d = mkTag("d", root);
+    root.children = [a, b, d];
+    const x = mkCode("x");
+    const y = mkCode("y");
+    rootVs.attrs = { x };
 
-    // Note that there are two paths to `expr` -- through child1 or child2.
+    testSite(
+      site,
+      (prune) => {
+        root.children = [a, c, b, d];
+        // Assigning an equal array changes nothing
+        root.children = [...root.children];
+        rootVs.attrs = { y, z: x };
+        // Removing several items reports each run of removed items
+        root.children = root.children.filter(
+          (child) => child !== a && child !== b,
+        );
+        prune();
+        // The removed children are no longer tracked; the kept ones are
+        a.name = "invisible";
+        c.name = "c 2";
+      },
+      (events) => {
+        expect(events.map((e) => e.type)).toEqual([
+          "array-splice",
+          "obj-delete",
+          "obj-add",
+          "obj-add",
+          "array-splice",
+          "array-splice",
+          "update",
+        ]);
+        expect(events[0]).toMatchObject({
+          changeNode: { inst: root, field: "children" },
+          index: 1,
+          added: [c],
+          removed: [],
+        });
+        expect(events[1]).toMatchObject({
+          changeNode: { inst: rootVs, field: "attrs" },
+          key: "x",
+          oldValue: x,
+        });
+        expect(events[2]).toMatchObject({ key: "y", newValue: y });
+        expect(events[3]).toMatchObject({ key: "z", newValue: x });
+        expect(events[4]).toMatchObject({ index: 0, added: [], removed: [a] });
+        expect(events[5]).toMatchObject({ index: 1, added: [], removed: [b] });
+        expect(events[6]).toMatchObject({
+          path: [
+            ...rootPath,
+            { inst: root, field: "children" },
+            { inst: c, field: "name" },
+          ],
+          newValue: "c 2",
+        });
+      },
+    );
+  });
 
-    testInst(
-      node,
+  it("keeps the old collection when assigned an equal one", () => {
+    const { site, root, mkTag } = mkSite();
+    const rootVs = vs(root);
+    const a = mkTag("a", root);
+    const x = mkCode("x");
+    const y = mkCode("y");
+    root.children = [a];
+    rootVs.attrs = { x, y };
+    const children = root.children;
+    const attrs = rootVs.attrs;
+
+    testSite(
+      site,
+      () => {
+        let runs = 0;
+        const dispose = autorun(() => {
+          void root.children;
+          void rootVs.attrs;
+          runs++;
+        });
+        root.children = [...children];
+        rootVs.attrs = { ...attrs };
+        expect(root.children).toBe(children);
+        expect(rootVs.attrs).toBe(attrs);
+        expect(runs).toBe(1);
+        // Reordering keys isn't a change either
+        rootVs.attrs = { y, x };
+        expect(rootVs.attrs).toBe(attrs);
+        expect(runs).toBe(1);
+        // A different item is
+        root.children = [];
+        expect(runs).toBe(2);
+        // Null in place of undefined isn't, as both mean an absent value
+        expect(rootVs.dataCond).toBeUndefined();
+        rootVs.dataCond = null;
+        expect(rootVs.dataCond).toBeUndefined();
+        dispose();
+      },
+      (events) => {
+        expect(events.map((e) => e.type)).toEqual(["array-splice"]);
+      },
+    );
+  });
+
+  it("freezes collections under test, so they can't change in place", () => {
+    const { site, root, mkTag } = mkSite();
+    const rootVs = vs(root);
+    const a = mkTag("a", root);
+
+    testSite(
+      site,
+      () => {
+        expect(() => (root.children as TplNode[]).push(a)).toThrow(TypeError);
+        expect(() => {
+          (rootVs.attrs as Record<string, CustomCode>)["x"] = mkCode("x");
+        }).toThrow(TypeError);
+      },
+      (events) => {
+        expect(events).toEqual([]);
+      },
+    );
+  });
+
+  it("undoes assigning a collection", () => {
+    const { site, root, mkTag } = mkSite();
+    const rootVs = vs(root);
+    const a = mkTag("a", root);
+    const b = mkTag("b", root);
+    const c = mkTag("c", root);
+    const x = mkCode("x");
+    root.children = [a, c];
+    rootVs.attrs = { x };
+    const recorder = new ChangeRecorder({ site });
+
+    expect(() =>
+      recorder.withRecording(() => {
+        root.children = [b, a];
+        rootVs.attrs = { y: mkCode("y") };
+        throw new Error();
+      }),
+    ).toThrow();
+
+    expect(root.children).toEqual([a, c]);
+    expect(rootVs.attrs).toEqual({ x });
+  });
+
+  it("reports changes through an inst's owner, wherever it moves", () => {
+    const { site, root, mkTag, rootPath } = mkSite();
+    const a = mkTag("a", root);
+    const b = mkTag("b", root);
+    root.children = [a, b];
+    const moved = mkTag("moved", a);
+    a.children = [moved];
+    const mixin = mkMixin("mixin");
+    site.mixins = [mixin];
+    const childPath = (parent: TplTag) => [
+      ...rootPath,
+      { inst: root, field: "children" },
+      { inst: parent, field: "children" },
+      { inst: moved, field: "name" },
+    ];
+    const mixinPath = [
+      { inst: site, field: "mixins" },
+      { inst: mixin, field: "name" },
+    ];
+
+    testSite(
+      site,
       () => {},
       (events, dispose, prune) => {
-        expect(events.length).toBe(0);
+        moved.name = "moved 2";
+        expect(events).toMatchObject([{ path: childPath(a) }]);
 
-        expr.value = "happy2";
-
-        // Only the first child strongly references `expr`
-        expect(events.length).toBe(1);
-        expect(events[0]).toMatchObject({
-          type: "update",
-          path: [
-            { inst: node, field: "children" },
-            { inst: child1, field: "attrs" },
-            { inst: expr, field: "value" },
-          ],
-          changeNode: { inst: expr, field: "value" },
-          oldValue: "happy",
-          newValue: "happy2",
-        });
-
-        // If child1 no longer points to `expr`, then child2 will need to add
-        // a strong reference to it.
-        child1.attrs["blah"] = mkExpr({ value: "unrelated" });
-        child2.attrs["blah3"] = expr;
+        // Moving it to another parent changes its path
+        a.children = [];
+        b.children = [moved];
+        moved.parent = b;
         events.length = 0;
         prune();
-        expr.value = "happy3";
-        expect(events.length).toBe(1);
-        expect(events[0]).toMatchObject({
-          type: "update",
-          path: [
-            { inst: node, field: "children" },
-            { inst: child2, field: "attrs" },
-            { inst: expr, field: "value" },
-          ],
-          changeNode: { inst: expr, field: "value" },
-          oldValue: "happy2",
-          newValue: "happy3",
-        });
+        moved.name = "moved 3";
+        expect(events).toMatchObject([{ path: childPath(b) }]);
 
-        delete child2.attrs2["blah2"];
-        child2.attrs2["another"] = [expr];
+        // Referring to an inst weakly doesn't give it another path, ...
+        vs(moved).rs.mixins = [mixin];
         events.length = 0;
         prune();
-        expr.value = "happy4";
-        expect(events.length).toBe(1);
-        expect(events[0]).toMatchObject({
-          type: "update",
-          path: [
-            { inst: node, field: "children" },
-            { inst: child2, field: "attrs" },
-            { inst: expr, field: "value" },
-          ],
-          changeNode: { inst: expr, field: "value" },
-          oldValue: "happy3",
-          newValue: "happy4",
-        });
+        mixin.name = "mixin 2";
+        expect(events).toMatchObject([{ path: mixinPath }]);
 
-        // Removing weakRef shouldn't affect the path
-        child2.attrs2["another"] = [];
+        // ... and removing the weak reference doesn't affect its path
+        vs(moved).rs.mixins = [];
         events.length = 0;
         prune();
-        expr.value = "happy5";
-        expect(events.length).toBe(1);
-        expect(events[0]).toMatchObject({
-          type: "update",
-          path: [
-            { inst: node, field: "children" },
-            { inst: child2, field: "attrs" },
-            { inst: expr, field: "value" },
-          ],
-          changeNode: { inst: expr, field: "value" },
-          oldValue: "happy4",
-          newValue: "happy5",
-        });
+        mixin.name = "mixin 3";
+        expect(events).toMatchObject([{ path: mixinPath }]);
 
-        // Finally if we point attrs's pointer away, then we should see no change,
-        // as we've now completely unsubscribed from `expr`
-        child2.attrs["blah3"] = mkExpr({ value: "yet another" });
+        // Once nothing owns it, its changes are no longer reported
+        b.children = [];
         events.length = 0;
         prune();
-        expr.value = "happy6";
+        moved.name = "moved 4";
         expect(events.length).toBe(0);
       },
     );
   });
 
   it("disposes indirect references", () => {
-    const node = mkTag({ name: "hi", tag: "div" });
-    const child = mkTag({ name: "child", tag: "div", parent: node });
-    node.children.push(child);
-    const expr = (child.rootExpr = mkExpr({ value: "expr" }));
-    const attrExpr = mkExpr({ value: "attr" });
-    child.attrs["attr"] = attrExpr;
+    const { site, root, mkTag } = mkSite();
+    const child = mkTag("child", root);
+    root.children = [child];
+    const childVs = vs(child);
+    const expr = mkCode("expr");
+    childVs.dataCond = expr;
+    const attrExpr = mkCode("attr");
+    childVs.attrs = { ...childVs.attrs, attr: attrExpr };
 
-    testInst(
-      node,
+    testSite(
+      site,
       () => {},
       (events, dispose, prune) => {
         events.length = 0;
         prune();
-        expr.value = "expr 2";
-        attrExpr.value = "attr 2";
+        expr.code = "expr 2";
+        attrExpr.code = "attr 2";
         expect(events.length).toBe(2);
 
         // Detach the child from the tree
-        arrayRemove(node.children, child);
+        root.children = root.children.filter((c) => c !== child);
         events.length = 0;
         prune();
 
-        expr.value = "expr 3";
-        attrExpr.value = "attr 3";
+        expr.code = "expr 3";
+        attrExpr.code = "attr 3";
         expect(events.length).toBe(0);
       },
     );
   });
 
-  it("disposes multiple paths with common ancestors to the same node", () => {
-    const node = mkTag({ name: "hi", tag: "div" });
-    const child = mkTag({ name: "child", tag: "div" });
-    node.children.push(child);
-    const value = mkTag({ name: "value", tag: "div", parent: node });
-    const expr = mkExpr({ value: value });
-    child.attrs["attr"] = expr;
-    child.attrs2["attr2"] = [expr];
+  it("untracks an inst whose last parent is untracked after it was checked", () => {
+    const { site, root, mkTag } = mkSite();
+    const parent1 = mkTag("parent1", root);
+    const parent2 = mkTag("parent2", root);
+    const parent3 = mkTag("parent3", root);
+    const child = mkTag("child", parent1);
+    root.children = [parent1, parent2, parent3];
 
-    // There are two paths to value:
-    // node.children>child.attrs>expr.value
-    // node.children>child.attrs2>expr.value
-    // The two paths share a common ancestor -- expr
+    testSite(
+      site,
+      () => {},
+      (events, dispose, prune) => {
+        // The model is briefly invalid within a change, with three parents
+        // holding the child
+        parent2.children = [child];
+        parent3.children = [child];
+        parent1.children = [child];
+        // Removed in this order, the child is checked after parent1 is
+        // untracked but before parent2 is
+        root.children = [parent2, parent3];
+        parent3.children = [];
+        root.children = [parent3];
+        prune();
 
-    testInst(
-      node,
+        events.length = 0;
+        child.name = "renamed";
+        expect(events.length).toBe(0);
+      },
+    );
+  });
+
+  it("tracks a subtree again when it is attached again", () => {
+    const { site, root, mkTag } = mkSite();
+    const child = mkTag("child", root);
+    root.children = [child];
+    const value = mkCode("value");
+    const expr = new ObjectPath({ path: ["value"], fallback: value });
+    vs(child).attrs = { attr: expr };
+
+    testSite(
+      site,
       () => {},
       (events, dispose, prune) => {
         events.length = 0;
         prune();
-        value.name = "value 2";
+        value.code = "value 2";
         expect(events.length).toBe(1);
-        expect(events[0].path !== undefined).toBe(true);
+        expect(events[0].path).toBeDefined();
 
         // detach child
-        arrayRemove(node.children, child);
+        root.children = root.children.filter((c) => c !== child);
         events.length = 0;
         prune();
-        value.name = "value 3";
+        value.code = "value 3";
         expect(events.length).toBe(0);
 
         // add it again
-        node.children.push(child);
+        root.children = [...root.children, child];
         events.length = 0;
         prune();
-        value.name = "value 4";
+        value.code = "value 4";
         expect(events.length).toBe(1);
-        expect(events[0].path !== undefined).toBe(true);
+        expect(events[0].path).toBeDefined();
 
         // detach again
-        arrayRemove(node.children, child);
+        root.children = root.children.filter((c) => c !== child);
         events.length = 0;
         prune();
-        value.name = "value 5";
+        value.code = "value 5";
         expect(events.length).toBe(0);
       },
     );
   });
 
   it("The change recorder should be transactional", () => {
-    const node = mkTag({ name: "node", tag: "div" });
-    const child1 = mkTag({ name: "child1", tag: "div" });
-    const child2 = mkTag({ name: "child2", tag: "div" });
-    node.children.push(child1);
-    const value = mkTag({ name: "value", tag: "div", parent: node });
-    const expr = mkExpr({ value: value });
-    child1.attrs["key"] = expr;
+    const { site, root, mkTag } = mkSite();
+    const child1 = mkTag("child1", root);
+    const child2 = mkTag("child2", root);
+    root.children = [child1];
+    const expr = mkCode("expr");
+    vs(child1).attrs = { key: expr };
+    const mixin = mkMixin("mixin");
+    site.mixins = [mixin];
 
-    const recorder = new ChangeRecorder({
-      inst: hackyCast(node),
-      _instUtil: instUtil,
-    });
+    const recorder = new ChangeRecorder({ site });
 
     const doWork = (fail: boolean) => {
-      node.children.push(child2);
-      delete child1.attrs["key"];
-      child2.attrs2["key2"] = [expr];
+      root.children = [...root.children, child2];
+      vs(child1).attrs = omit(vs(child1).attrs, "key");
+      vs(child2).rs.mixins = [...vs(child2).rs.mixins, mixin];
       if (fail) {
         throw new Error();
       }
-      child2.attrs["key4"] = expr;
+      vs(child2).attrs = { ...vs(child2).attrs, key4: expr };
     };
 
     expect(() => recorder.withRecording(() => doWork(true))).toThrow();
 
     // Check that all changes have been undone
-    expect(node.children.length).toBe(1);
-    expect(child1.attrs["key"]).toBe(expr);
-    expect(child2.attrs2["key2"]).toBe(undefined);
-    expect(child2.attrs2["key3"]).toBe(undefined);
-    expect(child2.attrs["key4"]).toBe(undefined);
+    expect(root.children.length).toBe(1);
+    expect(vs(child1).attrs["key"]).toBe(expr);
+    expect(vs(child2).rs.mixins).toEqual([]);
+    expect(vs(child2).attrs["key4"]).toBe(undefined);
 
     // Now do the changes without throwing
     expect(recorder.withRecording(() => doWork(false)).changes.length).toBe(4);
 
-    expect(node.children.length).toBe(2);
-    expect(child1.attrs["key"]).toBe(undefined);
-    expect(child2.attrs2["key2"].length).toBe(1);
-    expect(child2.attrs2["key3"]).toBe(undefined);
-    expect(child2.attrs["key4"]).toBe(expr);
+    expect(root.children.length).toBe(2);
+    expect(vs(child1).attrs["key"]).toBe(undefined);
+    expect(vs(child2).rs.mixins).toEqual([mixin]);
+    expect(vs(child2).attrs["key4"]).toBe(expr);
   });
 });

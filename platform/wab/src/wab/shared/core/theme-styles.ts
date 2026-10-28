@@ -66,7 +66,10 @@ export function ensureThemeStyleMixin(theme: Theme, selector: string): Mixin {
     forTheme: true,
     variantedRs: [],
   });
-  theme.styles.push(new ThemeStyle({ selector, style: newMixin }));
+  theme.styles = [
+    ...theme.styles,
+    new ThemeStyle({ selector, style: newMixin }),
+  ];
   return newMixin;
 }
 

@@ -102,8 +102,11 @@ const ThemeInitialStylesPanel = observer(
                         mixins: [],
                         animations: null,
                       });
-                      studioCtx.site.activeTheme!.addItemPrefs[newKey] =
-                        initialRs;
+                      const theme = studioCtx.site.activeTheme!;
+                      theme.addItemPrefs = {
+                        ...theme.addItemPrefs,
+                        [newKey]: initialRs,
+                      };
                     }),
                   );
                 }

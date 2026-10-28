@@ -48,7 +48,8 @@ function makeFixture() {
     ],
   });
   const handler = new EventHandler({ interactions: [] });
-  handler.interactions.push(
+  handler.interactions = [
+    ...handler.interactions,
     new Interaction({
       uuid: mkShortId(),
       interactionName: "Call clone probe",
@@ -58,7 +59,7 @@ function makeFixture() {
       parent: handler,
       args: [new NameArg({ name: "customFunctionOp", expr: op })],
     }),
-  );
+  ];
   const component = mkComponent({
     name: "Clone probe",
     type: ComponentType.Plain,
@@ -104,7 +105,7 @@ test.each([false, true])(
         uuid: mkShortId(),
         site: createSite({ customFunctions: [func] }),
       });
-      site.projectDependencies.push(dep);
+      site.projectDependencies = [...site.projectDependencies, dep];
       bundler.bundle(dep, "dependency", "1");
     }
     bundler.bundle(site, "source", "1");
@@ -131,7 +132,7 @@ test("component duplication still remaps arguments belonging to component props"
     paramType: "prop",
     type: typeFactory.func(argType),
   });
-  component.params.push(param);
+  component.params = [...component.params, param];
   // A separate function argument in the same interaction exercises both owners.
   const ownedArg = new FunctionArg({
     uuid: mkShortId(),

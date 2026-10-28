@@ -9,7 +9,7 @@ import Select from "@/wab/client/components/widgets/Select";
 import TrashsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__TrashSvg";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { cachedExprsInSite } from "@/wab/shared/cached-selectors";
-import { ensure, removeWhere } from "@/wab/shared/common";
+import { ensure } from "@/wab/shared/common";
 import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { fixCustomFunctionExpr } from "@/wab/shared/core/custom-functions";
 import { isDynamicExpr } from "@/wab/shared/core/exprs";
@@ -223,8 +223,6 @@ export async function updateSiteCustomFunctions(props: {
       ),
     };
   });
-  ctx.observeComponents(exprRefs.map((ref) => ref.ownerComponent));
-
   const availableFunctions = site.customFunctions.filter(
     (customFunction) => !props.removedFunctions.has(customFunction),
   );
@@ -238,13 +236,8 @@ export async function updateSiteCustomFunctions(props: {
 
   await ctx.change(
     () => {
-      // Add new functions first, so they can be used for remapping
-      for (const customFunction of newFunctions) {
-        site.customFunctions.push(customFunction);
-      }
-
-      removeWhere(site.customFunctions, (customFunction) =>
-        removedFunctions.has(customFunction),
+      site.customFunctions = [...site.customFunctions, ...newFunctions].filter(
+        (customFunction) => !removedFunctions.has(customFunction),
       );
 
       exprRefs.forEach((usage) => {
@@ -255,13 +248,15 @@ export async function updateSiteCustomFunctions(props: {
           }
         });
         // Remove from server queries
-        removeWhere(
-          usage.ownerComponent.serverQueries,
-          (serverQuery) =>
-            isKnownCustomFunctionExpr(serverQuery.op) &&
-            !!serverQuery.op.func &&
-            removedFunctions.has(serverQuery.op.func),
-        );
+        usage.ownerComponent.serverQueries =
+          usage.ownerComponent.serverQueries.filter(
+            (serverQuery) =>
+              !(
+                isKnownCustomFunctionExpr(serverQuery.op) &&
+                !!serverQuery.op.func &&
+                removedFunctions.has(serverQuery.op.func)
+              ),
+          );
 
         usage.exprRefs.forEach((ref) => {
           const expr = ref.expr;
@@ -276,22 +271,22 @@ export async function updateSiteCustomFunctions(props: {
             if (!updatedRegistration) {
               return;
             }
-            removeWhere(
-              expr.args,
+            expr.args = expr.args.filter(
               (arg) =>
-                !updatedRegistration.params.find(
+                !!updatedRegistration.params.find(
                   (param) => param === arg.argType,
                 ),
             );
           } else if (isKnownEventHandler(expr)) {
             expr.interactions.forEach((interaction) => {
               // Remove from event handlers
-              removeWhere(
-                interaction.args,
+              interaction.args = interaction.args.filter(
                 (arg) =>
-                  isKnownCustomFunctionExpr(arg.expr) &&
-                  removedFunctions.has(arg.expr.func) &&
-                  !remappedFunctions.has(arg.expr.func),
+                  !(
+                    isKnownCustomFunctionExpr(arg.expr) &&
+                    removedFunctions.has(arg.expr.func) &&
+                    !remappedFunctions.has(arg.expr.func)
+                  ),
               );
             });
           } else if (isDynamicExpr(expr)) {

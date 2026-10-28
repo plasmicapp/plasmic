@@ -8,7 +8,6 @@ import Button from "@/wab/client/components/widgets/Button";
 import { extractDataCtx } from "@/wab/client/state-management/interactions-meta";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { observer } from "@/wab/client/utils/mobx-client-util";
 import { ServerQueryOp } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { ExprCtx } from "@/wab/shared/core/exprs";
 import { EventHandlerKeyType } from "@/wab/shared/core/tpls";
@@ -19,6 +18,7 @@ import {
   isKnownCustomCode,
   isKnownCustomFunctionExpr,
 } from "@/wab/shared/model/classes";
+import { observer } from "mobx-react";
 import * as React from "react";
 
 /**

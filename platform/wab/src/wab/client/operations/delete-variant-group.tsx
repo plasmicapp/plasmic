@@ -112,11 +112,6 @@ export async function deleteVariantGroup(
     }
   }
 
-  if (component) {
-    // deleteResourcesWithUsages only observes the components using the group,
-    // but removing it also edits the owning component's tpl tree.
-    studioCtx.observeComponents([component]);
-  }
   const usageSummary = extractVariantGroupUsages(site, group, component);
   const usageCount =
     usageSummary.components.length +

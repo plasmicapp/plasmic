@@ -136,7 +136,8 @@ it("keeps WAB Sentry tags, users, and error contexts isolated", async () => {
     ).toBeUndefined();
 
     const site = createSite();
-    site.components.push(
+    site.components = [
+      ...site.components,
       ...[1, 2].map(() =>
         mkComponent({
           name: "Duplicate",
@@ -144,7 +145,7 @@ it("keeps WAB Sentry tags, users, and error contexts isolated", async () => {
           type: ComponentType.Plain,
         }),
       ),
-    );
+    ];
     Array.from(genSiteErrors(site));
     expect(await Sentry.flush(1000)).toBe(true);
     expect(

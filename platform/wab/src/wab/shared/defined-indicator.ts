@@ -77,7 +77,7 @@ export interface StyleSource {
   value: string;
   prop: string;
   isDerived?: boolean;
-  animations?: Animation[];
+  animations?: ReadonlyArray<Animation>;
 }
 
 export interface AttrSource {

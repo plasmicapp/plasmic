@@ -13,7 +13,7 @@ import {
   makeSizeAwareExpProxy,
 } from "@/wab/shared/sizingutils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { memoize } from "lodash";
+import { memoize, omit } from "lodash";
 import { CSSProperties } from "react";
 
 /** Helper for handling rulesets. */
@@ -73,7 +73,7 @@ export class RuleSetHelpers implements IRuleSetHelpersX {
   }
 
   clear(prop: string) {
-    delete this._rs.values[css.normProp(prop)];
+    this._rs.values = omit(this._rs.values, css.normProp(prop));
   }
 
   clearAll(props: string[]) {
@@ -96,8 +96,10 @@ export class RuleSetHelpers implements IRuleSetHelpersX {
 
   set(prop: /*TWZ*/ string, val: /*TWZ*/ string) {
     assert(val != null && val !== "", `val cannot be ${val}`);
-    this._rs.values[css.normProp(prop)] =
-      typeof val === "string" ? val : "" + val;
+    this._rs.values = {
+      ...this._rs.values,
+      [css.normProp(prop)]: typeof val === "string" ? val : "" + val,
+    };
   }
 }
 

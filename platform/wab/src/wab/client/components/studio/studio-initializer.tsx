@@ -28,7 +28,6 @@ import { isUnownedProject } from "@/wab/shared/EntUtil";
 import { spawn } from "@/wab/shared/common";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { initBuiltinActions } from "@/wab/shared/core/states";
-import { makeGlobalObservable } from "@/wab/shared/mobx-util";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { notification } from "antd";
 import { observer } from "mobx-react";
@@ -91,7 +90,6 @@ class StudioInitializer_ extends React.Component<
       );
     }
 
-    makeGlobalObservable();
     const studioCtx = await initStudioCtx(appCtx, projectId, onRefreshUi);
     const previewCtx = new PreviewCtx(hostFrameCtx, studioCtx);
 

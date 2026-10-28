@@ -51,6 +51,7 @@ import {
   isKnownVarRef,
   isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
+import { instFieldValues } from "@/wab/shared/model/model-meta";
 /* eslint-disable
     no-this-before-super,
 */
@@ -113,7 +114,6 @@ import {
   transformDataTokensToDisplay,
 } from "@/wab/shared/eval/expression-parser";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
-import { instFieldValues } from "@/wab/shared/model/model-meta";
 import { maybeConvertToIife } from "@/wab/shared/parser-utils";
 import { pageHrefPathToCode } from "@/wab/shared/utils/url-utils";
 import L, {
@@ -1066,7 +1066,7 @@ export function extractValueSavedFromDataPicker(
     value = value.bodyExpr;
   }
   return isKnownObjectPath(value)
-    ? value.path
+    ? [...value.path]
     : isKnownCustomCode(value)
       ? value.code.slice(1, -1)
       : isKnownExpr(value)
@@ -1078,25 +1078,25 @@ export function createExprForDataPickerValue(
   value: string | (string | number)[],
   fallback?: Expr | null,
   isBodyFunction?: false,
-  functionArgNames?: string[],
+  functionArgNames?: ReadonlyArray<string>,
 ): ObjectPath | CustomCode;
 export function createExprForDataPickerValue(
   value: string | (string | number)[],
   fallback: Expr | null | undefined,
   isBodyFunction: true,
-  functionArgNames?: string[],
+  functionArgNames?: ReadonlyArray<string>,
 ): FunctionExpr;
 export function createExprForDataPickerValue(
   value: string | (string | number)[],
   fallback?: Expr | null,
   isBodyFunction?: boolean,
-  functionArgNames?: string[],
+  functionArgNames?: ReadonlyArray<string>,
 ): ObjectPath | CustomCode | FunctionExpr;
 export function createExprForDataPickerValue(
   value: string | (string | number)[],
   fallback?: Expr | null,
   isBodyFunction?: boolean,
-  functionArgNames?: string[],
+  functionArgNames?: ReadonlyArray<string>,
 ) {
   const newExpr =
     typeof value === "object"
@@ -1172,7 +1172,7 @@ const filteredPrefixes = new RegExp(
     .join("|")})\\b`,
 );
 
-export function summarizePathParts(parts: (number | string)[]) {
+export function summarizePathParts(parts: ReadonlyArray<number | string>) {
   return parts.join(".").replace(filteredPrefixes, "").split(".").join(" ▸ ");
 }
 

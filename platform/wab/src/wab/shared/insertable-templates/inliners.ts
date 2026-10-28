@@ -527,16 +527,20 @@ const adjustInsertableTemplateComponentArgs = (
           );
         }),
       );
-      sourceTpl.vsettings[0].args.push(
+      const sourceVs = sourceTpl.vsettings[0];
+      sourceVs.args = [
+        ...sourceVs.args,
         new Arg({
           param,
           expr: new VariantsRef({
             variants: argVariants,
           }),
         }),
-      );
+      ];
     } else if (isKnownCustomCode(arg.expr)) {
-      sourceTpl.vsettings[0].args.push(
+      const sourceVs = sourceTpl.vsettings[0];
+      sourceVs.args = [
+        ...sourceVs.args,
         new Arg({
           param,
           expr: new CustomCode({
@@ -544,7 +548,7 @@ const adjustInsertableTemplateComponentArgs = (
             fallback: undefined,
           }),
         }),
-      );
+      ];
     } else if (isKnownRenderExpr(arg.expr)) {
       // If we are dealing with RenderExpr (slot content) we have to adjust the parent
       // to be the sourceTpl instead of any previous ref. Plume components/sub-components
@@ -612,14 +616,16 @@ const adjustInsertableTemplateComponentArgs = (
           }
         }),
       );
-      sourceTpl.vsettings[0].args.push(
+      const sourceVs = sourceTpl.vsettings[0];
+      sourceVs.args = [
+        ...sourceVs.args,
         new Arg({
           param,
           expr: new RenderExpr({
             tpl: renderTpl,
           }),
         }),
-      );
+      ];
     }
   });
 };
@@ -710,7 +716,10 @@ export function ensureHostLessDepComponent(
   for (const missingDep of missingDeps) {
     console.log(`Installing missing hostless package ${missingDep.name}`);
 
-    targetSite.projectDependencies.push(missingDep);
+    targetSite.projectDependencies = [
+      ...targetSite.projectDependencies,
+      missingDep,
+    ];
 
     // We need to sync new global contexts as well, and we will
     // copy over values for new global contexts from sourceSite
@@ -728,17 +737,20 @@ export function ensureHostLessDepComponent(
       const sourceSiteGc = sourceSite.globalContexts.find(
         (sourceGc) => sourceGc.component.name === gc.component.name,
       )!;
-      sourceSiteGc.vsettings[0].args.forEach((arg) => {
-        gc.vsettings[0].args.push(
-          new Arg({
-            param: strictFind(
-              gc.component.params,
-              (p) => p.variable.name === arg.param.variable.name,
-            ),
-            expr: cloneExpr(arg.expr),
-          }),
-        );
-      });
+      const gcVs = gc.vsettings[0];
+      gcVs.args = [
+        ...gcVs.args,
+        ...sourceSiteGc.vsettings[0].args.map(
+          (arg) =>
+            new Arg({
+              param: strictFind(
+                gc.component.params,
+                (p) => p.variable.name === arg.param.variable.name,
+              ),
+              expr: cloneExpr(arg.expr),
+            }),
+        ),
+      ];
     });
   }
 

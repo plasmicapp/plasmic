@@ -82,7 +82,7 @@ describe("getComponentEvalContext", () => {
   it("falls back to model args, then param defaults, when unrendered", () => {
     const { vs, propValues } = setup();
     expect(propValues()).toEqual({ enabled: false, dependent: "stored" });
-    vs.args.splice(0, 1);
+    vs.args = vs.args.slice(1);
     expect(propValues().enabled).toBe(true);
   });
 
@@ -93,10 +93,10 @@ describe("getComponentEvalContext", () => {
       paramType: "prop",
       type: typeFactory.text(),
     });
-    tpl.component.params.push(className);
+    tpl.component.params = [...tpl.component.params, className];
     const styleArg = (uuid: string) =>
       new Arg({ param: className, expr: new StyleExpr({ uuid, styles: [] }) });
-    vs.args.push(styleArg("base"));
+    vs.args = [...vs.args, styleArg("base")];
     const active = mkVariantSetting({
       variants: [mkVariant({ name: "active" })],
       args: [styleArg("active")],
@@ -144,14 +144,17 @@ describe("getComponentEvalContext", () => {
     const { tpl, vs, viewCtx, propValues } = setup();
     const site = createSite();
     const token = mkStyleToken({ name: "c", type: "Color", value: "#123456" });
-    site.styleTokens.push(token);
+    site.styleTokens = [...site.styleTokens, token];
     const color = mkParam({
       name: "color",
       paramType: "prop",
       type: typeFactory.color({ noDeref: false }),
     });
-    tpl.component.params.push(color);
-    vs.args.push(new Arg({ param: color, expr: new StyleTokenRef({ token }) }));
+    tpl.component.params = [...tpl.component.params, color];
+    vs.args = [
+      ...vs.args,
+      new Arg({ param: color, expr: new StyleTokenRef({ token }) }),
+    ];
     Object.assign(viewCtx, {
       dbCtx: () => ({ site }),
       variantTplMgr: () => ({ getActivatedVariantsForNode: () => new Set() }),

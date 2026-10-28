@@ -10,18 +10,16 @@ import {
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { replaceImageDataUrisInStyles } from "@/wab/client/web-importer/images";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
-import { validateGlobalVariantCombo } from "@/wab/shared/Variants";
-import { arrayRemove } from "@/wab/shared/collections";
+import {
+  VariantCombo,
+  validateGlobalVariantCombo,
+} from "@/wab/shared/Variants";
+import { arrayWithout } from "@/wab/shared/collections";
 import { arrayEqIgnoreOrder } from "@/wab/shared/common";
 import { mkRuleSet } from "@/wab/shared/core/styles";
 import { normProp } from "@/wab/shared/css";
 import { GenericError } from "@/wab/shared/error-handling";
-import {
-  Mixin,
-  RuleSet,
-  Variant,
-  VariantedRuleSet,
-} from "@/wab/shared/model/classes";
+import { Mixin, RuleSet, VariantedRuleSet } from "@/wab/shared/model/classes";
 import { uniq } from "lodash";
 import { Result, err, ok } from "neverthrow";
 
@@ -81,7 +79,7 @@ function writeStyleChanges(
 /** Variant order is irrelevant. null styles removes the whole override. */
 export function setMixinVariantedStyles(opts: {
   mixin: Mixin;
-  variants: Variant[];
+  variants: VariantCombo;
   styles: Record<string, string | null> | null;
   studioCtx?: StudioCtx;
   imageAssetRefs?: Map<string, string>;
@@ -106,7 +104,7 @@ export function setMixinVariantedStyles(opts: {
 
   if (styles === null) {
     if (existing) {
-      arrayRemove(mixin.variantedRs, existing);
+      mixin.variantedRs = arrayWithout(mixin.variantedRs, existing);
     }
     return ok([]);
   }
@@ -146,7 +144,7 @@ export function setMixinVariantedStyles(opts: {
   const variantedRs =
     existing ?? new VariantedRuleSet({ variants, rs: mkRuleSet({}) });
   if (!existing) {
-    mixin.variantedRs.push(variantedRs);
+    mixin.variantedRs = [...mixin.variantedRs, variantedRs];
   }
   messages.push(
     ...writeStyleChanges(
@@ -157,7 +155,7 @@ export function setMixinVariantedStyles(opts: {
     ),
   );
   if (Object.keys(variantedRs.rs.values).length === 0) {
-    arrayRemove(mixin.variantedRs, variantedRs);
+    mixin.variantedRs = arrayWithout(mixin.variantedRs, variantedRs);
   }
   return ok(messages);
 }

@@ -133,7 +133,7 @@ import {
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { setTplVisibility, TplVisibility } from "@/wab/shared/visibility-utils";
 import { deserializePlasmicComponentAttrs } from "@/wab/shared/web-exporter/component-utils";
-import L, { isArray } from "lodash";
+import { isArray } from "lodash";
 import { err, ok, Result } from "neverthrow";
 
 export interface HtmlToTplResult {
@@ -364,6 +364,7 @@ export async function htmlToTpl(
         const siteMixins = allMixins(site, { includeDeps: "direct" });
         for (const [tplNode, uuids] of tplMixinsData.entries()) {
           const rs = vtm.ensureBaseVariantSetting(tplNode).rs;
+          const mixins = new Set(rs.mixins);
           for (const uuid of uuids) {
             const mixin = siteMixins.find((m) => m.uuid === uuid);
             if (!mixin) {
@@ -372,10 +373,11 @@ export async function htmlToTpl(
                 tpl: tplRef(tplNode),
                 mixin: uuid,
               });
-            } else if (!rs.mixins.includes(mixin)) {
-              rs.mixins.push(mixin);
+            } else {
+              mixins.add(mixin);
             }
           }
+          rs.mixins = [...mixins];
         }
       }
 
@@ -387,11 +389,11 @@ export async function htmlToTpl(
         );
 
         const vs = ensureVariantSetting(assetTpl, []);
-        const assetAttrs = L.assign({
+        vs.attrs = {
+          ...vs.attrs,
           [getTagAttrForImageAsset(asset.type as ImageAssetType)]:
             new ImageAssetRef({ asset }),
-        });
-        L.merge(vs.attrs, assetAttrs);
+        };
       }
 
       return htmlToTplErrors;
@@ -462,7 +464,7 @@ export function mkEventHandlerExprFromHtmlAttrValue(
     parent: eventHandler,
     uuid: mkShortId(),
   });
-  eventHandler.interactions.push(interaction);
+  eventHandler.interactions = [...eventHandler.interactions, interaction];
   return eventHandler;
 }
 
@@ -1075,7 +1077,7 @@ export function upsertAnimationSequences(
         uuid: mkShortId(),
         keyframes,
       });
-      site.animationSequences.push(newSequence);
+      site.animationSequences = [...site.animationSequences, newSequence];
       result.push(newSequence);
     }
   }

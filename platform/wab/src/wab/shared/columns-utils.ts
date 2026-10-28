@@ -1,5 +1,6 @@
 import { RSH, readonlyRSH } from "@/wab/shared/RuleSetHelpers";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
+import { VariantCombo } from "@/wab/shared/Variants";
 import { ensure } from "@/wab/shared/common";
 import { expandRuleSets } from "@/wab/shared/core/styles";
 import { TplColumnsTag } from "@/wab/shared/core/tpls";
@@ -55,7 +56,7 @@ export const isReverseValue = (val: string) => val.endsWith("-reverse");
 
 export function isTplColumnsVariantReversed(
   tpl: TplColumnsTag,
-  variants: Variant[],
+  variants: VariantCombo,
   vtm: VariantTplMgr,
 ) {
   const tplVs = ensure(vtm.ensureVariantSetting(tpl, variants));
@@ -69,7 +70,7 @@ export function isTplColumnsVariantReversed(
 
 export function adjustVariantTplColumns(
   tpl: TplColumnsTag,
-  variants: Variant[],
+  variants: VariantCombo,
   newConfig: ColumnsConfigParams,
   vtm: VariantTplMgr,
 ) {
@@ -122,7 +123,7 @@ export function updateCurrentTplColumns(
 }
 
 export function calcMovedColSizes(
-  cols: number[],
+  cols: ReadonlyArray<number>,
   idx: number,
   delta: number,
   fullWidth: number,
@@ -167,7 +168,7 @@ export function equalColumnDistribution(len: number) {
 // else, we allocate the smallest size for new columns and try to maintain the proportion
 // between already existing cols
 export function redistributeColumns(
-  cols: number[],
+  cols: ReadonlyArray<number>,
   len: number,
   opts: { forceEqual?: boolean } = {},
 ) {

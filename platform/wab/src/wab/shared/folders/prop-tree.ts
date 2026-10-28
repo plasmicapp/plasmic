@@ -61,5 +61,5 @@ export function reorderLevel(
   const insertAt = component.params.findIndex((p) => levelUids.has(p.uid));
   const rest = component.params.filter((p) => !levelUids.has(p.uid));
   rest.splice(insertAt, 0, ...newOrder);
-  component.params.splice(0, component.params.length, ...rest);
+  component.params = rest;
 }

@@ -17,6 +17,7 @@ import {
   Site,
   isKnownTplTag,
 } from "@/wab/shared/model/classes";
+import { instFieldValues } from "@/wab/shared/model/model-meta";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const tplIids: string[] = [];
@@ -71,10 +72,10 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
             ]);
             if (screenVS) {
               baseVS.columnsConfig = new ColumnsConfig(
-                isBaseColumn ? mobileConfig : desktopConfig,
+                instFieldValues(isBaseColumn ? mobileConfig : desktopConfig),
               );
               screenVS.columnsConfig = new ColumnsConfig(
-                !isBaseColumn ? mobileConfig : desktopConfig,
+                instFieldValues(!isBaseColumn ? mobileConfig : desktopConfig),
               );
             } else {
               baseVS.columnsConfig = desktopConfig;

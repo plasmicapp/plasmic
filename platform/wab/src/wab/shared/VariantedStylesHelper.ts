@@ -1,14 +1,8 @@
 import { StyleTokenValue } from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
-import { isValidComboForToken } from "@/wab/shared/Variants";
-import {
-  arrayEqIgnoreOrder,
-  assert,
-  ensure,
-  ensureArray,
-  last,
-} from "@/wab/shared/common";
+import { VariantCombo, isValidComboForToken } from "@/wab/shared/Variants";
+import { arrayEqIgnoreOrder, assert, ensure, last } from "@/wab/shared/common";
 import { cloneRuleSet } from "@/wab/shared/core/styles";
 import { FinalToken, ImmutableToken } from "@/wab/shared/core/tokens";
 import {
@@ -16,7 +10,6 @@ import {
   RuleSet,
   Site,
   StyleToken,
-  Variant,
   VariantedRuleSet,
   VariantedValue,
   isKnownMixin,
@@ -29,8 +22,8 @@ import {
 export class VariantedStylesHelper {
   constructor(
     private site?: Site,
-    private activeGlobalVariants?: Variant[],
-    private targetGlobalVariants?: Variant[],
+    private activeGlobalVariants?: VariantCombo,
+    private targetGlobalVariants?: VariantCombo,
   ) {}
 
   key = () =>
@@ -162,7 +155,7 @@ export class VariantedStylesHelper {
         }"`,
       );
 
-      token.setVariantedValue(ensureArray(this.targetGlobalVariants), value);
+      token.setVariantedValue(this.targetGlobalVariants ?? [], value);
     }
   }
 
@@ -171,7 +164,7 @@ export class VariantedStylesHelper {
       !(token instanceof ImmutableToken),
       `cannot update token "${token.name}" from transitive dep`,
     );
-    token.removeVariantedValue(ensureArray(this.targetGlobalVariants));
+    token.removeVariantedValue(this.targetGlobalVariants ?? []);
   }
 
   updateMixinRule(
@@ -180,7 +173,7 @@ export class VariantedStylesHelper {
     value: string | undefined | null,
   ) {
     const variantedRs = mixin.variantedRs.find((vRs) =>
-      arrayEqIgnoreOrder(vRs.variants, ensureArray(this.targetGlobalVariants)),
+      arrayEqIgnoreOrder(vRs.variants, this.targetGlobalVariants ?? []),
     );
     const activeRuleSet = this.isTargetBaseVariant()
       ? mixin.rs
@@ -192,19 +185,22 @@ export class VariantedStylesHelper {
       }
     } else {
       if (!activeRuleSet) {
-        mixin.variantedRs.push(
+        mixin.variantedRs = [
+          ...mixin.variantedRs,
           new VariantedRuleSet({
-            variants: ensure(
-              this.targetGlobalVariants,
-              "Must be targeting variants",
-            ),
+            variants: [
+              ...ensure(
+                this.targetGlobalVariants,
+                "Must be targeting variants",
+              ),
+            ],
             rs: new RuleSet({
               values: {},
               mixins: mixin.rs.mixins,
               animations: null,
             }),
           }),
-        );
+        ];
       }
       const rs = activeRuleSet ?? last(mixin.variantedRs).rs;
       new RuleSetHelpers(rs, "").set(prop, value);

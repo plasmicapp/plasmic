@@ -35,7 +35,7 @@ export interface FontVariant {
 
 export function extractUsedFontsFromComponents(
   site: Site,
-  components: Component[],
+  components: ReadonlyArray<Component>,
   tokenResolver: TokenRefResolver = makeTokenRefResolver(site),
 ) {
   // Basically, for any piece of text, its style is influenced by the default

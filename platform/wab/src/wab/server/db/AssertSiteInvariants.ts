@@ -21,7 +21,6 @@ import { assert, maybe, spawn } from "@/wab/shared/common";
 import { observeModel } from "@/wab/shared/core/observable-model";
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import { taggedUnbundle } from "@/wab/shared/core/tagged-unbundle";
-import { instUtil } from "@/wab/shared/model/InstUtil";
 import {
   Site,
   ensureKnownProjectDependency,
@@ -97,16 +96,13 @@ function assertObservabeModelInvariants(
   // Observable model also checks several invariants.
   // We should call it after `assertSiteInvariants`, otherwise the
   // results will be cached by `computedFn` causing a memory leak.
-  const { dispose } = observeModel(site, {
-    instUtil,
+  const tracker = observeModel(site, {
     listener: () => assert(false, ""),
-    // We should keep it in sync with `DbCtx.createRecorder`:
-    excludeFields: [meta.getFieldByName("ProjectDependency", "site")],
     isExternalRef: (obj) =>
       !!maybe(bundler.addrOf(obj), (addr) => addr.uuid !== rootUuid),
     quiet: true,
   });
-  dispose();
+  tracker.dispose();
 }
 
 export async function main() {
