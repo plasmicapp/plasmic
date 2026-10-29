@@ -21,21 +21,18 @@
     }
   }
 
-  .ant-dropdown-menu-item {
+  .ant-dropdown-menu-item,
+  .ant-dropdown-menu-submenu-title {
     padding-left: 12px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    line-height: 22px;
+    transition: all 0ms;
     &:focus-visible {
       z-index: 1;
       outline-width: 1px;
       @include focused;
     }
-  }
-
-  .ant-dropdown-menu-item,
-  .ant-dropdown-menu-submenu-title {
-    padding-top: 2px;
-    padding-bottom: 2px;
-    line-height: 22px;
-    transition: all 0ms;
   }
 
   .ant-dropdown-menu-submenu-title {

@@ -740,6 +740,44 @@ const TplTreeNode = observer(function TplTreeNode(props: {
   const showLockIcon =
     props.ancestorLocked || (isKnownTplNode(item) && !L.isNil(item.locked));
 
+  const focusItem = (opts: { appendToMultiSelection: boolean }) => {
+    viewCtx.change(() => {
+      if (item instanceof SlotSelection) {
+        const tplComponent = ensure(
+          item.toTplSlotSelection().tpl,
+          "SlotSelection in tpl-tree is expected to have a tpl",
+        );
+        const val = tryGetValForTpl(viewCtx, tplComponent, componentFrameNum);
+        const valSlotPlaceholder = new SlotSelection({
+          val: val ? (val as ValComponent) : undefined,
+          tpl: !val ? tplComponent : undefined,
+          slotParam: item.slotParam,
+        });
+        if (val) {
+          viewCtx.getViewOps().tryFocusObj(valSlotPlaceholder, {
+            allowLocked: true,
+            exact: true,
+          });
+        } else {
+          viewCtx.setStudioFocusBySelectable(valSlotPlaceholder);
+        }
+      } else {
+        const val = tryGetValForTpl(viewCtx, item, componentFrameNum);
+        if (val) {
+          viewCtx.getViewOps().tryFocusObj(val, {
+            allowLocked: true,
+            appendToMultiSelection: opts.appendToMultiSelection,
+            exact: true,
+          });
+        } else {
+          viewCtx.setStudioFocusByTpl(item, undefined, {
+            appendToMultiSelection: opts.appendToMultiSelection,
+          });
+        }
+      }
+    });
+  };
+
   const visibleChangeCallback = React.useCallback(
     (visible: boolean) => {
       if (visible) {
@@ -791,52 +829,14 @@ const TplTreeNode = observer(function TplTreeNode(props: {
           });
           return;
         }
-        viewCtx.change(() => {
-          if (item instanceof SlotSelection) {
-            const tplComponent = ensure(
-              item.toTplSlotSelection().tpl,
-              "SlotSelection in tpl-tree is expected to have a tpl",
-            );
-            const val = tryGetValForTpl(
-              viewCtx,
-              tplComponent,
-              componentFrameNum,
-            );
-            const valSlotPlaceholder = new SlotSelection({
-              val: val ? (val as ValComponent) : undefined,
-              tpl: !val ? tplComponent : undefined,
-              slotParam: item.slotParam,
-            });
-            if (val) {
-              viewCtx.getViewOps().tryFocusObj(valSlotPlaceholder, {
-                allowLocked: true,
-                exact: true,
-              });
-            } else {
-              viewCtx.setStudioFocusBySelectable(valSlotPlaceholder);
-            }
-          } else {
-            // Each tpl can map to multiple vals.  We try to see the "best"
-            // corresponding val we can use; see tryGetValForTpl() for what
-            // "best" means.
-            const val = tryGetValForTpl(viewCtx, item, componentFrameNum);
-            if (val) {
-              viewCtx.getViewOps().tryFocusObj(val, {
-                allowLocked: true,
-                appendToMultiSelection: e.shiftKey,
-                exact: true,
-              });
-            } else {
-              viewCtx.setStudioFocusByTpl(item, undefined, {
-                appendToMultiSelection: e.shiftKey,
-              });
-            }
-          }
-        });
+        focusItem({ appendToMultiSelection: e.shiftKey });
       }}
       onContextMenu={(e) => {
         if (!isOutOfContext) {
           viewCtx.tryBlurEditingText();
+          if (!isFocused) {
+            focusItem({ appendToMultiSelection: false });
+          }
           maybeShowContextMenu(e.nativeEvent, makeTreeNodeMenu(viewCtx, item));
         }
       }}

@@ -793,6 +793,7 @@ export const IFrameAwareDropdownMenu = (props: {
       onVisibleChange={(visible) => setMenuVisible(visible)}
       overlayClassName={props.overlayClassName}
       overlayStyle={props.overlayStyle}
+      align={{ overflow: { adjustX: true, adjustY: true, shiftY: true } }}
       destroyPopupOnHide
     >
       {props.children}

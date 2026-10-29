@@ -174,6 +174,8 @@ export default class ContextMenu extends React.Component<ContextMenuProps, {}> {
         onVisibleChange={this.onDropdownVisible}
         overlay={this.props.overlay}
         trigger={["click"]}
+        autoFocus
+        align={{ overflow: { adjustX: true, adjustY: true, shiftY: true } }}
       >
         <div
           className={styles.ContextMenu}
@@ -190,8 +192,7 @@ export default class ContextMenu extends React.Component<ContextMenuProps, {}> {
 
 interface WithContextMenuProps {
   overlay?:
-    | React.ReactElement<MenuProps>
-    | (() => React.ReactElement<MenuProps>);
+    React.ReactElement<MenuProps> | (() => React.ReactElement<MenuProps>);
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
