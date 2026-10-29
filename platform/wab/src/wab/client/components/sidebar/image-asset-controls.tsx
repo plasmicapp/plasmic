@@ -8,6 +8,7 @@ import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import {
   ItemOrGroup,
   VirtualGroupedList,
+  VirtualGroupedListHandle,
 } from "@/wab/client/components/sidebar/VirtualGroupedList";
 import { useDepFilterButton } from "@/wab/client/components/sidebar/left-panel-utils";
 import { DraggableInsertable } from "@/wab/client/components/studio/add-drawer/DraggableInsertable";
@@ -33,12 +34,20 @@ import {
 import ImageBlockIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageBlock";
 import PlasmicLeftImagesPanel from "@/wab/client/plasmic/plasmic_kit/PlasmicLeftImagesPanel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import {
+  UiActionsOverlay,
+  useModelUiActionHandler,
+} from "@/wab/client/studio-ctx/ui/studio-ui-actions";
+import { mkSiteScopedUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ImageUploadResponse } from "@/wab/shared/ApiSchema";
 import { ensure } from "@/wab/shared/common";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { extractImageAssetUsages } from "@/wab/shared/core/image-assets";
-import { isHostLessPackage } from "@/wab/shared/core/sites";
+import {
+  isHostLessPackage,
+  tryGetImageAssetByUuid,
+} from "@/wab/shared/core/sites";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ImageAsset, ProjectDependency } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
@@ -87,6 +96,31 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
       [ImageAssetType.Icon]: true,
       [ImageAssetType.Picture]: true,
     });
+
+  const listRefs = {
+    [ImageAssetType.Icon]: React.useRef<VirtualGroupedListHandle>(null),
+    [ImageAssetType.Picture]: React.useRef<VirtualGroupedListHandle>(null),
+  };
+  const pendingScrollAsset = React.useRef<ImageAsset | undefined>(undefined);
+  const scrollToPendingAsset = () => {
+    const asset = pendingScrollAsset.current;
+    if (asset && listRefs[asset.type].current) {
+      pendingScrollAsset.current = undefined;
+      listRefs[asset.type].current?.scrollTo(asset.uuid);
+    }
+  };
+  useModelUiActionHandler("ImageAsset", (uuid) => {
+    const asset = tryGetImageAssetByUuid(studioCtx.site, uuid, {
+      includeDeps: "direct",
+    });
+    if (!asset) {
+      return;
+    }
+    pendingScrollAsset.current = asset;
+    setIsImageAssetTypeExpanded((state) => ({ ...state, [asset.type]: true }));
+    scrollToPendingAsset();
+  });
+  React.useEffect(scrollToPendingAsset, [isImageAssetTypeExpanded]);
 
   const addAsset = async (type: ImageAssetType) => {
     return studioCtx.changeUnsafe(() => {
@@ -187,6 +221,7 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
         }}
       >
         <VirtualGroupedList
+          handleRef={listRefs[type]}
           items={items}
           renderItem={(asset) => (
             <ImageAssetControl
@@ -431,6 +466,7 @@ const ImageAssetControl = observer(function ImageAssetControl(props: {
       >
         {matcher.boldSnippets(asset.name)}
       </ListItem>
+      <UiActionsOverlay uiId={mkSiteScopedUiId(asset)} />
     </DraggableInsertable>
   );
 });

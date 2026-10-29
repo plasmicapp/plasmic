@@ -4,6 +4,9 @@ import {
   ComponentDataQuery,
   ComponentServerQuery,
   DataToken,
+  GlobalVariantGroup,
+  ImageAsset,
+  Mixin,
   Param,
   StyleToken,
   TplNode,
@@ -11,7 +14,14 @@ import {
 } from "@/wab/shared/model/classes";
 
 export type SiteScopedModel =
-  Component | StyleToken | DataToken | AnimationSequence | Variant;
+  | Component
+  | StyleToken
+  | DataToken
+  | ImageAsset
+  | Mixin
+  | AnimationSequence
+  | GlobalVariantGroup
+  | Variant;
 
 export type ComponentScopedModel =
   ComponentDataQuery | ComponentServerQuery | Param | Variant | TplNode;

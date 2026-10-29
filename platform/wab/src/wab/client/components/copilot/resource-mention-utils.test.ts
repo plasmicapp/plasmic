@@ -7,17 +7,23 @@ import {
 import { parseMention } from "@/wab/client/components/mentions/mention-parse";
 import {
   ComponentScopedTag,
+  ModelUiId,
   SiteScopedTag,
   mkComponentScopedUiId,
   mkModelUiId,
   mkSiteScopedUiId,
 } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
-import { resolveResource } from "@/wab/client/studio-ctx/ui/studio-ui-resources";
+import {
+  resolveResource,
+  resolveResourceLabel,
+} from "@/wab/client/studio-ctx/ui/studio-ui-resources";
+import { mkDataToken } from "@/wab/commons/DataToken";
 import { mkStyleToken } from "@/wab/commons/StyleToken";
 import { FREE_CONTAINER_LOWER } from "@/wab/shared/Labels";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import {
   VariantGroupType,
+  getBaseVariant,
   mkGlobalVariantGroup,
   mkVariant,
 } from "@/wab/shared/Variants";
@@ -27,14 +33,21 @@ import {
   mkComponent,
   mkPageMeta,
 } from "@/wab/shared/core/components";
-import { mkParam } from "@/wab/shared/core/lang";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { mkImageAsset } from "@/wab/shared/core/image-assets";
+import { mkParam, mkParamsForState } from "@/wab/shared/core/lang";
 import { createSite, writeable } from "@/wab/shared/core/sites";
-import { deepTrackComponents, mkTplTagX } from "@/wab/shared/core/tpls";
+import { mkImplicitState, mkState } from "@/wab/shared/core/states";
+import { mkRuleSet } from "@/wab/shared/core/styles";
+import { deepTrackComponents, mkSlot, mkTplTagX } from "@/wab/shared/core/tpls";
 import {
   AnimationSequence,
   CodeComponentMeta,
   Component,
+  ComponentDataQuery,
+  ComponentServerQuery,
   HostLessPackageInfo,
+  Mixin,
   ProjectDependency,
   TplNode,
 } from "@/wab/shared/model/classes";
@@ -44,7 +57,13 @@ import { runInAction } from "mobx";
 function mkTestSite() {
   const site = createSite();
   const unnamedTpl = mkTplTagX("div");
-  const tpl = mkTplTagX("div", { name: "MyElement" }, unnamedTpl);
+  const slotParam = mkParam({
+    name: "children",
+    type: typeFactory.renderable(),
+    paramType: "slot",
+  });
+  const slot = mkSlot(slotParam);
+  const tpl = mkTplTagX("div", { name: "MyElement" }, [unnamedTpl, slot]);
   const component = mkComponent({
     name: "Card",
     type: ComponentType.Plain,
@@ -67,6 +86,11 @@ function mkTestSite() {
     value: "#00FFFF",
   });
   registeredToken.isRegistered = true;
+  const dataToken = mkDataToken({ name: "apiUrl", value: "https://x.test" });
+  const image = mkTestImage("Hero");
+  const icon = mkTestImage("Logo", ImageAssetType.Icon);
+  const dataUrilessImage = mkTestImage("Pending");
+  dataUrilessImage.dataUri = null;
   const codeComponent = mkComponent({
     name: "Widget",
     type: ComponentType.Code,
@@ -90,17 +114,97 @@ function mkTestSite() {
     name: "FadeIn",
     keyframes: [],
   });
+  const mixin = mkTestMixin("Elevated");
   const transitive = mkTestDep("Transitive");
   const imported = mkTestDep("Imported", {
     projectDependencies: [transitive.dep],
   });
+  // Named differently from how it is listed, to tell the two apart.
+  const propParam = mkParam({
+    name: "title",
+    displayName: "Title",
+    type: typeFactory.text(),
+    paramType: "prop",
+  });
+  const { valueParam: stateParam, onChangeParam } = mkParamsForState({
+    name: "item count",
+    variableType: "number",
+    accessType: "private",
+    onChangeProp: "onItemCountChange",
+  });
+  const state = mkState({
+    param: stateParam,
+    onChangeParam,
+    variableType: "number",
+  });
+  // MyElement exposes a `value` state of its own, as a text input would;
+  // Studio names the backing param "<element> <state>".
+  const innerState = mkParamsForState({
+    name: "value",
+    variableType: "text",
+    accessType: "writable",
+    onChangeProp: "onChange",
+  });
+  const implicitParams = mkParamsForState({
+    name: "MyElement value",
+    variableType: "text",
+    accessType: "private",
+    onChangeProp: "MyElement onChange",
+  });
+  const implicitState = mkImplicitState(
+    mkState({
+      param: innerState.valueParam,
+      onChangeParam: innerState.onChangeParam,
+      variableType: "text",
+    }),
+    tpl,
+    implicitParams.valueParam,
+    implicitParams.onChangeParam,
+  );
+  const serverQuery = new ComponentServerQuery({
+    uuid: mkShortId(),
+    name: "fetchUsers",
+    op: null,
+  });
+  const legacyQuery = new ComponentDataQuery({
+    uuid: mkShortId(),
+    name: "listUsers",
+    op: null,
+  });
+  // A style variant carries no name of its own, as `TplMgr` creates it.
+  const elementState = mkVariant({
+    name: "",
+    selectors: [":hover"],
+    forTpl: tpl,
+  });
+  const interactionVariant = mkVariant({ name: "", selectors: [":active"] });
   runInAction(() => {
     site.components = [...site.components, component, page, codeComponent];
     site.styleTokens = [...site.styleTokens, token, registeredToken];
+    site.dataTokens = [...site.dataTokens, dataToken];
+    site.imageAssets = [...site.imageAssets, image, icon, dataUrilessImage];
     screenGroup.variants = [...screenGroup.variants, screenVariant];
     site.globalVariantGroups = [...site.globalVariantGroups, variantGroup];
     site.animationSequences = [...site.animationSequences, animation];
+    site.mixins = [...site.mixins, mixin];
     site.projectDependencies = [...site.projectDependencies, imported.dep];
+    component.params = [
+      ...component.params,
+      propParam,
+      slotParam,
+      stateParam,
+      onChangeParam,
+      implicitParams.valueParam,
+      implicitParams.onChangeParam,
+    ];
+    component.states = [...component.states, state, implicitState];
+    component.serverQueries = [...component.serverQueries, serverQuery];
+    component.dataQueries = [...component.dataQueries, legacyQuery];
+    component.variants = [
+      ...component.variants,
+      elementState,
+      interactionVariant,
+    ];
   });
   // Registers the components in the maps `getOwnerSite` reads, which a site
   // built by hand misses; without it `getEffectiveVariantSetting` throws.
@@ -110,6 +214,7 @@ function mkTestSite() {
     const group = tplMgr.createVariantGroup({ component, name: "Size" });
     return tplMgr.createVariant(component, group, "Large");
   });
+
   return {
     site,
     component,
@@ -118,14 +223,53 @@ function mkTestSite() {
     codeComponent,
     tpl,
     unnamedTpl,
+    slot,
+    slotParam,
+    propParam,
+    stateParam,
+    state,
+    implicitState,
+    serverQuery,
+    legacyQuery,
+    elementState,
+    interactionVariant,
     token,
     registeredToken,
+    dataToken,
+    image,
+    icon,
+    dataUrilessImage,
+    mixin,
     variant,
+    variantGroup,
+    screenGroup,
     screenVariant,
     animation,
     imported,
     transitive,
   };
+}
+
+/** A picture needs its data to be listed, as `read` lists it. */
+function mkTestImage(name: string, type = ImageAssetType.Picture) {
+  return mkImageAsset({
+    name,
+    type,
+    dataUri: "data:image/png;base64,iVBORw0KGgo=",
+    width: 10,
+    height: 10,
+  });
+}
+
+function mkTestMixin(name: string) {
+  return new Mixin({
+    uuid: mkShortId(),
+    name,
+    rs: mkRuleSet({}),
+    preview: undefined,
+    forTheme: false,
+    variantedRs: [],
+  });
 }
 
 /** A project dependency whose site holds one of each mentionable resource. */
@@ -163,6 +307,11 @@ function mkTestDep(
     value: "#0000FF",
   });
   registeredToken.isRegistered = true;
+  const dataToken = mkDataToken({
+    name: `${name}ApiUrl`,
+    value: "https://y.test",
+  });
+  const image = mkTestImage(`${name}Hero`);
   const animation = new AnimationSequence({
     uuid: mkShortId(),
     name: `${name}Fade`,
@@ -179,19 +328,67 @@ function mkTestDep(
     type: VariantGroupType.GlobalUserDefined,
   });
   // createSite() seeds a screen variant group; give it a breakpoint of its own.
+  const screenGroup = site.globalVariantGroups[0];
   const screenVariant = mkVariant({
     name: `${name}Tablet`,
-    parent: site.globalVariantGroups[0],
+    parent: screenGroup,
+  });
+  const mixin = mkTestMixin(`${name}Elevated`);
+  // What an imported component owns is never mentionable, so the exact
+  // listing assertion fails if any of it leaks in.
+  const propParam = mkParam({
+    name: `${name}Title`,
+    type: typeFactory.text(),
+    paramType: "prop",
+  });
+  const { valueParam: stateParam, onChangeParam } = mkParamsForState({
+    name: `${name}Count`,
+    variableType: "number",
+    accessType: "private",
+    onChangeProp: `${name}OnCountChange`,
+  });
+  const state = mkState({
+    param: stateParam,
+    onChangeParam,
+    variableType: "number",
+  });
+  const serverQuery = new ComponentServerQuery({
+    uuid: mkShortId(),
+    name: `${name}FetchUsers`,
+    op: null,
+  });
+  const legacyQuery = new ComponentDataQuery({
+    uuid: mkShortId(),
+    name: `${name}ListUsers`,
+    op: null,
+  });
+  const elementState = mkVariant({
+    name: "",
+    selectors: [":hover"],
+    forTpl: tpl,
   });
   runInAction(() => {
     site.components = [...site.components, component, page, codeComponent];
     site.styleTokens = [...site.styleTokens, token, registeredToken];
+    site.dataTokens = [...site.dataTokens, dataToken];
+    site.imageAssets = [...site.imageAssets, image];
     site.animationSequences = [...site.animationSequences, animation];
+    site.mixins = [...site.mixins, mixin];
     site.globalVariantGroups = [...site.globalVariantGroups, variantGroup];
     site.globalVariantGroups[0].variants = [
       ...site.globalVariantGroups[0].variants,
       screenVariant,
     ];
+    component.params = [
+      ...component.params,
+      propParam,
+      stateParam,
+      onChangeParam,
+    ];
+    component.states = [...component.states, state];
+    component.serverQueries = [...component.serverQueries, serverQuery];
+    component.dataQueries = [...component.dataQueries, legacyQuery];
+    component.variants = [...component.variants, elementState];
   });
   const dep = new ProjectDependency({
     name: `${name} project`,
@@ -210,8 +407,18 @@ function mkTestDep(
     tpl,
     token,
     registeredToken,
+    dataToken,
+    image,
+    mixin,
     animation,
+    propParam,
+    stateParam,
+    serverQuery,
+    legacyQuery,
+    elementState,
     variant,
+    variantGroup,
+    screenGroup,
     screenVariant,
   };
 }
@@ -223,7 +430,7 @@ describe("mkResourceMentionRaw", () => {
     ).toBe("StyleToken:t1");
   });
 
-  it("scopes a tpl uuid by its component", () => {
+  it("scopes a uuid by its component", () => {
     expect(
       mkResourceMentionRaw({
         tag: "Tpl",
@@ -233,17 +440,14 @@ describe("mkResourceMentionRaw", () => {
         name: "Title",
       }),
     ).toBe("Tpl:comp1/tpl1");
-  });
-
-  it("scopes a component variant to its owner", () => {
     expect(
       mkResourceMentionRaw({
-        tag: "Variant",
-        uuid: "v1",
+        tag: "StateParam",
+        uuid: "s1",
         componentUuid: "comp1",
-        name: "Large",
+        name: "count",
       }),
-    ).toBe("Variant:comp1/v1");
+    ).toBe("StateParam:comp1/s1");
   });
 });
 
@@ -349,6 +553,163 @@ describe("resolveResource", () => {
   });
 });
 
+describe("resolveResource: the site-wide resources", () => {
+  const fx = mkTestSite();
+  const siteScoped = (typeTag: SiteScopedTag, uuid: string) =>
+    resolveResource(fx.site, mkSiteScopedUiId({ typeTag, uuid }))?.resource;
+
+  it("resolves a data token", () => {
+    expect(siteScoped("DataToken", fx.dataToken.uuid)).toBe(fx.dataToken);
+  });
+
+  it("resolves a directly imported data token", () => {
+    expect(siteScoped("DataToken", fx.imported.dataToken.uuid)).toBe(
+      fx.imported.dataToken,
+    );
+  });
+
+  it("does not resolve a transitively imported data token", () => {
+    expect(
+      siteScoped("DataToken", fx.transitive.dataToken.uuid),
+    ).toBeUndefined();
+  });
+
+  it("resolves an image and an icon", () => {
+    expect(siteScoped("ImageAsset", fx.image.uuid)).toBe(fx.image);
+    expect(siteScoped("ImageAsset", fx.icon.uuid)).toBe(fx.icon);
+  });
+
+  it("does not resolve a transitively imported image", () => {
+    expect(siteScoped("ImageAsset", fx.transitive.image.uuid)).toBeUndefined();
+  });
+
+  it("resolves a mixin", () => {
+    expect(siteScoped("Mixin", fx.mixin.uuid)).toBe(fx.mixin);
+  });
+
+  it("resolves a directly imported mixin", () => {
+    expect(siteScoped("Mixin", fx.imported.mixin.uuid)).toBe(fx.imported.mixin);
+  });
+
+  it("does not resolve a transitively imported mixin", () => {
+    expect(siteScoped("Mixin", fx.transitive.mixin.uuid)).toBeUndefined();
+  });
+
+  it("resolves a global variant group", () => {
+    expect(siteScoped("GlobalVariantGroup", fx.variantGroup.uuid)).toBe(
+      fx.variantGroup,
+    );
+  });
+
+  it("resolves the project's active screen variant group", () => {
+    expect(siteScoped("GlobalVariantGroup", fx.screenGroup.uuid)).toBe(
+      fx.screenGroup,
+    );
+  });
+
+  it("does not resolve a screen variant group that is not the active one", () => {
+    expect(
+      siteScoped("GlobalVariantGroup", fx.imported.screenGroup.uuid),
+    ).toBeUndefined();
+  });
+
+  it("resolves the active screen variant group when an imported project owns it", () => {
+    const own = mkTestSite();
+    const imported = own.imported.screenGroup;
+    runInAction(() => {
+      own.site.activeScreenVariantGroup = imported;
+    });
+    expect(
+      resolveResource(
+        own.site,
+        mkSiteScopedUiId({
+          typeTag: "GlobalVariantGroup",
+          uuid: imported.uuid,
+        }),
+      )?.resource,
+    ).toBe(imported);
+  });
+});
+
+describe("resolveResource: the resources a component owns", () => {
+  const fx = mkTestSite();
+  const scoped = (typeTag: ComponentScopedTag, uuid: string) =>
+    resolveResource(
+      fx.site,
+      mkComponentScopedUiId({ typeTag, uuid }, fx.component.uuid),
+    )?.resource;
+
+  it("resolves a prop", () => {
+    expect(scoped("PropParam", fx.propParam.uuid)).toBe(fx.propParam);
+  });
+
+  it("resolves a state through its param", () => {
+    expect(scoped("StateParam", fx.stateParam.uuid)).toBe(fx.stateParam);
+  });
+
+  it("resolves a data query and a legacy data query", () => {
+    expect(scoped("ComponentServerQuery", fx.serverQuery.uuid)).toBe(
+      fx.serverQuery,
+    );
+    expect(scoped("ComponentDataQuery", fx.legacyQuery.uuid)).toBe(
+      fx.legacyQuery,
+    );
+  });
+
+  it("resolves a slot as the element it is", () => {
+    expect(scoped("Tpl", fx.slot.uuid)).toBe(fx.slot);
+  });
+
+  it("resolves an element state and an interaction variant", () => {
+    expect(scoped("Variant", fx.elementState.uuid)).toBe(fx.elementState);
+    expect(scoped("Variant", fx.interactionVariant.uuid)).toBe(
+      fx.interactionVariant,
+    );
+  });
+});
+
+describe("resolveResourceLabel", () => {
+  const fx = mkTestSite();
+  const label = (uiId: ModelUiId) => resolveResourceLabel(fx.site, uiId);
+  const scoped = (typeTag: ComponentScopedTag, uuid: string) =>
+    label(mkComponentScopedUiId({ typeTag, uuid }, fx.component.uuid));
+
+  it("names a mixin and a global variant group", () => {
+    expect(label(mkSiteScopedUiId(fx.mixin))).toBe("Elevated");
+    expect(label(mkSiteScopedUiId(fx.variantGroup))).toBe("Theme");
+  });
+
+  it("names a slot by the param it fills in", () => {
+    expect(scoped("Tpl", fx.slot.uuid)).toBe("children");
+  });
+
+  it("names a prop and a state as the sidebar does, an implicit state by its element too", () => {
+    expect(scoped("PropParam", fx.propParam.uuid)).toBe("Title");
+    expect(scoped("StateParam", fx.stateParam.uuid)).toBe("Item count");
+    expect(scoped("StateParam", fx.implicitState.param.uuid)).toBe(
+      "MyElement: Value",
+    );
+    expect(scoped("ComponentServerQuery", fx.serverQuery.uuid)).toBe(
+      "fetchUsers",
+    );
+  });
+
+  it("names a group variant by itself", () => {
+    expect(scoped("Variant", fx.componentVariant.uuid)).toBe("Large");
+  });
+
+  it("names a style variant by its selectors, an element state by its element too", () => {
+    expect(scoped("Variant", fx.interactionVariant.uuid)).toBe("Pressed");
+    expect(scoped("Variant", fx.elementState.uuid)).toBe("MyElement: Hover");
+  });
+
+  it("has no label left once the resource is gone", () => {
+    expect(label(mkSiteScopedUiId({ typeTag: "Mixin", uuid: "nope" }))).toBe(
+      undefined,
+    );
+  });
+});
+
 const fixture = mkTestSite();
 const depName = (dep: ProjectDependency) => `${dep.name} (nice)`;
 const mkResources = (
@@ -373,6 +734,12 @@ describe("mkMentionableResources", () => {
       page,
       token,
       registeredToken,
+      dataToken,
+      image,
+      icon,
+      mixin,
+      variantGroup,
+      screenGroup,
       variant,
       screenVariant,
       animation,
@@ -386,6 +753,20 @@ describe("mkMentionableResources", () => {
       { tag: "Component", isPage: true, uuid: page.uuid, name: "HomePage" },
       { tag: "StyleToken", uuid: token.uuid, name: "primary" },
       { tag: "StyleToken", uuid: registeredToken.uuid, name: "registered" },
+      { tag: "DataToken", uuid: dataToken.uuid, name: "apiUrl" },
+      { tag: "ImageAsset", uuid: image.uuid, name: "Hero" },
+      { tag: "ImageAsset", uuid: icon.uuid, name: "Logo", detail: "icon" },
+      { tag: "Mixin", uuid: mixin.uuid, name: "Elevated" },
+      {
+        tag: "GlobalVariantGroup",
+        uuid: screenGroup.uuid,
+        name: "Screen",
+      },
+      {
+        tag: "GlobalVariantGroup",
+        uuid: variantGroup.uuid,
+        name: "Theme",
+      },
       {
         tag: "GlobalVariant",
         uuid: variant.uuid,
@@ -412,6 +793,30 @@ describe("mkMentionableResources", () => {
         tag: "StyleToken",
         uuid: imported.token.uuid,
         name: "Imported-primary",
+        fromProject,
+      },
+      {
+        tag: "DataToken",
+        uuid: imported.dataToken.uuid,
+        name: "ImportedApiUrl",
+        fromProject,
+      },
+      {
+        tag: "ImageAsset",
+        uuid: imported.image.uuid,
+        name: "ImportedHero",
+        fromProject,
+      },
+      {
+        tag: "Mixin",
+        uuid: imported.mixin.uuid,
+        name: "ImportedElevated",
+        fromProject,
+      },
+      {
+        tag: "GlobalVariantGroup",
+        uuid: imported.variantGroup.uuid,
+        name: "ImportedTheme",
         fromProject,
       },
       {
@@ -490,24 +895,120 @@ describe("mkMentionableResources", () => {
     ).toBe(false);
   });
 
-  it("adds the open component's named elements and its variants", () => {
-    const { searchable } = mkResources(fixture, fixture.component, [
-      fixture.tpl,
+  it("lists everything the open component owns", () => {
+    const {
+      component,
+      tpl,
+      slot,
+      propParam,
+      stateParam,
+      implicitState,
+      serverQuery,
+      legacyQuery,
+      componentVariant,
+      elementState,
+      interactionVariant,
+    } = fixture;
+    const componentUuid = component.uuid;
+    const { searchable } = mkResources(fixture, component);
+    // Exact, so a resource that should have been dropped fails here.
+    expect(
+      searchable.filter(
+        (r) => "componentUuid" in r && r.componentUuid === componentUuid,
+      ),
+    ).toEqual([
+      // A slot is listed as the element it is, named by its param.
+      {
+        tag: "Tpl",
+        uuid: slot.uuid,
+        componentUuid,
+        name: "children",
+        tplType: "slot",
+      },
+      {
+        tag: "Tpl",
+        uuid: tpl.uuid,
+        componentUuid,
+        name: "MyElement",
+        tplType: "freeContainer",
+      },
+      { tag: "PropParam", uuid: propParam.uuid, componentUuid, name: "Title" },
+      // Not the variant group's own state, which is reached through the group.
+      {
+        tag: "StateParam",
+        uuid: stateParam.uuid,
+        componentUuid,
+        name: "Item count",
+      },
+      // An implicit state is qualified by the element it is on.
+      {
+        tag: "StateParam",
+        uuid: implicitState.param.uuid,
+        componentUuid,
+        name: "Value",
+        detail: "MyElement",
+      },
+      {
+        tag: "ComponentServerQuery",
+        uuid: serverQuery.uuid,
+        componentUuid,
+        name: "fetchUsers",
+      },
+      {
+        tag: "ComponentDataQuery",
+        uuid: legacyQuery.uuid,
+        componentUuid,
+        name: "listUsers",
+      },
+      {
+        tag: "Variant",
+        uuid: getBaseVariant(component).uuid,
+        componentUuid,
+        name: "base",
+      },
+      // An element state is qualified by the element it is on.
+      {
+        tag: "Variant",
+        uuid: elementState.uuid,
+        componentUuid,
+        name: "Hover",
+        detail: "MyElement",
+      },
+      {
+        tag: "Variant",
+        uuid: componentVariant.uuid,
+        componentUuid,
+        name: "Large",
+        detail: "Size",
+      },
+      {
+        tag: "Variant",
+        uuid: interactionVariant.uuid,
+        componentUuid,
+        name: "Pressed",
+      },
     ]);
-    expect(searchable).toContainEqual(
-      expect.objectContaining({ tag: "Tpl", uuid: fixture.tpl.uuid }),
-    );
-    expect(searchable).toContainEqual({
-      tag: "Variant",
-      uuid: fixture.componentVariant.uuid,
-      componentUuid: fixture.component.uuid,
-      name: "Large",
-      detail: "Size",
-    });
     // An unnamed element is not searchable, so it is left out of `searchable`.
     expect(searchable).not.toContainEqual(
       expect.objectContaining({ uuid: fixture.unnamedTpl.uuid }),
     );
+  });
+
+  it("names every row as its chip will read once picked", () => {
+    const { component, site } = fixture;
+    const { searchable } = mkResources(fixture, component);
+    for (const r of searchable) {
+      if (!("componentUuid" in r)) {
+        continue;
+      }
+      const uiId = mkComponentScopedUiId(
+        { typeTag: r.tag, uuid: r.uuid },
+        r.componentUuid,
+      );
+      // A chip joins an element state's element in; the row has it as `detail`.
+      const chip = resolveResourceLabel(site, uiId);
+      expect(chip === r.name || chip === `${r.detail}: ${r.name}`).toBe(true);
+    }
   });
 
   it("leaves out component-scoped resources when nothing is open", () => {

@@ -11,7 +11,7 @@ import {
   UiId,
   parseModelUiId,
 } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
-import { getBaseVariant } from "@/wab/shared/Variants";
+import { getBaseVariant, makeVariantName } from "@/wab/shared/Variants";
 import {
   assertNever,
   ensure,
@@ -21,20 +21,20 @@ import {
 } from "@/wab/shared/common";
 import {
   allComponentVariants,
+  getParamDisplayName,
   tryGetComponentByUuid,
 } from "@/wab/shared/core/components";
 import { siteDataTokensDirectDeps } from "@/wab/shared/core/site-data-tokens";
 import { siteStyleTokensDirectDeps } from "@/wab/shared/core/site-style-tokens";
 import {
   allAnimationSequencesDict,
+  allGlobalVariantGroups,
+  allMixins,
   tryGetGlobalVariantByUuid,
+  tryGetImageAssetByUuid,
 } from "@/wab/shared/core/sites";
-import {
-  isTplNamable,
-  summarizeTpl,
-  summarizeTplNamable,
-  tryGetTplByUuid,
-} from "@/wab/shared/core/tpls";
+import { getStateDisplayName } from "@/wab/shared/core/states";
+import { getTplNodeLabel, tryGetTplByUuid } from "@/wab/shared/core/tpls";
 import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import {
   AnimationSequence,
@@ -42,11 +42,15 @@ import {
   ComponentDataQuery,
   ComponentServerQuery,
   DataToken,
+  GlobalVariantGroup,
+  ImageAsset,
+  Mixin,
   Param,
   Site,
   StyleToken,
   TplNode,
   Variant,
+  isKnownStateParam,
 } from "@/wab/shared/model/classes";
 import * as Comlink from "comlink";
 import { reaction } from "mobx";
@@ -158,25 +162,47 @@ export function resolveResourceLabel(
   site: Site,
   uiId: ModelUiId,
 ): string | undefined {
-  return maybe(resolveResource(site, uiId), ({ resource, owner }) =>
-    switchType(resource)
+  return maybe(resolveResource(site, uiId), ({ resource, owner }) => {
+    const baseRsh = (tpl: TplNode) =>
+      getEffectiveVariantSetting(tpl, [
+        getBaseVariant(ensure(owner, "a Tpl is always component-scoped")),
+      ]).rsh();
+    return switchType(resource)
       .when(
-        [Component, StyleToken, DataToken, AnimationSequence, Variant],
+        [
+          Component,
+          StyleToken,
+          DataToken,
+          Mixin,
+          ImageAsset,
+          AnimationSequence,
+        ],
         (r) => r.name,
       )
-      .when([ComponentDataQuery, ComponentServerQuery], (q) => q.name)
-      .when(Param, (p) => p.variable.name)
-      .when(TplNode, (tpl) => {
-        const base = getBaseVariant(
-          ensure(owner, "a Tpl is always component-scoped"),
-        );
-        const vs = getEffectiveVariantSetting(tpl, [base]);
-        return isTplNamable(tpl)
-          ? summarizeTplNamable(tpl, vs.rsh())
-          : summarizeTpl(tpl, vs.rsh());
+      .when(GlobalVariantGroup, (group) => group.param.variable.name)
+      .when(Variant, (variant) => {
+        const name = makeVariantName({ variant, site });
+        return variant.forTpl
+          ? `${getTplNodeLabel(variant.forTpl, baseRsh(variant.forTpl))}: ${name}`
+          : name;
       })
-      .result(),
-  );
+      .when([ComponentDataQuery, ComponentServerQuery], (q) => q.name)
+      .when(Param, (p) => {
+        if (!isKnownStateParam(p)) {
+          return getParamDisplayName(
+            ensure(owner, "a Param is always component-scoped"),
+            p,
+          );
+        }
+        const name = getStateDisplayName(p.state, "short");
+        const { tplNode } = p.state;
+        return tplNode
+          ? `${getTplNodeLabel(tplNode, baseRsh(tplNode))}: ${name}`
+          : name;
+      })
+      .when(TplNode, (tpl) => getTplNodeLabel(tpl, baseRsh(tpl)))
+      .result();
+  });
 }
 
 function findSiteScoped(
@@ -191,8 +217,19 @@ function findSiteScoped(
       return siteStyleTokensDirectDeps(site).find((t) => t.uuid === uuid);
     case "DataToken":
       return siteDataTokensDirectDeps(site).find((t) => t.uuid === uuid);
+    case "Mixin":
+      return allMixins(site, { includeDeps: "direct" }).find(
+        (m) => m.uuid === uuid,
+      );
+    case "ImageAsset":
+      return tryGetImageAssetByUuid(site, uuid, { includeDeps: "direct" });
     case "AnimationSequence":
       return allAnimationSequencesDict(site, { includeDeps: "direct" })[uuid];
+    case "GlobalVariantGroup":
+      return allGlobalVariantGroups(site, {
+        includeDeps: "direct",
+        excludeInactiveScreenVariants: true,
+      }).find((g) => g.uuid === uuid);
     case "GlobalVariant":
       return tryGetGlobalVariantByUuid(site, uuid, { includeDeps: "direct" });
     default:

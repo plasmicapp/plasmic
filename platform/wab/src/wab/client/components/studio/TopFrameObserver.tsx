@@ -40,6 +40,7 @@ import {
   isPageComponent,
   isReusableComponent,
 } from "@/wab/shared/core/components";
+import { tplFromSelectable } from "@/wab/shared/core/vals";
 import { formatErrorMessage } from "@/wab/shared/error-handling";
 import { Component } from "@/wab/shared/model/classes";
 import { notification } from "antd";
@@ -261,7 +262,9 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
         return mkMentionableResources({
           site: studioCtx.site,
           focusedComponent: viewCtx?.currentComponent(),
-          selectedTpls: withoutNils(viewCtx?.focusedTpls() ?? []),
+          selectedTpls: withoutNils(viewCtx?.focusedSelectables() ?? []).map(
+            tplFromSelectable,
+          ),
           getDepName: (dep) =>
             studioCtx.projectDependencyManager.getNiceDepName(dep),
         });

@@ -2115,6 +2115,14 @@ export function allImageAssets(
   return images;
 }
 
+export function tryGetImageAssetByUuid(
+  site: Site,
+  uuid: string,
+  opts: { includeDeps?: DependencyWalkScope } = {},
+): ImageAsset | undefined {
+  return allImageAssets(site, opts).find((a) => a.uuid === uuid);
+}
+
 export function getImageAssetByRef(
   site: Site,
   ref: string,
@@ -2128,9 +2136,9 @@ export function getImageAssetByRef(
       message: `expected a single var(--image-<uuid>), got "${ref}"`,
     });
   }
-  const asset = allImageAssets(site, { includeDeps: "direct" }).find(
-    (a) => a.uuid === assetId,
-  );
+  const asset = tryGetImageAssetByUuid(site, assetId, {
+    includeDeps: "direct",
+  });
   if (!asset) {
     return err({
       message: `no ${kind(type)} "${ref}" in this project or its direct imports`,

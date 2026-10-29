@@ -1,36 +1,44 @@
 import { matchScore } from "@/wab/client/components/mentions/mention-query";
 
 import { mkMentionRaw } from "@/wab/client/components/mentions/mention-parse";
+import { MIXIN_LOWER } from "@/wab/shared/Labels";
 import {
   getBaseVariant,
   getVariantGroupName,
   isScreenVariantGroup,
+  makeVariantName,
 } from "@/wab/shared/Variants";
 import { isNonNil } from "@/wab/shared/common";
 import {
   allComponentVariants,
+  getParamDisplayName,
   isPageComponent,
   isPlasmicComponent,
 } from "@/wab/shared/core/components";
+import { isIcon } from "@/wab/shared/core/image-assets";
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
+import { getStateDisplayName } from "@/wab/shared/core/states";
 import {
   flattenTpls,
+  getTplNodeLabel,
+  getTplNodeName,
   getTplType,
   isTplComponent,
-  isTplNamable,
-  summarizeTpl,
-  summarizeTplNamable,
   type TplType,
 } from "@/wab/shared/core/tpls";
 import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
-import { MentionTag } from "@/wab/shared/mentions";
+import {
+  ComponentScopedMentionTag,
+  SiteScopedMentionTag,
+} from "@/wab/shared/mentions";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
   Component,
   ProjectDependency,
   Site,
   TplNode,
+  isKnownPropParam,
 } from "@/wab/shared/model/classes";
 import { naturalSortByName } from "@/wab/shared/sort";
 import { partition } from "lodash";
@@ -56,18 +64,16 @@ export type TplMentionableResource = BaseMentionableResource & {
   tplType: TplType;
 };
 
-type VariantMentionableResource = BaseMentionableResource & {
-  tag: "Variant";
-  componentUuid: string;
-};
-
 export type MentionableResource =
   | ComponentMentionableResource
   | (BaseMentionableResource & {
-      tag: Exclude<MentionTag, "Component" | "Tpl" | "Variant">;
+      tag: Exclude<SiteScopedMentionTag, "Component">;
     })
-  | VariantMentionableResource
-  | TplMentionableResource;
+  | TplMentionableResource
+  | (BaseMentionableResource & {
+      tag: Exclude<ComponentScopedMentionTag, "Tpl">;
+      componentUuid: string;
+    });
 
 export interface MentionableResources {
   selection?: {
@@ -93,14 +99,14 @@ export function mkMentionableResources({
 }): MentionableResources {
   const searchable: MentionableResource[] = [];
   if (focusedComponent) {
-    searchable.push(...mkComponentMentionableResources(focusedComponent));
+    searchable.push(...mkComponentScopedResources(focusedComponent, site));
   }
   // Local resources come first: on a tie they should outrank an imported
   // project's resources
-  searchable.push(...mkSiteMentionableResources(site));
+  searchable.push(...mkSiteScopedResources(site));
   // Direct deps only, matching what the `read` copilot tool can fetch.
   for (const dep of walkDependencyTree(site, "direct")) {
-    searchable.push(...mkSiteMentionableResources(dep.site, getDepName(dep)));
+    searchable.push(...mkSiteScopedResources(dep.site, getDepName(dep)));
   }
   return {
     selection: mkCanvasSelectionResources(focusedComponent, selectedTpls),
@@ -108,121 +114,203 @@ export function mkMentionableResources({
   };
 }
 
-function mkComponentMentionableResources(
+function mkComponentScopedResources(
   component: Component,
+  site: Site,
 ): MentionableResource[] {
   const baseVariant = getBaseVariant(component);
   const resources: MentionableResource[] = [];
+  const componentUuid = component.uuid;
 
   const tpls: MentionableResource[] = [];
   for (const tpl of flattenTpls(component.tplTree)) {
-    if (isTplNamable(tpl) && tpl.name) {
-      tpls.push({
-        tag: "Tpl",
-        uuid: tpl.uuid,
-        componentUuid: component.uuid,
-        name: tpl.name,
-        tplType: getTplType(
-          tpl,
-          getEffectiveVariantSetting(tpl, [baseVariant]),
-        ),
-        // For an instance, show which component it is an instance of.
-        detail: isTplComponent(tpl) ? tpl.component.name : undefined,
-      });
+    const name = getTplNodeName(tpl);
+    if (!name) {
+      continue;
     }
+    tpls.push({
+      tag: "Tpl",
+      uuid: tpl.uuid,
+      componentUuid,
+      name,
+      tplType: getTplType(tpl, getEffectiveVariantSetting(tpl, [baseVariant])),
+      // For an instance, show which component it is an instance of.
+      detail: isTplComponent(tpl) ? tpl.component.name : undefined,
+    });
   }
   resources.push(...naturalSortByName(tpls));
 
-  for (const variant of naturalSortByName(allComponentVariants(component))) {
-    resources.push({
-      tag: "Variant",
-      uuid: variant.uuid,
-      componentUuid: component.uuid,
-      name: variant.name,
-      detail: getVariantGroupName(variant),
-    });
-  }
+  const props = component.params.filter(isKnownPropParam).map((param) => ({
+    tag: "PropParam" as const,
+    uuid: param.uuid,
+    componentUuid,
+    name: getParamDisplayName(component, param),
+  }));
+  resources.push(...naturalSortByName(props));
+
+  const states = component.states
+    .filter((state) => state.variableType !== "variant")
+    .map((state) => ({
+      tag: "StateParam" as const,
+      uuid: state.param.uuid,
+      componentUuid,
+      name: getStateDisplayName(state, "short"),
+      detail: state.tplNode
+        ? getTplNodeLabel(
+            state.tplNode,
+            getEffectiveVariantSetting(state.tplNode, [baseVariant]).rsh(),
+          )
+        : undefined,
+    }));
+  resources.push(...naturalSortByName(states));
+
+  const queries = component.serverQueries.map((query) => ({
+    tag: "ComponentServerQuery" as const,
+    uuid: query.uuid,
+    componentUuid,
+    name: query.name,
+  }));
+  resources.push(...naturalSortByName(queries));
+
+  const legacyQueries = component.dataQueries.map((query) => ({
+    tag: "ComponentDataQuery" as const,
+    uuid: query.uuid,
+    componentUuid,
+    name: query.name,
+  }));
+  resources.push(...naturalSortByName(legacyQueries));
+
+  const variants = allComponentVariants(component).map((variant) => ({
+    tag: "Variant" as const,
+    uuid: variant.uuid,
+    componentUuid,
+    name: makeVariantName({ variant, site }),
+    detail:
+      getVariantGroupName(variant) ??
+      (variant.forTpl
+        ? getTplNodeLabel(
+            variant.forTpl,
+            getEffectiveVariantSetting(variant.forTpl, [baseVariant]).rsh(),
+          )
+        : undefined),
+  }));
+  resources.push(...naturalSortByName(variants));
+
   return resources;
 }
 
-const mkSiteMentionableResources = maybeComputedFn(
-  function mkSiteMentionableResources(
-    site: Site,
-    fromProject?: string,
-  ): ReadonlyArray<MentionableResource> {
-    const isImported = fromProject !== undefined;
-    const resources: MentionableResource[] = [];
+const mkSiteScopedResources = maybeComputedFn(function mkSiteScopedResources(
+  site: Site,
+  fromProject?: string,
+): ReadonlyArray<MentionableResource> {
+  const isImported = fromProject !== undefined;
+  const resources: MentionableResource[] = [];
 
-    // Code components and arena frames aren't things a user would refer to by
-    // name in a prompt.
-    const [pages, components] = partition<Component>(
-      site.components.filter(isPlasmicComponent),
-      isPageComponent,
-    );
-    for (const comp of naturalSortByName(components)) {
+  // Code components and arena frames aren't things a user would refer to by
+  // name in a prompt.
+  const [pages, components] = partition<Component>(
+    site.components.filter(isPlasmicComponent),
+    isPageComponent,
+  );
+  for (const comp of naturalSortByName(components)) {
+    resources.push({
+      tag: "Component",
+      isPage: false,
+      uuid: comp.uuid,
+      name: comp.name,
+      fromProject,
+    });
+  }
+  if (!isImported) {
+    for (const page of naturalSortByName(pages)) {
       resources.push({
         tag: "Component",
-        isPage: false,
-        uuid: comp.uuid,
-        name: comp.name,
-        fromProject,
+        isPage: true,
+        uuid: page.uuid,
+        name: page.name,
       });
     }
-    if (!isImported) {
-      for (const page of naturalSortByName(pages)) {
-        resources.push({
-          tag: "Component",
-          isPage: true,
-          uuid: page.uuid,
-          name: page.name,
-        });
-      }
-    }
+  }
 
-    const styleTokens =
-      isImported && !isHostLessPackage(site)
-        ? site.styleTokens.filter((token) => !token.isRegistered)
-        : site.styleTokens;
-    for (const token of naturalSortByName(styleTokens)) {
-      resources.push({
-        tag: "StyleToken",
-        uuid: token.uuid,
-        name: token.name,
-        fromProject,
-      });
-    }
+  const styleTokens =
+    isImported && !isHostLessPackage(site)
+      ? site.styleTokens.filter((token) => !token.isRegistered)
+      : site.styleTokens;
+  for (const token of naturalSortByName(styleTokens)) {
+    resources.push({
+      tag: "StyleToken",
+      uuid: token.uuid,
+      name: token.name,
+      fromProject,
+    });
+  }
 
-    // Of the screen variant groups, only the project's active one is mentionable (stored as `site.activeScreenVariantGroup`)
-    const globalVariantGroups = site.globalVariantGroups.filter(
-      (group) => !isScreenVariantGroup(group),
-    );
-    if (!isImported && site.activeScreenVariantGroup) {
-      globalVariantGroups.push(site.activeScreenVariantGroup);
-    }
-    for (const variant of naturalSortByName(
-      globalVariantGroups.flatMap((group) => group.variants),
-    )) {
-      resources.push({
-        tag: "GlobalVariant",
-        uuid: variant.uuid,
-        name: variant.name,
-        detail: getVariantGroupName(variant),
-        fromProject,
-      });
-    }
+  for (const token of naturalSortByName(site.dataTokens)) {
+    resources.push({
+      tag: "DataToken",
+      uuid: token.uuid,
+      name: token.name,
+      fromProject,
+    });
+  }
 
-    for (const animation of naturalSortByName(site.animationSequences)) {
-      resources.push({
-        tag: "AnimationSequence",
-        uuid: animation.uuid,
-        name: animation.name,
-        fromProject,
-      });
-    }
+  const imageAssets = site.imageAssets.filter((asset) => !!asset.dataUri);
+  for (const asset of naturalSortByName(imageAssets)) {
+    resources.push({
+      tag: "ImageAsset",
+      uuid: asset.uuid,
+      name: asset.name,
+      detail: isIcon(asset) ? "icon" : undefined,
+      fromProject,
+    });
+  }
 
-    return resources;
-  },
-);
+  for (const mixin of naturalSortByName(site.mixins)) {
+    resources.push({
+      tag: "Mixin",
+      uuid: mixin.uuid,
+      name: mixin.name,
+      fromProject,
+    });
+  }
+
+  // Of the screen variant groups, only the project's active one is mentionable (stored as `site.activeScreenVariantGroup`)
+  const globalVariantGroups = site.globalVariantGroups.filter(
+    (group) => !isScreenVariantGroup(group),
+  );
+  if (!isImported && site.activeScreenVariantGroup) {
+    globalVariantGroups.push(site.activeScreenVariantGroup);
+  }
+  const groups = globalVariantGroups.map((group) => ({
+    tag: "GlobalVariantGroup" as const,
+    uuid: group.uuid,
+    name: group.param.variable.name,
+    fromProject,
+  }));
+  resources.push(...naturalSortByName(groups));
+  for (const variant of naturalSortByName(
+    globalVariantGroups.flatMap((group) => group.variants),
+  )) {
+    resources.push({
+      tag: "GlobalVariant",
+      uuid: variant.uuid,
+      name: variant.name,
+      detail: getVariantGroupName(variant),
+      fromProject,
+    });
+  }
+
+  for (const animation of naturalSortByName(site.animationSequences)) {
+    resources.push({
+      tag: "AnimationSequence",
+      uuid: animation.uuid,
+      name: animation.name,
+      fromProject,
+    });
+  }
+
+  return resources;
+});
 
 /**
  * The user's current canvas selection as mentionable resources.
@@ -249,9 +337,7 @@ function mkCanvasSelectionResources(
         uuid: tpl.uuid,
         componentUuid: currentComponent.uuid,
         tplType: getTplType(tpl, vs),
-        name: isTplNamable(tpl)
-          ? summarizeTplNamable(tpl, vs.rsh())
-          : summarizeTpl(tpl, vs.rsh()),
+        name: getTplNodeLabel(tpl, vs.rsh()),
       };
     }),
   };
@@ -265,26 +351,41 @@ export function getResourceMatchScore(
     [
       resource.name,
       resource.detail,
-      mentionSearchKeyword(resource),
+      ...mentionSearchKeywords(resource),
       resource.fromProject,
     ].filter(isNonNil),
     query,
   );
 }
 
-function mentionSearchKeyword(resource: MentionableResource): string {
+function mentionSearchKeywords(resource: MentionableResource): string[] {
   switch (resource.tag) {
     case "Component":
-      return resource.isPage ? "page" : "component";
+      return [resource.isPage ? "page" : "component"];
     case "StyleToken":
-      return "token";
+      return ["token"];
+    case "DataToken":
+      return ["data token", "token"];
+    case "ImageAsset":
+      return ["image", "icon"];
+    case "Mixin":
+      return ["mixin", MIXIN_LOWER];
     case "AnimationSequence":
-      return "animation";
+      return ["animation"];
     case "Variant":
     case "GlobalVariant":
-      return "variant";
+      return ["variant"];
+    case "GlobalVariantGroup":
+      return ["variant group"];
+    case "PropParam":
+      return ["prop"];
+    case "StateParam":
+      return ["state", "variable"];
+    case "ComponentServerQuery":
+    case "ComponentDataQuery":
+      return ["data query"];
     case "Tpl":
-      return "element";
+      return ["element"];
   }
 }
 

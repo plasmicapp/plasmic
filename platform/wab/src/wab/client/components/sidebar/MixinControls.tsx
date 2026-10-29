@@ -17,6 +17,7 @@ import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   ItemOrGroup,
   VirtualGroupedList,
+  VirtualGroupedListHandle,
 } from "@/wab/client/components/sidebar/VirtualGroupedList";
 import { useDepFilterButton } from "@/wab/client/components/sidebar/left-panel-utils";
 import {
@@ -39,6 +40,11 @@ import MixinIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Mixin";
 import ThemeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Theme";
 import PlasmicLeftMixinsPanel from "@/wab/client/plasmic/plasmic_kit/PlasmicLeftMixinsPanel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import {
+  UiActionsWrapper,
+  useModelUiActionHandler,
+} from "@/wab/client/studio-ctx/ui/studio-ui-actions";
+import { mkSiteScopedUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { isTokenRef } from "@/wab/commons/StyleToken";
 import { MIXIN_LOWER } from "@/wab/shared/Labels";
 import {
@@ -424,6 +430,11 @@ function _MixinsPanel() {
 
   const onSelect = (mixin: Mixin) => setEditMixin(mixin);
 
+  const listHandleRef = React.useRef<VirtualGroupedListHandle>(null);
+  useModelUiActionHandler("Mixin", (uuid) => {
+    listHandleRef.current?.scrollTo(uuid);
+  });
+
   const onFindReferences = (mixin: Mixin) => {
     setFindReferenceMixin(mixin);
   };
@@ -489,26 +500,31 @@ function _MixinsPanel() {
         content={
           <>
             <VirtualGroupedList
+              handleRef={listHandleRef}
               items={items}
               renderItem={(mixin) => (
-                <MixinRow
-                  mixin={mixin}
-                  sc={sc}
-                  matcher={matcher}
-                  onDuplicate={readOnly ? undefined : () => onDuplicate(mixin)}
-                  onFindReferences={() => onFindReferences(mixin)}
-                  readOnly={readOnly || !editableMixins.has(mixin)}
-                  onDelete={
-                    !readOnly && editableMixins.has(mixin)
-                      ? () => onDelete(mixin)
-                      : undefined
-                  }
-                  onClick={
-                    !readOnly && editableMixins.has(mixin)
-                      ? () => onSelect(mixin)
-                      : undefined
-                  }
-                />
+                <UiActionsWrapper uiId={mkSiteScopedUiId(mixin)}>
+                  <MixinRow
+                    mixin={mixin}
+                    sc={sc}
+                    matcher={matcher}
+                    onDuplicate={
+                      readOnly ? undefined : () => onDuplicate(mixin)
+                    }
+                    onFindReferences={() => onFindReferences(mixin)}
+                    readOnly={readOnly || !editableMixins.has(mixin)}
+                    onDelete={
+                      !readOnly && editableMixins.has(mixin)
+                        ? () => onDelete(mixin)
+                        : undefined
+                    }
+                    onClick={
+                      !readOnly && editableMixins.has(mixin)
+                        ? () => onSelect(mixin)
+                        : undefined
+                    }
+                  />
+                </UiActionsWrapper>
               )}
               itemHeight={32}
               renderGroupHeader={(dep) =>

@@ -187,7 +187,8 @@ import {
 import { isSlot, tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
 import {
   VariantCombo,
-  isScreenVariant,
+  isPrivateStyleVariant,
+  isScreenVariantGroup,
   isVariantSettingEmpty,
 } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
@@ -280,6 +281,7 @@ import {
   makeSelectableFullKey,
 } from "@/wab/shared/core/selection";
 import {
+  allGlobalVariantGroups,
   allGlobalVariants,
   getAllSiteFrames,
   getArenaByNameOrUuidOrPath,
@@ -289,7 +291,6 @@ import {
   isTplAttachedToSite,
   isValidArena,
   siteIsEmpty,
-  tryGetGlobalVariantByUuid,
 } from "@/wab/shared/core/sites";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import { SplitStatus } from "@/wab/shared/core/splits";
@@ -795,16 +796,25 @@ export class StudioCtx extends WithDbCtx {
               case "StyleToken":
                 this.switchLeftTab("tokens");
                 break;
+              case "Mixin":
+                this.switchLeftTab("mixins");
+                break;
+              case "ImageAsset":
+                this.switchLeftTab("images");
+                break;
               case "AnimationSequence":
                 this.switchLeftTab("animationSequences");
                 break;
+              case "GlobalVariantGroup":
               case "GlobalVariant": {
-                const variant = tryGetGlobalVariantByUuid(
-                  this.site,
-                  parsed.uuid,
-                  { includeDeps: "direct" },
+                const group = allGlobalVariantGroups(this.site, {
+                  includeDeps: "direct",
+                }).find(
+                  (g) =>
+                    g.uuid === parsed.uuid ||
+                    g.variants.some((v) => v.uuid === parsed.uuid),
                 );
-                if (variant && isScreenVariant(variant)) {
+                if (group && isScreenVariantGroup(group)) {
                   this.switchLeftTab("responsiveness");
                 } else {
                   this.switchRightTab(RightTabKey.component);
@@ -840,10 +850,20 @@ export class StudioCtx extends WithDbCtx {
                 }
                 break;
               }
-              case "Variant":
-                this.switchToComponentArena(component);
-                this.switchRightTab(RightTabKey.component);
+              case "Variant": {
+                const variant = allComponentVariants(component).find(
+                  (v) => v.uuid === parsed.uuid,
+                );
+                if (variant && isPrivateStyleVariant(variant)) {
+                  // An element state is edited on its element's design tab.
+                  spawn(this.setStudioFocusOnTpl(component, variant.forTpl));
+                  this.switchRightTab(RightTabKey.style);
+                } else {
+                  this.switchToComponentArena(component);
+                  this.switchRightTab(RightTabKey.component);
+                }
                 break;
+              }
               case "ComponentDataQuery":
               case "ComponentServerQuery":
               case "PropParam":
@@ -851,6 +871,7 @@ export class StudioCtx extends WithDbCtx {
               case "SlotParam":
               case "GlobalVariantGroupParam":
               case "StateChangeHandlerParam":
+                this.switchToComponentArena(component);
                 this.switchRightTab(RightTabKey.component);
                 break;
               default:

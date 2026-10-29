@@ -46,7 +46,11 @@ import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import VariantGroupIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
 import ScreenIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Screen";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { useModelUiActionHandler } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
+import {
+  UiActionsWrapper,
+  useModelUiActionHandler,
+} from "@/wab/client/studio-ctx/ui/studio-ui-actions";
+import { mkSiteScopedUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { testIds } from "@/wab/client/test-ids";
 import { VariantPinState } from "@/wab/shared/PinManager";
@@ -142,6 +146,10 @@ export const VariantsPanel = observer(
     const globalVariantsSectionRef = React.useRef<SidebarSectionHandle>(null);
 
     useModelUiActionHandler("GlobalVariant", () => {
+      globalVariantsSectionRef.current?.expand();
+    });
+
+    useModelUiActionHandler("GlobalVariantGroup", () => {
       globalVariantsSectionRef.current?.expand();
     });
 
@@ -631,77 +639,88 @@ export const VariantsPanel = observer(
                         ...site.globalVariantGroups
                           .filter((group) => !isScreenVariantGroup(group))
                           .map((group) => (
-                            <GlobalVariantGroupSection
+                            <UiActionsWrapper
                               key={group.uuid}
-                              studioCtx={studioCtx}
-                              viewCtx={viewCtx}
-                              group={group}
-                              defaultEditing={group === justAddedGroup}
-                              onRename={(name) =>
-                                onRenameVariantGroup(group, name)
-                              }
-                              onAddedVariant={onAddedVariant}
+                              uiId={mkSiteScopedUiId(group)}
                             >
-                              {maybeReorderableVariants(
-                                group,
-                                group.variants.map((variant) => (
-                                  <GlobalVariantRow
-                                    key={variant.uuid}
-                                    component={component}
-                                    variant={variant}
-                                    studioCtx={studioCtx}
-                                    viewCtx={viewCtx}
-                                    pinState={vcontroller.getPinState(variant)}
-                                    onClick={() =>
-                                      studioCtx.change(() => {
-                                        vcontroller.onClickVariant(variant);
-                                        return ok();
-                                      })
-                                    }
-                                    onTarget={
-                                      canChangeVariants ||
-                                      vcontroller.canToggleTargeting(variant)
-                                        ? (target) =>
-                                            studioCtx.change(() => {
-                                              vcontroller.onTargetVariant(
-                                                variant,
-                                                target,
-                                              );
-                                              return ok();
-                                            })
-                                        : undefined
-                                    }
-                                    onToggle={
-                                      canChangeVariants
-                                        ? () =>
-                                            studioCtx.change(() => {
-                                              vcontroller.onToggleVariant(
-                                                variant,
-                                              );
-                                              return ok();
-                                            })
-                                        : undefined
-                                    }
-                                    defaultEditing={
-                                      variant === justAddedVariant
-                                    }
-                                    onRenamed={() =>
-                                      setJustAddedVariant(undefined)
-                                    }
-                                  />
-                                )),
-                              )}
-                            </GlobalVariantGroupSection>
+                              <GlobalVariantGroupSection
+                                studioCtx={studioCtx}
+                                viewCtx={viewCtx}
+                                group={group}
+                                defaultEditing={group === justAddedGroup}
+                                onRename={(name) =>
+                                  onRenameVariantGroup(group, name)
+                                }
+                                onAddedVariant={onAddedVariant}
+                              >
+                                {maybeReorderableVariants(
+                                  group,
+                                  group.variants.map((variant) => (
+                                    <GlobalVariantRow
+                                      key={variant.uuid}
+                                      component={component}
+                                      variant={variant}
+                                      studioCtx={studioCtx}
+                                      viewCtx={viewCtx}
+                                      pinState={vcontroller.getPinState(
+                                        variant,
+                                      )}
+                                      onClick={() =>
+                                        studioCtx.change(() => {
+                                          vcontroller.onClickVariant(variant);
+                                          return ok();
+                                        })
+                                      }
+                                      onTarget={
+                                        canChangeVariants ||
+                                        vcontroller.canToggleTargeting(variant)
+                                          ? (target) =>
+                                              studioCtx.change(() => {
+                                                vcontroller.onTargetVariant(
+                                                  variant,
+                                                  target,
+                                                );
+                                                return ok();
+                                              })
+                                          : undefined
+                                      }
+                                      onToggle={
+                                        canChangeVariants
+                                          ? () =>
+                                              studioCtx.change(() => {
+                                                vcontroller.onToggleVariant(
+                                                  variant,
+                                                );
+                                                return ok();
+                                              })
+                                          : undefined
+                                      }
+                                      defaultEditing={
+                                        variant === justAddedVariant
+                                      }
+                                      onRenamed={() =>
+                                        setJustAddedVariant(undefined)
+                                      }
+                                    />
+                                  )),
+                                )}
+                              </GlobalVariantGroupSection>
+                            </UiActionsWrapper>
                           )),
 
                         ...site.projectDependencies.flatMap((dep) =>
                           dep.site.globalVariantGroups
                             .filter((group) => !isScreenVariantGroup(group))
-                            .map((group) =>
-                              makeReadOnlyGroupSection(component, group, {
-                                dep,
-                              }),
-                            ),
+                            .map((group) => (
+                              <UiActionsWrapper
+                                key={group.uuid}
+                                uiId={mkSiteScopedUiId(group)}
+                              >
+                                {makeReadOnlyGroupSection(component, group, {
+                                  dep,
+                                })}
+                              </UiActionsWrapper>
+                            )),
                         ),
                       ]}
                     </>

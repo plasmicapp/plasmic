@@ -1724,6 +1724,28 @@ export function isTplNodeNamable(
   );
 }
 
+/** A node's user-given name; for a slot, the name of the param it fills in. */
+export function getTplNodeName(tpl: TplNode): string | undefined {
+  if (!isTplNodeNamable(tpl)) {
+    return undefined;
+  }
+  return isTplSlot(tpl) ? tpl.param.variable.name : (tpl.name ?? undefined);
+}
+
+/** What to call @param tpl: its name, else a description of what it is. */
+export function getTplNodeLabel(
+  tpl: TplNode,
+  rsh?: ReadonlyIRuleSetHelpersX,
+): string {
+  const name = getTplNodeName(tpl);
+  if (name) {
+    return name;
+  }
+  return isTplNamable(tpl)
+    ? summarizeTplNamable(tpl, rsh)
+    : summarizeTpl(tpl, rsh);
+}
+
 export interface TplTextTag extends TplTag {
   type: "text";
   columnsSetting: never;

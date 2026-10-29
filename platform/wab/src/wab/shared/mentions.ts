@@ -11,20 +11,33 @@ export const MENTION_REGEX = regex("g")`
   >                         # Ends at closing angle bracket >
 `;
 
-const SITE_SCOPED_TAGS = [
+export const SITE_SCOPED_MENTION_TAGS = [
   "Component",
   "StyleToken",
+  "DataToken",
+  "ImageAsset",
+  "Mixin",
   "AnimationSequence",
+  "GlobalVariantGroup",
   "GlobalVariant",
 ] as const satisfies readonly SiteScopedTag[];
 
+export type SiteScopedMentionTag = (typeof SITE_SCOPED_MENTION_TAGS)[number];
+
 export const COMPONENT_SCOPED_MENTION_TAGS = [
   "Variant",
+  "PropParam",
+  "StateParam",
+  "ComponentServerQuery",
+  "ComponentDataQuery",
   "Tpl",
 ] as const satisfies readonly ComponentScopedTag[];
 
+export type ComponentScopedMentionTag =
+  (typeof COMPONENT_SCOPED_MENTION_TAGS)[number];
+
 export const MENTION_TAGS = [
-  ...SITE_SCOPED_TAGS,
+  ...SITE_SCOPED_MENTION_TAGS,
   ...COMPONENT_SCOPED_MENTION_TAGS,
 ];
 export type MentionTag = (typeof MENTION_TAGS)[number];
@@ -35,6 +48,6 @@ export function isMentionTag(tag: string): tag is MentionTag {
 
 export function isComponentScopedMentionTag(
   tag: MentionTag,
-): tag is Extract<MentionTag, ComponentScopedTag> {
+): tag is ComponentScopedMentionTag {
   return includes(COMPONENT_SCOPED_MENTION_TAGS, tag);
 }
