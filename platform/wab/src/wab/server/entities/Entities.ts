@@ -429,9 +429,6 @@ export class PartialRevisionCache extends Base<"PartialRevisionCacheId"> {
   @ManyToOne(() => ProjectRevision, { onDelete: "CASCADE" })
   projectRevision: ProjectRevision | null;
 
-  @Column("text", { array: true, nullable: true })
-  modifiedComponentIids: string[] | null;
-
   @Index()
   @Column("text")
   projectRevisionId: string;
