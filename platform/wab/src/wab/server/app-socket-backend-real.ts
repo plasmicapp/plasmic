@@ -23,6 +23,7 @@ import {
   ensureDbConnections,
   maybeMigrateDatabase,
 } from "@/wab/server/db/DbCon";
+import "@/wab/server/observability/setup";
 import { trackPostgresPool } from "@/wab/server/promstats";
 import { InitSocket } from "@/wab/server/routes/init-socket";
 import { ProjectsSocket } from "@/wab/server/routes/projects-socket";

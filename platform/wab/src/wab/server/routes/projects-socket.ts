@@ -28,6 +28,7 @@ import { ensure, maybe, spawnWrapper, withoutNils } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { modelSchemaHash } from "@/wab/shared/model/classes-metas";
+import * as Sentry from "@sentry/node";
 import { Request, Response } from "express";
 import { Server } from "http";
 import { get } from "lodash";
@@ -72,7 +73,12 @@ export class ProjectsSocket {
     this.io.use(spawnWrapper(socketAuthMiddleware));
 
     this.io.on("connection", async (socket) => {
-      await this.onConnect(socket);
+      try {
+        await this.onConnect(socket);
+      } catch (err) {
+        Sentry.captureException(err);
+        socket.disconnect(true);
+      }
     });
 
     // Track number of connected sockets
@@ -195,72 +201,11 @@ export class ProjectsSocket {
 
     // Subscribe to rooms by project ID.
     socket.on("subscribe", async (args) => {
-      if (args.namespace !== "projects") {
-        socket.emit("error", "Unknown reason for connection");
+      try {
+        await this.onSubscribe(socket, args);
+      } catch (err) {
+        Sentry.captureException(err);
         socket.disconnect(true);
-        return;
-      }
-
-      const user = ensure(
-        socket.handshake["user"],
-        "User should not be undefined",
-      );
-
-      // Check the user has all permissions to all projects.
-      const hasPermissions = await verifyProjectPermissions(
-        user,
-        args.projectIds,
-      );
-      // Check socket still connected after await.
-      if (!socket.connected) {
-        return;
-      }
-
-      if (!hasPermissions) {
-        socket.emit(
-          "error",
-          `No read access to projects ${args.projectIds.join(", ")}`,
-        );
-        socket.disconnect(true);
-        return;
-      }
-
-      logger.info(
-        `Subscribing user ${getSocketUserName(user)} to ${args.projectIds}`,
-      );
-      for (const projectId of args.projectIds) {
-        const room = `projects/${projectId}`;
-        await socket.join(room);
-        // Check socket still connected after await.
-        if (!socket.connected) {
-          return;
-        }
-      }
-
-      if (args.studio) {
-        // We subscribe for changes from Studio and from cli
-        socket.on("view", (data) => {
-          socket.data.viewInfo = {
-            branchId: data.branchId ?? undefined,
-            arenaInfo: data.arena ?? undefined,
-            selectionInfo: data.selection ?? undefined,
-            cursorInfo: data.cursor ?? undefined,
-            positionInfo: data.position ?? undefined,
-          };
-          this.broadcastPlayerSessions(`projects/${data.projectId}`);
-        });
-
-        for (const projectId of args.projectIds) {
-          const room = `projects/${projectId}`;
-          if (await shouldShowPlayer(user, projectId)) {
-            // Check socket still connected after await.
-            if (!socket.connected) {
-              return;
-            }
-            this.trackSocket(this.roomToSockets, room, socket);
-          }
-          this.broadcastPlayerSessions(room);
-        }
       }
     });
 
@@ -275,6 +220,79 @@ export class ProjectsSocket {
         ensure(socket.handshake["user"], "User should not be undefined"),
       )}`,
     );
+  }
+
+  private async onSubscribe(
+    socket: Socket,
+    args: Parameters<ClientToServerEvents["subscribe"]>[0],
+  ) {
+    if (args.namespace !== "projects") {
+      socket.emit("error", "Unknown reason for connection");
+      socket.disconnect(true);
+      return;
+    }
+
+    const user = ensure(
+      socket.handshake["user"],
+      "User should not be undefined",
+    );
+
+    // Check the user has all permissions to all projects.
+    const hasPermissions = await verifyProjectPermissions(
+      user,
+      args.projectIds,
+    );
+    // Check socket still connected after await.
+    if (!socket.connected) {
+      return;
+    }
+
+    if (!hasPermissions) {
+      socket.emit(
+        "error",
+        `No read access to projects ${args.projectIds.join(", ")}`,
+      );
+      socket.disconnect(true);
+      return;
+    }
+
+    logger.info(
+      `Subscribing user ${getSocketUserName(user)} to ${args.projectIds}`,
+    );
+    for (const projectId of args.projectIds) {
+      const room = `projects/${projectId}`;
+      await socket.join(room);
+      // Check socket still connected after await.
+      if (!socket.connected) {
+        return;
+      }
+    }
+
+    if (args.studio) {
+      // We subscribe for changes from Studio and from cli
+      socket.on("view", (data) => {
+        socket.data.viewInfo = {
+          branchId: data.branchId ?? undefined,
+          arenaInfo: data.arena ?? undefined,
+          selectionInfo: data.selection ?? undefined,
+          cursorInfo: data.cursor ?? undefined,
+          positionInfo: data.position ?? undefined,
+        };
+        this.broadcastPlayerSessions(`projects/${data.projectId}`);
+      });
+
+      for (const projectId of args.projectIds) {
+        const room = `projects/${projectId}`;
+        if (await shouldShowPlayer(user, projectId)) {
+          // Check socket still connected after await.
+          if (!socket.connected) {
+            return;
+          }
+          this.trackSocket(this.roomToSockets, room, socket);
+        }
+        this.broadcastPlayerSessions(room);
+      }
+    }
   }
 
   private buildPlayerInfo(socket: Socket) {
@@ -418,21 +436,29 @@ async function shouldShowPlayer(user: SocketUser, projectId: string) {
   }
   if (user.actor.type === "NormalUser") {
     const actor = user.actor;
-    return withDbMgr(user, async (mgr) => {
-      if (
-        // Note: just using the hardcoded default here, to avoid piping devflags down.
-        isAdminTeamEmail((await mgr.getUserById(actor.userId)).email, DEVFLAGS)
-      ) {
-        const ownerId = (await mgr.getProjectById(projectId)).createdById;
-        if (!ownerId) {
-          return true;
-        }
-        return isAdminTeamEmail(
-          (await mgr.getUserById(ownerId)).email,
-          DEVFLAGS,
-        );
+    return withDbMgr({ actor: SUPER_USER }, async (mgr) => {
+      // Don't show deleted users
+      const actorUser = await mgr.tryGetUserById(actor.userId);
+      if (!actorUser) {
+        return false;
       }
-      return true;
+
+      // Always show normal users
+      if (!isAdminTeamEmail(actorUser.email, DEVFLAGS)) {
+        return true;
+      }
+
+      // Only show admins on projects owned by admins
+      const project = await mgr.tryGetProjectById(projectId, false);
+      if (!project) {
+        return false;
+      }
+      const projectOwnerUser = project.createdById
+        ? await mgr.tryGetUserById(project.createdById)
+        : undefined;
+      return (
+        !!projectOwnerUser && isAdminTeamEmail(projectOwnerUser.email, DEVFLAGS)
+      );
     });
   }
   return false;
