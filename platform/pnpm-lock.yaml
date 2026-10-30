@@ -6699,11 +6699,11 @@ packages:
   '@remirror/types@1.0.1':
     resolution: {integrity: sha512-VlZQxwGnt1jtQ18D6JqdIF+uFZo525WEqrfp9BOc3COPpK4+AWCgdnAWL+ho6imWcoINlGjR/+3b6y5C1vBVEA==}
 
-  '@rive-app/canvas@2.45.1':
-    resolution: {integrity: sha512-VWOO1hHCMB3YKp3L2R1FqfobtreoAnMzpen9ngxTn6mNZj4KJEOW6lF7RhuVQkspN4t7BUCsGzBnEpZOFUHvyw==}
+  '@rive-app/canvas@2.48.0':
+    resolution: {integrity: sha512-PIZeN+AxIBnRbUkYIqgwyECT/n5svADgFZ8Q1gVLhNtUPdxvhSFmvoeR7y9DracoA0uReeOrQ4T00TRDNPtTIQ==}
 
-  '@rive-app/react-canvas@4.37.1':
-    resolution: {integrity: sha512-gA50ajL3igvr192QOtafRkRP9gcBDTN7hp3s90SA7q1t0T3pjXA3T9j7RDKaKM3wt7O0Vt30rPwiuH6EqfGv+A==}
+  '@rive-app/react-canvas@4.38.0':
+    resolution: {integrity: sha512-HyZkDEE6RtvKBRBs4CdbWW0DFhZIbESP8KDYr/WoXCWIWGq5KTj0+rqzNCLddkzK0vn8q5PmPnfY3dGnnFDBYw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
 
@@ -13263,12 +13263,12 @@ packages:
     resolution: {integrity: sha512-O9gl3zCl5h5blw1KGUzQKhA5oUXSl8rwUIM5o0S3nCXMliSvy5Dzx7/DJcI+SwgICv+IneSZwhBh1oSyEHA71A==}
     engines: {node: '>=0.6'}
 
-  qs@6.16.0:
-    resolution: {integrity: sha512-h6fhOIaRrID2CbEY2fqs+7t+UXZo+MLAnU5gRIq85uFtdiUPCdsApMlHhXogKVM4HM2DVbIjGNTTYH2OcmP1vA==}
-    engines: {node: '>=0.6'}
-
   qs@6.16.1:
     resolution: {integrity: sha512-5Px6J7rfHBAGUhNQ3es4YzcOdBBw0SDcVtThJml4RdnKw4tKs2epA0kPZ+K8X+WiHktT93RHVcQ/3ym5aTCgtg==}
+    engines: {node: '>=0.6'}
+
+  qs@6.17.0:
+    resolution: {integrity: sha512-5LK5BZ2XDHMvcUJaf0CQ5HL3aVgKbpklvByC7qLSxYkfE8COEEbJg5xCHWCTqzqi0Gs4Jn5Mv5v3R38W6edscA==}
     engines: {node: '>=0.6'}
 
   query-selector-shadow-dom@1.0.1:
@@ -20282,13 +20282,13 @@ snapshots:
   '@plasmicpkgs/rive@0.0.54(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@rive-app/react-canvas': 4.37.1(react@18.3.1)
+      '@rive-app/react-canvas': 4.38.0(react@18.3.1)
       react: 18.3.1
 
   '@plasmicpkgs/strapi@0.0.43(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
     dependencies:
       '@plasmicapp/host': 2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      qs: 6.16.1
+      qs: 6.17.0
 
   '@plasmicpkgs/tiptap@0.0.56(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(date-fns@2.28.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -22495,11 +22495,11 @@ snapshots:
     dependencies:
       type-fest: 2.19.0
 
-  '@rive-app/canvas@2.45.1': {}
+  '@rive-app/canvas@2.48.0': {}
 
-  '@rive-app/react-canvas@4.37.1(react@18.3.1)':
+  '@rive-app/react-canvas@4.38.0(react@18.3.1)':
     dependencies:
-      '@rive-app/canvas': 2.45.1
+      '@rive-app/canvas': 2.48.0
       react: 18.3.1
 
   '@rolldown/pluginutils@1.0.0-beta.27': {}
@@ -30060,12 +30060,12 @@ snapshots:
       es-define-property: 1.0.1
       side-channel: 1.1.1
 
-  qs@6.16.0:
+  qs@6.16.1:
     dependencies:
       es-define-property: 1.0.1
       side-channel: 1.1.1
 
-  qs@6.16.1:
+  qs@6.17.0:
     dependencies:
       es-define-property: 1.0.1
       side-channel: 1.1.1
@@ -32542,7 +32542,7 @@ snapshots:
     dependencies:
       deepmerge: 4.3.1
       fast-case: 1.7.0
-      qs: 6.16.1
+      qs: 6.17.0
 
   swr@1.3.0(react@18.3.1):
     dependencies:
@@ -33004,7 +33004,7 @@ snapshots:
 
   union@0.5.0:
     dependencies:
-      qs: 6.16.0
+      qs: 6.16.1
 
   unist-util-generated@2.0.1: {}
 
