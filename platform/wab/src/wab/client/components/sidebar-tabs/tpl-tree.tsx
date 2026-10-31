@@ -94,6 +94,7 @@ import {
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
   isBaseVariant,
+  isPrivateStyleVariant,
   isVariantSettingEmptyExcludingDefaultIgnorableStyles,
 } from "@/wab/shared/Variants";
 import { TplVisibility } from "@/wab/shared/visibility-utils";
@@ -290,8 +291,15 @@ const TplTreeNode = observer(function TplTreeNode(props: {
             } else {
               return undefined;
             }
+          } else if (
+            vtm
+              .getContainingFrame(item)
+              ?.getTargetVariants()
+              .some((v) => isPrivateStyleVariant(v) && v.forTpl !== item)
+          ) {
+            return undefined;
           } else {
-            return viewCtx.variantTplMgr().tryGetTargetVariantSetting(item);
+            return vtm.tryGetTargetVariantSetting(item);
           }
         };
 
