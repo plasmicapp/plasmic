@@ -116,6 +116,8 @@ export const ERROR_PATTERNS_TO_IGNORE = [
   "reading 'getStartPosition'",
   // Monaco tried to use web workers, but the apphost can block it with CSP
   ".loadForeignModule",
+  // Monaco falls back to the main thread if its worker bundle cannot load.
+  "editor.worker.js' failed to load",
 
   // antd / rc-align sometimes throw this by using ReactDOM.findDOMNode()
   "Unable to find node on an unmounted component",
@@ -137,6 +139,7 @@ export const ERROR_PATTERNS_TO_IGNORE = [
   // This is a known benign error that happens with ResizeObserver
   // https://linear.app/plasmic/issue/PLA-1721
   "ResizeObserver loop completed with undelivered notifications.",
+  "ResizeObserver loop limit exceeded",
 ];
 
 export function shouldIgnoreError(error: Error, source?: string) {

@@ -153,7 +153,15 @@ export class Loadable<T> extends React.Component<
   pLoad: /*TWZ*/ { cancel: () => any; promise: Promise<T> };
   async componentDidMount() {
     this.pLoad = makeCancelable(this.props.loader());
-    const data = await this.pLoad.promise;
+    let data: T;
+    try {
+      data = await this.pLoad.promise;
+    } catch (err) {
+      if (err?.isCanceled) {
+        return;
+      }
+      throw err;
+    }
     return this.setState({
       loaded: true,
       data,

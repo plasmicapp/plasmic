@@ -482,10 +482,9 @@ export async function detectOptionsFromDirectory(req: Request, res: Response) {
 
     res.json({ syncOptions });
   } catch (e) {
-    // We expect detectSyncOptions() to throw 404 errors if it can't find
-    // package.json. That shouldn't be thrown to Sentry.
+    // A missing package.json means there are no options to detect.
     if (e.status === 404) {
-      res.sendStatus(404);
+      res.json({ syncOptions: null });
     } else {
       throw e;
     }

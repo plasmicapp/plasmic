@@ -14,6 +14,7 @@ import {
   UserId,
 } from "@/wab/shared/ApiSchema";
 import { getArenaFrames } from "@/wab/shared/Arenas";
+import { UserError } from "@/wab/shared/UserError";
 import { generateSiteFromBundle } from "@/wab/shared/__testonly__/site-tests-utils";
 import { Bundle } from "@/wab/shared/bundler";
 import { withoutNils } from "@/wab/shared/common";
@@ -463,4 +464,43 @@ describe("aiStudioCtx", () => {
       { identity: chat, description: "Insert HTML" },
     ]);
   });
+});
+
+describe("fetchHostPageHtml", () => {
+  it("retries with the trailing slash toggled", async () => {
+    const fetchMock = vi
+      .spyOn(window, "fetch")
+      .mockRejectedValueOnce(new TypeError("Failed to fetch"))
+      .mockResolvedValueOnce({ text: async () => "host html" } as Response);
+    const { studioCtx } = fakeStudioCtx();
+    await expect(studioCtx.fetchHostPageHtml()).resolves.toBe("host html");
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    const urls = fetchMock.mock.calls.map(([url]) => String(url));
+    expect(urls[0].endsWith("/") ? urls[0].slice(0, -1) : urls[0] + "/").toBe(
+      urls[1],
+    );
+  });
+
+  it("shows a UserError when both attempts fail with network errors", async () => {
+    vi.spyOn(window, "fetch").mockRejectedValue(
+      new TypeError("Failed to fetch"),
+    );
+    const { studioCtx } = fakeStudioCtx();
+    await expect(studioCtx.fetchHostPageHtml()).rejects.toBeInstanceOf(
+      UserError,
+    );
+  });
+
+  it.each([true, false])(
+    "preserves unexpected errors (first attempt: %s)",
+    async (first) => {
+      const unexpected = new Error("unexpected failure");
+      const network = new TypeError("Failed to fetch");
+      vi.spyOn(window, "fetch")
+        .mockRejectedValueOnce(first ? unexpected : network)
+        .mockRejectedValueOnce(first ? network : unexpected);
+      const { studioCtx } = fakeStudioCtx();
+      await expect(studioCtx.fetchHostPageHtml()).rejects.toBe(unexpected);
+    },
+  );
 });

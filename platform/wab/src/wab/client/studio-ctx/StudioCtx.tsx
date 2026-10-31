@@ -185,6 +185,7 @@ import {
   SiteInfo,
 } from "@/wab/shared/SharedApi";
 import { isSlot, tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
+import { UserError } from "@/wab/shared/UserError";
 import {
   VariantCombo,
   isPrivateStyleVariant,
@@ -997,8 +998,19 @@ export class StudioCtx extends WithDbCtx {
 
       try {
         return await fetchUrl(hostPageUrl(false));
-      } catch {
-        return await fetchUrl(hostPageUrl(true));
+      } catch (firstError) {
+        try {
+          return await fetchUrl(hostPageUrl(true));
+        } catch (err) {
+          // Only treat network failures on both attempts as an unreachable host.
+          if (firstError instanceof TypeError && err instanceof TypeError) {
+            throw new UserError(
+              "Could not load your app host",
+              `Studio couldn't fetch ${hostPageUrl(false)}. Check that your app host is running and reachable from this browser, then reload Studio.`,
+            );
+          }
+          throw firstError instanceof TypeError ? err : firstError;
+        }
       }
     };
 

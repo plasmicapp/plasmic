@@ -1,6 +1,7 @@
 import {
   FileUploader,
   FileUploaderAccept,
+  Loadable,
 } from "@/wab/client/components/widgets";
 import { ensure } from "@/wab/shared/common";
 import { act, fireEvent, render } from "@testing-library/react";
@@ -41,4 +42,31 @@ describe("FileUploader", () => {
   it("names the accepted file kind in the drop feedback", () => {
     expect(dragFileOver("image")?.textContent).toBe("Drop image to upload");
   });
+});
+
+describe("Loadable", () => {
+  it.each(["resolve", "reject"] as const)(
+    "ignores a canceled load that later %ss",
+    async (outcome) => {
+      const onUnhandledRejection = vi.fn();
+      process.on("unhandledRejection", onUnhandledRejection);
+      try {
+        let settle: ((value: string) => void) | undefined;
+        const loader = () =>
+          new Promise<string>((resolve, reject) => {
+            settle = outcome === "resolve" ? resolve : reject;
+          });
+        const { unmount } = render(
+          <Loadable loader={loader} contents={(data) => data} />,
+        );
+        unmount();
+        ensure(settle, "Loadable starts loading on mount")("data");
+        // Unhandled rejections are detected after the microtask queue drains
+        await new Promise((r) => setTimeout(r, 0));
+        expect(onUnhandledRejection).not.toHaveBeenCalled();
+      } finally {
+        process.off("unhandledRejection", onUnhandledRejection);
+      }
+    },
+  );
 });
