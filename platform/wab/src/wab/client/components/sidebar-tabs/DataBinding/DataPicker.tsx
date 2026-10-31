@@ -39,7 +39,6 @@ import { ensure, isPrefixArray, sortBy } from "@/wab/shared/common";
 import { UnwrappedQueryResult } from "@/wab/shared/core/custom-functions";
 import { flattenedKeys } from "@/wab/shared/core/exprs";
 import { getFlattenedStateNames } from "@/wab/shared/core/states";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { formatErrorMessage } from "@/wab/shared/error-handling";
 import {
   pathToString,
@@ -422,7 +421,7 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
               }
             },
           }}
-          copilot={DEVFLAGS.showCopilot && !!viewCtx}
+          copilot={!!viewCtx?.studioCtx.codeCopilotEnabled()}
           items={{ ref: itemsRef }}
           codeEditing={true}
           codeEditor={{

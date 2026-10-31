@@ -184,6 +184,17 @@ export function ContentEditorConfigModal(props: {
             <BooleanControl trueLabel="Allowed" falseLabel="Disallowed" />
           </Form.Item>
 
+          <h3 className="mv-xlg">AI</h3>
+          <Form.Item name={["chatCopilot"]} label="Plasmic AI">
+            <BooleanControl trueLabel="Enabled" falseLabel="Disabled" />
+          </Form.Item>
+          <Form.Item name={["codeCopilot"]} label="AI in dynamic value editor">
+            <BooleanControl trueLabel="Enabled" falseLabel="Disabled" />
+          </Form.Item>
+          <Form.Item name={["studioMcp"]} label="Studio MCP">
+            <BooleanControl trueLabel="Enabled" falseLabel="Disabled" />
+          </Form.Item>
+
           {isOneOf(level, ["team", "workspace"]) && (
             <>
               <hr className="mv-xlg" />

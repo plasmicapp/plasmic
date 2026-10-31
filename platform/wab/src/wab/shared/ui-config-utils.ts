@@ -9,6 +9,7 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { arrayReversed } from "@/wab/shared/collections";
 import { withoutNils } from "@/wab/shared/common";
+import type { DevFlagsType } from "@/wab/shared/devflags";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import {
   FRAME_CAP,
@@ -192,6 +193,9 @@ export interface UiConfig {
   canPublishProject?: boolean;
   canOverrideImportedTokens?: boolean;
   canOverrideRegisteredTokens?: boolean;
+  chatCopilot?: boolean;
+  codeCopilot?: boolean;
+  studioMcp?: boolean;
 }
 
 /**
@@ -276,6 +280,9 @@ export function mergeUiConfigs(
     canOverrideRegisteredTokens: mergedFirst(
       configs.map((c) => c.canOverrideRegisteredTokens),
     ),
+    chatCopilot: mergedFirst(configs.map((c) => c.chatCopilot)),
+    codeCopilot: mergedFirst(configs.map((c) => c.codeCopilot)),
+    studioMcp: mergedFirst(configs.map((c) => c.studioMcp)),
   };
 }
 
@@ -479,4 +486,23 @@ export function canOverrideRegisteredTokens(config: UiConfig) {
   }
 
   return true;
+}
+
+export function isChatCopilotEnabled(devflags: DevFlagsType, config: UiConfig) {
+  return devflags.enableChatCopilot && (config.chatCopilot ?? true);
+}
+
+export function isQueryMigrationCopilotEnabled(
+  devflags: DevFlagsType,
+  config: UiConfig,
+) {
+  return devflags.enableQueryMigrationCopilot && (config.chatCopilot ?? true);
+}
+
+export function isCodeCopilotEnabled(devflags: DevFlagsType, config: UiConfig) {
+  return devflags.showCopilot && (config.codeCopilot ?? true);
+}
+
+export function isStudioMcpEnabled(config: UiConfig) {
+  return config.studioMcp ?? true;
 }

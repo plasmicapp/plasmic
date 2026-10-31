@@ -20,7 +20,12 @@ import { withoutNils } from "@/wab/shared/common";
 import { AiIdentity } from "@/wab/shared/copilot/copilot-tool-types";
 import { ComponentType } from "@/wab/shared/core/components";
 import { getDedicatedArena } from "@/wab/shared/core/sites";
-import { DEVFLAGS } from "@/wab/shared/devflags";
+import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
+import {
+  UiConfig,
+  isStudioMcpEnabled,
+  mergeUiConfigs,
+} from "@/wab/shared/ui-config-utils";
 import { ok } from "neverthrow";
 
 import _bundle from "@/wab/shared/web-exporter/bundles/starter-project-desktop-first.json";
@@ -132,6 +137,74 @@ describe("chatCopilotEnabled", () => {
       );
     },
   );
+});
+
+describe("AI features in UI config", () => {
+  function setup(
+    uiConfig: UiConfig | null,
+    devFlagOverrides: Partial<DevFlagsType> = {},
+  ) {
+    return fakeStudioCtx({
+      teams: [mockTeam({ featureTierId: "paid" as FeatureTierId })],
+      siteInfo: { teamId: TEAM_ID, uiConfig },
+      devFlagOverrides: {
+        enableChatCopilot: true,
+        enableQueryMigrationCopilot: true,
+        showCopilot: true,
+        ...devFlagOverrides,
+      },
+    }).studioCtx;
+  }
+
+  it("enables everything by default", () => {
+    for (const uiConfig of [null, {}, { chatCopilot: true }]) {
+      const studioCtx = setup(uiConfig);
+      expect(studioCtx.chatCopilotEnabled()).toBe(true);
+      expect(studioCtx.queryMigrationCopilotEnabled()).toBe(true);
+      expect(studioCtx.codeCopilotEnabled()).toBe(true);
+    }
+  });
+
+  it("chatCopilot disables chat and query migration copilots", () => {
+    const studioCtx = setup({ chatCopilot: false });
+    expect(studioCtx.chatCopilotEnabled()).toBe(false);
+    expect(studioCtx.queryMigrationCopilotEnabled()).toBe(false);
+    expect(studioCtx.codeCopilotEnabled()).toBe(true);
+  });
+
+  it("codeCopilot disables only the code copilot", () => {
+    const studioCtx = setup({ codeCopilot: false });
+    expect(studioCtx.chatCopilotEnabled()).toBe(true);
+    expect(studioCtx.queryMigrationCopilotEnabled()).toBe(true);
+    expect(studioCtx.codeCopilotEnabled()).toBe(false);
+  });
+
+  it("devflags disable features even if the UI config enables them", () => {
+    const uiConfig = { chatCopilot: true, codeCopilot: true };
+    expect(
+      setup(uiConfig, { enableChatCopilot: false }).chatCopilotEnabled(),
+    ).toBe(false);
+    expect(
+      setup(uiConfig, {
+        enableQueryMigrationCopilot: false,
+      }).queryMigrationCopilotEnabled(),
+    ).toBe(false);
+    expect(setup(uiConfig, { showCopilot: false }).codeCopilotEnabled()).toBe(
+      false,
+    );
+  });
+
+  it("lets later configs override earlier ones", () => {
+    const merged = mergeUiConfigs(
+      { chatCopilot: false, codeCopilot: false, studioMcp: false },
+      { chatCopilot: true },
+    );
+    expect(merged.chatCopilot).toBe(true);
+    expect(merged.codeCopilot).toBe(false);
+    expect(merged.studioMcp).toBe(false);
+    expect(isStudioMcpEnabled(merged)).toBe(false);
+    expect(isStudioMcpEnabled({})).toBe(true);
+  });
 });
 
 describe("background arenas", () => {

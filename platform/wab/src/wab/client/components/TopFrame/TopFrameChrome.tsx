@@ -59,7 +59,10 @@ import {
   APP_ROUTES,
   SEARCH_PARAM_COPILOT_CHAT,
 } from "@/wab/shared/route/app-routes";
-import { canEditUiConfig } from "@/wab/shared/ui-config-utils";
+import {
+  canEditUiConfig,
+  isChatCopilotEnabled,
+} from "@/wab/shared/ui-config-utils";
 import { message, notification } from "antd";
 import { Action, Location } from "history";
 import { observer } from "mobx-react";
@@ -83,8 +86,7 @@ export interface TopFrameChromeProps {
   topFrameApi: TopFrameApi;
 
   latestPublishedVersionData:
-    | { revisionId: string; version: string }
-    | undefined;
+    { revisionId: string; version: string } | undefined;
   revisionNum: number;
   noComponents: boolean;
   isLocalizationEnabled: boolean;
@@ -376,16 +378,22 @@ export function TopFrameChrome({
               />
             )}
             <FloatingWindowLayer>
-              {hostFrameApiReady && rest.showCopilotChatModal && editorPerm && (
-                <CopilotChat
-                  project={project}
-                  chatOpenOpts={rest.copilotChatOpenOpts}
-                  studioModalOpen={rest.studioModalOpen}
-                  canStartNewChat={canStartNewChat}
-                  onClose={() => topFrameApi.toggleCopilotChat()}
-                  onPlanReady={refreshProjectAndPerms}
-                />
-              )}
+              {hostFrameApiReady &&
+                rest.showCopilotChatModal &&
+                editorPerm &&
+                isChatCopilotEnabled(
+                  appCtx.appConfig,
+                  project.uiConfig ?? {},
+                ) && (
+                  <CopilotChat
+                    project={project}
+                    chatOpenOpts={rest.copilotChatOpenOpts}
+                    studioModalOpen={rest.studioModalOpen}
+                    canStartNewChat={canStartNewChat}
+                    onClose={() => topFrameApi.toggleCopilotChat()}
+                    onPlanReady={refreshProjectAndPerms}
+                  />
+                )}
             </FloatingWindowLayer>
             <React.Suspense fallback={null}>
               <TopFrameTours

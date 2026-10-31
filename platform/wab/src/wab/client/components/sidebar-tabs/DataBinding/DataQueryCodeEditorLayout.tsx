@@ -9,7 +9,6 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataQueryCodeEditorLayout";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { getEnvForPlasmicQueries } from "@/wab/shared/core/custom-functions";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   transformDataTokensInCode,
   transformDataTokensToDisplay,
@@ -36,7 +35,7 @@ function DataQueryCodeEditorLayout_(
   const studioCtx = useStudioCtx();
   const editorRef = React.useRef<FullCodeEditor>(null);
   const viewCtx = studioCtx.focusedViewCtx();
-  const showCopilot = DEVFLAGS.showCopilot && !!viewCtx;
+  const showCopilot = studioCtx.codeCopilotEnabled() && !!viewCtx;
 
   // Convert stored flattened format ($dataTokens_projId_name) to editor display format
   // ($dataTokens.name) If the code is not parseable, fall back to the raw value.

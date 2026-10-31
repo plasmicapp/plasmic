@@ -34,6 +34,7 @@ import { maybeOne, spawn } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { isStudioMcpEnabled } from "@/wab/shared/ui-config-utils";
 import { notification } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import { Location } from "history";
@@ -281,7 +282,9 @@ export function StudioFrame({
         refreshBranchData={refreshBranchData}
         {...topFrameChromeProps}
       />
-      <TopFrameCopilotToolsBridge />
+      <TopFrameCopilotToolsBridge
+        enabled={isStudioMcpEnabled(project.uiConfig ?? {})}
+      />
       <iframe
         className={"studio-frame"}
         src={src.toString()}

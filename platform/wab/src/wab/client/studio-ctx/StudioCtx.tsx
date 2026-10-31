@@ -390,6 +390,9 @@ import {
   LeftTabUiKey,
   UiConfig,
   getLeftTabPermission,
+  isChatCopilotEnabled,
+  isCodeCopilotEnabled,
+  isQueryMigrationCopilotEnabled,
   mergeUiConfigs,
 } from "@/wab/shared/ui-config-utils";
 import {
@@ -3450,7 +3453,10 @@ export class StudioCtx extends WithDbCtx {
   // Copilot
   //
   chatCopilotEnabled(): boolean {
-    if (!this.canEditProject() || !this.appCtx.appConfig.enableChatCopilot) {
+    if (
+      !this.canEditProject() ||
+      !isChatCopilotEnabled(this.appCtx.appConfig, this.getCurrentUiConfig())
+    ) {
       return false;
     }
 
@@ -3463,7 +3469,18 @@ export class StudioCtx extends WithDbCtx {
 
   queryMigrationCopilotEnabled(): boolean {
     return (
-      this.canEditProject() && this.appCtx.appConfig.enableQueryMigrationCopilot
+      this.canEditProject() &&
+      isQueryMigrationCopilotEnabled(
+        this.appCtx.appConfig,
+        this.getCurrentUiConfig(),
+      )
+    );
+  }
+
+  codeCopilotEnabled(): boolean {
+    return isCodeCopilotEnabled(
+      this.appCtx.appConfig,
+      this.getCurrentUiConfig(),
     );
   }
 

@@ -392,7 +392,7 @@ export const TemplatedTextEditor = React.forwardRef<
               Invalid SQL string
             </small>
           )}
-          {sql && dataSourceSchema && (
+          {sql && dataSourceSchema && studioCtx.codeCopilotEnabled() && (
             <CopilotCodePrompt
               className="mt-sm"
               data={data}
