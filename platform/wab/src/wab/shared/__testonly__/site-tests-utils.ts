@@ -11,10 +11,7 @@ import {
   isKnownProjectDependency,
   isKnownSite,
 } from "@/wab/shared/model/classes";
-import {
-  createNodeCtx,
-  walkModelTree,
-} from "@/wab/shared/model/model-tree-util";
+import { NodeCtx, walkModelTree } from "@/wab/shared/model/model-tree-util";
 
 /**
  * Generates a site object from bundle data of a project with dependencies.
@@ -73,7 +70,7 @@ export function observeSiteForTest(site: Site) {
   const externals = new Set<ObjInst>();
   for (const dep of site.projectDependencies) {
     externals.add(dep);
-    walkModelTree(createNodeCtx(dep.site)).forEach((inst) =>
+    walkModelTree(NodeCtx.root(dep.site)).forEach((inst) =>
       externals.add(inst),
     );
   }

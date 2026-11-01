@@ -82,10 +82,7 @@ import {
   isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
-import {
-  createNodeCtx,
-  walkModelTree,
-} from "@/wab/shared/model/model-tree-util";
+import { NodeCtx, walkModelTree } from "@/wab/shared/model/model-tree-util";
 import { modelConflictsMeta } from "@/wab/shared/site-diffs/model-conflicts-meta";
 import * as SentryBrowser from "@sentry/browser";
 import * as SentryNode from "@sentry/node";
@@ -162,7 +159,7 @@ export function* genSiteErrors(site: Site, componentUuidsToSkip?: Set<string>) {
 }
 
 function* genGenericModelErrors(site: Site) {
-  const insts = walkModelTree(createNodeCtx(site));
+  const insts = walkModelTree(NodeCtx.root(site));
   for (const inst of insts) {
     const cls = instUtil.getInstClass(inst);
     for (const field of meta.allFields(cls)) {

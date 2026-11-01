@@ -53,6 +53,7 @@ import {
   Component,
   ComponentDataQuery,
   CustomCode,
+  ensureKnownArenaFrame,
   ensureKnownChoice,
   ensureKnownCustomCode,
   ensureKnownExprText,
@@ -608,6 +609,36 @@ describe("merging", () => {
       res.mergedSite.arenas[0].children.length ===
         ancSite.arenas[0].children.length - 1,
     );
+  });
+
+  it("merges a one-sided change to an arena frame's root instance", () => {
+    const ancSite = basicSite();
+    ancSite.arenas[0].children = [
+      ...ancSite.arenas[0].children,
+      mkArenaFrame({
+        site: ancSite,
+        name: "frame",
+        component: ancSite.components[0],
+        height: 100,
+        width: 100,
+        pinnedGlobalVariants: {},
+        pinnedVariants: {},
+      }),
+    ];
+    const getRootVs = (site: Site) =>
+      ensureKnownArenaFrame(
+        site.arenas[0].children.find((child) => child.name === "frame"),
+      ).container.vsettings[0];
+    res = testMerge({
+      ancestorSite: ancSite,
+      a: () => {},
+      b: (site) => {
+        const vs = getRootVs(site);
+        vs.rs.values = { ...vs.rs.values, "margin-top": "123px" };
+      },
+    });
+    expect(res.status).toBe("merged");
+    expect(getRootVs(res.mergedSite).rs.values["margin-top"]).toBe("123px");
   });
 
   describe("auto-reconciliations", () => {

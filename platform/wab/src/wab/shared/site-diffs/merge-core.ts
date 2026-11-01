@@ -72,11 +72,8 @@ import {
 } from "@/wab/shared/model/model-meta";
 import {
   NodeCtx,
-  NodeFieldCtx,
   areSameInstType,
   assertSameInstType,
-  createNodeCtx,
-  nextCtx,
   walkModelTree,
 } from "@/wab/shared/model/model-tree-util";
 import {
@@ -99,7 +96,6 @@ import {
   set,
   uniq,
   uniqBy,
-  zip,
 } from "lodash";
 
 // site-diffs has circular dependencies
@@ -473,13 +469,13 @@ function handleUpdatedValue<T>(
 
 // Returns Map<leftPath, UpdateData>
 export function getInstUpdates(
-  origCtx: NodeCtx,
-  updatedCtx: NodeCtx,
+  origCtx: NodeCtx<ObjInst>,
+  updatedCtx: NodeCtx<ObjInst>,
   bundler: Bundler,
   updates = new Map<string, UpdateData>(),
 ): Map<string, UpdateData> {
-  const { node: origInst, path: origPath } = origCtx;
-  const { node: updatedInst, path: updatedPath } = updatedCtx;
+  const { node: origInst } = origCtx;
+  const { node: updatedInst } = updatedCtx;
 
   const cls = instUtil.getInstClass(
     ensure(origInst ?? updatedInst, "Either side must exist"),
@@ -507,8 +503,8 @@ export function getInstUpdates(
         const getKey = deriveKeyFunc(fieldMeta, bundler, { field, cls });
         return xs.forEach((v, i) =>
           rec(
-            nextCtx(_origCtx, `${i}`, getKey(v)),
-            nextCtx(_updatedCtx, `${i}`, getKey(v)),
+            _origCtx.child(`${i}`, getKey(v)),
+            _updatedCtx.child(`${i}`, getKey(v)),
           ),
         );
       } else if (isLiteralObject(origVal) || isLiteralObject(updatedVal)) {
@@ -520,7 +516,7 @@ export function getInstUpdates(
         );
         const keys = uniq([...Object.keys(xs), ...Object.keys(ys)]);
         return keys.forEach((k) =>
-          rec(nextCtx(_origCtx, k), nextCtx(_updatedCtx, k)),
+          rec(_origCtx.child(k), _updatedCtx.child(k)),
         );
       } else if (
         instUtil.isObjInst(origVal) ||
@@ -534,8 +530,8 @@ export function getInstUpdates(
       }
     };
     const fieldMeta = modelConflictsMeta[cls.name][field.name];
-    const origFieldCtx = nextCtx(origCtx, field.name);
-    const updatedFieldCtx = nextCtx(updatedCtx, field.name);
+    const origFieldCtx = origCtx.child(field.name);
+    const updatedFieldCtx = updatedCtx.child(field.name);
     const origValue = origFieldCtx.node;
     const updatedValue = updatedFieldCtx.node;
     if (
@@ -555,31 +551,19 @@ export function getInstUpdates(
         false,
       )
     ) {
-      updates.set(
-        JSON.stringify(
-          zip(origFieldCtx.path, origFieldCtx.keyPath ?? []).map(
-            ([a, b]) => b ?? a,
-          ),
-        ),
-        {
-          field,
-          fieldConflictMeta: fieldMeta,
-          updatedInst,
-          origInst,
-          updatedFieldValue:
-            updatedValue && updatedInst
-              ? handleUpdatedValue(
-                  fieldMeta,
-                  updatedValue,
-                  updatedInst,
-                  bundler,
-                )
-              : updatedValue,
-          origFieldValue: origValue,
-          origPath: origPath,
-          updatedPath,
-        },
-      );
+      updates.set(JSON.stringify(origFieldCtx.keyedPath()), {
+        field,
+        fieldConflictMeta: fieldMeta,
+        updatedInst,
+        origInst,
+        updatedFieldValue:
+          updatedValue && updatedInst
+            ? handleUpdatedValue(fieldMeta, updatedValue, updatedInst, bundler)
+            : updatedValue,
+        origFieldValue: origValue,
+        origPath: origCtx.path(),
+        updatedPath: updatedCtx.path(),
+      });
       if (
         !isWeakRefField(field) &&
         (Array.isArray(origValue) || Array.isArray(updatedValue)) &&
@@ -605,8 +589,8 @@ export function getInstUpdates(
                 !swallow(() => fieldMeta?.excludeFromMerge?.(updatedChild))))
           ) {
             rec(
-              nextCtx(origFieldCtx, `${origIndex}`, key),
-              nextCtx(updatedFieldCtx, `${updatedIndex}`, key),
+              origFieldCtx.child(`${origIndex}`, key),
+              updatedFieldCtx.child(`${updatedIndex}`, key),
             );
           }
         }
@@ -631,8 +615,8 @@ export function getInstUpdates(
               !swallow(() => fieldMeta?.excludeFromMerge?.(updatedChild)))
           ) {
             rec(
-              nextCtx(origFieldCtx, `${origIndex}`, key),
-              nextCtx(updatedFieldCtx, `${updatedIndex}`, key),
+              origFieldCtx.child(`${origIndex}`, key),
+              updatedFieldCtx.child(`${updatedIndex}`, key),
             );
           }
         }
@@ -925,10 +909,10 @@ function visitSpecialHandlers({
   picks,
   recorder,
 }: {
-  ancestorCtx: NodeCtx;
-  leftCtx: NodeCtx;
-  rightCtx: NodeCtx;
-  mergedCtx: NodeCtx;
+  ancestorCtx: NodeCtx<ObjInst>;
+  leftCtx: NodeCtx<ObjInst>;
+  rightCtx: NodeCtx<ObjInst>;
+  mergedCtx: NodeCtx<ObjInst>;
   bundler: Bundler;
   picks: DirectConflictPickMap | undefined;
   recorder: ChangeRecorder;
@@ -949,10 +933,10 @@ function visitSpecialHandlers({
 
   const rec = (
     field: Field,
-    ancFieldCtx: NodeFieldCtx,
-    leftFieldCtx: NodeFieldCtx,
-    rightFieldCtx: NodeFieldCtx,
-    mergedFieldCtx: NodeFieldCtx,
+    ancFieldCtx: NodeCtx,
+    leftFieldCtx: NodeCtx,
+    rightFieldCtx: NodeCtx,
+    mergedFieldCtx: NodeCtx,
   ) => {
     const fieldInfo = { field, cls };
     // They must all be arrays; if any are nil, then no conflicts!
@@ -966,26 +950,22 @@ function visitSpecialHandlers({
         const key = getArrayKey(bundler, v, fieldInfo);
         rec(
           field,
-          nextCtx(
-            ancFieldCtx,
+          ancFieldCtx.child(
             `${(ancFieldCtx.node as any[]).findIndex(
               (val) => getArrayKey(bundler, val, fieldInfo) === key,
             )}`,
           ),
-          nextCtx(
-            leftFieldCtx,
+          leftFieldCtx.child(
             `${(leftFieldCtx.node as any[]).findIndex(
               (val) => getArrayKey(bundler, val, fieldInfo) === key,
             )}`,
           ),
-          nextCtx(
-            rightFieldCtx,
+          rightFieldCtx.child(
             `${(rightFieldCtx.node as any[]).findIndex(
               (val) => getArrayKey(bundler, val, fieldInfo) === key,
             )}`,
           ),
-          nextCtx(
-            mergedFieldCtx,
+          mergedFieldCtx.child(
             `${(mergedFieldCtx.node as any[]).findIndex(
               (val) => getArrayKey(bundler, val, fieldInfo) === key,
             )}`,
@@ -998,17 +978,22 @@ function visitSpecialHandlers({
       isLiteralObject(rightFieldCtx.node) &&
       isLiteralObject(mergedFieldCtx.node)
     ) {
-      [...Object.keys(ancFieldCtx)].forEach((key) =>
+      [...Object.keys(ancFieldCtx.node)].forEach((key) =>
         rec(
           field,
-          nextCtx(ancFieldCtx, key),
-          nextCtx(leftFieldCtx, key),
-          nextCtx(rightFieldCtx, key),
-          nextCtx(mergedFieldCtx, key),
+          ancFieldCtx.child(key),
+          leftFieldCtx.child(key),
+          rightFieldCtx.child(key),
+          mergedFieldCtx.child(key),
         ),
       );
     } else if (
-      areSameInstType(ancFieldCtx, leftFieldCtx, rightFieldCtx, mergedFieldCtx)
+      areSameInstType(
+        ancFieldCtx.node,
+        leftFieldCtx.node,
+        rightFieldCtx.node,
+        mergedFieldCtx.node,
+      )
     ) {
       conflicts.push(
         ...visitSpecialHandlers({
@@ -1045,10 +1030,10 @@ function visitSpecialHandlers({
     } else if (!isWeakRefField(field)) {
       rec(
         field,
-        nextCtx(ancestorCtx, field.name),
-        nextCtx(leftCtx, field.name),
-        nextCtx(rightCtx, field.name),
-        nextCtx(mergedCtx, field.name),
+        ancestorCtx.child(field.name),
+        leftCtx.child(field.name),
+        rightCtx.child(field.name),
+        mergedCtx.child(field.name),
       );
     }
   }
@@ -1086,10 +1071,10 @@ export function getDirectConflicts({
   picks,
   filterConflict,
 }: {
-  ancestorCtx: NodeCtx;
-  leftCtx: NodeCtx;
-  rightCtx: NodeCtx;
-  mergedCtx: NodeCtx;
+  ancestorCtx: NodeCtx<ObjInst>;
+  leftCtx: NodeCtx<ObjInst>;
+  rightCtx: NodeCtx<ObjInst>;
+  mergedCtx: NodeCtx<ObjInst>;
   bundler: Bundler;
   recorder: ChangeRecorder;
   picks: DirectConflictPickMap | undefined;
@@ -1461,10 +1446,7 @@ export function getDirectConflicts({
                   // might be different than the path in the merged site if it's
                   // a change deeper in a subtree that moved
                   const fullPath = JSON.parse(pathStr).slice(0, -1);
-                  const ancestorPathPrefix = zip(
-                    ancestorCtx.path,
-                    ancestorCtx.keyPath ?? [],
-                  ).map(([a, b]) => b ?? a);
+                  const ancestorPathPrefix = ancestorCtx.keyedPath();
                   assert(
                     fullPath.length >= ancestorPathPrefix.length &&
                       JSON.stringify(
@@ -1609,7 +1591,7 @@ function walkAndFixNames(
   isDeletedInst: (inst: ObjInst) => boolean,
 ) {
   const autoReconciliations: AutoReconciliation[] = [];
-  const walked = walkModelTree(createNodeCtx(site));
+  const walked = walkModelTree(NodeCtx.root(site));
   for (const inst of walked) {
     const cls = instUtil.getInstClass(inst);
     for (const field of meta.allFields(cls)) {
@@ -2136,10 +2118,10 @@ export function tryMerge(
     mergedSite,
     () => {
       directConflicts = getDirectConflicts({
-        ancestorCtx: createNodeCtx(ancestor),
-        leftCtx: createNodeCtx(a),
-        rightCtx: createNodeCtx(b),
-        mergedCtx: createNodeCtx(mergedSite),
+        ancestorCtx: NodeCtx.root(ancestor),
+        leftCtx: NodeCtx.root(a),
+        rightCtx: NodeCtx.root(b),
+        mergedCtx: NodeCtx.root(mergedSite),
         bundler,
         recorder,
         picks,
@@ -2202,16 +2184,16 @@ function computeIidsToBeDeletedInMerge(
   right: Site,
   bundler: Bundler,
 ) {
-  const ancestorIids = walkModelTree(createNodeCtx(ancestor)).map(
+  const ancestorIids = walkModelTree(NodeCtx.root(ancestor)).map(
     (inst) => bundler.addrOfUnsafe(inst).iid,
   );
   const leftIids = new Set(
-    walkModelTree(createNodeCtx(left)).map(
+    walkModelTree(NodeCtx.root(left)).map(
       (inst) => bundler.addrOfUnsafe(inst).iid,
     ),
   );
   const rightIids = new Set(
-    walkModelTree(createNodeCtx(right)).map(
+    walkModelTree(NodeCtx.root(right)).map(
       (inst) => bundler.addrOfUnsafe(inst).iid,
     ),
   );

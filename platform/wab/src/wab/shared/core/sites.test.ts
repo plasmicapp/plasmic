@@ -25,10 +25,7 @@ import {
   Site,
   SiteParams,
 } from "@/wab/shared/model/classes";
-import {
-  createNodeCtx,
-  walkModelTree,
-} from "@/wab/shared/model/model-tree-util";
+import { NodeCtx, walkModelTree } from "@/wab/shared/model/model-tree-util";
 import { typeFactory } from "@/wab/shared/model/model-util";
 import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
 import {
@@ -261,7 +258,7 @@ describe("cloneSite", () => {
     function normalize(site: Site, id: string) {
       // Assign UUIDs by tree position, including references in CSS and map keys.
       const uuids = new Map<string, string>();
-      for (const inst of walkModelTree(createNodeCtx(site))) {
+      for (const inst of walkModelTree(NodeCtx.root(site))) {
         if (
           "uuid" in inst &&
           typeof inst.uuid === "string" &&

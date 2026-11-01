@@ -83,7 +83,10 @@ import {
 } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
 import { Field } from "@/wab/shared/model/model-meta";
-import { assertSameInstType } from "@/wab/shared/model/model-tree-util";
+import {
+  NodeCtx,
+  assertSameInstType,
+} from "@/wab/shared/model/model-tree-util";
 import { reorderPageArenaCols } from "@/wab/shared/page-arenas";
 import {
   AutoReconciliation,
@@ -536,26 +539,26 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
       const compB = equivalentOnB;
       directConflicts.push(
         ...getDirectConflicts({
-          ancestorCtx: {
+          ancestorCtx: NodeCtx.at({
             node: ancestorComp,
             site: siteAncestorCtx.site,
             path: getCompPath(ancestorComp, bundler),
-          },
-          leftCtx: {
+          }),
+          leftCtx: NodeCtx.at({
             node: compA,
             site: siteACtx.site,
             path: getCompPath(compA, bundler),
-          },
-          rightCtx: {
+          }),
+          rightCtx: NodeCtx.at({
             node: compB,
             site: siteBCtx.site,
             path: getCompPath(compB, bundler),
-          },
-          mergedCtx: {
+          }),
+          mergedCtx: NodeCtx.at({
             node: mergedComp,
             site: mergedSiteCtx.site,
             path: getCompPath(mergedComp, bundler),
-          },
+          }),
           bundler,
           picks,
           recorder,
@@ -567,7 +570,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
         compA.tplTree.uuid !== compB.tplTree.uuid
       ) {
         // Conflict when re-rooting the component
-        const pathStr = JSON.stringify(mergedSiteCtx.path);
+        const pathStr = JSON.stringify(mergedSiteCtx.path());
         const conf: SpecialDirectConflict = {
           conflictType: "special",
           objectType: "components",
@@ -733,7 +736,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
             !isSameParent(tplA, tplB)
           ) {
             // Both branches moved the same element to different locations
-            const pathStr = JSON.stringify(mergedSiteCtx.path);
+            const pathStr = JSON.stringify(mergedSiteCtx.path());
             const conf: SpecialDirectConflict = {
               conflictType: "special",
               objectType: "components",
@@ -809,29 +812,29 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
             );
             directConflicts.push(
               ...getDirectConflicts({
-                ancestorCtx: {
+                ancestorCtx: NodeCtx.at({
                   node: tplAnc,
                   site: siteAncestorCtx.site,
                   path: [...getCompPath(ancestorComp, bundler), ...nodePathAnc],
-                },
-                leftCtx: {
+                }),
+                leftCtx: NodeCtx.at({
                   node: tplA,
                   site: siteACtx.site,
                   path: [...getCompPath(compA, bundler), ...nodePathA],
-                },
-                rightCtx: {
+                }),
+                rightCtx: NodeCtx.at({
                   node: tplB,
                   site: siteBCtx.site,
                   path: [...getCompPath(compB, bundler), ...nodePathB],
-                },
-                mergedCtx: {
+                }),
+                mergedCtx: NodeCtx.at({
                   node: tplMerged,
                   site: mergedSiteCtx.site,
                   path: [
                     ...getCompPath(mergedComp, bundler),
                     ...nodePathMerged,
                   ],
-                },
+                }),
                 bundler,
                 picks,
                 recorder,
@@ -1024,7 +1027,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
             // upgrade only rebuilt the default content around it. So its
             // version is the ancestor's, and merging against the ancestor
             // applies this branch's edit.
-            const ancCtx = {
+            const ancCtx = NodeCtx.at({
               node: tplAnc,
               site: siteAncestorCtx.site,
               path: [
@@ -1034,7 +1037,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
                   "Path to tplNode must exist.",
                 ),
               ],
-            };
+            });
             const [keptTpl, keptSite, keptComp, keptPaths] = tplA
               ? ([tplA, siteA, compA, nodeToPathA] as const)
               : ([
@@ -1043,7 +1046,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
                   compB,
                   nodeToPathB,
                 ] as const);
-            const keptCtx = {
+            const keptCtx = NodeCtx.at({
               node: keptTpl,
               site: keptSite,
               path: [
@@ -1053,20 +1056,20 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
                   "Path to tplNode must exist.",
                 ),
               ],
-            };
+            });
             directConflicts.push(
               ...getDirectConflicts({
                 ancestorCtx: ancCtx,
                 leftCtx: tplA ? keptCtx : ancCtx,
                 rightCtx: tplA ? ancCtx : keptCtx,
-                mergedCtx: {
+                mergedCtx: NodeCtx.at({
                   node: tplMerged,
                   site: mergedSiteCtx.site,
                   path: [
                     ...getCompPath(mergedComp, bundler),
                     ...nodePathMerged,
                   ],
-                },
+                }),
                 bundler,
                 picks,
                 recorder,
@@ -1290,7 +1293,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
       // Without a conflict, the order is applied below with the other changes
       const orderToApply = finalOrder === "conflict" ? undefined : finalOrder;
       if (finalOrder === "conflict") {
-        const pathStr = JSON.stringify(mergedCtx.path);
+        const pathStr = JSON.stringify(mergedCtx.path());
         const conf: SpecialDirectConflict = {
           conflictType: "special",
           conflictParts: [`tpl ${merged.uuid} children order`],
@@ -1533,7 +1536,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
       };
 
       if (finalOrder === "conflict") {
-        const pathStr = JSON.stringify(mergedCtx.path);
+        const pathStr = JSON.stringify(mergedCtx.path());
         const conf: SpecialDirectConflict = {
           conflictType: "special",
           conflictParts: [`tpl ${merged.uuid} children order`],
@@ -1747,38 +1750,38 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
     } else {
       conflicts.push(
         ...getDirectConflicts({
-          ancestorCtx: {
+          ancestorCtx: NodeCtx.at({
             node: vs,
-            path: [...ancestorCtx.path, "vsettings", `${i}`],
+            path: [...ancestorCtx.path(), "vsettings", `${i}`],
             site: ancestorCtx.site,
-          },
-          leftCtx: {
+          }),
+          leftCtx: NodeCtx.at({
             node: leftEquiv,
             path: [
-              ...leftCtx.path,
+              ...leftCtx.path(),
               "vsettings",
               `${left.vsettings.indexOf(leftEquiv)}`,
             ],
             site: leftCtx.site,
-          },
-          rightCtx: {
+          }),
+          rightCtx: NodeCtx.at({
             node: rightEquiv,
             path: [
-              ...rightCtx.path,
+              ...rightCtx.path(),
               "vsettings",
               `${right.vsettings.indexOf(rightEquiv)}`,
             ],
             site: rightCtx.site,
-          },
-          mergedCtx: {
+          }),
+          mergedCtx: NodeCtx.at({
             node: mergedEquiv,
             path: [
-              ...mergedCtx.path,
+              ...mergedCtx.path(),
               "vsettings",
               `${merged.vsettings.indexOf(mergedEquiv)}`,
             ],
             site: mergedCtx.site,
-          },
+          }),
           bundler,
           picks,
           recorder,
@@ -1842,38 +1845,42 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
     const { vs, rightVs, ancestorVS } = conflictCheck;
     conflicts.push(
       ...getDirectConflicts({
-        ancestorCtx: {
+        ancestorCtx: NodeCtx.at({
           node: ancestorVS,
           path: [
-            ...ancestorCtx.path,
+            ...ancestorCtx.path(),
             "vsettings",
             ["new", ...vs.variants.map((v) => v.uuid)].join("-"),
           ],
           site: ancestorCtx.site,
-        },
-        leftCtx: {
+        }),
+        leftCtx: NodeCtx.at({
           node: vs,
-          path: [...leftCtx.path, "vsettings", `${left.vsettings.indexOf(vs)}`],
+          path: [
+            ...leftCtx.path(),
+            "vsettings",
+            `${left.vsettings.indexOf(vs)}`,
+          ],
           site: leftCtx.site,
-        },
-        rightCtx: {
+        }),
+        rightCtx: NodeCtx.at({
           node: rightVs,
           path: [
-            ...rightCtx.path,
+            ...rightCtx.path(),
             "vsettings",
             `${right.vsettings.indexOf(rightVs)}`,
           ],
           site: rightCtx.site,
-        },
-        mergedCtx: {
+        }),
+        mergedCtx: NodeCtx.at({
           node: mergedVS,
           path: [
-            ...mergedCtx.path,
+            ...mergedCtx.path(),
             "vsettings",
             ["new", ...vs.variants.map((v) => v.uuid)].join("-"),
           ],
           site: mergedCtx.site,
-        },
+        }),
         bundler,
         picks,
         recorder,
@@ -2400,37 +2407,40 @@ export const tryMergeGlobalContexts: MergeSpecialFieldHandler<Site> = (
 
       directConflicts.push(
         ...getDirectConflicts({
-          ancestorCtx: {
+          ancestorCtx: NodeCtx.at({
             node: ancestorTpl,
             path: [
-              ...ancestorCtx.path,
+              ...ancestorCtx.path(),
               ...(ancestorTpl
                 ? getGlobalContextPath(ancestorTpl, bundler)
                 : ["globalContexts", "new"]),
             ],
             site: ancestorCtx.site,
-          },
-          leftCtx: {
+          }),
+          leftCtx: NodeCtx.at({
             node: leftTpl,
-            path: [...leftCtx.path, ...getGlobalContextPath(leftTpl, bundler)],
+            path: [
+              ...leftCtx.path(),
+              ...getGlobalContextPath(leftTpl, bundler),
+            ],
             site: leftCtx.site,
-          },
-          rightCtx: {
+          }),
+          rightCtx: NodeCtx.at({
             node: rightTpl,
             path: [
-              ...rightCtx.path,
+              ...rightCtx.path(),
               ...getGlobalContextPath(rightTpl, bundler),
             ],
             site: rightCtx.site,
-          },
-          mergedCtx: {
+          }),
+          mergedCtx: NodeCtx.at({
             node: mergedTpl,
             path: [
-              ...mergedCtx.path,
+              ...mergedCtx.path(),
               ...getGlobalContextPath(mergedTpl, bundler),
             ],
             site: mergedCtx.site,
-          },
+          }),
           bundler,
           picks,
           recorder,

@@ -5,10 +5,7 @@ import {
   isKnownCustomFunctionExpr,
   Site,
 } from "@/wab/shared/model/classes";
-import {
-  createNodeCtx,
-  walkModelTree,
-} from "@/wab/shared/model/model-tree-util";
+import { NodeCtx, walkModelTree } from "@/wab/shared/model/model-tree-util";
 import { groupBy } from "lodash";
 
 /**
@@ -28,7 +25,7 @@ export function fixDuplicatedCustomFunctions(mergedSite: Site) {
   if (toFunctions.size === 0) {
     return;
   }
-  walkModelTree(createNodeCtx(mergedSite))
+  walkModelTree(NodeCtx.root(mergedSite))
     .filter(isKnownCustomFunctionExpr)
     .forEach((expr) => fixCustomFunctionExpr(toFunctions, expr));
   mergedSite.customFunctions = mergedSite.customFunctions.filter(
