@@ -1943,36 +1943,33 @@ function makeCreatePlasmicElement(
   const isFakeTpl = ctx.fakeTpls.includes(node);
 
   const serializeComponentCall = (is$PropsCreated: boolean) => {
+    // Omitted attributes must not leave empty lines behind: prettier >= 3.9
+    // keeps a blank line between JSX attributes, so they end up in the output.
+    const serializedAttrs = [
+      !skinny && nodeName && !isFakeTpl
+        ? `data-plasmic-name={${jsLiteral(nodeName)}}`
+        : "",
+      nodeName && !isFakeTpl
+        ? `data-plasmic-override={${getDataPlasmicOverride(
+            nodeName,
+            isPlasmicDefaultNodeName,
+          )}}`
+        : "",
+      !skinny && isRoot ? `data-plasmic-root={true}` : "",
+      !skinny && isRoot ? `data-plasmic-for-node={forNode}` : "",
+      is$PropsCreated
+        ? `{...child$Props}`
+        : keys
+            .map((key) => `${serializedKeyValue(key, `${attrs[key]}`)}`)
+            .join("\n"),
+      triggeredHooks && triggeredHooks.length > 0
+        ? `data-plasmic-trigger-props={[${L.uniq(
+            triggeredHooks.flatMap((spec) => spec.getTriggerPropNames()),
+          ).join(", ")}]}`
+        : "",
+    ].filter((serializedAttr) => serializedAttr !== "");
     return `<${tagType}
-      ${
-        !skinny && nodeName && !isFakeTpl
-          ? `data-plasmic-name={${jsLiteral(nodeName)}}`
-          : ""
-      }
-      ${
-        nodeName && !isFakeTpl
-          ? `data-plasmic-override={${getDataPlasmicOverride(
-              nodeName,
-              isPlasmicDefaultNodeName,
-            )}}`
-          : ""
-      }
-      ${!skinny && isRoot ? `data-plasmic-root={true}` : ""}
-      ${!skinny && isRoot ? `data-plasmic-for-node={forNode}` : ""}
-      ${
-        is$PropsCreated
-          ? `{...child$Props}`
-          : keys
-              .map((key) => `${serializedKeyValue(key, `${attrs[key]}`)}`)
-              .join("\n")
-      }
-      ${
-        triggeredHooks && triggeredHooks.length > 0
-          ? `data-plasmic-trigger-props={[${L.uniq(
-              triggeredHooks.flatMap((spec) => spec.getTriggerPropNames()),
-            ).join(", ")}]}`
-          : ""
-      }
+      ${serializedAttrs.join("\n      ")}
       ${
         hasChildren
           ? `>

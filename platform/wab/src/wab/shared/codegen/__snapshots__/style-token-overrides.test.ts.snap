@@ -395,23 +395,16 @@ const $$ = {};
       "fontSize",
       "large"
     ) })}
-      
       >
             <DepComp
       data-plasmic-name={"depComp"}
       data-plasmic-override={overrides.depComp}
-      
-      
       className={classNames("__wab_instance", "Homepage__depComp__mtl9A")}
-      
       />
 <p
       data-plasmic-name={"p"}
       data-plasmic-override={overrides.p}
-      
-      
       className={classNames("plasmic_default__all", "plasmic_default__p", "plasmic_default__p__12345", "__wab_text", "Homepage__p__c3Zff")}
-      
       >
             { "Main text (primary)" }
           </p>
@@ -1472,23 +1465,16 @@ const $$ = {};
       "fontSize",
       "large"
     ) })}
-      
       >
             <DepComp
       data-plasmic-name={"depComp"}
       data-plasmic-override={overrides.depComp}
-      
-      
       className={classNames("__wab_instance", sty.depComp)}
-      
       />
 <p
       data-plasmic-name={"p"}
       data-plasmic-override={overrides.p}
-      
-      
       className={classNames("all", "p", "p__12345", "__wab_text", sty.p)}
-      
       >
             { "Main text (primary)" }
           </p>

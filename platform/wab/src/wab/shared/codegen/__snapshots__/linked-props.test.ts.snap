@@ -367,39 +367,24 @@ const $$ = {};
       "theme",
       "dark"
     ) })}
-      
       >
             { (hasVariant(
       $state,
       "locked",
       "locked"
     ) ? false : true) ? (<div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "Inner__freeBox__brok4", { "Inner__freeBoxlocked__brok4LFFlC": hasVariant(
       $state,
       "locked",
       "locked"
     ) })}
-      
       >
             <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "Inner__text__bpY0U")}
-      
       >
             { "Username: " }
           </div>
 <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "Inner__text__l04N3", { "Inner__texttheme_light__l04N3ZDgm0": hasVariant(
       $state,
       "theme",
@@ -409,7 +394,6 @@ const $$ = {};
       "theme",
       "neon"
     ) })}
-      
       >
             <React.Fragment>{(() => {
       try {
@@ -432,32 +416,18 @@ const $$ = {};
       "locked",
       "locked"
     ) ? false : true) ? (<div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "Inner__freeBox__sN7TN", { "Inner__freeBoxlocked__sN7TNlFFlC": hasVariant(
       $state,
       "locked",
       "locked"
     ) })}
-      
       >
             <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "Inner__text__tXDhc")}
-      
       >
             { "Theme: " }
           </div>
 <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "Inner__text__kxb0A", { "Inner__texttheme_dark__kxb0ABIdt": hasVariant(
       $state,
       "theme",
@@ -471,7 +441,6 @@ const $$ = {};
       "theme",
       "neon"
     ) })}
-      
       >
             { hasVariant(
       $state,
@@ -493,16 +462,11 @@ const $$ = {};
       "locked",
       "locked"
     ) ? true : false) ? (<div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "Inner__text__mIqIa", { "Inner__textlocked__mIqIalFFlC": hasVariant(
       $state,
       "locked",
       "locked"
     ) })}
-      
       >
             { "The content is locked" }
           </div>) : null }
@@ -808,18 +772,14 @@ const $$ = {};
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames("plasmic_default__all", "root_reset_1234567890", "plasmic_default_styles", "plasmic_mixins", styleTokensClassNames, "Outer__root___634Ea")}
-      
       >
             <Inner
       data-plasmic-name={"inner"}
       data-plasmic-override={overrides.inner}
-      
-      
       className={classNames("__wab_instance", "Outer__inner__bykvX")}
 locked={args.locked}
 theme={args.theme}
 username={args.username}
-      
       />
           </div>
       ) as React.ReactElement | null;
@@ -1184,57 +1144,33 @@ const $$ = {};
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames("plasmic_default__all", "root_reset_1234567890", "plasmic_default_styles", "plasmic_mixins", styleTokensClassNames, "PropLinkingTest__root__aWcUo")}
-      
       >
             <h5
       data-plasmic-name={"h5"}
       data-plasmic-override={overrides.h5}
-      
-      
       className={classNames("plasmic_default__all", "plasmic_default__h5", "plasmic_default__h5__12345", "__wab_text", "PropLinkingTest__h5__znOez")}
-      
       >
             { "Prop Linking Test" }
           </h5>
 <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "PropLinkingTest__freeBox__h58Ga")}
 id={"block-1"}
-      
       >
             <Outer
-      
-      
-      
-      
       className={classNames("__wab_instance", "PropLinkingTest__outer___0PaEp")}
 theme={"neon"}
 username={"user 123"}
-      
       />
           </div>
 <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "PropLinkingTest__freeBox__rQhms")}
 id={"block-2"}
-      
       >
             <Outer
-      
-      
-      
-      
       className={classNames("__wab_instance", "PropLinkingTest__outer__bsCE")}
 locked={true}
 theme={"light"}
 username={"hello world"}
-      
       />
           </div>
           </div>

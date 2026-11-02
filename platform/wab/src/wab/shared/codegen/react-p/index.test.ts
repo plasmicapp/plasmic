@@ -30,6 +30,7 @@ import {
 import { typeFactory } from "@/wab/shared/model/model-util";
 import { PlasmicTranslatorContext } from "@plasmicapp/host";
 import { render } from "@testing-library/react";
+import * as prettier from "prettier";
 import * as React from "react";
 import tmp from "tmp";
 
@@ -84,6 +85,40 @@ describe("serializeTplTagBase", () => {
     const submitButtonJsx = renderModule.slice(submitButtonStart);
     expect(submitButtonJsx).toContain('type={"submit"}');
     expect(submitButtonJsx).not.toContain('type={"button"}');
+  });
+
+  it("leaves no blank lines between the attributes of non-root elements once formatted", async () => {
+    const site = createSite();
+    const component = mkComponent({
+      name: "Card",
+      type: ComponentType.Plain,
+      tplTree: (baseVariant) => {
+        const title = mkTplTagX("button", {
+          name: "title",
+          baseVariant,
+          attrs: { title: codeLit("Open") },
+        });
+        const root = mkTplTagX("div", {}, [title]);
+        ensureVariantSetting(root, [baseVariant]);
+        return root;
+      },
+    });
+    site.components = [...site.components, component];
+
+    const { readFromProject } = await codegen(dir.name, site);
+    const formatted = await prettier.format(
+      readFromProject("PlasmicCard.tsx"),
+      {
+        parser: "typescript",
+      },
+    );
+
+    const titleJsx = formatted.slice(
+      formatted.indexOf('data-plasmic-name={"title"}'),
+    );
+    expect(titleJsx).toMatch(
+      /data-plasmic-override=\{overrides\.title\}\n[ \t]*className=/,
+    );
   });
 
   it("defaults <img> alt to its image asset's description unless alt is set", async () => {

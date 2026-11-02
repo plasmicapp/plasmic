@@ -1285,7 +1285,6 @@ onPress={args.onClick}
 plasmicUpdateVariant={updateVariant}
 resetsForm={args.resetsForm}
 submitsForm={args.submitsForm}
-      
       >
             { (hasVariant(
       $state,
@@ -1302,8 +1301,6 @@ submitsForm={args.submitsForm}
     ) ? true : false) ? (<div
       data-plasmic-name={"softBackground"}
       data-plasmic-override={overrides.softBackground}
-      
-      
       className={classNames("plasmic_default__all", "Button__softBackground__hnrbV", { "Button__softBackgroundcolor_errorDestructive__hnrbVcMheu": hasVariant(
       $state,
       "color",
@@ -1341,7 +1338,6 @@ submitsForm={args.submitsForm}
       "type",
       "soft"
     ) })}
-      
       />) : null }
 { (hasVariant(
       $state,
@@ -1350,8 +1346,6 @@ submitsForm={args.submitsForm}
     ) ? true : false) ? (<div
       data-plasmic-name={"border"}
       data-plasmic-override={overrides.border}
-      
-      
       className={classNames("plasmic_default__all", "Button__border__buvbi", { "Button__bordercolor_errorDestructive__buvbicMheu": hasVariant(
       $state,
       "color",
@@ -1413,13 +1407,10 @@ submitsForm={args.submitsForm}
       "type",
       "soft"
     ) })}
-      
       />) : null }
 <div
       data-plasmic-name={"interactionEffect"}
       data-plasmic-override={overrides.interactionEffect}
-      
-      
       className={classNames("plasmic_default__all", "Button__interactionEffect__qu3Be", { "Button__interactionEffectcolor_errorDestructive__qu3BEcMheu": hasVariant(
       $state,
       "color",
@@ -1474,13 +1465,8 @@ style={hasVariant(
       "type",
       "bordered"
     ) && $ccVariants["pressed"] ? {"display":"block"} : undefined}
-      
       />
 <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "Button__freeBox__o2Ucr", { "Button__freeBoxcolor_neutral__o2UcruIxPw": hasVariant(
       $state,
       "color",
@@ -1518,13 +1504,8 @@ style={hasVariant(
       "type",
       "bordered"
     ) })}
-      
       >
             <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "Button__freeBox__dWlDm", { "Button__freeBoxcolor_neutral__dWlDMuIxPw": hasVariant(
       $state,
       "color",
@@ -1558,17 +1539,11 @@ style={hasVariant(
       "type",
       "bordered"
     ) })}
-      
       >
             { renderPlasmicSlot({
       defaultContents: <CircleIcon
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "Button__svg__pz6Ky")}
 role={"img"}
-      
       />,
       value: args.start,
       className: classNames("Button__slotTargetStart__hwuAw", { "Button__slotTargetStartcolor_errorDestructive__hwuAwcMheu": hasVariant(
@@ -1704,12 +1679,7 @@ role={"img"}
           </div>
 { renderPlasmicSlot({
       defaultContents: <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "Button__text__uJl5C")}
-      
       >
             { "Text" }
           </div>,
@@ -1849,10 +1819,6 @@ role={"img"}
     ) })
   }) }
 <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "Button__freeBox__bstQz", { "Button__freeBoxiconEnd__bstQzfrDp5": hasVariant(
       $state,
       "iconEnd",
@@ -1870,17 +1836,11 @@ role={"img"}
       "size",
       "small"
     ) })}
-      
       >
             { renderPlasmicSlot({
       defaultContents: <ChevronDownIcon
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "Button__svg__ySq0C")}
 role={"img"}
-      
       />,
       value: args.end,
       className: classNames("Button__slotTargetEnd__ooNSu", { "Button__slotTargetEndcolor_errorDestructive__ooNSucMheu": hasVariant(
@@ -2315,7 +2275,6 @@ const $$ = {};
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames("__wab_instance", "DataFetcherGrandParent__root__oy7X5")}
-      
       />
       ) as React.ReactElement | null;
     }
@@ -2606,7 +2565,6 @@ const $$ = {};
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       queries={{}}
-      
       />
       ) as React.ReactElement | null;
     }
@@ -2910,15 +2868,11 @@ const $$ = {};
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames("plasmic_default__all", "root_reset_1234567890", "plasmic_default_styles", "plasmic_mixins", styleTokensClassNames, "HelloWorld__root__cgR3R")}
-      
       >
             <div
       data-plasmic-name={"text"}
       data-plasmic-override={overrides.text}
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "HelloWorld__text__eUcDa")}
-      
       >
             { "My world" }
           </div>
@@ -3554,8 +3508,6 @@ const $$ = {};
       dialog={<BaseModal
       data-plasmic-name={"ariaModal"}
       data-plasmic-override={overrides.ariaModal}
-      
-      
       className={classNames("__wab_instance", "ModalDialog__ariaModal__eaRon", { "ModalDialog__ariaModalnoTrigger__eaRoneQ53M": hasVariant(
       $state,
       "noTrigger",
@@ -3575,26 +3527,17 @@ onOpenChange={async (...eventArgs: any) => {
       }}
 ref={(ref) => { $refs["ariaModal"] = ref; }}
 resetClassName={classNames("root_reset_1234567890", "plasmic_default_styles", "plasmic_mixins", styleTokensClassNames)}
-      
       >
             <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "ModalDialog__freeBox__rwLCc")}
-      
       >
             { ((
       $props.showHeader
     )) ? (<BaseHeading
       data-plasmic-name={"ariaHeading"}
       data-plasmic-override={overrides.ariaHeading}
-      
-      
       className={classNames("__wab_instance", "ModalDialog__ariaHeading__jLi53")}
 slot={"title"}
-      
       >
             { renderPlasmicSlot({
       defaultContents: "Heading",
@@ -3605,37 +3548,19 @@ slot={"title"}
 <div
       data-plasmic-name={"scrollableContent"}
       data-plasmic-override={overrides.scrollableContent}
-      
-      
       className={classNames("plasmic_default__all", "ModalDialog__scrollableContent__aHjbC")}
-      
       >
             { renderPlasmicSlot({
       defaultContents: <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "ModalDialog__freeBox__u7Zde")}
-      
       >
             <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "ModalDialog__text___5BY7K")}
-      
       >
             { "This is a Modal!" }
           </div>
 <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "ModalDialog__text___8YSHj")}
-      
       >
             { "You can put anything here!\\n\\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\\n\\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." }
           </div>
@@ -3647,35 +3572,16 @@ slot={"title"}
 { ((
       $props.showFooter
     )) ? (<div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "ModalDialog__freeBox__ofcdm")}
-      
       >
             { renderPlasmicSlot({
       defaultContents: <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "ModalDialog__freeBox__qo9Cq")}
-      
       >
             <Button
-      
-      
-      
-      
       color={"muted"}
 label={<div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "ModalDialog__text__cz0N8")}
-      
       >
             { "Close" }
           </div>}
@@ -3714,7 +3620,6 @@ onClick={async (event) => {
             
       }}
 type={"soft"}
-      
       />
           </div>,
       value: args.footer,
@@ -3737,17 +3642,11 @@ trigger={(hasVariant(
       "noTrigger"
     ) ? false : true) ? (renderPlasmicSlot({
       defaultContents: <Button
-      
-      
-      
-      
       label={"Open Modal"}
-      
       />,
       value: args.trigger,
       
   })) : null}
-      
       />
       ) as React.ReactElement | null;
     }
@@ -4077,15 +3976,11 @@ placementRight: false
       data-plasmic-for-node={forNode}
       className={classNames("__wab_instance", "root_reset_1234567890", "plasmic_default_styles", "plasmic_mixins", styleTokensClassNames, "MyOverlayArrow__root___043Jz")}
 plasmicUpdateVariant={updateVariant}
-      
       >
             <div
       data-plasmic-name={"freeBox"}
       data-plasmic-override={overrides.freeBox}
-      
-      
       className={classNames("plasmic_default__all", "MyOverlayArrow__freeBox__pU7Yq")}
-      
       />
           </BaseOverlayArrow>
       ) as React.ReactElement | null;
@@ -4585,13 +4480,10 @@ const $$ = {};
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames("plasmic_default__all", "root_reset_1234567890", "plasmic_default_styles", "plasmic_mixins", styleTokensClassNames, "NewPage__root__naS0D")}
-      
       >
             <PopoverDialog
       data-plasmic-name={"popoverDialog"}
       data-plasmic-override={overrides.popoverDialog}
-      
-      
       className={classNames("__wab_instance", "NewPage__popoverDialog__jyuy8")}
 onOpenChange={async (...eventArgs: any) => {
         (generateStateOnChangeProp($state, ["popoverDialog","isOpen"])).apply(null, eventArgs);
@@ -4602,39 +4494,24 @@ onOpenChange={async (...eventArgs: any) => {
 
         
       }}
-      
       />
 <Tooltip
       data-plasmic-name={"tooltip"}
       data-plasmic-override={overrides.tooltip}
-      
-      
       className={classNames("__wab_instance", "NewPage__tooltip__tvWgF")}
-      
       />
 <MyOverlayArrow
       data-plasmic-name={"myOverlayArrow"}
       data-plasmic-override={overrides.myOverlayArrow}
-      
-      
       className={classNames("__wab_instance", "NewPage__myOverlayArrow__h7L7T")}
-      
       />
 <Fetcher
       data-plasmic-name={"dataFetcher"}
       data-plasmic-override={overrides.dataFetcher}
-      
-      
       queries={{}}
-      
       >
             { ($queries: any) => <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "NewPage__text__j2Q51")}
-      
       >
             { "Enter some text" }
           </div> }
@@ -4642,8 +4519,6 @@ onOpenChange={async (...eventArgs: any) => {
 <ModalDialog
       data-plasmic-name={"modalDialog"}
       data-plasmic-override={overrides.modalDialog}
-      
-      
       className={classNames("__wab_instance", "NewPage__modalDialog__eb26A")}
 isOpen={generateStateValueProp($state, ["modalDialog","isOpen"])}
 onOpenChange={async (...eventArgs: any) => {
@@ -4655,31 +4530,19 @@ onOpenChange={async (...eventArgs: any) => {
 
         
       }}
-      
       />
 <Button
       data-plasmic-name={"button"}
       data-plasmic-override={overrides.button}
-      
-      
       className={classNames("__wab_instance", "NewPage__button___8MwN4")}
-      
       />
 <HelloWorld
       data-plasmic-name={"helloWorld"}
       data-plasmic-override={overrides.helloWorld}
-      
-      
       className={classNames("__wab_instance", "NewPage__helloWorld__obrji")}
-      
       />
 <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "NewPage__text__j1W8I")}
-      
       >
             { "Enter some text" }
           </div>
@@ -5089,7 +4952,6 @@ placement={args.placement}
 plasmicUpdateVariant={updateVariant}
 resetClassName={classNames("root_reset_1234567890", "plasmic_default_styles", "plasmic_mixins", styleTokensClassNames)}
 shouldFlip={args.shouldFlip}
-      
       >
             { ((() => {
       try {
@@ -5107,48 +4969,25 @@ shouldFlip={args.shouldFlip}
     })()) ? (<TriangleFilledIcon
       data-plasmic-name={"svg"}
       data-plasmic-override={overrides.svg}
-      
-      
       className={classNames("plasmic_default__all", "Popover__svg___50Dg")}
 role={"img"}
-      
       />) : null }
 { renderPlasmicSlot({
       defaultContents: <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "Popover__freeBox__cdco")}
-      
       >
             <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "Popover__text__tzMIc")}
-      
       >
             { "This is a Popover!" }
           </div>
 <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "Popover__text__hzjpw")}
-      
       >
             { "You can put anything here!" }
           </div>
 <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "Popover__text__vYaOz")}
-      
       >
             { "Use it in a \`Aria Dialog Trigger\` component to trigger it on a button click." }
           </div>
@@ -5507,34 +5346,17 @@ const $$ = {};
       dialog={<Popover
       data-plasmic-name={"popover"}
       data-plasmic-override={overrides.popover}
-      
-      
       content={renderPlasmicSlot({
       defaultContents: <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "PopoverDialog__freeBox__tC4Ze")}
-      
       >
             <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "PopoverDialog__text__pn4M")}
-      
       >
             { "This is a Popover!" }
           </div>
 <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "PopoverDialog__text__fcSFe")}
-      
       >
             { "You can put anything here!" }
           </div>
@@ -5546,7 +5368,6 @@ offset={args.offset}
 placement={args.placement}
 shouldFlip={args.shouldFlip}
 showArrow={args.showArrow}
-      
       />}
 isOpen={generateStateValueProp($state, ["ariaDialogTrigger","isOpen"])}
 onOpenChange={async (...eventArgs: any) => {
@@ -5558,18 +5379,12 @@ onOpenChange={async (...eventArgs: any) => {
       }}
 trigger={renderPlasmicSlot({
       defaultContents: <Button
-      
-      
-      
-      
       className={classNames("__wab_instance", "PopoverDialog__button__k3IZm")}
 label={"Open Popover"}
-      
       />,
       value: args.trigger,
       
   })}
-      
       />
       ) as React.ReactElement | null;
     }
@@ -6029,46 +5844,23 @@ tooltipContent={<React.Fragment>{ ((() => {
     })()) ? (<TriangleInvertedFilledIcon
       data-plasmic-name={"svg"}
       data-plasmic-override={overrides.svg}
-      
-      
       className={classNames("plasmic_default__all", "Tooltip__svg___3Q8Bc")}
 role={"img"}
-      
       />) : null }
 <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "Tooltip__freeBox__jXb6")}
-      
       >
             <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "Tooltip__freeBox__zfjIv")}
-      
       >
             { renderPlasmicSlot({
       defaultContents: <React.Fragment><div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "Tooltip__text__vIx67")}
-      
       >
             { "Hello from Tooltip! " }
           </div>
 <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "Tooltip__text__iHyHe")}
-      
       >
             { "Lorem ipsum dolor sit amet" }
           </div></React.Fragment>,
@@ -6077,16 +5869,10 @@ role={"img"}
   }) }
           </div>
           </div></React.Fragment>}
-      
       >
             { renderPlasmicSlot({
       defaultContents: <div
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "__wab_text", "Tooltip__text__kvNiE")}
-      
       >
             { "Hover me!" }
           </div>,
@@ -8127,7 +7913,6 @@ onPress={args.onClick}
 plasmicUpdateVariant={updateVariant}
 resetsForm={args.resetsForm}
 submitsForm={args.submitsForm}
-      
       >
             { (hasVariant(
       $state,
@@ -8144,8 +7929,6 @@ submitsForm={args.submitsForm}
     ) ? true : false) ? (<div
       data-plasmic-name={"softBackground"}
       data-plasmic-override={overrides.softBackground}
-      
-      
       className={classNames("all", sty.softBackground, { [sty.softBackgroundcolor_errorDestructive]: hasVariant(
       $state,
       "color",
@@ -8183,7 +7966,6 @@ submitsForm={args.submitsForm}
       "type",
       "soft"
     ) })}
-      
       />) : null }
 { (hasVariant(
       $state,
@@ -8192,8 +7974,6 @@ submitsForm={args.submitsForm}
     ) ? true : false) ? (<div
       data-plasmic-name={"border"}
       data-plasmic-override={overrides.border}
-      
-      
       className={classNames("all", sty.border, { [sty.bordercolor_errorDestructive]: hasVariant(
       $state,
       "color",
@@ -8255,13 +8035,10 @@ submitsForm={args.submitsForm}
       "type",
       "soft"
     ) })}
-      
       />) : null }
 <div
       data-plasmic-name={"interactionEffect"}
       data-plasmic-override={overrides.interactionEffect}
-      
-      
       className={classNames("all", sty.interactionEffect, { [sty.interactionEffectcolor_errorDestructive]: hasVariant(
       $state,
       "color",
@@ -8316,13 +8093,8 @@ style={hasVariant(
       "type",
       "bordered"
     ) && $ccVariants["pressed"] ? {"display":"block"} : undefined}
-      
       />
 <div
-      
-      
-      
-      
       className={classNames("all", sty.freeBox__o2Ucr, { [sty.freeBoxcolor_neutral__o2UcruIxPw]: hasVariant(
       $state,
       "color",
@@ -8360,13 +8132,8 @@ style={hasVariant(
       "type",
       "bordered"
     ) })}
-      
       >
             <div
-      
-      
-      
-      
       className={classNames("all", sty.freeBox__dWlDm, { [sty.freeBoxcolor_neutral__dWlDMuIxPw]: hasVariant(
       $state,
       "color",
@@ -8400,17 +8167,11 @@ style={hasVariant(
       "type",
       "bordered"
     ) })}
-      
       >
             { renderPlasmicSlot({
       defaultContents: <CircleIcon
-      
-      
-      
-      
       className={classNames("all", sty.svg__pz6Ky)}
 role={"img"}
-      
       />,
       value: args.start,
       className: classNames(sty.slotTargetStart, { [sty.slotTargetStartcolor_errorDestructive]: hasVariant(
@@ -8546,12 +8307,7 @@ role={"img"}
           </div>
 { renderPlasmicSlot({
       defaultContents: <div
-      
-      
-      
-      
       className={classNames("all", "__wab_text", sty.text__uJl5C)}
-      
       >
             { "Text" }
           </div>,
@@ -8691,10 +8447,6 @@ role={"img"}
     ) })
   }) }
 <div
-      
-      
-      
-      
       className={classNames("all", sty.freeBox__bstQz, { [sty.freeBoxiconEnd__bstQzfrDp5]: hasVariant(
       $state,
       "iconEnd",
@@ -8712,17 +8464,11 @@ role={"img"}
       "size",
       "small"
     ) })}
-      
       >
             { renderPlasmicSlot({
       defaultContents: <ChevronDownIcon
-      
-      
-      
-      
       className={classNames("all", sty.svg__ySq0C)}
 role={"img"}
-      
       />,
       value: args.end,
       className: classNames(sty.slotTargetEnd, { [sty.slotTargetEndcolor_errorDestructive]: hasVariant(
@@ -9157,7 +8903,6 @@ const $$ = {};
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames("__wab_instance", sty.root)}
-      
       />
       ) as React.ReactElement | null;
     }
@@ -9448,7 +9193,6 @@ const $$ = {};
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       queries={{}}
-      
       />
       ) as React.ReactElement | null;
     }
@@ -9752,15 +9496,11 @@ const $$ = {};
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames("all", "root_reset_1234567890", "plasmic_default_styles", "plasmic_mixins", styleTokensClassNames, sty.root)}
-      
       >
             <div
       data-plasmic-name={"text"}
       data-plasmic-override={overrides.text}
-      
-      
       className={classNames("all", "__wab_text", sty.text)}
-      
       >
             { "My world" }
           </div>
@@ -10396,8 +10136,6 @@ const $$ = {};
       dialog={<BaseModal
       data-plasmic-name={"ariaModal"}
       data-plasmic-override={overrides.ariaModal}
-      
-      
       className={classNames("__wab_instance", sty.ariaModal, { [sty.ariaModalnoTrigger]: hasVariant(
       $state,
       "noTrigger",
@@ -10417,26 +10155,17 @@ onOpenChange={async (...eventArgs: any) => {
       }}
 ref={(ref) => { $refs["ariaModal"] = ref; }}
 resetClassName={classNames("root_reset_1234567890", "plasmic_default_styles", "plasmic_mixins", styleTokensClassNames)}
-      
       >
             <div
-      
-      
-      
-      
       className={classNames("all", sty.freeBox__rwLCc)}
-      
       >
             { ((
       $props.showHeader
     )) ? (<BaseHeading
       data-plasmic-name={"ariaHeading"}
       data-plasmic-override={overrides.ariaHeading}
-      
-      
       className={classNames("__wab_instance", sty.ariaHeading)}
 slot={"title"}
-      
       >
             { renderPlasmicSlot({
       defaultContents: "Heading",
@@ -10447,37 +10176,19 @@ slot={"title"}
 <div
       data-plasmic-name={"scrollableContent"}
       data-plasmic-override={overrides.scrollableContent}
-      
-      
       className={classNames("all", sty.scrollableContent)}
-      
       >
             { renderPlasmicSlot({
       defaultContents: <div
-      
-      
-      
-      
       className={classNames("all", sty.freeBox__u7Zde)}
-      
       >
             <div
-      
-      
-      
-      
       className={classNames("all", "__wab_text", sty.text___5BY7K)}
-      
       >
             { "This is a Modal!" }
           </div>
 <div
-      
-      
-      
-      
       className={classNames("all", "__wab_text", sty.text___8YSHj)}
-      
       >
             { "You can put anything here!\\n\\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\\n\\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." }
           </div>
@@ -10489,35 +10200,16 @@ slot={"title"}
 { ((
       $props.showFooter
     )) ? (<div
-      
-      
-      
-      
       className={classNames("all", sty.freeBox__ofcdm)}
-      
       >
             { renderPlasmicSlot({
       defaultContents: <div
-      
-      
-      
-      
       className={classNames("all", sty.freeBox__qo9Cq)}
-      
       >
             <Button
-      
-      
-      
-      
       color={"muted"}
 label={<div
-      
-      
-      
-      
       className={classNames("all", "__wab_text", sty.text__cz0N8)}
-      
       >
             { "Close" }
           </div>}
@@ -10556,7 +10248,6 @@ onClick={async (event) => {
             
       }}
 type={"soft"}
-      
       />
           </div>,
       value: args.footer,
@@ -10579,17 +10270,11 @@ trigger={(hasVariant(
       "noTrigger"
     ) ? false : true) ? (renderPlasmicSlot({
       defaultContents: <Button
-      
-      
-      
-      
       label={"Open Modal"}
-      
       />,
       value: args.trigger,
       
   })) : null}
-      
       />
       ) as React.ReactElement | null;
     }
@@ -10919,15 +10604,11 @@ placementRight: false
       data-plasmic-for-node={forNode}
       className={classNames("__wab_instance", "root_reset_1234567890", "plasmic_default_styles", "plasmic_mixins", styleTokensClassNames, sty.root)}
 plasmicUpdateVariant={updateVariant}
-      
       >
             <div
       data-plasmic-name={"freeBox"}
       data-plasmic-override={overrides.freeBox}
-      
-      
       className={classNames("all", sty.freeBox)}
-      
       />
           </BaseOverlayArrow>
       ) as React.ReactElement | null;
@@ -11427,13 +11108,10 @@ const $$ = {};
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames("all", "root_reset_1234567890", "plasmic_default_styles", "plasmic_mixins", styleTokensClassNames, sty.root)}
-      
       >
             <PopoverDialog
       data-plasmic-name={"popoverDialog"}
       data-plasmic-override={overrides.popoverDialog}
-      
-      
       className={classNames("__wab_instance", sty.popoverDialog)}
 onOpenChange={async (...eventArgs: any) => {
         (generateStateOnChangeProp($state, ["popoverDialog","isOpen"])).apply(null, eventArgs);
@@ -11444,39 +11122,24 @@ onOpenChange={async (...eventArgs: any) => {
 
         
       }}
-      
       />
 <Tooltip
       data-plasmic-name={"tooltip"}
       data-plasmic-override={overrides.tooltip}
-      
-      
       className={classNames("__wab_instance", sty.tooltip)}
-      
       />
 <MyOverlayArrow
       data-plasmic-name={"myOverlayArrow"}
       data-plasmic-override={overrides.myOverlayArrow}
-      
-      
       className={classNames("__wab_instance", sty.myOverlayArrow)}
-      
       />
 <Fetcher
       data-plasmic-name={"dataFetcher"}
       data-plasmic-override={overrides.dataFetcher}
-      
-      
       queries={{}}
-      
       >
             { ($queries: any) => <div
-      
-      
-      
-      
       className={classNames("all", "__wab_text", sty.text__j2Q51)}
-      
       >
             { "Enter some text" }
           </div> }
@@ -11484,8 +11147,6 @@ onOpenChange={async (...eventArgs: any) => {
 <ModalDialog
       data-plasmic-name={"modalDialog"}
       data-plasmic-override={overrides.modalDialog}
-      
-      
       className={classNames("__wab_instance", sty.modalDialog)}
 isOpen={generateStateValueProp($state, ["modalDialog","isOpen"])}
 onOpenChange={async (...eventArgs: any) => {
@@ -11497,31 +11158,19 @@ onOpenChange={async (...eventArgs: any) => {
 
         
       }}
-      
       />
 <Button
       data-plasmic-name={"button"}
       data-plasmic-override={overrides.button}
-      
-      
       className={classNames("__wab_instance", sty.button)}
-      
       />
 <HelloWorld
       data-plasmic-name={"helloWorld"}
       data-plasmic-override={overrides.helloWorld}
-      
-      
       className={classNames("__wab_instance", sty.helloWorld)}
-      
       />
 <div
-      
-      
-      
-      
       className={classNames("all", "__wab_text", sty.text__j1W8I)}
-      
       >
             { "Enter some text" }
           </div>
@@ -11931,7 +11580,6 @@ placement={args.placement}
 plasmicUpdateVariant={updateVariant}
 resetClassName={classNames("root_reset_1234567890", "plasmic_default_styles", "plasmic_mixins", styleTokensClassNames)}
 shouldFlip={args.shouldFlip}
-      
       >
             { ((() => {
       try {
@@ -11949,48 +11597,25 @@ shouldFlip={args.shouldFlip}
     })()) ? (<TriangleFilledIcon
       data-plasmic-name={"svg"}
       data-plasmic-override={overrides.svg}
-      
-      
       className={classNames("all", sty.svg)}
 role={"img"}
-      
       />) : null }
 { renderPlasmicSlot({
       defaultContents: <div
-      
-      
-      
-      
       className={classNames("all", sty.freeBox__cdco)}
-      
       >
             <div
-      
-      
-      
-      
       className={classNames("all", "__wab_text", sty.text__tzMIc)}
-      
       >
             { "This is a Popover!" }
           </div>
 <div
-      
-      
-      
-      
       className={classNames("all", "__wab_text", sty.text__hzjpw)}
-      
       >
             { "You can put anything here!" }
           </div>
 <div
-      
-      
-      
-      
       className={classNames("all", "__wab_text", sty.text__vYaOz)}
-      
       >
             { "Use it in a \`Aria Dialog Trigger\` component to trigger it on a button click." }
           </div>
@@ -12349,34 +11974,17 @@ const $$ = {};
       dialog={<Popover
       data-plasmic-name={"popover"}
       data-plasmic-override={overrides.popover}
-      
-      
       content={renderPlasmicSlot({
       defaultContents: <div
-      
-      
-      
-      
       className={classNames("all", sty.freeBox__tC4Ze)}
-      
       >
             <div
-      
-      
-      
-      
       className={classNames("all", "__wab_text", sty.text__pn4M)}
-      
       >
             { "This is a Popover!" }
           </div>
 <div
-      
-      
-      
-      
       className={classNames("all", "__wab_text", sty.text__fcSFe)}
-      
       >
             { "You can put anything here!" }
           </div>
@@ -12388,7 +11996,6 @@ offset={args.offset}
 placement={args.placement}
 shouldFlip={args.shouldFlip}
 showArrow={args.showArrow}
-      
       />}
 isOpen={generateStateValueProp($state, ["ariaDialogTrigger","isOpen"])}
 onOpenChange={async (...eventArgs: any) => {
@@ -12400,18 +12007,12 @@ onOpenChange={async (...eventArgs: any) => {
       }}
 trigger={renderPlasmicSlot({
       defaultContents: <Button
-      
-      
-      
-      
       className={classNames("__wab_instance", sty.button__k3IZm)}
 label={"Open Popover"}
-      
       />,
       value: args.trigger,
       
   })}
-      
       />
       ) as React.ReactElement | null;
     }
@@ -12871,46 +12472,23 @@ tooltipContent={<React.Fragment>{ ((() => {
     })()) ? (<TriangleInvertedFilledIcon
       data-plasmic-name={"svg"}
       data-plasmic-override={overrides.svg}
-      
-      
       className={classNames("all", sty.svg)}
 role={"img"}
-      
       />) : null }
 <div
-      
-      
-      
-      
       className={classNames("all", sty.freeBox__jXb6)}
-      
       >
             <div
-      
-      
-      
-      
       className={classNames("all", sty.freeBox__zfjIv)}
-      
       >
             { renderPlasmicSlot({
       defaultContents: <React.Fragment><div
-      
-      
-      
-      
       className={classNames("all", "__wab_text", sty.text__vIx67)}
-      
       >
             { "Hello from Tooltip! " }
           </div>
 <div
-      
-      
-      
-      
       className={classNames("all", "__wab_text", sty.text__iHyHe)}
-      
       >
             { "Lorem ipsum dolor sit amet" }
           </div></React.Fragment>,
@@ -12919,16 +12497,10 @@ role={"img"}
   }) }
           </div>
           </div></React.Fragment>}
-      
       >
             { renderPlasmicSlot({
       defaultContents: <div
-      
-      
-      
-      
       className={classNames("all", "__wab_text", sty.text__kvNiE)}
-      
       >
             { "Hover me!" }
           </div>,
