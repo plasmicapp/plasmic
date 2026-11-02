@@ -8,7 +8,6 @@ import {
   translations,
 } from "@zxcvbn-ts/language-en";
 import { matcherPwnedFactory } from "@zxcvbn-ts/matcher-pwned";
-import fetch from "isomorphic-unfetch";
 
 const passwordStrengthOptions = {
   translations: translations,
