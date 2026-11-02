@@ -1,4 +1,4 @@
-# CLAUDE.md - platform/wab
+# AGENTS.md - platform/wab
 
 ## Overview
 
