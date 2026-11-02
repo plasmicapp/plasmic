@@ -1226,7 +1226,7 @@ importers:
         version: 0.0.381(@plasmicapp/data-sources@1.0.31(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/commerce-local':
         specifier: ^0.0.266
-        version: 0.0.266(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(@types/react@18.3.18)(node-fetch@2.7.0)(react@18.3.1)
+        version: 0.0.266(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(@types/react@18.3.18)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/plasmic-basic-components':
         specifier: ^0.0.293
         version: 0.0.293(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1545,9 +1545,6 @@ importers:
       node-cron:
         specifier: ^3.0.3
         version: 3.0.3
-      node-fetch:
-        specifier: ^2.6.1
-        version: 2.7.0
       node-html-parser:
         specifier: ^3.3.6
         version: 3.3.6
@@ -1930,9 +1927,6 @@ importers:
       '@types/node':
         specifier: 24.12.2
         version: 24.12.2
-      '@types/node-fetch':
-        specifier: ^2.6.13
-        version: 2.6.13
       '@types/nodemailer':
         specifier: 6.4.0
         version: 6.4.0
@@ -19894,18 +19888,6 @@ snapshots:
       - node-fetch
       - supports-color
 
-  '@plasmicpkgs/commerce-local@0.0.266(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(@types/react@18.3.18)(node-fetch@2.7.0)(react@18.3.1)':
-    dependencies:
-      '@plasmicapp/host': 2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@plasmicpkgs/commerce': 0.0.265(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(@types/react@18.3.18)(node-fetch@2.7.0)(react@18.3.1)
-      react: 18.3.1
-    transitivePeerDependencies:
-      - '@plasmicapp/query'
-      - '@types/node-fetch'
-      - '@types/react'
-      - node-fetch
-      - supports-color
-
   '@plasmicpkgs/commerce-local@0.0.266(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(@types/react@18.3.18)(node-fetch@3.3.2)(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -19957,23 +19939,6 @@ snapshots:
       swell-js: 3.24.5
     transitivePeerDependencies:
       - '@plasmicapp/query'
-      - '@types/node-fetch'
-      - '@types/react'
-      - node-fetch
-      - supports-color
-
-  '@plasmicpkgs/commerce@0.0.265(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(@types/react@18.3.18)(node-fetch@2.7.0)(react@18.3.1)':
-    dependencies:
-      '@plasmicapp/host': 2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@plasmicapp/query': 0.1.88(react@18.3.1)
-      '@vercel/fetch': 6.2.0(@types/node-fetch@2.6.13)(node-fetch@2.7.0)
-      debounce: 1.2.1
-      js-cookie: 3.0.5
-      lodash.debounce: 4.0.8
-      react: 18.3.1
-      react-hook-form: 7.91.0(@types/react@18.3.18)(react@18.3.1)
-      swr: 1.3.0(react@18.3.1)
-    transitivePeerDependencies:
       - '@types/node-fetch'
       - '@types/react'
       - node-fetch
@@ -24063,43 +24028,17 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.12.2':
     optional: true
 
-  '@vercel/fetch-cached-dns@2.1.2(node-fetch@2.7.0)':
-    dependencies:
-      '@types/node-fetch': 2.6.13
-      '@zeit/dns-cached-resolve': 2.1.2
-      node-fetch: 2.7.0
-
   '@vercel/fetch-cached-dns@2.1.2(node-fetch@3.3.2)':
     dependencies:
       '@types/node-fetch': 2.6.13
       '@zeit/dns-cached-resolve': 2.1.2
       node-fetch: 3.3.2
 
-  '@vercel/fetch-retry@5.1.3(node-fetch@2.7.0)':
-    dependencies:
-      async-retry: 1.3.3
-      debug: 4.4.3
-      node-fetch: 2.7.0
-    transitivePeerDependencies:
-      - supports-color
-
   '@vercel/fetch-retry@5.1.3(node-fetch@3.3.2)':
     dependencies:
       async-retry: 1.3.3
       debug: 4.4.3
       node-fetch: 3.3.2
-    transitivePeerDependencies:
-      - supports-color
-
-  '@vercel/fetch@6.2.0(@types/node-fetch@2.6.13)(node-fetch@2.7.0)':
-    dependencies:
-      '@types/async-retry': 1.4.9
-      '@types/node-fetch': 2.6.13
-      '@vercel/fetch-cached-dns': 2.1.2(node-fetch@2.7.0)
-      '@vercel/fetch-retry': 5.1.3(node-fetch@2.7.0)
-      agentkeepalive: 4.6.0
-      debug: 4.4.3
-      node-fetch: 2.7.0
     transitivePeerDependencies:
       - supports-color
 
@@ -24752,7 +24691,7 @@ snapshots:
 
   axios@1.18.1:
     dependencies:
-      follow-redirects: 1.16.0
+      follow-redirects: 1.16.0(debug@4.4.3)
       form-data: 4.0.6
       https-proxy-agent: 5.0.1
       proxy-from-env: 2.1.0
@@ -26582,8 +26521,6 @@ snapshots:
   focus-lock@1.3.6:
     dependencies:
       tslib: 2.8.1
-
-  follow-redirects@1.16.0: {}
 
   follow-redirects@1.16.0(debug@2.6.9):
     optionalDependencies:

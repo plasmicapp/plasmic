@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import { getVercelSecrets } from "../src/wab/server/secrets";
 import { ensureString } from "../src/wab/shared/common";
 

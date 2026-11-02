@@ -16,7 +16,6 @@ import {
 } from "@/wab/shared/bundler";
 import { spawn, spawnWrapper } from "@/wab/shared/common";
 import fs from "fs";
-import fetch from "node-fetch";
 import path from "path";
 import yargs from "yargs";
 

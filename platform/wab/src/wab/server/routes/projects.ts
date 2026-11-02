@@ -179,7 +179,6 @@ import {
   sortBy,
   uniq,
 } from "lodash";
-import fetch from "node-fetch";
 import * as Prettier from "prettier";
 import type { SetRequired } from "type-fest";
 import { EntityManager, MigrationExecutor } from "typeorm";
@@ -2196,7 +2195,9 @@ export async function getPkgVersionPublishStatus(req: Request, res: Response) {
     // instead of a redirect (see PLA-12576)
     if (!redirectLocation && redirectRes.status === 200) {
       try {
-        const jsonBody = await redirectRes.json();
+        const jsonBody = (await redirectRes.json()) as {
+          redirectUrl?: string;
+        };
         if (jsonBody.redirectUrl) {
           redirectLocation = jsonBody.redirectUrl;
         }
@@ -2208,9 +2209,10 @@ export async function getPkgVersionPublishStatus(req: Request, res: Response) {
     if (redirectLocation) {
       try {
         const decodedUri = decodeURIComponent(redirectLocation);
-        const redirectProjectId = new URL(decodedUri).searchParams.get(
-          "projectId",
-        );
+        const redirectProjectId = new URL(
+          decodedUri,
+          "http://fake-url",
+        ).searchParams.get("projectId");
         const redirectProjectVersion =
           redirectProjectId && redirectProjectId.split("@")[1];
 

@@ -6,7 +6,6 @@ import "@/wab/server/extensions";
 import { logError } from "@/wab/server/server-util";
 import type { BroadcastPayload } from "@/wab/shared/api/socket";
 import { Request } from "express";
-import fetch from "node-fetch";
 
 export async function disconnectUserSockets(req: Request) {
   const socketHost = getSocketHost();
