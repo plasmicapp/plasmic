@@ -1,19 +1,26 @@
-import { writeClipboardPlasmicData } from "@/wab/client/clipboard/common";
+import {
+  readClipboardPlasmicData,
+  writeClipboardPlasmicData,
+} from "@/wab/client/clipboard/common";
 import * as Sentry from "@sentry/browser";
 
 vi.mock("@sentry/browser", () => ({ captureException: vi.fn() }));
 
-describe("writeClipboardPlasmicData", () => {
+describe("system clipboard", () => {
   const originalClipboard = Object.getOwnPropertyDescriptor(
     navigator,
     "clipboard",
   );
 
-  function mockClipboardWrite(error: unknown, synchronous: boolean) {
+  function mockClipboard(
+    method: "read" | "write",
+    error: unknown,
+    synchronous: boolean,
+  ) {
     Object.defineProperty(navigator, "clipboard", {
       configurable: true,
       value: {
-        write: synchronous
+        [method]: synchronous
           ? vi.fn(() => {
               throw error;
             })
@@ -35,7 +42,6 @@ describe("writeClipboardPlasmicData", () => {
 
   afterEach(() => {
     vi.unstubAllGlobals();
-    vi.restoreAllMocks();
     if (originalClipboard) {
       Object.defineProperty(navigator, "clipboard", originalClipboard);
     } else {
@@ -46,7 +52,8 @@ describe("writeClipboardPlasmicData", () => {
   it.each([false, true])(
     "does not report a denied clipboard write (sync: %s)",
     async (synchronous) => {
-      mockClipboardWrite(
+      mockClipboard(
+        "write",
         new DOMException("Write permission denied.", "NotAllowedError"),
         synchronous,
       );
@@ -60,11 +67,29 @@ describe("writeClipboardPlasmicData", () => {
     "reports other clipboard write failures (sync: %s)",
     async (synchronous) => {
       const error = new Error("boom");
-      mockClipboardWrite(error, synchronous);
+      mockClipboard("write", error, synchronous);
       writeClipboardPlasmicData("{}");
       await vi.waitFor(() =>
         expect(Sentry.captureException).toHaveBeenCalledWith(error),
       );
     },
   );
+
+  it("does not report a denied clipboard read", async () => {
+    mockClipboard(
+      "read",
+      new DOMException("Read permission denied.", "NotAllowedError"),
+      false,
+    );
+    await expect(readClipboardPlasmicData()).resolves.toBeUndefined();
+    expect(console.warn).toHaveBeenCalled();
+    expect(Sentry.captureException).not.toHaveBeenCalled();
+  });
+
+  it("reports other clipboard read failures", async () => {
+    const error = new Error("boom");
+    mockClipboard("read", error, false);
+    await expect(readClipboardPlasmicData()).resolves.toBeUndefined();
+    expect(Sentry.captureException).toHaveBeenCalledWith(error);
+  });
 });

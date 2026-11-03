@@ -51,6 +51,13 @@ export function ensureViewCtxOrThrowUserError(studioCtx: StudioCtx): ViewCtx {
   }
 }
 
+function reportClipboardError(action: "read from" | "write to", e: unknown) {
+  console.warn(`Failed to ${action} system clipboard`, e);
+  if (!(e instanceof DOMException && e.name === "NotAllowedError")) {
+    Sentry.captureException(e);
+  }
+}
+
 export async function readClipboardPlasmicData(): Promise<string | undefined> {
   if (
     typeof navigator !== "undefined" &&
@@ -68,8 +75,7 @@ export async function readClipboardPlasmicData(): Promise<string | undefined> {
         }
       }
     } catch (e) {
-      console.warn("Failed to read from system clipboard", e);
-      Sentry.captureException(e);
+      reportClipboardError("read from", e);
     }
   }
   return undefined;
@@ -82,13 +88,7 @@ export function writeClipboardPlasmicData(data: string) {
     navigator.clipboard.write &&
     typeof ClipboardItem !== "undefined"
   ) {
-    const onWriteError = (e: unknown) => {
-      console.warn("Failed to write to system clipboard", e);
-      // Mirroring the in-memory clipboard is best-effort when permission is denied.
-      if (!(e instanceof DOMException && e.name === "NotAllowedError")) {
-        Sentry.captureException(e);
-      }
-    };
+    const onWriteError = (e: unknown) => reportClipboardError("write to", e);
     try {
       const blob = new Blob([data], { type: PLASMIC_CLIPBOARD_FORMAT });
       const item = new ClipboardItem({ [PLASMIC_CLIPBOARD_FORMAT]: blob });

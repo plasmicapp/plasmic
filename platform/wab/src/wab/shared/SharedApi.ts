@@ -1385,7 +1385,7 @@ export abstract class SharedApi {
     repository: GitRepository,
     branch: string,
     dir: string,
-  ): Promise<Partial<GitSyncOptions> | undefined> {
+  ): Promise<Partial<GitSyncOptions> | null> {
     const { name, installationId } = repository;
     const res = await this.get(
       `/github/detect/${name}`,
@@ -1396,7 +1396,7 @@ export abstract class SharedApi {
       },
       this.githubToken(),
     );
-    return res.syncOptions ?? undefined;
+    return res.syncOptions;
   }
 
   async addProjectRepository(
