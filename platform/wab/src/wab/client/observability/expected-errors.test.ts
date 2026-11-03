@@ -9,6 +9,7 @@ import {
   NotFoundError,
   PreconditionFailedError,
   ProjectRevisionError,
+  RateLimitedExceeded,
   SchemaMismatchError,
   UnauthorizedError,
   transformErrors,
@@ -23,6 +24,7 @@ describe("isExpectedApiError", () => {
       new AuthError("x"),
       new NotFoundError("x"),
       new PreconditionFailedError("x"),
+      new RateLimitedExceeded("x"),
       new CopilotRateLimitExceededError("x"),
       new CopilotPlanRequiredError(),
     ]) {
@@ -36,11 +38,21 @@ describe("isExpectedApiError", () => {
       "NotFoundError",
       "EntityNotFound",
       "PreconditionFailedError",
+      "RateLimitedExceeded",
     ]) {
       expect(
         isExpectedApiError(transformErrors({ name, message: "x" } as Error)),
       ).toBe(true);
     }
+  });
+
+  it("rehydrates rate-limit errors with their status and message", () => {
+    const err = transformErrors({
+      name: "RateLimitedExceeded",
+      message: "slow down",
+    } as Error);
+    expect(err).toBeInstanceOf(RateLimitedExceeded);
+    expect(err).toMatchObject({ statusCode: 429, message: "slow down" });
   });
 
   it("is false for errors that may signal a bug", () => {

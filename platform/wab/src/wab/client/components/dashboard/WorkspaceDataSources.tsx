@@ -88,11 +88,12 @@ function WorkspaceDataSources_(
             onUpdate={onUpdate}
             canEdit={
               isEditing === "new" ||
-              canEditDataSource(
-                isEditing.ownerId,
-                appCtx.selfInfo?.id,
-                workspaceAccessLevel,
-              )
+              (allowNewDataSources &&
+                canEditDataSource(
+                  isEditing.ownerId,
+                  appCtx.selfInfo?.id,
+                  workspaceAccessLevel,
+                ))
             }
           />
         )}

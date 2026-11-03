@@ -6,14 +6,8 @@ import type { Request } from "express-serve-static-core";
 const E2E_DEVFLAGS: Partial<DevFlagsType> = {
   e2eDevFlagsApplied: true,
 
-  // data-rep.spec.ts, http.spec.ts, postgres.spec.ts,
-  // state-management-dependent.spec.ts, dynamic-initial-value.spec.ts
+  // data-rep.spec.ts, state-management-dependent.spec.ts, dynamic-initial-value.spec.ts
   plexus: false,
-
-  // data-sources/*, dynamic-pages.spec.ts, forms/schema.spec.ts,
-  // hostless-commerce.spec.ts — the legacy integrations UI is only shown
-  // when this is on (or the project already uses a data source).
-  enableDataQueries: true,
 
   branching: true,
 

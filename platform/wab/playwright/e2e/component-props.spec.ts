@@ -38,10 +38,6 @@ test.describe("component-props", () => {
       propType: "any",
     });
     await models.studio.createComponentProp({
-      propName: "queryDataProp",
-      propType: "queryData",
-    });
-    await models.studio.createComponentProp({
       propName: "eventHandlerProp",
       propType: "eventHandler",
     });

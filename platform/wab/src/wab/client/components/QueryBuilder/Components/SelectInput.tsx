@@ -10,6 +10,7 @@ type Props = {
   onValueChanged: (newSelectedKey: string) => void;
   hideArrow?: boolean;
   className?: string;
+  disabled?: boolean;
 };
 
 function SelectInputArrow() {
@@ -37,13 +38,21 @@ function SelectInputArrow() {
 const SELECT_INPUT_MIN_WIDTH = 100;
 
 export function SelectInput(props: Props) {
-  const { items, value, onValueChanged, hideArrow, className = "" } = props;
+  const {
+    items,
+    value,
+    onValueChanged,
+    hideArrow,
+    className = "",
+    disabled,
+  } = props;
 
   return (
     <Select
       className={`plasmic-query-builder-select ${className}`}
       value={value}
       onChange={onValueChanged}
+      disabled={disabled}
       size={"small"}
       bordered={true}
       suffixIcon={<SelectInputArrow />}

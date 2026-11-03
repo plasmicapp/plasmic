@@ -29,9 +29,6 @@ import React from "react";
 export const MULTIPLE_PRIMARY_KEY_VALUE = "__plasmic_mpk";
 
 export const INVALID_DATA_SOURCE_MESSAGE = {
-  dynamicPages: `The dynamic page wizard only supports integrations where Plasmic can understand the data table schema.
-
-  For the selected integration type, you will need to [manually create a dynamic page](https://docs.plasmic.app/learn/dynamic-pages/#creating-dynamic-pages-manually) instead.`,
   schemaForms: `The form connect-to-table wizard only supports integrations where Plasmic can understand the data table schema.
 
   For the selected integration type, you will need to [manually configure your form](https://docs.plasmic.app/learn/forms/#configuring-fields) instead.`,
@@ -49,6 +46,7 @@ interface DataSourceTablePickerProps {
   requiredStandardQueries?: (keyof StandardQueries)[];
   invalidDataSourceMessage?: string;
   exprCtx: ExprCtx;
+  disabled?: boolean;
 }
 
 export function DataSourceTablePicker(props: DataSourceTablePickerProps) {
@@ -62,6 +60,7 @@ export function DataSourceTablePicker(props: DataSourceTablePickerProps) {
     draft = { sourceId: getPreferredDataSource(studioCtx.site) },
     requiredStandardQueries,
     exprCtx,
+    disabled,
   } = props;
   const sourceId = draft?.sourceId;
   const tableId = draft?.tableId;
@@ -101,8 +100,7 @@ export function DataSourceTablePicker(props: DataSourceTablePickerProps) {
   const table = React.useMemo(
     () =>
       sourceSchemaData?.tables.find((t) => t.id === tableId) as
-        | TableSchema
-        | undefined,
+        TableSchema | undefined,
     [sourceSchemaData, tableId],
   );
   const tableFields = React.useMemo(() => {
@@ -179,7 +177,6 @@ export function DataSourceTablePicker(props: DataSourceTablePickerProps) {
       <LabeledItemRow label={DATA_SOURCE_CAP}>
         <DataSourcePicker
           sourceId={sourceId}
-          sourceType={undefined}
           onChange={(newId) => {
             onChange({
               ...draft,
@@ -191,6 +188,7 @@ export function DataSourceTablePicker(props: DataSourceTablePickerProps) {
             });
           }}
           readOpsOnly={true}
+          disabled={disabled}
         />
       </LabeledItemRow>
       {(() => {
@@ -222,6 +220,7 @@ export function DataSourceTablePicker(props: DataSourceTablePickerProps) {
                 valueSetState={tableId ? "isSet" : undefined}
                 value={tableId}
                 options={tableOptions}
+                readOnly={disabled}
                 onChange={(newTable) => {
                   const selectedTable = sourceSchemaData.tables.find(
                     (t) => t.id === newTable,
@@ -248,6 +247,7 @@ export function DataSourceTablePicker(props: DataSourceTablePickerProps) {
             valueSetState={lookupField ? "isSet" : undefined}
             value={lookupField}
             options={tableFields}
+            readOnly={disabled}
             onChange={(newField) => setLookupField(newField)}
           />
         </LabeledItemRow>
@@ -281,6 +281,7 @@ export function DataSourceTablePicker(props: DataSourceTablePickerProps) {
             hideDefinedIndicator={true}
             showAsIndentedRow={lookupField === MULTIPLE_PRIMARY_KEY_VALUE}
             exprCtx={exprCtx}
+            disabled={disabled}
           />
         </LabeledItemRow>
       )}

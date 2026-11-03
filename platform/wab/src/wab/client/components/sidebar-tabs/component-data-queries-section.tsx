@@ -272,6 +272,13 @@ function ComponentQueriesSection_(props: {
       makeAllLegacyQueriesMigrationPrompt(component, component.dataQueries),
     );
 
+  const enableDataQueries = studioCtx.appCtx.appConfig.enableDataQueries;
+  const isEmpty =
+    component.dataQueries.length === 0 && tplFetchers.length === 0;
+  if (isEmpty && !enableDataQueries) {
+    return null;
+  }
+
   return (
     <SidebarSection
       id="data-queries-section"
@@ -289,7 +296,7 @@ function ComponentQueriesSection_(props: {
           {isDeprecated ? " (legacy)" : ""}
         </LabelWithDetailedTooltip>
       }
-      emptyBody={component.dataQueries.length === 0 && tplFetchers.length === 0}
+      emptyBody={isEmpty}
       emptyDescription="Fetch data from an integration."
       zeroBodyPadding
       controls={
@@ -303,13 +310,15 @@ function ComponentQueriesSection_(props: {
               Migrate all
             </LinkButton>
           )}
-          <IconLinkButton
-            id="data-queries-add-btn"
-            tooltip={`Add ${DATA_QUERY_LOWER} to ${componentType}`}
-            onClick={handleAddDataQuery}
-          >
-            <Icon icon={PlusIcon} />
-          </IconLinkButton>
+          {enableDataQueries && (
+            <IconLinkButton
+              id="data-queries-add-btn"
+              tooltip={`Add ${DATA_QUERY_LOWER} to ${componentType}`}
+              onClick={handleAddDataQuery}
+            >
+              <Icon icon={PlusIcon} />
+            </IconLinkButton>
+          )}
         </div>
       }
     >

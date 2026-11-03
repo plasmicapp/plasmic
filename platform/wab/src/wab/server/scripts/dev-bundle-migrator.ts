@@ -77,7 +77,6 @@ const paths = [
   "../loader-tests/data/react-quill.json",
   "../loader-tests/data/slick-slider.json",
   "../loader-tests/data/plasmic-antd5.json",
-  "../loader-tests/data/data-source-basic.json",
   "../loader-tests/data/react-aria.json",
   "../loader-tests/data/strapi.json",
   "../loader-tests/data/wordpress.json",

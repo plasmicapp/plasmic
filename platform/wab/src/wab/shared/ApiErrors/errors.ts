@@ -77,6 +77,11 @@ export class BundleTypeError extends ApiError {
   statusCode = 412;
 }
 
+export class RateLimitedExceeded extends ApiError {
+  name = "RateLimitedExceeded";
+  statusCode = 429;
+}
+
 export class CopilotRateLimitExceededError extends ApiError {
   name = "CopilotRateLimitExceededError";
   statusCode = 429;
@@ -134,6 +139,7 @@ const errorNameRegistry = {
   EntityNotFound: NotFoundError,
   BadRequestError,
   CopilotPlanRequiredError,
+  RateLimitedExceeded,
   CopilotRateLimitExceededError,
   GrantUserNotFoundError,
   PreconditionFailedError,

@@ -53,6 +53,7 @@ interface DataSourceQueryBuilderProps {
   schema?: DataPickerTypesSchema;
   bindings: Record<string, TemplatedString | CustomCode | ObjectPath>;
   exprCtx: ExprCtx;
+  disabled?: boolean;
 }
 
 function DataSourceQueryBuilder_(
@@ -69,6 +70,7 @@ function DataSourceQueryBuilder_(
     schema,
     bindings: defaultBindings,
     exprCtx,
+    disabled,
   } = props;
 
   const fields = Object.entries(defaultFields)
@@ -88,11 +90,20 @@ function DataSourceQueryBuilder_(
 
     return {
       ...mergedConfig,
+      settings: {
+        ...mergedConfig.settings,
+        ...(disabled && {
+          immutableGroupsMode: true,
+          immutableFieldsMode: true,
+          immutableOpsMode: true,
+          immutableValuesMode: true,
+        }),
+      },
       fields: {
         ...fields,
       },
     } as Config;
-  }, [dataSourceConfig, fields]);
+  }, [dataSourceConfig, fields, disabled]);
 
   // We create a ref to `data` to use it in query builder widgets factory
   // below, so that the widget factory always use the latest/current

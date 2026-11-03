@@ -267,7 +267,8 @@ function ActionBuilder_(
                   children: [
                     ...Object.entries(ACTIONS_META)
                       .filter(
-                        ([__, meta]) =>
+                        ([aName, meta]) =>
+                          aName === interaction.actionName ||
                           !meta.hidden?.({
                             siteInfo: sc.siteInfo,
                             flags: sc.appCtx.appConfig,

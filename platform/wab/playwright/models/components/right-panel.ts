@@ -269,13 +269,6 @@ export class RightPanel extends BaseModel {
   readonly addVariantGroupButton = this.frame.locator(
     '[data-test-id="add-variant-group-button"] .ant-dropdown-trigger',
   );
-  readonly importedDataSourceDropdownButton: Locator = this.page.getByRole(
-    "button",
-    { name: "Select an integration from" },
-  );
-  readonly dynamicPageTableButton: Locator = this.frame.getByRole("button", {
-    name: "unset",
-  });
   constructor(page: Page) {
     super(page);
   }
@@ -1215,23 +1208,6 @@ export class RightPanel extends BaseModel {
     );
   }
 
-  async pickDataSource(dataSourceName: string) {
-    const pickIntegrationBtn = this.frame.locator(
-      "#data-source-modal-pick-integration-btn",
-    );
-    if (await pickIntegrationBtn.isVisible()) {
-      await pickIntegrationBtn.click();
-      await this.page.waitForTimeout(1000);
-
-      await this.importedDataSourceDropdownButton.click();
-      await this.page.getByRole("option", { name: dataSourceName }).click();
-
-      await this.page.getByRole("button", { name: "Confirm" }).click();
-    } else {
-      await this.setDataPlasmicProp("dataSource", dataSourceName);
-    }
-  }
-
   async clickPageData() {
     await this.frame.getByRole("tab", { name: "Page data" }).click();
   }
@@ -1248,33 +1224,6 @@ export class RightPanel extends BaseModel {
     return this.frame.locator(
       `[data-plasmic-role="labeled-item"]:has(:text-is("${paramName}")) input[type="text"]`,
     );
-  }
-
-  async clickViewDifferentRecord() {
-    await this.frame.getByText("View different record").click();
-  }
-
-  async clickShowFilters() {
-    await this.frame.getByText("Show filters").click();
-  }
-
-  async getViewButtons() {
-    return this.frame
-      .getByRole("table")
-      .getByRole("button", { name: "View", exact: true });
-  }
-
-  async clickCreateDynamicPageButton() {
-    await this.frame
-      .getByRole("button", { name: "Create dynamic page" })
-      .and(this.frame.locator(":not([disabled])"))
-      .click();
-  }
-
-  async waitForProductIdButton() {
-    await this.frame
-      .getByRole("button", { name: "product_id" })
-      .waitFor({ state: "visible" });
   }
 
   async addFormItem(prop: string, value: Record<string, any>) {
@@ -1510,16 +1459,6 @@ export class RightPanel extends BaseModel {
     await this.page.waitForTimeout(2000);
   }
 
-  async addComponentQuery() {
-    const addQueryBtn = this.frame.locator("#data-queries-add-btn");
-    await addQueryBtn.click();
-  }
-
-  async saveDataSourceModal() {
-    const saveBtn = this.frame.locator("#data-source-modal-save-btn");
-    await saveBtn.click();
-  }
-
   async closeSidebarModal() {
     const closeBtn = this.frame.locator('[data-test-id="close-sidebar-modal"]');
     await closeBtn.click();
@@ -1558,134 +1497,6 @@ export class RightPanel extends BaseModel {
       await this.page.keyboard.type(name);
       await this.page.keyboard.press("Enter");
     }
-  }
-
-  async configureSchemaForm(options: {
-    dataSourceId: string;
-    formType: "New Entry" | "Update Entry";
-    tableName: string;
-    lookupField?: string;
-    idValue?: string;
-  }) {
-    const { dataSourceId, formType, tableName, lookupField, idValue } = options;
-
-    const modal = this.frame.locator(".ant-modal");
-    await modal.getByText("Select the form type").waitFor();
-    const selectElement = modal
-      .locator("select")
-      .filter({ hasText: formType })
-      .first();
-    await selectElement.selectOption({ label: formType });
-
-    const integrationBtn = this.frame.getByText("Pick an integration");
-    await integrationBtn.click();
-
-    const loader = this.page.locator(".loader-container");
-    try {
-      await loader.waitFor({ state: "visible", timeout: 1000 });
-      await loader.waitFor({ state: "detached", timeout: 5000 });
-    } catch {}
-
-    const integrationDropdown = this.page
-      .getByText("Select an integration from your workspace to use")
-      .or(
-        this.page
-          .locator("select")
-          .filter({ hasText: "Select an integration" })
-          .first(),
-      );
-    await integrationDropdown.click();
-    await this.page.waitForTimeout(500);
-
-    await this.page
-      .locator("select")
-      .first()
-      .selectOption({ value: dataSourceId });
-    await this.page.waitForTimeout(1000);
-
-    const confirmBtn = this.page.locator('[data-test-id="prompt-submit"]');
-    await confirmBtn.first().click();
-    const unsetButton = this.frame.getByRole("button", { name: "unset" });
-    await unsetButton.click({ timeout: 20000 });
-    await this.page.waitForTimeout(500);
-
-    const tableOption = this.frame.locator(`option[value*="${tableName}"]`);
-    const tableOptionValue = await tableOption.getAttribute("value");
-    const tableSelect = this.frame.locator(
-      `select:has(option[value*="${tableName}"])`,
-    );
-    if (tableOptionValue && (await tableSelect.count()) > 0) {
-      await tableSelect.selectOption({ value: tableOptionValue });
-    }
-
-    if (formType === "Update Entry" && lookupField) {
-      const lookupDropdown = this.frame
-        .getByRole("button", { name: "unset" })
-        .nth(1);
-      if ((await lookupDropdown.count()) > 0) {
-        await lookupDropdown.click();
-        await this.page.waitForTimeout(500);
-
-        const fieldOption = this.frame.locator(
-          `option[value="${lookupField}"]`,
-        );
-        if ((await fieldOption.count()) > 0) {
-          const fieldSelect = this.frame.locator(
-            `select:has(option[value="${lookupField}"])`,
-          );
-          await fieldSelect.selectOption({ value: lookupField });
-        }
-      }
-
-      if (idValue) {
-        const idInputCandidates = [
-          this.frame.locator('input[placeholder*="id"]'),
-          this.frame.locator('input[name*="id"]'),
-          this.frame.locator("input").last(),
-        ];
-
-        for (const candidate of idInputCandidates) {
-          if ((await candidate.count()) > 0) {
-            try {
-              await candidate.first().clear();
-              await candidate.first().fill(idValue);
-              break;
-            } catch (e) {}
-          }
-        }
-      }
-    }
-
-    await this.page.waitForTimeout(2000);
-
-    const saveBtnStudio = this.frame.getByText("Save");
-    if ((await saveBtnStudio.count()) > 0) {
-      await saveBtnStudio.click();
-      await this.page.waitForTimeout(2000);
-    }
-  }
-
-  async setupComponentQuery(resourceName: string) {
-    await this.switchToComponentDataTab();
-    await this.addComponentQuery();
-    await this.setSelectByLabel(
-      "data-source-modal-pick-resource-btn",
-      resourceName,
-    );
-    await this.saveDataSourceModal();
-  }
-
-  async verifySchemaFormFields(
-    expectedFields: string[],
-    frame: FrameLocator,
-  ): Promise<boolean> {
-    await this.page.waitForTimeout(3000);
-
-    const results = await Promise.all(
-      expectedFields.map((field) => frame.locator(`text=${field}`).count()),
-    );
-
-    return results.every((count) => count > 0);
   }
 
   async checkNumberOfStatesInComponent(explicit: number, implicit: number) {

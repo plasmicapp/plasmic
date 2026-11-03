@@ -43,6 +43,7 @@ export function GroupHeader(props: Props) {
             );
           }}
           hideArrow={true}
+          disabled={props.readonly}
         />
       ) : (
         <span>Match</span>
@@ -55,6 +56,7 @@ export function GroupHeader(props: Props) {
           value={props.selectedConjunction}
           onValueChanged={(value) => props.setConjunction(value)}
           hideArrow={true}
+          disabled={props.readonly}
         />
       ) : (
         <span>{conjunctions[0].label.toLowerCase()}</span>

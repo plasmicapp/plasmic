@@ -323,7 +323,9 @@ export function DataSourceModal({
           showIcon={true}
           message={
             <div>
-              Only the owner of the integration or a workspace owner can edit it
+              {appCtx.appConfig.enableDataQueries
+                ? "Only the owner of the integration or a workspace owner can edit it"
+                : "Legacy integrations can no longer be edited, only deleted"}
             </div>
           }
         />

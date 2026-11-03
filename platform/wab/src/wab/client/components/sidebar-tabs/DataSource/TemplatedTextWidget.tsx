@@ -28,7 +28,7 @@ interface TemplatedTextWidgetProps extends Pick<
 }
 
 export function TemplatedTextWidget(props: TemplatedTextWidgetProps) {
-  const { value, bindings, setValue, ...rest } = props;
+  const { value, bindings, setValue, readonly, ...rest } = props;
   const realValue =
     bindings && value
       ? ensureKnownTemplatedString(bindings[value])
@@ -40,6 +40,7 @@ export function TemplatedTextWidget(props: TemplatedTextWidgetProps) {
       {...rest}
       onChange={setValue}
       value={realValue}
+      disabled={readonly}
     />
   );
 }
@@ -49,7 +50,7 @@ export function TemplatedTextEditorWithMenuIndicator(
 ) {
   return (
     <ContextMenuIndicator
-      showDynamicValueButton
+      showDynamicValueButton={!props.readOnly && !props.disabled}
       tooltip={"Append dynamic value"}
       className="qb-custom-widget"
       fullWidth

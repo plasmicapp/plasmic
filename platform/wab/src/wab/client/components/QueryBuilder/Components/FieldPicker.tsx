@@ -11,6 +11,7 @@ export function FieldPicker(props: Props) {
       items={props.items}
       value={props.selectedKey ?? undefined}
       onValueChanged={(value) => props.setField(value)}
+      disabled={props.readonly}
     />
   );
 }

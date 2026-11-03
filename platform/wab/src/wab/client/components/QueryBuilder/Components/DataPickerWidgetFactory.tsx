@@ -54,7 +54,7 @@ export function DataPickerWidgetFactory({
     setValue(mkUndefinedObjectPath());
   }, [setDefaultOpenDataPicker]);
 
-  const { value } = widgetProps;
+  const { value, readonly } = widgetProps;
 
   const isDynamicValue =
     isKnownObjectPath(value) ||
@@ -85,6 +85,7 @@ export function DataPickerWidgetFactory({
         schema={schema}
         defaultOpenDataPicker={defaultOpenDataPicker}
         exprCtx={exprCtx}
+        disabled={readonly}
       />
     );
   } else {
@@ -100,6 +101,10 @@ export function DataPickerWidgetFactory({
       </Menu>
     );
     widget = renderOriginalWidget();
+  }
+
+  if (readonly) {
+    return <div className="qb-custom-widget">{widget}</div>;
   }
 
   return (
@@ -124,6 +129,7 @@ type DynamicValueWidgetProps = {
   expectedValues?: string;
   setValue: (newVal: ObjectPath | CustomCode | null | undefined) => void;
   exprCtx: ExprCtx;
+  disabled?: boolean;
 };
 
 export function DynamicValueWidget({
@@ -135,6 +141,7 @@ export function DynamicValueWidget({
   deleteIcon = true,
   expectedValues,
   exprCtx,
+  disabled,
 }: DynamicValueWidgetProps) {
   const [popoverVisible, setPopoverVisible] = React.useState(
     defaultOpenDataPicker ?? false,
@@ -162,7 +169,7 @@ export function DynamicValueWidget({
         />
       }
       trigger="click"
-      visible={popoverVisible}
+      visible={!disabled && popoverVisible}
       onVisibleChange={(_visible) => setPopoverVisible(_visible)}
       destroyTooltipOnHide={true}
       overlayClassName="data-picker-popover-overlay"
@@ -180,7 +187,7 @@ export function DynamicValueWidget({
           {previewValue ?? "unset"}
         </span>
 
-        {deleteIcon && (
+        {deleteIcon && !disabled && (
           <div className="inline-block">
             <IconLinkButton
               className={cx(["dropdown-pill__deleter", "ml-sm"])}

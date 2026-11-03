@@ -5,6 +5,7 @@ import {
   ForbiddenError,
   NotFoundError,
   PreconditionFailedError,
+  RateLimitedExceeded,
   UnauthorizedError,
 } from "@/wab/shared/ApiErrors/errors";
 
@@ -16,6 +17,7 @@ const EXPECTED_API_ERRORS = [
   AuthError,
   NotFoundError,
   PreconditionFailedError,
+  RateLimitedExceeded,
   CopilotRateLimitExceededError,
   CopilotPlanRequiredError,
 ];

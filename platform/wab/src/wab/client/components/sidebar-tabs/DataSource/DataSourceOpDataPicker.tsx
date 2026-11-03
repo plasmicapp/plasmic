@@ -110,10 +110,14 @@ export function DataSourceOpDataPicker({
         {
           label: "",
           values: [
-            {
-              value: "[[new query]]",
-              label: "Add new query....",
-            },
+            ...(studioCtx.appCtx.appConfig.enableDataQueries
+              ? [
+                  {
+                    value: "[[new query]]",
+                    label: "Add new query....",
+                  },
+                ]
+              : []),
             {
               value: "[[dynamic value]]",
               label: "Use dynamic value...",

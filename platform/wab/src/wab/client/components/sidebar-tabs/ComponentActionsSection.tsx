@@ -4,7 +4,6 @@ import {
 } from "@/wab/shared/model/classes";
 /** @format */
 import { reportError } from "@/wab/client/ErrorNotifications";
-import { ConnectToDBTableModal } from "@/wab/client/components/sidebar-tabs/DataSource/ConnectToDBTable";
 import { updateOrCreateExpr } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
 import Button from "@/wab/client/components/widgets/Button";
@@ -13,7 +12,7 @@ import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { getSlotParams } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { elementSchemaToTpl } from "@/wab/shared/code-components/code-components";
-import { ensure, hackyCast, maybe } from "@/wab/shared/common";
+import { ensure, maybe } from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import { TplComponent } from "@/wab/shared/model/classes";
@@ -72,14 +71,6 @@ export const ComponentActionsSection = observer(
                     viewCtx={viewCtx}
                     expsProvider={expsProvider}
                     tplComp={tpl}
-                  />
-                );
-              } else if (hackyCast(action).type === "form-schema") {
-                return (
-                  <ConnectToDBTableModal
-                    key={idx}
-                    viewCtx={viewCtx}
-                    tpl={tpl}
                   />
                 );
               } else {

@@ -5,6 +5,7 @@ import {
 } from "@/wab/server/data-sources/data-source-utils";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { logger, withSpan } from "@/wab/server/observability";
+import { createInlineRateLimiter } from "@/wab/server/rate-limit";
 import {
   extractAppUserFromToken,
   trackAppUserActivity,
@@ -17,10 +18,29 @@ import {
 } from "@/wab/server/routes/end-user";
 import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import { asyncTimed } from "@/wab/server/timing-util";
-import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
+import {
+  BadRequestError,
+  RateLimitedExceeded,
+} from "@/wab/shared/ApiErrors/errors";
 import { GenericDataSource } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { OperationTemplate } from "@/wab/shared/data-sources-meta/data-sources";
 import { Request, Response } from "express-serve-static-core";
+
+/**
+ * Limits calls to each legacy integration, per the limitDataQueries devflag.
+ * Handlers call this only after validating and authorizing the request, so
+ * that anyone who knows a source ID can't use up its quota with bad requests.
+ */
+export const checkLegacyDataSourceOpRateLimit = createInlineRateLimiter({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  limit: (req) => req.devflags.limitDataQueries ?? 0,
+  skip: (req) => req.devflags.limitDataQueries === null,
+  keyGenerator: (req) => req.params.dataSourceId,
+  makeError: () =>
+    new RateLimitedExceeded(
+      "Too many requests to this legacy integration. Migrate its queries to keep using them.",
+    ),
+});
 
 export function executeDataSourceOperationWithCurrentUserHandler(
   inStudioAuth: boolean,
@@ -210,6 +230,8 @@ export function executeDataSourceOperationWithCurrentUserHandler(
       });
       return;
     }
+
+    await checkLegacyDataSourceOpRateLimit(req, res);
 
     const currentUser = currentUserInfo.appUser;
 

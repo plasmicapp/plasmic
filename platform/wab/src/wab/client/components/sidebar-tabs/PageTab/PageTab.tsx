@@ -41,7 +41,6 @@ export const PageTab = observer(function PageTab(props: {
     inStudio: true,
   };
 
-  const appConfig = studioCtx.appCtx.appConfig;
   const [showSettings, setShowSettings] = React.useState(false);
   const [isExpanded, setExpanded] = useLocalStorage(
     "PageTab.isExpanded",
@@ -132,13 +131,11 @@ export const PageTab = observer(function PageTab(props: {
                             component={page}
                             viewCtx={viewCtx}
                           />
-                          {appConfig.enableDataQueries && (
-                            <ComponentDataQueriesSection
-                              component={page}
-                              viewCtx={viewCtx}
-                              isDeprecated
-                            />
-                          )}
+                          <ComponentDataQueriesSection
+                            component={page}
+                            viewCtx={viewCtx}
+                            isDeprecated
+                          />
                         </>
                       )}
 

@@ -35,7 +35,6 @@ export const ComponentTab = observer(function ComponentTab(props: {
   isHalf?: boolean;
 }) {
   const { component, studioCtx, viewCtx, isHalf = false } = props;
-  const appConfig = studioCtx.appCtx.appConfig;
 
   const plugin = getPlumeEditorPlugin(component);
   const variantsPanelRef = React.useRef<VariantsPanelHandle>(null);
@@ -139,13 +138,11 @@ export const ComponentTab = observer(function ComponentTab(props: {
                             component={component}
                             viewCtx={viewCtx}
                           />
-                          {appConfig.enableDataQueries && (
-                            <ComponentDataQueriesSection
-                              component={component}
-                              viewCtx={viewCtx}
-                              isDeprecated
-                            />
-                          )}
+                          <ComponentDataQueriesSection
+                            component={component}
+                            viewCtx={viewCtx}
+                            isDeprecated
+                          />
                         </>
                       )}
                       {canEdit(PublicStyleSection.States) && (

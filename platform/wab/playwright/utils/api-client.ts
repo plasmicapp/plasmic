@@ -7,7 +7,6 @@ import {
 
 export class ApiClient {
   private token: string | undefined = undefined;
-  private dataSourceId: string | undefined = undefined;
 
   constructor(
     public request: APIRequestContext,
@@ -304,50 +303,6 @@ export class ApiClient {
     return tokenData.token.token;
   }
 
-  async createPostgresDataSource(
-    dsname: string,
-    connection: {
-      host: string;
-      port: string;
-      name: string;
-      user: string;
-      password: string;
-    },
-  ) {
-    const csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
-    const csrf = (await csrfRes.json()).csrf;
-
-    const workspaceRes = await this.request.get(
-      `${this.baseUrl}/api/v1/personal-workspace`,
-      { headers: { "X-CSRF-Token": csrf } },
-    );
-    const workspaceId = (await workspaceRes.json()).workspace.id;
-
-    const response = await this.request.post(
-      `${this.baseUrl}/api/v1/data-source/sources`,
-      {
-        data: {
-          source: "postgres",
-          name: dsname,
-          workspaceId: workspaceId,
-          credentials: {
-            password: connection.password,
-          },
-          settings: {
-            host: connection.host,
-            port: connection.port,
-            name: connection.name,
-            user: connection.user,
-          },
-        },
-        headers: { "X-CSRF-Token": csrf },
-      },
-    );
-    const result = await response.json();
-    this.dataSourceId = result.id;
-    return result.id;
-  }
-
   async removeProjectAfterTest(
     projectId: string | undefined,
     email: string,
@@ -409,50 +364,6 @@ export class ApiClient {
     return await response.json();
   }
 
-  async createFakeDataSource(options?: any) {
-    const csrf = await this.getCsrf();
-
-    const workspaceRes = await this.request.get(
-      `${this.baseUrl}/api/v1/personal-workspace`,
-      { headers: { "X-CSRF-Token": csrf } },
-    );
-    const workspaceId = (await workspaceRes.json()).workspace.id;
-
-    const fakeDataSourceName = `Fake Data Source ${Date.now()}`;
-    const createDataSourceOptions = options ?? {
-      source: "fake",
-      name: fakeDataSourceName,
-      workspaceId: workspaceId,
-    };
-
-    const response = await this.request.post(
-      `${this.baseUrl}/api/v1/data-source/sources`,
-      {
-        headers: { "X-CSRF-Token": csrf },
-        data: createDataSourceOptions,
-      },
-    );
-
-    const result = await response.json();
-    this.dataSourceId = result.id;
-    return result.id;
-  }
-
-  async deleteDataSourceOfCurrentTest() {
-    if (this.dataSourceId) {
-      const csrf = await this.getCsrf();
-
-      await this.request.delete(
-        `${this.baseUrl}/api/v1/data-source/sources/${this.dataSourceId}`,
-        {
-          headers: { "X-CSRF-Token": csrf },
-        },
-      );
-
-      this.dataSourceId = undefined;
-    }
-  }
-
   async grantProjectPermission(
     projectId: string,
     userEmail: string,
@@ -480,7 +391,6 @@ export class ApiClient {
     templateNameOrBundle: string | any,
     options?: {
       keepProjectIdsAndNames?: boolean;
-      dataSourceReplacement?: { fakeSourceId: string };
     },
   ) {
     let bundle: any;
@@ -512,7 +422,6 @@ export class ApiClient {
           data: JSON.stringify(bundle),
           keepProjectIdsAndNames: options?.keepProjectIdsAndNames ?? false,
           migrationsStrict: true,
-          dataSourceReplacement: options?.dataSourceReplacement,
         },
       },
     );

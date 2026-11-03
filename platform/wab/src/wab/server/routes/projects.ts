@@ -3,7 +3,6 @@ import * as semver from "@/wab/commons/semver";
 import { toOpaque } from "@/wab/commons/types";
 import { ProjectVersionMeta, VersionResolution } from "@/wab/commons/versions";
 import { createBranchFromBase } from "@/wab/server/branch";
-import { reevaluateDataSourceExprOpIds } from "@/wab/server/data-sources/data-source-utils";
 import {
   getLastBundleVersion,
   getMigratedBundle,
@@ -169,7 +168,7 @@ import { mergeUiConfigs } from "@/wab/shared/ui-config-utils";
 import { getCodegenUrl } from "@/wab/shared/urls";
 import * as Sentry from "@sentry/node";
 import { Request, Response } from "express-serve-static-core";
-import { fromPairs, last, map, omit, pick, sortBy, uniq } from "lodash";
+import { last, map, omit, pick, sortBy, uniq } from "lodash";
 import * as Prettier from "prettier";
 import type { SetRequired } from "type-fest";
 import { EntityManager, MigrationExecutor } from "typeorm";
@@ -340,10 +339,6 @@ export async function clonePublishedTemplate(req: Request, res: Response) {
   res.json({ projectId: project.id, token: project.projectApiToken });
 }
 
-type DataSourceReplacement = {
-  fakeSourceId: string;
-};
-
 export async function importProject(req: Request, res: Response) {
   const {
     name,
@@ -352,7 +347,6 @@ export async function importProject(req: Request, res: Response) {
     prefilled,
     keepProjectIdsAndNames,
     updateImportedHostLess,
-    dataSourceReplacement,
     migrationsStrict,
     projectDomains,
   } = req.body as {
@@ -363,7 +357,6 @@ export async function importProject(req: Request, res: Response) {
     keepProjectIdsAndNames?: boolean; // keepProjectIdsAndNames shouldn't be used together with publish
     migrationsStrict?: boolean; // Used for tests only
     updateImportedHostLess?: boolean;
-    dataSourceReplacement?: DataSourceReplacement;
     projectDomains?: string[];
   };
 
@@ -385,7 +378,6 @@ export async function importProject(req: Request, res: Response) {
   const project = await doImportProject(bundles, mgr, bundler, {
     projectName: name,
     keepProjectIdsAndNames,
-    dataSourceReplacement,
     migrationsStrict,
   });
   req.promLabels.projectId = project.id;
@@ -436,7 +428,6 @@ export async function doImportProject(
     keepProjectIdsAndNames?: boolean;
     projectName?: string;
     migrationsStrict?: boolean;
-    dataSourceReplacement?: DataSourceReplacement;
   },
 ): Promise<Project> {
   const depBundles = bundles.slice(0, bundles.length - 1);
@@ -736,21 +727,6 @@ export async function doImportProject(
         workspaceId: hostLessWorkspaceId,
       });
     }
-  }
-
-  if (opts?.dataSourceReplacement) {
-    const sourceIds = getAllOpExprSourceIdsUsedInSite(unbundledSite);
-    const { fakeSourceId } = opts.dataSourceReplacement;
-    const oldToNewSourceIds = fromPairs(
-      sourceIds.map((id) => [id, fakeSourceId]),
-    );
-    await reevaluateDataSourceExprOpIds(mgr, unbundledSite, oldToNewSourceIds);
-    const newBundle = bundler.bundle(
-      unbundledSite,
-      project.id,
-      siteBundle.version,
-    );
-    Object.assign(siteBundle, newBundle);
   }
 
   const sourceIds = getAllOpExprSourceIdsUsedInSite(unbundledSite);

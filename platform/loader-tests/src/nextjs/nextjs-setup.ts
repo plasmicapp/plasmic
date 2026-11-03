@@ -7,7 +7,6 @@ import tmp from "tmp";
 import { getEnvVar } from "../env";
 import { NextJsEnv, ProjectContext } from "../playwright-tests/setup-utils";
 import {
-  DataSourceReplacement,
   runCommand,
   uploadProject,
   waitUntilServerDown,
@@ -100,7 +99,7 @@ export async function prepareTemplate(opts: {
       `react@${reactVersion}`,
       `react-dom@${reactVersion}`,
       `@types/react@${reactVersion}`,
-      `@types/react-dom@${reactVersion}`
+      `@types/react-dom@${reactVersion}`,
     );
   }
   await runCommand(`pnpm update ${updatePackages.join(" ")}`, pnpmOptions);
@@ -115,7 +114,7 @@ export async function prepareTemplate(opts: {
         },
       ],
       host: codegenHost,
-    })
+    }),
   );
 
   if (isAppRouter) {
@@ -137,7 +136,7 @@ export async function prepareTemplate(opts: {
     if (authRedirectUri) {
       adjustedCatchAllContent = adjustedCatchAllContent.replace(
         "undefined; // __AUTH_REDIRECT_URI__",
-        `"${authRedirectUri}/";`
+        `"${authRedirectUri}/";`,
       );
     }
 
@@ -155,7 +154,6 @@ export async function setupNextJs(opts: {
   nextVersion?: string;
   reactVersion?: string;
   tsConfigOverrides?: Record<string, unknown>;
-  dataSourceReplacement?: DataSourceReplacement;
   env?: Record<string, string>;
 }): Promise<NextJsContext> {
   const {
@@ -167,13 +165,12 @@ export async function setupNextJs(opts: {
     nextVersion = "14",
     reactVersion,
     tsConfigOverrides,
-    dataSourceReplacement,
     env,
   } = opts;
   const { projectId, projectToken } = await uploadProject(
     bundleFile,
     projectName,
-    { bundleTransformation, dataSourceReplacement }
+    { bundleTransformation },
   );
   const { name: tmpdir, removeCallback: tmpdirCleanup } = tmp.dirSync({
     unsafeCleanup: true,
@@ -193,7 +190,7 @@ export async function setupNextJs(opts: {
       tsConfigOverrides,
     },
     tmpdir,
-    env
+    env,
   );
 
   return {
@@ -261,7 +258,7 @@ export async function setupNextjsServer(
   project: ProjectContext,
   env: NextJsEnv,
   dir: string,
-  envVars?: Record<string, string>
+  envVars?: Record<string, string>,
 ) {
   const template = env.template ?? "template-pages";
   const templateDir = path.resolve(path.join(__dirname, template));
@@ -288,7 +285,7 @@ export async function setupNextjsServer(
   const port = await getPort();
   const nextServer = runCommand(
     `./node_modules/.bin/next start --port ${port}`,
-    { dir, output: "inherit", noExit: true, env: envVars }
+    { dir, output: "inherit", noExit: true, env: envVars },
   );
   const host = `http://localhost:${port}`;
   await waitUntilServerUp(host, { process: nextServer });

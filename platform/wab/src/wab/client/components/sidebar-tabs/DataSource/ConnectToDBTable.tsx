@@ -2,10 +2,7 @@ import {
   BottomModalButtons,
   useBottomModalActions,
 } from "@/wab/client/components/BottomModal";
-import {
-  reactConfirm,
-  showTemporaryPrompt,
-} from "@/wab/client/components/quick-modals";
+import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { ChoicePropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/ChoicePropEditor";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import {
@@ -15,32 +12,15 @@ import {
   useSource,
   useSourceSchemaData,
 } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
-import {
-  DataSourceTablePicker,
-  INVALID_DATA_SOURCE_MESSAGE,
-} from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceTablePicker";
-import { useSourceOp } from "@/wab/client/components/sidebar-tabs/useSourceOp";
+import { DataSourceTablePicker } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceTablePicker";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import Button from "@/wab/client/components/widgets/Button";
-import { Modal } from "@/wab/client/components/widgets/Modal";
-import { providesAppCtx } from "@/wab/client/contexts/AppContexts";
-import {
-  StudioCtx,
-  providesStudioCtx,
-  useStudioCtx,
-} from "@/wab/client/studio-ctx/StudioCtx";
-import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
-import {
-  ensure,
-  ensureArray,
-  mkShortId,
-  spawn,
-  swallow,
-} from "@/wab/shared/common";
-import { ExprCtx, serCompositeExprMaybe } from "@/wab/shared/core/exprs";
+import { ensure, mkShortId, spawn, swallow } from "@/wab/shared/common";
+import { ExprCtx } from "@/wab/shared/core/exprs";
 import { tryGetTplOwnerComponent } from "@/wab/shared/core/tpls";
 import { getDataSourceMeta } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
@@ -48,7 +28,6 @@ import {
   LookupSpecDraft,
   dataSourceTemplateToString,
   ensureDataSourceStandardQuery,
-  ensureLookupSpecFromDraft,
   extractFiltersFromDefaultDataSourceQueries,
 } from "@/wab/shared/data-sources-meta/data-sources";
 import {
@@ -80,158 +59,6 @@ const formOptions = [
   { label: "New Entry", value: FormType.NewEntry },
   { label: "Update Entry", value: FormType.UpdateEntry },
 ];
-
-export function ConnectToDBTable({
-  viewCtx,
-  tpl,
-  onSubmit,
-  onCancel,
-}: {
-  viewCtx: ViewCtx;
-  tpl: TplComponent;
-  onSubmit: (val: ConnectionData) => void;
-  onCancel: () => void;
-}) {
-  const studioCtx = useStudioCtx();
-  const [selectedFormOption, setSelectedFormOption] = React.useState<
-    FormType | undefined
-  >(undefined);
-  const [lookupDraft, setLookupDraft] = React.useState<
-    LookupSpecDraft | undefined
-  >(undefined);
-  const { source } = useSourceOp(lookupDraft?.sourceId, undefined);
-  const { data: sourceSchemaData } = useSourceSchemaData(
-    viewCtx.studioCtx,
-    lookupDraft?.sourceId,
-    source,
-  );
-  const ownerComponent = tryGetTplOwnerComponent(tpl);
-  const exprCtx: ExprCtx = {
-    projectFlags: studioCtx.projectFlags(),
-    component: ownerComponent ?? null,
-    inStudio: true,
-  };
-  const tableSchema = useTableSchema(sourceSchemaData, lookupDraft?.tableId);
-  const isSaveDisabled = React.useMemo(() => {
-    if (
-      selectedFormOption === undefined ||
-      lookupDraft === undefined ||
-      lookupDraft.sourceId === undefined ||
-      lookupDraft.tableId === undefined ||
-      tableSchema === undefined
-    ) {
-      return true;
-    }
-    if (selectedFormOption === FormType.NewEntry) {
-      return false;
-    }
-    if (lookupDraft.lookupValue?.value === undefined) {
-      return true;
-    }
-    return !ensureArray(lookupDraft.lookupFields).every(
-      (field) =>
-        field in ensure(lookupDraft.lookupValue, "checked before").value,
-    );
-  }, [lookupDraft, selectedFormOption]);
-
-  const onSave = async () => {
-    if (
-      !source ||
-      selectedFormOption === undefined ||
-      !lookupDraft ||
-      isSaveDisabled ||
-      !tableSchema
-    ) {
-      return;
-    }
-    const lookupSpec = ensureLookupSpecFromDraft(lookupDraft);
-    const sourceMeta = getDataSourceMeta(source.source);
-    let dataOp: DataSourceOpExpr;
-    if (selectedFormOption === FormType.NewEntry) {
-      const makeSchemaQuery = ensureDataSourceStandardQuery(
-        sourceMeta,
-        "getSchema",
-      );
-      dataOp = makeSchemaQuery(lookupSpec.sourceId, lookupSpec.tableId);
-    } else {
-      const makeGetOneQuery = ensureDataSourceStandardQuery(
-        sourceMeta,
-        "getOne",
-      );
-      dataOp = makeGetOneQuery(
-        lookupSpec.sourceId,
-        tableSchema,
-        ensure(
-          lookupSpec.lookupValue,
-          "update entry should have a lookup value",
-        ),
-      );
-    }
-    dataOp.opId = await studioCtx.appCtx.app.withSpinner(
-      getOpIdForDataSourceOpExpr(
-        viewCtx.studioCtx.appCtx.api,
-        dataOp,
-        exprCtx,
-        studioCtx.siteInfo.id,
-      ),
-    );
-    onSubmit({
-      formType: selectedFormOption,
-      dataOp,
-      sourceMeta,
-      tableSchema,
-      lookupValue: lookupSpec.lookupValue,
-    });
-  };
-
-  return (
-    <Modal
-      open={true}
-      title={"Connect to DB Table"}
-      closable={false}
-      footer={
-        <div className="flex gap-m justify-end">
-          <Button onClick={onCancel}>Cancel</Button>
-          <Button type="primary" onClick={onSave} disabled={isSaveDisabled}>
-            Save
-          </Button>
-        </div>
-      }
-      forceRender={true}
-    >
-      <div className="flex flex-col gap-xlg">
-        <LabeledItemRow label={"Form Type"} tooltip={formTypeDescription}>
-          <ChoicePropEditor
-            attr="formType"
-            options={formOptions}
-            value={selectedFormOption}
-            onChange={(value) => {
-              setSelectedFormOption(value);
-            }}
-            defaultValueHint={"Select the form type..."}
-            valueSetState={
-              selectedFormOption !== undefined ? "isSet" : undefined
-            }
-          />
-        </LabeledItemRow>
-        {selectedFormOption !== undefined && (
-          <DataSourceTablePicker
-            studioCtx={viewCtx.studioCtx}
-            requireLookupValue={selectedFormOption === FormType.UpdateEntry}
-            env={viewCtx.getCanvasEnvForTpl(tpl)}
-            schema={viewCtx.customFunctionsSchema()}
-            draft={lookupDraft}
-            onChange={(newDraft) => setLookupDraft(newDraft)}
-            onlySchema={selectedFormOption === FormType.NewEntry}
-            requiredStandardQueries={["getOne", "getSchema"]}
-            invalidDataSourceMessage={INVALID_DATA_SOURCE_MESSAGE.schemaForms}
-            exprCtx={exprCtx}
-          />
-        )}
-      </div>
-    </Modal>
-  );
-}
 
 async function mkDefaultSubmit(
   studioCtx: StudioCtx,
@@ -308,75 +135,6 @@ async function mkDefaultSubmit(
   });
   eventHandler.interactions = [...eventHandler.interactions, interaction];
   return eventHandler;
-}
-
-export function ConnectToDBTableModal({
-  viewCtx,
-  tpl,
-}: {
-  viewCtx: ViewCtx;
-  tpl: TplComponent;
-}) {
-  const onConnectToDbTable = async (connectionData: ConnectionData) => {
-    const baseVs = ensureBaseVariantSetting(tpl);
-    const dataParam = ensure(
-      tpl.component.params.find((p) => p.variable.name === "data"),
-      `Form component should have a "data" prop`,
-    );
-    const formItemsParam = ensure(
-      tpl.component.params.find((p) => p.variable.name === "formItems"),
-      `Form component should have a "formItems" prop`,
-    );
-    const submitParam = ensure(
-      tpl.component.params.find((p) => p.variable.name === "onFinish"),
-      `Form component should have a "onFinish" prop`,
-    );
-    const tplMgr = viewCtx.studioCtx.tplMgr();
-
-    const submitExpr = await mkDefaultSubmit(
-      viewCtx.studioCtx,
-      tpl,
-      connectionData,
-    );
-    await viewCtx.studioCtx.change(() => {
-      tplMgr.setArg(
-        tpl,
-        baseVs,
-        formItemsParam.variable,
-        serCompositeExprMaybe([]),
-      );
-      tplMgr.setArg(tpl, baseVs, dataParam.variable, connectionData.dataOp);
-      tplMgr.setArg(tpl, baseVs, submitParam.variable, submitExpr);
-      return ok();
-    });
-  };
-
-  return (
-    <>
-      <Button
-        onClick={async () => {
-          const connectionData = await showTemporaryPrompt<ConnectionData>(
-            (onSubmit, onCancel) =>
-              providesStudioCtx(viewCtx.studioCtx)(
-                providesAppCtx(viewCtx.studioCtx.appCtx)(
-                  <ConnectToDBTable
-                    viewCtx={viewCtx}
-                    tpl={tpl}
-                    onSubmit={onSubmit}
-                    onCancel={onCancel}
-                  />,
-                ),
-              ),
-          );
-          if (connectionData) {
-            await onConnectToDbTable(connectionData);
-          }
-        }}
-      >
-        Connect to Table
-      </Button>
-    </>
-  );
 }
 
 function useTableSchema(
@@ -514,6 +272,7 @@ function FormDataConnectionBottomModal({
     inStudio: true,
   };
   const modalActions = useBottomModalActions();
+  const readOnly = !studioCtx.appCtx.appConfig.enableDataQueries;
   const { data: source } = useSource(studioCtx, sourceId);
   const { data: sourceSchemaData } = useSourceSchemaData(
     studioCtx,
@@ -662,6 +421,7 @@ function FormDataConnectionBottomModal({
               valueSetState={
                 selectedFormOption !== undefined ? "isSet" : undefined
               }
+              readOnly={readOnly}
             />
           </LabeledItemRow>
           {selectedFormOption !== undefined && (
@@ -674,6 +434,7 @@ function FormDataConnectionBottomModal({
               requireLookupValue={selectedFormOption === FormType.UpdateEntry}
               onlySchema={selectedFormOption === FormType.NewEntry}
               exprCtx={exprCtx}
+              disabled={readOnly}
             />
           )}
         </div>
@@ -698,7 +459,7 @@ function FormDataConnectionBottomModal({
         </div>
       </div>
       <BottomModalButtons>
-        <Button onClick={onSave} type="primary">
+        <Button onClick={onSave} type="primary" disabled={readOnly}>
           Save
         </Button>
         <Button onClick={onPreview}>Preview</Button>

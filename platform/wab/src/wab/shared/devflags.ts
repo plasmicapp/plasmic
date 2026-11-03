@@ -572,6 +572,8 @@ const DEFAULT_DEVFLAGS = {
   cmsUniqueFields: false,
   // Allows using auth and backend integrations in a project.
   enableDataQueries: false,
+  // Limits CALLING legacy data queries to this rate per hour. 0 to block.
+  limitDataQueries: null as number | null,
   // Disable the public copilot interaction
   disablePublicCopilot: false,
   // Preset animations importable project id

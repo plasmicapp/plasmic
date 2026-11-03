@@ -21,10 +21,6 @@ export type NewPageInfo =
     }
   | {
       name: string;
-      type: "dynamic";
-    }
-  | {
-      name: string;
       type: "template";
       componentName: string;
       projectId: string;
@@ -119,14 +115,6 @@ function NewPageModal(props: NewPageModalProps) {
             imgUrl={"https://jovial-poitras-57edb1.netlify.app/blank.png"}
             onClick={() => {
               setPageInfo({ type: "blank", name: getNewPageName("NewPage") });
-            }}
-          />
-          <NewComponentItem
-            isSelected={pageInfo.type === "dynamic"}
-            title="Dynamic page"
-            imgUrl={"https://jovial-poitras-57edb1.netlify.app/blank.png"}
-            onClick={() => {
-              setPageInfo({ type: "dynamic", name: getNewPageName("NewPage") });
             }}
           />
         </NewComponentSection>

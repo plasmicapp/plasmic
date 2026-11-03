@@ -139,7 +139,9 @@ export const InternalDataPickerEditor = observer(
             }
             expectedValues={expectedValues}
             initialMode={initialMode}
-            withAddQuery={!!viewCtx}
+            withAddQuery={
+              !!viewCtx && viewCtx.studioCtx.appCtx.appConfig.enableDataQueries
+            }
             hidePreview={hidePreview}
             onAddQuery={() => {
               if (viewCtx) {

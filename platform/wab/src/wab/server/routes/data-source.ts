@@ -5,6 +5,7 @@ import {
   makeFetcher,
 } from "@/wab/server/data-sources/data-source-utils";
 import { DataSource } from "@/wab/server/entities/Entities";
+import { checkLegacyDataSourceOpRateLimit } from "@/wab/server/routes/server-data";
 import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import { mkApiWorkspaces } from "@/wab/server/routes/workspaces";
 import {
@@ -323,6 +324,8 @@ export async function executeDataSourceStudioOperationHandler(
       `Project ${projectId} is not allowed to use data source ${dataSourceId}`,
     );
   }
+
+  await checkLegacyDataSourceOpRateLimit(req, res);
 
   const op: OperationTemplate = {
     name: request.name,

@@ -5,17 +5,7 @@ import path from "path";
 import tmp from "tmp";
 import { getEnvVar } from "../env";
 import { NextJsContext, prepareTemplate } from "../nextjs/nextjs-setup";
-import {
-  TODOMVC_SEED_SQL,
-  createPostgresTestDatabase,
-} from "../postgres-test-db";
-import {
-  DataSourceReplacement,
-  createPostgresDataSource,
-  removeDataSource,
-  runCommand,
-  waitUntilServerUp,
-} from "../utils";
+import { runCommand, waitUntilServerUp } from "../utils";
 
 type AppRoles = Array<{ id: string; name: string; order: number }>;
 
@@ -46,7 +36,7 @@ class Api {
       {
         email,
         password,
-      }
+      },
     );
 
     await this.loadCSRF();
@@ -64,7 +54,7 @@ class Api {
     method: string,
     route: string,
     headers: Record<string, string> = {},
-    body?: Record<string, any>
+    body?: Record<string, any>,
   ) {
     const reqHeaders = {
       ...this.defaultHeaders(),
@@ -84,7 +74,7 @@ class Api {
         return jsonResponse(
           await this.request.get(url, {
             headers: reqHeaders,
-          })
+          }),
         );
       }
       case "POST": {
@@ -92,7 +82,7 @@ class Api {
           await this.request.post(url, {
             headers: reqHeaders,
             data: body,
-          })
+          }),
         );
       }
       case "DELETE": {
@@ -100,7 +90,7 @@ class Api {
           await this.request.delete(url, {
             headers: reqHeaders,
             data: body,
-          })
+          }),
         );
       }
       default:
@@ -117,21 +107,19 @@ async function uploadProject(
     bundleTransformation?: (value: string) => string;
     keepProjectIdsAndNames?: boolean;
     publish?: boolean;
-    dataSourceReplacement?: DataSourceReplacement;
     projectDomains?: string[];
-  }
+  },
 ) {
   const {
     bundleTransformation,
     keepProjectIdsAndNames,
     publish,
-    dataSourceReplacement,
     projectDomains,
   } = opts ?? {};
   const name = projectName.replace(/\s/g, "");
   const rawData = fs
     .readFileSync(
-      path.resolve(path.join(__dirname, "..", "..", "data", fileName))
+      path.resolve(path.join(__dirname, "..", "..", "data", fileName)),
     )
     .toString();
   const data = bundleTransformation ? bundleTransformation(rawData) : rawData;
@@ -148,9 +136,8 @@ async function uploadProject(
       name,
       publish,
       keepProjectIdsAndNames,
-      dataSourceReplacement,
       projectDomains,
-    }
+    },
   );
   console.log(`Uploaded ${fileName} as ${projectName} (${projectId})`);
   return { projectId, projectToken, workspaceId };
@@ -163,7 +150,7 @@ async function deleteProjectAndRevisions(api: Api, projectId: string) {
     {},
     {
       projectId,
-    }
+    },
   );
 }
 
@@ -178,7 +165,7 @@ export async function createEndUserDirectory(api: Api, workspaceId: string) {
     {},
     {
       name: "Test Directory",
-    }
+    },
   );
 
   return {
@@ -192,7 +179,7 @@ export async function upsertAppAuthConfig(
   projectId: string,
   directoryId: string,
   provider: "plasmic-auth" | "custom-auth",
-  redirectUris: string[] = []
+  redirectUris: string[] = [],
 ) {
   const config = await api.fetch(
     "POST",
@@ -202,7 +189,7 @@ export async function upsertAppAuthConfig(
       directoryId,
       provider,
       redirectUris,
-    }
+    },
   );
 
   return {
@@ -218,7 +205,7 @@ export async function getAppAuthRoles(api: Api, projectId: string) {
 export async function inviteUsersToApp(
   api: Api,
   projectId: string,
-  roles: AppRoles
+  roles: AppRoles,
 ) {
   const nonAnonRoles = roles.filter((r) => r.order > 0);
   const accesses = await Promise.all(
@@ -233,9 +220,9 @@ export async function inviteUsersToApp(
         {
           roleId: role.id,
           emails: [`e2e.${role.order}@plasmic.app`],
-        }
+        },
       );
-    })
+    }),
   );
 
   // Just invite plasmic app default users
@@ -246,7 +233,7 @@ export async function inviteUsersToApp(
     {
       roleId: nonAnonRoles[0].id,
       emails: ["admin@admin.example.com", "user@example.com"],
-    }
+    },
   );
 
   return accesses.map(([access]) => {
@@ -277,21 +264,20 @@ export async function setupAppAuth(
   opts: {
     host: string;
     provider: "plasmic-auth" | "custom-auth";
-    dataSourceId: string;
-  }
+  },
 ) {
   await deleteProjectAndRevisions(api, projectId);
 
   const { teamId, directoryId } = await createEndUserDirectory(
     api,
-    workspaceId
+    workspaceId,
   );
   const { appAuthSecret } = await upsertAppAuthConfig(
     api,
     projectId,
     directoryId,
     opts.provider,
-    [`${opts.host}/`]
+    [`${opts.host}/`],
   );
   const roles = await getAppAuthRoles(api, projectId);
   const users = await inviteUsersToApp(api, projectId, roles);
@@ -308,27 +294,24 @@ export async function setupAppAuth(
           .replace(new RegExp(AUTH_BUNDLE_REFERENCES.projectId, "g"), projectId)
           .replace(
             new RegExp(AUTH_BUNDLE_REFERENCES.antd5ProjectId, "g"),
-            `${projectId}antd5`
+            `${projectId}antd5`,
           )
           .replace(
             new RegExp(AUTH_BUNDLE_REFERENCES.richCompsProjectId, "g"),
-            `${projectId}rich`
+            `${projectId}rich`,
           )
           .replace(
             new RegExp(AUTH_BUNDLE_REFERENCES.adminRoleId, "g"),
-            roles.find((r) => r.order === 2)?.id as string
+            roles.find((r) => r.order === 2)?.id as string,
           )
           .replace(
             new RegExp(AUTH_BUNDLE_REFERENCES.normalRoleId, "g"),
-            roles.find((r) => r.order === 1)?.id as string
+            roles.find((r) => r.order === 1)?.id as string,
           );
       },
       keepProjectIdsAndNames: true,
       publish: false,
-      dataSourceReplacement: {
-        fakeSourceId: opts.dataSourceId,
-      },
-    }
+    },
   );
   return {
     projectId,
@@ -386,13 +369,7 @@ export async function authNextJsSetup(opts: {
       // Don't publish since we will do a second upload with auth
       publish: false,
       projectDomains: [`localhost:${port}`],
-    }
-  );
-
-  const testDatabase = await createPostgresTestDatabase(TODOMVC_SEED_SQL);
-  const dataSourceId = await createPostgresDataSource(
-    `Todomvc ${testDatabase.connection.name}`,
-    testDatabase.connection
+    },
   );
 
   const authCtx: AppAuthContext = await setupAppAuth(
@@ -403,8 +380,7 @@ export async function authNextJsSetup(opts: {
     {
       ...appAuthOpts,
       host,
-      dataSourceId,
-    }
+    },
   );
 
   const { projectToken } = authCtx;
@@ -416,7 +392,7 @@ export async function authNextJsSetup(opts: {
   console.log("tmpdir", tmpdir);
   const template = opts.template ?? "template";
   const templateDir = path.resolve(
-    path.join(__dirname, "..", "nextjs", template)
+    path.join(__dirname, "..", "nextjs", template),
   );
 
   await prepareTemplate({
@@ -435,14 +411,14 @@ export async function authNextJsSetup(opts: {
     JSON.stringify({
       appSecret: authCtx.appAuthSecret,
       authHost: getEnvVar("WAB_HOST"),
-    })
+    }),
   );
 
   await runCommand(`npm run build`, { dir: tmpdir });
 
   const nextServer = runCommand(
     `./node_modules/.bin/next start --port ${port}`,
-    { dir: tmpdir, noExit: true, output: "inherit" }
+    { dir: tmpdir, noExit: true, output: "inherit" },
   );
 
   await waitUntilServerUp(host, { process: nextServer });
@@ -463,9 +439,5 @@ export async function authNextJsSetup(opts: {
     server: nextServer,
     host,
     authCtx,
-    cleanup: async () => {
-      await removeDataSource(dataSourceId);
-      await testDatabase.dispose();
-    },
   };
 }

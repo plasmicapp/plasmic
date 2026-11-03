@@ -36,30 +36,32 @@ function DataSource_(
       >
         Delete
       </Menu.Item>
-      <Menu.Item
-        key="move"
-        onClick={async () => {
-          const response = await promptMoveToWorkspace(
-            appCtx,
-            null,
-            false,
-            "Move",
-          );
-          if (!response) {
-            return;
-          }
-          assert(response.result === "workspace", "Must specify a workspace");
-          await appCtx.api.updateDataSource(source.id, {
-            workspaceId: response.workspace.id,
-          });
-          notification.success({
-            message: `Integration ${source.name} moved to ${response.workspace.name}`,
-          });
-          await onUpdate();
-        }}
-      >
-        Move to workspace
-      </Menu.Item>
+      {appCtx.appConfig.enableDataQueries && (
+        <Menu.Item
+          key="move"
+          onClick={async () => {
+            const response = await promptMoveToWorkspace(
+              appCtx,
+              null,
+              false,
+              "Move",
+            );
+            if (!response) {
+              return;
+            }
+            assert(response.result === "workspace", "Must specify a workspace");
+            await appCtx.api.updateDataSource(source.id, {
+              workspaceId: response.workspace.id,
+            });
+            notification.success({
+              message: `Integration ${source.name} moved to ${response.workspace.name}`,
+            });
+            await onUpdate();
+          }}
+        >
+          Move to workspace
+        </Menu.Item>
+      )}
     </Menu>
   );
 

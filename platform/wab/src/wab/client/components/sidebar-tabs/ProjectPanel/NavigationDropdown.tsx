@@ -8,17 +8,6 @@ import {
 } from "@/wab/client/components/grouping/VirtualTree";
 import { KeyboardShortcut } from "@/wab/client/components/menu-builder";
 import { promptDeleteFolder } from "@/wab/client/components/modals/folderDeletionModal";
-import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
-import {
-  getOpIdForDataSourceOpExpr,
-  orderFieldsByRanking,
-  useSource,
-  useSourceSchemaData,
-} from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
-import {
-  DataSourceTablePicker,
-  INVALID_DATA_SOURCE_MESSAGE,
-} from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceTablePicker";
 import { deleteArenas } from "@/wab/client/components/sidebar-tabs/ProjectPanel/ArenaContextMenu";
 import {
   ArenaData,
@@ -38,12 +27,9 @@ import {
   getArenaDisplay,
 } from "@/wab/client/components/sidebar-tabs/ProjectPanel/NavigationRows";
 import styles from "@/wab/client/components/sidebar-tabs/ProjectPanel/ProjectPanelTop.module.scss";
-import Button from "@/wab/client/components/widgets/Button";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { ListStack } from "@/wab/client/components/widgets/ListStack";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 import { NewComponentInfo } from "@/wab/client/components/widgets/NewComponentModal";
-import { providesAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   buildInsertableExtraInfo,
   getScreenVariantToInsertableTemplate,
@@ -55,54 +41,19 @@ import {
   promptPageTemplate,
 } from "@/wab/client/prompts";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
-import {
-  StudioCtx,
-  providesStudioCtx,
-  useStudioCtx,
-} from "@/wab/client/studio-ctx/StudioCtx";
+import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { testIds } from "@/wab/client/test-ids";
-import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
-import { valueAsString } from "@/wab/commons/values";
 import { ArenaType, isArenaType } from "@/wab/shared/ApiSchema";
 import { AnyArena, getArenaName } from "@/wab/shared/Arenas";
 import { ARENAS_DESCRIPTION, ARENA_LOWER } from "@/wab/shared/Labels";
-import { tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
-import { addEmptyQuery } from "@/wab/shared/TplMgr";
-import { $$$ } from "@/wab/shared/TplQuery";
-import { getHostLessComponents } from "@/wab/shared/code-components/code-components";
-import { toVarName } from "@/wab/shared/codegen/util";
 import {
   assert,
   spawn,
-  swallow,
   switchType,
   unreachable,
   withoutNils,
 } from "@/wab/shared/common";
 import { ComponentType, PageComponent } from "@/wab/shared/core/components";
-import {
-  asCode,
-  code,
-  codeLit,
-  mkTemplatedStringOfOneDynExpr,
-} from "@/wab/shared/core/exprs";
-import {
-  flattenTpls,
-  isTplContainer,
-  isTplTag,
-  isTplTextBlock,
-  mkTplComponentX,
-  mkTplInlinedText,
-} from "@/wab/shared/core/tpls";
-import { getDataSourceMeta } from "@/wab/shared/data-sources-meta/data-source-registry";
-import {
-  LookupSpec,
-  LookupSpecDraft,
-  ensureDataSourceStandardQuery,
-  ensureLookupSpecFromDraft,
-} from "@/wab/shared/data-sources-meta/data-sources";
-import { tryEvalExpr } from "@/wab/shared/eval";
-import { pathToString } from "@/wab/shared/eval/expression-parser";
 import {
   Folder as InternalFolder,
   createFolderTreeStructure,
@@ -112,15 +63,7 @@ import {
   replaceFolderName,
 } from "@/wab/shared/folders/folders-util";
 import { InsertableTemplateComponentExtraInfo } from "@/wab/shared/insertable-templates/types";
-import {
-  Arena,
-  ComponentArena,
-  ExprText,
-  ObjectPath,
-  PageArena,
-} from "@/wab/shared/model/classes";
-import { TableSchema } from "@plasmicapp/data-sources";
-import { executePlasmicDataOp } from "@plasmicapp/react-web/lib/data-sources";
+import { Arena, ComponentArena, PageArena } from "@/wab/shared/model/classes";
 import { Dropdown, Menu } from "antd";
 import { debounce } from "lodash";
 import { observer } from "mobx-react";
@@ -191,89 +134,6 @@ export function mapToArenaPanelRow({
     actions,
   };
 }
-
-const DYNAMIC_PAGES_HELP_TEXT = `Generate a unique page per record from a table, with paths like \`/products/[id]\` and \`/posts/[id]\`. [Learn more in the docs](https://docs.plasmic.app/learn/dynamic-pages).`;
-
-function DataSourceTablePickerWrapper({
-  onSubmit,
-  studioCtx,
-}: {
-  studioCtx: StudioCtx;
-  onSubmit: ([lookupSpec, fields]: [LookupSpec, TableSchema]) => void;
-}) {
-  const [draft, setDraft] = React.useState<LookupSpecDraft | undefined>(
-    undefined,
-  );
-  const { data: source } = useSource(studioCtx, draft?.sourceId);
-  const { data: sourceSchemaData } = useSourceSchemaData(
-    studioCtx,
-    draft?.sourceId,
-    source,
-  );
-
-  const isSaveDisabled = React.useMemo(
-    () =>
-      draft === undefined ||
-      draft.sourceId === undefined ||
-      draft.tableId === undefined ||
-      draft.lookupFields === undefined,
-    [draft],
-  );
-
-  const onCreatePage = React.useCallback(() => {
-    if (!draft || !sourceSchemaData) {
-      return;
-    }
-    const table = sourceSchemaData.tables.find(
-      (t) => t.id === draft.tableId,
-    ) as TableSchema;
-    if (!table) {
-      return;
-    }
-    onSubmit([ensureLookupSpecFromDraft(draft), table]);
-  }, [source, sourceSchemaData, draft]);
-
-  return (
-    <div className="flex flex-col gap-xlg">
-      <StandardMarkdown>{DYNAMIC_PAGES_HELP_TEXT}</StandardMarkdown>
-      <DataSourceTablePicker
-        studioCtx={studioCtx}
-        draft={draft}
-        onChange={(newDraft) => setDraft(newDraft)}
-        requiredStandardQueries={["getList", "getOne"]}
-        invalidDataSourceMessage={INVALID_DATA_SOURCE_MESSAGE.dynamicPages}
-        exprCtx={{
-          projectFlags: studioCtx.projectFlags(),
-          component: null,
-          inStudio: true,
-        }}
-      />
-      <div>
-        <Button
-          type={"primary"}
-          disabled={isSaveDisabled}
-          onClick={onCreatePage}
-        >
-          Create dynamic page
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-const rankedFieldsForDisplayName = [
-  "displayname",
-  "title",
-  "name",
-  "firstname",
-  "username",
-  "label",
-  "description",
-  "email",
-  "handle",
-  "slug",
-  "id",
-];
 
 interface NavigationDropdownContextValue {
   onClose: () => void;
@@ -435,224 +295,6 @@ function NavigationDropdown_(
             );
 
             await mkPage();
-            break;
-          }
-          case "dynamic": {
-            // First, ask what to create a dynamic page over.
-            const dynpageResponse = await showTemporaryPrompt<
-              [LookupSpec, TableSchema]
-            >((onSubmit, onCancel) =>
-              providesStudioCtx(studioCtx)(
-                providesAppCtx(studioCtx.appCtx)(
-                  <Modal
-                    title={`Create dynamic page template`}
-                    visible={true}
-                    footer={null}
-                    onCancel={() => onCancel()}
-                  >
-                    <DataSourceTablePickerWrapper
-                      studioCtx={studioCtx}
-                      onSubmit={onSubmit}
-                    />
-                  </Modal>,
-                ),
-              ),
-            );
-            if (!dynpageResponse) {
-              return;
-            }
-            const [lookupSpec, tableSchema] = dynpageResponse;
-
-            await studioCtx.app.withSpinner(
-              (async () => {
-                // *Now* create the page.
-                const page = await mkPage();
-
-                // Prep
-                const { lookupFields, tableLabel, tableId, sourceType } =
-                  lookupSpec;
-                const tableSym = toVarName(tableLabel ?? tableId);
-                const sourceMeta = getDataSourceMeta(sourceType);
-
-                // Try getting an arbitrary object.
-                // Issue a getMany query without filters. Could be slow!
-                const listRecords = ensureDataSourceStandardQuery(
-                  sourceMeta,
-                  "getList",
-                )(lookupSpec.sourceId, lookupSpec.tableId);
-                const { api } = studioCtx.appCtx;
-                listRecords.opId = await getOpIdForDataSourceOpExpr(
-                  api,
-                  listRecords,
-                  {
-                    projectFlags: studioCtx.projectFlags(),
-                    component: page,
-                    inStudio: true,
-                  },
-                  studioCtx.siteInfo.id,
-                );
-                const maybeEvalResult =
-                  swallow(() =>
-                    tryEvalExpr(
-                      asCode(listRecords, {
-                        projectFlags: studioCtx.projectFlags(),
-                        component: page,
-                        inStudio: true,
-                      }).code,
-                      {},
-                    ),
-                  ) ?? undefined;
-                const result = maybeEvalResult
-                  ? await executePlasmicDataOp(maybeEvalResult.val)
-                  : undefined;
-                const initialValues = Object.fromEntries(
-                  lookupFields.map((field) => [
-                    field,
-                    result?.data[0]?.[field] ?? "value",
-                  ]),
-                );
-
-                // Create the lookup query that the dynamic page will use.
-                // It references $ctx.params.FIELD
-                const lookupValue = {
-                  value: Object.fromEntries(
-                    lookupFields.map((field, idx) => [field, `{{${idx + 1}}}`]),
-                  ),
-                  bindings: Object.fromEntries(
-                    lookupFields.map((field, idx) => {
-                      const path = new ObjectPath({
-                        path: ["$ctx", "params", field],
-                        fallback: null,
-                      });
-                      const fieldType =
-                        tableSchema.fields.find((f) => f.id === field)?.type ??
-                        "text";
-                      return [
-                        `{{${idx + 1}}}`,
-                        ["text", "string"].includes(fieldType)
-                          ? mkTemplatedStringOfOneDynExpr(path)
-                          : path,
-                      ];
-                    }),
-                  ),
-                };
-                const getOneQuery = ensureDataSourceStandardQuery(
-                  sourceMeta,
-                  "getOne",
-                )(lookupSpec.sourceId, tableSchema, lookupValue);
-                getOneQuery.opId = await getOpIdForDataSourceOpExpr(
-                  studioCtx.appCtx.api,
-                  getOneQuery,
-                  {
-                    projectFlags: studioCtx.projectFlags(),
-                    component: page,
-                    inStudio: true,
-                  },
-                  studioCtx.siteInfo.id,
-                );
-
-                // Update the page path info with the path URL.
-                // Fill in the initialValue we got as the default preview value for the param.
-                // And add name h1.
-                await studioCtx.changeUnsafe(() => {
-                  studioCtx
-                    .tplMgr()
-                    .changePagePath(
-                      page,
-                      `/${encodeURIComponent(tableSym)}/${lookupFields
-                        .map((field) => `[${field}]`)
-                        .join("/")}`,
-                    );
-                  // Make sure to convert these to strings, since query params are always strings (not numbers etc.).
-                  page.pageMeta.params = {
-                    ...page.pageMeta.params,
-                    ...Object.fromEntries(
-                      lookupFields.map((field) => [
-                        field,
-                        valueAsString(initialValues[field]),
-                      ]),
-                    ),
-                  };
-
-                  // Find first h1 or insert h1 into first page section within main slot or root.
-                  function createH1() {
-                    const baseVariant = page.variants[0];
-                    const newTpl = mkTplInlinedText(
-                      "Name",
-                      [baseVariant],
-                      "h1",
-                    );
-
-                    // If there is a main slot, must insert there, or else root (assuming it's a container).
-                    const root =
-                      tryGetMainContentSlotTarget(page.tplTree) ??
-                      (isTplContainer(page.tplTree) ? page.tplTree : undefined);
-
-                    // Find a page section or else insert into slot/root.
-                    const targetParent =
-                      flattenTpls(page.tplTree).find(
-                        (tpl) => isTplTag(tpl) && tpl.tag === "section",
-                      ) ?? root;
-                    if (!targetParent) {
-                      return undefined;
-                    }
-
-                    $$$(targetParent).prepend(newTpl);
-
-                    // Try also adding a RichDetails component, if installed.
-                    // We're only adding this if inserting a new title.
-                    // We don't try this if we found some existing h1.
-                    const richDetailsComponent = getHostLessComponents(
-                      studioCtx.site,
-                    ).find((c) => c.name === "hostless-rich-details");
-                    if (richDetailsComponent) {
-                      $$$(newTpl).after(
-                        mkTplComponentX({
-                          component: richDetailsComponent,
-                          baseVariant,
-                          args: {
-                            data: new ObjectPath({
-                              path: ["$queries", "query", "data", 0],
-                              fallback: codeLit(null),
-                            }),
-                          },
-                        }),
-                      );
-                    }
-                    return newTpl;
-                  }
-
-                  // Add the title as well.
-                  const tplTitle =
-                    flattenTpls(page.tplTree).find((tpl) =>
-                      isTplTextBlock(tpl, "h1"),
-                    ) ?? createH1();
-                  if (tplTitle) {
-                    // Set its dynamic value.
-                    const bestField =
-                      orderFieldsByRanking(
-                        tableSchema.fields,
-                        rankedFieldsForDisplayName,
-                        true,
-                      )[0]?.id ?? lookupFields[0];
-                    tplTitle.vsettings[0].text = new ExprText({
-                      expr: code(
-                        `(${pathToString([
-                          "$queries.query.data[0]",
-                          bestField,
-                        ])})`,
-                        codeLit("Page title"),
-                      ),
-                      html: false,
-                    });
-                  }
-
-                  // Now add the query we prepared earlier as well.
-                  const pageQuery = addEmptyQuery(page, "query");
-                  pageQuery.op = getOneQuery;
-                });
-              })(),
-            );
             break;
           }
         }

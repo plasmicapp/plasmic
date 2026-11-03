@@ -1,3 +1,8 @@
+// organize-imports-ignore
+// Load MixinControls first. It is part of an import cycle with
+// StyleComponent, and loading StyleComponent first leaves it undefined when
+// align-items-controls extends it.
+import "@/wab/client/components/sidebar/MixinControls";
 import {
   PropEditorRow,
   PropValueEditorContext,

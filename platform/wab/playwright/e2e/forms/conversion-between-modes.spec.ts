@@ -8,7 +8,6 @@ import {
 
 test.describe("conversion-between-modes", () => {
   let projectId: string;
-  let dataSourceId: string;
 
   async function selectFormInOutline(models: PageModels) {
     const outlineForm = models.studio.frame.locator('text="Form"').first();
@@ -19,19 +18,12 @@ test.describe("conversion-between-modes", () => {
   }
 
   test.beforeEach(async ({ apiClient, page }) => {
-    dataSourceId = await apiClient.createFakeDataSource();
-
-    projectId = await apiClient.setupProjectFromTemplate(formsBundle, {
-      dataSourceReplacement: {
-        fakeSourceId: dataSourceId,
-      },
-    });
+    projectId = await apiClient.setupProjectFromTemplate(formsBundle);
 
     await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
-    await apiClient.deleteDataSourceOfCurrentTest();
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
@@ -179,111 +171,6 @@ test.describe("conversion-between-modes", () => {
     await checkFormValues(expectedFormItems, frame);
 
     await selectFormInOutline(models);
-
-    await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle",
-    );
-
-    await checkFormValues(expectedFormItems, frame);
-
-    await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle",
-    );
-
-    await checkFormValues(expectedFormItems, frame);
-
-    await models.studio.rightPanel.checkNoErrors();
-  });
-
-  test("schema mode: new entry", async ({ models }) => {
-    const frame = await models.studio.switchArena("Test Conversion 3");
-
-    await models.studio.leftPanel.insertNode("plasmic-antd5-form");
-
-    const expectedFormItems: ExpectedFormItem[] = [
-      { name: "id", label: "id", type: "Number" },
-      { name: "firstName", label: "firstName", type: "Text" },
-      { name: "lastName", label: "lastName", type: "Text" },
-      { name: "sport", label: "sport", type: "Text" },
-      { name: "age", label: "age", type: "Number" },
-    ];
-
-    await selectFormInOutline(models);
-
-    await checkFormValues(expectedFormItems, frame);
-
-    await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle",
-    );
-
-    await checkFormValues(expectedFormItems, frame);
-
-    await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle",
-    );
-
-    await checkFormValues(expectedFormItems, frame);
-
-    await models.studio.rightPanel.checkNoErrors();
-  });
-
-  test("schema mode: update entry", async ({ models }) => {
-    const frame = await models.studio.switchArena("Test Conversion 4");
-
-    await models.studio.leftPanel.insertNode("plasmic-antd5-form");
-
-    const expectedFormItems: ExpectedFormItem[] = [
-      { name: "id", label: "id", type: "Number", value: 1 },
-      { name: "name", label: "name", type: "Text" },
-      { name: "price", label: "price", type: "Number", value: 2 },
-    ];
-
-    await selectFormInOutline(models);
-
-    await checkFormValues(expectedFormItems, frame);
-
-    await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle",
-    );
-
-    await checkFormValues(expectedFormItems, frame);
-
-    await models.studio.rightPanel.clickDataPlasmicProp(
-      "simplified-mode-toggle",
-    );
-
-    await checkFormValues(expectedFormItems, frame);
-
-    await models.studio.rightPanel.checkNoErrors();
-  });
-
-  test("conversion keeps dynamic values", async ({ models }) => {
-    const frame = await models.studio.switchArena("Test Conversion 5");
-
-    await models.studio.leftPanel.insertNode("plasmic-antd5-form");
-
-    const expectedFormItems: ExpectedFormItem[] = [
-      { name: "id", label: "id", type: "Number" },
-      {
-        name: "firstName",
-        label: "First Name",
-        type: "Text",
-        value: "Hello",
-      },
-      {
-        name: "Last name",
-        label: "lastName",
-        type: "Text",
-        value: "World",
-      },
-      { name: "sport", label: "sport", type: "Text" },
-      { name: "age", label: "age", type: "Number" },
-      { name: "active", label: "Active", type: "Checkbox", value: true },
-    ];
-
-    await selectFormInOutline(models);
-
-    await checkFormValues(expectedFormItems, frame);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
       "simplified-mode-toggle",

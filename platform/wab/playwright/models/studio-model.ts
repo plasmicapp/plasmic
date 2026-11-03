@@ -1110,18 +1110,6 @@ export class StudioModel extends BaseModel {
       .click();
   }
 
-  async deleteDataSource(name: string): Promise<void> {
-    await this.page.getByText(name).first().click({ button: "right" });
-    await this.page.waitForTimeout(500);
-    const deleteMenuItem = this.page
-      .locator(".ant-dropdown-menu")
-      .getByText("Delete");
-    await deleteMenuItem.waitFor({ state: "visible" });
-    await deleteMenuItem.click();
-    await this.page.locator(`[data-test-id="confirm"]`).click();
-    await this.page.getByRole("dialog").waitFor({ state: "hidden" });
-  }
-
   /**
    * Create a data token by right clicking a prop row.
    * rowLocator can be any element within the target row.

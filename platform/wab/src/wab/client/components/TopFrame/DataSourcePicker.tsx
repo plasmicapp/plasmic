@@ -119,13 +119,15 @@ export function DataSourcePicker({
                       type="bordered"
                       className="flex-fill"
                     >
-                      <Select.Option
-                        key="create"
-                        textValue={`Create new ${DATA_SOURCE_LOWER}`}
-                        value="create"
-                      >
-                        Create a new {DATA_SOURCE_LOWER}...
-                      </Select.Option>
+                      {appCtx.appConfig.enableDataQueries && (
+                        <Select.Option
+                          key="create"
+                          textValue={`Create new ${DATA_SOURCE_LOWER}`}
+                          value="create"
+                        >
+                          Create a new {DATA_SOURCE_LOWER}...
+                        </Select.Option>
+                      )}
                       {sources
                         .filter(
                           (source) =>
