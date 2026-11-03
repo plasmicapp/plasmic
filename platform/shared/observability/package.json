@@ -23,7 +23,7 @@
   "devDependencies": {
     "@opentelemetry/context-async-hooks": "2.1.0",
     "@opentelemetry/sdk-trace-base": "2.2.0",
-    "@types/node": "^22.19.19",
+    "@types/node": "catalog:",
     "otel-api-injected": "npm:@opentelemetry/api@1.9.0",
     "typescript": "catalog:",
     "vitest": "catalog:"
