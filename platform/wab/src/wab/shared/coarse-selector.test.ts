@@ -273,6 +273,37 @@ describe("coarseSelector", () => {
     recorder.dispose();
   });
 
+  it("keeps an equal result so that dependents don't recompute", () => {
+    const { site, compA, recorder } = setup();
+    const perComponent = countingComponentSelector((c) =>
+      flattenTpls(c.tplTree).map(tplName),
+    );
+    let siteRuns = 0;
+    const selector = siteSelector((s: Site) => {
+      siteRuns++;
+      return s.components.map((c) => perComponent.selector(c));
+    });
+
+    const namesA = perComponent.selector(compA);
+    const result = selector(site);
+    expect(siteRuns).toBe(1);
+
+    // A CSS edit invalidates A's selector, but its result is unchanged
+    setColor(tplChild(compA), "red");
+    expect(perComponent.selector(compA)).toBe(namesA);
+    expect(perComponent.counter.runs).toBe(3);
+    expect(selector(site)).toBe(result);
+    expect(siteRuns).toBe(1);
+
+    // A change to the tree that it reads propagates
+    tplChild(compA).name = "kid";
+    expect(perComponent.selector(compA)).toEqual(["A root", "kid"]);
+    expect(selector(site)[0]).toEqual(["A root", "kid"]);
+    expect(siteRuns).toBe(2);
+
+    recorder.dispose();
+  });
+
   it("allocates no field atoms on the insts it reads", () => {
     const { site, compA, compB, recorder } = setup();
     const selector = siteSelector((s: Site) =>

@@ -1667,10 +1667,16 @@ export function arrayEq(
   ys: ReadonlyArray<any>,
   comparator?: (a: any, b: any) => boolean,
 ) {
-  return (
-    xs.length === ys.length &&
-    xs.every((x, i) => (comparator ? comparator(x, ys[i]) : x === ys[i]))
-  );
+  if (xs.length !== ys.length) {
+    return false;
+  }
+  // Index directly rather than use `every`, which skips holes
+  for (let i = 0; i < xs.length; i++) {
+    if (comparator ? !comparator(xs[i], ys[i]) : xs[i] !== ys[i]) {
+      return false;
+    }
+  }
+  return true;
 }
 
 export function isPrefixArray(xs: ReadonlyArray<any>, ys: ReadonlyArray<any>) {

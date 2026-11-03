@@ -1,3 +1,4 @@
+import { arrayEq, isLiteralObject, setEquals } from "@/wab/shared/common";
 import mobx from "@/wab/shared/import-mobx";
 import type { Component, Site } from "@/wab/shared/model/classes";
 import { isModelInst } from "@/wab/shared/model/model-meta";
@@ -106,6 +107,7 @@ export function coarseSelector<T extends (...args: any[]) => any>(
 ): T {
   const actuallyComputedFn = computedFn(trackCoarsely(fn), {
     keepAlive: true,
+    equals: compareCustom,
     ...opts,
   });
   return function (...args: any[]) {
@@ -133,7 +135,7 @@ export function coarseComputed<T>(
   fn: () => T,
   opts?: IComputedValueOptions<T>,
 ): IComputedValue<T> {
-  return mobx.computed(trackCoarsely(fn), opts);
+  return mobx.computed(trackCoarsely(fn), { equals: compareCustom, ...opts });
 }
 
 type CachingFunction<T extends (...args: any[]) => any> = {
@@ -162,9 +164,10 @@ export function keyedComputedFn<T extends (...args: any[]) => any>(
       const key = keyFn(...args);
       let comp = cache.get(key);
       if (!comp) {
-        comp = mobx.computed(() => trackedFn(...args), {
+        comp = mobx.computed<ReturnType<T>>(() => trackedFn(...args), {
           name: `${opts.name ?? fn.name}-${i++}`,
           keepAlive: true,
+          ...(opts.coarse && { equals: compareCustom }),
         });
         cache.set(key, comp);
       }
@@ -269,3 +272,42 @@ export function disposeOwnedComputedFns(owner: object) {
   // unobserved
   mobx.runInAction(() => disposers?.forEach((dispose) => dispose()));
 }
+
+/**
+ * Same as mobx's `comparer.structural` except:
+ * - class instances are compared by identity
+ * - set and map order doesn't matter
+ * - set members and map keys are compared by identity
+ */
+function compareCustom(a: unknown, b: unknown): boolean {
+  if (Object.is(a, b)) {
+    return true;
+  }
+  if (Array.isArray(a)) {
+    return Array.isArray(b) && arrayEq(a, b, compareCustom);
+  }
+  if (a instanceof Set) {
+    return b instanceof Set && setEquals(a, b);
+  }
+  if (a instanceof Map) {
+    if (!(b instanceof Map) || a.size !== b.size) {
+      return false;
+    }
+    for (const [k, v] of a) {
+      if (!b.has(k) || !compareCustom(v, b.get(k))) {
+        return false;
+      }
+    }
+    return true;
+  }
+  if (isLiteralObject(a) && isLiteralObject(b)) {
+    const keys = Object.keys(a);
+    return (
+      keys.length === Object.keys(b).length &&
+      keys.every((k) => k in b && compareCustom(a[k], b[k]))
+    );
+  }
+  return false;
+}
+
+export const _testonly = { compareCustom };
