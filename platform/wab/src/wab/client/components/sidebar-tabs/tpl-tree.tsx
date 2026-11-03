@@ -1231,7 +1231,7 @@ function isCantDragInsertion(
   DragInsertion,
   "insert-above" | "insert-below" | "insert-as-child"
 > {
-  return !L.isString(ins);
+  return typeof ins !== "string";
 }
 
 function getTargetSlivers(

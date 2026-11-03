@@ -204,7 +204,7 @@ function CmsListItemHeader({
           disabled={disabled}
           onEdit={(newVal) => {
             const targetIndexOneBased = parseInt(newVal);
-            if (!isNaN(targetIndexOneBased)) {
+            if (!Number.isNaN(targetIndexOneBased)) {
               const targetIndex = targetIndexOneBased - 1;
               if (
                 targetIndex >= 0 &&

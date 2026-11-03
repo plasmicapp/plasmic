@@ -668,7 +668,7 @@ const FlexGrowControls = observer(function FlexGrowControls(props: {
             )}
             onEdit={(value) => {
               const num = parseFloat(value);
-              if (!isNaN(num) && num >= 0) {
+              if (!Number.isNaN(num) && num >= 0) {
                 spawn(
                   expsProvider.studioCtx.changeUnsafe(() => {
                     exp().set(prop, String(num));

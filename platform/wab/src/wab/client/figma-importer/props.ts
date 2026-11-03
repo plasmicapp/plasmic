@@ -29,7 +29,7 @@ import {
 } from "@/wab/shared/model/model-util";
 import type { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import { notification } from "antd";
-import { isArray, isBoolean, isNumber, isObject, isString, omit } from "lodash";
+import { isArray, isObject, omit } from "lodash";
 
 function getChildComponentNameFromPropertyKey(
   allDescendants: InstanceNode[],
@@ -61,10 +61,10 @@ function fixComponentFigmaPropKey(key: string, prop: ComponentProperty) {
 }
 
 function isFigmaTrueishValue(value: number | string | boolean | null) {
-  if (isBoolean(value)) {
+  if (typeof value === "boolean") {
     return value;
   }
-  if (isNumber(value)) {
+  if (typeof value === "number") {
     return value === 1;
   }
   if (value === null) {
@@ -85,7 +85,7 @@ function fixComponentFigmaPropValue(
   // Figma prop.value will either be a string, boolean or number, but we want to
   // but we will try to ensure that the value is a boolean, as we runned into
   if (prop.type === "BOOLEAN") {
-    if (isBoolean(prop.value)) {
+    if (typeof prop.value === "boolean") {
       return prop;
     }
     return { ...prop, value: isFigmaTrueishValue(prop.value) };
@@ -228,11 +228,11 @@ function fromFigmaPropsToTplProps(
         }
       }
       // Link props crashes studio if assigned an boolean
-      if (param.type.name === "href" && isBoolean(value)) {
+      if (param.type.name === "href" && typeof value === "boolean") {
         return null;
       }
       // Parse text to number if param is number
-      if (isNumType(param.type) && isString(value)) {
+      if (isNumType(param.type) && typeof value === "string") {
         return [param.variable.name, Number(value)];
       }
       if (isBoolType(param.type)) {

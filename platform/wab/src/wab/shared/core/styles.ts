@@ -1755,13 +1755,13 @@ function showPseudoClassSelector(
         }
       })
       .filter((sel) => {
-        if (L.isString(sel)) {
+        if (typeof sel === "string") {
           return true;
         }
         return !sel.cssSelector.startsWith("::") && !sel.trigger?.alwaysByHook;
       })
       .map((sel) => {
-        if (L.isString(sel)) {
+        if (typeof sel === "string") {
           return sel;
         }
         return sel.cssSelector;

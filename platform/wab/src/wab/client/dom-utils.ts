@@ -32,7 +32,6 @@ import {
 import { notification } from "antd";
 import * as downscale from "downscale";
 import $ from "jquery";
-import { isString } from "lodash";
 import isFunction from "lodash/isFunction";
 import memoize from "lodash/memoize";
 import React from "react";
@@ -285,9 +284,10 @@ export const isContextMenuDescendant = (child: Element) => {
 export async function readAndSanitizeFileAsImage(
   fileOrDataUrl: File | string,
 ): Promise<ResizableImage | undefined> {
-  const dataUrl = isString(fileOrDataUrl)
-    ? fileOrDataUrl
-    : await readUploadedFileAsDataUrl(fileOrDataUrl);
+  const dataUrl =
+    typeof fileOrDataUrl === "string"
+      ? fileOrDataUrl
+      : await readUploadedFileAsDataUrl(fileOrDataUrl);
 
   const parsed = parseDataUrl(dataUrl);
   if (parsed && parsed.contentType === SVG_MEDIA_TYPE) {

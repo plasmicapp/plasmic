@@ -311,7 +311,6 @@ import { DataDict, mkMetaName } from "@plasmicapp/host";
 import { $StateSpec } from "@plasmicapp/react-web";
 import {
   cloneDeep,
-  isString,
   last,
   omit,
   pick,
@@ -703,7 +702,7 @@ function mkInitFuncHash(
 
 function isSlotArgElement(v: React.ReactElement) {
   const props =
-    isString(v.key) && v.key.startsWith(slotFragmentKey)
+    typeof v.key === "string" && v.key.startsWith(slotFragmentKey)
       ? JSON.parse(v.key.slice(slotFragmentKey.length))
       : v.props;
   return !!props[slotArgCompKeyProp] && !!props[slotArgParamProp];
@@ -1892,7 +1891,7 @@ function computeRenderedArg(
         if (v.type === ctx.sub.React.Fragment) {
           const existingKey = v.key || v.props.key;
           if (
-            isString(existingKey) &&
+            typeof existingKey === "string" &&
             existingKey.startsWith(slotFragmentKey)
           ) {
             const existingAttrs = JSON.parse(

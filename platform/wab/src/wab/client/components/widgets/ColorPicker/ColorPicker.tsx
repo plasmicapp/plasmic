@@ -266,7 +266,7 @@ function ColorPicker_({
   };
 
   const applyAlpha = (newAlpha: number) => {
-    if (isNaN(newAlpha)) {
+    if (Number.isNaN(newAlpha)) {
       return;
     }
 

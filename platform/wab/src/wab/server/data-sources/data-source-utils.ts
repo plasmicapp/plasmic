@@ -60,7 +60,7 @@ import {
   Utils as QbUtils,
 } from "@react-awesome-query-builder/antd";
 import { isUUID } from "class-validator";
-import { isArray, isNil, isString, mapValues } from "lodash";
+import { isArray, isNil, mapValues } from "lodash";
 import { astMapper, parse, toSql } from "pgsql-ast-parser";
 import { Connection } from "typeorm";
 
@@ -157,7 +157,7 @@ export function substituteArgs(
       if (argMeta.type === "filter[]" && argMeta.isSql) {
         sqlString = buildSqlStringForFilterTemplateArg(source, template);
       }
-      if (isString(template) && isDynamicValue(template)) {
+      if (typeof template === "string" && isDynamicValue(template)) {
         // If this is indeed a template string, then perform substitution
         const subVals = userArgs[key];
         const substitutedArg = substituteTemplate(

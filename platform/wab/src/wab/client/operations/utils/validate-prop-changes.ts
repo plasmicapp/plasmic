@@ -16,7 +16,6 @@ import {
   getChoiceValue,
 } from "@/wab/shared/model/prop-type-config";
 import { ChoiceOptions } from "@plasmicapp/host";
-import { isString } from "lodash";
 
 /**
  * Validates a prop name: must be non-empty and must not end with "/"
@@ -87,16 +86,20 @@ export function validateValueForPropType(
       case "any":
         return true;
       case "string":
-        return isString(value);
+        return typeof value === "string";
       case "number":
         return (
           typeof value === "number" ||
-          (isString(value) && value.trim() !== "" && !Number.isNaN(+value))
+          (typeof value === "string" &&
+            value.trim() !== "" &&
+            !Number.isNaN(+value))
         );
       case "boolean":
         return typeof value === "boolean";
       case "string[]":
-        return Array.isArray(value) && value.every((v) => isString(v));
+        return (
+          Array.isArray(value) && value.every((v) => typeof v === "string")
+        );
     }
   };
   if (!matchesJsonType()) {

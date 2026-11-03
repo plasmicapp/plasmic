@@ -37,7 +37,7 @@ import {
 import { Formula, compile } from "@qualifyze/airtable-formulator";
 import Airtable from "airtable";
 import { AirtableBase } from "airtable/lib/airtable_base";
-import { isNumber, omit } from "lodash";
+import { omit } from "lodash";
 import moize from "moize";
 import refresh from "passport-oauth2-refresh";
 import { Connection } from "typeorm";
@@ -309,10 +309,10 @@ export class AirtableFetcher {
       const data = await this.client(opts.resource)
         .select({
           pageSize: 100,
-          ...(isNumber(pageIndex) && isNumber(pageSize)
+          ...(typeof pageIndex === "number" && typeof pageSize === "number"
             ? { offset: pageIndex * pageSize }
             : {}),
-          ...(isNumber(pageSize) ? { maxRecords: pageSize } : {}),
+          ...(typeof pageSize === "number" ? { maxRecords: pageSize } : {}),
           ...(opts.sort
             ? {
                 sort: opts.sort?.map(({ field, order }) => ({

@@ -14,15 +14,12 @@ import {
   flattenDeep,
   identity,
   isArray,
-  isBoolean,
   isDate,
   isElement,
   isEmpty,
   isFunction,
   isNil,
-  isNumber,
   isObject,
-  isString,
   chunk as lodashChunk,
   get as lodashGet,
   range as lodashRange,
@@ -180,7 +177,7 @@ function matchesType(val: any, type: any) {
   } else {
     return (
       val instanceof type ||
-      (type === String && isString(val)) ||
+      (type === String && typeof val === "string") ||
       (type === Function && isFunction(val)) ||
       (type != null && "isKnown" in type && type.isKnown(val))
     );
@@ -432,7 +429,7 @@ export function assert<T>(
   if (!cond) {
     // We always generate an non empty message so that it doesn't get swallowed
     // by the async library.
-    msg = (isString(msg) ? msg : msg()) || "Assertion failed";
+    msg = (typeof msg === "string" ? msg : msg()) || "Assertion failed";
     debugger;
     throw new AssertionError(msg);
   }
@@ -446,7 +443,7 @@ export function check<U>(value: U, msg: StringGen = "") {
 export function unexpected(msg: StringGen = ""): never {
   debugger;
   throw new InvalidCodePathError(
-    !msg ? undefined : isString(msg) ? msg : msg(),
+    !msg ? undefined : typeof msg === "string" ? msg : msg(),
   );
 }
 
@@ -711,7 +708,7 @@ export const cx = (...xs) =>
               for (const x of [...flexFlatten(xs)]) {
                 if (isObject(x)) {
                   yield x;
-                } else if (isString(x)) {
+                } else if (typeof x === "string") {
                   yield Object.fromEntries([tuple(x, true)]);
                 } else if (x) {
                   // Ignore falsy
@@ -1055,7 +1052,7 @@ export function ensure<T>(x: T | null | undefined, msg: StringGen): T;
 export function ensure<T>(x: T | null | undefined, msg: StringGen = ""): T {
   if (x === null || x === undefined) {
     debugger;
-    msg = (isString(msg) ? msg : msg()) || "";
+    msg = (typeof msg === "string" ? msg : msg()) || "";
     throw new NullOrUndefinedValueError(
       `Value must not be undefined or null${msg ? `- ${msg}` : ""}`,
     );
@@ -1094,7 +1091,7 @@ export function isValidIsoDate(str: string | undefined, extendedOnly = false) {
   if (!dayjs(str).isValid()) {
     return false;
   } // should be a valid dayjs date
-  if (isNaN(new Date(str).getTime())) {
+  if (Number.isNaN(new Date(str).getTime())) {
     return false;
   } // should be a valid js date
   return true;
@@ -1110,7 +1107,7 @@ export function ensureTruthy<T>(
 ): T {
   if (!x) {
     debugger;
-    msg = (isString(msg) ? msg : msg()) || "";
+    msg = (typeof msg === "string" ? msg : msg()) || "";
     throw new FalsyValueError(`Value must be truthy${msg ? `- ${msg}` : ""}`);
   } else {
     return x;
@@ -1341,7 +1338,7 @@ export function generate<T>(gen: () => IterableIterator<T>) {
 
 export function tryParseNumLit(text: string): number | undefined {
   let num;
-  if (text !== "" && !isNaN((num = +text))) {
+  if (text !== "" && !Number.isNaN((num = +text))) {
     return num;
   } else {
     return undefined;
@@ -1421,7 +1418,7 @@ export function zipWithIndex<T>(xs: ReadonlyArray<T>): [T, number][] {
 
 export function describeValueOrType(x: any): string {
   return isJsonScalar(x)
-    ? isString(x)
+    ? typeof x === "string"
       ? JSON.stringify(truncateTextMid(100, x))
       : JSON.stringify(x)
     : x === undefined
@@ -1484,7 +1481,7 @@ export function delay(ms: number) {
 }
 
 export function ensureString(x: any) {
-  if (isString(x)) {
+  if (typeof x === "string") {
     return x;
   } else {
     throw new Error(`Expected string, but got ${typeof x}`);
@@ -2045,7 +2042,7 @@ export function asyncMaxAtATime(max: number, f: AsyncCallable): AsyncCallable {
 }
 
 export function isArrayOfStrings(v: any): v is string[] {
-  return isArray(v) && v.every(isString);
+  return isArray(v) && v.every((x) => typeof x === "string");
 }
 
 export function isArrayOfLiterals(v: any): v is (string | number | boolean)[] {
@@ -2075,7 +2072,12 @@ export function hasKey<K extends string>(v: any, key: K): v is Record<K, any> {
 }
 
 export function isJsonScalar(v: any): v is string | number | boolean | null {
-  return isString(v) || isNumber(v) || isBoolean(v) || v === null;
+  return (
+    typeof v === "string" ||
+    typeof v === "number" ||
+    typeof v === "boolean" ||
+    v === null
+  );
 }
 
 /**

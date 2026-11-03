@@ -6,7 +6,7 @@ import { ensure, unexpected } from "@/wab/shared/common";
 import { StateAccessType, StateVariableType } from "@/wab/shared/core/states";
 import { exprUsesDollarVars } from "@/wab/shared/eval/expression-parser";
 import { Expr, VariantGroup } from "@/wab/shared/model/classes";
-import { isArray, isBoolean, isNumber, isPlainObject, isString } from "lodash";
+import { isArray, isPlainObject } from "lodash";
 
 /**
  * Checks that a JSON initial value is compatible with the state's variable
@@ -24,17 +24,17 @@ export function validateStateInitialValue(
   switch (variableType) {
     case "text":
     case "dateString":
-      return isString(value) ? undefined : typeError();
+      return typeof value === "string" ? undefined : typeError();
     case "number":
-      return isNumber(value) ? undefined : typeError();
+      return typeof value === "number" ? undefined : typeError();
     case "boolean":
-      return isBoolean(value) ? undefined : typeError();
+      return typeof value === "boolean" ? undefined : typeError();
     case "array":
       return isArray(value) ? undefined : typeError();
     case "object":
       return isPlainObject(value) ? undefined : typeError();
     case "dateRangeStrings":
-      return isArray(value) && value.every((v) => isString(v))
+      return isArray(value) && value.every((v) => typeof v === "string")
         ? undefined
         : typeError();
     case "variant":

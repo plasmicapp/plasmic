@@ -22,7 +22,7 @@ import { isValidJavaScriptCode, parseJsCode } from "@/wab/shared/parser-utils";
 import { matchesQueryCacheKey } from "@plasmicapp/data-sources";
 import { ancestor as traverse } from "acorn-walk";
 import { notification } from "antd";
-import { findLast, isString } from "lodash";
+import { findLast } from "lodash";
 
 function wrapInteractionCode(interactionCode: string) {
   return `(async () => {
@@ -69,7 +69,7 @@ export function doesCodeDependsOnPreviousStepsOrEventArgs(
         object.type === "Identifier" &&
         object.name === "$steps" &&
         property.type === "Literal" &&
-        isString(property.value)
+        typeof property.value === "string"
       ) {
         stepsUsages.push(property.value);
       } else if (

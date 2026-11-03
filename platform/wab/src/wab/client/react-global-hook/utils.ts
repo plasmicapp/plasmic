@@ -39,7 +39,6 @@ import {
   TplSlot,
   TplTag,
 } from "@/wab/shared/model/classes";
-import { isString } from "lodash";
 
 function hasKey(v: any, key: string) {
   return typeof v === "object" && v !== null && key in v;
@@ -51,11 +50,11 @@ const tryReadInternalProp = (
 ): string | undefined => {
   if (
     hasKey(node.memoizedProps, propName) &&
-    isString(node.memoizedProps[propName])
+    typeof node.memoizedProps[propName] === "string"
   ) {
     return node.memoizedProps[propName];
   }
-  if (isString(node.key) && node.key.startsWith(slotFragmentKey)) {
+  if (typeof node.key === "string" && node.key.startsWith(slotFragmentKey)) {
     const attrs = (() => {
       try {
         return JSON.parse(node.key.slice(slotFragmentKey.length));
@@ -63,7 +62,7 @@ const tryReadInternalProp = (
         throw new Error("Failed to parse key: " + node.key);
       }
     })();
-    if (hasKey(attrs, propName) && isString(attrs[propName])) {
+    if (hasKey(attrs, propName) && typeof attrs[propName] === "string") {
       return attrs[propName];
     }
   }

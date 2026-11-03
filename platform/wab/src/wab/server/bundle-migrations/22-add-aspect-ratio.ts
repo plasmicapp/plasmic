@@ -49,7 +49,7 @@ export const migrate: BundledMigrationFn = async (bundle) => {
             processed.status === "success"
               ? processed.result.aspectRatio
               : undefined;
-          if (aspectRatio && isFinite(aspectRatio)) {
+          if (aspectRatio && Number.isFinite(aspectRatio)) {
             inst["aspectRatio"] = Math.round(
               aspectRatio * ASPECT_RATIO_SCALE_FACTOR,
             );

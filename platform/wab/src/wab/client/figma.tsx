@@ -93,7 +93,6 @@ import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { WaitForClipError } from "@/wab/shared/UserError";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { notification } from "antd";
-import { isString } from "lodash";
 import { ok } from "neverthrow";
 import React from "react";
 import { Matrix } from "transformation-matrix";
@@ -415,7 +414,7 @@ export const denormalizeFigmaData = (
         if (
           !imagesToRename.has(denormalized.imageHash) &&
           par &&
-          isString(par["name"])
+          typeof par["name"] === "string"
         ) {
           imagesToRename.set(denormalized.imageHash, par["name"]);
         }

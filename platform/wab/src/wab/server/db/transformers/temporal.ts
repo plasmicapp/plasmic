@@ -57,8 +57,8 @@ export const tstzTransformer: Transformer<Temporal.Instant> = {
           Number.parseInt(groups["hour"]),
           Number.parseInt(groups["minute"]),
           Number.parseInt(groups["second"]),
-          isNaN(ms) ? 0 : Math.floor(ms / 1000),
-          isNaN(ms) ? 0 : ms % 1000,
+          Number.isNaN(ms) ? 0 : Math.floor(ms / 1000),
+          Number.isNaN(ms) ? 0 : ms % 1000,
         ),
         timeZone: groups["offset"],
       })

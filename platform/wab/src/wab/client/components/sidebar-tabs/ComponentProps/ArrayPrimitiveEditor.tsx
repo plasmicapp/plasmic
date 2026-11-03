@@ -67,7 +67,10 @@ function parseValue(inputVal: string, rows: ChoiceRow[]): ChoiceValue {
 function nextValue(rows: ChoiceRow[]): ChoiceValue {
   const values = rows.map((row) => row.value);
   // Auto-increment if the current values are all numeric
-  if (values.length && values.every((v) => !isNaN(parseFloat(String(v))))) {
+  if (
+    values.length &&
+    values.every((v) => !Number.isNaN(parseFloat(String(v))))
+  ) {
     const last = values[values.length - 1];
     return typeof last === "number"
       ? Number(last) + 1

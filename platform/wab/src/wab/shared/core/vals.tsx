@@ -21,9 +21,13 @@ import * as US from "underscore.string";
 export const summarizeVal = function (val: any) {
   if (val == null) {
     return "Nothing";
-  } else if (L.isString(val)) {
+  } else if (typeof val === "string") {
     return US.quote(val);
-  } else if (L.isNumber(val) || L.isDate(val) || L.isBoolean(val)) {
+  } else if (
+    typeof val === "number" ||
+    L.isDate(val) ||
+    typeof val === "boolean"
+  ) {
     return `${val}`;
   } else if (
     isKnownRenderExpr(val) ||

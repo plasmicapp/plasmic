@@ -91,7 +91,6 @@ import {
   differenceBy,
   groupBy,
   intersectionBy,
-  isString,
   pick,
   set,
   uniq,
@@ -375,7 +374,7 @@ export function deriveKeyFunc(
 ) {
   return function getKey(x: any) {
     if (
-      !isString(fm) &&
+      typeof fm !== "string" &&
       "arrayType" in fm &&
       (fm.arrayType === "ordered" || fm.arrayType === "unordered") &&
       fm.conflictType === "merge" &&
@@ -1291,7 +1290,7 @@ export function getDirectConflicts({
 
                 if (
                   fieldMeta &&
-                  !isString(fieldMeta) &&
+                  typeof fieldMeta !== "string" &&
                   "arrayType" in fieldMeta &&
                   fieldMeta.arrayType === "ordered"
                 ) {
@@ -1822,7 +1821,7 @@ export function keyPathGet(
     const conflictMeta = modelConflictsMeta[cls.name][field.name];
 
     const index = parseInt(key);
-    if (!isNaN(index) && conflictMeta.conflictType === "special") {
+    if (!Number.isNaN(index) && conflictMeta.conflictType === "special") {
       return rec(fieldVal[index], after);
     }
 
@@ -1830,7 +1829,7 @@ export function keyPathGet(
 
     const map = xKeyBy(fieldVal, getKey);
     const child =
-      !isNaN(index) && !map.has(key) ? fieldVal[index] : map.get(key);
+      !Number.isNaN(index) && !map.has(key) ? fieldVal[index] : map.get(key);
     return rec(child, after);
   } else {
     return rec(fieldVal, rest);

@@ -12,7 +12,6 @@ import { ProjectId, UserId } from "@/wab/shared/ApiSchema";
 import crypto from "crypto";
 import { Request, Response } from "express-serve-static-core";
 import jwt from "jsonwebtoken";
-import { isString } from "lodash";
 
 const encryptor = makeStableEncryptor(getEncryptionKey());
 interface OauthCodeMeta {
@@ -72,11 +71,12 @@ export async function issueOauthCode(req: Request, res: Response) {
 
   const mgr = superDbMgr(req);
   const appAuthConfig = await mgr.getAppAuthConfig(clientId as ProjectId);
-  const originHost = isString(rawOriginHost) ? rawOriginHost : undefined;
+  const originHost =
+    typeof rawOriginHost === "string" ? rawOriginHost : undefined;
 
   if (
     !clientId ||
-    !isString(clientId) ||
+    typeof clientId !== "string" ||
     !appAuthConfig ||
     appAuthConfig.provider !== "plasmic-auth"
   ) {
@@ -115,7 +115,7 @@ export async function issueOauthCode(req: Request, res: Response) {
     return;
   }
 
-  if (!isString(codeChallenge)) {
+  if (typeof codeChallenge !== "string") {
     performRedirect({ error: "invalid_code_challenge" });
     return;
   }
@@ -286,7 +286,7 @@ export function trackAppUserActivity(
 
 export function extractAppUserFromToken(req: Request, skipError = false) {
   const token = req.headers["x-plasmic-data-user-auth-token"];
-  if (!token || !isString(token)) {
+  if (!token || typeof token !== "string") {
     logger.debug(
       `[${req.id}] - Data source request without app auth token or with invalid token`,
     );
@@ -315,8 +315,9 @@ export async function upsertEndUser(req: Request, res: Response) {
     req.body.appAuthApiToken ?? req.headers["x-plasmic-app-auth-api-token"];
 
   const identifier = {
-    email: email && isString(email) ? email : undefined,
-    externalId: externalId && isString(externalId) ? externalId : undefined,
+    email: email && typeof email === "string" ? email : undefined,
+    externalId:
+      externalId && typeof externalId === "string" ? externalId : undefined,
   };
 
   if (!appAuthApiToken || (!identifier.email && !identifier.externalId)) {
@@ -415,9 +416,12 @@ export function parseRedirectURI(
     const baseDomain = `${protocol}://${domain}`;
     let redirectUri = new URL("/", baseDomain).toString();
     try {
-      if (state && isString(state)) {
+      if (state && typeof state === "string") {
         const parsedState = JSON.parse(state);
-        if (parsedState.continueTo && isString(parsedState.continueTo)) {
+        if (
+          parsedState.continueTo &&
+          typeof parsedState.continueTo === "string"
+        ) {
           // state.continueTo can be a full url or a pathanem
           if (isValidRedirectUri(parsedState.continueTo)) {
             const url = new URL(parsedState.continueTo);
@@ -448,7 +452,7 @@ export function parseRedirectURI(
   }
 
   if (queryRedirectUri) {
-    if (!isString(queryRedirectUri)) {
+    if (typeof queryRedirectUri !== "string") {
       return {
         valid: false,
       };

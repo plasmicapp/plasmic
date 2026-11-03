@@ -610,7 +610,7 @@ const styleForGeometryMixin = (
             const matrix = inverse(transformToMatrix(paint.gradientTransform));
 
             // If the matrix is not invertible, we won't attempt to use it
-            if (isNaN(matrix.a)) {
+            if (Number.isNaN(matrix.a)) {
               return;
             }
 

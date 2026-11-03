@@ -58,7 +58,7 @@ export function showSizeCss(size: Size): string {
 export const autoSize: KeywordSize = { type: "KeywordSize", value: "auto" };
 
 export function createNumericSize(num: number, unit: Unit): NumericSize {
-  check(isFinite(num));
+  check(Number.isFinite(num));
   return { type: "NumericSize", num, unit };
 }
 

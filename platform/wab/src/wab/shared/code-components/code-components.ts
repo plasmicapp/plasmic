@@ -243,7 +243,6 @@ import {
   isEqual,
   isNil,
   isObject,
-  isString,
   omit,
   partition,
   pick,
@@ -769,7 +768,7 @@ function typeCheckRegistrations(ctx: SiteCtx) {
     for (const {
       meta,
     } of ctx.codeComponentsRegistry.getRegisteredComponentsAndContexts()) {
-      if (!isString(meta.name)) {
+      if (typeof meta.name !== "string") {
         return err(
           new CodeComponentRegistrationTypeError(
             `meta.name is not a string. Received: ${meta.name}`,
@@ -777,7 +776,7 @@ function typeCheckRegistrations(ctx: SiteCtx) {
         );
       }
       const errorPrefix = `Failed to register code component named "${meta.name}". `;
-      if (!isString(meta.importPath)) {
+      if (typeof meta.importPath !== "string") {
         return err(
           new CodeComponentRegistrationTypeError(
             errorPrefix +
@@ -801,7 +800,7 @@ function typeCheckRegistrations(ctx: SiteCtx) {
         "refProp",
       ] as const;
       for (const prop of optionalStringProps) {
-        if (!isNil(meta[prop]) && !isString(meta[prop])) {
+        if (!isNil(meta[prop]) && typeof meta[prop] !== "string") {
           return err(
             new CodeComponentRegistrationTypeError(
               errorPrefix +
@@ -913,7 +912,7 @@ function typeCheckRegistrations(ctx: SiteCtx) {
           if ("editOnly" in propType && propType.editOnly) {
             if (
               !isNil(propType.uncontrolledProp) &&
-              !isString(propType.uncontrolledProp)
+              typeof propType.uncontrolledProp !== "string"
             ) {
               return err(
                 new CodeComponentRegistrationTypeError(
@@ -923,7 +922,10 @@ function typeCheckRegistrations(ctx: SiteCtx) {
               );
             }
           }
-          if (!isNil(propType.displayName) && !isString(propType.displayName)) {
+          if (
+            !isNil(propType.displayName) &&
+            typeof propType.displayName !== "string"
+          ) {
             return err(
               new CodeComponentRegistrationTypeError(
                 errorPrefix +
@@ -931,7 +933,10 @@ function typeCheckRegistrations(ctx: SiteCtx) {
               ),
             );
           }
-          if (!isNil(propType.description) && !isString(propType.description)) {
+          if (
+            !isNil(propType.description) &&
+            typeof propType.description !== "string"
+          ) {
             return err(
               new CodeComponentRegistrationTypeError(
                 errorPrefix +
@@ -990,18 +995,20 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                 );
               }
               break;
-            case "code":
-              if (!isString(propType.lang)) {
+            case "code": {
+              const lang: unknown = propType.lang;
+              if (typeof lang !== "string") {
                 return err(
                   new CodeComponentRegistrationTypeError(
                     errorPrefix +
-                      `Prop ${propName} has invalid "code" type. \`PropType.lang\` expects a string, but received: ${propType.lang}`,
+                      `Prop ${propName} has invalid "code" type. \`PropType.lang\` expects a string, but received: ${lang}`,
                   ),
                 );
               }
               break;
+            }
             case "dataSource":
-              if (!isString(propType.dataSource)) {
+              if (typeof propType.dataSource !== "string") {
                 return err(
                   new CodeComponentRegistrationTypeError(
                     errorPrefix +
@@ -1011,7 +1018,10 @@ function typeCheckRegistrations(ctx: SiteCtx) {
               }
               break;
             case "number": {
-              if (!isNil(propType.control) && !isString(propType.control)) {
+              if (
+                !isNil(propType.control) &&
+                typeof propType.control !== "string"
+              ) {
                 return err(
                   new CodeComponentRegistrationTypeError(
                     errorPrefix +
@@ -1054,7 +1064,10 @@ function typeCheckRegistrations(ctx: SiteCtx) {
               break;
             }
             case "string":
-              if (!isNil(propType.control) && !isString(propType.control)) {
+              if (
+                !isNil(propType.control) &&
+                typeof propType.control !== "string"
+              ) {
                 return err(
                   new CodeComponentRegistrationTypeError(
                     errorPrefix +
@@ -2619,7 +2632,7 @@ function mapParamTypeToArgType(
 ): ArgType["type"] {
   // `ParamType` includes a bare-`"string"` member; narrow it out so the rich
   // object members (which carry `.type`/`.options`) are accessible below.
-  if (isString(propType)) {
+  if (typeof propType === "string") {
     return typeFactory.text();
   }
   if (isArray(propType.type)) {
@@ -4042,7 +4055,9 @@ function typeCheckVariantsFromMeta(
   const hasInvalidVariant = Object.entries(meta.variants).some(
     ([selector, { cssSelector, displayName }]) => {
       return (
-        !isString(selector) || !isString(cssSelector) || !isString(displayName)
+        typeof selector !== "string" ||
+        typeof cssSelector !== "string" ||
+        typeof displayName !== "string"
       );
     },
   );
@@ -4762,7 +4777,7 @@ async function upsertRegisteredFunctions(
   };
 
   for (const functionReg of registeredFunctions.values()) {
-    if (!isString(functionReg.meta.name)) {
+    if (typeof functionReg.meta.name !== "string") {
       return err(
         new InvalidCustomFunctionError(
           `Error registering custom function: expected \`meta.name\` to be a string, but got: ${functionReg.meta.name}`,
@@ -4780,7 +4795,7 @@ async function upsertRegisteredFunctions(
       );
     }
     if (
-      isString(functionReg.meta.namespace) &&
+      typeof functionReg.meta.namespace === "string" &&
       !isValidJsIdentifier(functionReg.meta.namespace)
     ) {
       return err(
@@ -4795,7 +4810,10 @@ async function upsertRegisteredFunctions(
       "typescriptDeclaration",
       "displayName",
     ] as const) {
-      if (!isString(functionReg.meta[prop]) && !isNil(functionReg.meta[prop])) {
+      if (
+        typeof functionReg.meta[prop] !== "string" &&
+        !isNil(functionReg.meta[prop])
+      ) {
         return err(
           new InvalidCustomFunctionError(
             `${errorPrefix} expected \`meta.${prop}\` to be a string, but got: ${functionReg.meta[prop]}`,
@@ -4803,7 +4821,7 @@ async function upsertRegisteredFunctions(
         );
       }
     }
-    if (!isString(functionReg.meta.importPath)) {
+    if (typeof functionReg.meta.importPath !== "string") {
       return err(
         new InvalidCustomFunctionError(
           `${errorPrefix} expected \`meta.importPath\` to be a string, but got: ${functionReg.meta.importPath}`,
@@ -4821,7 +4839,7 @@ async function upsertRegisteredFunctions(
       for (const param of functionReg.meta.params as (
         string | ParamType<any, any>
       )[]) {
-        if (isString(param)) {
+        if (typeof param === "string") {
           if (!isValidJsIdentifier(param)) {
             return err(
               new InvalidCustomFunctionError(
@@ -4830,7 +4848,10 @@ async function upsertRegisteredFunctions(
             );
           }
         } else {
-          if (!isString(param.name) || !isValidJsIdentifier(param.name)) {
+          if (
+            typeof param.name !== "string" ||
+            !isValidJsIdentifier(param.name)
+          ) {
             return err(
               new InvalidCustomFunctionError(
                 `${errorPrefix} Param name is not a valid JavaScript identifier: ${param.name}`,
@@ -4840,7 +4861,10 @@ async function upsertRegisteredFunctions(
           const paramErrorPrefix = `Error registering param ${
             param.name
           } of custom function ${registeredFunctionId(functionReg)}:`;
-          if (!isNil(param.description) && !isString(param.description)) {
+          if (
+            !isNil(param.description) &&
+            typeof param.description !== "string"
+          ) {
             return err(
               new InvalidCustomFunctionError(
                 `${paramErrorPrefix} expected \`description\` to be a string, but got: ${param.description}`,
@@ -4862,7 +4886,7 @@ async function upsertRegisteredFunctions(
     if (!isNil(functionReg.meta.returnValue)) {
       if (
         !isNil(functionReg.meta.returnValue.description) &&
-        !isString(functionReg.meta.returnValue.description)
+        typeof functionReg.meta.returnValue.description !== "string"
       ) {
         return err(
           new InvalidCustomFunctionError(
@@ -5036,7 +5060,7 @@ async function upsertRegisteredLibs(
     for (const registration of registeredLibs.values()) {
       const errorPrefix = `Error registering Code Library ${registration.meta.name}:`;
       for (const prop of ["name", "importPath", "jsIdentifier"] as const) {
-        if (!isString(registration.meta[prop])) {
+        if (typeof registration.meta[prop] !== "string") {
           return err(
             new InvalidCodeLibraryError(
               `${errorPrefix} Expected \`meta.${prop}\` to be a String, but got: ${registration.meta[prop]}`,
@@ -5063,7 +5087,7 @@ async function upsertRegisteredLibs(
         );
       }
       const wrongFileIdx = registration.meta.files.findIndex(
-        (f) => !isString(f.contents) || !isString(f.fileName),
+        (f) => typeof f.contents !== "string" || typeof f.fileName !== "string",
       );
       if (wrongFileIdx >= 0) {
         return err(

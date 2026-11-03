@@ -29,11 +29,7 @@ export interface AutoCompleteSource<T> {
 }
 
 export type SelectMethod =
-  | "Enter"
-  | "Tab"
-  | "Click"
-  | "ArrowLeft"
-  | "ArrowRight";
+  "Enter" | "Tab" | "Click" | "ArrowLeft" | "ArrowRight";
 export interface SelectModifiers {
   alt?: boolean;
   ctrl?: boolean;
@@ -284,7 +280,7 @@ export class BetterAutoComplete<P> extends React.Component<
                       if (itemKey === selectedKey) {
                         props.className = sty.item__active;
                       }
-                      if (L.isString(item) && item === SHOW_MORE) {
+                      if (typeof item === "string" && item === SHOW_MORE) {
                         props = L.assign({}, props, {
                           onClick: (param) => {
                             this.curLimit *= 2;

@@ -169,16 +169,7 @@ import { mergeUiConfigs } from "@/wab/shared/ui-config-utils";
 import { getCodegenUrl } from "@/wab/shared/urls";
 import * as Sentry from "@sentry/node";
 import { Request, Response } from "express-serve-static-core";
-import {
-  fromPairs,
-  isString,
-  last,
-  map,
-  omit,
-  pick,
-  sortBy,
-  uniq,
-} from "lodash";
+import { fromPairs, last, map, omit, pick, sortBy, uniq } from "lodash";
 import * as Prettier from "prettier";
 import type { SetRequired } from "type-fest";
 import { EntityManager, MigrationExecutor } from "typeorm";
@@ -1506,7 +1497,9 @@ export async function getProjectRev(req: Request, res: Response) {
     : undefined;
   const revisionNum = req.query.revisionNum;
   if (revisionNum !== undefined) {
-    logger.info(`revisionNum is ${revisionNum}. ${isString(revisionNum)}`);
+    logger.info(
+      `revisionNum is ${revisionNum}. ${typeof revisionNum === "string"}`,
+    );
   }
   const dontMigrateProject =
     !!req.query.dontMigrateProject &&
@@ -1750,7 +1743,7 @@ export async function updateHostUrl(req: Request, res: Response) {
   const projectId = req.params.projectId;
   if (
     !("hostUrl" in data) ||
-    (data.hostUrl != null && !isString(data.hostUrl))
+    (data.hostUrl != null && typeof data.hostUrl !== "string")
   ) {
     throw new BadRequestError(
       `Unexpected hostUrl to be of type ${typeof data.hostUrl}`,

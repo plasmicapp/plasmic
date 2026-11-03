@@ -8,7 +8,6 @@ import {
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { cx, mkShortId } from "@/wab/shared/common";
 import { Dropdown, Popover, Tooltip } from "antd";
-import { isString } from "lodash";
 import React, {
   useCallback,
   useEffect,
@@ -110,7 +109,8 @@ export const GhostFrame = React.forwardRef(function GhostFrame_(
         width,
       }}
       aria-label={
-        props["aria-label"] ?? (isString(tooltip) ? tooltip : undefined)
+        props["aria-label"] ??
+        (typeof tooltip === "string" ? tooltip : undefined)
       }
       onClick={onClick}
       {...rest}

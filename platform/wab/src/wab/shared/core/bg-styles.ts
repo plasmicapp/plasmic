@@ -557,7 +557,7 @@ export class Dim {
   getNumericValue(): number {
     const parsed = parseFloat(this.value);
     assert(
-      !isNaN(parsed),
+      !Number.isNaN(parsed),
       `Cannot parse numeric value from Dim: ${this.value}`,
     );
     return parsed;

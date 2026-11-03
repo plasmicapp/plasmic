@@ -182,7 +182,7 @@ export function mkColumnItems(
 }
 
 export function getItemPath(item: ColumnItem): (string | number)[] {
-  const key = isNaN(Number(item.name)) ? item.name : Number(item.name);
+  const key = Number.isNaN(Number(item.name)) ? item.name : Number(item.name);
   return item.pathPrefix.concat(key);
 }
 

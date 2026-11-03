@@ -8838,7 +8838,7 @@ export class DbMgr implements MigrationDbMgr {
       await this.saveProjectRev({
         projectId: projectId,
         data: resolution.resolvedSite
-          ? L.isString(resolution.resolvedSite)
+          ? typeof resolution.resolvedSite === "string"
             ? resolution.resolvedSite
             : JSON.stringify(
                 bundler.bundle(

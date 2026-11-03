@@ -21,7 +21,6 @@ import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { GenericDataSource } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { OperationTemplate } from "@/wab/shared/data-sources-meta/data-sources";
 import { Request, Response } from "express-serve-static-core";
-import { isString } from "lodash";
 
 export function executeDataSourceOperationWithCurrentUserHandler(
   inStudioAuth: boolean,
@@ -115,10 +114,11 @@ export function executeDataSourceOperationWithCurrentUserHandler(
         // In studio, we allow user to perform operations as user
         const { identifier: reqIdentifier } = req.body;
         const identifier = {
-          ...(reqIdentifier?.email && isString(reqIdentifier.email)
+          ...(reqIdentifier?.email && typeof reqIdentifier.email === "string"
             ? { email: reqIdentifier.email }
             : {}),
-          ...(reqIdentifier?.externalId && isString(reqIdentifier.externalId)
+          ...(reqIdentifier?.externalId &&
+          typeof reqIdentifier.externalId === "string"
             ? { externalId: reqIdentifier.externalId }
             : {}),
         };

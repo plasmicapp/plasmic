@@ -28,7 +28,6 @@ import { isValidUrl } from "@/wab/shared/css/urls";
 import { ImageAsset, isKnownImageAsset } from "@/wab/shared/model/classes";
 import { placeholderImgUrl } from "@/wab/shared/urls";
 import { Select, Tooltip, notification } from "antd";
-import L from "lodash";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
 import React, { CSSProperties } from "react";
@@ -48,7 +47,7 @@ export const ImageAssetPreviewAndPicker = observer(
     const uri =
       asset && asset.dataUri
         ? asset.dataUri
-        : L.isString(value)
+        : typeof value === "string"
           ? value
           : undefined;
     const isIcon = type === ImageAssetType.Icon;
@@ -264,7 +263,7 @@ export const ImageAssetOrUrlPicker = observer(
     >(undefined);
     const urlInputRef = React.useRef<TextboxRef>(null);
 
-    const isDataUrl = L.isString(value) && value.startsWith("data:");
+    const isDataUrl = typeof value === "string" && value.startsWith("data:");
 
     const handleImageUploaded = async (image: ResizableImage, file?: File) => {
       const { imageResult, opts } = await studioCtx.app.withSpinner(
@@ -320,7 +319,9 @@ export const ImageAssetOrUrlPicker = observer(
           // it's a big file!
           // Also don't show the url of the placeholder file.
           defaultValue={
-            isDataUrl || !L.isString(value) || value === placeholderImgUrl()
+            isDataUrl ||
+            typeof value !== "string" ||
+            value === placeholderImgUrl()
               ? ""
               : value
           }

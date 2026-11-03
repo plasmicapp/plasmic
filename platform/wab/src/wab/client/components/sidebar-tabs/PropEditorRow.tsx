@@ -190,7 +190,7 @@ import { isBaseVariant } from "@/wab/shared/Variants";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
 import { ChoiceValue } from "@plasmicapp/host";
 import { Menu, Tooltip } from "antd";
-import { capitalize, isString, keyBy, omit } from "lodash";
+import { capitalize, keyBy, omit } from "lodash";
 import { observer } from "mobx-react";
 import React, { useMemo } from "react";
 
@@ -300,7 +300,7 @@ export function updateOrCreateExpr(
   viewCtx?: ViewCtx,
 ) {
   if (owningTpl && isRenderableType(type)) {
-    assert(isString(val), "Used to create a tpl with inlined text");
+    assert(typeof val === "string", "Used to create a tpl with inlined text");
     assert(viewCtx, "ViewCtx is required to update a renderableType");
     const vtm = viewCtx.variantTplMgr();
     if (expr) {

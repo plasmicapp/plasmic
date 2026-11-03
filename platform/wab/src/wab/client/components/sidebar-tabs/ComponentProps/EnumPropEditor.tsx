@@ -3,7 +3,7 @@ import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
 import { ensureArray, filterMapTruthy } from "@/wab/shared/common";
 import { ChoiceOptions, ChoiceValue } from "@plasmicapp/host";
 import { Select } from "antd";
-import { isArray, isNumber, isObject, isString } from "lodash";
+import { isArray, isObject } from "lodash";
 import React from "react";
 
 const stringify = (value: any): string => {
@@ -11,9 +11,8 @@ const stringify = (value: any): string => {
   return JSON.stringify(value)?.replaceAll('"', "'");
 };
 const parse = function <T>(value: T): T {
-  const parsed = isString(value)
-    ? JSON.parse(value.replaceAll("'", '"'))
-    : value;
+  const parsed =
+    typeof value === "string" ? JSON.parse(value.replaceAll("'", '"')) : value;
   return parsed;
 };
 
@@ -150,7 +149,7 @@ export function EnumPropEditor<T extends ChoiceValue>(props: {
   const options = React.useMemo(
     () => [
       ...filterMapTruthy(propOptions, (option) =>
-        isString(option) || isNumber(option)
+        typeof option === "string" || typeof option === "number"
           ? {
               value: option.toString(),
               label: option.toString(),

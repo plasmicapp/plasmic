@@ -278,7 +278,7 @@ export class FreestyleManipulator {
     if (newNum < 0 && ["width", "height"].includes(dimProp)) {
       return false;
     }
-    if (isFinite(newNum)) {
+    if (Number.isFinite(newNum)) {
       const smartDimProp = getSmartDimProp(dimProp);
       exp.set(smartDimProp, showSizeCss(createNumericSize(newNum, unit)));
       if (smartDimProp === "max-width") {

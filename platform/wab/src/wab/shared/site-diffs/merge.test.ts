@@ -122,7 +122,7 @@ import {
   mkVariantSetting,
 } from "@/wab/shared/Variants";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
-import { isArray, isString, omit, pick, sortBy } from "lodash";
+import { isArray, omit, pick, sortBy } from "lodash";
 import type { PartialDeep } from "type-fest";
 
 const fixmeLater = false;
@@ -2087,7 +2087,7 @@ describe("merging", () => {
       });
       expect(
         res.mergedSite.components[0].dataQueries[0].op!.queryInvalidation!.invalidationQueries!.map(
-          (v) => (isString(v) ? v : v.ref.uuid),
+          (v) => (typeof v === "string" ? v : v.ref.uuid),
         ),
       ).toMatchObject([
         "testing-string-equal",

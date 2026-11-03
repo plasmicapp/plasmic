@@ -14,7 +14,7 @@ import {
 import { Input, Menu, notification, Tooltip } from "antd";
 import { GraphiQLProvider } from "graphiql";
 import "graphiql/graphiql.css";
-import { isArray, isNil, isString, mapValues, omit } from "lodash";
+import { isArray, isNil, mapValues, omit } from "lodash";
 import { observer } from "mobx-react";
 import React, {
   createContext,
@@ -1109,9 +1109,10 @@ const getStringTemplateVal = (
 ) => {
   const templateVal = getTemplateVal(draft, arg);
   if (templateVal) {
-    const templateString = isString(templateVal)
-      ? templateVal
-      : exprToDataSourceString(templateVal, exprCtx);
+    const templateString =
+      typeof templateVal === "string"
+        ? templateVal
+        : exprToDataSourceString(templateVal, exprCtx);
     return isJsonType(fieldType) ? JSON.parse(templateString) : templateString;
   }
   return undefined;
@@ -2807,7 +2808,10 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
                                 }-json-editor`}
                               />
                             );
-                          } else if (isString(val) && isDynamicValue(val)) {
+                          } else if (
+                            typeof val === "string" &&
+                            isDynamicValue(val)
+                          ) {
                             return (
                               <DynamicValueWidget
                                 value={

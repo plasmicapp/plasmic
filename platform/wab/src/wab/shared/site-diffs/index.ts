@@ -83,7 +83,7 @@ import {
   isKnownTplSlot,
   isKnownVariant,
 } from "@/wab/shared/model/classes";
-import L, { isString, mapValues } from "lodash";
+import L, { mapValues } from "lodash";
 
 export const INITIAL_VERSION_NUMBER = "0.0.1";
 
@@ -1192,7 +1192,9 @@ export function hashExpr(
     .when(TemplatedString, (templatedString) =>
       templatedString.text
         .map((t) =>
-          isString(t) ? t : `{{ ${hashExpr(site, t, exprCtx, tokenDicts)} }} `,
+          typeof t === "string"
+            ? t
+            : `{{ ${hashExpr(site, t, exprCtx, tokenDicts)} }} `,
         )
         .join(""),
     )

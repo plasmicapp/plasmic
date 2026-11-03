@@ -31,7 +31,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { smartHumanize } from "@/wab/shared/strs";
 import { Menu } from "antd";
-import { isString, uniq } from "lodash";
+import { uniq } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -134,11 +134,11 @@ export const InvalidationEditor = observer(function InvalidationKeysEditor({
   };
 
   const multiSelectValues = invalidationQueries
-    ? invalidationQueries.find((query) => isString(query))
+    ? invalidationQueries.find((query) => typeof query === "string")
       ? [ALL_QUERIES.value]
       : uniq(
           invalidationQueries.map((query) =>
-            isString(query) ? query : refToValue(query.ref),
+            typeof query === "string" ? query : refToValue(query.ref),
           ),
         )
     : undefined;

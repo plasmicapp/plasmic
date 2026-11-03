@@ -192,7 +192,7 @@ const AnimationSequenceEditModal = observer(
                   value={`${selectedKeyframe.percentage}%`}
                   onChange={(val) => {
                     const numVal = parseFloat(val || "0");
-                    if (!isNaN(numVal) && numVal >= 0 && numVal <= 100) {
+                    if (!Number.isNaN(numVal) && numVal >= 0 && numVal <= 100) {
                       spawn(
                         studioCtx.change(() => {
                           selectedKeyframe.percentage = numVal;

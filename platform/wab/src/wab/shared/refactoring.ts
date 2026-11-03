@@ -50,7 +50,7 @@ import {
   isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
 import type * as ast from "estree";
-import { get, isString } from "lodash";
+import { get } from "lodash";
 
 /**
  * Returns boolean indicating whether `expr` is referencing `param`.
@@ -543,7 +543,7 @@ export const findQueryInvalidationRefs = siteSelector(
   function findQueryInvalidationRefs(site: Site): QueryRef[] {
     return findQueryInvalidationExprs(site).flatMap((expr) =>
       expr.invalidationQueries.filter(
-        (queryRef): queryRef is QueryRef => !isString(queryRef),
+        (queryRef): queryRef is QueryRef => typeof queryRef !== "string",
       ),
     );
   },

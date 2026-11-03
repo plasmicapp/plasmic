@@ -21,7 +21,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { isOptionsType } from "@/wab/shared/model/model-util";
 import { ChoiceObject, ChoiceOptions } from "@plasmicapp/host";
-import { isBoolean, isNumber, isObject, isString } from "lodash";
+import { isObject } from "lodash";
 
 const TYPE = "choice-prop-values";
 
@@ -53,7 +53,9 @@ export const valueInOptions = (
     return value.every((val) => valueInOptions(options, val));
   }
   return !!options?.some((option) =>
-    isString(option) || isNumber(option) || isBoolean(option)
+    typeof option === "string" ||
+    typeof option === "number" ||
+    typeof option === "boolean"
       ? option === value
       : isObject(option) && "value" in option
         ? option.value === value

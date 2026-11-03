@@ -75,7 +75,7 @@ const createDimensionsExtractor = () => {
                 dimensions.height = Number.parseFloat(viewBox[3]);
                 const ratio = dimensions.width / dimensions.height;
                 dimensions.aspectRatio =
-                  ratio && isFinite(ratio) ? ratio : undefined;
+                  ratio && Number.isFinite(ratio) ? ratio : undefined;
               }
             }
           },

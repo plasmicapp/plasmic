@@ -31,7 +31,7 @@ import {
   WidgetProps,
 } from "@react-awesome-query-builder/antd";
 import cn from "classnames";
-import { isNil, isString, merge, pick } from "lodash";
+import { isNil, merge, pick } from "lodash";
 import * as React from "react";
 
 const InitialConfig = QueryBuilderConfig;
@@ -229,12 +229,13 @@ function DataSourceQueryBuilder_(
                 validateValue: (v) => {
                   // TODO: Better validation for select / datetime?
                   return (
-                    (isString(v) && isDynamicValue(v)) ||
+                    (typeof v === "string" && isDynamicValue(v)) ||
                     typeof v === fieldConfig.type ||
                     `${typeof v}-custom` === fieldConfig.type ||
-                    (fieldConfig.type === "select" && isString(v)) ||
-                    (fieldConfig.type === "datetime" && isString(v)) ||
-                    (fieldConfig.type === "date" && isString(v))
+                    (fieldConfig.type === "select" && typeof v === "string") ||
+                    (fieldConfig.type === "datetime" &&
+                      typeof v === "string") ||
+                    (fieldConfig.type === "date" && typeof v === "string")
                   );
                 },
               },

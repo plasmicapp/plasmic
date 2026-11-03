@@ -50,7 +50,7 @@ import {
   isValSlot,
 } from "@/wab/shared/core/val-nodes";
 import { SlotInfo } from "@/wab/shared/eval/val-state";
-import { isString, omit } from "lodash";
+import { omit } from "lodash";
 import { observable, runInAction } from "mobx";
 
 const officialHook = (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__ as
@@ -620,7 +620,8 @@ if (officialHook) {
               } else if (slotPlaceholderKey) {
                 const [tplCompKey, paramUuid] = slotPlaceholderKey.split("~");
                 assert(
-                  isString(tplCompKey) && isString(paramUuid),
+                  typeof tplCompKey === "string" &&
+                    typeof paramUuid === "string",
                   () =>
                     `Couldn't parse slot placeholder key: ${JSON.stringify(
                       slotPlaceholderKey,

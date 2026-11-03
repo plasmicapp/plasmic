@@ -9,7 +9,6 @@ import {
   isKnownCustomCode,
   isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
-import { isString } from "lodash";
 
 /**
  * Legacy `$queries` run server-side through the integration proxy, `$q` queries run
@@ -225,10 +224,10 @@ function headerNames(template: DataSourceTemplate): string[] | undefined {
   const value = template.value;
   const text = isKnownTemplatedString(value)
     ? value.text
-        .map((part) => (isString(part) ? part : DYNAMIC_HEADER_PART))
+        .map((part) => (typeof part === "string" ? part : DYNAMIC_HEADER_PART))
         .join("")
     : value;
-  if (!isString(text) || text.trim() === "") {
+  if (typeof text !== "string" || text.trim() === "") {
     return [];
   }
   let parsed: unknown;
@@ -386,7 +385,9 @@ export function redactBaseUrl(baseUrl: string): string {
 
 /** Clearing the query-group editor can leave a TemplatedString with only empty text. */
 function isBlankTemplatedString(ts: TemplatedString): boolean {
-  return ts.text.every((part) => isString(part) && part.trim() === "");
+  return ts.text.every(
+    (part) => typeof part === "string" && part.trim() === "",
+  );
 }
 
 /**
@@ -405,7 +406,7 @@ function templateLiteralText(template: DataSourceTemplate): string {
 function exprLiteralText(expr: TemplatedString | CustomCode | ObjectPath) {
   if (isKnownTemplatedString(expr)) {
     return expr.text
-      .map((part) => (isString(part) ? part : exprLiteralText(part)))
+      .map((part) => (typeof part === "string" ? part : exprLiteralText(part)))
       .join(" ");
   }
   if (isKnownCustomCode(expr)) {

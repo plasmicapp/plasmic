@@ -20,7 +20,6 @@ import {
   isKnownImageAssetRef,
   isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
-import L from "lodash";
 
 function getOgImageLink(
   ctx: SerializerBaseContext,
@@ -29,7 +28,7 @@ function getOgImageLink(
   if (!image) {
     return undefined;
   }
-  if (L.isString(image)) {
+  if (typeof image === "string") {
     return image;
   }
   if (isKnownTemplatedString(image)) {
@@ -262,7 +261,7 @@ function serializeMetadataValue(
   if (!value) {
     return undefined;
   }
-  if (L.isString(value)) {
+  if (typeof value === "string") {
     return JSON.stringify(value);
   }
   if (isKnownExpr(value)) {
@@ -279,7 +278,7 @@ function flattenMetadataValueToString(
   if (!value) {
     return "";
   }
-  if (L.isString(value)) {
+  if (typeof value === "string") {
     return value;
   }
   if (isKnownTemplatedString(value)) {
@@ -295,7 +294,7 @@ function getOgImageValue(
   if (!metaImage) {
     return undefined;
   }
-  if (L.isString(metaImage)) {
+  if (typeof metaImage === "string") {
     return JSON.stringify(metaImage);
   }
   if (isKnownImageAssetRef(metaImage)) {

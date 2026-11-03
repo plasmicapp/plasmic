@@ -39,7 +39,7 @@ import type {
   JsonLogicStrictNotEqual,
   JsonLogicVar,
 } from "json-logic-js";
-import { isString, mapValues } from "lodash";
+import { mapValues } from "lodash";
 import { z } from "zod";
 
 export const ALL_QUERIES = { value: "plasmic_refresh_all", label: "All" };
@@ -52,8 +52,8 @@ export class DataSourceError extends Error {
   details?: any;
   statusCode?: number;
   constructor(details?: any, statusCode?: number) {
-    super(isString(details) ? details : undefined);
-    if (!isString(details)) {
+    super(typeof details === "string" ? details : undefined);
+    if (typeof details !== "string") {
       this.details = details;
     }
     this.statusCode = statusCode;
@@ -374,7 +374,7 @@ export function exprToDataSourceString(expr: Expr, exprCtx: ExprCtx) {
   return isKnownTemplatedString(expr)
     ? expr.text
         .map((t) =>
-          isString(t)
+          typeof t === "string"
             ? t
             : `{{ ${stripParensAndMaybeConvertToIife(asCode(t, exprCtx).code, {
                 addParens: true,
@@ -433,12 +433,15 @@ export function coerceArgStringToType(
       if (argMeta.type === "pagination") {
         // Hack: Complex types with dynamic bindings only work currently with
         // templated strings.
-        if (typeof parsed.pageSize === "string" && isFinite(+parsed.pageSize)) {
+        if (
+          typeof parsed.pageSize === "string" &&
+          Number.isFinite(+parsed.pageSize)
+        ) {
           parsed.pageSize = +parsed.pageSize;
         }
         if (
           typeof parsed.pageIndex === "string" &&
-          isFinite(+parsed.pageIndex)
+          Number.isFinite(+parsed.pageIndex)
         ) {
           parsed.pageIndex = +parsed.pageIndex;
         }

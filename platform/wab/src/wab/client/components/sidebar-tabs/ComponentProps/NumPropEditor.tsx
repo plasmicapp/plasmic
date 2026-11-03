@@ -47,7 +47,7 @@ export function InputNumPropEditor(props: InputNumPropEditorProps) {
     }
 
     const numeric = typeof val === "string" ? +val : val;
-    if (isNaN(numeric)) {
+    if (Number.isNaN(numeric)) {
       notification.warning({
         message: "Invalid value",
         description: `Expected a number, but got "${val}"`,

@@ -12,7 +12,7 @@ export function naturalSort<T>(
         .filter<string>(isTruthy)
         .map((stringPart) => {
           const numberPart = parseFloat(stringPart);
-          return isNaN(numberPart) ? stringPart : numberPart;
+          return Number.isNaN(numberPart) ? stringPart : numberPart;
         }),
     }))
     .sort((a, b) => {

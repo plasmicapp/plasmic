@@ -45,7 +45,6 @@ import { getPlumeDocsPlugin } from "@/wab/shared/plume/plume-registry";
 import generate from "@babel/generator";
 import * as parser from "@babel/parser";
 import * as t from "@babel/types";
-import L from "lodash";
 import * as printerEstree from "prettier/plugins/estree";
 import * as parserTypescript from "prettier/plugins/typescript";
 import * as Prettier from "prettier/standalone";
@@ -684,7 +683,7 @@ function serializeToggleValue(
   value: any,
   param: Param | undefined,
 ) {
-  if (L.isString(value)) {
+  if (typeof value === "string") {
     return jsLiteral(value);
   }
   if (isKnownImageAssetRef(value)) {

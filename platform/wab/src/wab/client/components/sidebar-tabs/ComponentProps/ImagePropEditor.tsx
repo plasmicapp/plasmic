@@ -15,7 +15,6 @@ import { isEditable } from "@/wab/shared/core/sites";
 import { ImageAsset, isKnownImageAsset } from "@/wab/shared/model/classes";
 import { placeholderImgUrl } from "@/wab/shared/urls";
 import { Tooltip } from "antd";
-import L from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -32,7 +31,7 @@ export const ImagePropEditor = observer(function ImagePropEditor(props: {
   const uri =
     asset && asset.dataUri
       ? asset.dataUri
-      : L.isString(value)
+      : typeof value === "string"
         ? value
         : undefined;
   const [pickingImage, setPickingImage] = React.useState(false);

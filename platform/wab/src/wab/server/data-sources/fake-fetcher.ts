@@ -21,7 +21,7 @@ import {
   TableSchema,
 } from "@plasmicapp/data-sources";
 import { AntdConfig } from "@react-awesome-query-builder/antd";
-import { cloneDeep, isString } from "lodash";
+import { cloneDeep } from "lodash";
 
 export function makeFakeFetcher(source: FakeDataSource) {
   return new FakeFetcher(source);
@@ -49,7 +49,7 @@ function filterRow(row: Record<string, any>, filters?: Filters): boolean {
     } else if ("in" in logic) {
       const fieldName = logic.in[1]?.["var"];
       const value = logic.in[0];
-      if (!isString(value) || !isString(row[fieldName])) {
+      if (typeof value !== "string" || typeof row[fieldName] !== "string") {
         return false;
       }
       return row[fieldName].toLowerCase().includes(value.toLowerCase());

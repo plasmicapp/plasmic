@@ -3,7 +3,7 @@ import { fetchUntrusted, UnsafeUrlError } from "@/wab/server/util/url";
 import { DataSourceError } from "@/wab/shared/data-sources-meta/data-sources";
 import { HttpDataSource } from "@/wab/shared/data-sources-meta/http-meta";
 import { AxiosResponse } from "axios";
-import { isEmpty, isNil, isString } from "lodash";
+import { isEmpty, isNil } from "lodash";
 
 const DEFAULT_TIMEOUT = 175000;
 
@@ -125,7 +125,7 @@ async function processResult(res: AxiosResponse<string>) {
   } catch {}
   if (statusCode >= 400) {
     throw new DataSourceError(
-      isString(processedResponse) || !isEmpty(processedResponse)
+      typeof processedResponse === "string" || !isEmpty(processedResponse)
         ? processedResponse
         : undefined,
       statusCode,

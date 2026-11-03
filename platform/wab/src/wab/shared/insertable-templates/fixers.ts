@@ -75,7 +75,6 @@ import {
   isKnownTemplatedString,
   isKnownTplTag,
 } from "@/wab/shared/model/classes";
-import { isString } from "lodash";
 
 export function ensureTplWithBaseAndScreenVariants(
   tpl: TplNode,
@@ -579,7 +578,7 @@ function isInvalidTextOrDynamicExpression(
   }
   if (isKnownTemplatedString(expr)) {
     return expr.text.some((t) => {
-      if (isString(t)) {
+      if (typeof t === "string") {
         return false;
       }
       return isInvalidTextOrDynamicExpression(t, invalidExprNames);

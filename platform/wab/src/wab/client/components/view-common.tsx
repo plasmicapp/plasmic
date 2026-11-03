@@ -272,7 +272,7 @@ export function replaceLink(
   // Replace the [text] with a link.
   const { children: childOrChildren, ...rest } = props;
   const children = ensureArray(childOrChildren);
-  assert(L.isString(children[0]), "Unexpected not string children");
+  assert(typeof children[0] === "string", "Unexpected not string children");
   const pat = /\[(.+?)\]/g;
   const match = pat.exec(children[0]);
   if (match) {

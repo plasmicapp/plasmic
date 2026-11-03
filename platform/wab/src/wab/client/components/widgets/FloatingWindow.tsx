@@ -330,7 +330,7 @@ function loadWindowState(
 }
 
 function parseNumber(val: unknown): number | undefined {
-  if (typeof val === "number" && L.isFinite(val)) {
+  if (typeof val === "number" && Number.isFinite(val)) {
     return val;
   } else {
     return undefined;
@@ -359,8 +359,8 @@ function computeMinDimensions(windowEl: HTMLElement) {
   // Use an arbitrary positive value in case it's negative or a non-pixel value
   // like auto, min-content, etc.
   return {
-    minWidth: L.isFinite(minWidth) && minWidth > 0 ? minWidth : 5,
-    minHeight: L.isFinite(minHeight) && minHeight > 0 ? minHeight : 5,
+    minWidth: Number.isFinite(minWidth) && minWidth > 0 ? minWidth : 5,
+    minHeight: Number.isFinite(minHeight) && minHeight > 0 ? minHeight : 5,
   };
 }
 

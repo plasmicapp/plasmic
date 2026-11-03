@@ -238,7 +238,7 @@ export const DimTokenSpinner = observer(
       MutableToken<StyleToken> | undefined
     >(undefined);
 
-    const isNumberMode = !isNaN(parseFloat(inputValue));
+    const isNumberMode = !Number.isNaN(parseFloat(inputValue));
     const matcher = new Matcher(typedInputValue ?? "");
     const showCurrentToken = hasParsedToken && typedInputValue === undefined;
     const skipChangeOnBlur = React.useRef(false);
@@ -299,9 +299,7 @@ export const DimTokenSpinner = observer(
     const resolver = useClientTokenResolver();
 
     const makeTokenOptions = (): (
-      | AddTokenItem
-      | EditTokenItem
-      | SelectTokenItem
+      AddTokenItem | EditTokenItem | SelectTokenItem
     )[] => {
       if (!tokenType || !tokens) {
         return [];
@@ -1214,7 +1212,7 @@ function useDimValue(opts: DimValueOpts) {
     : css.roundedCssNumeric(value, displayedFractionDigits);
 
   function spin(dir: "up" | "down", large?: boolean) {
-    if (!value || isNaN(parseFloat(value))) {
+    if (!value || Number.isNaN(parseFloat(value))) {
       return;
     }
     const curParsed = css.parseCssNumericNew(value);

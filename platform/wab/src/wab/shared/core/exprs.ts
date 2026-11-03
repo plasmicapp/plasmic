@@ -116,14 +116,7 @@ import {
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import { maybeConvertToIife } from "@/wab/shared/parser-utils";
 import { pageHrefPathToCode } from "@/wab/shared/utils/url-utils";
-import L, {
-  escapeRegExp,
-  groupBy,
-  isString,
-  mapValues,
-  set,
-  toPath,
-} from "lodash";
+import L, { escapeRegExp, groupBy, mapValues, set, toPath } from "lodash";
 
 export interface ExprCtx {
   component: Component | null;
@@ -356,7 +349,7 @@ export function clone(_expr: Expr): Expr {
       TemplatedString,
       (expr) =>
         new TemplatedString({
-          text: expr.text.map((t) => (isString(t) ? t : clone(t))),
+          text: expr.text.map((t) => (typeof t === "string" ? t : clone(t))),
         }),
     )
     .when(
@@ -566,7 +559,7 @@ const _asCode = maybeComputedFn((_expr: Expr, exprCtx: ExprCtx): CustomCode =>
       const parts = expr.text.filter((x) => !!x && x !== "");
       if (parts.length === 1) {
         const part = parts[0];
-        if (isString(part)) {
+        if (typeof part === "string") {
           return codeLit(part);
         } else {
           // If TemplatedString contains only a single code chip and nothing
@@ -578,7 +571,7 @@ const _asCode = maybeComputedFn((_expr: Expr, exprCtx: ExprCtx): CustomCode =>
         return code(
           `\`${expr.text
             .map((t) =>
-              isString(t)
+              typeof t === "string"
                 ? t
                 : `\${ ${stripParensAndMaybeConvertToIife(
                     asCode(t, exprCtx).code,
@@ -741,7 +734,7 @@ const _asCode = maybeComputedFn((_expr: Expr, exprCtx: ExprCtx): CustomCode =>
         `[${withoutNils(
           expr.invalidationQueries.map((query) => {
             // explicit query cache key
-            if (isString(query)) {
+            if (typeof query === "string") {
               return jsLiteral(query);
             }
             const ref = query.ref;
@@ -828,7 +821,7 @@ export function tryExtractJson(_expr: Expr): JsonValue | undefined {
       }),
     )
     .when(TemplatedString, (expr): string | undefined =>
-      expr.text.length === 1 && isString(expr.text[0])
+      expr.text.length === 1 && typeof expr.text[0] === "string"
         ? expr.text[0]
         : undefined,
     )
@@ -874,17 +867,19 @@ export function hasDynamicParts(text: TemplatedString) {
  */
 export function tryExtractString(expr: Expr): string | undefined {
   return maybe(tryExtractJson(expr), (v) =>
-    L.isString(v) ? v : L.isNumber(v) ? "" + v : undefined,
+    typeof v === "string" ? v : typeof v === "number" ? "" + v : undefined,
   );
 }
 
 export function tryCoerceString(expr: Expr | string): string | undefined {
-  return isString(expr) ? expr : tryExtractString(expr);
+  return typeof expr === "string" ? expr : tryExtractString(expr);
 }
 
 /** Returns booleans, undefined for everything else. */
 export function tryExtractBoolean(expr: Expr): boolean | undefined {
-  return maybe(tryExtractJson(expr), (v) => (L.isBoolean(v) ? v : undefined));
+  return maybe(tryExtractJson(expr), (v) =>
+    typeof v === "boolean" ? v : undefined,
+  );
 }
 
 export function stripParens(text: string) {
@@ -1374,7 +1369,7 @@ export function mkTemplatedStringOfOneDynExpr(expr: CustomCode | ObjectPath) {
 
 /** Joins all string parts of a TemplatedString, discarding any dynamic expressions. */
 export function flattenTemplatedStringToString(text: TemplatedString): string {
-  return text.text.filter(isString).join("");
+  return text.text.filter((t): t is string => typeof t === "string").join("");
 }
 
 /**

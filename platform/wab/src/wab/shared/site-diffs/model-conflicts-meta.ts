@@ -40,7 +40,6 @@ import {
   DirectConflictPickMap,
   generateIidForInst,
 } from "@/wab/shared/site-diffs/merge-core";
-import { isString } from "lodash";
 
 export type MaybeWithPrefix<T extends string | null> = T extends null
   ? never
@@ -1188,7 +1187,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     invalidationQueries: {
       arrayType: "unordered",
       conflictType: "merge",
-      mergeKeyFn: (v) => (isString(v) ? v : v.ref.uuid),
+      mergeKeyFn: (v) => (typeof v === "string" ? v : v.ref.uuid),
       handleUpdatedValues: (queries, parent, bundler) =>
         shallowCloneArrayValuesAndAddToBundle(queries, parent, bundler, [
           classes.QueryRef,

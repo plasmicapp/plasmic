@@ -18,7 +18,6 @@ import { Component, TplNode } from "@/wab/shared/model/classes";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { getBoundingRect } from "@figma-plugin/helpers";
-import { isString } from "lodash";
 import { Matrix } from "transformation-matrix";
 
 export function transformToMatrix(transform: Transform): Matrix {
@@ -52,7 +51,7 @@ function getMainComponentName(node: InstanceNode) {
   if (!node.mainComponent) {
     return undefined;
   }
-  if (isString(node.mainComponent)) {
+  if (typeof node.mainComponent === "string") {
     return node.mainComponent;
   }
   return node.mainComponent.name;

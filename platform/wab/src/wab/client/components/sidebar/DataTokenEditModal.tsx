@@ -88,7 +88,7 @@ export const DataTokenEditModal = observer(function DataTokenEditModal(props: {
       setSelectedTokenType(newType);
 
       const newValue =
-        value && newType === "number" && isFinite(Number(value))
+        value && newType === "number" && Number.isFinite(Number(value))
           ? value
           : toDataTokenDisplayValue(
               dataTypes[newType].defaultSerializedValue,
@@ -215,7 +215,7 @@ function isValidValue(displayValue: string, type: DataTokenType) {
       return true;
     }
     // Check if it's a valid number
-    return isFinite(Number(displayValue));
+    return Number.isFinite(Number(displayValue));
   }
   // For "code" and "string" types, no validation during input
   return true;

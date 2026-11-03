@@ -45,7 +45,6 @@ import {
   inputTypeToComponentName as inputTypeToAntdComponentName,
   SimplifiedFormItemsProp,
 } from "@plasmicpkgs/antd5";
-import { isString } from "lodash";
 
 type FormItemProps = {
   [key in keyof SimplifiedFormItemsProp]: Expr | undefined;
@@ -55,7 +54,10 @@ export const inputTypeToElementSchema = (formItem: any) => {
   const inputType = isKnownExpr(formItem.inputType)
     ? tryExtractJson(formItem.inputType)
     : formItem.inputType;
-  if (!isString(inputType) || !(inputType in inputTypeToAntdComponentName)) {
+  if (
+    typeof inputType !== "string" ||
+    !(inputType in inputTypeToAntdComponentName)
+  ) {
     return undefined;
   }
   return {
@@ -134,8 +136,7 @@ export function generateTplsFromFormItems(
     }
     if (itemParam.defaultExpr) {
       return tryExtractJson(itemParam.defaultExpr) as
-        | FormItemProps[]
-        | undefined;
+        FormItemProps[] | undefined;
     }
     return undefined;
   };

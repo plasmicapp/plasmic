@@ -2,15 +2,7 @@
 
 import { ApiAppUser } from "@/wab/shared/ApiSchema";
 import { isPrimitive } from "@/wab/shared/common";
-import {
-  isBoolean,
-  isFunction,
-  isNull,
-  isNumber,
-  isObject,
-  isString,
-  isUndefined,
-} from "lodash";
+import { isFunction, isNull, isObject, isUndefined } from "lodash";
 
 export const DATA_BIND_REGEX = /{{([\s\S]*?)}}/;
 
@@ -89,7 +81,7 @@ export const getDynamicBindings = (
   dynamicString: string,
 ): { stringSegments: string[]; jsSnippets: string[] } => {
   // Protect against bad string parse
-  if (!dynamicString || !isString(dynamicString)) {
+  if (!dynamicString || typeof dynamicString !== "string") {
     return { stringSegments: [], jsSnippets: [] };
   }
   const sanitisedString = dynamicString.trim();
@@ -126,7 +118,7 @@ export function getDynamicSnippetsForJsonExpr(dynamicJson: any) {
 }
 
 function getDynamicSnippetsInJson(dynamicJson: any): string[] {
-  if (isString(dynamicJson)) {
+  if (typeof dynamicJson === "string") {
     return getDynamicSnippets(dynamicJson);
   } else if (isPrimitive(dynamicJson)) {
     return [];
@@ -278,13 +270,13 @@ export const smartSubstituteDynamicValues = (
 };
 
 const getType = (value: unknown) => {
-  if (isString(value)) {
+  if (typeof value === "string") {
     return Types.STRING;
   }
-  if (isNumber(value)) {
+  if (typeof value === "number") {
     return Types.NUMBER;
   }
-  if (isBoolean(value)) {
+  if (typeof value === "boolean") {
     return Types.BOOLEAN;
   }
   if (Array.isArray(value)) {

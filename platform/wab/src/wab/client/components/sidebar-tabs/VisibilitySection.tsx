@@ -139,7 +139,7 @@ function VisibilitySection_(props: {
       : parseFloat(val || "0");
 
     styling.change(() => {
-      if (val === undefined || (isNaN(newVal) && !isTokenRef(val))) {
+      if (val === undefined || (Number.isNaN(newVal) && !isTokenRef(val))) {
         styling.exp().clear("opacity");
       } else {
         styling

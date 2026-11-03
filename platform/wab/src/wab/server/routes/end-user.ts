@@ -41,7 +41,7 @@ import { GenericDataSource } from "@/wab/shared/data-sources-meta/data-source-re
 import { OperationTemplate } from "@/wab/shared/data-sources-meta/data-sources";
 import { prodUrlForProject } from "@/wab/shared/project-urls";
 import { Request, Response } from "express-serve-static-core";
-import { groupBy, isString, pick, uniq } from "lodash";
+import { groupBy, pick, uniq } from "lodash";
 import { Connection } from "typeorm";
 import validator from "validator";
 
@@ -231,11 +231,11 @@ export async function getAppCurrentUserProperties(req: Request, res: Response) {
   const reqIdentifier = req.body.identifier;
   const identifier = {
     email:
-      reqIdentifier.email && isString(reqIdentifier.email)
+      reqIdentifier.email && typeof reqIdentifier.email === "string"
         ? reqIdentifier.email
         : undefined,
     externalId:
-      reqIdentifier.externalId && isString(reqIdentifier.externalId)
+      reqIdentifier.externalId && typeof reqIdentifier.externalId === "string"
         ? reqIdentifier.externalId
         : undefined,
   };
@@ -640,8 +640,8 @@ export async function createAccessRules(req: Request, res: Response) {
         domain.startsWith("@") && validator.isFQDN(domain.substring(1)),
     );
 
-  const validatedExternalIds = (externalIds ?? []).filter((externalId) =>
-    isString(externalId),
+  const validatedExternalIds = (externalIds ?? []).filter(
+    (externalId) => typeof externalId === "string",
   );
 
   const users = await mgr.createAccessRules(

@@ -43,7 +43,7 @@ import type { TraceCarrier } from "@plasmic-shared/observability";
 import execa from "execa";
 import { Request, Response } from "express-serve-static-core";
 import fs from "fs";
-import { isString, pickBy } from "lodash";
+import { pickBy } from "lodash";
 import path from "path";
 
 /**
@@ -418,13 +418,14 @@ export async function buildLatestLoaderAssets(req: Request, res: Response) {
 }
 
 export async function getLoaderChunk(req: Request, res: Response) {
-  const fileNames = isString(req.query.fileName)
-    ? req.query.fileName.split(",")
-    : undefined;
+  const fileNames =
+    typeof req.query.fileName === "string"
+      ? req.query.fileName.split(",")
+      : undefined;
 
   const bundleKey = req.query.bundleKey;
 
-  if (!isString(bundleKey)) {
+  if (typeof bundleKey !== "string") {
     throw new BadRequestError("Invalid `bundleKey` param: " + bundleKey);
   }
 

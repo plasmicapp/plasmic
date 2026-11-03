@@ -27,7 +27,7 @@ import {
 import { RuleSet } from "@/wab/shared/model/classes";
 import CssInitials from "css-initials";
 import { Value, generate, parse } from "css-tree";
-import { camelCase, flatten, isString, kebabCase, mapKeys, uniq } from "lodash";
+import { camelCase, flatten, kebabCase, mapKeys, uniq } from "lodash";
 import memoizeOne from "memoize-one";
 import { CSSProperties } from "react";
 
@@ -189,7 +189,7 @@ const cssInitialsOverridesReverseMaps = new Map(
   Object.entries(cssInitialsOverrides).map(([prop, entry]) =>
     tuple(
       prop,
-      isString(entry)
+      typeof entry === "string"
         ? new Map([tuple("*", entry)])
         : new Map(
             flatten(
@@ -465,7 +465,7 @@ export function autoUnit(val: string, defaultUnit: string, prev?: string) {
       : maybes(prev)((_prev) => parseCssNumericNew(_prev))(
           (parsed) => parsed.units,
         )() || defaultUnit;
-  return newNum !== undefined && isFinite(newNum)
+  return newNum !== undefined && Number.isFinite(newNum)
     ? showSizeCss(createNumericSize(newNum, ensureUnit(unit)))
     : val;
 }
@@ -477,7 +477,7 @@ export function fontWeightNumber(val: string) {
     return 700;
   } else {
     const parsed = parseInt(val);
-    if (isNaN(parsed)) {
+    if (Number.isNaN(parsed)) {
       return 400;
     }
     return parsed;

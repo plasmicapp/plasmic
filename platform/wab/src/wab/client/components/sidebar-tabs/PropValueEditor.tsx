@@ -139,7 +139,7 @@ import { typesEqual } from "@/wab/shared/model/model-util";
 import { smartHumanize } from "@/wab/shared/strs";
 import { ComponentContextConfig } from "@plasmicapp/host";
 import type { RulesLogic } from "json-logic-js";
-import L, { isNil, isNumber } from "lodash";
+import L, { isNil } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -753,7 +753,7 @@ const PropValueEditor_ = (
     let step: number | undefined = undefined;
 
     const ensureNumberValueIsValid = (x: number | undefined) =>
-      isNumber(x) && isFinite(x) ? x : undefined;
+      Number.isFinite(x) ? x : undefined;
     if (isPlainObjectPropType(propType) && propType.type === "number") {
       min = ensureNumberValueIsValid(_getContextDependentValue(propType.min));
       max = ensureNumberValueIsValid(_getContextDependentValue(propType.max));

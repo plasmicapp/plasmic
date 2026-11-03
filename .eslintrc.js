@@ -111,6 +111,8 @@ const restrictedTestonlySyntaxRule = {
     "`_testonly` is only for tests. Please use the module's real exports.",
 };
 
+const primitiveChecks = "isString|isNumber|isBoolean|isFinite|isNaN";
+
 // Shared by every `no-restricted-syntax` rule, since an override replaces the
 // whole list rather than extending it.
 const restrictedSyntaxRules = [
@@ -123,6 +125,13 @@ const restrictedSyntaxRules = [
     selector: `BinaryExpression[operator='instanceof'] > Identifier[name=/\\b(${TYPES})\\b/]`,
     message:
       "instanceof cannot be used with model types. Use isKnownXXX instead.",
+  },
+  {
+    // Except Number.isFinite/Number.isNaN, these accept boxed primitives (e.g.
+    // `new String("a")`) or coerce their argument to a number.
+    selector: `CallExpression:matches([callee.name=/^(${primitiveChecks})$/], [callee.property.name=/^(${primitiveChecks})$/]):not([callee.object.name='Number'])`,
+    message:
+      'Please use `typeof x === "string"` (or "number"/"boolean") or `Number.isFinite()`/`Number.isNaN()` instead.',
   },
   restrictedTestonlySyntaxRule,
 ];

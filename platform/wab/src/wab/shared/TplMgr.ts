@@ -286,7 +286,7 @@ import {
   isInvisible,
   setTplVisibility,
 } from "@/wab/shared/visibility-utils";
-import L, { isString, omit, omitBy, partition, pickBy, uniqBy } from "lodash";
+import L, { omit, omitBy, partition, pickBy, uniqBy } from "lodash";
 import flatten from "lodash/flatten";
 import has from "lodash/has";
 import kebabCase from "lodash/kebabCase";
@@ -1296,7 +1296,8 @@ export class TplMgr {
     );
     queryInvalidationExprs.forEach(({ expr }) => {
       expr.invalidationQueries = expr.invalidationQueries.filter(
-        (key) => isString(key) || !removedQueriesSet.has(key.ref.uuid),
+        (key) =>
+          typeof key === "string" || !removedQueriesSet.has(key.ref.uuid),
       );
     });
   }
@@ -1361,7 +1362,7 @@ export class TplMgr {
     queryInvalidationExprs.forEach(({ expr }) => {
       expr.invalidationQueries = withoutNils(
         expr.invalidationQueries.map((key) => {
-          if (isString(key) || !removedUuids.has(key.ref.uuid)) {
+          if (typeof key === "string" || !removedUuids.has(key.ref.uuid)) {
             return key;
           }
           const replacement = removedUuidToReplacement.get(key.ref.uuid);

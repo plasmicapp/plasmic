@@ -64,7 +64,7 @@ import {
 import { DataSourceSchema, TableSchema } from "@plasmicapp/data-sources";
 import { FormType, formTypeDescription } from "@plasmicpkgs/antd5";
 import { notification } from "antd";
-import { isString, size } from "lodash";
+import { size } from "lodash";
 import { ok } from "neverthrow";
 import React from "react";
 
@@ -417,7 +417,9 @@ export function FormDataConnectionPropEditor({
     const filters = extractFiltersFromDefaultDataSourceQueries(value);
     const tableId = swallow(() => {
       const resourceValue = value?.templates.resource?.value;
-      return isString(resourceValue) ? JSON.parse(resourceValue) : undefined;
+      return typeof resourceValue === "string"
+        ? JSON.parse(resourceValue)
+        : undefined;
     });
     return {
       sourceId: value.sourceId,
@@ -534,7 +536,7 @@ function FormDataConnectionBottomModal({
       });
       return;
     }
-    if (!isString(tableId) || !tableSchema || !sourceMeta) {
+    if (typeof tableId !== "string" || !tableSchema || !sourceMeta) {
       notification.error({
         message: `Missing required fields: Table`,
       });

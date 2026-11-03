@@ -62,7 +62,7 @@ import {
 import { instUtil as defaultInstUtil } from "@/wab/shared/model/InstUtil";
 import { Type as ModelType } from "@/wab/shared/model/model-meta";
 import { ChoiceOptions, ChoiceValue } from "@plasmicapp/host";
-import { isArray, isBoolean, isEqual, isNil, isNumber, isString } from "lodash";
+import { isArray, isEqual, isNil } from "lodash";
 
 export const typeFactory = {
   text: () => new Text({ name: "text" }),
@@ -375,15 +375,17 @@ export function conformsToType(
 ) {
   switch (type.type) {
     case "String":
-      return isString(value);
+      return typeof value === "string";
     case "StringLiteral":
-      return isString(value) && value === type.params[0];
+      return typeof value === "string" && value === type.params[0];
     case "Number":
-      return isNumber(value);
+      return typeof value === "number";
     case "Bool":
-      return isBoolean(value);
+      return typeof value === "boolean";
     case "Lit":
-      return isNil(value) || isString(value) || isBoolean(value);
+      return (
+        isNil(value) || typeof value === "string" || typeof value === "boolean"
+      );
     case "List":
     case "Set":
       return (

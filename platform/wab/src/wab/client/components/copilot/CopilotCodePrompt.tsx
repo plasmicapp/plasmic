@@ -12,7 +12,7 @@ import {
 } from "@/wab/shared/common";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import { Tooltip } from "antd";
-import { isString, range } from "lodash";
+import { range } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -113,7 +113,7 @@ function processData(data: Record<string, any>) {
   for (const maxDepth of depthRange) {
     const rec = (v: any, depth: number, path: (string | number)[]) => {
       if (isPrimitive(v)) {
-        if (isString(v) && v.length > 25) {
+        if (typeof v === "string" && v.length > 25) {
           return `${v.slice(0, 20)}...`;
         }
         return v;

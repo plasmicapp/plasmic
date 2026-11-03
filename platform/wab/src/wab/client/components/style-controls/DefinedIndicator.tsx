@@ -158,7 +158,7 @@ export function getStylePropValue(
     );
 
     // We also check isNaN because sometimes numbers get interpreted
-    const isColor = Chroma.valid(val) && isNaN(+val);
+    const isColor = Chroma.valid(val) && Number.isNaN(+val);
     const displayValue = isColor ? (
       <span>
         <ColorSwatch color={val} />

@@ -23,7 +23,6 @@ import { isKnownExpr, TemplatedString } from "@/wab/shared/model/classes";
 import { smartHumanize } from "@/wab/shared/strs";
 import { PropType } from "@plasmicapp/host";
 import { ObjectType } from "@plasmicapp/host/dist/registerFunction";
-import { isString } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -107,7 +106,8 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
         : undefined;
     const fieldValueExpr = isKnownExpr(fieldValue)
       ? fieldValue
-      : getPropTypeType(fieldPropType) === "string" && isString(fieldValue)
+      : getPropTypeType(fieldPropType) === "string" &&
+          typeof fieldValue === "string"
         ? new TemplatedString({ text: [fieldValue] })
         : codeLit(fieldValue);
 

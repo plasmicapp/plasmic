@@ -207,7 +207,8 @@ export class MetaSvc {
           (propMeta) =>
             propMeta.name === prop &&
             (!propMeta.origin ||
-              (L.isString(propMeta.origin) && !isBaseOrigin(propMeta.origin))),
+              (typeof propMeta.origin === "string" &&
+                !isBaseOrigin(propMeta.origin))),
         ))
     );
   }
