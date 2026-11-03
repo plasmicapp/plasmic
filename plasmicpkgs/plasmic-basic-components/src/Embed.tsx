@@ -3,7 +3,7 @@ import registerComponent, {
   CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React, { useEffect, useRef } from "react";
-import { ensure, useFirstRender, useId } from "./common";
+import { useFirstRender, useId } from "./common";
 
 export interface EmbedProps {
   className?: string;
@@ -44,12 +44,28 @@ export function Embed({ className, code, hideInEditor = false }: EmbedProps) {
       return;
     }
 
+    // The element may already be gone (e.g. unmounted before the effect ran).
+    const root = rootElt.current;
+    if (!root) {
+      return;
+    }
+
     // Load scripts sequentially one at a time, since later scripts can depend on earlier ones.
     let cleanup = false;
     (async () => {
-      for (const oldScript of Array.from(
-        ensure(rootElt.current).querySelectorAll("script")
-      )) {
+      for (const oldScript of Array.from(root.querySelectorAll("script"))) {
+        // A re-render or unmount can happen while we're awaiting an earlier
+        // script's load event; if so, stop rather than mutating a stale tree.
+        if (cleanup) {
+          return;
+        }
+        // That same re-render can also detach the <script> nodes we captured
+        // above (React re-applies dangerouslySetInnerHTML), leaving them with a
+        // null parentNode. Skip those instead of throwing on a failed assertion.
+        const parent = oldScript.parentNode;
+        if (!parent) {
+          continue;
+        }
         const newScript = document.createElement("script");
         // This doesn't actually have the effect we want, we need to explicitly wait on the load event, since all
         // dynamically injected scripts are always async.
@@ -58,7 +74,7 @@ export function Embed({ className, code, hideInEditor = false }: EmbedProps) {
           newScript.setAttribute(attr.name, attr.value)
         );
         newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-        ensure(oldScript.parentNode).replaceChild(newScript, oldScript);
+        parent.replaceChild(newScript, oldScript);
         // Only scripts with src will ever fire a load event.
         if (newScript.src) {
           await new Promise((resolve) =>
@@ -69,10 +85,14 @@ export function Embed({ className, code, hideInEditor = false }: EmbedProps) {
           }
         }
       }
-      return () => {
-        cleanup = true;
-      };
     })();
+
+    // Returned from the effect (not the async IIFE) so it is actually
+    // registered as the cleanup; signals the loop above to stop on
+    // unmount / dependency change.
+    return () => {
+      cleanup = true;
+    };
   }, [htmlId, code, hideInEditor, inEditor]);
   const effectiveCode =
     hideInEditor && inEditor
