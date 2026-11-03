@@ -330,25 +330,14 @@ const $$ = {};
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames("plasmic_default__all", "root_reset_1234567890", "plasmic_default_styles", "plasmic_mixins", styleTokensClassNames, "Homepage__root__wN3Do")}
-      
       >
             <h1
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "plasmic_default__h1", "plasmic_default__h1__12345", "__wab_text", "Homepage__h1__dplmm")}
-      
       >
             { "This project animation" }
           </h1>
 <h1
-      
-      
-      
-      
       className={classNames("plasmic_default__all", "plasmic_default__h1", "plasmic_default__h1__12345", "__wab_text", "Homepage__h1__cidRc")}
-      
       >
             { "Imported project animation" }
           </h1>
@@ -1331,25 +1320,14 @@ const $$ = {};
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames("all", "root_reset_1234567890", "plasmic_default_styles", "plasmic_mixins", styleTokensClassNames, sty.root)}
-      
       >
             <h1
-      
-      
-      
-      
       className={classNames("all", "h1", "h1__12345", "__wab_text", sty.h1__dplmm)}
-      
       >
             { "This project animation" }
           </h1>
 <h1
-      
-      
-      
-      
       className={classNames("all", "h1", "h1__12345", "__wab_text", sty.h1__cidRc)}
-      
       >
             { "Imported project animation" }
           </h1>
