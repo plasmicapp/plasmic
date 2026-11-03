@@ -11,8 +11,8 @@ catalogs:
       specifier: 4.12.1
       version: 4.12.1
     '@hono/node-server':
-      specifier: ^1.14.0
-      version: 1.14.0
+      specifier: ^1.19.17
+      version: 1.19.17
     '@nats-io/jetstream':
       specifier: 3.3.1
       version: 3.3.1
@@ -243,7 +243,7 @@ importers:
         version: 4.12.1
       '@hono/node-server':
         specifier: 'catalog:'
-        version: 1.14.0(hono@4.9.8)
+        version: 1.19.17(hono@4.9.8)
       '@plasmic-shared/observability':
         specifier: workspace:*
         version: link:../shared/observability
@@ -1003,7 +1003,7 @@ importers:
         version: 8.1.0
       '@hono/node-server':
         specifier: 'catalog:'
-        version: 1.14.0(hono@4.9.8)
+        version: 1.19.17(hono@4.9.8)
       '@nats-io/jetstream':
         specifier: 'catalog:'
         version: 3.3.1
@@ -3212,8 +3212,8 @@ packages:
       react: ^16 || ^17 || ^18
       react-dom: ^16 || ^17 || ^18
 
-  '@hono/node-server@1.14.0':
-    resolution: {integrity: sha512-YUCxJwgHRKSqjrdTk9e4VMGKN27MK5r4+MGPyZTgKH+IYbK+KtYbHeOcPGJ91KGGD6RIQiz2dAHxvjauNhOS8g==}
+  '@hono/node-server@1.19.17':
+    resolution: {integrity: sha512-dSneS5qhiauZWGDCeK4o695Xd9nUNjviSZCMQrj10eetr8Uln1ucn6bbphOM6UynAMMtNIzZNSpL9vnASJwrPQ==}
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
@@ -18156,7 +18156,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@hono/node-server@1.14.0(hono@4.9.8)':
+  '@hono/node-server@1.19.17(hono@4.9.8)':
     dependencies:
       hono: 4.9.8
 

@@ -17,7 +17,7 @@ minimumReleaseAgeExclude:
 
 catalog:
   "@godaddy/terminus": 4.12.1
-  "@hono/node-server": ^1.14.0
+  "@hono/node-server": ^1.19.17
   "@nats-io/jetstream": 3.3.1
   "@nats-io/kv": 3.3.1
   "@nats-io/nats-core": 3.3.1
