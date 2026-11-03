@@ -3513,6 +3513,7 @@ export default PlasmicButton;
       },
       "render": {
         "appUser": {},
+        "defaultCss": "./plasmic__default_style.css",
         "depCss": [],
         "globalContexts": undefined,
         "globalVariants": [],
@@ -3571,6 +3572,7 @@ export default PlasmicButton;
       },
       "render": {
         "appUser": {},
+        "defaultCss": "./plasmic__default_style.css",
         "depCss": [],
         "globalContexts": undefined,
         "globalVariants": [],
@@ -3619,6 +3621,7 @@ export default PlasmicButton;
       },
       "render": {
         "appUser": {},
+        "defaultCss": "./plasmic__default_style.css",
         "depCss": [],
         "globalContexts": undefined,
         "globalVariants": [],
@@ -4799,6 +4802,7 @@ export default PlasmicHomepage;
       },
       "render": {
         "appUser": {},
+        "defaultCss": "./plasmic__default_style.css",
         "depCss": [],
         "globalContexts": undefined,
         "globalVariants": [],
@@ -6412,6 +6416,7 @@ export default PlasmicP1;
       },
       "render": {
         "appUser": {},
+        "defaultCss": "./plasmic__default_style.css",
         "depCss": [],
         "globalContexts": undefined,
         "globalVariants": [],
@@ -8281,6 +8286,7 @@ import "./project_nK82Sy7U95EbFvy7eCs7Ha.css"; // plasmic-import: nK82Sy7U95EbFv
       },
       "render": {
         "appUser": {},
+        "defaultCss": "./plasmic__default_style.css",
         "depCss": [
           "./project_nK82Sy7U95EbFvy7eCs7Ha.css",
         ],
@@ -8351,6 +8357,7 @@ import "./project_nK82Sy7U95EbFvy7eCs7Ha.css"; // plasmic-import: nK82Sy7U95EbFv
       },
       "render": {
         "appUser": {},
+        "defaultCss": "./plasmic__default_style.css",
         "depCss": [],
         "globalContexts": undefined,
         "globalVariants": [
@@ -12322,6 +12329,7 @@ import "./project_dDhZ6zwZLAf7xJZyZTRjNo.css"; // plasmic-import: dDhZ6zwZLAf7xJ
       },
       "render": {
         "appUser": {},
+        "defaultCss": "./plasmic__default_style.css",
         "depCss": [
           "./project_dDhZ6zwZLAf7xJZyZTRjNo.css",
           "./project_o4X34XVygFFWtxjFUskpCA.css",
@@ -12387,6 +12395,7 @@ import "./project_dDhZ6zwZLAf7xJZyZTRjNo.css"; // plasmic-import: dDhZ6zwZLAf7xJ
       },
       "render": {
         "appUser": {},
+        "defaultCss": "./plasmic__default_style.css",
         "depCss": [],
         "globalContexts": undefined,
         "globalVariants": [],
@@ -14233,6 +14242,7 @@ import "./project_iGygRUekJWXZgpf4Konyj4.css"; // plasmic-import: iGygRUekJWXZgp
       },
       "render": {
         "appUser": {},
+        "defaultCss": "./plasmic__default_style.css",
         "depCss": [
           "./project_iGygRUekJWXZgpf4Konyj4.css",
         ],
