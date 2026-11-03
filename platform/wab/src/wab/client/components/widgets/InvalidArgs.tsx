@@ -1,3 +1,4 @@
+import { getCustomFunctionDisplayName } from "@/wab/client/components/modals/customFunctionModals";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import WarningIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
 import { cx } from "@/wab/shared/common";
@@ -5,26 +6,36 @@ import {
   InvalidArg,
   getInvalidArgErrorMessage,
 } from "@/wab/shared/core/invalid-arg";
+import { CustomFunction } from "@/wab/shared/model/classes";
 import * as React from "react";
 
 /**
  * Amber warning icon + label, matching the per-field prop-validation warning
  * (see `.invalid-arg-warning` in main.sass).
  */
-export function InvalidArgsBadge(props: {
-  className?: string;
-  children: React.ReactNode;
-}) {
+export const InvalidArgsBadge = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(function InvalidArgsBadge({ className, children, ...rest }, ref) {
   return (
     <div
-      className={cx(
-        "flex flex-vcenter gap-sm invalid-arg-warning",
-        props.className,
-      )}
+      ref={ref}
+      {...rest}
+      className={cx("flex flex-vcenter gap-sm invalid-arg-warning", className)}
     >
       <Icon icon={WarningIcon} />
-      {props.children}
+      {children}
     </div>
+  );
+});
+
+export function UnregisteredFunctionMessage(props: { func: CustomFunction }) {
+  const { func } = props;
+  return (
+    <>
+      Function "{getCustomFunctionDisplayName(func)}" is no longer registered.
+      Select another function or restore the registration.
+    </>
   );
 }
 

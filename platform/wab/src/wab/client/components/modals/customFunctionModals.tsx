@@ -9,6 +9,10 @@ import Select from "@/wab/client/components/widgets/Select";
 import TrashsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__TrashSvg";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { cachedExprsInSite } from "@/wab/shared/cached-selectors";
+import {
+  PendingCustomFunctionUpdate,
+  applyCustomFunctionChanges,
+} from "@/wab/shared/code-components/code-components";
 import { ensure } from "@/wab/shared/common";
 import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { fixCustomFunctionExpr } from "@/wab/shared/core/custom-functions";
@@ -168,7 +172,12 @@ async function tryRemapMissingCustomFunctions(
       refComponents,
       availableFunctions,
     });
-    if (functionToRemap && functionToRemap !== "delete") {
+    // Closing the prompt decides nothing: keep the function and its uses, and
+    // ask again on the next sync.
+    if (!functionToRemap) {
+      continue;
+    }
+    if (functionToRemap !== "delete") {
       remappedFunctions.set(customFunction, functionToRemap);
     }
     removedFunctions.add(customFunction);
@@ -202,7 +211,7 @@ const isCustomFunctionOrDynamicExpr = (expr: Expr) => {
 export async function updateSiteCustomFunctions(props: {
   ctx: StudioCtx;
   newFunctions: CustomFunction[];
-  updatedFunctions: CustomFunction[];
+  updatedFunctions: PendingCustomFunctionUpdate[];
   removedFunctions: Set<CustomFunction>;
 }) {
   const { ctx, newFunctions, updatedFunctions } = props;
@@ -236,9 +245,11 @@ export async function updateSiteCustomFunctions(props: {
 
   await ctx.change(
     () => {
-      site.customFunctions = [...site.customFunctions, ...newFunctions].filter(
-        (customFunction) => !removedFunctions.has(customFunction),
-      );
+      applyCustomFunctionChanges(site, {
+        newFunctions,
+        updatedFunctions,
+        removedFunctions,
+      });
 
       exprRefs.forEach((usage) => {
         // Update server queries with remapped functions
@@ -265,17 +276,14 @@ export async function updateSiteCustomFunctions(props: {
             fixCustomFunctionExpr(remappedFunctions, expr);
 
             // Update params
-            const updatedRegistration = updatedFunctions.find(
-              (fn) => fn === expr.func,
+            const updated = updatedFunctions.find(
+              (u) => u.customFunction === expr.func,
             );
-            if (!updatedRegistration) {
+            if (!updated) {
               return;
             }
-            expr.args = expr.args.filter(
-              (arg) =>
-                !!updatedRegistration.params.find(
-                  (param) => param === arg.argType,
-                ),
+            expr.args = expr.args.filter((arg) =>
+              updated.customFunction.params.includes(arg.argType),
             );
           } else if (isKnownEventHandler(expr)) {
             expr.interactions.forEach((interaction) => {

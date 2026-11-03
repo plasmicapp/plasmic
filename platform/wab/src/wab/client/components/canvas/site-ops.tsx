@@ -1032,6 +1032,7 @@ export class SiteOps {
   ) {
     await this.studioCtx.change(() => {
       this.tplMgr.upgradeProjectDeps(targetDeps);
+      this.studioCtx.rebindRestoredFunctions();
       this.studioCtx.ensureAllComponentStackFramesHasOnlyValidVariants();
       return ok();
     }, opts);

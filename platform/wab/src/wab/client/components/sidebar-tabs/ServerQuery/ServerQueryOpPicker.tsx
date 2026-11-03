@@ -20,6 +20,7 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import {
   InvalidArgsBadge,
   InvalidArgsSummary,
+  UnregisteredFunctionMessage,
 } from "@/wab/client/components/widgets/InvalidArgs";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import SearchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
@@ -648,8 +649,9 @@ export const ServerQueryOpDraftForm = observer(
 function _ServerQueryOpPreview(props: {
   queryState: StatefulQueryState | undefined;
   invalidArgs: Record<string, InvalidArg> | undefined;
+  unregisteredFunc?: CustomFunction;
 }) {
-  const { queryState, invalidArgs } = props;
+  const { queryState, invalidArgs, unregisteredFunc } = props;
   const invalidArgsList = invalidArgs ? Object.values(invalidArgs) : undefined;
   const previewValue = React.useMemo(() => {
     if (!queryState) {
@@ -730,7 +732,21 @@ function _ServerQueryOpPreview(props: {
             name: "Response",
             key: "response",
             contents: () =>
-              invalidArgsList ? (
+              unregisteredFunc ? (
+                <div
+                  className={cx(
+                    "flex-col fill-width flex-hcenter gap-m dimfg text-center",
+                    styles.unregisteredFunction,
+                  )}
+                >
+                  <InvalidArgsBadge>
+                    <strong>Function not registered</strong>
+                  </InvalidArgsBadge>
+                  <div className={styles.unregisteredFunctionMessage}>
+                    <UnregisteredFunctionMessage func={unregisteredFunc} />
+                  </div>
+                </div>
+              ) : invalidArgsList ? (
                 <div className="flex-col fill-width fill-height flex-vcenter flex-hcenter gap-m dimfg text-center">
                   <InvalidArgsBadge>
                     <strong>Fix validation errors</strong>
@@ -955,6 +971,12 @@ export const ServerQueryOpExprFormAndPreview = observer(
           <ServerQueryOpPreview
             queryState={queryState}
             invalidArgs={invalidArgs}
+            unregisteredFunc={
+              draft.fnExpr &&
+              !studioCtx.getRegisteredFunction(draft.fnExpr.func)
+                ? draft.fnExpr.func
+                : undefined
+            }
           />
         </div>
       </div>

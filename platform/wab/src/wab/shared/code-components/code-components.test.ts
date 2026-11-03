@@ -3,18 +3,27 @@ import { parseMasterPkg } from "@/wab/server/pkg-mgr";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { FastBundler } from "@/wab/shared/bundler";
 import {
+  CodeComponentSyncCallbackFns,
   CodeComponentsRegistry,
+  CustomFunctionParam,
   UnknownComponentError,
   _testonly,
+  applyCustomFunctionChanges,
   componentMetaToComponentParams,
+  createCustomFunctionFromRegistration,
   getNewProps,
   makePlumeComponentMeta,
   mkCodeComponent,
   parseStyles,
   propTypeToWabType,
+  registeredFunctionId,
 } from "@/wab/shared/code-components/code-components";
+import {
+  mkComponentWithQueries,
+  mkServerQuery,
+} from "@/wab/shared/codegen/react-p/server-queries/__testonly__/test-utils";
 import { arrayWithout } from "@/wab/shared/collections";
-import { only, uncheckedCast } from "@/wab/shared/common";
+import { mkShortId, only, uncheckedCast } from "@/wab/shared/common";
 import { PlumeComponent } from "@/wab/shared/core/components";
 import { codeLit } from "@/wab/shared/core/exprs";
 import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
@@ -22,6 +31,8 @@ import { createSite } from "@/wab/shared/core/sites";
 import { unbundleSite } from "@/wab/shared/core/tagged-unbundle";
 import {
   Component,
+  CustomFunctionExpr,
+  FunctionArg,
   ProjectDependency,
   PropParam,
   Site,
@@ -29,8 +40,13 @@ import {
   StateParam,
 } from "@/wab/shared/model/classes";
 import { instFieldValues } from "@/wab/shared/model/model-meta";
-import type { GlobalContextMeta } from "@plasmicapp/host";
+import type {
+  CustomFunctionRegistration,
+  GlobalContextMeta,
+} from "@plasmicapp/host";
 import type { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
+import { ok } from "neverthrow";
+import React from "react";
 
 const { addNewRegisteredComponents, findDuplicateAriaParams } = _testonly;
 
@@ -431,5 +447,225 @@ describe("propTypeToWabType", () => {
       name: expected,
       options: ["a", "b"],
     });
+  });
+});
+
+describe("custom function sync", () => {
+  const registration = (
+    name: string,
+    params: CustomFunctionParam[] = [
+      { name: "keep", type: "string" },
+      { name: "obsolete", type: "number" },
+    ],
+  ): CustomFunctionRegistration => ({
+    function: () => undefined,
+    meta: {
+      name,
+      importPath: "./functions",
+      // The registry erases the concrete function signature; these fixtures
+      // intentionally exercise the full runtime registration vocabulary.
+      params: params as CustomFunctionRegistration["meta"]["params"],
+    },
+  });
+
+  function setup() {
+    const site = createSite();
+    const existing = createCustomFunctionFromRegistration(
+      registration("existing"),
+    );
+    const removed = createCustomFunctionFromRegistration(
+      registration("removed"),
+    );
+    site.customFunctions = [existing, removed];
+    const next = registration("existing", [
+      { name: "keep", type: "string" },
+      { name: "added", type: "boolean" },
+    ]);
+    next.meta.displayName = "Updated function";
+    const registry = new CodeComponentsRegistry(globalThis, {});
+    vi.spyOn(registry, "getRegisteredFunctionsMap").mockReturnValue(
+      new Map(
+        [next, registration("newFunction")].map((reg) => [
+          registeredFunctionId(reg),
+          reg,
+        ]),
+      ),
+    );
+    const ctx: Parameters<typeof _testonly.upsertRegisteredFunctions>[0] = {
+      site,
+      codeComponentsRegistry: registry,
+      change: vi.fn(async (f) => f()),
+      getRootSubReact: () => React,
+      tplMgr: () => new TplMgr({ site }),
+      getPlumeSite: () => undefined,
+    };
+    const callbacks: CodeComponentSyncCallbackFns = {
+      onMissingCodeComponents: async () => ok(),
+      onInvalidReactVersion: async () => ok(),
+      onInvalidComponentImportNames: vi.fn(),
+      onStaleProps: async () => false,
+      onNewDefaultComponents: vi.fn(),
+      onSchemaToTplWarnings: vi.fn(),
+      onSchemaToTplError: vi.fn(),
+      onInvalidJsonForDefaultValue: vi.fn(),
+    };
+    return { site, existing, removed, next, ctx, callbacks };
+  }
+
+  it("defers all mutations to the client callback and preserves matching ArgTypes", async () => {
+    const { site, existing, removed, ctx, callbacks } = setup();
+    const previousParams = existing.params;
+    const callback = vi.fn(async (changes) => {
+      expect(site.customFunctions).toEqual([existing, removed]);
+      expect(existing.displayName).toBeNull();
+      expect(existing.params).toBe(previousParams);
+      expect(changes.updatedFunctions[0].updates.params[0]).toBe(
+        previousParams[0],
+      );
+      expect(ctx.change).not.toHaveBeenCalled();
+      await ctx.change(
+        () => {
+          applyCustomFunctionChanges(site, changes);
+          return ok();
+        },
+        { noUndoRecord: true },
+      );
+    });
+    callbacks.onUpdatedCustomFunctions = callback;
+    expect(
+      (await _testonly.upsertRegisteredFunctions(ctx, callbacks)).isOk(),
+    ).toBe(true);
+    expect(callback).toHaveBeenCalledOnce();
+    expect(ctx.change).toHaveBeenCalledOnce();
+    expect(site.customFunctions.map((f) => f.importName)).toEqual([
+      "existing",
+      "newFunction",
+    ]);
+    expect(existing.displayName).toBe("Updated function");
+    expect(existing.params[0]).toBe(previousParams[0]);
+    expect(existing.params).not.toContain(previousParams[1]);
+  });
+
+  it("applies additions, updates and removals without a client callback and skips unchanged syncs", async () => {
+    const { site, existing, ctx, callbacks } = setup();
+    const kept = existing.params[0];
+    expect(
+      (await _testonly.upsertRegisteredFunctions(ctx, callbacks)).isOk(),
+    ).toBe(true);
+    expect(site.customFunctions.map((f) => f.importName)).toEqual([
+      "existing",
+      "newFunction",
+    ]);
+    expect(existing.params.map((p) => p.argName)).toEqual(["keep", "added"]);
+    expect(existing.params[0]).toBe(kept);
+    expect(existing.displayName).toBe("Updated function");
+    expect(ctx.change).toHaveBeenCalledExactlyOnceWith(expect.any(Function), {
+      noUndoRecord: true,
+    });
+    expect(
+      (await _testonly.upsertRegisteredFunctions(ctx, callbacks)).isOk(),
+    ).toBe(true);
+    expect(ctx.change).toHaveBeenCalledOnce();
+  });
+
+  it("validates every registration before applying pending changes", async () => {
+    const { site, existing, removed, ctx, callbacks } = setup();
+    ctx.codeComponentsRegistry
+      .getRegisteredFunctionsMap()
+      .set(
+        registeredFunctionId(registration("not valid")),
+        registration("not valid"),
+      );
+    const previousParams = existing.params;
+    const result = await _testonly.upsertRegisteredFunctions(ctx, callbacks);
+    expect(result.isErr()).toBe(true);
+    expect(site.customFunctions).toEqual([existing, removed]);
+    expect(existing.params).toBe(previousParams);
+    expect(ctx.change).not.toHaveBeenCalled();
+  });
+
+  it.each(["matching", "importPath", "defaultExport", "registered", "invalid"])(
+    "restores only unregistered matching imports: %s",
+    async (kind) => {
+      const { site, existing, removed, ctx, callbacks } = setup();
+      const local = kind === "registered" ? existing : removed;
+      const dependencyFunction = createCustomFunctionFromRegistration(
+        registration(local.importName, [{ name: "keep", type: "string" }]),
+      );
+      if (kind === "importPath") {
+        dependencyFunction.importPath = "./other-functions";
+      } else if (kind === "defaultExport") {
+        dependencyFunction.defaultExport = true;
+      }
+      site.projectDependencies = [
+        new ProjectDependency({
+          name: "Library",
+          pkgId: "library",
+          projectId: "library-project",
+          uuid: mkShortId(),
+          version: "1.0.0",
+          site: createSite({ customFunctions: [dependencyFunction] }),
+        }),
+      ];
+      const call = new CustomFunctionExpr({
+        func: local,
+        args: local.params.map(
+          (argType) =>
+            new FunctionArg({
+              uuid: mkShortId(),
+              argType,
+              expr: codeLit(argType.argName),
+            }),
+        ),
+      });
+      site.components = [mkComponentWithQueries(mkServerQuery("query", call))];
+      const originalArgs = [...call.args];
+      const callback = vi.fn();
+      callbacks.onUpdatedCustomFunctions = callback;
+      if (kind === "invalid") {
+        ctx.codeComponentsRegistry
+          .getRegisteredFunctionsMap()
+          .set(
+            registeredFunctionId(registration("not valid")),
+            registration("not valid"),
+          );
+      }
+      const result = await _testonly.upsertRegisteredFunctions(ctx, callbacks);
+      expect(result.isErr()).toBe(kind === "invalid");
+      if (kind === "matching") {
+        expect(call.func).toBe(dependencyFunction);
+        expect(call.args).toEqual([originalArgs[0]]);
+        expect(call.args[0].argType).toBe(dependencyFunction.params[0]);
+        expect(site.customFunctions).not.toContain(local);
+        expect(callback.mock.calls[0][0].removedFunctions.has(local)).toBe(
+          false,
+        );
+      } else {
+        expect(call.func).toBe(local);
+        expect(call.args).toEqual(originalArgs);
+        expect(site.customFunctions).toContain(local);
+        expect(ctx.change).not.toHaveBeenCalled();
+        if (kind === "invalid") {
+          expect(callback).not.toHaveBeenCalled();
+        } else {
+          expect(callback.mock.calls[0][0].removedFunctions.has(local)).toBe(
+            kind !== "registered",
+          );
+        }
+      }
+    },
+  );
+
+  it("awaits the fallback transaction", async () => {
+    const { site, ctx, callbacks } = setup();
+    vi.mocked(ctx.change).mockImplementation(async (f) => {
+      await Promise.resolve();
+      return f();
+    });
+    await _testonly.upsertRegisteredFunctions(ctx, callbacks);
+    expect(site.customFunctions.map((f) => f.importName)).toEqual([
+      "existing",
+      "newFunction",
+    ]);
   });
 });

@@ -8,6 +8,7 @@ import { ensureVariantSetting, mkBaseVariant } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import {
   allCustomFunctions,
+  cachedExprsInSite,
   componentToTplComponents,
   computedProjectFlags,
   flattenComponent,
@@ -27,7 +28,6 @@ import {
   assert,
   ensure,
   ensureArray,
-  hackyCast,
   isArrayOfLiterals,
   isArrayOfStrings,
   isNumeric,
@@ -65,6 +65,7 @@ import {
   mkComponent,
   removeComponentParam,
 } from "@/wab/shared/core/components";
+import { fixCustomFunctionExpr } from "@/wab/shared/core/custom-functions";
 import { ExprCtx, asCode, tryExtractString } from "@/wab/shared/core/exprs";
 import {
   ParamExportType,
@@ -184,6 +185,7 @@ import {
   ensureKnownTplTag,
   isKnownClassNamePropType,
   isKnownCustomCode,
+  isKnownCustomFunctionExpr,
   isKnownEventHandler,
   isKnownMultiChoice,
   isKnownPropParam,
@@ -664,7 +666,7 @@ export interface CodeComponentSyncCallbackFns {
   onUpdatedCustomFunctions?: (opts: {
     ctx: SiteCtx;
     newFunctions: CustomFunction[];
-    updatedFunctions: CustomFunction[];
+    updatedFunctions: PendingCustomFunctionUpdate[];
     removedFunctions: Set<CustomFunction>;
   }) => Promise<void>;
   onUpdatedCodeLibraries?: (opts: {
@@ -2923,8 +2925,10 @@ export function elementSchemaToTpl(
         case "box":
         case "vbox":
         case "hbox":
-        /* eslint-disable */
+        // Legacy section schemas are still accepted by the converter.
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
+        // eslint-disable-next-line no-fallthrough
         case "page-section": {
           const tag = schema.tag || "div";
           const children = schema.children
@@ -2946,6 +2950,7 @@ export function elementSchemaToTpl(
           const vs = ensureVariantSetting(tpl, baseCombo);
           RSH(vs.rs, tpl).merge(
             getDefaultStyles(
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               schema.type === "page-section"
                 ? AddItemKey.section
@@ -3075,7 +3080,7 @@ function layoutTypeToStyles(
 // Sanitize user defined styles
 export function parseStyles(
   rawStyles: React.CSSProperties,
-  elementType: Exclude<PlasmicElement, String>["type"],
+  elementType: Exclude<PlasmicElement, string>["type"],
   opts: { prefs?: AddItemPrefs },
 ): {
   styles: Record<string, string>;
@@ -3189,10 +3194,10 @@ export function parseStyles(
       parseCss(styles["box-shadow"], { startRule: "boxShadows" });
       sanitized["box-shadow"] = styles["box-shadow"];
     } catch {
-      const err = new Error(
+      const parseError = new Error(
         `Failed to parse CSS value for "box-shadow": ${styles["box-shadow"]}`,
       );
-      warnings.push({ message: err.message, shouldLogError: true });
+      warnings.push({ message: parseError.message, shouldLogError: true });
     }
   }
 
@@ -3289,6 +3294,7 @@ export function parseStyles(
           );
 
           return new BackgroundLayer({
+            // eslint-disable-next-line @typescript-eslint/no-misused-spread -- BackgroundLayer keeps its fields as own properties
             ...(layer ?? {}),
             ...otherProps,
             image,
@@ -3427,7 +3433,7 @@ export function propMetasToComponentParams(
   >(function* () {
     const valueParamNamesForWriteableStates = new Set(
       withoutNils(
-        Object.entries(meta.states ?? {}).map(([stateName, stateSpec]) =>
+        Object.values(meta.states ?? {}).map((stateSpec) =>
           stateSpec.type === "writable" ? stateSpec.valueProp : null,
         ),
       ),
@@ -3490,7 +3496,7 @@ export function stateMetasToComponentParams(
   >(function* () {
     const params: (Param | null | undefined)[] = [];
     for (const [stateName, stateSpec] of Object.entries(states).filter(
-      ([_, stateSpec]) => stateSpec.type === "readonly",
+      ([, spec]) => spec.type === "readonly",
     )) {
       params.push(
         stateSpec &&
@@ -3697,7 +3703,7 @@ export function isReactImplControl(
 
 export type ObjectStudioPropType<T> = Exclude<
   StudioPropType<T>,
-  CustomControl<T> | String
+  CustomControl<T> | string
 >;
 
 export function isExprValuePropType(
@@ -4120,10 +4126,9 @@ export function propTypeToWabType(
       // Custom control react component
       return ok(convertTsToWabType("any"));
     } else {
-      if (hackyCast(type.type) === "dataSourceOpData") {
-        return ok(typeFactory.queryData());
-      }
       switch (type.type) {
+        case "dataSourceOpData":
+          return ok(typeFactory.queryData());
         case "slot": {
           const components: ComponentInstance[] = [];
           for (const name of type.allowedComponents ?? []) {
@@ -4208,7 +4213,7 @@ export function propTypeToWabType(
           );
         case "themeStyles":
           return ok(typeFactory.defaultStyles());
-        case "interaction":
+        case "interaction": {
           const eventHandlerKey = type.eventHandlerKey;
           if (isEventHandlerKeyForAttr(eventHandlerKey)) {
             return ok(
@@ -4220,6 +4225,7 @@ export function propTypeToWabType(
             return ok(clone(eventHandlerKey.funcType));
           }
           return ok(typeFactory.func());
+        }
         case "eventHandler": {
           const argWabTypes = yield* Result.combine(
             type.argTypes.map((argType) =>
@@ -4727,6 +4733,98 @@ async function upsertRegisteredTokens(
   });
 }
 
+type CustomFunctionUpdate = Omit<
+  CustomFunction,
+  "importName" | "namespace" | "typeTag" | "uid"
+>;
+
+const CUSTOM_FUNCTION_UPDATEABLE_FIELDS = [
+  "defaultExport",
+  "importPath",
+  "params",
+  "isQuery",
+  "isMutation",
+  "displayName",
+] as const;
+
+export interface PendingCustomFunctionUpdate {
+  customFunction: CustomFunction;
+  updates: CustomFunctionUpdate;
+}
+
+export function applyCustomFunctionChanges(
+  site: Site,
+  opts: {
+    newFunctions: CustomFunction[];
+    updatedFunctions: PendingCustomFunctionUpdate[];
+    removedFunctions: Set<CustomFunction>;
+  },
+) {
+  site.customFunctions = [...site.customFunctions, ...opts.newFunctions].filter(
+    (f) => !opts.removedFunctions.has(f),
+  );
+  for (const { customFunction, updates } of opts.updatedFunctions) {
+    Object.assign(customFunction, updates);
+  }
+}
+
+// Only the host registry can distinguish a preserved dependency function from a
+// local registration with the same import.
+function findRestoredFunctions(
+  site: Site,
+  registeredFunctions: Map<CustomFunctionId, CustomFunctionRegistration>,
+) {
+  const dependencyFunctions = new Map<CustomFunctionId, CustomFunction>();
+  for (const dep of walkDependencyTree(site, "all")) {
+    for (const func of dep.site.customFunctions) {
+      const id = customFunctionId(func);
+      if (!dependencyFunctions.has(id)) {
+        dependencyFunctions.set(id, func);
+      }
+    }
+  }
+  const restoredFunctions = new Map<CustomFunction, CustomFunction>();
+  for (const local of site.customFunctions) {
+    const id = customFunctionId(local);
+    const restored = dependencyFunctions.get(id);
+    if (
+      !registeredFunctions.has(id) &&
+      restored &&
+      restored.importPath === local.importPath &&
+      restored.defaultExport === local.defaultExport
+    ) {
+      restoredFunctions.set(local, restored);
+    }
+  }
+  return restoredFunctions;
+}
+
+function applyRestoredFunctions(
+  site: Site,
+  restoredFunctions: Map<CustomFunction, CustomFunction>,
+) {
+  for (const { exprRefs } of cachedExprsInSite(site)) {
+    for (const { expr } of exprRefs) {
+      if (isKnownCustomFunctionExpr(expr)) {
+        fixCustomFunctionExpr(restoredFunctions, expr);
+      }
+    }
+  }
+  site.customFunctions = site.customFunctions.filter(
+    (f) => !restoredFunctions.has(f),
+  );
+}
+
+export function rebindRestoredFunctions(
+  site: Site,
+  registeredFunctions: Map<CustomFunctionId, CustomFunctionRegistration>,
+) {
+  applyRestoredFunctions(
+    site,
+    findRestoredFunctions(site, registeredFunctions),
+  );
+}
+
 async function upsertRegisteredFunctions(
   ctx: SiteCtx,
   fns: CodeComponentSyncCallbackFns,
@@ -4740,7 +4838,7 @@ async function upsertRegisteredFunctions(
   );
 
   const newFunctionRegs: CustomFunctionRegistration[] = [];
-  const updatedFunctionRegs: CustomFunctionRegistration[] = [];
+  const updatedFunctions: PendingCustomFunctionUpdate[] = [];
   const removedFunctions = new Set<CustomFunction>();
 
   const isValidType = (type: any): boolean => {
@@ -4908,23 +5006,18 @@ async function upsertRegisteredFunctions(
 
     const existing = existingFunctions.get(registeredFunctionId(functionReg));
     if (existing) {
-      const updateableFields: Omit<
-        CustomFunction,
-        "importName" | "namespace" | "typeTag" | "uid"
-      > = pick(createCustomFunctionFromRegistration(functionReg, existing), [
-        "defaultExport",
-        "importPath",
-        "params",
-        "isQuery",
-        "isMutation",
-        "displayName",
-      ]);
+      // Retain matching ArgType identities, but defer metadata mutations until
+      // the client can apply them together with expression cleanup.
+      const updates: CustomFunctionUpdate = pick(
+        createCustomFunctionFromRegistration(functionReg, existing),
+        CUSTOM_FUNCTION_UPDATEABLE_FIELDS,
+      );
       if (
-        Object.entries(updateableFields).some(
+        Object.entries(updates).some(
           ([key, value]) => !isEqual(value, existing[key]),
         )
       ) {
-        updatedFunctionRegs.push(functionReg);
+        updatedFunctions.push({ customFunction: existing, updates });
       }
     } else {
       newFunctionRegs.push(functionReg);
@@ -4989,54 +5082,46 @@ async function upsertRegisteredFunctions(
     }
   }
 
-  if (
-    newFunctionRegs.length > 0 ||
-    updatedFunctionRegs.length > 0 ||
-    removedFunctions.size > 0
-  ) {
-    const newFunctions: CustomFunction[] = [];
-    const updatedFunctions: CustomFunction[] = [];
-    for (const functionReg of newFunctionRegs) {
-      const customFunction = createCustomFunctionFromRegistration(functionReg);
-      newFunctions.push(customFunction);
-    }
-
-    ctx.change(
+  const restoredFunctions = findRestoredFunctions(site, registeredFunctions);
+  if (restoredFunctions.size > 0) {
+    restoredFunctions.forEach((_, local) => removedFunctions.delete(local));
+    await ctx.change<never>(
       () => {
-        for (const functionReg of updatedFunctionRegs) {
-          const existing = ensure(
-            existingFunctions.get(registeredFunctionId(functionReg)),
-            "Previously checked",
-          );
-          const updateableFields: Omit<
-            CustomFunction,
-            "importName" | "namespace" | "typeTag" | "uid"
-          > = pick(
-            createCustomFunctionFromRegistration(functionReg, existing),
-            [
-              "defaultExport",
-              "importPath",
-              "params",
-              "isQuery",
-              "isMutation",
-              "displayName",
-            ],
-          );
-
-          Object.assign(existing, updateableFields);
-          updatedFunctions.push(existing);
-        }
+        applyRestoredFunctions(site, restoredFunctions);
         return ok();
       },
       { noUndoRecord: true },
     );
+  }
 
-    await fns.onUpdatedCustomFunctions?.({
-      ctx,
-      newFunctions,
-      updatedFunctions,
-      removedFunctions,
-    });
+  if (
+    newFunctionRegs.length > 0 ||
+    updatedFunctions.length > 0 ||
+    removedFunctions.size > 0
+  ) {
+    const newFunctions = newFunctionRegs.map((reg) =>
+      createCustomFunctionFromRegistration(reg),
+    );
+    if (fns.onUpdatedCustomFunctions) {
+      await fns.onUpdatedCustomFunctions({
+        ctx,
+        newFunctions,
+        updatedFunctions,
+        removedFunctions,
+      });
+    } else {
+      await ctx.change<never>(
+        () => {
+          applyCustomFunctionChanges(site, {
+            newFunctions,
+            updatedFunctions,
+            removedFunctions,
+          });
+          return ok();
+        },
+        { noUndoRecord: true },
+      );
+    }
   }
 
   return ok();
@@ -5352,5 +5437,6 @@ export function appendCodeComponentMetaToModel(
 
 export const _testonly = {
   addNewRegisteredComponents,
+  upsertRegisteredFunctions,
   findDuplicateAriaParams,
 };

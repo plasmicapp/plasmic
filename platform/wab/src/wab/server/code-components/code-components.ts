@@ -16,6 +16,7 @@ import {
   extractDefaultSlotContents,
   getNewProps,
   mkCodeComponent,
+  registeredFunctionId,
   syncCodeComponents,
 } from "@/wab/shared/code-components/code-components";
 import { assert, ensure } from "@/wab/shared/common";
@@ -25,6 +26,7 @@ import {
   isContextCodeComponent,
   isHostLessCodeComponent,
 } from "@/wab/shared/core/components";
+import { customFunctionId } from "@/wab/shared/core/query-ids";
 import { createSite, writeable } from "@/wab/shared/core/sites";
 import { addComponentState } from "@/wab/shared/core/states";
 import { mkTplComponent } from "@/wab/shared/core/tpls";
@@ -293,6 +295,10 @@ export async function updateHostlessPackage(
       ].map(({ meta }: ComponentRegistration) => meta.name),
     );
 
+    const importedFunctionIds = new Set(
+      (globalThis.__PlasmicFunctionsRegistry ?? []).map(registeredFunctionId),
+    );
+
     logger.info(`Loading main package ${pkgInfo.name}`);
     loadServerPackage(pkgInfo.name);
 
@@ -330,6 +336,10 @@ export async function updateHostlessPackage(
       (c) => importedComponentNames.has(c.name) || isBuiltinCodeComponent(c),
     );
     tplMgr.removeComponentGroup(toDeleteComponents);
+
+    site.customFunctions = site.customFunctions.filter(
+      (f) => !importedFunctionIds.has(customFunctionId(f)),
+    );
 
     site.components
       .filter(isCodeComponent)

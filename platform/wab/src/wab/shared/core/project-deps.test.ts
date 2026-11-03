@@ -11,35 +11,56 @@ import {
   mkVariant,
 } from "@/wab/shared/Variants";
 import { Bundler } from "@/wab/shared/bundler";
-import { ensure, jsonClone } from "@/wab/shared/common";
+import { allCustomFunctions } from "@/wab/shared/cached-selectors";
+import {
+  CodeComponentsRegistry,
+  _testonly,
+  rebindRestoredFunctions,
+} from "@/wab/shared/code-components/code-components";
+import { mkServerQuery } from "@/wab/shared/codegen/react-p/server-queries/__testonly__/test-utils";
+import { ensure, jsonClone, mkShortId } from "@/wab/shared/common";
 import { mkComponentArena } from "@/wab/shared/component-arenas";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
-import { codeLit } from "@/wab/shared/core/exprs";
+import { getCustomFunctionParams } from "@/wab/shared/core/custom-functions";
+import { codeLit, customCode } from "@/wab/shared/core/exprs";
 import { mkParam } from "@/wab/shared/core/lang";
 import {
   getDependenciesWithReferencedCss,
   upgradeProjectDeps,
   walkDependencyTree,
 } from "@/wab/shared/core/project-deps";
+import { customFunctionId } from "@/wab/shared/core/query-ids";
 import { createSite } from "@/wab/shared/core/sites";
 import {
   TplTagType,
+  findExprsInNode,
+  flattenTpls,
   mkTplComponentX,
   mkTplTagX,
   trackComponentRoot,
   trackComponentSite,
 } from "@/wab/shared/core/tpls";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   Arg,
   ColumnsSetting,
+  CustomFunction,
+  CustomFunctionExpr,
+  EventHandler,
+  FunctionArg,
+  Interaction,
+  NameArg,
   ProjectDependency,
   Site,
   StyleToken,
   StyleTokenOverride,
   VariantedValue,
   ensureKnownProjectDependency,
+  isKnownCustomFunctionExpr,
 } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
+import { ok } from "neverthrow";
+import React from "react";
 
 describe("walkDependencyTree", () => {
   test("scope: direct", () => {
@@ -714,6 +735,469 @@ describe("upgradeProjectDeps", () => {
       { oldDep: kit1.dep, newDep: kit2.dep, futureDeps: [kit3.dep] },
     ]);
     expect(intro.vsettings[0].args).toEqual([]);
+  });
+});
+
+describe("upgradeProjectDeps with removed custom functions", () => {
+  const mkFunc = (importName: string) =>
+    new CustomFunction({
+      importName,
+      importPath: "@plasmicpkgs/fetch",
+      defaultExport: false,
+      namespace: null,
+      displayName: null,
+      params: [typeFactory.arg("url", typeFactory.text())],
+      isQuery: true,
+      isMutation: false,
+    });
+  const mkDep = (version: string, customFunctions: CustomFunction[]) =>
+    new ProjectDependency({
+      name: "Lib",
+      pkgId: "lib-pkg-id",
+      projectId: "lib-project-id",
+      version,
+      uuid: mkShortId(),
+      site: createSite({ customFunctions }),
+    });
+
+  async function syncWithoutHostFunctions(site: Site) {
+    const registry = new CodeComponentsRegistry(globalThis, {});
+    vi.spyOn(registry, "getRegisteredFunctionsMap").mockReturnValue(new Map());
+    const onUpdatedCustomFunctions = vi.fn();
+    const result = await _testonly.upsertRegisteredFunctions(
+      {
+        site,
+        codeComponentsRegistry: registry,
+        change: async (f) => f(),
+        getRootSubReact: () => React,
+        tplMgr: () => new TplMgr({ site }),
+        getPlumeSite: () => undefined,
+      },
+      {
+        onMissingCodeComponents: async () => ok(),
+        onInvalidReactVersion: async () => ok(),
+        onInvalidComponentImportNames: vi.fn(),
+        onStaleProps: async () => false,
+        onNewDefaultComponents: vi.fn(),
+        onSchemaToTplWarnings: vi.fn(),
+        onSchemaToTplError: vi.fn(),
+        onInvalidJsonForDefaultValue: vi.fn(),
+        onUpdatedCustomFunctions,
+      },
+    );
+    expect(result.isOk()).toBe(true);
+    expect(onUpdatedCustomFunctions).not.toHaveBeenCalled();
+  }
+
+  function setup() {
+    const queried = mkFunc("queried");
+    const inCode = mkFunc("inCode");
+    const unused = mkFunc("unused");
+    const oldDep = mkDep("1.0.0", [queried, inCode, unused]);
+    const op = new CustomFunctionExpr({
+      func: queried,
+      args: [
+        new FunctionArg({
+          uuid: mkShortId(),
+          argType: queried.params[0],
+          expr: customCode('"a"'),
+        }),
+      ],
+    });
+    const page = mkComponent({
+      name: "Comp",
+      type: ComponentType.Plain,
+      tplTree: mkTplTagX("div"),
+    });
+    page.serverQueries = [
+      mkServerQuery("fnQuery", op),
+      mkServerQuery("codeQuery", customCode("($$.inCode())")),
+    ];
+    const site = createSite({ projectDependencies: [oldDep] });
+    site.components = [page];
+    return { site, oldDep, page, op };
+  }
+
+  it("keeps used functions as local copies and their queries pointing at them", () => {
+    const { site, oldDep, page, op } = setup();
+    upgradeProjectDeps(site, [{ oldDep, newDep: mkDep("2.0.0", []) }]);
+    expect(site.customFunctions.map((f) => f.importName)).toEqual([
+      "queried",
+      "inCode",
+    ]);
+    const [localFunc] = site.customFunctions;
+    expect(page.serverQueries[0].op).toBe(op);
+    expect(op.func).toBe(localFunc);
+    expect(op.args[0].argType).toBe(localFunc.params[0]);
+  });
+
+  it("reuses a local function with the same id", () => {
+    const { site, oldDep, op } = setup();
+    const existing = mkFunc("queried");
+    site.customFunctions = [existing];
+    upgradeProjectDeps(site, [{ oldDep, newDep: mkDep("2.0.0", []) }]);
+    expect(op.func).toBe(existing);
+    expect(site.customFunctions.map((f) => f.importName)).toEqual([
+      "queried",
+      "inCode",
+    ]);
+  });
+
+  it("rebinds preserved functions during sync when restored with a changed signature", async () => {
+    const { site, oldDep, page, op } = setup();
+    const codeQuery = page.serverQueries[1].op;
+    const removed = mkDep("2.0.0", []);
+    const obsolete = typeFactory.arg("obsolete", typeFactory.text());
+    const count = typeFactory.arg("count", typeFactory.num());
+    op.func.params = [...op.func.params, obsolete, count];
+    op.args = [
+      ...op.args,
+      new FunctionArg({
+        uuid: mkShortId(),
+        argType: obsolete,
+        expr: codeLit("old"),
+      }),
+      new FunctionArg({
+        uuid: mkShortId(),
+        argType: count,
+        expr: codeLit(7),
+      }),
+    ];
+    upgradeProjectDeps(site, [{ oldDep, newDep: removed }]);
+    const stillRemoved = mkDep("3.0.0", []);
+    upgradeProjectDeps(site, [{ oldDep: removed, newDep: stillRemoved }]);
+
+    const restored = mkFunc("queried");
+    restored.params = [
+      typeFactory.arg("count", typeFactory.num()),
+      restored.params[0],
+      typeFactory.arg("added", typeFactory.text()),
+    ];
+    const restoredCode = mkFunc("inCode");
+    const newDep = mkDep("4.0.0", [restored, restoredCode]);
+    const preserved = op.func;
+    upgradeProjectDeps(site, [{ oldDep: stillRemoved, newDep }]);
+    expect(op.func).toBe(preserved);
+    expect(op.args).toHaveLength(3);
+    await syncWithoutHostFunctions(site);
+
+    expect(site.customFunctions).toEqual([]);
+    expect(
+      allCustomFunctions(site).map(({ customFunction }) => customFunction),
+    ).toEqual([restored, restoredCode]);
+    expect(op.func).toBe(restored);
+    expect(op.args).toHaveLength(2);
+    expect(op.args[0].argType).toBe(restored.params[1]);
+    expect(op.args[1].argType).toBe(restored.params[0]);
+    expect(
+      getCustomFunctionParams(
+        op,
+        {},
+        { projectFlags: DEVFLAGS, component: page, inStudio: true },
+      ),
+    ).toEqual([7, "a", undefined]);
+    expect(page.serverQueries[1].op).toBe(codeQuery);
+
+    const removedAgain = mkDep("5.0.0", []);
+    upgradeProjectDeps(site, [{ oldDep: newDep, newDep: removedAgain }]);
+    expect(op.func).toBe(site.customFunctions[0]);
+    expect(op.args[0].argType).toBe(op.func.params[1]);
+  });
+
+  it.each(["matching import", "importPath", "defaultExport"] as const)(
+    "preserves a same-id local function (%s)",
+    (field) => {
+      const { site, oldDep, page } = setup();
+      const local = mkFunc("queried");
+      if (field === "importPath") {
+        local.importPath = "./my-functions";
+      } else if (field === "defaultExport") {
+        local.defaultExport = true;
+      }
+      local.params = [typeFactory.arg("token", typeFactory.text())];
+      const op = new CustomFunctionExpr({
+        func: local,
+        args: [
+          new FunctionArg({
+            uuid: mkShortId(),
+            argType: local.params[0],
+            expr: codeLit("secret"),
+          }),
+        ],
+      });
+      site.customFunctions = [local];
+      page.serverQueries = [mkServerQuery("localQuery", op)];
+      const arg = op.args[0];
+      upgradeProjectDeps(site, [
+        {
+          oldDep,
+          newDep: mkDep("1.0.1", [mkFunc("queried"), mkFunc("inCode")]),
+        },
+      ]);
+      expect(site.customFunctions).toEqual([local]);
+      expect(op.func).toBe(local);
+      expect(op.args).toEqual([arg]);
+      expect(arg.argType).toBe(local.params[0]);
+    },
+  );
+
+  it.each(["tag", "local component", "removed component"])(
+    "rebinds handlers on a %s through upgrade, removal, and restoration",
+    async (kind) => {
+      const { site, oldDep, page, op } = setup();
+      page.serverQueries = [];
+      const handler = new EventHandler({ interactions: [] });
+      handler.interactions = [
+        new Interaction({
+          uuid: mkShortId(),
+          interactionName: "Call function",
+          actionName: "customFunctionOp",
+          conditionalMode: "always",
+          condExpr: null,
+          parent: handler,
+          args: [new NameArg({ name: "customFunctionOp", expr: op })],
+        }),
+      ];
+      const button = mkComponent({
+        name: "Button",
+        type: ComponentType.Plain,
+        tplTree: (baseVariant) =>
+          mkTplTagX("button", {
+            baseVariant,
+            attrs: { onClick: handler },
+          }),
+      });
+      if (kind === "tag") {
+        site.components = [button];
+      } else if (kind === "local component") {
+        const param = mkParam({
+          name: "onClick",
+          type: typeFactory.func(),
+          paramType: "prop",
+        });
+        button.params = [param];
+        button.tplTree.vsettings[0].attrs = {};
+        page.tplTree = mkTplComponentX({
+          component: button,
+          baseVariant: getBaseVariant(page),
+          args: [new Arg({ param, expr: handler })],
+        });
+        site.components = [page, button];
+      } else {
+        oldDep.site.components = [button];
+        page.tplTree = mkTplComponentX({
+          component: button,
+          baseVariant: getBaseVariant(page),
+        });
+      }
+      const kept = mkFunc("queried");
+      kept.params = [
+        typeFactory.arg("added", typeFactory.text()),
+        kept.params[0],
+      ];
+      const next = mkDep("1.1.0", [kept]);
+      upgradeProjectDeps(site, [{ oldDep, newDep: next }]);
+      // A removed dependency component is cloned, including its handler.
+      const calls = site.components
+        .flatMap((c) =>
+          flattenTpls(c.tplTree).flatMap((tpl) => findExprsInNode(tpl)),
+        )
+        .map(({ expr }) => expr)
+        .filter(isKnownCustomFunctionExpr);
+      expect(calls).toHaveLength(1);
+      const call = calls[0];
+      expect(call.func).toBe(kept);
+      expect(call.args[0].argType).toBe(kept.params[1]);
+      expect(
+        getCustomFunctionParams(
+          call,
+          {},
+          {
+            projectFlags: DEVFLAGS,
+            component: page,
+            inStudio: true,
+          },
+        ),
+      ).toEqual([undefined, "a"]);
+      const removed = mkDep("2.0.0", []);
+      upgradeProjectDeps(site, [{ oldDep: next, newDep: removed }]);
+      expect(call.func).toBe(site.customFunctions[0]);
+      expect(call.args[0].argType).toBe(call.func.params[1]);
+      const restored = mkFunc("queried");
+      upgradeProjectDeps(site, [
+        { oldDep: removed, newDep: mkDep("3.0.0", [restored]) },
+      ]);
+      await syncWithoutHostFunctions(site);
+      expect(site.customFunctions).toEqual([]);
+      expect(call.func).toBe(restored);
+      expect(call.args[0].argType).toBe(restored.params[0]);
+    },
+  );
+
+  it("rebinds restored functions without a sync, keeping registered ones", () => {
+    const { site, oldDep, page, op } = setup();
+    op.func.params = [
+      ...op.func.params,
+      typeFactory.arg("count", typeFactory.num()),
+    ];
+    op.args = [
+      ...op.args,
+      new FunctionArg({
+        uuid: mkShortId(),
+        argType: op.func.params[1],
+        expr: codeLit(7),
+      }),
+    ];
+    const removed = mkDep("2.0.0", []);
+    upgradeProjectDeps(site, [{ oldDep, newDep: removed }]);
+    const restored = mkFunc("queried");
+    restored.params = [
+      typeFactory.arg("count", typeFactory.num()),
+      restored.params[0],
+    ];
+    upgradeProjectDeps(site, [
+      {
+        oldDep: removed,
+        newDep: mkDep("3.0.0", [restored, mkFunc("inCode")]),
+      },
+    ]);
+    const params = () =>
+      getCustomFunctionParams(
+        op,
+        {},
+        { projectFlags: DEVFLAGS, component: page, inStudio: true },
+      );
+    expect(params()).toEqual(["a", 7]);
+
+    const local = op.func;
+    const registration = {
+      function: () => {},
+      meta: { name: "queried", importPath: local.importPath },
+    };
+    rebindRestoredFunctions(
+      site,
+      new Map([[customFunctionId(local), registration]]),
+    );
+    expect(op.func).toBe(local);
+
+    rebindRestoredFunctions(site, new Map());
+    expect(op.func).toBe(restored);
+    expect(params()).toEqual([7, "a"]);
+    expect(site.customFunctions).toEqual([]);
+  });
+
+  function setupRemovedComponents() {
+    const func = mkFunc("queried");
+    const mkPlain = (name: string) =>
+      mkComponent({
+        name,
+        type: ComponentType.Plain,
+        tplTree: mkTplTagX("div"),
+      });
+    const inner = mkPlain("Inner");
+    const op = new CustomFunctionExpr({ func, args: [] });
+    inner.serverQueries = [mkServerQuery("fnQuery", op)];
+    const outer = mkPlain("Outer");
+    outer.tplTree = mkTplComponentX({
+      component: inner,
+      baseVariant: getBaseVariant(outer),
+    });
+    const oldDep = mkDep("1.0.0", [func]);
+    oldDep.site.components = [outer, inner];
+    oldDep.site.components.forEach((c) => {
+      trackComponentRoot(c);
+      trackComponentSite(c, oldDep.site);
+    });
+    const page = mkPlain("Page");
+    const site = createSite({ projectDependencies: [oldDep] });
+    site.components = [page];
+    return { site, oldDep, page, outer };
+  }
+
+  it("does not copy functions used only by components the site doesn't clone", () => {
+    const { site, oldDep } = setupRemovedComponents();
+    upgradeProjectDeps(site, [{ oldDep, newDep: mkDep("2.0.0", []) }]);
+    expect(site.customFunctions).toEqual([]);
+    expect(site.components.map((c) => c.name)).toEqual(["Page"]);
+  });
+
+  it("copies functions used by transitively cloned components", () => {
+    const { site, oldDep, page, outer } = setupRemovedComponents();
+    page.tplTree = mkTplComponentX({
+      component: outer,
+      baseVariant: getBaseVariant(page),
+    });
+    trackComponentRoot(page);
+    trackComponentSite(page, site);
+    upgradeProjectDeps(site, [{ oldDep, newDep: mkDep("2.0.0", []) }]);
+    expect(site.customFunctions.map((f) => f.importName)).toEqual(["queried"]);
+    const inner = ensure(
+      site.components.find((c) => c.name === "Inner"),
+      "Inner should be cloned",
+    );
+    const op = inner.serverQueries[0].op as CustomFunctionExpr;
+    expect(op.func).toBe(site.customFunctions[0]);
+  });
+
+  it.each(["another dependency", "the new version's dependency"])(
+    "binds to a removed function still provided by %s",
+    (provider) => {
+      const { site, oldDep, op } = setup();
+      const moved = mkFunc("queried");
+      const lib = new ProjectDependency({
+        name: "Other",
+        pkgId: "other-pkg-id",
+        projectId: "other-project-id",
+        version: "1.0.0",
+        uuid: mkShortId(),
+        site: createSite({ customFunctions: [moved, mkFunc("inCode")] }),
+      });
+      const newDep = mkDep("2.0.0", []);
+      if (provider === "another dependency") {
+        site.projectDependencies = [...site.projectDependencies, lib];
+      } else {
+        newDep.site.projectDependencies = [lib];
+      }
+      upgradeProjectDeps(site, [{ oldDep, newDep }]);
+      expect(site.customFunctions).toEqual([]);
+      expect(op.func).toBe(moved);
+    },
+  );
+
+  it("rebinds handlers in param defaults", () => {
+    const { site, oldDep, page, op } = setup();
+    page.serverQueries = [];
+    const handler = new EventHandler({ interactions: [] });
+    handler.interactions = [
+      new Interaction({
+        uuid: mkShortId(),
+        interactionName: "Call function",
+        actionName: "customFunctionOp",
+        conditionalMode: "always",
+        condExpr: null,
+        parent: handler,
+        args: [new NameArg({ name: "customFunctionOp", expr: op })],
+      }),
+    ];
+    page.params = [
+      mkParam({
+        name: "onAction",
+        type: typeFactory.func(),
+        paramType: "prop",
+        defaultExpr: handler,
+      }),
+    ];
+    upgradeProjectDeps(site, [{ oldDep, newDep: mkDep("2.0.0", []) }]);
+    expect(op.func).toBe(site.customFunctions[0]);
+  });
+
+  it("does not copy functions the new version still has", () => {
+    const { site, oldDep, op } = setup();
+    const kept = mkFunc("queried");
+    const newDep = mkDep("2.0.0", [kept, mkFunc("inCode")]);
+    upgradeProjectDeps(site, [{ oldDep, newDep }]);
+    expect(op.func).toBe(kept);
+    expect(site.customFunctions).toEqual([]);
   });
 });
 

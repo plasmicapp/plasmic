@@ -13,6 +13,7 @@ import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   componentToReferenced,
+  customFunctionsAndLibsUsedByComponent,
   customFunctionsUsedBySite,
 } from "@/wab/shared/cached-selectors";
 import {
@@ -464,9 +465,17 @@ const WarnChangeDep = observer(function WarnChangeDep_(props: {
   );
   const removedFunctionsById = new Set(removedFunctions.map(customFunctionId));
   const removedReferencedFunctions = new Set(
-    [...customFunctionsUsedBySite(site)].filter((fn) =>
-      removedFunctionsById.has(customFunctionId(fn)),
-    ),
+    [
+      ...customFunctionsUsedBySite(site),
+      // Removed components of a hostless package aren't copied.
+      ...(isHostLessPackage(curDep.site)
+        ? []
+        : [...removedReferencedComponents].flatMap(
+            (comp) =>
+              customFunctionsAndLibsUsedByComponent(curDep.site, comp)
+                .customFunctions,
+          )),
+    ].filter((fn) => removedFunctionsById.has(customFunctionId(fn))),
   );
 
   // out of those directly referenced objects that will now be removed,
@@ -495,33 +504,16 @@ const WarnChangeDep = observer(function WarnChangeDep_(props: {
       objDepMap,
     ),
   ]);
-  const functionsList =
-    removedReferencedFunctions.size > 0 ? (
-      <div>
-        <Icon className="function-fg mr-sm" icon={CodeIcon} /> Functions{" "}
-        {[...removedReferencedFunctions]
-          .map((fn) => getCustomFunctionDisplayName(fn))
-          .join(", ")}
-      </div>
-    ) : null;
   const functionsNote = removedReferencedFunctions.size > 0 && (
     <div className="mt-m">
-      These functions will no longer be available:{" "}
+      <Icon className="function-fg mr-sm" icon={CodeIcon} /> These functions
+      will no longer be available. Queries that use them will show an error
+      until you replace them:{" "}
       {[...removedReferencedFunctions]
         .map((fn) => getCustomFunctionDisplayName(fn))
         .join(", ")}
     </div>
   );
-  const removedHostlessArtifactTypes = withoutNils([
-    removedReferencedComponents.size > 0 ? "components" : undefined,
-    removedReferencedFunctions.size > 0 ? "functions" : undefined,
-  ]);
-  const removedHostlessArtifactLabel =
-    removedHostlessArtifactTypes.length === 0
-      ? "items"
-      : removedHostlessArtifactTypes.length === 1
-        ? removedHostlessArtifactTypes[0]
-        : removedHostlessArtifactTypes.join(" and ");
 
   return (
     <>
@@ -545,24 +537,36 @@ const WarnChangeDep = observer(function WarnChangeDep_(props: {
           description={
             isHostLessPackage(curDep.site) ? (
               <div>
-                <div>
-                  These external {removedHostlessArtifactLabel} will be removed
-                  from this project:
-                </div>
                 {removedReferencedComponents.size > 0 && (
-                  <div>
-                    <Icon className="component-fg mr-sm" icon={ComponentIcon} />{" "}
-                    Components{" "}
-                    {[...removedReferencedComponents]
-                      .map((t) => getComponentDisplayName(t))
-                      .join(", ")}
-                  </div>
+                  <>
+                    <div>
+                      These external components will be removed from this
+                      project:
+                    </div>
+                    <div>
+                      <Icon
+                        className="component-fg mr-sm"
+                        icon={ComponentIcon}
+                      />{" "}
+                      Components{" "}
+                      {[...removedReferencedComponents]
+                        .map((t) => getComponentDisplayName(t))
+                        .join(", ")}
+                    </div>
+                  </>
                 )}
-                {functionsList}
+                {functionsNote}
               </div>
             ) : (
               <div>
-                <div>We will make a copy of them for you in this project:</div>
+                {(removedReferencedComponents.size > 0 ||
+                  removedReferencedTokens.size > 0 ||
+                  removedReferencedMixins.size > 0 ||
+                  removedReferencedImageAssets.size > 0) && (
+                  <div>
+                    We will make a copy of them for you in this project:
+                  </div>
+                )}
                 {removedReferencedComponents.size > 0 && (
                   <div>
                     <Icon className="component-fg mr-sm" icon={ComponentIcon} />{" "}

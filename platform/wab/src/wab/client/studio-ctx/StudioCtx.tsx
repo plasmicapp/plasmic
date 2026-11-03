@@ -217,6 +217,7 @@ import {
 import {
   CodeComponentsRegistry,
   HighlightInteractionRequest,
+  rebindRestoredFunctions,
   registeredFunctionId,
   syncPlumeComponent,
 } from "@/wab/shared/code-components/code-components";
@@ -3971,6 +3972,19 @@ export class StudioCtx extends WithDbCtx {
       }
     }
     return map;
+  }
+
+  // Call in the transaction that changes deps: arg order follows the bound params.
+  rebindRestoredFunctions() {
+    if (this.appCtx.appConfig.ccStubs || isHostLessPackage(this.site)) {
+      return;
+    }
+    const registered = swallow(() =>
+      this.codeComponentsRegistry.getRegisteredFunctionsMap(),
+    );
+    if (registered) {
+      rebindRestoredFunctions(this.site, registered);
+    }
   }
 
   getRegisteredFunction(func: classes.CustomFunction) {

@@ -188,6 +188,13 @@ export const ccClientCallbackFns: CodeComponentSyncCallbackFns = {
       updatedFunctions,
       removedFunctions: opts.removedFunctions,
     });
+    if (
+      newFunctions.length === 0 &&
+      updatedFunctions.length === 0 &&
+      removedFunctions.length === 0
+    ) {
+      return;
+    }
     notification.info({
       message: "Registered functions updated",
       description: (
@@ -202,7 +209,7 @@ export const ccClientCallbackFns: CodeComponentSyncCallbackFns = {
             <p>
               <strong>Updated functions: </strong>
               {updatedFunctions
-                .map((f) => `"${customFunctionId(f)}"`)
+                .map((u) => `"${customFunctionId(u.customFunction)}"`)
                 .join(", ")}
             </p>
           )}

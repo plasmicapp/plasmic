@@ -313,6 +313,8 @@ export class ProjectDependencyManager {
         ...getNonTransitiveDepDefaultComponents(projectDependency.site),
         ...this._sc.site.defaultComponents,
       };
+
+      this._sc.rebindRestoredFunctions();
     });
 
     return projectDependency;

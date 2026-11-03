@@ -26,7 +26,10 @@ import {
   isScreenVariant,
   isScreenVariantGroup,
 } from "@/wab/shared/Variants";
-import { flattenComponent } from "@/wab/shared/cached-selectors";
+import {
+  customFunctionsAndLibsUsedByComponent,
+  flattenComponent,
+} from "@/wab/shared/cached-selectors";
 import { ensureOnlyValidCodeComponentVariantsInComponent } from "@/wab/shared/code-components/variants";
 import {
   collectUsedIconAssetsForTpl,
@@ -66,6 +69,7 @@ import {
 } from "@/wab/shared/core/components";
 import {
   fixCustomFunctionExpr,
+  fixCustomFunctionsInExprs,
   fixCustomFunctionsInTpl,
   getOldToNewCustomFunctions,
 } from "@/wab/shared/core/custom-functions";
@@ -76,6 +80,7 @@ import {
   mkImageAssetRef,
   replaceAllAssetRefs,
 } from "@/wab/shared/core/image-assets";
+import { customFunctionId } from "@/wab/shared/core/query-ids";
 import {
   siteFinalStyleTokens,
   siteFinalStyleTokensAllDeps,
@@ -84,6 +89,7 @@ import {
 } from "@/wab/shared/core/site-style-tokens";
 import {
   allGlobalVariants,
+  cloneCustomFunction,
   getAllAttachedTpls,
   getSiteArenas,
   isHostLessPackage,
@@ -106,6 +112,7 @@ import {
   clone,
   findExprsInComponent,
   findExprsInNode,
+  flattenExprs,
   flattenTpls,
   getOwnerSite,
   isTplColumns,
@@ -715,6 +722,43 @@ function upgradeProjectDep(
   const oldToNewState = new Map<State, State | undefined>();
   const oldToNewPage = new Map<PageComponent, PageComponent | undefined>();
   const oldToNewCustomFunctions = getOldToNewCustomFunctions(oldDep, newDep);
+  const removedFunctions = new Map(
+    [...oldToNewCustomFunctions]
+      .filter(([, newFunc]) => !newFunc)
+      .map(([oldFunc]) => tuple(customFunctionId(oldFunc), oldFunc)),
+  );
+  const remainingFunctions = [
+    ...site.customFunctions,
+    ...[
+      ...site.projectDependencies.filter((dep) => dep !== oldDep),
+      ...(newDep ? [newDep] : []),
+    ]
+      .flatMap((dep) => [dep, ...walkDependencyTree(dep.site, "all")])
+      .flatMap((dep) => dep.site.customFunctions),
+  ];
+  // Runs per fixed component, so it also covers components cloned from oldDep.
+  const preserveRemovedFunctions = (component: Component) => {
+    if (removedFunctions.size === 0) {
+      return;
+    }
+    for (const func of customFunctionsAndLibsUsedByComponent(site, component)
+      .customFunctions) {
+      const funcId = customFunctionId(func);
+      const oldFunc = removedFunctions.get(funcId);
+      if (!oldFunc) {
+        continue;
+      }
+      removedFunctions.delete(funcId);
+      let newFunc = remainingFunctions.find(
+        (f) => customFunctionId(f) === funcId,
+      );
+      if (!newFunc) {
+        newFunc = cloneCustomFunction(oldFunc);
+        site.customFunctions = [...site.customFunctions, newFunc];
+      }
+      oldToNewCustomFunctions.set(oldFunc, newFunc);
+    }
+  };
 
   const isFutureParam = (component: Component, param: Param) =>
     futureDeps.some((dep) =>
@@ -1318,6 +1362,8 @@ function upgradeProjectDep(
       return;
     }
 
+    fixCustomFunctionsInTpl(oldToNewCustomFunctions, tpl);
+
     // If we see a VariantSetting referencing a now-deleted global variant,
     // then we'll have to just delete the VariantSetting as well :-/
     const filteredVsettings = tpl.vsettings.filter(
@@ -1427,8 +1473,6 @@ function upgradeProjectDep(
         ensureCorrectImplicitStates(site, owner, tpl);
       }
 
-      fixCustomFunctionsInTpl(oldToNewCustomFunctions, tpl);
-
       for (const vs of tpl.vsettings) {
         for (const arg of [...vs.args]) {
           const oldParam = arg.param;
@@ -1535,6 +1579,7 @@ function upgradeProjectDep(
   };
 
   const fixComponent = (component: Component) => {
+    preserveRemovedFunctions(component);
     if (isPageComponent(component)) {
       // Fix page og:image asset
       if (isKnownImageAssetRef(component.pageMeta.openGraphImage)) {
@@ -1617,6 +1662,15 @@ function upgradeProjectDep(
       }
       serverQuery.op = fixCustomFunctionExpr(oldToNewCustomFunctions, op);
     });
+
+    for (const param of component.params) {
+      fixCustomFunctionsInExprs(
+        oldToNewCustomFunctions,
+        withoutNils([param.defaultExpr, param.previewExpr]).flatMap(
+          flattenExprs,
+        ),
+      );
+    }
   };
 
   // Fix up all components and TplNodes. We re-read `site.components` on each

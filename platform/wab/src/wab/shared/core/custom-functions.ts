@@ -26,6 +26,7 @@ import { parseCodeExpression } from "@/wab/shared/eval/expression-parser";
 import {
   CustomFunction,
   CustomFunctionExpr,
+  Expr,
   ProjectDependency,
   TplNode,
   isKnownCustomFunctionExpr,
@@ -343,7 +344,17 @@ export function fixCustomFunctionsInTpl(
   oldToNewFunctions: Map<CustomFunction, CustomFunction | undefined>,
   tpl: TplNode,
 ) {
-  for (const { expr } of findExprsInNode(tpl)) {
+  fixCustomFunctionsInExprs(
+    oldToNewFunctions,
+    findExprsInNode(tpl).map(({ expr }) => expr),
+  );
+}
+
+export function fixCustomFunctionsInExprs(
+  oldToNewFunctions: Map<CustomFunction, CustomFunction | undefined>,
+  exprs: Expr[],
+) {
+  for (const expr of exprs) {
     if (isKnownEventHandler(expr)) {
       for (const interaction of expr.interactions) {
         for (const arg of [...interaction.args]) {

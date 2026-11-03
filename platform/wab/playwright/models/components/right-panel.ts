@@ -1,5 +1,5 @@
 import { FrameLocator, Locator, Page, expect, test } from "@playwright/test";
-import { modifierKey } from "../../utils/key-utils";
+import { modifierKey, pasteIntoMonaco } from "../../utils/key-utils";
 import { updateFormValuesInLiveMode } from "../../utils/studio-utils";
 import { BaseModel } from "../BaseModel";
 
@@ -1124,8 +1124,7 @@ export class RightPanel extends BaseModel {
     await editor.click();
     await editor.locator(".view-lines").waitFor({ state: "visible" });
 
-    await this.page.evaluate((c) => navigator.clipboard.writeText(c), code);
-    await this.page.keyboard.press("ControlOrMeta+V");
+    await pasteIntoMonaco(editor, code);
 
     if (assertWhileOpen) {
       await assertWhileOpen(modal);
