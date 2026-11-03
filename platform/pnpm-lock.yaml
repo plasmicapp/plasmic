@@ -13779,6 +13779,7 @@ packages:
 
   react-awesome-reveal@4.3.1:
     resolution: {integrity: sha512-eMQqjNbk979ltKK/VUjw6+pGNa0Zg08ikCo7xCsi3BBX9sQSc2eVJMHXspEA/dS/1UiqFiZwgz19wlCL19+/qA==}
+    deprecated: 'Upgrade to react-awesome-reveal 5 or @awesome-reveal/react: https://awesome-reveal.dev'
     peerDependencies:
       '@emotion/react': ^11.0.0
       react: '>=16.14.0'
