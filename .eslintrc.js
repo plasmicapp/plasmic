@@ -115,14 +115,6 @@ const restrictedTestonlySyntaxRule = {
 // whole list rather than extending it.
 const restrictedSyntaxRules = [
   {
-    selector: "CallExpression[callee.name='ensure'][arguments.length!=2]",
-    message: "`ensure` must always be invoked with a message.",
-  },
-  {
-    selector: "CallExpression[callee.name='assert'][arguments.length!=2]",
-    message: "`assert` must always be invoked with a message.",
-  },
-  {
     selector: `CallExpression[callee.name='ensureInstance'][arguments.length=2] > Identifier[name=/\\b(${TYPES})\\b/]`,
     message:
       "ensureInstance cannot be called on model types. Use ensureKnownXXX instead.",
@@ -221,7 +213,7 @@ module.exports = {
       },
     ],
     "no-restricted-imports": ["error", { paths: restrictedImportPaths }],
-    "no-restricted-syntax": ["warn", ...restrictedSyntaxRules],
+    "no-restricted-syntax": ["error", ...restrictedSyntaxRules],
     "react/forbid-elements": [
       "error",
       {
@@ -457,7 +449,7 @@ module.exports = {
       rules: {
         // Tests may use `_testonly`.
         "no-restricted-syntax": [
-          "warn",
+          "error",
           ...restrictedSyntaxRules.filter(
             (rule) => rule !== restrictedTestonlySyntaxRule,
           ),

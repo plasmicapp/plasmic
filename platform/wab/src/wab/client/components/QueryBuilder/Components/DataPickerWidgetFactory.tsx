@@ -18,6 +18,9 @@ import {
   CustomCode,
   ObjectPath,
   TemplatedString,
+  isKnownCustomCode,
+  isKnownObjectPath,
+  isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
 import { WidgetProps } from "@react-awesome-query-builder/antd";
 import { Menu, Popover } from "antd";
@@ -54,9 +57,9 @@ export function DataPickerWidgetFactory({
   const { value } = widgetProps;
 
   const isDynamicValue =
-    value instanceof ObjectPath ||
-    value instanceof CustomCode ||
-    value instanceof TemplatedString;
+    isKnownObjectPath(value) ||
+    isKnownCustomCode(value) ||
+    isKnownTemplatedString(value);
 
   let contextMenu: React.ReactNode;
   let widget: React.ReactNode;

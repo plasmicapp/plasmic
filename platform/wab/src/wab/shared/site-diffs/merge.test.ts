@@ -4988,7 +4988,7 @@ describe("merging", () => {
         originalUuidSlotArg1 = (
           ensure(
             flattenTpls(parentComp.tplTree).find(
-              (tpl) => tpl instanceof TplTag && tpl.name === "slot1Element1",
+              (tpl) => isKnownTplTag(tpl) && tpl.name === "slot1Element1",
             ),
             () => `Couldn't find slot1Element1`,
           ) as TplTag
@@ -4996,7 +4996,7 @@ describe("merging", () => {
         originalUuidSlotArg2 = (
           ensure(
             flattenTpls(parentComp.tplTree).find(
-              (tpl) => tpl instanceof TplTag && tpl.name === "slot2Element1",
+              (tpl) => isKnownTplTag(tpl) && tpl.name === "slot2Element1",
             ),
             () => `Couldn't find slot2Element1`,
           ) as TplTag
@@ -5015,14 +5015,13 @@ describe("merging", () => {
         );
         const tplComp = ensure(
           flattenTpls(parentComp.tplTree).find(
-            (tpl) => tpl instanceof TplComponent && tpl.name === "tplComp",
+            (tpl) => isKnownTplComponent(tpl) && tpl.name === "tplComp",
           ),
           () => `Couldn't find tplComp`,
         ) as TplComponent;
         const tplSlot1 = ensure(
           flattenTpls(instantiatedComp.tplTree).find(
-            (tpl) =>
-              tpl instanceof TplSlot && tpl.param.variable.name === "slot1",
+            (tpl) => isKnownTplSlot(tpl) && tpl.param.variable.name === "slot1",
           ),
           () => `Couldn't find slot1`,
         ) as TplSlot;
@@ -5050,14 +5049,13 @@ describe("merging", () => {
         );
         const tplComp = ensure(
           flattenTpls(parentComp.tplTree).find(
-            (tpl) => tpl instanceof TplComponent && tpl.name === "tplComp",
+            (tpl) => isKnownTplComponent(tpl) && tpl.name === "tplComp",
           ),
           () => `Couldn't find tplComp`,
         ) as TplComponent;
         const tplSlot1 = ensure(
           flattenTpls(instantiatedComp.tplTree).find(
-            (tpl) =>
-              tpl instanceof TplSlot && tpl.param.variable.name === "slot1",
+            (tpl) => isKnownTplSlot(tpl) && tpl.param.variable.name === "slot1",
           ),
           () => `Couldn't find slot1`,
         ) as TplSlot;
@@ -5085,7 +5083,7 @@ describe("merging", () => {
     const mergedUuidSlotArg1 = (
       ensure(
         flattenTpls(parentComp.tplTree).find(
-          (tpl) => tpl instanceof TplTag && tpl.name === "slot1Element1",
+          (tpl) => isKnownTplTag(tpl) && tpl.name === "slot1Element1",
         ),
         () => `Couldn't find slot1Element1`,
       ) as TplTag
@@ -5093,19 +5091,19 @@ describe("merging", () => {
     const mergedUuidSlotArg2 = (
       ensure(
         flattenTpls(parentComp.tplTree).find(
-          (tpl) => tpl instanceof TplTag && tpl.name === "slot2Element1",
+          (tpl) => isKnownTplTag(tpl) && tpl.name === "slot2Element1",
         ),
         () => `Couldn't find slot2Element1`,
       ) as TplTag
     ).uuid;
     const tplComp = ensure(
       flattenTpls(parentComp.tplTree).find(
-        (tpl) => tpl instanceof TplComponent && tpl.name === "tplComp",
+        (tpl) => isKnownTplComponent(tpl) && tpl.name === "tplComp",
       ),
       () => `Couldn't find tplComp`,
     ) as TplComponent;
     expect(
-      tplChildren(tplComp).map((tpl) => tpl instanceof TplTag && tpl.name),
+      tplChildren(tplComp).map((tpl) => isKnownTplTag(tpl) && tpl.name),
     ).toMatchObject([
       "slot1Element0",
       "slot1Element1",
