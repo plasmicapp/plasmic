@@ -1,5 +1,4 @@
 import { existsSync, promises as fs } from "fs";
-import L from "lodash";
 import path from "path";
 import { spawnOrFail } from "../utils/cmd-utils";
 import { installCodegenDeps, runCodegenSync } from "../utils/codegen";
@@ -32,7 +31,7 @@ export const gatsbyStrategy: CPAStrategy = {
     const { projectPath, projectId, template, jsOrTs, packageManager } = args;
     if (template) {
       console.log(
-        `Warning: Ignoring template '${template}' (argument is not supported by Gatsby).`
+        `Warning: Ignoring template '${template}' (argument is not supported by Gatsby).`,
       );
     }
     const gatsbyTemplate = GATSBY_TEMPLATES[jsOrTs];
@@ -40,14 +39,14 @@ export const gatsbyStrategy: CPAStrategy = {
     await spawnOrFail(`${createCommand}`);
     // Remove package-lock.json since the user might be using a different package manager
     await spawnOrFail(
-      `rm -rf ${projectPath}/.git ${projectPath}/LICENSE ${projectPath}/package-lock.json`
+      `rm -rf ${projectPath}/.git ${projectPath}/LICENSE ${projectPath}/package-lock.json`,
     );
 
     // Rename before installing; Yarn Berry rejects `yarn run` once the lockfile's
     // workspace name no longer matches package.json
     const packageJsonPath = path.join(projectPath, "package.json");
     const packageJsonObject = JSON.parse(
-      await fs.readFile(packageJsonPath, "utf8")
+      await fs.readFile(packageJsonPath, "utf8"),
     );
     packageJsonObject.name = path.basename(projectPath);
     packageJsonObject.description = `Plasmic app for ${projectId}`;
@@ -55,7 +54,7 @@ export const gatsbyStrategy: CPAStrategy = {
     delete packageJsonObject.author;
     await fs.writeFile(
       packageJsonPath,
-      JSON.stringify(packageJsonObject, null, 2)
+      JSON.stringify(packageJsonObject, null, 2),
     );
 
     if (packageManager === "yarn2") {
@@ -83,7 +82,7 @@ export const gatsbyStrategy: CPAStrategy = {
       {
         workingDir: projectPath,
         packageManager,
-      }
+      },
     );
     if (
       !installedGatsby ||
@@ -109,15 +108,15 @@ export const gatsbyStrategy: CPAStrategy = {
     if (scheme === "loader") {
       const gatsbyConfigFile = path.join(
         projectPath,
-        `gatsby-config.${jsOrTs}`
+        `gatsby-config.${jsOrTs}`,
       );
       await fs.writeFile(
         gatsbyConfigFile,
         makeGatsbyConfig(
           projectId,
           ensure(projectApiToken, "Missing projectApiToken"),
-          jsOrTs
-        )
+          jsOrTs,
+        ),
       );
     }
   },
@@ -138,7 +137,7 @@ export const gatsbyStrategy: CPAStrategy = {
     // Create a very basic 404 page - `gatsby build` fails without it.
     await fs.writeFile(
       path.join(projectPath, `src/pages/404.${jsOrTs}`),
-      GATSBY_404
+      GATSBY_404,
     );
 
     // Add plasmic-host page
@@ -147,26 +146,26 @@ export const gatsbyStrategy: CPAStrategy = {
       makeGatsbyHostPage({
         jsOrTs,
         scheme,
-      })
+      }),
     );
 
     // gatsby-node implements onCreatePage to prefetch query data for SSG.
     // For codegen scheme, leave it empty.
     await fs.writeFile(
       path.join(projectPath, `gatsby-node.${jsOrTs}`),
-      scheme === "loader" ? makeGatsbyNode(jsOrTs) : ""
+      scheme === "loader" ? makeGatsbyNode(jsOrTs) : "",
     );
 
     // Updates `gatsby-ssr` to include script tag for preamble
     await fs.writeFile(
       path.join(projectPath, `gatsby-ssr.${jsOrTs}x`),
-      GATSBY_SSR_CONFIG
+      GATSBY_SSR_CONFIG,
     );
 
     if (scheme === "loader") {
       await fs.writeFile(
         path.join(projectPath, `src/plasmic-init.${jsOrTs}`),
-        makeGatsbyPlasmicInit(jsOrTs)
+        makeGatsbyPlasmicInit(jsOrTs),
       );
 
       const templatesFolder = path.join(projectPath, "src/templates");
@@ -175,7 +174,7 @@ export const gatsbyStrategy: CPAStrategy = {
       }
       const defaultPagePath = path.join(
         templatesFolder,
-        `defaultPlasmicPage.${jsOrTs}x`
+        `defaultPlasmicPage.${jsOrTs}x`,
       );
       await fs.writeFile(defaultPagePath, makeGatsbyDefaultPage(jsOrTs));
     } else {
@@ -188,10 +187,9 @@ export const gatsbyStrategy: CPAStrategy = {
 
       // Special case: remove all Gatsby components (due to conflicting file names)
       const config = await getPlasmicConfig(projectPath, "gatsby", scheme);
-      const plasmicFiles = L.map(
-        L.flatMap(config.projects, (p) => p.components),
-        (c) => c.importSpec.modulePath
-      );
+      const plasmicFiles = config.projects
+        .flatMap((p) => p.components)
+        .map((c) => c.importSpec.modulePath);
       deleteGlob(path.join(projectPath, "src/@(pages|components)/*.*"), [
         // Files to ignore
         ...plasmicFiles.map((f) => path.basename(f)),
@@ -201,14 +199,14 @@ export const gatsbyStrategy: CPAStrategy = {
       // on, so
       await fs.writeFile(
         path.join(projectPath, `src/pages/404.${jsOrTs}x`),
-        GATSBY_404
+        GATSBY_404,
       );
 
       // Make an index page if the project didn't have one.
       if (!plasmicFiles.find((f) => f.includes("/index."))) {
         await fs.writeFile(
           path.join(projectPath, `src/pages/index.${jsOrTs}x`),
-          generateWelcomePage(config, "gatsby")
+          generateWelcomePage(config, "gatsby"),
         );
       }
 
@@ -216,7 +214,7 @@ export const gatsbyStrategy: CPAStrategy = {
       const wrapperContent = wrapAppRootForCodegen();
       const browserFilePath = path.join(
         projectPath,
-        `gatsby-browser.${jsOrTs}x`
+        `gatsby-browser.${jsOrTs}x`,
       );
       await fs.writeFile(browserFilePath, wrapperContent);
 

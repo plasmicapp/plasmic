@@ -4,7 +4,6 @@ import type {
 } from "@plasmicapp/cli/dist/utils/config-utils";
 import { existsSync, promises as fs, unlinkSync } from "fs";
 import glob from "glob";
-import L from "lodash";
 import * as path from "upath";
 import { README } from "../templates/readme";
 import { WELCOME_PAGE } from "../templates/welcomePage";
@@ -19,20 +18,21 @@ import { JsOrTs, PackageManagerType, PlatformType } from "./types";
  */
 export function deleteGlob(
   searchPattern: string,
-  skipPatterns?: string[]
+  skipPatterns?: string[],
 ): void {
   const filesToDelete = glob
     .sync(searchPattern)
     .filter(
       (file) =>
-        !skipPatterns || !skipPatterns.find((pattern) => file.includes(pattern))
+        !skipPatterns ||
+        !skipPatterns.find((pattern) => file.includes(pattern)),
     );
   filesToDelete.forEach((f: string) => unlinkSync(f));
 }
 
 export function stripExtension(
   filename: string,
-  removeComposedPath = false
+  removeComposedPath = false,
 ): string {
   const ext = removeComposedPath
     ? filename.substring(filename.indexOf("."))
@@ -46,7 +46,7 @@ export function stripExtension(
 export async function writePlasmicLoaderJson(
   projectDir: string,
   projectId: string,
-  projectApiToken: string
+  projectApiToken: string,
 ): Promise<void> {
   const plasmicLoaderJson = path.join(projectDir, "plasmic-loader.json");
   const content = {
@@ -69,7 +69,7 @@ export async function writePlasmicLoaderJson(
 export async function overwriteReadme(
   projectPath: string,
   platform: PlatformType,
-  buildCommand: string
+  buildCommand: string,
 ): Promise<void> {
   const readmeFile = path.join(projectPath, "README.md");
   const contents = README(platform, buildCommand);
@@ -85,18 +85,18 @@ export async function overwriteReadme(
 export function generateHomePage(
   componentAbsPath: string,
   indexAbsPath: string,
-  globalContextsAbsPath?: string
+  globalContextsAbsPath?: string,
 ): string {
   const componentFilename = path.basename(componentAbsPath);
   const componentName = stripExtension(componentFilename);
   // The relative import path from App.js to the Plasmic component
   const componentRelativePath = path.relative(
     path.dirname(indexAbsPath),
-    componentAbsPath
+    componentAbsPath,
   );
   const globalContextsImport = globalContextsAbsPath
     ? `import GlobalContextsProvider from './${stripExtension(
-        path.relative(path.dirname(indexAbsPath), globalContextsAbsPath)
+        path.relative(path.dirname(indexAbsPath), globalContextsAbsPath),
       )}'`
     : ``;
   const maybeWrapInGlobalContexts = (content: string) => {
@@ -113,7 +113,7 @@ ${globalContextsImport}
 function App() {
   return (
     ${maybeWrapInGlobalContexts(
-      `<React.Suspense><${componentName} /></React.Suspense>`
+      `<React.Suspense><${componentName} /></React.Suspense>`,
     )}
   );
 }
@@ -131,7 +131,7 @@ export default App;
  */
 export function generateWelcomePage(
   config: PlasmicConfig,
-  platform: string
+  platform: string,
 ): string {
   let pages:
     | {
@@ -140,10 +140,10 @@ export function generateWelcomePage(
         getPageSection: () => string;
       }
     | undefined;
-  if (platform !== "react" && config && L.isArray(config.projects)) {
-    const components = L.flatMap(config.projects, (p) => p.components).filter(
-      (c) => c.componentType === "page"
-    );
+  if (platform !== "react" && config && Array.isArray(config.projects)) {
+    const components = config.projects
+      .flatMap((p) => p.components)
+      .filter((c) => c.componentType === "page");
     const dir =
       config?.nextjsConfig?.pagesDir ?? config?.gatsbyConfig?.pagesDir;
     if (components.length > 0 && dir) {
@@ -163,7 +163,7 @@ export function generateWelcomePage(
                 // https://nextjs.org/docs/messages/app-dir-dynamic-href
                 const href = (pc.path ?? relativeLink).replace(
                   /\[(\w+)\]/g,
-                  "placeholder"
+                  "placeholder",
                 );
                 return `<li><Link href="${href}">${pc.name} - ${pc.path}</Link></li>`;
               } else {
@@ -185,7 +185,7 @@ export function generateWelcomePage(
   const content = WELCOME_PAGE(
     !!pages,
     platform,
-    pages?.getPageSection() ?? ""
+    pages?.getPageSection() ?? "",
   );
   return content;
 }
@@ -193,7 +193,7 @@ export function generateWelcomePage(
 export async function getPlasmicConfig(
   projectPath: string,
   platform: PlatformType,
-  scheme: string
+  scheme: string,
 ): Promise<PlasmicConfig> {
   const isNextjs = platform === "nextjs";
   const isGatsby = platform === "gatsby";
@@ -203,11 +203,11 @@ export async function getPlasmicConfig(
     isCodegen
       ? "plasmic.json"
       : isNextjs && isLoader
-      ? ".plasmic/plasmic.json"
-      : isGatsby && isLoader
-      ? ".cache/.plasmic/plasmic.json"
-      : undefined,
-    "Missing platform or scheme"
+        ? ".plasmic/plasmic.json"
+        : isGatsby && isLoader
+          ? ".cache/.plasmic/plasmic.json"
+          : undefined,
+    "Missing platform or scheme",
   );
   const configStr = await fs.readFile(path.join(projectPath, configPath));
   return JSON.parse(configStr.toString());
@@ -217,7 +217,7 @@ export async function getPlasmicConfig(
 // this will force Plasmic to recognize Typescript
 export async function ensureTsconfig(
   projectPath: string,
-  packageManager: PackageManagerType
+  packageManager: PackageManagerType,
 ): Promise<void> {
   const tsconfigPath = path.join(projectPath, "tsconfig.json");
   if (!existsSync(tsconfigPath)) {

@@ -1,5 +1,3 @@
-import L from "lodash";
-
 type StringGen = string | (() => string);
 
 export function flatMap<T, U>(arr: T[], f: (x: T) => U[]) {
@@ -13,9 +11,9 @@ export function flatMap<T, U>(arr: T[], f: (x: T) => U[]) {
 export function ensure<T>(x: T | null | undefined, msg: StringGen = ""): T {
   if (x === null || x === undefined) {
     debugger;
-    msg = (L.isString(msg) ? msg : msg()) || "";
+    msg = (typeof msg === "string" ? msg : msg()) || "";
     throw new Error(
-      `Value must not be undefined or null${msg ? `- ${msg}` : ""}`
+      `Value must not be undefined or null${msg ? `- ${msg}` : ""}`,
     );
   } else {
     return x;
@@ -23,7 +21,7 @@ export function ensure<T>(x: T | null | undefined, msg: StringGen = ""): T {
 }
 
 export function ensureString(x: any) {
-  if (L.isString(x)) {
+  if (typeof x === "string") {
     return x;
   } else {
     throw new Error(`Expected ${x} to be a string`);
@@ -38,12 +36,12 @@ export class AssertionError extends Error {
 
 export function assert<T>(
   cond: T,
-  msg: StringGen = "Assertion failed"
+  msg: StringGen = "Assertion failed",
 ): asserts cond {
   if (!cond) {
     // We always generate an non empty message so that it doesn't get swallowed
     // by the async library.
-    msg = (L.isString(msg) ? msg : msg()) || "Assertion failed";
+    msg = (typeof msg === "string" ? msg : msg()) || "Assertion failed";
     debugger;
     throw new AssertionError(msg);
   }

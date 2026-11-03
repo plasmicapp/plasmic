@@ -1,6 +1,5 @@
 import { PlasmicConfig } from "@plasmicapp/cli/dist/utils/config-utils";
 import { existsSync, promises as fs } from "fs";
-import L from "lodash";
 import path from "path";
 import { spawnOrFail } from "../utils/cmd-utils";
 import { installCodegenDeps, runCodegenSync } from "../utils/codegen";
@@ -252,10 +251,9 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
     );
 
     // Make an index (/) page if the project didn't have one.
-    const plasmicFiles = L.map(
-      L.flatMap(config.projects, (p) => p.components),
-      (c) => c.importSpec.modulePath,
-    );
+    const plasmicFiles = config.projects
+      .flatMap((p) => p.components)
+      .map((c) => c.importSpec.modulePath);
     if (!plasmicFiles.find((f) => f.includes("app/page."))) {
       await fs.writeFile(
         path.join(projectPath, "app", `page.${jsOrTs}x`),
@@ -352,10 +350,9 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
     );
 
     // Make an index page if the project didn't have one.
-    const plasmicFiles = L.map(
-      L.flatMap(config.projects, (p) => p.components),
-      (c) => c.importSpec.modulePath,
-    );
+    const plasmicFiles = config.projects
+      .flatMap((p) => p.components)
+      .map((c) => c.importSpec.modulePath);
     if (!plasmicFiles.find((f) => f.includes("/index."))) {
       await fs.writeFile(
         path.join(projectPath, "pages", `index.${jsOrTs}x`),

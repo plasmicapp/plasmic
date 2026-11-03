@@ -55,7 +55,8 @@ export function defaultResourcePath(
   project: ProjectConfig | ProjectMetaBundle | string,
   ...subpaths: string[]
 ) {
-  const projectName = L.isString(project) ? project : project.projectName;
+  const projectName =
+    typeof project === "string" ? project : project.projectName;
   return path.join(
     context.config.defaultPlasmicDir,
     L.snakeCase(projectName),
