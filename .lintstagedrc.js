@@ -13,7 +13,7 @@ module.exports = {
     cmds.push(`prettier --write ${files.map((f) => `"${f}"`).join(" ")}`);
     return cmds;
   },
-  "*.{json,css,less,scss,md,toml,xml,yml,yaml}": ["prettier --write"],
+  "*.{json,css,less,scss,md,xml,yml,yaml}": ["prettier --write"],
   "Dockerfile*": ["hadolint --failure-threshold=error"],
 
   // Format HCL/Terragrunt files, but never touch generated *.lock.hcl (excluded via extglob)
