@@ -27,7 +27,7 @@ COPY . .
 RUN mkdir -p /tmp/.plasmic && \
     cp platform/wab/tools/docker-dev/secrets.json /tmp/.plasmic/secrets.json && \
     pnpm setup && \
-    pnpm setup:canvas-packages
+    pnpm build:canvas-packages
 
 # --- Final stage ---
 FROM node:24.22.1-alpine

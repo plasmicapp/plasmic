@@ -170,6 +170,19 @@ pnpm setup
 
 If the above doesn't fix the issue, try again but running `pnpm setup-all` instead.
 
+From the repository root, you can also run individual setup phases:
+
+- `pnpm setup:install`: install dependencies for each setup workspace once. Accepts `--frozen-lockfile`.
+- `pnpm setup:build`: build platform assets without installing dependencies.
+- `pnpm build:canvas-packages`: rebuild the code component host packages.
+- `pnpm setup:db`: run database migrations and update development bundles, including Plume.
+- `pnpm setup:bundles`: update bundles when database migrations have already run.
+
+`pnpm setup` installs dependencies and builds platform assets. `pnpm setup-all` also builds
+canvas packages and runs database setup. Individual asset builds use `pnpm build:<project>`.
+These commands prepare local development and CI; the assets are also used in production.
+`setup:install` installs both dependencies and devDependencies.
+
 ## SVG Icons
 
 For the in-flux SVG icons, install the icon fonts from https://github.com/keremciu/font-bundles
