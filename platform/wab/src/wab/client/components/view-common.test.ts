@@ -4,6 +4,7 @@ import {
   renderStyles,
 } from "@/wab/client/components/view-common";
 import { cx, tuple } from "@/wab/shared/common";
+import { renderToStaticMarkup } from "react-dom/server";
 
 describe("cx", () =>
   it("should work", function () {
@@ -198,6 +199,44 @@ describe("Matcher", () => {
         20,
       );
       expect(result).toBeTruthy();
+    });
+  });
+
+  describe("matchCode", () => {
+    const code = [
+      "const itemsCount = $props.section.items.length;",
+      '`${ itemsCount } ${ itemsCount === 1 ? "Item" : "Items" }`',
+    ].join("\n");
+
+    it("ignores whitespace around symbols", () => {
+      const query = '`${itemsCount} ${itemsCount === 1 ? "Item" : "Items"}`';
+      expect(new Matcher(query, { matchCode: true }).matches(code)).toBe(true);
+      expect(new Matcher(query).matches(code)).toBe(false);
+    });
+
+    it("matches across lines", () => {
+      const query = "length; `${";
+      expect(new Matcher(query, { matchCode: true }).matches(code)).toBe(true);
+      expect(new Matcher(query).matches(code)).toBe(false);
+    });
+
+    it("still matches words in order", () => {
+      expect(
+        new Matcher("section length", { matchCode: true }).matches(code),
+      ).toBe(true);
+    });
+
+    it("doesn't split identifiers", () => {
+      expect(
+        new Matcher("itemsCount", { matchCode: true }).matches("items Count"),
+      ).toBe(false);
+    });
+
+    it("bolds the match when the whitespace differs", () => {
+      const matcher = new Matcher("${itemsCount}", { matchCode: true });
+      expect(
+        renderToStaticMarkup(matcher.boldSnippets("`${ itemsCount } items`")),
+      ).toBe("<span>`<strong>${ itemsCount }</strong> items`</span>");
     });
   });
 });

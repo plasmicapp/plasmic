@@ -477,7 +477,10 @@ const LeftExprsSearchPanel = observer(function LeftExprsSearchPanel() {
   const matcher = React.useMemo(
     () =>
       debouncedSearch.trim()
-        ? new Matcher(debouncedSearch, { matchMiddleOfWord: true })
+        ? new Matcher(debouncedSearch, {
+            matchMiddleOfWord: true,
+            matchCode: true,
+          })
         : undefined,
     [debouncedSearch],
   );
