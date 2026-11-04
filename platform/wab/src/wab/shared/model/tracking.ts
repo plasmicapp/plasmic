@@ -12,7 +12,8 @@
  * - Collections are immutable values: a model changes only by assigning a
  *   field. Replacing a collection is reported as a diff, e.g. as splices.
  * - A coarse derivation (`markCurrentDerivationCoarse`) depends on one atom
- *   per scope (see `TrackerOpts.isScopeRoot`) rather than one per field.
+ *   per scope (see `TrackerOpts.isScopeRoot`) rather than one per field,
+ *   except on @Inert fields, whose writes don't change their scope.
  *
  * This file knows nothing about the concrete model schema.
  */
@@ -32,6 +33,7 @@ import {
   MetaRuntime,
   ModelInst,
   instFields,
+  isInertField,
   isModelInst,
 } from "@/wab/shared/model/model-meta";
 
@@ -288,6 +290,16 @@ export class TrackingMetaRuntime extends MetaRuntime {
     }
   }
 
+  /**
+   * Called by the getter of an @Inert field. Even a coarse derivation
+   * tracks it per field, since writing it doesn't change its scope.
+   */
+  override reportInertRead(inst: ModelInst, name: string) {
+    if (globalState.trackingDerivation !== null) {
+      reportAtomObserved(inst, name);
+    }
+  }
+
   /** Called by every field setter; a plain write for untracked insts */
   override writeField(inst: ModelInst, field: Field, next: any) {
     if (freezeCollections) {
@@ -404,15 +416,22 @@ export class Tracker<T extends ModelInst = ModelInst> {
 
   onFieldUpdate(inst: T, field: Field, prev: any, next: any) {
     const pending: T[] = [];
+    // Coarse derivations track an @Inert field by its own atom
+    const scopeChanged = !isInertField(field);
     for (const change of this.relink(inst, field, prev, next, pending)) {
-      this.fire(inst, field.name, change);
+      this.fire(inst, field.name, change, scopeChanged);
     }
     this.track(pending);
   }
 
-  private fire(inst: T, field: string, change: AnyChange) {
+  private fire(
+    inst: T,
+    field: string,
+    change: AnyChange,
+    scopeChanged: boolean,
+  ) {
     const changeNode = { inst, field };
-    const path = this.getPathToChild(inst, true);
+    const path = this.getPathToChild(inst, scopeChanged);
     this.opts.listener({
       ...change,
       path: path && [...path, changeNode],

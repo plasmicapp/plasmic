@@ -19,6 +19,7 @@ import {
   TypeStamped,
   ensure,
   ensureArrayOfInstances,
+  switchType,
   tuple,
   xDifference,
 } from "@/wab/shared/common";
@@ -34,6 +35,7 @@ import {
   SIZE_PROPS,
   plasmicImgAttrStyles,
 } from "@/wab/shared/core/style-props";
+import { extractMixinUsages } from "@/wab/shared/core/styles";
 import {
   findVariantSettingsUnderTpl,
   flattenTpls,
@@ -44,6 +46,7 @@ import {
   isTplTag,
   isTplVariantable,
 } from "@/wab/shared/core/tpls";
+import { PLASMIC_DISPLAY_NONE } from "@/wab/shared/css";
 import {
   Component,
   Mixin,
@@ -75,6 +78,7 @@ import {
   isKnownVariantedRuleSet,
   isKnownVariantedValue,
 } from "@/wab/shared/model/classes";
+import { instFields, isInertField } from "@/wab/shared/model/model-meta";
 import { hasSpecialSizeVal } from "@/wab/shared/sizingutils";
 import L, { omit } from "lodash";
 
@@ -193,6 +197,12 @@ function isParentPointerChange(change: ModelChange) {
   return isKnownTplNode(last.inst) && last.field === "parent";
 }
 
+function isInertFieldChange(change: ModelChange) {
+  const { inst, field } = change.changeNode;
+  const changedField = instFields(inst).find((f) => f.name === field);
+  return !!changedField && isInertField(changedField);
+}
+
 /**
  * Given a list of `ModelChange`s, returns a `ChangeSummary`.
  */
@@ -202,8 +212,11 @@ export function summarizeChanges(
 ): ChangeSummary {
   // We ignore changes to the parent pointer, as they always manifest
   // as some other change anyway (for example, changes to the children)
-  // field of some other node
-  const changes = recordedData.changes.filter((c) => !isParentPointerChange(c));
+  // field of some other node. We also ignore changes to @Inert fields, as
+  // nothing rendered depends on them.
+  const changes = recordedData.changes.filter(
+    (c) => !isParentPointerChange(c) && !isInertFieldChange(c),
+  );
 
   const site = studioCtx.site;
   const updatedNodes = new Set<TplNode>();
@@ -342,7 +355,9 @@ export function summarizeChanges(
     styleForcesEval =
       styleForcesEval ||
       changeTogglesTplSlotStyles(change) ||
-      changeChangesImgSize(change);
+      changeChangesImgSize(change) ||
+      changeTogglesDisplay(change) ||
+      changeTogglesFlexDirection(change);
 
     const [thisTokenOrMixinValueChangeType, splicedMixin] =
       getCssVarsChangeType(change);
@@ -692,6 +707,28 @@ function changeChangesImgSize(change: ModelChange) {
   return false;
 }
 
+function changeTogglesDisplay(change: ModelChange) {
+  // A hidden (display: none) element that is auto-opened because it's
+  // selected is rendered with an inline `display` from its RuleSet (see
+  // determineAutoOpenState in canvas-rendering.ts), so a change to `display`
+  // or to whether it's hidden needs an evaluation to update the inline style.
+  return changeTogglesStyle(
+    change,
+    ["display", PLASMIC_DISPLAY_NONE],
+    (vals) => `${vals.display}|${vals[PLASMIC_DISPLAY_NONE]}`,
+  );
+}
+
+function changeTogglesFlexDirection(change: ModelChange) {
+  // flex-direction changes the placeholder label for an empty stack
+  // (see deriveTplTagChildren in canvas-rendering.ts).
+  return changeTogglesStyle(
+    change,
+    ["flex-direction"],
+    (vals) => vals["flex-direction"],
+  );
+}
+
 /**
  * If this is a change on Variant.selectors, then we need to regenerate the css rule
  * for all VariantSettings that reference this variant
@@ -892,18 +929,29 @@ function getDeeplyChangedComponent(
 ) {
   const changed = new Set<Component>(seedComponents);
 
-  const updateForPath = (path: ChangeNode[]) => {
-    for (const node of path) {
-      if (isKnownComponent(node.inst)) {
-        changed.add(node.inst);
-      }
-    }
-  };
-
-  // First, gather all the directly changed Components
+  // First, gather all changed components.
   for (const change of changes) {
-    if (change.path) {
-      updateForPath(change.path);
+    for (const node of change.path ?? []) {
+      switchType(node.inst)
+        .when(Component, (component) => {
+          changed.add(component);
+        })
+        .when(Mixin, (mixin) => {
+          if (
+            changeTogglesDisplay(change) ||
+            changeTogglesFlexDirection(change)
+          ) {
+            // Mixin changes that toggle display or flex direction may change
+            // rendering of components, so affected components are included.
+            const [, usages] = extractMixinUsages(studioCtx.site, mixin);
+            usages.components.forEach((component) => changed.add(component));
+            usages.frames.forEach((frame) =>
+              changed.add(frame.container.component),
+            );
+          }
+        })
+        .when(Object, () => {})
+        .result();
     }
   }
 

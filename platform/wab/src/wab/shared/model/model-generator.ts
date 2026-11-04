@@ -7,6 +7,7 @@ import {
   FieldAnnotationValues,
   MetaRuntime,
   Type,
+  isInertField,
   toTs,
 } from "@/wab/shared/model/model-meta";
 import fs from "fs";
@@ -114,12 +115,25 @@ ast.field = ({
   if (missing.length > 0) {
     throw new Error("Unknown field annotations: " + JSON.stringify(missing));
   }
-  return new Field({
+  const field = new Field({
     name,
     type: ast.type(type),
     annotations: annotations as FieldAnnotation[],
   });
+  // @Inert fields must be primitive
+  if (isInertField(field) && !isPrimitiveType(field.type)) {
+    throw new Error(`@Inert field ${name} must be a primitive`);
+  }
+  return field;
 };
+
+function isPrimitiveType(type: Type | string): boolean {
+  return (
+    typeof type !== "string" &&
+    (["String", "Number", "Bool"].includes(type.type) ||
+      (type.type === "Optional" && type.params.every(isPrimitiveType)))
+  );
+}
 type ClassWithSubclasses = [Class, ClassWithSubclasses[]];
 ast.cls = function (cls, base): ClassWithSubclasses {
   return tuple(
@@ -168,7 +182,10 @@ export function writeTypescriptClasses(schema: string, classesPath: string) {
           field.annotations.includes("Transient") ? " | null | undefined" : ""
         }`;
         const name = JSON.stringify(field.name);
-        const getter = `get ${field.name}(): ${type} { meta.reportRead(this, ${name}); return (this as any).$v.${field.name}; }`;
+        const reportRead = isInertField(field)
+          ? "reportInertRead"
+          : "reportRead";
+        const getter = `get ${field.name}(): ${type} { meta.${reportRead}(this, ${name}); return (this as any).$v.${field.name}; }`;
         const setter = `${
           field.annotations.includes("Const") ? "private " : ""
         }set ${field.name}(value: ${type}) { meta.writeField(this, Base${cls.name}.${fieldStatic(field)}, value); }`;

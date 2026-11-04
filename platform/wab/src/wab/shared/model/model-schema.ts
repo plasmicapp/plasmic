@@ -10,6 +10,10 @@ export const schema = `\
 # Otherwise, it will be considered a strong reference and we must make sure not
 # to reference it with another strong reference.
 # Fields that don't store \`ObjInst\`s don't need annotations.
+#
+# @Inert marks a primitive field, like a timestamp, that nothing rendered
+# depends on. Writing it doesn't invalidate coarse selectors (see tracking.ts),
+# and summarizeChanges ignores it.
 
 # Avoid using \`Type\` as it's too generic!
 Type
@@ -456,7 +460,7 @@ Component
   alwaysAutoName: Bool
   trapsFocus: Bool
   # A timestamp of when the component was last updated
-  updatedAt: Number?
+  @Inert updatedAt: Number?
 NameArg
   name: String
   expr: Expr

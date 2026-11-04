@@ -197,6 +197,34 @@ describe("coarseSelector", () => {
     recorder.dispose();
   });
 
+  it("tracks an @Inert field by its own atom", () => {
+    const { compA, recorder } = setup();
+    const { selector, counter } = countingComponentSelector((c) =>
+      deepRead(c.tplTree),
+    );
+    const { selector: updatedAtSelector, counter: updatedAtCounter } =
+      countingComponentSelector((c) => [c.name, c.updatedAt]);
+
+    selector(compA);
+    updatedAtSelector(compA);
+
+    // Writing it doesn't change the Component's scope
+    compA.updatedAt = 1;
+    selector(compA);
+    expect(counter.runs).toBe(1);
+
+    // but a selector that read it recomputes
+    expect(updatedAtSelector(compA)).toEqual(["A", 1]);
+    expect(updatedAtCounter.runs).toBe(2);
+
+    // and still depends on the rest of its scope
+    compA.name = "A2";
+    expect(updatedAtSelector(compA)).toEqual(["A2", 1]);
+    expect(updatedAtCounter.runs).toBe(3);
+
+    recorder.dispose();
+  });
+
   it("recomputes a site selector after a change anywhere it read", () => {
     const { site, compA, compB, recorder } = setup();
     let runs = 0;

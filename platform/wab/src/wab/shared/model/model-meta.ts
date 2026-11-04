@@ -21,12 +21,16 @@ export class Class {
   }
 }
 
-// BundleConst doesn't do anything right now, just means that the only expected changes are when swapping it from an old version to a new version of the object across PkgVersions.
 export const FieldAnnotationValues = [
   "WeakRef",
   "Const",
+  // BundleConst doesn't do anything right now, just means that the only expected changes are when swapping it from an old version to a new version of the object across PkgVersions.
   "BundleConst",
   "Transient",
+  // Inert marks a primitive field that nothing rendered depends on (e.g. a
+  // timestamp). Coarse selectors track it per field, so that writing it doesn't
+  // invalidate its scope, and summarizeChanges ignores it.
+  "Inert",
 ] as const;
 export type FieldAnnotation = (typeof FieldAnnotationValues)[number];
 
@@ -113,6 +117,11 @@ export class MetaRuntime {
   }
 
   reportRead(_inst: ModelInst, _name: string): void {
+    // Field reads aren't tracked
+  }
+
+  /** Called by the getter of an @Inert field, instead of `reportRead` */
+  reportInertRead(_inst: ModelInst, _name: string): void {
     // Field reads aren't tracked
   }
 
@@ -316,6 +325,10 @@ export function isStrongRefField(f: Field) {
 
 export function isWeakRefField(f: Field) {
   return f.annotations.includes("WeakRef");
+}
+
+export function isInertField(f: Field) {
+  return f.annotations.includes("Inert");
 }
 
 // We always exclude __type and uid from x; __type comes from unbundling
