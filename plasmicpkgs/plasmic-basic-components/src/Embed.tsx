@@ -3,7 +3,7 @@ import registerComponent, {
   CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React, { useEffect, useRef } from "react";
-import { ensure, useFirstRender, useId } from "./common";
+import { useFirstRender, useId } from "./common";
 
 export interface EmbedProps {
   className?: string;
@@ -25,6 +25,7 @@ export interface EmbedProps {
  */
 export function Embed({ className, code, hideInEditor = false }: EmbedProps) {
   const rootElt = useRef<HTMLDivElement>(null);
+  const latestRun = useRef(0);
   const inEditor = usePlasmicCanvasContext();
   const htmlId = useId?.();
   const firstRender = useFirstRender();
@@ -45,41 +46,43 @@ export function Embed({ className, code, hideInEditor = false }: EmbedProps) {
     }
 
     // Load scripts sequentially one at a time, since later scripts can depend on earlier ones.
-    let cleanup = false;
+    const run = ++latestRun.current;
     (async () => {
       for (const oldScript of Array.from(
-        ensure(rootElt.current).querySelectorAll("script")
+        rootElt.current!.querySelectorAll("script"),
       )) {
+        // A re-render or unmount can replace the HTML while an earlier script loads.
+        if (!oldScript.isConnected) {
+          continue;
+        }
         const newScript = document.createElement("script");
         // This doesn't actually have the effect we want, we need to explicitly wait on the load event, since all
         // dynamically injected scripts are always async.
         newScript.async = false;
         Array.from(oldScript.attributes).forEach((attr) =>
-          newScript.setAttribute(attr.name, attr.value)
+          newScript.setAttribute(attr.name, attr.value),
         );
         newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-        ensure(oldScript.parentNode).replaceChild(newScript, oldScript);
+        oldScript.replaceWith(newScript);
         // Only scripts with src will ever fire a load event.
         if (newScript.src) {
-          await new Promise((resolve) =>
-            newScript.addEventListener("load", resolve)
-          );
-          if (cleanup) {
+          await new Promise((resolve) => {
+            newScript.addEventListener("load", resolve);
+            newScript.addEventListener("error", resolve);
+          });
+          if (run !== latestRun.current) {
             return;
           }
         }
       }
-      return () => {
-        cleanup = true;
-      };
     })();
   }, [htmlId, code, hideInEditor, inEditor]);
   const effectiveCode =
     hideInEditor && inEditor
       ? ""
       : inEditor || !htmlId
-      ? code
-      : addIdentifierScript(htmlId, code);
+        ? code
+        : addIdentifierScript(htmlId, code);
   return (
     <div
       ref={rootElt}
@@ -128,7 +131,7 @@ export const embedMeta: CodeComponentMeta<EmbedProps> = {
 
 export function registerEmbed(
   loader?: { registerComponent: typeof registerComponent },
-  customEmbedMeta?: CodeComponentMeta<EmbedProps>
+  customEmbedMeta?: CodeComponentMeta<EmbedProps>,
 ) {
   if (loader) {
     loader.registerComponent(Embed, customEmbedMeta ?? embedMeta);

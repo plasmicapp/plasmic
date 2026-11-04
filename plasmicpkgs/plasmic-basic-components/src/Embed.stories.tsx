@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
 import { expect, userEvent, waitFor } from "@storybook/test";
-import { delay, http, HttpResponse } from "msw";
+import { HttpResponse, delay, http } from "msw";
 import React, { useEffect } from "react";
 import ReactDOMClient from "react-dom/client";
 import ReactDOMServer from "react-dom/server";
@@ -44,7 +44,7 @@ export const HtmlCssJs: Story = {
       "Expect HTML/CSS to render a button with a font-size style",
       () => {
         expect(button).toHaveStyle("font-size: 14px");
-      }
+      },
     );
 
     await step("Expect JS to change the font-size", async () => {
@@ -57,7 +57,7 @@ export const HtmlCssJs: Story = {
       async () => {
         await userEvent.click(canvas.getByText("Re-render parent"));
         expect(button).toHaveStyle("font-size: 20px");
-      }
+      },
     );
 
     await step(
@@ -66,7 +66,7 @@ export const HtmlCssJs: Story = {
         await userEvent.click(canvas.getByText("Change code prop"));
         expect(button).not.toBeVisible(); // the original button is unmounted
         expect(canvas.getByText("click me")).toHaveStyle("font-size: 14px");
-      }
+      },
     );
   },
 };
@@ -98,7 +98,7 @@ export const HtmlCssJsSsr: Story = {
       "Expect HTML/CSS to render a button with a font-size style",
       () => {
         expect(button).toHaveStyle("font-size: 14px");
-      }
+      },
     );
 
     await step("Expect JS to change the font-size", async () => {
@@ -121,10 +121,10 @@ export const Iframe: Story = {
 ></iframe>`,
   },
   play: async ({ canvas, step }) => {
-    await step("Expect iframe to load", async ({ canvas }) => {
+    await step("Expect iframe to load", async () => {
       expect(canvas.getByTestId("count")).toHaveTextContent("0");
       await waitFor(() =>
-        expect(canvas.getByTestId("count")).toHaveTextContent("1")
+        expect(canvas.getByTestId("count")).toHaveTextContent("1"),
       );
     });
 
@@ -134,7 +134,7 @@ export const Iframe: Story = {
         await userEvent.click(canvas.getByText("Re-render parent"));
         await delay(150);
         expect(canvas.getByTestId("count")).toHaveTextContent("1");
-      }
+      },
     );
 
     await step("Expect iframe to be reloaded on code prop change", async () => {
@@ -159,7 +159,7 @@ function makeScriptResolver(i: number, delayMs: number) {
     await delay(delayMs);
     return HttpResponse.text(
       `document.querySelector("[data-testid=status${i}]").textContent = "done";
-document.querySelector("[data-testid=count]").textContent = +document.querySelector("[data-testid=count]").textContent + 1;`
+document.querySelector("[data-testid=count]").textContent = +document.querySelector("[data-testid=count]").textContent + 1;`,
     );
   });
 }
@@ -194,7 +194,7 @@ ${makeStatusAndScript(3)}`,
           expect(canvas.getByTestId("status2")).toHaveTextContent("loading");
           expect(canvas.getByTestId("status3")).toHaveTextContent("initial");
         });
-      }
+      },
     );
 
     await step(
@@ -205,7 +205,7 @@ ${makeStatusAndScript(3)}`,
         expect(canvas.getByTestId("status1")).toHaveTextContent("done");
         expect(canvas.getByTestId("status2")).toHaveTextContent("loading");
         expect(canvas.getByTestId("status3")).toHaveTextContent("initial");
-      }
+      },
     );
 
     await step(
@@ -217,7 +217,7 @@ ${makeStatusAndScript(3)}`,
           expect(canvas.getByTestId("status2")).toHaveTextContent("done");
           expect(canvas.getByTestId("status3")).toHaveTextContent("loading");
         });
-      }
+      },
     );
 
     await step("Expect script3 to be done", async () => {
@@ -251,14 +251,54 @@ ${makeStatusAndScript(3)}`,
           expect(canvas.getByTestId("status2")).toHaveTextContent("done");
           expect(canvas.getByTestId("status3")).toHaveTextContent("done");
         });
-      }
+      },
     );
+  },
+};
+
+export const CodeChangeWhileScriptLoading: Story = {
+  args: {
+    code: `<div data-testid="count">0</div>
+${makeStatusAndScript(1)}
+${makeStatusAndScript(2)}`,
+  },
+  parameters: {
+    msw: {
+      handlers: [makeScriptResolver(1, 800), makeScriptResolver(2, 50)],
+    },
+  },
+  play: async ({ canvas, step }) => {
+    const rejections: unknown[] = [];
+    const onRejection = (e: PromiseRejectionEvent) => rejections.push(e.reason);
+    window.addEventListener("unhandledrejection", onRejection);
+    try {
+      await step("Change code prop while script1 is loading", async () => {
+        await waitFor(() =>
+          expect(canvas.getByTestId("status1")).toHaveTextContent("loading"),
+        );
+        await userEvent.click(canvas.getByText("Change code prop"));
+      });
+
+      await step("Expect new scripts to load without errors", async () => {
+        // The replaced script1 still executes, so the final count is 3.
+        await waitFor(
+          () => {
+            expect(canvas.getByTestId("status2")).toHaveTextContent("done");
+            expect(canvas.getByTestId("count")).toHaveTextContent("3");
+          },
+          { timeout: 3000 },
+        );
+        expect(rejections).toEqual([]);
+      });
+    } finally {
+      window.removeEventListener("unhandledrejection", onRejection);
+    }
   },
 };
 
 function simulateSsr(
   root: HTMLElement,
-  reactElement: React.ReactElement
+  reactElement: React.ReactElement,
 ): void {
   // Server render to string and set in root
   root.innerHTML = ReactDOMServer.renderToString(reactElement);
