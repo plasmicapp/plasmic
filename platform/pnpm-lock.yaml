@@ -351,8 +351,8 @@ importers:
         specifier: ^0.0.256
         version: 0.0.256(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-basic-components':
-        specifier: ^0.0.293
-        version: 0.0.293(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.294
+        version: 0.0.294(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-chakra-ui':
         specifier: ^0.0.94
         version: 0.0.94(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.18)(framer-motion@7.10.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -402,8 +402,8 @@ importers:
         specifier: ^0.0.123
         version: 0.0.123(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-aria':
-        specifier: ^0.0.201
-        version: 0.0.201(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.202
+        version: 0.0.202(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-awesome-reveal':
         specifier: ^3.8.266
         version: 3.8.266(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -821,8 +821,8 @@ importers:
         specifier: ^0.0.256
         version: 0.0.256(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-basic-components':
-        specifier: ^0.0.293
-        version: 0.0.293(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.294
+        version: 0.0.294(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-chakra-ui':
         specifier: ^0.0.94
         version: 0.0.94(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.18)(framer-motion@7.10.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -872,8 +872,8 @@ importers:
         specifier: ^0.0.123
         version: 0.0.123(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-aria':
-        specifier: ^0.0.201
-        version: 0.0.201(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.202
+        version: 0.0.202(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-awesome-reveal':
         specifier: ^3.8.266
         version: 3.8.266(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1313,14 +1313,14 @@ importers:
         specifier: ^0.0.266
         version: 0.0.266(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(@types/react@18.3.18)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/plasmic-basic-components':
-        specifier: ^0.0.293
-        version: 0.0.293(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.294
+        version: 0.0.294(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-embed-css':
         specifier: ^0.1.248
         version: 0.1.248(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-aria':
-        specifier: ^0.0.201
-        version: 0.0.201(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.202
+        version: 0.0.202(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@popperjs/core':
         specifier: 2.11.8
         version: 2.11.8
@@ -5081,8 +5081,8 @@ packages:
     resolution: {integrity: sha512-VN/nwVehURL1TeHt7WlxuYXD7v9f87MG58YLrZeBQOcGDA9ck/gZNz7m1S1MeJ67gpnbpyJ3uFUPt+t1KnMQxw==}
     engines: {node: '>=12'}
 
-  '@plasmicpkgs/plasmic-basic-components@0.0.293':
-    resolution: {integrity: sha512-pXHfEJ4VQ0iQ6DeCgteEWY88R3teBqYx/z4pix9ILlvC1Zqoh7B8UgiiKdVQZhuLc732ZWIFdZx5lQn0u7+gCA==}
+  '@plasmicpkgs/plasmic-basic-components@0.0.294':
+    resolution: {integrity: sha512-SjfdQji54EHWmPEaPFWFtHsDVYwTL8zCnMsMYQl6+004gEUhlqKOajk9qlSQRNTGWIJK+ayiW5i4g7FeNrDuFA==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       '@plasmicapp/query': ^0.1.64
@@ -5198,8 +5198,8 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@plasmicpkgs/react-aria@0.0.201':
-    resolution: {integrity: sha512-OIUOsZKO0RoYEWuy+31cqklmGPB+nbmBPWZ59XaLNQL8ROxi+V/9qIAiOCZtnUOpeBUSqNDRN9T/mTvq02h9VA==}
+  '@plasmicpkgs/react-aria@0.0.202':
+    resolution: {integrity: sha512-DMHIoSiMSLtvfXpek2gPhUavrn+2iLVKGOqTGbAN7+Ix3//ZOCaQjSwRk+Pi+tAPqSIdczyHEpjq998Zz2SgRw==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       react: '>=16.8.0'
@@ -20367,7 +20367,7 @@ snapshots:
 
   '@plasmicpkgs/luxon-parser@3.4.4': {}
 
-  '@plasmicpkgs/plasmic-basic-components@0.0.293(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/plasmic-basic-components@0.0.294(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicapp/query': 0.1.88(react@18.3.1)
@@ -20538,7 +20538,7 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
-  '@plasmicpkgs/react-aria@0.0.201(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/react-aria@0.0.202(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/i18n': 3.12.13(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
