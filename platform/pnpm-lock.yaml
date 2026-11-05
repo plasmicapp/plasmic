@@ -12776,6 +12776,7 @@ packages:
   nkeys.js@1.1.0:
     resolution: {integrity: sha512-tB/a0shZL5UZWSwsoeyqfTszONTt4k2YS0tuQioMOD180+MbombYVgzDUYHlx+gejYK6rgf08n/2Df99WY0Sxg==}
     engines: {node: '>=10.0.0'}
+    deprecated: 'Package moved. Use @nats-io/nkeys instead: https://www.npmjs.com/package/@nats-io/nkeys'
 
   no-case@3.0.4:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
