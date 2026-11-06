@@ -16188,8 +16188,8 @@ packages:
   vanilla-cookieconsent@3.1.0:
     resolution: {integrity: sha512-/McNRtm/3IXzb9dhqMIcbquoU45SzbN2VB+To4jxEPqMmp7uVniP6BhGLjU8MC7ZCDsNQVOp27fhQTM/ruIXAA==}
 
-  vanilla-cookieconsent@3.2.1:
-    resolution: {integrity: sha512-M3XXHR7AitvIRLj0kq5wZQqTNmAtINhxy4+IO2Tknm064uPzEgv8WQdp8ttgblspPvvocF8BkLI5qnkB31nVVA==}
+  vanilla-cookieconsent@3.3.0:
+    resolution: {integrity: sha512-KkFJL9W9MAOC7ipSmk1CqTY1PHBViDU81jRBRWGw1Zhx5Y3nyAQ2COYwMpEG2z2SM75HNUIOwM7NnkSJe775Tw==}
 
   varint@6.0.0:
     resolution: {integrity: sha512-cXEIW6cfr15lFv563k4GuVuW/fiwjknytD37jIOLSdSWuOI6WnO/oKwmP2FQTU2l01LP8/M5TSAJpzUaGe3uWg==}
@@ -20686,7 +20686,7 @@ snapshots:
   '@plasmicpkgs/vanilla-cookieconsent@0.0.40(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
     dependencies:
       '@plasmicapp/host': 2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      vanilla-cookieconsent: 3.2.1
+      vanilla-cookieconsent: 3.3.0
 
   '@plasmicpkgs/wordpress@0.0.42(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
     dependencies:
@@ -33577,7 +33577,7 @@ snapshots:
 
   vanilla-cookieconsent@3.1.0: {}
 
-  vanilla-cookieconsent@3.2.1: {}
+  vanilla-cookieconsent@3.3.0: {}
 
   varint@6.0.0: {}
 
