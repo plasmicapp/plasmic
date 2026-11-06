@@ -7,7 +7,7 @@ import { ensure, range } from "@/wab/shared/common";
 import getPort from "get-port";
 import { customAlphabet } from "nanoid";
 import { lowercase, numbers } from "nanoid-dictionary";
-import { EntityManager } from "typeorm";
+import { Connection, EntityManager } from "typeorm";
 
 export async function withDb(
   f: (
@@ -96,7 +96,7 @@ export async function createDatabase(name = "test") {
     "super",
   );
   await sucon.query("select 1");
-  await sucon.query(`drop database if exists ${dbname} with (force);`);
+  await dropDatabase(sucon, dbname);
   await sucon.query(`create database ${dbname} owner wab;`);
   const dburi = `postgresql://wab@localhost/${dbname}`;
   const con = await ensureDbConnection(dburi, dbname);
@@ -110,13 +110,28 @@ export async function createDatabase(name = "test") {
     dburi,
     con,
     cleanup: async () => {
-      await con.close();
-      if (isCI) {
-        await sucon.query(`drop database if exists ${dbname} with (force);`);
+      try {
+        await con.close();
+        if (isCI) {
+          await dropDatabase(sucon, dbname);
+        }
+      } finally {
+        await sucon.close();
       }
-      await sucon.close();
     },
   };
+}
+
+// WITH (FORCE) signals every backend on the database, including autovacuum workers,
+// which superwab is not allowed to signal. Terminate just the client sessions instead.
+async function dropDatabase(sucon: Connection, dbname: string) {
+  await sucon.query(
+    `select pg_terminate_backend(pid) from pg_stat_activity
+     where datname = $1 and backend_type = 'client backend'
+       and pid <> pg_backend_pid();`,
+    [dbname],
+  );
+  await sucon.query(`drop database if exists ${dbname};`);
 }
 
 export async function createBackend(
