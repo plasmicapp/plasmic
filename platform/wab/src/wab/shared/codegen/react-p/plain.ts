@@ -179,6 +179,7 @@ export function exportReactPlain(
     },
     fakeTpls,
     replacedHostlessComponentImportPath,
+    serverQueryTree: undefined,
     useRSC: false,
     hasServerQueries:
       component.serverQueries.filter(isServerQueryWithOperation).length > 0,

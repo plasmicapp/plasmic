@@ -1,5 +1,6 @@
 import { initPlasmicLoader } from "@plasmicapp/loader-nextjs/react-server-conditional";
 import Badge from "./components/Badge";
+import { getAmenities, getResorts } from "./components/ResortQueries";
 import { NoPrefetchSection, ServerSection } from "./components/SsrSections";
 import config from "./config.json";
 
@@ -15,6 +16,18 @@ export const PLASMIC = initPlasmicLoader({
       appDir: true,
     },
   },
+});
+
+PLASMIC.registerFunction(getResorts, {
+  name: "getResorts",
+  isQuery: true,
+  params: [{ name: "codes", type: "array" }],
+});
+
+PLASMIC.registerFunction(getAmenities, {
+  name: "getAmenities",
+  isQuery: true,
+  params: [{ name: "code", type: "string" }],
 });
 
 PLASMIC.registerComponent(Badge, {

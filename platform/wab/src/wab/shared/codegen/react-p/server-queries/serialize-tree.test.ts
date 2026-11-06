@@ -106,6 +106,7 @@ function createSimpleQueryTree(
   };
 
   return {
+    componentMap: new Map(),
     rootComponent: component,
     rootNode: componentNode,
   };
@@ -203,6 +204,7 @@ describe("serializeServerQueryTree", () => {
     };
 
     const tree: ServerQueryTree = {
+      componentMap: new Map(),
       rootComponent: parentComponent,
       rootNode: {
         type: "component",
@@ -258,6 +260,7 @@ describe("serializeServerQueryTree", () => {
     };
 
     const tree: ServerQueryTree = {
+      componentMap: new Map(),
       rootComponent: component,
       rootNode: {
         type: "component",
@@ -300,6 +303,7 @@ describe("serializeServerQueryTree", () => {
     };
 
     const tree: ServerQueryTree = {
+      componentMap: new Map(),
       rootComponent: component,
       rootNode: {
         type: "component",
@@ -348,6 +352,7 @@ describe("serializeServerQueryTree", () => {
     };
 
     const tree: ServerQueryTree = {
+      componentMap: new Map(),
       rootComponent: component,
       rootNode: {
         type: "component",
@@ -368,6 +373,46 @@ describe("serializeServerQueryTree", () => {
     expect(serialized).toContain(
       "({ $q, $props, $ctx, $state, $scopedItemVars: { currentItem, currentIndex } }) => (currentItem)",
     );
+  });
+
+  it("should not bind item vars twice when nested repeats share names", () => {
+    const component = createMockComponent("TestComponent");
+    const leaf: ServerComponentNode = {
+      type: "component",
+      component: createMockComponent("Leaf"),
+      queries: [],
+      states: [],
+      propsContext: { item: "currentItem" },
+      children: [],
+    };
+    const repeated = (children: ServerNode[]): ServerRepeatedContextNode => ({
+      type: "repeated",
+      collectionExpr: "$props.items",
+      itemName: "currentItem",
+      indexName: "currentIndex",
+      children,
+    });
+
+    const serialized = serializeServerQueryTree(
+      {
+        componentMap: new Map(),
+        rootComponent: component,
+        rootNode: {
+          type: "component",
+          component,
+          queries: [],
+          states: [],
+          propsContext: {},
+          children: [repeated([repeated([leaf])])],
+        },
+      },
+      ctx,
+    );
+
+    expect(serialized).toContain(
+      "$scopedItemVars: { currentItem, currentIndex } }) => (currentItem)",
+    );
+    expect(serialized).not.toContain("currentIndex, currentItem");
   });
 
   it("should serialize data provider nodes with function expression", () => {
@@ -391,6 +436,7 @@ describe("serializeServerQueryTree", () => {
     };
 
     const tree: ServerQueryTree = {
+      componentMap: new Map(),
       rootComponent: component,
       rootNode: {
         type: "component",
@@ -440,6 +486,7 @@ describe("hasNestedQueries", () => {
     };
 
     const tree: ServerQueryTree = {
+      componentMap: new Map(),
       rootComponent: parentComponent,
       rootNode: {
         type: "component",
@@ -483,6 +530,7 @@ describe("hasNestedQueries", () => {
     };
 
     const tree: ServerQueryTree = {
+      componentMap: new Map(),
       rootComponent: parentComponent,
       rootNode: {
         type: "component",
@@ -521,6 +569,7 @@ describe("hasNestedQueries", () => {
     };
 
     const tree: ServerQueryTree = {
+      componentMap: new Map(),
       rootComponent: parentComponent,
       rootNode: {
         type: "component",

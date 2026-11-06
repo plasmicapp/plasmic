@@ -609,6 +609,29 @@ export const customFunctionsAndLibsUsedByComponent = siteSelector(
     site: Site,
     component: Component,
   ) {
+    return customFunctionsAndLibsUsedByFunctionIds(
+      site,
+      customFunctionIdsUsedByComponent(component),
+    );
+  },
+);
+
+export function customFunctionsAndLibsUsedByComponents(
+  site: Site,
+  components: Component[],
+) {
+  return customFunctionsAndLibsUsedByFunctionIds(
+    site,
+    new Set(
+      components.flatMap((component) => [
+        ...customFunctionIdsUsedByComponent(component),
+      ]),
+    ),
+  );
+}
+
+const customFunctionIdsUsedByComponent = componentSelector(
+  function customFunctionIdsUsedByComponent(component: Component) {
     const codeExprs = filterFalsy(
       cachedExprsInComponent(component).map(
         ({ expr }) =>
@@ -617,7 +640,7 @@ export const customFunctionsAndLibsUsedByComponent = siteSelector(
           expr,
       ),
     );
-    const usedFunctionIds = new Set<string>(
+    return new Set<string>(
       withoutNils([
         ...codeExprs.flatMap((expr) => {
           if (isKnownCustomCode(expr)) {
@@ -627,47 +650,50 @@ export const customFunctionsAndLibsUsedByComponent = siteSelector(
         }),
       ]),
     );
-    const codeLibraryByJsIdentifier = new Map(
-      allCodeLibraries(site).map(({ codeLibrary }) => [
-        codeLibrary.jsIdentifier,
-        codeLibrary,
-      ]),
-    );
-    const usedLibraries = new Map<CodeLibrary, "all" | Set<string>>();
-    usedFunctionIds.forEach((id) => {
-      const [namespace, functionName] = id.split(".");
-      const lib = codeLibraryByJsIdentifier.get(namespace);
-      if (lib) {
-        if (lib.importType === "namespace" && !!functionName) {
-          const usedFns = xSetDefault(usedLibraries, lib, () => new Set());
-          if (usedFns !== "all") {
-            usedFns.add(functionName);
-          }
-        } else {
-          usedLibraries.set(lib, "all");
-        }
-      }
-    });
-    return {
-      customFunctions: allCustomFunctions(site)
-        .map(({ customFunction }) => customFunction)
-        .filter(
-          (fn) =>
-            usedFunctionIds.has(customFunctionId(fn)) ||
-            // If someone does `const L = $$.lodash;`, we should include all
-            // functions in `lodash` namespace!
-            (fn.namespace && usedFunctionIds.has(fn.namespace)),
-        ),
-      codeLibraries: Array.from(usedLibraries.entries()).map(
-        ([lib, imports]) =>
-          [
-            lib,
-            imports === "all" ? "all" : Array.from(imports.keys()),
-          ] as const,
-      ),
-    };
   },
 );
+
+function customFunctionsAndLibsUsedByFunctionIds(
+  site: Site,
+  usedFunctionIds: Set<string>,
+) {
+  const codeLibraryByJsIdentifier = new Map(
+    allCodeLibraries(site).map(({ codeLibrary }) => [
+      codeLibrary.jsIdentifier,
+      codeLibrary,
+    ]),
+  );
+  const usedLibraries = new Map<CodeLibrary, "all" | Set<string>>();
+  usedFunctionIds.forEach((id) => {
+    const [namespace, functionName] = id.split(".");
+    const lib = codeLibraryByJsIdentifier.get(namespace);
+    if (lib) {
+      if (lib.importType === "namespace" && !!functionName) {
+        const usedFns = xSetDefault(usedLibraries, lib, () => new Set());
+        if (usedFns !== "all") {
+          usedFns.add(functionName);
+        }
+      } else {
+        usedLibraries.set(lib, "all");
+      }
+    }
+  });
+  return {
+    customFunctions: allCustomFunctions(site)
+      .map(({ customFunction }) => customFunction)
+      .filter(
+        (fn) =>
+          usedFunctionIds.has(customFunctionId(fn)) ||
+          // If someone does `const L = $$.lodash;`, we should include all
+          // functions in `lodash` namespace!
+          (fn.namespace && usedFunctionIds.has(fn.namespace)),
+      ),
+    codeLibraries: Array.from(usedLibraries.entries()).map(
+      ([lib, imports]) =>
+        [lib, imports === "all" ? "all" : Array.from(imports.keys())] as const,
+    ),
+  };
+}
 
 export const customFunctionsUsedBySite = maybeComputedFn(
   function customFunctionsUsedBySite(site: Site) {

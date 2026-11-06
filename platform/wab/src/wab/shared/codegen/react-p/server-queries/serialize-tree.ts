@@ -25,7 +25,7 @@ import {
   isKnownCustomCode,
 } from "@/wab/shared/model/classes";
 import { convertToFunction } from "@/wab/shared/parser-utils";
-import { groupBy } from "lodash";
+import { groupBy, uniq } from "lodash";
 
 /**
  * Wraps a DynamicExprCode string in a ContextFn arrow function.
@@ -190,7 +190,8 @@ function serializeServerNode(
     case "repeated": {
       const { itemName, indexName, collectionExpr } = node;
       // collectionExpr is evaluated BEFORE iteration, so it doesn't have the item vars yet
-      const childScopedVars = [...scopedItemVars, itemName, indexName];
+      // uniq: nested repeats often share default names like currentItem.
+      const childScopedVars = uniq([...scopedItemVars, itemName, indexName]);
       const childrenStr = node.children
         .map((c) => serializeServerNode(c, ctx, childScopedVars))
         .join(", ");

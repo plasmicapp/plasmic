@@ -167,6 +167,10 @@ import {
   serializeRootServerQueryTree,
 } from "@/wab/shared/codegen/react-p/server-queries";
 import {
+  collectComponentServerQueries,
+  serverQueryTreeHasQueries,
+} from "@/wab/shared/codegen/react-p/server-queries/collect";
+import {
   makeDataSourcesQueryTypeImports,
   makePlasmicQueryImports,
   makePlasmicServerRscComponentName,
@@ -818,9 +822,16 @@ export function exportReactPresentational(
     },
     fakeTpls,
     replacedHostlessComponentImportPath,
+    serverQueryTree: undefined,
     useRSC: !!opts.platformOptions?.nextjs?.appDir,
     hasServerQueries,
   };
+  if (ctx.useRSC && isPage) {
+    const tree = collectComponentServerQueries(ctx);
+    if (serverQueryTreeHasQueries(tree.rootNode)) {
+      ctx.serverQueryTree = tree;
+    }
+  }
 
   const isCodeComponentStub =
     opts.codeComponentStubs &&
@@ -2739,7 +2750,7 @@ function serializePageAwareSkeletonWrapperTs(
       ? serializePagesRouterGetStaticPaths()
       : undefined;
 
-  const serverQueryComponentParams = ctx.hasServerQueries
+  const serverQueryComponentParams = ctx.serverQueryTree
     ? "params={params} searchParams={searchParams} "
     : "";
   let content = ctx.useRSC

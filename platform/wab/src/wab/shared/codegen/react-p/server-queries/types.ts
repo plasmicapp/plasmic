@@ -1,5 +1,5 @@
 import { ServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
-import { Component, Site, State } from "@/wab/shared/model/classes";
+import { Component, State } from "@/wab/shared/model/classes";
 
 /**
  * A string with JavaScript code to be evaluated at runtime.
@@ -90,6 +90,8 @@ export type ServerNode =
  * Contains the entry component and all discovered server nodes.
  */
 export interface ServerQueryTree {
+  // Plasmic components visited during collection, including the root.
+  componentMap: Map<string, Component>;
   rootComponent: Component;
   rootNode: ServerComponentNode;
 }
@@ -99,6 +101,5 @@ export interface ServerQueryTree {
  * Tracks the current evaluation environment.
  */
 export interface ServerQueryCollectionContext {
-  site: Site;
   componentMap: Map<string, Component>;
 }

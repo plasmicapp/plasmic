@@ -44,23 +44,27 @@ import {
 export function collectComponentServerQueries(
   params: Pick<SerializerBaseContext, "site" | "component" | "exprCtx">,
 ): ServerQueryTree {
-  const { site, component, exprCtx } = params;
+  const { component, exprCtx } = params;
   const componentMap = new Map<string, Component>();
-  for (const comp of site.components) {
-    componentMap.set(comp.uuid, comp);
-  }
 
   const ctx: ServerQueryCollectionContext = {
-    site,
     componentMap,
   };
 
   const rootNode = collectComponentNode(ctx, component, exprCtx, {});
 
   return {
+    componentMap,
     rootComponent: component,
     rootNode,
   };
+}
+
+export function serverQueryTreeHasQueries(node: ServerNode): boolean {
+  return (
+    (node.type === "component" && node.queries.length > 0) ||
+    node.children.some(serverQueryTreeHasQueries)
+  );
 }
 
 function collectComponentNode(
@@ -69,6 +73,8 @@ function collectComponentNode(
   exprCtx: ExprCtx,
   propsContext: Record<string, DynamicExprCode>,
 ): ServerComponentNode {
+  ctx.componentMap.set(component.uuid, component);
+
   // Get server queries with operations
   const queries = component.serverQueries.filter(
     isServerQueryWithOperation,

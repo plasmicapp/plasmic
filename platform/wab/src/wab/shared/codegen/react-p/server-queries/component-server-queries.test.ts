@@ -96,6 +96,36 @@ describe("Component server queries", () => {
     projectFlags: DEVFLAGS,
   } as unknown as SerializerBaseContext;
 
+  it("tracks only visited Plasmic components, including those outside site.components", () => {
+    const site = createSite();
+    const child = mkComponent({
+      name: "Child",
+      type: ComponentType.Plain,
+      tplTree: (baseVariant) => mkTplTagX("div", { baseVariant }),
+    });
+    const root = mkComponent({
+      name: "Root",
+      type: ComponentType.Plain,
+      tplTree: (baseVariant) =>
+        mkTplTagX("div", { baseVariant }, [
+          mkTplComponentX({ component: child, baseVariant }),
+          mkTplComponentX({ component: child, baseVariant }),
+        ]),
+    });
+    const unused = mkComponent({
+      name: "Unused",
+      type: ComponentType.Plain,
+      tplTree: (baseVariant) => mkTplTagX("div", { baseVariant }),
+    });
+    site.components = [root, unused];
+    const tree = collectComponentServerQueries({
+      site,
+      component: root,
+      exprCtx,
+    });
+    expect([...tree.componentMap.values()]).toEqual([root, child]);
+  });
+
   describe("collectComponentServerQueries for simple component instance", () => {
     const site = generateSiteFromBundle(_simpleBundle as [string, Bundle][]);
 

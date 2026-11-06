@@ -7,6 +7,8 @@ import {
   componentToReferencers,
   componentToTplComponents,
   componentToUsedMixins,
+  customFunctionsAndLibsUsedByComponent,
+  customFunctionsAndLibsUsedByComponents,
   deepComponentToReferencers,
   findNonEmptyCombos,
   flattenComponent,
@@ -24,7 +26,9 @@ import {
 } from "@/wab/shared/core/tpls";
 import mobx from "@/wab/shared/import-mobx";
 import {
+  CodeLibrary,
   Component,
+  CustomCode,
   Site,
   TplTag,
   Variant,
@@ -233,4 +237,46 @@ describe("cached selectors", () => {
       recorder.dispose();
     },
   );
+});
+
+describe("customFunctionsAndLibsUsedByComponents", () => {
+  it("deduplicates library members and lets a whole-library use override members", () => {
+    const site = createSite();
+    const lib = new CodeLibrary({
+      name: "utils",
+      importPath: "utils",
+      jsIdentifier: "utils",
+      importType: "namespace",
+      namedImport: null,
+      isSyntheticDefaultImport: false,
+    });
+    site.codeLibraries = [lib];
+    const components = [
+      "($$.utils.first())",
+      "($$.utils.first() + $$.utils.last())",
+      "($$.utils)",
+    ].map((code, i) =>
+      mkComponent({
+        name: `Component${i}`,
+        type: ComponentType.Plain,
+        tplTree: (baseVariant) =>
+          mkTplTagX("div", {
+            baseVariant,
+            attrs: { title: new CustomCode({ code, fallback: null }) },
+          }),
+      }),
+    );
+    expect(
+      customFunctionsAndLibsUsedByComponent(site, components[0]).codeLibraries,
+    ).toEqual([[lib, ["first"]]]);
+    expect(
+      customFunctionsAndLibsUsedByComponents(site, components.slice(0, 2))
+        .codeLibraries,
+    ).toEqual([[lib, ["first", "last"]]]);
+    for (const order of [components, [...components].reverse()]) {
+      expect(
+        customFunctionsAndLibsUsedByComponents(site, order).codeLibraries,
+      ).toEqual([[lib, "all"]]);
+    }
+  });
 });

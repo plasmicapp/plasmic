@@ -131,15 +131,35 @@ export function makeComponentDataTokenImports(
   projectId: ProjectId,
   exportOpts: ExportOpts,
 ): string {
-  const tokenIdentifiers = getDataTokenIdentifiersFromExprs(
-    findExprsInComponent(component).map(({ expr }) => expr),
+  return makeComponentsDataTokenImports(
+    [component],
+    site,
+    projectId,
+    exportOpts,
   );
-  const pageMetaTokenIdentifiers = component.pageMeta
-    ? getDataTokenIdentifiersFromPageMeta(component.pageMeta)
-    : undefined;
-  if (pageMetaTokenIdentifiers) {
-    for (const tokenIdentifier of pageMetaTokenIdentifiers) {
-      tokenIdentifiers.add(tokenIdentifier);
+}
+
+/**
+ * Same as makeComponentDataTokenImports, with one import per token across all components.
+ */
+export function makeComponentsDataTokenImports(
+  components: Component[],
+  site: Site,
+  projectId: ProjectId,
+  exportOpts: ExportOpts,
+): string {
+  const tokenIdentifiers = getDataTokenIdentifiersFromExprs(
+    components.flatMap((component) =>
+      findExprsInComponent(component).map(({ expr }) => expr),
+    ),
+  );
+  for (const { pageMeta } of components) {
+    if (pageMeta) {
+      for (const tokenIdentifier of getDataTokenIdentifiersFromPageMeta(
+        pageMeta,
+      )) {
+        tokenIdentifiers.add(tokenIdentifier);
+      }
     }
   }
   return generateDataTokenImports(

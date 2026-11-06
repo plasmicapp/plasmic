@@ -4,6 +4,7 @@ import { VariantCombo } from "@/wab/shared/Variants";
 import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import { ReactHookSpec } from "@/wab/shared/codegen/react-p/react-hook-spec";
 import { NodeNamer } from "@/wab/shared/codegen/react-p/serialize-utils";
+import { ServerQueryTree } from "@/wab/shared/codegen/react-p/server-queries/types";
 import { ExportOpts, ProjectConfig } from "@/wab/shared/codegen/types";
 import { ExprCtx } from "@/wab/shared/core/exprs";
 import { CssProjectDependencies } from "@/wab/shared/core/sites";
@@ -78,8 +79,10 @@ export interface SerializerBaseContext {
    * importing a simpler form component instead of the full form component for schema forms.
    */
   replacedHostlessComponentImportPath: Map<Component, string>;
-  // Whether the component has server queries that are properly configured
+  // Whether this component itself has configured server queries (excludes descendants)
   hasServerQueries: boolean;
+  // Set for RSC page if it or any descendant component has server queries
+  serverQueryTree: ServerQueryTree | undefined;
   // Whether the component should be generated using rsc modules
   useRSC: boolean;
 }

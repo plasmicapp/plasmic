@@ -5,7 +5,7 @@ import {
 import { getDataSourcesPackageName } from "@/wab/shared/codegen/react-p/data-sources";
 import {
   generateDataTokenImports,
-  makeComponentDataTokenImports,
+  makeComponentsDataTokenImports,
 } from "@/wab/shared/codegen/react-p/data-tokens/imports";
 import {
   getMetadataTypeDefinition,
@@ -19,7 +19,6 @@ import {
   makeTaggedPlasmicImport,
   pagePathConflictsWithAppRouter,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
-import { collectComponentServerQueries } from "@/wab/shared/codegen/react-p/server-queries/collect";
 import {
   serializeRootComponentQueries,
   serializeServerQueryTree,
@@ -103,7 +102,7 @@ function serializeServerQueriesServerWrapper(
   const clientComponentName = makePlasmicClientRscComponentName(component);
   const genPropsName = makeDefaultExternalPropsName(component);
 
-  const componentBody = !ctx.hasServerQueries
+  const componentBody = !ctx.serverQueryTree
     ? ""
     : serializeServerComponentBody(ctx);
   const usesSearchParams =
@@ -137,12 +136,12 @@ ${serializeMakeAppRouterPageCtx(ctx, { usesSearchParams })}
 export type ${componentPropsName} = ${genPropsName} & PlasmicPageProps;
 
 export ${
-    ctx.hasServerQueries ? "async " : ""
+    ctx.serverQueryTree ? "async " : ""
   }function ${componentName}(props: ${componentPropsName}) {
   ${componentBody}
 
   return (${
-    ctx.hasServerQueries
+    ctx.serverQueryTree
       ? `
     <PlasmicQueryDataProvider prefetchedCache={prefetchedCache}>
       <${clientComponentName} {...rest} />
@@ -202,9 +201,6 @@ function serializeComponentServerQueryTree(
   ctx: SerializerBaseContext,
   serializedTree: string,
 ) {
-  if (!ctx.hasServerQueries) {
-    return "";
-  }
   const isPage = isPageComponent(ctx.component);
   return `${
     isPage ? "export " : ""
@@ -243,18 +239,22 @@ export function serializePageQueryTree(ctx: SerializerBaseContext) {
 }
 
 function serializeServerPageQueries(ctx: SerializerBaseContext) {
-  const { component } = ctx;
+  const { component, serverQueryTree } = ctx;
+  // The tree evaluates descendants' expressions in this module's scope.
+  const components = serverQueryTree
+    ? [...serverQueryTree.componentMap.values()]
+    : [component];
   const { customFunctionsAndLibsImport, serializedCustomFunctionsAndLibs } =
-    serializeCustomFunctionsAndLibs(ctx);
+    serializeCustomFunctionsAndLibs(ctx, components);
 
-  const dataTokenImports = makeComponentDataTokenImports(
-    component,
+  const dataTokenImports = makeComponentsDataTokenImports(
+    components,
     ctx.site,
     ctx.projectConfig.projectId,
     ctx.exportOpts,
   );
 
-  if (!ctx.hasServerQueries) {
+  if (!serverQueryTree) {
     // No queries - just emit custom functions, data tokens, and metadata function
     return `
 ${customFunctionsAndLibsImport}
@@ -267,15 +267,12 @@ ${serializeGenerateDynamicMetadataFunction(ctx)}
 `;
   }
 
-  const serverQueryImports = ctx.hasServerQueries
-    ? `
+  const serverQueryImports = `
 ${makeDataSourcesServerQueryImports()}
 ${makeDataSourcesQueryTypeImports()}
 ${makeServerQueryTreeTypeImport()}
-import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";`
-    : "";
-  const tree = collectComponentServerQueries(ctx);
-  const serializedTree = serializeServerQueryTree(tree, ctx);
+import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";`;
+  const serializedTree = serializeServerQueryTree(serverQueryTree, ctx);
 
   const module = `
 ${customFunctionsAndLibsImport}
@@ -334,7 +331,7 @@ export async function generateMetadata(props: {
 function serializeServerPageQueriesLoader(ctx: SerializerBaseContext) {
   let getPlasmicQueriesDataBody: string;
 
-  if (!ctx.hasServerQueries) {
+  if (!ctx.serverQueryTree) {
     getPlasmicQueriesDataBody = `return {};`;
   } else {
     getPlasmicQueriesDataBody = `const { params, query, ...restCtx } = ctx ?? {};
