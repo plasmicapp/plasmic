@@ -3,6 +3,10 @@ import { Bundle } from "@/wab/shared/bundler";
 import { mkCodeComponent } from "@/wab/shared/code-components/code-components";
 import _advancedBundle from "@/wab/shared/codegen/react-p/server-queries/__testonly__/bundles/advanced-component-server-queries.json";
 import _simpleBundle from "@/wab/shared/codegen/react-p/server-queries/__testonly__/bundles/simple-component-server-queries.json";
+import {
+  mkCustomFunctionExpr,
+  mkServerQuery,
+} from "@/wab/shared/codegen/react-p/server-queries/__testonly__/test-utils";
 import { collectComponentServerQueries } from "@/wab/shared/codegen/react-p/server-queries/collect";
 import { serializeServerQueryTree } from "@/wab/shared/codegen/react-p/server-queries/serialize-tree";
 import {
@@ -14,11 +18,17 @@ import {
 import { ServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
-import { ExprCtx } from "@/wab/shared/core/exprs";
+import { ExprCtx, codeLit } from "@/wab/shared/core/exprs";
+import { mkParam } from "@/wab/shared/core/lang";
 import { createSite } from "@/wab/shared/core/sites";
 import { mkTplComponentX, mkTplTagX } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Component, Site } from "@/wab/shared/model/classes";
+import { typeFactory } from "@/wab/shared/model/model-util";
+import {
+  QueryComponentNode,
+  executePlasmicQueries,
+} from "@plasmicapp/data-sources";
 
 function findInServerNode(node: ServerNode, visitor: (n: ServerNode) => void) {
   const stack = [node];
@@ -95,6 +105,61 @@ describe("Component server queries", () => {
     fakeTpls: [],
     projectFlags: DEVFLAGS,
   } as unknown as SerializerBaseContext;
+
+  it("prefetches component queries using the rendered prop names", async () => {
+    const resortCodes = ["SCR", "SAT", "SBR"];
+    const slider = mkComponent({
+      name: "ResortSlider",
+      type: ComponentType.Plain,
+      tplTree: (baseVariant) => mkTplTagX("div", { baseVariant }),
+      params: [
+        mkParam({
+          name: "Resort Codes",
+          type: typeFactory.any(),
+          paramType: "prop",
+        }),
+      ],
+    });
+    slider.serverQueries = [
+      mkServerQuery(
+        "resorts",
+        mkCustomFunctionExpr(
+          "getResorts",
+          ["codes"],
+          [{ name: "codes", code: "$props.resortCodes" }],
+        ),
+      ),
+    ];
+    const page = mkComponent({
+      name: "Homepage",
+      type: ComponentType.Page,
+      tplTree: (baseVariant) =>
+        mkTplComponentX({
+          component: slider,
+          baseVariant,
+          args: { "Resort Codes": codeLit(resortCodes) },
+        }),
+    });
+    const tree = collectComponentServerQueries({
+      site: createSite(),
+      component: page,
+      exprCtx,
+    });
+    const getResorts = vi.fn(async (codes: string[]) => codes ?? []);
+    const queryTree: QueryComponentNode = new Function(
+      "$$",
+      `return (${serializeServerQueryTree(tree, ctx)})`,
+    )({ getResorts });
+
+    const { cache } = await executePlasmicQueries(queryTree, {
+      $props: {},
+      $ctx: {},
+    });
+    expect(getResorts).toHaveBeenCalledExactlyOnceWith(resortCodes);
+    expect(cache).toEqual({
+      '$q.$.getResorts.$.[["SCR","SAT","SBR"]]': resortCodes,
+    });
+  });
 
   it("tracks only visited Plasmic components, including those outside site.components", () => {
     const site = createSite();

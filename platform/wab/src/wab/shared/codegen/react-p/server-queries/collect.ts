@@ -15,6 +15,7 @@ import {
   isServerQueryWithOperation,
 } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
+import { paramToVarName } from "@/wab/shared/codegen/util";
 import {
   getRepetitionElementName,
   getRepetitionIndexName,
@@ -266,7 +267,7 @@ function extractPropsContext(
         continue;
       }
       try {
-        const propName = arg.param.variable.name;
+        const propName = paramToVarName(node.component, arg.param);
         propsContext[propName] = getRawCode(arg.expr, exprCtx);
       } catch {
         // Some expressions may not be serializable, skip them
