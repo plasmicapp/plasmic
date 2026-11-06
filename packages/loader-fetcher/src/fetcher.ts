@@ -148,7 +148,10 @@ export function internal_getCachedBundleInNodeServer(
 
 function getBundleKey({
   host,
+  apiHost,
+  cdnHost,
   platform,
+  platformOptions,
   i18n,
   preview,
   projects,
@@ -156,8 +159,12 @@ function getBundleKey({
 }: FetcherOptions) {
   return JSON.stringify({
     host,
+    apiHost,
+    cdnHost,
     platform,
+    nextjsAppDir: platformOptions?.nextjs?.appDir,
     i18nKeyScheme: i18n?.keyScheme,
+    i18nTagPrefix: i18n?.tagPrefix,
     preview,
     projects,
     skipHead,
