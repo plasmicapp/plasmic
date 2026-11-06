@@ -204,6 +204,31 @@ describe("loader", () => {
     expect(await htmlRes.text()).toInclude("Hello, world!");
   });
 
+  it.each([undefined, { title: "Hello & welcome" }])(
+    "preserves global variants in HTML redirects with componentProps=%j",
+    async (componentProps) => {
+      const globalVariants = JSON.stringify([
+        { name: "Publisher", value: "testplus" },
+      ]);
+      const query = new URLSearchParams({ globalVariants });
+      if (componentProps) {
+        query.set("componentProps", JSON.stringify(componentProps));
+      }
+      const response = await publicApi.getPublishedLoaderHtml(
+        projects[0],
+        `Homepage?${query}`,
+      );
+      expect(response.status()).toEqual(302);
+      const destination = new URL(response.headers()["location"], baseURL);
+      expect(destination.searchParams.get("globalVariants")).toEqual(
+        globalVariants,
+      );
+      expect(destination.searchParams.get("componentProps")).toEqual(
+        JSON.stringify(componentProps ?? {}),
+      );
+    },
+  );
+
   it("resolves component as HTML with hydration", async () => {
     const redirectRes = await publicApi.getPublishedLoaderHtml(
       projects[0],

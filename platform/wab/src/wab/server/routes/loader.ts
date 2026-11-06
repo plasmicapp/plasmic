@@ -501,7 +501,7 @@ export async function buildPublishedLoaderHtml(req: Request, res: Response) {
       ],
       [
         "globalVariants",
-        req.query.globalVariants ? (req.query.componentProps as string) : "[]",
+        req.query.globalVariants ? (req.query.globalVariants as string) : "[]",
       ],
       ["prepass", req.query.prepass === "1" ? "1" : "0"],
     ]).toString(),
