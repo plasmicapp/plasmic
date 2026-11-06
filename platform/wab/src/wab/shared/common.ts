@@ -969,7 +969,7 @@ export function uniqueName(
   return attempt;
 }
 
-export const xKeyBy = <K, V>(xs: V[], keyfn: (x: V) => K): Map<K, V> =>
+export const xKeyBy = <K, V>(xs: readonly V[], keyfn: (x: V) => K): Map<K, V> =>
   new Map(xs.map((x) => tuple(keyfn(x), x)));
 
 /**

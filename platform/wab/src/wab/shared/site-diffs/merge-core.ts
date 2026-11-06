@@ -34,6 +34,7 @@ import { ChangeRecorder } from "@/wab/shared/core/observable-model";
 import { SplitType } from "@/wab/shared/core/splits";
 import {
   TplNamable,
+  findExprsInComponent,
   flattenTpls,
   isTplNamable,
   trackComponentRoot,
@@ -47,6 +48,7 @@ import {
   ArenaChild,
   Component,
   ComponentArena,
+  Expr,
   ImageAsset,
   Mixin,
   ObjInst,
@@ -76,6 +78,7 @@ import {
   assertSameInstType,
   walkModelTree,
 } from "@/wab/shared/model/model-tree-util";
+import { renameParamAndFixExprs } from "@/wab/shared/refactoring";
 import {
   fixDanglingReferenceConflicts,
   getEmptyDeletedAssetsSummary,
@@ -91,6 +94,7 @@ import {
   differenceBy,
   groupBy,
   intersectionBy,
+  memoize,
   pick,
   set,
   uniq,
@@ -1672,6 +1676,78 @@ function preFixNames(
   return autoReconciliations;
 }
 
+function preFixParamRenames(
+  ancestor: Site,
+  a: Site,
+  b: Site,
+  bundler: Bundler,
+) {
+  const iid = (inst: ObjInst) => bundler.addrOfUnsafe(inst).iid;
+  const aComponents = xKeyBy(a.components, iid);
+  const bComponents = xKeyBy(b.components, iid);
+  const exprsByIid = memoize((site: Site) =>
+    xKeyBy(
+      site.components.flatMap((c) =>
+        findExprsInComponent(c).map(({ expr }) => expr),
+      ),
+      iid,
+    ),
+  );
+  // The parts of an expr that renameParamAndFixExprs can rewrite.
+  const renameKey = (expr: Expr | undefined): string | undefined =>
+    classes.isKnownCustomCode(expr)
+      ? expr.code
+      : classes.isKnownObjectPath(expr)
+        ? JSON.stringify(expr.path)
+        : classes.isKnownFunctionExpr(expr)
+          ? renameKey(expr.bodyExpr)
+          : undefined;
+  // An expr left as in the ancestor must stay so when the renaming branch
+  // edited or removed it, or the merge would see two competing edits.
+  const rename = (
+    site: Site,
+    renamingSite: Site,
+    component: Component,
+    param: Param,
+    newName: string,
+  ) =>
+    renameParamAndFixExprs(site, component, param, newName, {
+      skipUnparseableExpressions: true,
+      shouldFixExpr: (expr) => {
+        const ancestorKey = renameKey(exprsByIid(ancestor).get(iid(expr)));
+        return (
+          ancestorKey !== renameKey(expr) ||
+          ancestorKey === renameKey(exprsByIid(renamingSite).get(iid(expr)))
+        );
+      },
+    });
+  for (const ancestorComponent of ancestor.components) {
+    const aComponent = aComponents.get(iid(ancestorComponent));
+    const bComponent = bComponents.get(iid(ancestorComponent));
+    if (!aComponent || !bComponent) {
+      continue;
+    }
+    const aParams = xKeyBy(aComponent.params, iid);
+    const bParams = xKeyBy(bComponent.params, iid);
+    for (const ancestorParam of ancestorComponent.params) {
+      const aParam = aParams.get(iid(ancestorParam));
+      const bParam = bParams.get(iid(ancestorParam));
+      if (!aParam || !bParam) {
+        continue;
+      }
+      const oldName = ancestorParam.variable.name;
+      const aName = aParam.variable.name;
+      const bName = bParam.variable.name;
+      // Leave divergent renames to the normal conflict resolution machinery.
+      if (aName !== oldName && bName === oldName) {
+        rename(b, a, bComponent, bParam, aName);
+      } else if (bName !== oldName && aName === oldName) {
+        rename(a, b, aComponent, aParam, bName);
+      }
+    }
+  }
+}
+
 type FlattenedTplNodes = {
   nodes: Record<string, TplNamable>;
   names: string[];
@@ -1875,6 +1951,12 @@ function runMergeFnAndApplyFixes(
   autoReconciliations.push(
     ...preFixTplNames(a, b, ancestor, bundler, isDeletedInst),
   );
+
+  // Propagate one-sided param renames so expressions added in the other branch
+  // use the new name. Duplicate names must have been reconciled first.
+  mobx.runInAction(() => {
+    preFixParamRenames(ancestor, a, b, bundler);
+  });
 
   mobx.runInAction(() => {
     recorder.withRecording(() => {

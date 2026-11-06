@@ -29,7 +29,11 @@ import {
 import { asCode, codeLit, tryExtractJson } from "@/wab/shared/core/exprs";
 import { mkParam, mkParamsForState } from "@/wab/shared/core/lang";
 import { createSite } from "@/wab/shared/core/sites";
-import { addComponentState, mkState } from "@/wab/shared/core/states";
+import {
+  addComponentState,
+  addImplicitStates,
+  mkState,
+} from "@/wab/shared/core/states";
 import {
   flattenTpls,
   isTplNamable,
@@ -827,6 +831,335 @@ describe("merging", () => {
           },
         ],
       });
+    });
+  });
+
+  describe("one-sided param renames", () => {
+    function addState(
+      site: Site,
+      component: Component,
+      name: string,
+      accessType: "private" | "writable" = "private",
+    ) {
+      const { valueParam, onChangeParam } = mkParamsForState({
+        name,
+        variableType: "text",
+        accessType,
+        onChangeProp: `on ${name} change`,
+      });
+      addComponentState(
+        site,
+        component,
+        mkState({
+          param: valueParam,
+          onChangeParam,
+          variableType: "text",
+          accessType,
+        }),
+      );
+    }
+
+    function appendCode(component: Component, code: string) {
+      const baseVariant = getBaseVariant(component);
+      const tpl = mkTplTagX("div", {
+        type: TplTagType.Text,
+        baseVariant,
+        variants: [mkVariantSetting({ variants: [baseVariant] })],
+      });
+      tpl.vsettings[0].text = new ExprText({
+        expr: new CustomCode({ code, fallback: undefined }),
+        html: false,
+      });
+      $$$(component.tplTree).append(tpl);
+    }
+
+    function textCodes(component: Component) {
+      return ensureKnownTplTag(component.tplTree).children.map((child) => {
+        const text = ensureKnownTplTag(child).vsettings[0].text;
+        return ensureKnownCustomCode(ensureKnownExprText(text).expr).code;
+      });
+    }
+
+    function renameParam(site: Site, tplMgr: TplMgr, from: string, to: string) {
+      const component = site.components[0];
+      const param = ensure(
+        component.params.find((p) => p.variable.name === from),
+        `Missing param ${from}`,
+      );
+      tplMgr.renameParam(component, param, to);
+    }
+
+    it.each(["a", "b"] as const)(
+      "refactors expressions added in branch %s",
+      (side) => {
+        const ancestor = singleComponentSite();
+        const component = ancestor.components[0];
+        addState(ancestor, component, "old state");
+        addState(ancestor, component, "other");
+        component.params = [
+          ...component.params,
+          mkParam({
+            name: "old prop",
+            type: typeFactory.text(),
+            paramType: "prop",
+          }),
+        ];
+        const independent = new TplMgr({ site: ancestor }).addComponent({
+          name: "Independent",
+          type: ComponentType.Plain,
+        });
+        addState(ancestor, independent, "old state");
+
+        const rename = (site: Site, tplMgr: TplMgr) => {
+          renameParam(site, tplMgr, "old state", "new state");
+          renameParam(site, tplMgr, "old prop", "new prop");
+        };
+        const addExprs = (site: Site) => {
+          appendCode(
+            site.components[0],
+            "($state.oldState + $state.other + $props.oldProp)",
+          );
+          appendCode(site.components[1], "($state.oldState)");
+        };
+        const result = testMerge({
+          ancestorSite: ancestor,
+          a: side === "a" ? addExprs : rename,
+          b: side === "b" ? addExprs : rename,
+        });
+
+        expect(result.status).toBe("merged");
+        expect(result.autoReconciliations).toEqual([]);
+        const [merged, mergedIndependent] = result.mergedSite.components;
+        expect(textCodes(merged)).toEqual([
+          "($state.newState + $state.other + $props.newProp)",
+        ]);
+        expect(textCodes(mergedIndependent)).toEqual(["($state.oldState)"]);
+      },
+    );
+
+    it.each(["a", "b"] as const)(
+      "skips unfinished expressions added in branch %s",
+      (side) => {
+        const ancestor = singleComponentSite();
+        addState(ancestor, ancestor.components[0], "old state");
+        ancestor.components[0].params = [
+          ...ancestor.components[0].params,
+          mkParam({
+            name: "old prop",
+            type: typeFactory.text(),
+            paramType: "prop",
+          }),
+        ];
+        const rename = (site: Site, tplMgr: TplMgr) => {
+          renameParam(site, tplMgr, "old state", "new state");
+          renameParam(site, tplMgr, "old prop", "new prop");
+        };
+        const addExprs = (site: Site) => {
+          appendCode(site.components[0], "($state.other +)");
+          appendCode(site.components[0], "($state.oldState + $props.oldProp)");
+          appendCode(site.components[0], "($props.other +)");
+        };
+        const result = testMerge({
+          ancestorSite: ancestor,
+          a: side === "a" ? addExprs : rename,
+          b: side === "b" ? addExprs : rename,
+        });
+        expect(result.status).toBe("merged");
+        expect(textCodes(result.mergedSite.components[0])).toEqual([
+          "($state.other +)",
+          "($state.newState + $props.newProp)",
+          "($props.other +)",
+        ]);
+      },
+    );
+
+    it.each(["a", "b"] as const)(
+      "refactors exposed state references despite unfinished expressions in branch %s",
+      (side) => {
+        const ancestor = singleComponentSite();
+        const child = ancestor.components[0];
+        addState(ancestor, child, "old state", "writable");
+        const parent = new TplMgr({ site: ancestor }).addComponent({
+          name: "Parent",
+          type: ComponentType.Plain,
+        });
+        const instance = mkTplComponentX({
+          name: "child",
+          component: child,
+          baseVariant: getBaseVariant(parent),
+        });
+        $$$(parent.tplTree).append(instance);
+        addImplicitStates(ancestor, child);
+        const rename = (site: Site, tplMgr: TplMgr) =>
+          renameParam(site, tplMgr, "old state", "new state");
+        const addExprs = (site: Site) => {
+          appendCode(site.components[1], "($state.other +)");
+          appendCode(site.components[1], "($state.child.oldState)");
+        };
+        const result = testMerge({
+          ancestorSite: ancestor,
+          a: side === "a" ? addExprs : rename,
+          b: side === "b" ? addExprs : rename,
+        });
+        expect(result.status).toBe("merged");
+        const texts = ensureKnownTplTag(
+          result.mergedSite.components[1].tplTree,
+        ).children.slice(1);
+        expect(
+          texts.map(
+            (tpl) =>
+              ensureKnownCustomCode(
+                ensureKnownExprText(ensureKnownTplTag(tpl).vsettings[0].text)
+                  .expr,
+              ).code,
+          ),
+        ).toEqual(["($state.other +)", "($state.child.newState)"]);
+      },
+    );
+
+    it.each(["a", "b"] as const)(
+      "refactors valid nested expressions and object paths in branch %s",
+      (side) => {
+        const ancestor = singleComponentSite();
+        addState(ancestor, ancestor.components[0], "old state");
+        const rename = (site: Site, tplMgr: TplMgr) =>
+          renameParam(site, tplMgr, "old state", "new state");
+        const addExprs = (site: Site) => {
+          const param = site.components[0].states[0].param;
+          param.defaultExpr = new CustomCode({
+            code: "($state.other +)",
+            fallback: new ObjectPath({
+              path: ["$state", "oldState"],
+              fallback: undefined,
+            }),
+          });
+          param.previewExpr = new CustomCode({
+            code: "($state.oldState)",
+            fallback: new CustomCode({
+              code: "($state.other +)",
+              fallback: undefined,
+            }),
+          });
+        };
+        const result = testMerge({
+          ancestorSite: ancestor,
+          a: side === "a" ? addExprs : rename,
+          b: side === "b" ? addExprs : rename,
+        });
+        expect(result.status).toBe("merged");
+        const param = result.mergedSite.components[0].states[0].param;
+        const defaultExpr = ensureKnownCustomCode(param.defaultExpr);
+        expect(defaultExpr.code).toBe("($state.other +)");
+        expect(ensureKnownObjectPath(defaultExpr.fallback).path).toEqual([
+          "$state",
+          "newState",
+        ]);
+        const previewExpr = ensureKnownCustomCode(param.previewExpr);
+        expect(previewExpr.code).toBe("($state.newState)");
+        expect(ensureKnownCustomCode(previewExpr.fallback).code).toBe(
+          "($state.other +)",
+        );
+      },
+    );
+
+    it.each(["a", "b"] as const)(
+      "preserves distinct references when branch %s adds a prop with the rename target",
+      (side) => {
+        const ancestor = singleComponentSite();
+        ancestor.components[0].params = [
+          ...ancestor.components[0].params,
+          mkParam({
+            name: "old prop",
+            type: typeFactory.text(),
+            paramType: "prop",
+          }),
+        ];
+        const rename = (site: Site, tplMgr: TplMgr) =>
+          renameParam(site, tplMgr, "old prop", "new prop");
+        const addExprs = (site: Site) => {
+          site.components[0].params = [
+            ...site.components[0].params,
+            mkParam({
+              name: "new prop",
+              type: typeFactory.text(),
+              paramType: "prop",
+            }),
+          ];
+          appendCode(site.components[0], "($props.oldProp + $props.newProp)");
+        };
+        const result = testMerge({
+          ancestorSite: ancestor,
+          a: side === "a" ? addExprs : rename,
+          b: side === "b" ? addExprs : rename,
+        });
+        expect(result.status).toBe("merged");
+        expect(textCodes(result.mergedSite.components[0])).toEqual([
+          side === "a"
+            ? "($props.newProp2 + $props.newProp)"
+            : "($props.newProp + $props.newProp2)",
+        ]);
+      },
+    );
+
+    it.each(["mutate", "replace", "delete"] as const)(
+      "keeps the renaming branch's %s of an ancestor expression",
+      (edit) => {
+        const ancestor = singleComponentSite();
+        ancestor.components[0].params = [
+          ...ancestor.components[0].params,
+          mkParam({
+            name: "old prop",
+            type: typeFactory.text(),
+            paramType: "prop",
+          }),
+        ];
+        appendCode(ancestor.components[0], "($props.oldProp)");
+        const result = testMerge({
+          ancestorSite: ancestor,
+          a: (site, tplMgr) => {
+            renameParam(site, tplMgr, "old prop", "new prop");
+            const component = site.components[0];
+            const tpl = ensureKnownTplTag(
+              ensureKnownTplTag(component.tplTree).children[0],
+            );
+            const text = ensureKnownExprText(tpl.vsettings[0].text);
+            if (edit === "mutate") {
+              ensureKnownCustomCode(text.expr).code = "($props.newProp + 1)";
+            } else if (edit === "replace") {
+              text.expr = new CustomCode({
+                code: "($props.newProp + 1)",
+                fallback: undefined,
+              });
+            } else {
+              $$$(tpl).remove({ deep: true });
+            }
+          },
+          b: (site, tplMgr) =>
+            tplMgr.renameComponent(site.components[0], "Renamed"),
+        });
+        expect(result.status).toBe("merged");
+        const merged = result.mergedSite.components[0];
+        expect(merged.name).toBe("Renamed");
+        expect(textCodes(merged)).toEqual(
+          edit === "delete" ? [] : ["($props.newProp + 1)"],
+        );
+      },
+    );
+
+    it("keeps divergent renames as a conflict", () => {
+      const ancestor = singleComponentSite();
+      addState(ancestor, ancestor.components[0], "old name");
+      const result = testMerge({
+        ancestorSite: ancestor,
+        a: (site, tplMgr) => renameParam(site, tplMgr, "old name", "left name"),
+        b: (site, tplMgr) =>
+          renameParam(site, tplMgr, "old name", "right name"),
+        directConflictsPicks: ["right", "right"],
+      });
+      expect(result.status).toBe("needs-resolution");
+      expect(
+        result.mergedSite.components[0].states[0].param.variable.name,
+      ).toBe("right name");
     });
   });
 

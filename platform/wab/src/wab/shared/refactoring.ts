@@ -16,6 +16,7 @@ import {
 } from "@/wab/shared/core/states";
 import * as Tpls from "@/wab/shared/core/tpls";
 import {
+  EvaluationError,
   extractDataTokenIdentifiersFromCode,
   findMemberChainsInCode,
   isPathDataToken,
@@ -402,13 +403,36 @@ export function renameParamAndFixExprs(
   component: Component,
   param: Param,
   newName: string,
+  opts?: {
+    skipUnparseableExpressions?: boolean;
+    shouldFixExpr?: (expr: Expr) => boolean;
+  },
 ) {
   const oldName = param.variable.name;
   const oldVarName = toVarName(oldName);
   const newVarName = toVarName(newName);
 
+  // A merge can bring in unfinished expressions from another branch. Skip parsing
+  // failures, only when explicitly requested by the merge pass.
+  const isUsed = (expr: Expr, check: () => boolean) => {
+    if (opts?.shouldFixExpr && !opts.shouldFixExpr(expr)) {
+      return false;
+    }
+    try {
+      return check();
+    } catch (error) {
+      if (
+        opts?.skipUnparseableExpressions &&
+        error instanceof EvaluationError
+      ) {
+        return false;
+      }
+      throw error;
+    }
+  };
+
   const paramRefs = Tpls.findExprsInComponent(component).filter(({ expr }) =>
-    isParamUsedInExpr(param, expr),
+    isUsed(expr, () => isParamUsedInExpr(param, expr)),
   );
   for (const { expr } of paramRefs) {
     renameObjectInExpr(expr, "$props", "$props", oldVarName, newVarName);
@@ -429,7 +453,7 @@ export function renameParamAndFixExprs(
       param.variable.name = oldName;
 
       const stateRefs = Tpls.findExprsInComponent(comp).filter(({ expr }) =>
-        isStateUsedInExpr(st, expr),
+        isUsed(expr, () => isStateUsedInExpr(st, expr)),
       );
       for (const { expr } of stateRefs) {
         renameObjectInExpr(
