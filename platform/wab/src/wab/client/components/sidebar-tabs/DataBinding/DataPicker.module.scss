@@ -1,0 +1,15 @@
+// Doubled selector to win over the generated header class.
+.dockedHeader.dockedHeader {
+  padding: 8px 12px;
+}
+
+// The search box renders in the header instead, leaving the generated row that follows it empty.
+.dockedHeader + div:empty {
+  display: none;
+}
+
+.dockedSearch {
+  flex-grow: 1;
+  max-width: 360px;
+  margin-right: 16px;
+}

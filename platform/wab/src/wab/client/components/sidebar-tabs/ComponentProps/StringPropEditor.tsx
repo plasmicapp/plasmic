@@ -1,3 +1,4 @@
+import type { BindingIdentity } from "@/wab/client/components/editor-sessions/binding-session";
 import { checkStrSizeLimit } from "@/wab/client/components/sidebar-tabs/ComponentProps/CodeEditor";
 import { TemplatedTextEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/TemplatedTextEditor";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
@@ -108,6 +109,7 @@ export const StringPropEditor = React.forwardRef<
 });
 
 export interface TemplatedStringPropEditorProps {
+  bindingTarget?: BindingIdentity;
   onChange: (value: TemplatedStringPropEditorValue) => void;
   value: TemplatedStringPropEditorValue | null | undefined;
   disabled?: boolean;
@@ -122,6 +124,7 @@ export interface TemplatedStringPropEditorProps {
   showExpressionAsPreviewValue?: boolean;
   component?: Component;
   control?: "default" | "large" | "multiLine";
+  title?: string;
 }
 
 /**
@@ -201,6 +204,7 @@ export const TemplatedStringPropEditor = React.forwardRef<
 
   return (
     <TemplatedTextEditor
+      bindingTarget={props.bindingTarget}
       value={draft ?? normalizedValue}
       disabled={props.disabled}
       onChange={(value) => {
@@ -212,6 +216,7 @@ export const TemplatedStringPropEditor = React.forwardRef<
       data={props.data}
       schema={props.schema}
       component={props.component}
+      title={props.title}
       placeholder={props.defaultValueHint ?? "unset"}
       multiLine={multiLineMode}
       onKeyDown={(e) => {

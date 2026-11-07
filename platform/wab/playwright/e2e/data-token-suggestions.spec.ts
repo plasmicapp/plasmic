@@ -204,8 +204,7 @@ test.describe("data token suggestions popover", () => {
       .locator(`[data-plasmic-role="labeled-item"]`)
       .last()
       .click();
-
-    const modal = studio.serverQueryBottomModal;
+    const modal = studio.serverQueryPanel;
     await modal.waitFor();
 
     const hostRow = modal.locator(`[data-test-id="prop-editor-row-host"]`);

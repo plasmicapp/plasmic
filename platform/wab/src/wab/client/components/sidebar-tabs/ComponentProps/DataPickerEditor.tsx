@@ -1,19 +1,26 @@
-import { isContextMenuOpen } from "@/wab/client/components/ContextMenu";
-import DataPicker, {
+import {
+  BindingIdentity,
+  isBindingTarget,
+} from "@/wab/client/components/editor-sessions/binding-session";
+import {
   DataPickerTypesSchema,
   InitialMode,
 } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import {
+  DataPickerTrigger,
+  DataPickerTriggerHandle,
+} from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerPanel";
 import { RightTabKey } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { zIndex } from "@/wab/client/z-index";
-import { toVarName } from "@/wab/shared/codegen/util";
-import { isNonNil, mkShortId, spawn, uniqueName } from "@/wab/shared/common";
+import { addEmptyQuery } from "@/wab/shared/TplMgr";
+import { isNonNil, spawn } from "@/wab/shared/common";
+import { summarizeTpl } from "@/wab/shared/core/tpls";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   pathToDisplayString,
   transformDataTokensToDisplay,
 } from "@/wab/shared/eval/expression-parser";
-import { ComponentDataQuery } from "@/wab/shared/model/classes";
-import { Popover, Tooltip } from "antd";
+import { Tooltip } from "antd";
 import { default as classNames } from "classnames";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
@@ -21,7 +28,7 @@ import React from "react";
 
 interface DataPickerEditorProps {
   value: (string | number)[] | string | null | undefined;
-  onChange: (value: (string | number)[] | string | null | undefined) => void;
+  onChange?: (value: (string | number)[] | string | null | undefined) => void;
   viewCtx?: ViewCtx;
   data?: Record<string, any>;
   schema?: DataPickerTypesSchema;
@@ -31,11 +38,15 @@ interface DataPickerEditorProps {
   hideStateSwitch?: boolean;
   autoFocus?: boolean;
   alwaysShowValuePathAsLabel?: boolean;
+  /** Names the field in the panel's tab, e.g. the prop's label. */
+  title?: string;
   "data-plasmic-prop"?: string;
   expectedValues?: string;
   initialMode?: InitialMode;
   onAddVariableBtnClick?: () => void;
   hidePreview?: boolean;
+  forDataRepCollection?: boolean;
+  target?: BindingIdentity;
   // A brief description of what the expression is supposed to be used for
   context?: string;
   isRunCodeInteraction?: boolean;
@@ -70,9 +81,19 @@ export const InternalDataPickerEditor = observer(
       isRunCodeInteraction,
       onRunClick,
     } = props;
+    const target = isBindingTarget(props.target) ? props.target : undefined;
+    const write = target?.write ?? onChange;
+    const unlink = target?.unlink ?? onUnlink;
+    const pickerRef = React.useRef<DataPickerTriggerHandle>(null);
+    React.useEffect(() => {
+      if (DEVFLAGS.dockview && visible && !isDisabled) {
+        pickerRef.current?.open();
+        setVisible(false);
+      }
+    }, [visible, isDisabled]);
     const firstRenderRef = React.useRef(true);
     React.useLayoutEffect(() => {
-      if (!firstRenderRef.current) {
+      if (!DEVFLAGS.dockview && !firstRenderRef.current) {
         setVisible(false);
         return;
       }
@@ -114,89 +135,94 @@ export const InternalDataPickerEditor = observer(
     //   evaluatedValue = codeExpr;
     // }
 
+    const focusedTpl = viewCtx?.focusedTpl();
+    const panelTitle =
+      props.title ||
+      (focusedTpl ? summarizeTpl(focusedTpl) : undefined) ||
+      "Dynamic value";
+
     return (
-      <Popover
-        zIndex={zIndex.dataPicker}
-        content={
-          <DataPicker
-            value={displayValue}
-            onChange={(val) => {
-              onChange(val);
-              setVisible(false);
-            }}
-            onRunClick={onRunClick}
-            onCancel={() => setVisible(false)}
-            data={data}
-            schema={schema}
-            hideStateSwitch={hideStateSwitch}
-            onUnlink={
-              onUnlink
-                ? () => {
-                    onUnlink();
-                    setVisible(false);
-                  }
-                : undefined
-            }
-            expectedValues={expectedValues}
-            initialMode={initialMode}
-            withAddQuery={
-              !!viewCtx && viewCtx.studioCtx.appCtx.appConfig.enableDataQueries
-            }
-            hidePreview={hidePreview}
-            onAddQuery={() => {
-              if (viewCtx) {
-                spawn(
-                  viewCtx.studioCtx.change(() => {
-                    const component = viewCtx.currentTplComponent().component;
-                    const newQuery = new ComponentDataQuery({
-                      uuid: mkShortId(),
-                      name: toVarName(
-                        uniqueName(
-                          component.dataQueries.map((q) => q.name),
-                          "componentData",
-                          {
-                            normalize: toVarName,
-                          },
-                        ),
-                      ),
-                      op: undefined,
-                    });
-                    component.dataQueries = [
-                      ...component.dataQueries,
-                      newQuery,
-                    ];
-                    viewCtx.studioCtx.switchRightTab(RightTabKey.component);
-                    viewCtx.studioCtx.newlyAddedQuery = newQuery;
-                    setVisible(false);
-                    return ok();
-                  }),
-                );
-              }
-            }}
-            onAddVariableBtnClick={onAddVariableBtnClick}
-            context={context}
-            isRunCodeInteraction={isRunCodeInteraction}
-          />
-        }
-        trigger="click"
+      <DataPickerTrigger
+        ref={pickerRef}
         visible={!isDisabled && visible}
-        onVisibleChange={(_visible) => {
-          // Don't close if a context menu is open (e.g. the data inspector's
-          // insert/copy menu), since it's portaled to body and Popover sees
-          // clicks on it as outside clicks.
-          if (!_visible && isContextMenuOpen()) {
-            return;
-          }
-          setVisible(_visible);
+        setVisible={setVisible}
+        title={panelTitle}
+        picker={{
+          value: target ? target.value() : displayValue,
+          viewCtx,
+          target: props.target,
+          forDataRepCollection: props.forDataRepCollection,
+          onChange: (val) => {
+            write?.(val);
+            if (!DEVFLAGS.dockview) {
+              setVisible(false);
+            }
+          },
+          onRunClick,
+          onCancel: () => setVisible(false),
+          data,
+          schema,
+          hideStateSwitch,
+          onUnlink: unlink
+            ? () => {
+                if (target && viewCtx) {
+                  viewCtx.studioCtx.changeSpawn(unlink);
+                } else {
+                  unlink();
+                }
+                if (!DEVFLAGS.dockview) {
+                  setVisible(false);
+                }
+              }
+            : undefined,
+          expectedValues,
+          initialMode,
+          withAddQuery:
+            !!viewCtx &&
+            (DEVFLAGS.dockview ||
+              viewCtx.studioCtx.appCtx.appConfig.enableDataQueries),
+          hidePreview,
+          onAddQuery: () => {
+            if (viewCtx) {
+              spawn(
+                viewCtx.studioCtx.change(() => {
+                  const component = viewCtx.currentTplComponent().component;
+                  if (DEVFLAGS.dockview) {
+                    viewCtx.studioCtx.newlyAddedQuery = viewCtx.studioCtx
+                      .tplMgr()
+                      .addComponentServerQuery(component);
+                  } else {
+                    viewCtx.studioCtx.newlyAddedQuery = addEmptyQuery(
+                      component,
+                      "componentData",
+                    );
+                  }
+                  viewCtx.studioCtx.switchRightTab(RightTabKey.component);
+                  setVisible(false);
+                  return ok();
+                }),
+              );
+            }
+          },
+          onAddVariableBtnClick,
+          context,
+          isRunCodeInteraction,
         }}
-        destroyTooltipOnHide={true}
-        overlayClassName="data-picker-popover-overlay"
       >
         <div
           ref={autoFocus ? autoFocusCallback : undefined}
           className="code-editor-input"
           data-plasmic-prop={props["data-plasmic-prop"]}
           tabIndex={0}
+          onClick={
+            DEVFLAGS.dockview
+              ? () => {
+                  if (!isDisabled) {
+                    pickerRef.current?.open();
+                  }
+                }
+              : undefined
+          }
         >
           <Tooltip title={isDisabled && disabledTooltip}>
             <span
@@ -209,7 +235,7 @@ export const InternalDataPickerEditor = observer(
             </span>
           </Tooltip>
         </div>
-      </Popover>
+      </DataPickerTrigger>
     );
   },
 );

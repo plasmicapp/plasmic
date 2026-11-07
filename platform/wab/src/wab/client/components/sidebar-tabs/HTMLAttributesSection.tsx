@@ -1,3 +1,4 @@
+import { modelBindingTarget } from "@/wab/client/components/editor-sessions/model-binding-target";
 import {
   inferPropTypeFromAttr,
   PropEditorRow,
@@ -643,6 +644,10 @@ export const HTMLAttributePropEditor = observer(
     return (
       <PropEditorRow
         key={attr}
+        bindingTarget={modelBindingTarget(viewCtx, tpl, curSharedVS.variants, {
+          kind: "attr",
+          attr,
+        })}
         attr={attr}
         propType={propType}
         expr={expr}

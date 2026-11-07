@@ -507,22 +507,19 @@ function ActionBuilder_(
                         interactionsCtx,
                         parameterName,
                       );
-                      spawn(
-                        sc.change(() => {
-                          interaction.args = Object.entries(newArgs).map(
-                            ([name, expr]) =>
-                              mkNameArg({
-                                name,
-                                expr,
-                              }),
-                          );
-                          ensureGenericFuncTypes(
-                            eventHandlerExpr,
-                            eventHandlerKey,
-                          );
-                          return ok();
-                        }),
-                      );
+                      sc.changeSpawn(() => {
+                        interaction.args = Object.entries(newArgs).map(
+                          ([name, expr]) =>
+                            mkNameArg({
+                              name,
+                              expr,
+                            }),
+                        );
+                        ensureGenericFuncTypes(
+                          eventHandlerExpr,
+                          eventHandlerKey,
+                        );
+                      });
                     }}
                     propType={parameterMeta}
                     layout="vertical"

@@ -30,6 +30,11 @@
   background: #fafafa;
 }
 
+.draftFormScroller::after {
+  content: "";
+  flex: 0 0 16px;
+}
+
 .blueIndicatorContainer {
   width: 12px;
   height: 12px;

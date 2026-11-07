@@ -111,7 +111,12 @@ function DataQueryCodeEditorLayout_(
           language="javascript"
           defaultValue={currentValue}
           data={completionData}
-          onChange={commitValue}
+          onChange={(val: string) => {
+            // Monaco reports the initial value as a change on mount.
+            if (val !== currentValue) {
+              commitValue(val);
+            }
+          }}
           enableMinimap={false}
           hideGlobalSuggestions={true}
           folding={false}

@@ -1,7 +1,7 @@
 import { ContextMenuContext } from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
 import { EnumPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/EnumPropEditor";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
-import { useDataSourceOpExprBottomModals } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
+import { useDataSourceOpExprPanels } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
 import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { JsonValue } from "@/wab/shared/core/lang";
@@ -41,7 +41,7 @@ export function DataSourceOpDataPicker({
 }) {
   const studioCtx = useStudioCtx();
   const ctx = useContext(ContextMenuContext);
-  const dataSourceModals = useDataSourceOpExprBottomModals();
+  const dataSourceModals = useDataSourceOpExprPanels();
   return (
     <EnumPropEditor
       value={isKnownObjectPath(value) ? value.path[1] : undefined}
@@ -67,15 +67,11 @@ export function DataSourceOpDataPicker({
               dataSourceModals.open(query.uuid, {
                 parent: query,
                 value: query.op ?? undefined,
-                onSave: async (newOp, opExprName) => {
-                  await studioCtx.change(() => {
-                    query.op = newOp;
-                    if (opExprName && component && opExprName !== query.name) {
-                      renameQueryAndFixExprs(component, query, opExprName);
-                    }
-                    return ok();
-                  });
-                  dataSourceModals.close(query.uuid);
+                onSave: (newOp, opExprName) => {
+                  query.op = newOp;
+                  if (opExprName && component && opExprName !== query.name) {
+                    renameQueryAndFixExprs(component, query, opExprName);
+                  }
                 },
                 onCancel: () => dataSourceModals.close(query.uuid),
                 env,

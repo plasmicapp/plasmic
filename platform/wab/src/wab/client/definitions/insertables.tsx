@@ -129,6 +129,8 @@ export type AddTplItem<T = any> = AddItemCommon & {
   projectId?: string;
   // Assumed to run inside sc.change()
   factory: (viewCtx: ViewCtx, extraInfo: T) => TplNode | undefined;
+  /** Runs after insertion, inside the same change. */
+  onInserted?: (viewCtx: ViewCtx, tpl: TplNode) => void;
   /**
    * Assumed to be run just outside sc.change().
    * This will get called twice when user is dragging an item:

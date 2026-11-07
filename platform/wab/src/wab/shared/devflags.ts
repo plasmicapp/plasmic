@@ -476,6 +476,9 @@ const DEFAULT_DEVFLAGS = {
 
   codePreview: false,
   demo: false,
+  // dockview studio layout: tabbed bottom panel, dockable right pane, data picker docked in the
+  // bottom panel
+  dockview: false,
   hideBlankStarter: false,
   skipInvariants: false,
   uncatchErrors: false,

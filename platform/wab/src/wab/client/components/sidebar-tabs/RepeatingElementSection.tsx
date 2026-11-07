@@ -1,5 +1,8 @@
+import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
+import { modelBindingTarget } from "@/wab/client/components/editor-sessions/model-binding-target";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
 import { StringPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
+import { acceptDataDrop } from "@/wab/client/components/sidebar-tabs/DataBinding/data-drop";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { IconLinkButton } from "@/wab/client/components/widgets";
@@ -9,13 +12,10 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { isBaseVariant } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { ensure, uniqueName, withoutNils } from "@/wab/shared/common";
-import {
-  code,
-  createExprForDataPickerValue,
-  extractValueSavedFromDataPicker,
-} from "@/wab/shared/core/exprs";
+import { extractValueSavedFromDataPicker } from "@/wab/shared/core/exprs";
 import { mkVar } from "@/wab/shared/core/lang";
 import { tryGetTplOwnerComponent } from "@/wab/shared/core/tpls";
+import { computeDropCollectionExpr } from "@/wab/shared/data-picker/data-drop-compat";
 import { ObjectPath, Rep, TplNode } from "@/wab/shared/model/classes";
 import { Menu } from "antd";
 import { observer } from "mobx-react";
@@ -43,6 +43,9 @@ export const RepeatingElementSection = observer(function (props: {
     "All TplNodes must have a base variant setting",
   );
   const dataRep = baseVs.dataRep;
+  const collectionEnv = viewCtx.getCanvasEnvForTpl(tpl, {
+    forDataRepCollection: true,
+  });
 
   const resetDataRep = () => {
     viewCtx.change(() => {
@@ -96,33 +99,53 @@ export const RepeatingElementSection = observer(function (props: {
             label="Collection"
             data-test-id="repeating-element-collection"
           >
-            <DataPickerEditor
-              viewCtx={viewCtx}
-              value={
-                extractValueSavedFromDataPicker(dataRep?.collection, {
-                  projectFlags: viewCtx.projectFlags(),
-                  component: ownerComponent ?? null,
-                  inStudio: true,
-                }) ?? ""
+            <ContextMenuIndicator
+              className="fill-width"
+              fullWidth
+              dataDropTarget={
+                collectionEnv
+                  ? {
+                      accepts: (payload) =>
+                        acceptDataDrop(
+                          payload,
+                          collectionEnv,
+                          viewCtx,
+                          ["array"],
+                          "Repeat collection only accepts arrays",
+                        ),
+                      onDropData: (payload) => {
+                        dataRep.collection = computeDropCollectionExpr(
+                          dataRep.collection,
+                          payload.path,
+                        );
+                      },
+                    }
+                  : undefined
               }
-              onChange={(val) => {
-                if (!val) {
-                  return;
+            >
+              <DataPickerEditor
+                forDataRepCollection
+                viewCtx={viewCtx}
+                title="Collection"
+                target={modelBindingTarget(viewCtx, tpl, baseVs.variants, {
+                  kind: "collection",
+                })}
+                value={
+                  extractValueSavedFromDataPicker(dataRep?.collection, {
+                    projectFlags: viewCtx.projectFlags(),
+                    component: ownerComponent ?? null,
+                    inStudio: true,
+                  }) ?? ""
                 }
-                const newExpr = createExprForDataPickerValue(val, code(`([])`));
-                viewCtx.change(() => {
-                  dataRep.collection = newExpr;
-                });
-              }}
-              visible={isDataPickerVisible}
-              setVisible={setIsDataPickerVisible}
-              data={viewCtx.getCanvasEnvForTpl(tpl, {
-                forDataRepCollection: true,
-              })}
-              schema={viewCtx.customFunctionsSchema()}
-              key={tpl.uid}
-              context="Array of elements to then be iterated"
-            />
+
+                visible={isDataPickerVisible}
+                setVisible={setIsDataPickerVisible}
+                data={collectionEnv}
+                schema={viewCtx.customFunctionsSchema()}
+                key={tpl.uid}
+                context="Array of elements to then be iterated"
+              />
+            </ContextMenuIndicator>
           </LabeledItemRow>
           <LabeledItemRow
             label="Element name"

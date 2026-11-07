@@ -1,0 +1,12 @@
+.dataDropTarget {
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px #b4dfc4 !important;
+}
+
+.dataDropTargetHovered {
+  box-shadow: 0 0 0 2px #20a673 !important;
+}
+
+.dataDropTargetRejected {
+  box-shadow: 0 0 0 2px #d14343 !important;
+}

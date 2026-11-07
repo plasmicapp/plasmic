@@ -17,10 +17,14 @@ export type ModalScopeProps = Omit<
  *
  * This component adds a wrapping <div> that trap focus and key events.
  */
-export function ModalScope({ containFocus = true, ...props }: ModalScopeProps) {
+export function ModalScope({
+  containFocus = true,
+  autoFocus = true,
+  ...props
+}: ModalScopeProps) {
   return (
-    <FocusScope contain={containFocus} autoFocus restoreFocus>
-      <ModalScopeInternal {...props} />
+    <FocusScope contain={containFocus} autoFocus={autoFocus} restoreFocus>
+      <ModalScopeInternal {...props} autoFocus={autoFocus} />
     </FocusScope>
   );
 }
@@ -28,6 +32,7 @@ export function ModalScope({ containFocus = true, ...props }: ModalScopeProps) {
 function ModalScopeInternal({
   children,
   allowKeyCombos = [],
+  autoFocus = true,
   ...props
 }: ModalScopeProps) {
   const containerElRef = useRef<HTMLDivElement | null>(null);
@@ -35,6 +40,9 @@ function ModalScopeInternal({
   // so manually focus the first element on layout.
   const focusManager = useFocusManager();
   useLayoutEffect(() => {
+    if (!autoFocus) {
+      return;
+    }
     setTimeout(() => {
       if (
         containerElRef.current &&
@@ -43,7 +51,7 @@ function ModalScopeInternal({
         focusManager.focusFirst();
       }
     });
-  }, []);
+  }, [autoFocus]);
 
   const keyboardEventHandlers = useMemo<React.ComponentProps<"div">>(() => {
     const handler = stopKeyboardEventPropagation(allowKeyCombos.flat());

@@ -246,6 +246,7 @@
     "css.escape": "^1.5.1",
     "dayjs": "1.11.23",
     "debug": "2.6.9",
+    "dockview-react": "^7.0.2",
     "dom-align": "^1.12.4",
     "dotenv": "8.2.0",
     "downscale": "^1.0.6",

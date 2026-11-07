@@ -1,18 +1,20 @@
 import { isTplCodeComponentStyleable } from "@/wab/client/code-components/code-components";
-import { useAppRoles } from "@/wab/client/components/app-auth/app-auth-contexts";
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
+import { useAppRoles } from "@/wab/client/components/app-auth/app-auth-contexts";
+import { modelBindingTarget } from "@/wab/client/components/editor-sessions/model-binding-target";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { BoolPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/BoolPropEditor";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
 import { FallbackEditor } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
+import { acceptDataDrop } from "@/wab/client/components/sidebar-tabs/DataBinding/data-drop";
 import S from "@/wab/client/components/sidebar-tabs/VisibilitySection.module.scss";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   LabeledItem,
   LabeledItemRow,
   LabeledStyleDimItem,
   shouldBeDisabled,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
-import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   TplExpsProvider,
   useStyleComponent,
@@ -27,36 +29,34 @@ import {
 } from "@/wab/client/utils/style-utils";
 import { getVisibilityChoicesForTpl } from "@/wab/client/utils/tpl-client-utils";
 import { isTokenRef } from "@/wab/commons/StyleToken";
-import { ensureInstance } from "@/wab/shared/common";
-import {
-  clone,
-  codeLit,
-  createExprForDataPickerValue,
-  extractValueSavedFromDataPicker,
-  isFallbackSet,
-  tryExtractBoolean,
-  tryExtractJson,
-} from "@/wab/shared/core/exprs";
-import { isTplCodeComponent } from "@/wab/shared/core/tpls";
-import { PERCENTAGE_UNITS } from "@/wab/shared/css/types";
-import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
 import { RESET_CAP } from "@/wab/shared/Labels";
-import {
-  CustomCode,
-  ensureKnownCustomCode,
-  ObjectPath,
-  TplNode,
-} from "@/wab/shared/model/classes";
 import {
   isPrivateStyleVariant,
   tryGetVariantSetting,
 } from "@/wab/shared/Variants";
+import { ensureInstance } from "@/wab/shared/common";
 import {
+  clone,
+  codeLit,
+  extractValueSavedFromDataPicker,
+  isFallbackSet,
+  tryExtractBoolean,
+} from "@/wab/shared/core/exprs";
+import { isTplCodeComponent } from "@/wab/shared/core/tpls";
+import { PERCENTAGE_UNITS } from "@/wab/shared/css/types";
+import {
+  SCALAR_DATA_TYPES,
+  computeDropReplacementExpr,
+} from "@/wab/shared/data-picker/data-drop-compat";
+import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
+import { CustomCode, ObjectPath, TplNode } from "@/wab/shared/model/classes";
+import {
+  TplVisibility,
   clearTplVisibility,
   getVisibilityDataProp,
   getVisibilityLabel,
   hasVisibilitySetting,
-  TplVisibility,
+  setTplVisibility,
 } from "@/wab/shared/visibility-utils";
 import { Menu } from "antd";
 import cn from "classnames";
@@ -199,7 +199,7 @@ function VisibilitySection_(props: {
             <Menu.Item
               key={role.id}
               onClick={() => {
-                _setCustomCond(
+                void _setCustomCond(
                   new CustomCode({
                     code: `((currentUser?.roleIds ?? []).includes('${role.id}'))`,
                     fallback: new CustomCode({
@@ -225,9 +225,11 @@ function VisibilitySection_(props: {
     );
   };
   const _setCustomCond = (cond: CustomCode | ObjectPath) => {
-    viewCtx.change(() => {
-      viewCtx.getViewOps().setTplVisibility(tpl, TplVisibility.CustomExpr);
-      viewCtx.getViewOps().setDataCond(tpl, cond);
+    return viewCtx.studioCtx.changeUnsafe(() => {
+      setTplVisibility(tpl, targetVisibilityCombo, TplVisibility.CustomExpr);
+      viewCtx
+        .variantTplMgr()
+        .ensureVariantSetting(tpl, targetVisibilityCombo).dataCond = cond;
     });
   };
 
@@ -239,6 +241,32 @@ function VisibilitySection_(props: {
   const customCode =
     currentVisibility === TplVisibility.CustomExpr
       ? (effectiveVs.dataCond as CustomCode | ObjectPath)
+      : undefined;
+  const visibilityEnv = viewCtx.getCanvasEnvForTpl(tpl, {
+    forDataRepCollection: true,
+  });
+  const visibilityDataDropTarget =
+    !isDisabled && !hasPrivateStyleVariant && visibilityEnv
+      ? {
+          accepts: (payload) =>
+            acceptDataDrop(
+              payload,
+              visibilityEnv,
+              viewCtx,
+              SCALAR_DATA_TYPES,
+              "Visibility only accepts scalar values",
+            ),
+          onDropData: (payload) => {
+            const cond = computeDropReplacementExpr(
+              effectiveVs.dataCond ?? codeLit(true),
+              payload.path,
+            )!;
+            viewCtx
+              .getViewOps()
+              .setTplVisibility(tpl, TplVisibility.CustomExpr);
+            viewCtx.getViewOps().setDataCond(tpl, cond);
+          },
+        }
       : undefined;
   return (
     <SidebarSection
@@ -289,6 +317,7 @@ function VisibilitySection_(props: {
               style={{
                 width: "100%",
               }}
+              dataDropTarget={visibilityDataDropTarget}
             >
               <StyleToggleButtonGroup
                 value={currentVisibility}
@@ -327,33 +356,18 @@ function VisibilitySection_(props: {
             label="Condition"
           >
             <DataPickerEditor
+              forDataRepCollection
               viewCtx={viewCtx}
+              title="Condition"
+              target={modelBindingTarget(viewCtx, tpl, targetVisibilityCombo, {
+                kind: "visibility",
+              })}
               value={extractValueSavedFromDataPicker(customCode, {
                 projectFlags: viewCtx.projectFlags(),
                 component: viewCtx.currentComponent(),
                 inStudio: true,
               })}
-              onChange={(val) => {
-                if (!val) {
-                  return;
-                }
-                const fallbackExpr = customCode.fallback
-                  ? clone(customCode.fallback)
-                  : undefined;
-                const newExpr = createExprForDataPickerValue(
-                  val,
-                  fallbackExpr,
-                ) as CustomCode | ObjectPath;
-                _setCustomCond(newExpr);
-              }}
-              onUnlink={() => {
-                const boolProp = ensureKnownCustomCode(customCode.fallback);
-                if (tryExtractJson(boolProp)) {
-                  _setTplVisibility(TplVisibility.Visible);
-                } else {
-                  _setTplVisibility(TplVisibility.NotRendered);
-                }
-              }}
+
               data={viewCtx.getCanvasEnvForTpl(tpl, {
                 forDataRepCollection: true,
               })}
@@ -374,7 +388,7 @@ function VisibilitySection_(props: {
                 CustomCode,
               );
               newExpr.fallback = undefined;
-              _setCustomCond(newExpr);
+              void _setCustomCond(newExpr);
             }}
             definedIndicator={visibilityDefinedIndicator}
           >
@@ -388,7 +402,7 @@ function VisibilitySection_(props: {
                     CustomCode,
                   );
                   newExpr.fallback = codeLit(val);
-                  _setCustomCond(newExpr);
+                  return _setCustomCond(newExpr);
                 }}
                 value={
                   customCode.fallback

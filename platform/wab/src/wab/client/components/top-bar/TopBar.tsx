@@ -434,13 +434,10 @@ function _TopBar({ preview }: TopBarProps) {
 
           ...{ "data-test-id": "exit-live-mode-btn" },
         }}
-        codeButton={
-          studioCtx.contentEditorMode || isWhiteLabelUser
-            ? {
-                render: () => null,
-              }
-            : {}
-        }
+        codeButton={{
+          wrap: (node) =>
+            studioCtx.contentEditorMode || isWhiteLabelUser ? null : node,
+        }}
         zoomButton={{}}
         viewButton={{}}
         shareButton={

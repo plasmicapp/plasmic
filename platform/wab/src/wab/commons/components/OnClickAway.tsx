@@ -76,6 +76,7 @@ export const INTERACT_OUTSIDE_EXCEPTION_SELECTORS = [
   ".panel-popup",
   ".ant-popover",
   ".bottom-modals",
+  ".bottom-panel",
 ];
 export function useInteractOutsideWithCommonExceptions(
   opts: Parameters<typeof useInteractOutside>[0] & {

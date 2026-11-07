@@ -504,16 +504,16 @@ test.describe("data token usages", () => {
         .locator(`[data-plasmic-role="labeled-item"]`)
         .last()
         .click();
-      const serverQueryModal = models.studio.serverQueryBottomModal;
-      await serverQueryModal.waitFor();
-      await expect(serverQueryModal).toContainText(
+      const serverQueryPanel = models.studio.serverQueryPanel;
+      await serverQueryPanel.waitFor();
+      await expect(serverQueryPanel).toContainText(
         "Press Execute to preview results",
       );
 
-      const strapiHostRow = serverQueryModal.locator(
+      const strapiHostRow = serverQueryPanel.locator(
         `[data-test-id="prop-editor-row-host"]`,
       );
-      const strapiCollectionRow = serverQueryModal.locator(
+      const strapiCollectionRow = serverQueryPanel.locator(
         `[data-test-id="prop-editor-row-collection"]`,
       );
       const strapiHostInput = strapiHostRow.locator(
@@ -573,12 +573,12 @@ test.describe("data token usages", () => {
       await strapiCollectionInput.waitFor({ state: "visible" });
       await expect(strapiCollectionInput).toHaveText(`$dataTokens.collection`);
 
-      await serverQueryModal.locator("button").getByText("Execute").click();
+      await serverQueryPanel.locator("button").getByText("Execute").click();
       await expect(
-        serverQueryModal.locator(".code-preview-inner"),
+        serverQueryPanel.locator(".code-preview-inner"),
       ).toContainText("data: Array(7)");
-      await serverQueryModal.locator("button").getByText("Save").click();
-      await serverQueryModal.waitFor({ state: "hidden" });
+      await serverQueryPanel.locator("button").getByText("Save").click();
+      await serverQueryPanel.waitFor({ state: "hidden" });
       await models.studio.leftPanel.assertDataTokenExists(newExpectedName);
       await models.studio.leftPanel.assertDataTokenExists("Collection");
 
@@ -588,8 +588,8 @@ test.describe("data token usages", () => {
           .locator(`[data-plasmic-role="labeled-item"]`)
           .last()
           .click();
-        await serverQueryModal.waitFor();
-        const hostInput = serverQueryModal
+        await serverQueryPanel.waitFor();
+        const hostInput = serverQueryPanel
           .locator(`[data-test-id="prop-editor-row-host"]`)
           .locator(`[data-plasmic-prop="host"]`);
         await models.studio.pickDataTokenFromSubmenu(

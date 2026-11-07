@@ -39,7 +39,10 @@ export function MultiSelectEnumPropEditor(props: {
         (value ?? []).map((val) => options.find((op) => op.value === val)),
       )}
       itemKey={(item) => (item ? JSON.stringify(item.value) : "")}
-      onSelect={(item) => onChange([...(value ?? []), item.value])}
+      onSelect={(item) => {
+        // XMultiSelect uses the return value to close its menu; onChange may return a Promise.
+        onChange([...(value ?? []), item.value]);
+      }}
       onUnselect={(item) =>
         onChange((value ?? []).filter((v) => v !== item.value))
       }

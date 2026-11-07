@@ -1,3 +1,4 @@
+import { MultiSelectEnumPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/MultiSelectEnumPropEditor";
 import { XMultiSelect } from "@/wab/client/components/XMultiSelect";
 import { fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
@@ -23,4 +24,30 @@ describe("XMultiSelect", () => {
       (await screen.findByText("Option")).closest(".xselect"),
     ).toBeTruthy();
   });
+});
+
+it("keeps a multi-choice menu open when its change handler saves asynchronously", async () => {
+  const save = vi.fn();
+  function Harness() {
+    const [value, setValue] = React.useState<string[]>([]);
+    return (
+      <MultiSelectEnumPropEditor
+        value={value}
+        options={[
+          { label: "First", value: "first" },
+          { label: "Second", value: "second" },
+        ]}
+        onChange={async (next) => {
+          setValue(next);
+          save(next);
+        }}
+      />
+    );
+  }
+  render(<Harness />);
+  fireEvent.focus(screen.getByRole("textbox"));
+  fireEvent.click(await screen.findByRole("option", { name: "First" }));
+  expect(await screen.findByRole("option", { name: "Second" })).toBeTruthy();
+  fireEvent.click(screen.getByRole("option", { name: "Second" }));
+  expect(save).toHaveBeenLastCalledWith(["first", "second"]);
 });

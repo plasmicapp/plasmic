@@ -2010,6 +2010,16 @@ export class TplMgr {
     });
   }
 
+  addComponentServerQuery(component: Component) {
+    const query = new ComponentServerQuery({
+      uuid: mkShortId(),
+      name: this.getUniqueServerQueryName(component, "Query"),
+      op: undefined,
+    });
+    component.serverQueries = [...component.serverQueries, query];
+    return query;
+  }
+
   duplicateComponentServerQuery(
     component: Component,
     query: ComponentServerQuery,

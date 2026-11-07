@@ -48,6 +48,7 @@ export function TemplatedTextWidget(props: TemplatedTextWidgetProps) {
 export function TemplatedTextEditorWithMenuIndicator(
   props: TemplatedTextEditorProps,
 ) {
+  const emptyValue = React.useMemo(() => new TemplatedString({ text: [] }), []);
   return (
     <ContextMenuIndicator
       showDynamicValueButton={!props.readOnly && !props.disabled}
@@ -55,7 +56,7 @@ export function TemplatedTextEditorWithMenuIndicator(
       className="qb-custom-widget"
       fullWidth
     >
-      <TemplatedTextEditor {...props} />
+      <TemplatedTextEditor {...props} value={props.value ?? emptyValue} />
       {/*{evaluated && <ValuePreview val={evaluated.val} err={evaluated.err} />}*/}
     </ContextMenuIndicator>
   );

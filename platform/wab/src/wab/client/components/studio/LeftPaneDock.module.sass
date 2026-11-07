@@ -1,0 +1,25 @@
+.DockContainer
+  flex: 1
+  min-height: 0
+  position: relative
+
+.Dock
+  width: 100%
+  height: 100%
+
+  // The LeftTabStrip acts as the switcher for this dock (VSCode activity-bar/side-bar model), so
+  // hide dockview's own tab bar.
+  :global(.dv-tabs-and-actions-container)
+    display: none
+
+.TabContent
+  height: 100%
+  display: flex
+  flex-direction: column
+  overflow: hidden
+
+  // Some sidebar roots size themselves to their content. Make the root fill the height instead, so
+  // its inner scroll container is constrained when a fully width dockview shortens the left pane.
+  > *
+    flex: 1
+    min-height: 0

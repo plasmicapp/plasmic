@@ -3,11 +3,11 @@ import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import { TextAndShortcut } from "@/wab/client/components/menu-builder";
 import { ComponentActionsSection } from "@/wab/client/components/sidebar-tabs/ComponentActionsSection";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
-import {
-  DataPickerRunCodeActionContext,
+import type {
   DataPickerTypesSchema,
   InitialMode,
 } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import { DataPickerRunCodeActionContext } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerRunCodeActionContext";
 import {
   PropEditorRowWrapper,
   isPropShown,
@@ -492,6 +492,7 @@ export function VariableEditor(props: {
       )}
       <DataPickerEditor
         viewCtx={viewCtx}
+        title={attr}
         data={filteredData}
         initialMode={"dataPicking"}
         hideStateSwitch={true}
@@ -507,7 +508,7 @@ export function VariableEditor(props: {
             return;
           }
           const newExpr = createExprForDataPickerValue(val);
-          onChange(newExpr);
+          return onChange(newExpr);
         }}
         visible={isDataPickerVisible}
         setVisible={(val) => setIsDataPickerVisible(val)}
@@ -685,6 +686,7 @@ export function ExprEditor(props: {
   hidePreview?: boolean;
   component?: Component;
   isRunCodeInteraction?: boolean;
+  title?: string;
 }) {
   const {
     value,
@@ -708,6 +710,7 @@ export function ExprEditor(props: {
     <DataPickerEditor
       data={data}
       schema={schema}
+      title={props.title}
       initialMode={initialMode}
       hidePreview={hidePreview}
       value={extractValueSavedFromDataPicker(value, {
@@ -725,7 +728,7 @@ export function ExprEditor(props: {
           isBodyFunction,
           functionArgNames,
         );
-        onChange(newExpr);
+        return onChange(newExpr);
       }}
       visible={isDataPickerVisible}
       setVisible={(val) => setIsDataPickerVisible(val)}

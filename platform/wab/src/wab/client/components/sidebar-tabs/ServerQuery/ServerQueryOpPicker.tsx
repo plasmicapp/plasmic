@@ -1,4 +1,6 @@
-import { BottomModalButtons } from "@/wab/client/components/BottomModal";
+import { BottomPanelButtons } from "@/wab/client/components/BottomPanel";
+import { EditorSession } from "@/wab/client/components/editor-sessions/editor-session";
+import type { ModelTarget } from "@/wab/client/components/editor-sessions/model-target";
 import { StringPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { PropValueEditorContextData } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
@@ -39,6 +41,7 @@ import { ServerQueryOp } from "@/wab/shared/codegen/react-p/server-queries/utils
 import { makeShortProjectId, toVarName } from "@/wab/shared/codegen/util";
 import {
   cx,
+  ensure,
   mkShortId,
   spawn,
   switchType,
@@ -148,7 +151,7 @@ export function mkCustomFunctionArgs(
   return args;
 }
 
-interface QueryDraft {
+export interface QueryDraft {
   queryName?: string;
   fnExpr?: CustomFunctionExpr;
   codeExpr?: CustomCode;
@@ -201,7 +204,9 @@ function getAllCustomFunctions(site: Site) {
 export const ServerQueryOpDraftForm = observer(
   function ServerQueryOpDraftForm(props: {
     value: QueryDraft;
-    onChange: (value: QueryDraft) => void;
+    onChange: (
+      value: QueryDraft | ((previous: QueryDraft) => QueryDraft),
+    ) => void;
     readOnly?: boolean;
     env: Record<string, any> | undefined;
     schema?: DataPickerTypesSchema;
@@ -412,17 +417,19 @@ export const ServerQueryOpDraftForm = observer(
     // Rebuild fnExpr with `mkArgs` applied to the current args and commit it.
     const commitFnExprArgs = React.useCallback(
       (mkArgs: (args: ReadonlyArray<FunctionArg>) => FunctionArg[]) => {
-        if (value.fnExpr) {
-          onChange({
-            queryName: value.queryName,
-            fnExpr: new CustomFunctionExpr({
-              ...instFieldValues(value.fnExpr),
-              args: mkArgs(value.fnExpr.args),
-            }),
-          });
-        }
+        onChange((previous) =>
+          previous.fnExpr
+            ? {
+                ...previous,
+                fnExpr: new CustomFunctionExpr({
+                  ...instFieldValues(previous.fnExpr),
+                  args: mkArgs(previous.fnExpr.args),
+                }),
+              }
+            : previous,
+        );
       },
-      [onChange, value],
+      [onChange],
     );
 
     const handlePropEditorRowChange = React.useCallback(
@@ -778,10 +785,47 @@ function _ServerQueryOpPreview(props: {
 
 export const ServerQueryOpPreview = React.memo(_ServerQueryOpPreview);
 
+export function createServerQuerySession(
+  studioCtx: Pick<StudioCtx, "change">,
+  value: ServerQueryOp | ComponentServerQuery | undefined,
+  onSave: (value: ServerQueryOp, name?: string) => void,
+  target?: ModelTarget,
+) {
+  const parent = isKnownComponentServerQuery(value) ? value : undefined;
+  return new EditorSession<QueryDraft>({
+    studioCtx,
+    initial: getDraftFromOp(
+      (isKnownComponentServerQuery(value) ? value.op : value) ?? undefined,
+      parent?.name,
+    ),
+    target,
+    prepare: (draft) => {
+      if (!isValidQueryDraft(draft)) {
+        return {
+          kind: "blocked",
+          message: "Enter a valid query expression before saving.",
+        };
+      }
+      return {
+        apply: () => {
+          onSave(
+            ensure(
+              draft.codeExpr ?? draft.fnExpr,
+              "Valid query requires an expression",
+            ),
+            draft.queryName,
+          );
+        },
+      };
+    },
+  });
+}
+
 export const ServerQueryOpExprFormAndPreview = observer(
   function ServerQueryOpExprFormAndPreview(props: {
     value: ServerQueryOp | ComponentServerQuery | undefined;
-    onSave: (value: ServerQueryOp, opExprName?: string) => void;
+    session: EditorSession<QueryDraft>;
+    saveAndClose: () => Promise<boolean>;
     onCancel: () => void;
     readOnly?: boolean;
     env: Record<string, any> | undefined;
@@ -793,7 +837,6 @@ export const ServerQueryOpExprFormAndPreview = observer(
   }) {
     const {
       value,
-      onSave,
       onCancel,
       readOnly,
       env,
@@ -806,10 +849,9 @@ export const ServerQueryOpExprFormAndPreview = observer(
     const mode: ServerQueryMode = interaction ? "mutation" : "query";
     const studioCtx = useStudioCtx();
     const parentQuery = isKnownComponentServerQuery(value) ? value : undefined;
-    const [draft, setDraft] = React.useState<QueryDraft>(() => {
-      const op = isKnownComponentServerQuery(value) ? value.op : value;
-      return getDraftFromOp(op ?? undefined, parentQuery?.name);
-    });
+    const { session } = props;
+    const draft = session.draft;
+    const setDraft = session.setDraft;
 
     // Watch for data token renames and update draft expressions accordingly
     React.useEffect(() => {
@@ -881,14 +923,7 @@ export const ServerQueryOpExprFormAndPreview = observer(
     const [executeArgs, setExecuteArgs] = React.useState<ServerQueryOpArgs>();
     const { queryState, invalidArgs } = useServerQueryOp(executeArgs);
     const validDraft = isValidQueryDraft(draft) && draft;
-    const saveOp = validDraft
-      ? async () => {
-          const op = validDraft.codeExpr ?? validDraft.fnExpr;
-          if (op) {
-            onSave(op, validDraft.queryName);
-          }
-        }
-      : undefined;
+    const saveOp = props.saveAndClose;
 
     const executeOp =
       validDraft && env
@@ -948,7 +983,7 @@ export const ServerQueryOpExprFormAndPreview = observer(
                 invalidArgs={invalidArgs}
               />
             </div>
-            <BottomModalButtons>
+            <BottomPanelButtons>
               <Button
                 id="data-source-modal-save-btn"
                 type="primary"
@@ -966,7 +1001,7 @@ export const ServerQueryOpExprFormAndPreview = observer(
                 Execute
               </Button>
               <Button onClick={onCancel}>Cancel</Button>
-            </BottomModalButtons>
+            </BottomPanelButtons>
           </div>
           <ServerQueryOpPreview
             queryState={queryState}

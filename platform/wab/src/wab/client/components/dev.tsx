@@ -10,6 +10,7 @@ interface DevContainerProps {
   className?: string;
   style?: React.CSSProperties;
   children?: React.ReactNode;
+  containerRef?: React.Ref<HTMLDivElement>;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
 }
@@ -17,6 +18,7 @@ export class DevContainer extends React.Component<DevContainerProps, {}> {
   render() {
     return (
       <div
+        ref={this.props.containerRef}
         onContextMenu={(e) => {
           // Disable context menu within Studio for most elements except
           // keyboard interactive elements, where it's nice to have options

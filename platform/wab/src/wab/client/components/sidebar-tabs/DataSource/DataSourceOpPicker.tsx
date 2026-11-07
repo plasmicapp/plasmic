@@ -1,4 +1,8 @@
+import { EditorSession } from "@/wab/client/components/editor-sessions/editor-session";
+import { modelSnapshot } from "@/wab/client/components/editor-sessions/model-target";
+import { omitDataQueryFromEnv } from "@/wab/client/components/editor-sessions/query-env";
 import { Modal } from "@/wab/client/components/widgets/Modal";
+import { clone } from "@/wab/shared/core/exprs";
 import "@graphiql/plugin-explorer/dist/style.css";
 import type { CrudSorting } from "@pankod/refine-core";
 import {
@@ -14,7 +18,7 @@ import {
 import { Input, Menu, notification, Tooltip } from "antd";
 import { GraphiQLProvider } from "graphiql";
 import "graphiql/graphiql.css";
-import { isArray, isNil, mapValues, omit } from "lodash";
+import { isArray, isNil, mapValues, noop, omit } from "lodash";
 import { observer } from "mobx-react";
 import React, {
   createContext,
@@ -28,11 +32,13 @@ import React, {
 import { AppCtx } from "@/wab/client/app-ctx";
 import { useAppRoles } from "@/wab/client/components/app-auth/app-auth-contexts";
 import {
-  BottomModalButtons,
-  useBottomModalActions,
-} from "@/wab/client/components/BottomModal";
+  BottomPanelButtons,
+  useBottomPanelActions,
+} from "@/wab/client/components/BottomPanel";
+import { currentSelection } from "@/wab/client/components/BottomPanelState";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
+import type { BindingPreviewContext } from "@/wab/client/components/editor-sessions/binding-session";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { createPortalTunnel } from "@/wab/client/components/portal-tunnel";
 import {
@@ -90,6 +96,7 @@ import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import SearchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
 import TrashIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Trash";
 import TreeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Tree";
+import EditSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__EditSvg";
 import RefreshsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__RefreshSvg";
 import {
   BLOCKED_RUN_INTERACTION_MESSAGE,
@@ -196,7 +203,6 @@ import { Fetcher } from "@graphiql/toolkit";
 import { PlasmicDataSourceContextProvider } from "@plasmicapp/react-web";
 import cx from "classnames";
 import constate from "constate";
-import { useMountedState } from "react-use";
 import useSWR from "swr";
 
 interface DataSourceOpPickerInputs {
@@ -237,20 +243,6 @@ const DataSourceDraftContext = createContext<DataSourceDraftContext>({});
 
 const LazyCodePreview = React.lazy(
   () => import("@/wab/client/components/coding/CodePreview"),
-);
-
-const INVALID_CURRENT_USER_OPERATION_MESSAGE = () => (
-  <span>
-    This {DATA_SOURCE_OPERATION_LOWER} can't be saved because of unsafe usage of
-    the current user. Refer to{" "}
-    <a
-      target="_blank"
-      href="https://docs.plasmic.app/learn/auth/#using-the-logged-in-user-in-dynamic-values"
-    >
-      docs
-    </a>{" "}
-    for more information.
-  </span>
 );
 
 /**
@@ -309,7 +301,7 @@ export const DataSourceOpPicker = observer((props: DataSourceOpPickerProps) => {
     component,
     ...rest
   } = props;
-  const { open, close } = useDataSourceOpExprBottomModal(queryKey);
+  const { open, close } = useDataSourceOpExprPanel(queryKey);
   const studioCtx = useStudioCtx();
   const exprCtx: ExprCtx = {
     projectFlags: studioCtx.projectFlags(),
@@ -347,11 +339,8 @@ export const DataSourceOpPicker = observer((props: DataSourceOpPickerProps) => {
           onClick={() => {
             open({
               value,
-              onSave: (newExpr) => {
-                onChange(newExpr);
-                close();
-                onClose?.();
-              },
+              selection: currentSelection(studioCtx.focusedViewCtx()),
+              onSave: onChange,
               onCancel: () => {
                 close();
                 onClose?.();
@@ -376,43 +365,55 @@ export const DataSourceOpPicker = observer((props: DataSourceOpPickerProps) => {
   );
 });
 
-/** For managing multiple query modals or an unknown/dynamic query. */
-export function useDataSourceOpExprBottomModals() {
+/** For managing multiple query panels or an unknown/dynamic query. */
+export function useDataSourceOpExprPanels() {
   const ctx = useDataSourceOpPickerContext();
-  const modalActions = useBottomModalActions();
+  const studioCtx = useStudioCtx();
+  const modalActions = useBottomPanelActions();
   return {
     open: (
       queryKey: string,
       {
         title,
+        selection,
         ...props
       }: {
-        title?: string;
-      } & DataSourceOpExprBottomModalContentProps,
+        title?: string | (() => string);
+        selection?: BindingPreviewContext;
+      } & DataSourceOpExprPanelContentProps,
     ) => {
-      modalActions.open(queryKey, {
+      const session = createDataSourceSession(studioCtx, props);
+      void modalActions.open(queryKey, {
+        session,
         title:
           title ||
+          (isKnownComponentDataQuery(props.parent)
+            ? props.parent.name
+            : undefined) ||
           (ctx.isRowSelector
             ? `Switch to a different record`
             : `Configure ${DATA_SOURCE_OPERATION_LOWER}`),
-        children: <DataSourceOpExprBottomModalContent {...props} />,
+        viewCtx: props.viewCtx,
+        selection,
+        trailingIcon: <Icon icon={EditSvgIcon} />,
+        content: { kind: "dataQuery", props, session },
       });
     },
     close: (queryKey: string) => {
-      modalActions.close(queryKey);
+      modalActions.discard(queryKey);
     },
   };
 }
 
-/** For managing a single query modal with a known query key. */
-export function useDataSourceOpExprBottomModal(queryKey: string) {
-  const dataSourceModals = useDataSourceOpExprBottomModals();
+/** For managing a single query panel with a known query key. */
+export function useDataSourceOpExprPanel(queryKey: string) {
+  const dataSourceModals = useDataSourceOpExprPanels();
   return {
     open: (
       props: {
-        title?: string;
-      } & DataSourceOpExprBottomModalContentProps,
+        title?: string | (() => string);
+        selection?: BindingPreviewContext;
+      } & DataSourceOpExprPanelContentProps,
     ) => {
       dataSourceModals.open(queryKey, props);
     },
@@ -422,10 +423,9 @@ export function useDataSourceOpExprBottomModal(queryKey: string) {
   };
 }
 
-interface DataSourceOpExprBottomModalContentProps {
+export type DataSourceOpExprPanelContentProps = {
   value?: DataSourceOpExpr;
-  onSave: (expr: DataSourceOpExpr, opExprName?: string) => unknown;
-  onCancel: () => unknown;
+  onCancel: () => void;
   readOnly?: boolean;
   readOpsOnly?: boolean;
   userPropsMode?: boolean;
@@ -435,7 +435,7 @@ interface DataSourceOpExprBottomModalContentProps {
   allowedOps?: string[];
   livePreview?: boolean;
   isRowSelector?: boolean;
-  onRowSelected?: (row: any) => unknown;
+  onRowSelected?: (row: any) => void;
   selectedRowKey?: string;
   rowKey?: string | string[];
   exprCtx: ExprCtx;
@@ -443,12 +443,24 @@ interface DataSourceOpExprBottomModalContentProps {
   viewCtx?: ViewCtx;
   tpl?: TplNode;
   eventHandlerKey?: EventHandlerKeyType;
-}
+} & (
+  | {
+      onSave: (expr: DataSourceOpExpr, opExprName?: string) => void;
+      onSaveAsync?: never;
+    }
+  | {
+      onSave?: never;
+      /** Persists outside the Studio model transaction; rejection keeps the draft open. */
+      onSaveAsync: (
+        expr: DataSourceOpExpr,
+        opExprName?: string,
+      ) => Promise<void>;
+    }
+);
 
-const DataSourceOpExprBottomModalContent = observer(
-  function DataSourceOpExprBottomModal({
+export const DataSourceOpExprPanelContent = observer(
+  function DataSourceOpExprPanelContent({
     value,
-    onSave,
     onCancel,
     readOnly,
     readOpsOnly,
@@ -466,27 +478,30 @@ const DataSourceOpExprBottomModalContent = observer(
     viewCtx,
     tpl,
     eventHandlerKey,
+    session,
+    saveAndClose,
     ...rest
-  }: DataSourceOpExprBottomModalContentProps) {
+  }: DataSourceOpExprPanelContentProps & {
+    session: EditorSession<DataSourceOpDraftValue>;
+    saveAndClose: () => Promise<boolean>;
+  }) {
     const studioCtx = useStudioCtx();
-    const wrappedOnSave = React.useCallback(
-      (newExpr: DataSourceOpExpr, opExprName?: string) => {
-        if (hasUnsafeCurrentUserBinding(newExpr, exprCtx)) {
-          notification.warning({
-            message: INVALID_CURRENT_USER_OPERATION_MESSAGE(),
-          });
-          return;
-        }
-        onSave(newExpr, opExprName);
-      },
-      [onSave],
-    );
-
-    const env = rest.env
-      ? rest.env
-      : viewCtx && tpl
-        ? extractDataCtx(viewCtx, tpl, undefined, interaction, eventHandlerKey)
+    const canvasEnv =
+      viewCtx && tpl && studioCtx.viewCtxs.includes(viewCtx)
+        ? isKnownComponentDataQuery(parent)
+          ? omitDataQueryFromEnv(
+              viewCtx.getCanvasEnvForTpl(tpl, { forDataRepCollection: true }),
+              parent,
+            )
+          : extractDataCtx(
+              viewCtx,
+              tpl,
+              undefined,
+              interaction,
+              eventHandlerKey,
+            )
         : undefined;
+    const env = rest.env ?? canvasEnv;
 
     return (
       <PlasmicDataSourceContextProvider
@@ -503,10 +518,11 @@ const DataSourceOpExprBottomModalContent = observer(
         >
           <DataSourceOpExprFormAndPreview
             value={value}
-            onSave={wrappedOnSave}
+            session={session}
+            saveAndClose={saveAndClose}
             onCancel={onCancel}
             env={env}
-            schema={schema}
+            schema={schema ?? viewCtx?.customFunctionsSchema()}
             parent={parent}
             readOnly={readOnly || !studioCtx.appCtx.appConfig.enableDataQueries}
             readOpsOnly={readOpsOnly}
@@ -721,7 +737,7 @@ const DataOpExecuteQueueContext = React.createContext<{
   >;
 }>({
   executeQueue: [],
-  setExecuteQueue: () => {},
+  setExecuteQueue: noop,
 });
 
 function useDataOpExecuteQueue() {
@@ -733,10 +749,132 @@ function getArgLabel(argMeta: ArgMeta, codeName: string) {
   return argMeta.label ?? smartHumanize(codeName);
 }
 
+export function createDataSourceSession(
+  studioCtx: StudioCtx,
+  props: DataSourceOpExprPanelContentProps,
+) {
+  const { parent, exprCtx } = props;
+  const value = props.value ? clone(props.value) : undefined;
+  const component = exprCtx.component;
+  const query = isKnownComponentDataQuery(parent) ? parent : undefined;
+  return new EditorSession<DataSourceOpDraftValue>({
+    studioCtx: props.onSaveAsync ? undefined : studioCtx,
+    initial: value
+      ? {
+          sourceId: value.sourceId,
+          opName: value.opName,
+          roleId: value.roleId,
+          cacheKey: value?.cacheKey ?? undefined,
+          queryInvalidation: value.queryInvalidation ?? undefined,
+          templates: mapValues(
+            value?.templates ?? {},
+            (v) =>
+              ({
+                type: getTemplateFieldType(v),
+                value: v.value,
+                bindings: v.bindings,
+              }) as const,
+          ),
+          queryName: isKnownComponentDataQuery(parent)
+            ? parent.name
+            : undefined,
+        }
+      : {
+          // In all data op expr, we init the roleId with the defaultPageRoleId, inclusive in component data queries
+          roleId: studioCtx.site.defaultPageRoleId,
+          queryInvalidation: new QueryInvalidationExpr({
+            invalidationQueries: [ALL_QUERIES.value],
+            invalidationKeys: undefined,
+          }),
+          sourceId: getPreferredDataSource(studioCtx.site),
+          queryName: isKnownComponentDataQuery(parent)
+            ? parent.name
+            : undefined,
+        },
+    snapshot: (draft) => modelSnapshot(omit(draft, "opMeta")),
+    target:
+      query && component
+        ? {
+            exists: () =>
+              studioCtx.site.components.includes(component) &&
+              component.dataQueries.includes(query),
+            read: () => ({ op: query.op, name: query.name }),
+          }
+        : undefined,
+    prepare: async (draft) => {
+      if (!draft.sourceId || !draft.opName) {
+        return {
+          kind: "blocked",
+          message: "Choose an integration and operation before saving.",
+        };
+      }
+      const api = studioCtx.appCtx.api;
+      const source = await api.getDataSourceById(draft.sourceId);
+      const sourceMeta = getDataSourceMeta(source.source);
+      const opMeta = sourceMeta.ops.find((op) => op.name === draft.opName);
+      if (!opMeta) {
+        return {
+          kind: "blocked",
+          message:
+            "This operation is no longer available. Choose another operation.",
+        };
+      }
+      const schemaOp = sourceMeta.studioOps.schemaOp;
+      const schema = schemaOp
+        ? await api.executeDataSourceStudioOp(
+            studioCtx.siteInfo.id,
+            draft.sourceId,
+            { name: schemaOp.name },
+          )
+        : undefined;
+      const missing = getMissingRequiredArgsFromDraft(
+        { ...draft, opMeta },
+        schema,
+        exprCtx,
+      );
+      if (missing.length) {
+        return {
+          kind: "blocked",
+          message: `Missing required fields: ${missing.map(([name, meta]) => getArgLabel(meta, name)).join(", ")}`,
+        };
+      }
+      const expr = ensure(
+        await getDataSourceExprFromDraft({
+          ...draft,
+          api,
+          exprCtx,
+          projectId: studioCtx.siteInfo.id,
+        }),
+        "sourceId and opName are set",
+      );
+      expr.cacheKey = opMeta.type === "read" ? draft.cacheKey : undefined;
+      expr.queryInvalidation =
+        opMeta.type === "write" ? draft.queryInvalidation : undefined;
+      expr.parent = parent ? new QueryRef({ ref: parent }) : undefined;
+      if (hasUnsafeCurrentUserBinding(expr, exprCtx)) {
+        return {
+          kind: "blocked",
+          message: `This ${DATA_SOURCE_OPERATION_LOWER} can't be saved because of unsafe usage of the current user. See https://docs.plasmic.app/learn/auth/#using-the-logged-in-user-in-dynamic-values`,
+        };
+      }
+      if (props.onSaveAsync) {
+        await props.onSaveAsync(expr, draft.queryName);
+        return { apply: () => undefined };
+      }
+      return {
+        apply: () => {
+          props.onSave(expr, draft.queryName);
+        },
+      };
+    },
+  });
+}
+
 const DataSourceOpExprFormAndPreview = observer(
   function DataSourceOpExprFormAndPreview(props: {
     value?: DataSourceOpExpr;
-    onSave: (value: DataSourceOpExpr, opExprName?: string) => void;
+    session: EditorSession<DataSourceOpDraftValue>;
+    saveAndClose: () => Promise<boolean>;
     onCancel: () => void;
     readOnly?: boolean;
     env: Record<string, any> | undefined;
@@ -756,7 +894,6 @@ const DataSourceOpExprFormAndPreview = observer(
   }) {
     const {
       value,
-      onSave,
       onCancel,
       readOnly,
       env,
@@ -769,43 +906,10 @@ const DataSourceOpExprFormAndPreview = observer(
       interaction,
     } = props;
     const studioCtx = useStudioCtx();
-    const api = useApi();
-    const isMounted = useMountedState();
     const [showControls, setShowControls] = useState(false);
-    const [draft, setDraft] = React.useState<DataSourceOpDraftValue>(() =>
-      value
-        ? {
-            sourceId: value.sourceId,
-            opName: value.opName,
-            roleId: value.roleId,
-            cacheKey: value?.cacheKey ?? undefined,
-            queryInvalidation: value.queryInvalidation ?? undefined,
-            templates: mapValues(
-              value?.templates ?? {},
-              (v) =>
-                ({
-                  type: getTemplateFieldType(v),
-                  value: v.value,
-                  bindings: v.bindings,
-                }) as const,
-            ),
-            queryName: isKnownComponentDataQuery(parent)
-              ? parent.name
-              : undefined,
-          }
-        : {
-            // In all data op expr, we init the roleId with the defaultPageRoleId, inclusive in component data queries
-            roleId: studioCtx.site.defaultPageRoleId,
-            queryInvalidation: new QueryInvalidationExpr({
-              invalidationQueries: [ALL_QUERIES.value],
-              invalidationKeys: undefined,
-            }),
-            sourceId: getPreferredDataSource(studioCtx.site),
-            queryName: isKnownComponentDataQuery(parent)
-              ? parent.name
-              : undefined,
-          },
-    );
+    const { session } = props;
+    const draft = session.draft;
+    const setDraft = session.setDraft;
     const [previewOperation, setPreviewOperation] = React.useState<
       DataSourceOpDraftValue | undefined
     >(value ? draft : undefined);
@@ -831,74 +935,10 @@ const DataSourceOpExprFormAndPreview = observer(
       sourceSchemaData,
       exprCtx,
     ).map(([argName, argMeta]) => getArgLabel(argMeta, argName));
-    const [isGettingOpId, setGettingOpId] = React.useState(false);
-
+    const isGettingOpId = session.pending;
     const { isRowSelector, livePreview, setTabKey, preferredTab } =
       useDataSourceOpPickerContext();
-
-    const saveOpExpr = async () => {
-      setGettingOpId(true);
-      const pickedSourceId = ensure(
-        draft.sourceId,
-        `sourceId must be set for this button to be clickable`,
-      );
-      const pickedOpName = ensure(
-        draft.opName,
-        `opName must be set for this button to be clickable`,
-      );
-      const { opId } = await api.getDataSourceOpId(
-        studioCtx.siteInfo.id,
-        pickedSourceId,
-        {
-          name: pickedOpName,
-          templates: mapValues(draft.templates, (v) =>
-            dataSourceTemplateToString(
-              mkDataSourceTemplate({
-                fieldType: v.type,
-                value: v.value,
-                bindings: v.bindings,
-              }),
-              exprCtx,
-            ),
-          ),
-          roleId: draft.roleId,
-        },
-      );
-      if (isMounted()) {
-        if (missingRequiredArgs.length === 0) {
-          onSave(
-            new DataSourceOpExpr({
-              sourceId: pickedSourceId,
-              opId,
-              opName: pickedOpName,
-              templates: mapValues(draft.templates, (v) =>
-                mkDataSourceTemplate({
-                  fieldType: v.type,
-                  value: v.value,
-                  bindings: v.bindings,
-                }),
-              ),
-              roleId: draft.roleId,
-              cacheKey: opMeta?.type === "read" ? draft.cacheKey : undefined,
-              queryInvalidation:
-                opMeta?.type === "write" ? draft.queryInvalidation : undefined,
-              parent:
-                parent !== undefined
-                  ? new QueryRef({ ref: parent })
-                  : undefined,
-            }),
-            draft.queryName,
-          );
-        } else {
-          notification.error({
-            message: `Missing required fields: ${missingRequiredArgs.join(
-              ", ",
-            )}`,
-          });
-        }
-        setGettingOpId(false);
-      }
-    };
+    const saveOpExpr = props.saveAndClose;
 
     const [selectedTableSchema, setSelectedTableSchema] =
       React.useState<TableSchema>();
@@ -930,7 +970,7 @@ const DataSourceOpExprFormAndPreview = observer(
     const contents = (
       <div className="fill-height">
         {isRowSelector && (
-          <BottomModalButtons>
+          <BottomPanelButtons>
             <Switch
               className={"mr-lg"}
               onChange={() => {
@@ -939,7 +979,7 @@ const DataSourceOpExprFormAndPreview = observer(
             >
               Show filters
             </Switch>
-          </BottomModalButtons>
+          </BottomPanelButtons>
         )}
         <div className="flex-row fill-height">
           <div
@@ -949,7 +989,12 @@ const DataSourceOpExprFormAndPreview = observer(
             })}
             style={{ width: 500, flexShrink: 0 }}
           >
-            <div className="flex-col fill-width fill-height overflow-scroll p-xxlg flex-children-no-shrink">
+            <div
+              className={cx(
+                "flex-col fill-width fill-height overflow-scroll p-xxlg flex-children-no-shrink",
+                styles.draftFormScroller,
+              )}
+            >
               <DataSourceOpDraftForm
                 value={draft}
                 onChange={(getNewDraft) => {
@@ -978,7 +1023,7 @@ const DataSourceOpExprFormAndPreview = observer(
               />
             </div>
             {!isRowSelector ? (
-              <BottomModalButtons>
+              <BottomPanelButtons>
                 {!readOnly && (
                   <Button
                     id="data-source-modal-save-btn"
@@ -1043,13 +1088,11 @@ const DataSourceOpExprFormAndPreview = observer(
                     executeQueue.length > 0
                   }
                   startIcon={<Icon icon={SearchIcon} />}
-                  {...(missingRequiredArgs.length > 0
-                    ? {
-                        tooltip: `Missing required fields: ${missingRequiredArgs.join(
-                          ", ",
-                        )}`,
-                      }
-                    : {})}
+                  {...(missingRequiredArgs.length > 0 && {
+                    tooltip: `Missing required fields: ${missingRequiredArgs.join(
+                      ", ",
+                    )}`,
+                  })}
                 >
                   {opMeta?.type === "read"
                     ? "Preview"
@@ -1058,11 +1101,11 @@ const DataSourceOpExprFormAndPreview = observer(
                       : "Execute"}
                 </Button>
                 <Button onClick={onCancel}>Cancel</Button>
-              </BottomModalButtons>
+              </BottomPanelButtons>
             ) : (
-              <BottomModalButtons>
+              <BottomPanelButtons>
                 <Button onClick={onCancel}>Cancel</Button>
-              </BottomModalButtons>
+              </BottomPanelButtons>
             )}
           </div>
           <DataOpExecuteQueueContext.Provider value={dataOpExecuteContextValue}>
@@ -1703,12 +1746,11 @@ export function DataSourceOpDraftForm(props: {
                           exprCtx={exprCtx}
                           readOnly={readOnly}
                           sql={argMeta.isSql}
-                          {...(argMeta.isSql
-                            ? {
-                                dataSourceSchema: sourceSchemaData,
-                              }
-                            : {})}
+                          {...(argMeta.isSql && {
+                            dataSourceSchema: sourceSchemaData,
+                          })}
                           {...argMeta.renderProps?.(source!)}
+                          title={argLabel}
                           data-plasmic-prop={`data-source-modal-${key}`}
                         />
                       );
@@ -2841,11 +2883,13 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
                                 }
                                 exprCtx={exprCtx}
                                 disabled={disabled}
+                                title={fieldName}
                               />
                             );
                           } else if (fieldType === "json") {
                             return (
                               <DataPickerEditor
+                                title={fieldName}
                                 value={extractValueSavedFromDataPicker(
                                   allBindings[val],
                                   exprCtx,
@@ -3740,4 +3784,10 @@ function GqlProvider(props: {
       {children}
     </GraphiQLProvider>
   );
+}
+
+export interface DataSourcePanelDescriptor {
+  kind: "dataQuery";
+  props: DataSourceOpExprPanelContentProps;
+  session: EditorSession<DataSourceOpDraftValue>;
 }

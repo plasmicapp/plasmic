@@ -1,9 +1,11 @@
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
+import { modelBindingTarget } from "@/wab/client/components/editor-sessions/model-binding-target";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
 import { FallbackEditor } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
+import { acceptDataDrop } from "@/wab/client/components/sidebar-tabs/DataBinding/data-drop";
 import { ContentPanelSection } from "@/wab/client/components/sidebar-tabs/image-content-section";
 import {
   LinkToPropMenuItem,
@@ -33,7 +35,6 @@ import {
 import {
   clone,
   codeLit,
-  createExprForDataPickerValue,
   extractReferencedParam,
   extractValueSavedFromDataPicker,
   isFallbackSet,
@@ -45,6 +46,7 @@ import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { getTagAttrForImageAsset } from "@/wab/shared/core/image-assets";
 import { typographyCssProps } from "@/wab/shared/core/style-props";
 import { getTplComponentsInSite } from "@/wab/shared/core/tpls";
+import { computeDropReplacementExpr } from "@/wab/shared/data-picker/data-drop-compat";
 import {
   DefinedIndicatorType,
   computeDefinedIndicator,
@@ -66,7 +68,6 @@ import {
   isKnownImageAsset,
   isKnownImageAssetRef,
   isKnownObjectPath,
-  isKnownVarRef,
 } from "@/wab/shared/model/classes";
 import { isImageType, typeFactory } from "@/wab/shared/model/model-util";
 import { Alert, Menu } from "antd";
@@ -173,6 +174,25 @@ export const ImageSection = observer(function ImageSection(props: {
   });
   const isDynamicExpression = isRealCodeExpr(expr);
   const shouldShowSizeProps = isDynamicExpression || isKnownCustomCode(expr);
+  const imageEnv = viewCtx.getCanvasEnvForTpl(tpl);
+  const imageDataDropTarget =
+    !isIcon && imageEnv
+      ? {
+          accepts: (payload) =>
+            acceptDataDrop(
+              payload,
+              imageEnv,
+              viewCtx,
+              ["string"],
+              "Image URL only accepts strings",
+            ),
+          onDropData: (payload) => {
+            const newExpr = computeDropReplacementExpr(expr, payload.path)!;
+            targetVs.attrs = { ...targetVs.attrs, [attr]: newExpr };
+            setShowFallback(!!newExpr.fallback);
+          },
+        }
+      : undefined;
 
   return (
     <StylePanelSection
@@ -212,54 +232,21 @@ export const ImageSection = observer(function ImageSection(props: {
                   switchToDynamic();
                 }}
                 className="fill-width"
+                dataDropTarget={imageDataDropTarget}
               >
                 <DataPickerEditor
                   viewCtx={viewCtx}
+                  title="Image URL"
+                  target={modelBindingTarget(viewCtx, tpl, targetVs.variants, {
+                    kind: "attr",
+                    attr,
+                  })}
                   value={extractValueSavedFromDataPicker(expr, {
                     projectFlags: viewCtx.projectFlags(),
                     component: ownerComponent,
                     inStudio: true,
                   })}
-                  onChange={(val) => {
-                    if (!val) {
-                      return;
-                    }
-                    const codeExpr = ensureInstance(
-                      expr,
-                      ObjectPath,
-                      CustomCode,
-                    );
-                    const fallbackExpr = codeExpr.fallback
-                      ? clone(codeExpr.fallback)
-                      : undefined;
-                    const newExpr = createExprForDataPickerValue(
-                      val,
-                      fallbackExpr,
-                    );
-                    viewCtx.change(() => {
-                      if (targetVs) {
-                        targetVs.attrs = { ...targetVs.attrs, [attr]: newExpr };
-                      }
-                    });
-                  }}
-                  onUnlink={() => {
-                    viewCtx.change(() => {
-                      if (targetVs) {
-                        if (
-                          (isKnownCustomCode(expr) ||
-                            isKnownObjectPath(expr)) &&
-                          expr.fallback
-                        ) {
-                          targetVs.attrs = {
-                            ...targetVs.attrs,
-                            [attr]: expr.fallback,
-                          };
-                        } else {
-                          targetVs.attrs = omit(targetVs.attrs, attr);
-                        }
-                      }
-                    });
-                  }}
+
                   visible={isDataPickerVisible}
                   setVisible={setIsDataPickerVisible}
                   data={viewCtx.getCanvasEnvForTpl(tpl)}
@@ -334,6 +321,7 @@ export const ImageSection = observer(function ImageSection(props: {
               switchToDynamic();
             }}
             className="fill-width"
+            dataDropTarget={imageDataDropTarget}
           >
             <ImageAssetPreviewAndPicker
               className="flex-fill flex-col"

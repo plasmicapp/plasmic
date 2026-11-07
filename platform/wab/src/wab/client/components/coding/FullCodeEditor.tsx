@@ -158,7 +158,15 @@ export const FullCodeEditor = React.forwardRef(
         );
         if (autoFocus) {
           setTimeout(() => {
-            makeMonacoAutoFocus(editor);
+            // The editor loads lazily; keep focus on a panel field the user already typed into.
+            const active = document.activeElement;
+            const panel = editor.getContainerDomNode().closest(".bottom-panel");
+            if (
+              !panel?.contains(active) ||
+              !active?.matches("input, textarea, [contenteditable='true']")
+            ) {
+              makeMonacoAutoFocus(editor);
+            }
           }, 0);
         }
       },

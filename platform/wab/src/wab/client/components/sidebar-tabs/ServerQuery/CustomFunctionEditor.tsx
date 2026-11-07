@@ -1,9 +1,10 @@
+import { currentSelection } from "@/wab/client/components/BottomPanelState";
 import {
   CustomCodePreview,
   CustomFunctionExprPreview,
   ServerQueryOpSummary,
 } from "@/wab/client/components/sidebar-tabs/ServerQuery/QueryResultPreview";
-import { useServerQueryBottomModal } from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryBottomModal";
+import { useServerQueryPanel } from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryPanel";
 import Button from "@/wab/client/components/widgets/Button";
 import { extractDataCtx } from "@/wab/client/state-management/interactions-meta";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -59,7 +60,7 @@ export const CustomFunctionEditor = observer(
       component,
       ...rest
     } = props;
-    const { open, close } = useServerQueryBottomModal(queryKey);
+    const { open, close } = useServerQueryPanel(queryKey);
     const studioCtx = useStudioCtx();
     const projectFlags = studioCtx.projectFlags();
     // Identity-stable for useServerQueryOp's memo deps.
@@ -95,11 +96,8 @@ export const CustomFunctionEditor = observer(
           onClick={() => {
             open({
               value,
-              onSave: (newExpr) => {
-                onChange(newExpr);
-                close();
-                onClose?.();
-              },
+              selection: currentSelection(studioCtx.focusedViewCtx()),
+              onSave: onChange,
               onCancel: () => {
                 close();
                 onClose?.();

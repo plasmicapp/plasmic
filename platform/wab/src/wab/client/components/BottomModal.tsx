@@ -1,172 +1,65 @@
 import sty from "@/wab/client/components/BottomModal.module.sass";
+import {
+  BottomPanelSessionContent,
+  BottomPanelTabContext,
+  useBottomPanel,
+} from "@/wab/client/components/BottomPanel";
+import {
+  BottomPanelTabConfig,
+  tabTitle,
+} from "@/wab/client/components/BottomPanelState";
 import { useConstant } from "@/wab/commons/components/ReactUtil";
-import { ensure } from "@/wab/shared/common";
 import classNames from "classnames";
-import { omit, size } from "lodash";
-import React, { Dispatch, Reducer } from "react";
+import { observer } from "mobx-react";
+import React from "react";
 import { FocusScope } from "react-aria";
 import { animated, useSpring, useTransition } from "react-spring";
 import { useMeasure } from "react-use";
-import tunnel from "tunnel-rat";
 
-interface BottomModalsStore {
-  state: BottomModalsState;
-  dispatch: Dispatch<BottomModalsAction>;
-}
-
-interface BottomModalsPushAction {
-  type: "push";
-  id: string;
-  config: BottomModalConfig;
-}
-
-interface BottomModalsPopAction {
-  type: "pop";
-  id: string;
-}
-
-interface BottomModalsFocusAction {
-  type: "focus";
-  focusedIndex?: number;
-}
-
-type BottomModalsAction =
-  BottomModalsPushAction | BottomModalsPopAction | BottomModalsFocusAction;
-
-export function BottomModalsProvider(props: { children?: React.ReactNode }) {
-  const [state, dispatch] = React.useReducer<
-    Reducer<BottomModalsState, BottomModalsAction>
-  >(
-    (curState, action) => {
-      switch (action.type) {
-        case "push": {
-          const newModals = {
-            [action.id]: action.config,
-            ...omit(curState.modals, action.id),
-          };
-          return {
-            modals: newModals,
-            focusedIndex: 0,
-          };
-        }
-        case "pop": {
-          const newFocus =
-            curState.focusedIndex !== undefined
-              ? curState.focusedIndex - 1
-              : undefined;
-          return {
-            modals: omit(curState.modals, action.id),
-            focusedIndex:
-              newFocus != null && newFocus >= 0 ? newFocus : undefined,
-          };
-        }
-        case "focus": {
-          return {
-            ...curState,
-            focusedIndex: action.focusedIndex,
-          };
-        }
-      }
-    },
-    {
-      focusedIndex: undefined,
-      modals: {},
-    },
-  );
-
-  const store = React.useMemo(() => ({ state, dispatch }), [state, dispatch]);
-
-  return (
-    <BottomModalsContext.Provider value={store}>
-      {props.children}
-    </BottomModalsContext.Provider>
-  );
-}
-
-function useBottomModalsContext() {
-  return ensure(
-    React.useContext(BottomModalsContext),
-    `Missing <BottomModalsProvider/>`,
-  );
-}
-
-export function useBottomModalActions() {
-  const ctx = useBottomModalsContext();
-  const actions = React.useMemo(
-    () => ({
-      open(id: string, props: BottomModalProps) {
-        ctx.dispatch({
-          type: "push",
-          id,
-          config: {
-            ...props,
-            buttonsTunnel: tunnel(),
-          },
-        });
-      },
-      close(id: string) {
-        ctx.dispatch({
-          type: "pop",
-          id,
-        });
-      },
-    }),
-    [ctx],
-  );
-  return actions;
-}
-
-interface BottomModalsState {
-  focusedIndex?: number;
-  modals: Record<string, BottomModalConfig>;
-}
-
-const BottomModalsContext = React.createContext<BottomModalsStore | undefined>(
-  undefined,
-);
-
-const BottomModalContext = React.createContext<BottomModalConfig | undefined>(
-  undefined,
-);
-
-interface BottomModalProps {
-  children?: React.ReactNode;
-  title?: React.ReactNode;
-  "data-test-id"?: string;
-}
-
-interface BottomModalConfig extends BottomModalProps {
-  buttonsTunnel: ReturnType<typeof tunnel>;
-}
-
-interface BottomModalsProps {
-  onFocusedIndexChange?: (newIndex: number | undefined) => void;
-}
-
-export function BottomModals({ onFocusedIndexChange }: BottomModalsProps) {
-  const store = useBottomModalsContext();
-  const { state, dispatch } = store;
+/**
+ * The stacked bottom modals used while the `dockview` devflag is off. Renders the same tab store as
+ * <BottomPanel/>, newest in front.
+ */
+export const BottomModals = observer(function BottomModals() {
+  const state = useBottomPanel();
+  const modals = [...state.stack].reverse();
+  const active = state.stack[state.stack.length - 1];
+  const [focusedId, setFocusedId] = React.useState<string | undefined>();
   const [rootRef, rootSize] = useMeasure<HTMLDivElement>();
-  const transitions = useTransition(Object.entries(state.modals), {
-    keys: ([id]) => id,
+
+  React.useEffect(() => {
+    setFocusedId(active?.id);
+  }, [active?.buttonsTunnel]);
+  // If the locally focused modal closes, bring the newest remaining modal forward. Use an updater
+  // so a simultaneous activation update wins too.
+  React.useEffect(() => {
+    setFocusedId((current) => {
+      if (!current || state.stack.some((entry) => entry.id === current)) {
+        return current;
+      }
+      return state.stack[state.stack.length - 1]?.id;
+    });
+  }, [state.stack]);
+  React.useEffect(() => {
+    state.focused = focusedId !== undefined;
+  }, [focusedId]);
+
+  const focusedIndex = modals.findIndex((m) => m.id === focusedId);
+  const transitions = useTransition(modals, {
+    keys: (modal) => modal.id,
     from: { bottom: "-100%" },
     leave: { bottom: "-100%" },
     enter: { bottom: "0%" },
   });
-  React.useEffect(() => {
-    onFocusedIndexChange?.(state.focusedIndex);
-  }, [state.focusedIndex]);
   return (
     <div className={classNames(sty.ModalsRoot, "bottom-modals")} ref={rootRef}>
-      {size(state.modals) > 0 && state.focusedIndex !== undefined && (
+      {modals.length > 0 && focusedIndex >= 0 && (
         <div
-          className={classNames(sty.ModalsMask, {
-            [sty.ModalsMask__collapsed]: state.focusedIndex == null,
-          })}
-          onClick={() => dispatch({ type: "focus", focusedIndex: undefined })}
+          className={sty.ModalsMask}
+          onClick={() => setFocusedId(undefined)}
         />
       )}
-      {transitions((styles, [id, modal], transitionState) => (
+      {transitions((styles, modal, transitionState) => (
         // TODO: remove this div and see if chrome render is still broken
         <div
           style={{
@@ -188,40 +81,36 @@ export function BottomModals({ onFocusedIndexChange }: BottomModalsProps) {
               pointerEvents: "none",
             }}
             className={`animated-bottom-modal-${transitionState.phase}`}
-            key={id}
+            key={modal.id}
           >
-            <BottomModalInternal
-              key={id}
-              id={id}
+            <BottomModal
               config={modal}
-              store={store}
+              index={modals.indexOf(modal)}
+              count={modals.length}
+              focusedIndex={focusedIndex}
               canvasHeight={rootSize.height}
+              onFocus={() => setFocusedId(modal.id)}
             />
           </animated.div>
         </div>
       ))}
     </div>
   );
-}
+});
 
-function BottomModalInternal(props: {
-  config: BottomModalConfig;
-  store: BottomModalsStore;
-  id: string;
+const BottomModal = observer(function BottomModal(props: {
+  config: BottomPanelTabConfig;
+  /** Position in the stack, 0 being the newest and in front. */
+  index: number;
+  count: number;
+  focusedIndex: number;
   canvasHeight: number;
+  onFocus: () => void;
 }) {
-  const { config, store, id, canvasHeight } = props;
-  const { title, children, "data-test-id": dataTestId } = config;
-  const { state, dispatch } = store;
+  const { config, index, count, focusedIndex, canvasHeight, onFocus } = props;
   const leftDelta = useConstant(() => Math.floor(10 - Math.random() * 20));
-  const index = Object.keys(state.modals).indexOf(id);
-  if (index < 0) {
-    // Happens when unmounting and animating out this modal
-  }
-
-  const count = size(state.modals);
-  const isCollapsed = state.focusedIndex == null || index > state.focusedIndex;
-  const isFocused = state.focusedIndex === index;
+  const isCollapsed = focusedIndex < 0 || index > focusedIndex;
+  const isFocused = focusedIndex === index;
   const height = canvasHeight * 0.9 - 60 * index;
   const top = isCollapsed
     ? canvasHeight - ((count - index) * 10 + 40)
@@ -230,17 +119,19 @@ function BottomModalInternal(props: {
 
   return (
     <animated.div
-      className={sty.ModalRoot}
+      // bottom-panel: shared with <BottomPanel/> for popover containment, click-away exceptions and
+      // tests.
+      className={classNames(sty.ModalRoot, "bottom-panel")}
       style={{ ...animatedStyles, height, left: 100 + leftDelta }}
-      data-test-id={dataTestId}
+      data-test-id="bottom-panel"
       onClick={() => {
         if (!isFocused) {
-          dispatch({ type: "focus", focusedIndex: index });
+          onFocus();
         }
       }}
     >
       <div className={sty.ModalTitleContainer}>
-        <div className={sty.ModalTitle}>{title}</div>
+        <div className={sty.ModalTitle}>{tabTitle(config)}</div>
         {isFocused && (
           <div className={sty.ModalActions}>
             <config.buttonsTunnel.Out />
@@ -248,21 +139,12 @@ function BottomModalInternal(props: {
         )}
       </div>
       <FocusScope autoFocus>
-        <div className={sty.ModalBody}>
-          <BottomModalContext.Provider value={config}>
-            {children}
-          </BottomModalContext.Provider>
+        <div className={sty.ModalBody} data-test-id={config["data-test-id"]}>
+          <BottomPanelTabContext.Provider value={config}>
+            <BottomPanelSessionContent config={config} />
+          </BottomPanelTabContext.Provider>
         </div>
       </FocusScope>
     </animated.div>
   );
-}
-
-export function BottomModalButtons(props: { children?: React.ReactNode }) {
-  const config = ensure(
-    React.useContext(BottomModalContext),
-    "BottomModalButtons can only be used in a BottomModal",
-  );
-
-  return <config.buttonsTunnel.In>{props.children}</config.buttonsTunnel.In>;
-}
+});

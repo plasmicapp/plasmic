@@ -1,4 +1,5 @@
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
+import { modelBindingTarget } from "@/wab/client/components/editor-sessions/model-binding-target";
 import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
 import { FallbackEditor } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
@@ -30,9 +31,7 @@ import {
   mkVariantGroupArgExpr,
 } from "@/wab/shared/core/components";
 import {
-  clone,
   codeLit,
-  createExprForDataPickerValue,
   extractReferencedParam,
   extractValueSavedFromDataPicker,
   isFallbackSet,
@@ -124,6 +123,9 @@ export const VariantPicker = observer(function VariantPicker(props: {
   tpl: TplComponent;
 }) {
   const { viewCtx, group, tpl } = props;
+  const targetVariants = viewCtx
+    .variantTplMgr()
+    .getTargetVariantComboForNode(tpl);
 
   const studioCtx = useStudioCtx();
 
@@ -256,12 +258,18 @@ export const VariantPicker = observer(function VariantPicker(props: {
       "Unexpected currentExpr value, should be ObjectPath or CustomCode",
     );
     const fallback = currentExpr.fallback;
-    viewCtx.change(() => {
+    return viewCtx.studioCtx.changeUnsafe(() => {
       const variantTplMgr = viewCtx.variantTplMgr();
+      const vs = variantTplMgr.ensureVariantSetting(tpl, targetVariants);
       if (isKnownVariantsRef(fallback)) {
-        variantTplMgr.setArg(tpl, group.param.variable, fallback);
+        variantTplMgr.setArgUnderVariantSetting(
+          tpl,
+          group.param.variable,
+          fallback,
+          vs,
+        );
       } else {
-        variantTplMgr.delArg(tpl, group.param.variable);
+        variantTplMgr.delArgFromVariantSetting(tpl, group.param.variable, vs);
       }
     });
   };
@@ -400,7 +408,12 @@ export const VariantPicker = observer(function VariantPicker(props: {
             </Menu.Item>
           )}
           {arg.valueType === "dynamic" && (
-            <Menu.Item key={"!dynamicValue"} onClick={unlinkFromDynamicValue}>
+            <Menu.Item
+              key={"!dynamicValue"}
+              onClick={() => {
+                void unlinkFromDynamicValue();
+              }}
+            >
               Remove dynamic value
             </Menu.Item>
           )}
@@ -457,30 +470,17 @@ export const VariantPicker = observer(function VariantPicker(props: {
           ) : arg.valueType === "dynamic" ? (
             <DataPickerEditor
               viewCtx={viewCtx}
+              title={label}
+              target={modelBindingTarget(viewCtx, tpl, targetVariants, {
+                kind: "arg",
+                param: group.param,
+              })}
               value={extractValueSavedFromDataPicker(currentExpr, {
                 projectFlags: studioCtx.projectFlags(),
                 component: tryGetTplOwnerComponent(tpl) ?? null,
                 inStudio: true,
               })}
-              onChange={(val) => {
-                if (!val) {
-                  return;
-                }
-                const codeExpr = ensureInstance(
-                  currentExpr,
-                  CustomCode,
-                  ObjectPath,
-                );
-                const fallbackExpr = codeExpr.fallback
-                  ? clone(codeExpr.fallback)
-                  : undefined;
-                const newExpr = createExprForDataPickerValue(val, fallbackExpr);
-                viewCtx.change(() => {
-                  const variantTplMgr = viewCtx.variantTplMgr();
-                  variantTplMgr.setArg(tpl, group.param.variable, newExpr);
-                });
-              }}
-              onUnlink={unlinkFromDynamicValue}
+
               visible={isDataPickerVisible}
               setVisible={setIsDataPickerVisible}
               isDisabled={isDisabled}

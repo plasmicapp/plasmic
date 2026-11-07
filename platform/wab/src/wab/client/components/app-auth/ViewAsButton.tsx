@@ -7,7 +7,7 @@ import {
   useAppRoles,
   useAppUsers,
 } from "@/wab/client/components/app-auth/app-auth-contexts";
-import { useDataSourceOpExprBottomModal } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
+import { useDataSourceOpExprPanel } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
 import {
   ClickStopper,
   IFrameAwareDropdownMenu,
@@ -27,7 +27,7 @@ import { ifEmpty, spawn } from "@/wab/shared/common";
 import { isValidCurrentUserPropsExpr } from "@/wab/shared/core/exprs";
 import { DataSourceOpExpr } from "@/wab/shared/model/classes";
 import { isUserProjectEditor } from "@/wab/shared/perms";
-import { Menu, notification } from "antd";
+import { Menu } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
@@ -200,9 +200,7 @@ export function AdvancedAppAuthMenuItems() {
   const appCtx = studioCtx.appCtx;
   const appId = studioCtx.siteInfo.id;
   const { roles } = useAppRoles(appCtx, appId);
-  const dataSourceModal = useDataSourceOpExprBottomModal(
-    "current-user-properties",
-  );
+  const dataSourceModal = useDataSourceOpExprPanel("current-user-properties");
   const {
     config: appCurrentUserOpConfig,
     mutate: mutateAppCurrentUserOpConfig,
@@ -216,11 +214,9 @@ export function AdvancedAppAuthMenuItems() {
         inStudio: true,
       })
     ) {
-      notification.error({
-        message:
-          "The current user properties expression is invalid. You can only use direct properties from the current user without any manipulation.",
-      });
-      return;
+      throw new Error(
+        "The current user properties expression is invalid. You can only use direct properties from the current user without any manipulation.",
+      );
     }
 
     // This opId shouldn't be possible to leak as it's only used internally
@@ -240,8 +236,6 @@ export function AdvancedAppAuthMenuItems() {
     });
 
     await studioCtx.refreshAppUserProperties();
-
-    dataSourceModal.close();
   }
 
   return (
@@ -256,9 +250,7 @@ export function AdvancedAppAuthMenuItems() {
                 value: getDataSourceOpExprFromBundle(
                   appCurrentUserOpConfig.userPropsBundledOp,
                 ),
-                onSave: (newExpr) => {
-                  spawn(handleSave(newExpr));
-                },
+                onSaveAsync: handleSave,
                 onCancel: () => dataSourceModal.close(),
                 env: {
                   currentUser: {

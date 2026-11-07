@@ -4,10 +4,7 @@ import {
   CustomFunctionExprPreview,
   ServerQueryOpSummary,
 } from "@/wab/client/components/sidebar-tabs/ServerQuery/QueryResultPreview";
-import {
-  omitQueryFromEnv,
-  useServerQueryBottomModal,
-} from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryBottomModal";
+import { omitQueryFromEnv } from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryPanel";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   IFrameAwareDropdownMenu,
@@ -17,6 +14,8 @@ import { ServerQueriesTooltip } from "@/wab/client/components/widgets/DetailedTo
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
+import { useOpenNewlyAddedQuery } from "@/wab/client/hooks/useOpenNewlyAddedQuery";
+import { useOpenQueryPanel } from "@/wab/client/hooks/useOpenQueryPanel";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { mkComponentScopedUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
@@ -28,16 +27,14 @@ import {
   SERVER_QUERY_LOWER,
   SERVER_QUERY_PLURAL_CAP,
 } from "@/wab/shared/Labels";
-import {
-  ServerQueryOp,
-  isServerQueryWithOperation,
-} from "@/wab/shared/codegen/react-p/server-queries/utils";
-import { mkShortId, spawn } from "@/wab/shared/common";
+import { isServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
+import { spawn } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
   isPageComponent,
 } from "@/wab/shared/core/components";
 import { ExprCtx } from "@/wab/shared/core/exprs";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   Component,
   ComponentServerQuery,
@@ -67,39 +64,15 @@ const ServerQueryRow = observer(
       }),
       [projectFlags, component],
     );
-    const schema = viewCtx.customFunctionsSchema();
     const tpl = viewCtx.currentCtxTplRoot();
 
-    const serverQueryModal = useServerQueryBottomModal(query.uuid);
-    const openServerQueryModal = () => {
-      // Pass viewCtx and tpl instead of a static env so the modal can reactively
-      // compute the environment, including newly created data tokens
-      serverQueryModal.open({
-        value: query,
-        onSave: handleCustomFunctionExprChange,
-        onCancel: serverQueryModal.close,
-        viewCtx,
-        tpl,
-        schema,
-        exprCtx,
-      });
-    };
-
-    const handleCustomFunctionExprChange = async (
-      newOp: ServerQueryOp,
-      opExprName?: string,
-    ) => {
-      await studioCtx.siteOps().updateComponentServerQuery(component, query, {
-        op: newOp,
-        name: opExprName,
-      });
-      serverQueryModal.close();
-    };
+    const openQuery = useOpenQueryPanel();
+    const openServerQueryPanel = () => openQuery(viewCtx, query);
 
     const menu = () => {
       return (
         <Menu>
-          <Menu.Item onClick={() => openServerQueryModal()}>
+          <Menu.Item onClick={openServerQueryPanel}>
             {CONFIGURE_ACTION}
           </Menu.Item>
           <Menu.Item
@@ -136,13 +109,15 @@ const ServerQueryRow = observer(
     }
     const currGlobalThis = viewCtx.canvasCtx.win();
 
+    useOpenNewlyAddedQuery(studioCtx, query, openServerQueryPanel);
+
     return (
       <WithContextMenu overlay={menu}>
         <LabeledListItem
           uiId={mkComponentScopedUiId(query, component.uuid)}
           label={query.name}
           menu={menu}
-          onClick={() => openServerQueryModal()}
+          onClick={openServerQueryPanel}
         >
           {query.op ? (
             <div className="flex flex-col fill-width">
@@ -185,13 +160,10 @@ function ServerQueriesSection_(props: {
   const handleAddBlankQuery = () => {
     spawn(
       studioCtx.change(() => {
-        const serverQuery = new ComponentServerQuery({
-          uuid: mkShortId(),
-          name: studioCtx.tplMgr().getUniqueServerQueryName(component, "Query"),
-          op: undefined,
-        });
-
-        component.serverQueries = [...component.serverQueries, serverQuery];
+        const query = studioCtx.tplMgr().addComponentServerQuery(component);
+        if (DEVFLAGS.dockview) {
+          studioCtx.newlyAddedQuery = query;
+        }
         return ok();
       }),
     );

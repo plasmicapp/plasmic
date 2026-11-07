@@ -15,6 +15,5 @@ const zIndex_ = {
   modal: 1000,
   floating: 900, // persistent floating windows (comments, copilot)
   rightPaneModal: 6,
-  bottomModal: 5,
 } as const;
 export const zIndex = zIndex_ as ToZIndexes<typeof zIndex_>;

@@ -5,10 +5,8 @@ import {
 import { DataInspector } from "@/wab/client/components/coding/DataInspector";
 import type { FullCodeEditor } from "@/wab/client/components/coding/FullCodeEditor";
 import LazyFullCodeEditor from "@/wab/client/components/coding/LazyFullCodeEditor";
-import {
-  DataPickerRunCodeActionContext,
-  DataPickerTypesSchema,
-} from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import type { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import { DataPickerRunCodeActionContext } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerRunCodeActionContext";
 import {
   DefaultDataPickerCodeEditorLayoutProps,
   PlasmicDataPickerCodeEditorLayout,
@@ -29,6 +27,7 @@ export interface DataPickerCodeEditorLayoutProps extends Omit<
   previewData: object | undefined;
   defaultValue: string;
   onSave: (val: string) => boolean;
+  onChange?: (val: string) => void;
   schema?: DataPickerTypesSchema;
   context?: string;
   hideEnvPanel?: boolean;
@@ -44,12 +43,15 @@ function DataPickerCodeEditorLayout_(
     previewData,
     defaultValue,
     onSave,
+    onChange,
     schema,
     hideEnvPanel,
     context,
     ...rest
   } = props;
   const [currentValue, setCurrentValue] = React.useState(defaultValue);
+  // Monaco owns edits; changing its initial value resets its model and auto-closing pairs.
+  const [initialValue, setInitialValue] = React.useState(defaultValue);
   const [codeEditorKey, setCodeEditorKey] = React.useState(0);
   const [showEnv, setShowEnv] = React.useState(false);
   const studioCtx = useStudioCtx();
@@ -67,10 +69,13 @@ function DataPickerCodeEditorLayout_(
           key={codeEditorKey}
           hideLineNumbers={true}
           language={"javascript"}
-          defaultValue={defaultValue}
+          defaultValue={initialValue}
           data={completionData}
           onSave={onSave}
-          onChange={(val: string) => setCurrentValue(val)}
+          onChange={(val: string) => {
+            setCurrentValue(val);
+            onChange?.(val);
+          }}
           enableMinimap={false}
           hideGlobalSuggestions={true}
           folding={false}
@@ -84,6 +89,8 @@ function DataPickerCodeEditorLayout_(
           currentValue,
           onUpdate: (v) => {
             setCurrentValue(v);
+            setInitialValue(v);
+            onChange?.(v);
             onSave(v);
             setCodeEditorKey(codeEditorKey + 1);
           },

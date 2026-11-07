@@ -1,6 +1,6 @@
 import { maybeConvertToHostLessProject } from "@/wab/client/code-components/code-components";
-import { BottomModalsProvider } from "@/wab/client/components/BottomModal";
 import { showPlasmicImgModal } from "@/wab/client/components/modals/PlasmicImgModal";
+import { DataPickerPanelProvider } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerPanel";
 import { ShortcutsModal } from "@/wab/client/components/studio/Shortcuts";
 import {
   getCanvasPkgs,
@@ -86,7 +86,7 @@ export class Studio extends React.Component<StudioProps, {}> {
         <PlasmicQueryDataProvider
           provider={() => this.props.studioCtx.hostQuerySwrCache}
         >
-          <BottomModalsProvider>
+          <DataPickerPanelProvider>
             <div className={"studio"}>
               <div className={"studio__main-area"}>{this.props.children}</div>
             </div>
@@ -94,7 +94,7 @@ export class Studio extends React.Component<StudioProps, {}> {
               <TopProjectNavTour />
               <StudioTutorialTours />
             </React.Suspense>
-          </BottomModalsProvider>
+          </DataPickerPanelProvider>
         </PlasmicQueryDataProvider>
       </ShortcutsModal>
     );

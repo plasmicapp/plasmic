@@ -1,0 +1,263 @@
+@import "src/wab/styles/_utils.sass"
+
+.Root
+  position: relative
+  flex-shrink: 0
+  background-color: white
+  border-top: 1px solid #ccc
+  // clip doesn't create a scroll container, so the picker's auto-focused search input can't scroll
+  // the collapsed tab strip out of view.
+  overflow: clip
+  transition: height 200ms ease
+  z-index: 3
+
+  &.Centered
+    border-right: 1px solid #ccc
+
+  &.Bound
+    border-top: 2px solid $blue9
+
+  @media (prefers-reduced-motion: reduce)
+    transition: none
+
+.Resizer
+  position: absolute
+  top: 0
+  left: 0
+  right: 0
+  height: 8px
+  cursor: ns-resize
+  z-index: 10
+
+.Dock
+  width: 100%
+  height: calc(100% - 40px)
+  overflow: hidden
+
+  // The breadcrumb header above the dock is the only view switcher.
+  :global(.dv-tabs-and-actions-container)
+    display: none
+
+.Header
+  height: 40px
+  display: flex
+  align-items: center
+  padding-right: $space-lg
+  border-bottom: 1px solid $sand4
+  cursor: pointer
+
+.HeaderToggle
+  align-self: stretch
+  flex: 1 1 $space-lg
+  min-width: $space-lg
+  appearance: none
+  padding: 0
+  border: 0
+  background: transparent
+  cursor: pointer
+
+.Breadcrumbs
+  align-self: stretch
+  min-width: 0
+  display: flex
+  align-items: center
+  gap: $space-xsm
+  padding-left: $space-lg
+  overflow: hidden
+  cursor: default
+
+.RootCrumb
+  flex-shrink: 0
+  height: 28px
+  display: flex
+  align-items: center
+  padding: 0 $space-xsm
+  border-radius: 8px
+  background: transparent
+  color: $sand10
+  font-weight: 600
+  transition: background-color 100ms ease
+
+.RootCrumbInteractive
+  &:hover,
+  &:focus-within
+    background: $sand3
+
+.CrumbBack,
+.RootCrumbLabel,
+.Crumb
+  appearance: none
+  border: 0
+  background: none
+  color: inherit
+  font: inherit
+
+.CrumbBack,
+button.RootCrumbLabel,
+.Crumb
+  cursor: pointer
+
+  &:disabled
+    cursor: default
+
+.CrumbBack
+  width: 20px
+  height: 20px
+  display: flex
+  align-items: center
+  justify-content: center
+  padding: 0
+  border-radius: 4px
+
+  :global(.custom-svg-icon)
+    width: 12px !important
+    height: 12px !important
+
+.RootCrumbLabel,
+.Crumb,
+.CrumbActive
+  min-width: 0
+  display: flex
+  align-items: center
+  gap: $space-xsm
+
+.RootCrumbLabel
+  height: 100%
+  padding: 0 $space-xsm
+
+  > :global(.custom-svg-icon)
+    width: 12px !important
+    height: 12px !important
+
+.Crumb,
+.CrumbActive
+  max-width: 220px
+  height: 28px
+  padding: 0 $space-xsm
+  border-radius: 6px
+  color: $dimfg
+  font-weight: 600
+
+.Crumb
+  flex-shrink: 1
+  transition: background-color 100ms ease
+
+  &:hover
+    background: $sand3
+
+  > :global(.custom-svg-icon)
+    width: 12px !important
+    height: 12px !important
+
+.CrumbSeparator
+  flex-shrink: 0
+  color: $sand8
+  width: 12px !important
+  height: 12px !important
+
+.CrumbActive
+  max-width: none
+  flex-shrink: 1
+  color: $fg
+
+.CrumbActiveIcon
+  flex-shrink: 0
+  width: 24px
+  height: 24px
+  display: flex
+  align-items: center
+  justify-content: center
+  border-radius: 7px
+  background: $blue9
+  color: white
+
+  :global(.custom-svg-icon)
+    width: 12px !important
+    height: 12px !important
+
+.CrumbTrailingIcon
+  flex-shrink: 0
+  display: flex
+  color: $dimfg
+
+  :global(.custom-svg-icon)
+    width: 14px !important
+    height: 14px !important
+
+.CrumbTitle
+  max-width: 220px
+  min-width: 0
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+
+.UnsavedChanges
+  flex-shrink: 0
+  display: flex
+  align-items: center
+  gap: 2px
+  margin-left: $space-sm
+  color: $dimfg
+  font-size: $font-size-sm
+  font-weight: 400
+
+.UnsavedChangesDot
+  width: 16px !important
+  height: 16px !important
+  color: $orange9
+
+.AlignmentMenuButton
+  color: $dimfg
+
+.AlignmentDropdown
+  :global(.ant-dropdown-menu)
+    min-width: 180px
+
+  :global(.ant-dropdown-menu-item-group-title)
+    padding: $space-sm $space-m $space-xsm
+    color: $dimfg
+    font-size: 11px
+    font-weight: 600
+    letter-spacing: .04em
+
+  :global(.ant-dropdown-menu-item-group-list [role="menuitem"])
+    padding: $space-xsm $space-sm
+    padding-left: $space-sm !important
+
+  :global(.ant-dropdown-menu-item-selected)
+    color: $blue9
+    background: $blue2
+
+    &::after
+      content: "✓"
+      margin-left: auto
+
+.TabBody
+  height: 100%
+  display: flex
+  flex-direction: column
+
+.TabBodyCollapsed
+  visibility: hidden
+
+.TabActions
+  flex-shrink: 0
+  display: flex
+  align-items: center
+  column-gap: $space-sm
+  height: 100%
+
+.PanelToggleIcon
+  transition: transform 200ms ease
+
+  @media (prefers-reduced-motion: reduce)
+    transition: none
+
+.PanelToggleIconCollapsed
+  transform: rotate(180deg)
+
+.TabBodyContent
+  flex-grow: 1
+  min-height: 0
+  position: relative
+  overflow: auto

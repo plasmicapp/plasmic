@@ -14,8 +14,8 @@ async function createServerQuery(
   } & ({ url: string } | { urlExpression: string }),
 ) {
   await test.step(`Create server query "${opts.name}"`, async () => {
-    const serverQueryModal = models.studio.serverQueryBottomModal;
-    const previewResult = serverQueryModal.locator(".code-preview-inner");
+    const serverQueryPanel = models.studio.serverQueryPanel;
+    const previewResult = serverQueryPanel.locator(".code-preview-inner");
 
     await models.studio.rightPanel.addServerQueryButton.click();
     // When other components already have configured queries the add button becomes
@@ -30,18 +30,18 @@ async function createServerQuery(
     } catch {
       // No dropdown – query was created directly by the button click.
     }
-    // This is the server query created in the previous line
     await models.studio.rightPanel.serverQueriesSection
       .locator(`[data-plasmic-role="labeled-item"]`)
       .last()
       .click();
+    await serverQueryPanel.waitFor();
 
-    const queryNameInput = serverQueryModal.locator(
+    const queryNameInput = serverQueryPanel.locator(
       `[data-test-id="query-name"] input`,
     );
     await queryNameInput.fill(opts.name);
 
-    const urlInput = serverQueryModal
+    const urlInput = serverQueryPanel
       .locator(`[data-test-id="prop-editor-row-url"]`)
       .locator(`[data-plasmic-prop="url"]`);
 
@@ -54,11 +54,11 @@ async function createServerQuery(
       await models.studio.page.keyboard.type(opts.url);
     }
 
-    await serverQueryModal.locator("button").getByText("Execute").click();
+    await serverQueryPanel.locator("button").getByText("Execute").click();
     await expect(previewResult).toContainText(opts.expectedResult);
 
-    await serverQueryModal.locator("button").getByText("Save").click();
-    await serverQueryModal.waitFor({ state: "hidden" });
+    await serverQueryPanel.locator("button").getByText("Save").click();
+    await serverQueryPanel.waitFor({ state: "hidden" });
   });
 }
 
@@ -111,22 +111,23 @@ async function copyQueryFromPage(
  * Returns the code editor locator (ready for code insertion).
  */
 async function openNewCustomCodeQuery(models: PageModels, name: string) {
-  const serverQueryModal = models.studio.serverQueryBottomModal;
+  const serverQueryPanel = models.studio.serverQueryPanel;
 
   await models.studio.rightPanel.addServerQueryButton.click();
   await models.studio.rightPanel.serverQueriesSection
     .locator(`[data-plasmic-role="labeled-item"]`)
     .last()
     .click();
+  await serverQueryPanel.waitFor();
 
-  await serverQueryModal
+  await serverQueryPanel
     .locator(`[data-test-id="query-name"] input`)
     .fill(name);
 
-  await serverQueryModal.getByText("Select...").click();
+  await serverQueryPanel.getByText("Select...").click();
   await models.studio.frame.locator('[data-key="__custom_code__"]').click();
 
-  const codeEditor = serverQueryModal.locator(
+  const codeEditor = serverQueryPanel.locator(
     "div.react-monaco-editor-container",
   );
   await codeEditor.click();
@@ -179,8 +180,8 @@ test.describe("server queries", () => {
     });
     await goToProject(page, `/projects/${projectId}`);
 
-    const serverQueryModal = models.studio.serverQueryBottomModal;
-    const previewResult = serverQueryModal.locator(".code-preview-inner");
+    const serverQueryPanel = models.studio.serverQueryPanel;
+    const previewResult = serverQueryPanel.locator(".code-preview-inner");
     const queryRows =
       models.studio.rightPanel.serverQueriesSectionContent.locator(
         `[data-plasmic-role="labeled-item"]`,
@@ -231,10 +232,10 @@ test.describe("server queries", () => {
         await page.keyboard.press("ArrowLeft");
       }
 
-      await serverQueryModal
+      await serverQueryPanel
         .locator('[data-insert-path="$dataTokens"]')
         .click();
-      await serverQueryModal
+      await serverQueryPanel
         .locator('[data-insert-path="$dataTokens.planet"]')
         .click({ button: "right" });
       await models.studio.frame
@@ -247,11 +248,11 @@ test.describe("server queries", () => {
         "$dataTokens.planet",
       );
 
-      await serverQueryModal.locator("button").getByText("Execute").click();
+      await serverQueryPanel.locator("button").getByText("Execute").click();
       await expect(previewResult).toContainText("Welcome to Mars");
 
-      await serverQueryModal.locator("button").getByText("Save").click();
-      await serverQueryModal.waitFor({ state: "hidden" });
+      await serverQueryPanel.locator("button").getByText("Save").click();
+      await serverQueryPanel.waitFor({ state: "hidden" });
     });
     await assertQuerySummary("greeting");
 
@@ -264,22 +265,22 @@ test.describe("server queries", () => {
       await page.keyboard.type("[1, 2, 3");
       await expect(codeEditor.locator(".view-line")).toHaveText(["[1, 2, 3]"]);
 
-      await serverQueryModal.locator("button").getByText("Execute").click();
+      await serverQueryPanel.locator("button").getByText("Execute").click();
       await expect(previewResult).toContainText("[1, 2, 3]");
 
-      await serverQueryModal.locator("button").getByText("Save").click();
-      await serverQueryModal.waitFor({ state: "hidden" });
+      await serverQueryPanel.locator("button").getByText("Save").click();
+      await serverQueryPanel.waitFor({ state: "hidden" });
     });
 
     await test.step('Create "Full Greeting" query with $q reference from inspector', async () => {
       const codeEditor = await openNewCustomCodeQuery(models, "Full Greeting");
 
       // Insert $q.greeting.data from the data context inspector
-      await serverQueryModal.locator('[data-insert-path="$q"]').click();
-      await serverQueryModal
+      await serverQueryPanel.locator('[data-insert-path="$q"]').click();
+      await serverQueryPanel
         .locator('[data-insert-path="$q.greeting"]')
         .click();
-      await serverQueryModal
+      await serverQueryPanel
         .locator('[data-insert-path="$q.greeting.data"]')
         .click({ button: "right" });
       await models.studio.frame
@@ -291,13 +292,13 @@ test.describe("server queries", () => {
       // Use synthetic paste so Monaco doesn't auto-close the inner `"`.
       await pasteIntoMonaco(codeEditor, ' + ", enjoy your stay!"');
 
-      await serverQueryModal.locator("button").getByText("Execute").click();
+      await serverQueryPanel.locator("button").getByText("Execute").click();
       await expect(previewResult).toContainText(
         "Welcome to Mars, enjoy your stay!",
       );
 
-      await serverQueryModal.locator("button").getByText("Save").click();
-      await serverQueryModal.waitFor({ state: "hidden" });
+      await serverQueryPanel.locator("button").getByText("Save").click();
+      await serverQueryPanel.waitFor({ state: "hidden" });
     });
     await assertQuerySummary("greeting");
     await assertQuerySummary("fullGreeting");
@@ -305,7 +306,7 @@ test.describe("server queries", () => {
     await test.step("reopened query shows data token in display format", async () => {
       await queryRows.getByText("Greeting", { exact: true }).click();
 
-      const codeEditor = serverQueryModal.locator(
+      const codeEditor = serverQueryPanel.locator(
         "div.react-monaco-editor-container",
       );
       await codeEditor.waitFor({ state: "visible" });
@@ -316,8 +317,8 @@ test.describe("server queries", () => {
         "$dataTokens.planet",
       );
 
-      await serverQueryModal.locator("button").getByText("Save").click();
-      await serverQueryModal.waitFor({ state: "hidden" });
+      await serverQueryPanel.locator("button").getByText("Save").click();
+      await serverQueryPanel.waitFor({ state: "hidden" });
     });
 
     await test.step("duplicate Full Greeting query", async () => {
@@ -438,13 +439,14 @@ test.describe("server queries", () => {
     await models.studio.leftPanel.createNewPage("CMS Page");
     await models.studio.rightPanel.clickPageData();
 
-    const serverQueryModal = models.studio.serverQueryBottomModal;
+    const serverQueryPanel = models.studio.serverQueryPanel;
     await models.studio.rightPanel.addServerQueryButton.click();
     await models.studio.rightPanel.serverQueriesSection
       .locator(`[data-plasmic-role="labeled-item"]`)
       .last()
       .click();
-    await serverQueryModal
+    await serverQueryPanel.waitFor();
+    await serverQueryPanel
       .locator(`[data-test-id="query-name"] input`)
       .fill("cmsTables");
 
@@ -453,7 +455,7 @@ test.describe("server queries", () => {
         `[data-key="install-custom-function-${functionId}"]`,
       );
 
-    await serverQueryModal.getByText("Select...").click();
+    await serverQueryPanel.getByText("Select...").click();
     // Each declared function is its own option, keyed by its customFunctionId.
     await expect(installOption("plasmicCms.fetchTables")).toBeVisible();
     await expect(installOption("plasmicCms.fetchContent")).toBeVisible();
@@ -463,14 +465,14 @@ test.describe("server queries", () => {
     // fetchTables and fetchContent share host/cmsId/cmsPublicToken, so tableId is
     // what proves the requested function was bound rather than a sibling query.
     await expect(
-      serverQueryModal.locator(`[data-test-id="prop-editor-row-cmsId"]`),
+      serverQueryPanel.locator(`[data-test-id="prop-editor-row-cmsId"]`),
     ).toBeVisible();
     await expect(
-      serverQueryModal.locator(`[data-test-id="prop-editor-row-tableId"]`),
+      serverQueryPanel.locator(`[data-test-id="prop-editor-row-tableId"]`),
     ).toBeHidden();
 
-    await serverQueryModal.locator("button").getByText("Save").click();
-    await serverQueryModal.waitFor({ state: "hidden" });
+    await serverQueryPanel.locator("button").getByText("Save").click();
+    await serverQueryPanel.waitFor({ state: "hidden" });
 
     const queryRow = models.studio.rightPanel.serverQueriesSectionContent
       .locator(`[data-plasmic-role="labeled-item"]`)
@@ -480,7 +482,7 @@ test.describe("server queries", () => {
     // Installing the package moves every function it declares out of the
     // installable group, including the ones the test never picked.
     await queryRow.click();
-    await serverQueryModal
+    await serverQueryPanel
       .locator(`[data-test-id="data-query-fn"] button`)
       .click();
     await expect(
@@ -642,9 +644,9 @@ test.describe("server queries", () => {
     await models.studio.leftPanel.createNewPage("GraphQL Page");
     await models.studio.rightPanel.clickPageData();
 
-    const serverQueryModal = models.studio.serverQueryBottomModal;
-    const previewResult = serverQueryModal.locator(".code-preview-inner");
-    const executeButton = serverQueryModal
+    const serverQueryPanel = models.studio.serverQueryPanel;
+    const previewResult = serverQueryPanel.locator(".code-preview-inner");
+    const executeButton = serverQueryPanel
       .locator("button")
       .getByText("Execute");
 
@@ -654,21 +656,22 @@ test.describe("server queries", () => {
       .locator(`[data-plasmic-role="labeled-item"]`)
       .last()
       .click();
-    await serverQueryModal
+    await serverQueryPanel.waitFor();
+    await serverQueryPanel
       .locator(`[data-test-id="query-name"] input`)
       .fill("gqlQuery");
 
-    const urlRow = serverQueryModal.locator(
+    const urlRow = serverQueryPanel.locator(
       '[data-test-id="prop-editor-row-url"]',
     );
-    const methodRow = serverQueryModal.locator(
+    const methodRow = serverQueryPanel.locator(
       '[data-test-id="prop-editor-row-method"]',
     );
-    const requestRow = serverQueryModal.locator(
+    const requestRow = serverQueryPanel.locator(
       '[data-test-id="prop-editor-row-request"]',
     );
     const urlInput = urlRow.locator('[data-plasmic-prop="url"]');
-    const invalidArgIcons = serverQueryModal.locator(".invalid-arg-icon");
+    const invalidArgIcons = serverQueryPanel.locator(".invalid-arg-icon");
     const setIndicator = (row: typeof urlRow) =>
       row.locator('[class*="DefinedIndicator--set"]');
 
@@ -687,14 +690,14 @@ test.describe("server queries", () => {
     await test.step("executing with missing required params is blocked with validation errors", async () => {
       await executeButton.click();
       await expect(
-        serverQueryModal.getByText("Fix validation errors"),
+        serverQueryPanel.getByText("Fix validation errors"),
       ).toBeVisible();
       await expect(
-        serverQueryModal.getByText("These parameters have invalid values:"),
+        serverQueryPanel.getByText("These parameters have invalid values:"),
       ).toBeVisible();
-      await expect(serverQueryModal.getByText("URL: Required")).toBeVisible();
+      await expect(serverQueryPanel.getByText("URL: Required")).toBeVisible();
       await expect(
-        serverQueryModal.getByText("Request: Required"),
+        serverQueryPanel.getByText("Request: Required"),
       ).toBeVisible();
       await expect(invalidArgIcons).toHaveCount(2);
       expect(receivedMethods).toEqual([]);
@@ -708,13 +711,13 @@ test.describe("server queries", () => {
 
       await executeButton.click();
       await expect(
-        serverQueryModal.getByText("This parameter has an invalid value:"),
+        serverQueryPanel.getByText("This parameter has an invalid value:"),
       ).toBeVisible();
       await expect(
-        serverQueryModal.getByText("Request: Required"),
+        serverQueryPanel.getByText("Request: Required"),
       ).toBeVisible();
       await expect(
-        serverQueryModal.getByText("URL: Required"),
+        serverQueryPanel.getByText("URL: Required"),
       ).not.toBeVisible();
       await expect(invalidArgIcons).toHaveCount(1);
     });
@@ -765,15 +768,15 @@ test.describe("server queries", () => {
       await executeButton.click();
       await expect(previewResult).toContainText("statusCode: 200");
       await expect(
-        serverQueryModal.getByText("Fix validation errors"),
+        serverQueryPanel.getByText("Fix validation errors"),
       ).not.toBeVisible();
       await expect(invalidArgIcons).toHaveCount(0);
 
       // The reset `method` default actually flowed through to the request.
       expect([...new Set(receivedMethods)]).toEqual(["POST"]);
 
-      await serverQueryModal.locator("button").getByText("Save").click();
-      await serverQueryModal.waitFor({ state: "hidden" });
+      await serverQueryPanel.locator("button").getByText("Save").click();
+      await serverQueryPanel.waitFor({ state: "hidden" });
     });
   });
 

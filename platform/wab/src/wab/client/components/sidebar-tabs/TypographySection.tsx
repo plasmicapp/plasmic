@@ -1,17 +1,23 @@
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
+import { modelBindingTarget } from "@/wab/client/components/editor-sessions/model-binding-target";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
 import {
   StringPropEditor,
   TemplatedStringPropEditor,
 } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
 import { FallbackEditor } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
-import { DataTokenEditModal } from "@/wab/client/components/sidebar/DataTokenEditModal";
 import {
-  getValueSetState,
+  DataDropTargetHandlers,
+  acceptDataDrop,
+} from "@/wab/client/components/sidebar-tabs/DataBinding/data-drop";
+import { PropEditorRef } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import { DataTokenEditModal } from "@/wab/client/components/sidebar/DataTokenEditModal";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import {
   LabeledItemRow,
   ValueSetState,
+  getValueSetState,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
-import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   ExpsProvider,
   StylePanelSection,
@@ -27,17 +33,21 @@ import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelW
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import { assert, cx, ensureInstance } from "@/wab/shared/common";
 import {
+  isCodeComponentSlot,
+  isPlainTextTplSlot,
+} from "@/wab/shared/SlotUtils";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { cx, ensureInstance } from "@/wab/shared/common";
+import {
+  ExprCtx,
   asCode,
   clone,
   codeLit,
   createExprForDataPickerValue,
-  ExprCtx,
   extractValueSavedFromDataPicker,
   flattenTemplatedStringToString,
   isFallbackSet,
-  tryExtractString,
 } from "@/wab/shared/core/exprs";
 import {
   inheritableTypographyCssProps,
@@ -49,26 +59,25 @@ import {
   mkDataTokenExprText,
 } from "@/wab/shared/core/tpls";
 import {
+  SCALAR_DATA_TYPES,
+  computeDropTextExpr,
+} from "@/wab/shared/data-picker/data-drop-compat";
+import {
   CustomCode,
   DataToken,
-  ensureKnownTplTag,
   ExprText,
-  isKnownCustomCode,
-  isKnownExprText,
-  isKnownObjectPath,
-  isKnownTemplatedString,
   ObjectPath,
   RawText,
   RichText,
   TemplatedString,
   TplSlot,
   TplTag,
+  ensureKnownTplTag,
+  isKnownCustomCode,
+  isKnownExprText,
+  isKnownObjectPath,
+  isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
-import {
-  isCodeComponentSlot,
-  isPlainTextTplSlot,
-} from "@/wab/shared/SlotUtils";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Alert, Menu, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
@@ -208,6 +217,7 @@ export const TextContentRow = observer(function TextContentRow(props: {
   const { expsProvider, viewCtx } = props;
   const studioCtx = useStudioCtx();
   const contentRef = React.useRef<HTMLDivElement>(null);
+  const templatedEditorRef = React.useRef<PropEditorRef>(null);
   const [isDataPickerVisible, setIsDataPickerVisible] =
     React.useState<boolean>(false);
   const [editDataToken, setEditDataToken] = React.useState<DataToken | null>(
@@ -279,9 +289,13 @@ export const TextContentRow = observer(function TextContentRow(props: {
 
   const setState = getValueSetState(indicator);
 
+  const textVariants = vtm.getTargetVariantComboForNode(textTpl);
+  const textBindingTarget = modelBindingTarget(viewCtx, textTpl, textVariants, {
+    kind: "text",
+  });
   const onChange = (newValue: RichText | null) => {
-    viewCtx.change(() => {
-      vtm.ensureCurrentVariantSetting(textTpl).text = newValue;
+    return studioCtx.changeUnsafe(() => {
+      vtm.ensureVariantSetting(textTpl, textVariants).text = newValue;
     });
   };
 
@@ -291,7 +305,7 @@ export const TextContentRow = observer(function TextContentRow(props: {
     inStudio: true,
   };
   const switchToDynamicValue = (dataTokenName: string) => {
-    onChange(mkDataTokenExprText(viewCtx.siteInfo.id, dataTokenName));
+    void onChange(mkDataTokenExprText(viewCtx.siteInfo.id, dataTokenName));
   };
 
   const applyDynamicValue = convertToDynamicValue
@@ -301,6 +315,41 @@ export const TextContentRow = observer(function TextContentRow(props: {
         setIsDataPickerVisible(true);
       }
     : undefined;
+  const contentEnv = viewCtx.getCanvasEnvForTpl(tpl);
+  const dataDropTarget: DataDropTargetHandlers | undefined =
+    !isDisabled && contentEnv
+      ? {
+          accepts: (payload) =>
+            acceptDataDrop(
+              payload,
+              contentEnv,
+              viewCtx,
+              SCALAR_DATA_TYPES,
+              `${payload.varType} cannot be used as text content.`,
+            ),
+          onDropData: (payload, dropPt) => {
+            const replacement = computeDropTextExpr(
+              text,
+              payload.path,
+              isSubNode,
+            );
+            if (!replacement) {
+              // Mixed static/dynamic sub-node content inserts at the drop point.
+              templatedEditorRef.current?.useDynamicValue?.(
+                createExprForDataPickerValue(payload.path, undefined),
+                dropPt,
+              );
+              return;
+            }
+            void onChange(
+              new ExprText({
+                expr: replacement,
+                html: isKnownExprText(text) ? text.html : false,
+              }),
+            );
+          },
+        }
+      : undefined;
   const contextMenu = () => {
     return (
       <Menu>
@@ -351,6 +400,7 @@ export const TextContentRow = observer(function TextContentRow(props: {
           onIndicatorClickDefault={applyDynamicValue}
           className="qb-custom-widget"
           fullWidth
+          dataDropTarget={dataDropTarget}
         >
           <MaybeWrap
             cond={!!isDisabled}
@@ -368,6 +418,7 @@ export const TextContentRow = observer(function TextContentRow(props: {
             {isKnownExprText(text) ? (
               isSubNode ? (
                 <TemplatedStringPropEditor
+                  bindingTarget={textBindingTarget}
                   viewCtx={viewCtx}
                   value={text.expr}
                   onChange={(val) => {
@@ -375,7 +426,7 @@ export const TextContentRow = observer(function TextContentRow(props: {
                       typeof val === "string"
                         ? new TemplatedString({ text: [val] })
                         : val;
-                    onChange(
+                    return onChange(
                       new ExprText({
                         expr: newExpr,
                         html: text.html,
@@ -383,55 +434,24 @@ export const TextContentRow = observer(function TextContentRow(props: {
                     );
                   }}
                   disabled={isDisabled}
-                  data={viewCtx.getCanvasEnvForTpl(tpl)}
+                  data={contentEnv}
                   schema={viewCtx.customFunctionsSchema()}
                   component={viewCtx.currentComponent()}
-                  key={tpl.uid}
+                  key={textBindingTarget.key}
+                  ref={templatedEditorRef}
                 />
               ) : (
                 <DataPickerEditor
                   viewCtx={viewCtx}
+                  title="Text"
+                  target={textBindingTarget}
                   value={extractValueSavedFromDataPicker(text.expr, exprCtx)}
-                  onChange={(val) => {
-                    if (!val) {
-                      return;
-                    }
-                    assert(
-                      codeExpr,
-                      "Unexpected undefined value, codeExpr must be defined when data binding",
-                    );
-                    const fallbackExpr = codeExpr.fallback
-                      ? clone(codeExpr.fallback)
-                      : undefined;
-                    const newExpr = createExprForDataPickerValue(
-                      val,
-                      fallbackExpr,
-                    );
-                    onChange(
-                      new ExprText({
-                        expr: newExpr,
-                        html: text.html,
-                      }),
-                    );
-                  }}
-                  onUnlink={() => {
-                    const fallbackText =
-                      (codeExpr &&
-                        isKnownCustomCode(codeExpr.fallback) &&
-                        tryExtractString(codeExpr.fallback)) ||
-                      "";
-                    onChange(
-                      new RawText({
-                        text: fallbackText,
-                        markers: [],
-                      }),
-                    );
-                  }}
+
                   visible={isDataPickerVisible}
                   setVisible={setIsDataPickerVisible}
                   isDisabled={isDisabled}
                   disabledTooltip={disabledTooltip}
-                  data={viewCtx.getCanvasEnvForTpl(tpl)}
+                  data={contentEnv}
                   schema={viewCtx.customFunctionsSchema()}
                   key={tpl.uid}
                   context="The text content to be displayed"

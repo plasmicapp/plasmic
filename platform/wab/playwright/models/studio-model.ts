@@ -68,8 +68,8 @@ export class StudioModel extends BaseModel {
     'input[data-test-id="extract-component-name"]',
   );
 
-  readonly serverQueryBottomModal: Locator = this.frame.locator(
-    '[data-test-id="server-query-bottom-modal"]',
+  readonly serverQueryPanel: Locator = this.frame.locator(
+    '[data-test-id="bottom-panel"]:has([data-test-id="server-query-panel"])',
   );
   readonly notification: Locator = this.frame.locator(
     ".ant-notification-notice",

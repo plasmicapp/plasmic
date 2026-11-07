@@ -1,5 +1,5 @@
 import {
-  useDataSourceOpExprBottomModal,
+  useDataSourceOpExprPanel,
   useSource,
 } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
@@ -23,6 +23,7 @@ import {
   ensure,
   maybe,
   maybeFirst,
+  spawn,
   swallow,
   unexpected,
 } from "@/wab/shared/common";
@@ -238,7 +239,7 @@ export const PageURLParametersSection = observer(
       () => `view-record-${page.uuid}`,
       [page.uuid],
     );
-    const { open, close } = useDataSourceOpExprBottomModal(queryKey);
+    const { open, close } = useDataSourceOpExprPanel(queryKey);
 
     return (
       <SidebarSection
@@ -283,20 +284,23 @@ export const PageURLParametersSection = observer(
                       onSave: () => {},
                       onCancel: () => close(),
                       isRowSelector: true,
-                      onRowSelected: async (row) => {
-                        await sc.changeUnsafe(() => {
-                          // Make sure to convert these to strings, since query params are always strings.
-                          pageMeta.params = {
-                            ...pageMeta.params,
-                            ...Object.fromEntries(
-                              mainDetailsSpec.pathParams.map((p) => [
-                                p,
-                                valueAsString(row[p]),
-                              ]),
-                            ),
-                          };
-                        });
-                        close();
+                      onRowSelected: (row) => {
+                        spawn(
+                          sc
+                            .changeUnsafe(() => {
+                              // Make sure to convert these to strings, since query params are always strings.
+                              pageMeta.params = {
+                                ...pageMeta.params,
+                                ...Object.fromEntries(
+                                  mainDetailsSpec.pathParams.map((p) => [
+                                    p,
+                                    valueAsString(row[p]),
+                                  ]),
+                                ),
+                              };
+                            })
+                            .then(() => close()),
+                        );
                       },
                       livePreview: true,
                       selectedRowKey: mainDetailsSpec.pathParams

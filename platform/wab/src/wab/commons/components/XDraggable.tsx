@@ -212,7 +212,11 @@ class _XDraggable extends React.Component<XDraggableProps, XDraggableState> {
     return (
       <>
         {this.state.lastEvent && this.state.lastEvent.data.started && (
-          <UseKey filter={"Escape"} fn={this.handleEscape} />
+          <UseKey
+            filter={"Escape"}
+            fn={this.handleEscape}
+            options={{ capture: true }}
+          />
         )}
         {/* @ts-ignore */}
         <DraggableCore

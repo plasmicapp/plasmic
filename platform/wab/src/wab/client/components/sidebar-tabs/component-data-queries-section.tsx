@@ -1,8 +1,8 @@
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
+import { omitDataQueryFromEnv } from "@/wab/client/components/editor-sessions/query-env";
 import {
   DataSourceOpExprSummary,
   DataSourceOpValuePreview,
-  useDataSourceOpExprBottomModal,
 } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { IconLinkButton, LinkButton } from "@/wab/client/components/widgets";
@@ -18,6 +18,8 @@ import {
   makeAllLegacyQueriesMigrationPrompt,
   makeLegacyQueryMigrationPrompt,
 } from "@/wab/client/copilot/query-migration";
+import { useOpenNewlyAddedQuery } from "@/wab/client/hooks/useOpenNewlyAddedQuery";
+import { useOpenQueryPanel } from "@/wab/client/hooks/useOpenQueryPanel";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { SparklesSvgIcon } from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__SparklesSvg";
 import {
@@ -35,7 +37,6 @@ import {
 } from "@/wab/shared/Labels";
 import { addEmptyQuery } from "@/wab/shared/TplMgr";
 import { getTplComponentFetchers } from "@/wab/shared/cached-selectors";
-import { toVarName } from "@/wab/shared/codegen/util";
 import { spawn } from "@/wab/shared/common";
 import { isPageComponent } from "@/wab/shared/core/components";
 import { ExprCtx, asCode } from "@/wab/shared/core/exprs";
@@ -44,7 +45,6 @@ import { checkLegacyQueryMigratable } from "@/wab/shared/data-sources-meta/legac
 import {
   Component,
   ComponentDataQuery,
-  DataSourceOpExpr,
   TplComponent,
   isKnownDataSourceOpExpr,
   isKnownTemplatedString,
@@ -52,11 +52,9 @@ import {
 import {
   findLegacyQueriesReadByOp,
   findQueryInvalidationRefs,
-  renameQueryAndFixExprs,
 } from "@/wab/shared/refactoring";
 import { PlasmicDataSourceContextProvider } from "@plasmicapp/react-web";
 import { Menu } from "antd";
-import { autorun } from "mobx";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
 import React from "react";
@@ -116,38 +114,13 @@ const DataQueryRow = observer(
       inStudio: true,
     };
 
-    const handleDataSourceOpChange = async (
-      newOp: DataSourceOpExpr,
-      opExprName?: string,
-    ) => {
-      await studioCtx.change(() => {
-        query.op = newOp;
-        if (opExprName && opExprName !== query.name) {
-          renameQueryAndFixExprs(component, query, opExprName);
-        }
-        return ok();
-      });
-      dataSourceModal.close();
-    };
-
-    const dataSourceModal = useDataSourceOpExprBottomModal(query.uuid);
-    const openDataSourceModal = () => {
-      dataSourceModal.open({
-        parent: query,
-        value: query.op ?? undefined,
-        onSave: handleDataSourceOpChange,
-        onCancel: dataSourceModal.close,
-        env,
-        schema,
-        readOpsOnly: true,
-        exprCtx,
-      });
-    };
+    const openQuery = useOpenQueryPanel();
+    const openDataSourceModal = () => openQuery(viewCtx, query);
 
     const menu = () => {
       return (
         <Menu>
-          <Menu.Item onClick={() => openDataSourceModal()}>
+          <Menu.Item onClick={openDataSourceModal}>
             {CONFIGURE_ACTION}
           </Menu.Item>
           {showMigrateItem && (
@@ -183,28 +156,14 @@ const DataQueryRow = observer(
       );
     };
 
-    // For some reason calling `omit` tries to read from the query data,
-    // throwing `PlasmicUndefinedDataError`
-    const env = {
-      ...viewCtx.getCanvasEnvForTpl(viewCtx.currentCtxTplRoot(), {
+    const env = omitDataQueryFromEnv(
+      viewCtx.getCanvasEnvForTpl(viewCtx.currentCtxTplRoot(), {
         forDataRepCollection: true,
       }),
-    };
-    if (env.$queries) {
-      env.$queries = { ...env.$queries };
-      delete env.$queries[toVarName(query.name)];
-    }
-    const schema = viewCtx.customFunctionsSchema();
+      query,
+    );
 
-    React.useEffect(() => {
-      const dispose = autorun(() => {
-        if (studioCtx.newlyAddedQuery === query) {
-          studioCtx.newlyAddedQuery = undefined;
-          openDataSourceModal();
-        }
-      });
-      return () => dispose();
-    }, [query]);
+    useOpenNewlyAddedQuery(studioCtx, query, openDataSourceModal);
 
     return (
       <WithContextMenu overlay={menu}>
@@ -212,7 +171,7 @@ const DataQueryRow = observer(
           uiId={mkComponentScopedUiId(query, component.uuid)}
           label={query.name}
           menu={menu}
-          onClick={() => openDataSourceModal()}
+          onClick={openDataSourceModal}
         >
           {query.op ? (
             <div className="flex flex-col fill-width">

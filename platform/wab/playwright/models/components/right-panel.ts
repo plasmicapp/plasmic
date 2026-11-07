@@ -287,7 +287,7 @@ export class RightPanel extends BaseModel {
 
   getStateVariable(stateVar: string): Locator {
     const stateVariable = this.frame
-      .locator(`[data-test-id="0-${stateVar}"]`)
+      .locator(`[data-test-id="data-picker"] [data-test-id="0-${stateVar}"]`)
       .first();
     return stateVariable;
   }
@@ -1113,7 +1113,7 @@ export class RightPanel extends BaseModel {
       .click();
 
     const modal = this.frame.locator(
-      '[data-test-id="server-query-bottom-modal"]',
+      '[data-test-id="bottom-panel"]:has([data-test-id="server-query-panel"])',
     );
     await modal.getByRole("button", { name: "Select...", exact: true }).click();
     await this.frame
@@ -1477,7 +1477,14 @@ export class RightPanel extends BaseModel {
 
   async closeDataPicker() {
     const picker = this.frame.locator('[data-test-id="data-picker"]');
-    await picker.getByRole("button", { name: "Cancel" }).click();
+    // Docked (dockview devflag), the picker's buttons are in the panel's
+    // action row rather than in the picker.
+    await this.frame
+      .locator(
+        '[data-test-id="data-picker"], [data-test-id="bottom-panel-actions"]',
+      )
+      .getByRole("button", { name: "Cancel" })
+      .click();
     await picker.waitFor({ state: "detached", timeout: 5000 });
   }
 

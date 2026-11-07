@@ -34,6 +34,7 @@ import {
   makeCancelable,
   maybe,
 } from "@/wab/shared/common";
+import type { DropdownProps } from "antd";
 import { Dropdown, Table, Tooltip } from "antd";
 import classNames from "classnames";
 import { isKeyHotkey } from "is-hotkey";
@@ -755,6 +756,7 @@ export const IFrameAwareDropdownMenu = (props: {
   menu: React.ReactNode | MenuMaker;
   children?: ReactNode;
   disabled?: boolean;
+  placement?: DropdownProps["placement"];
   overlayClassName?: string;
   overlayStyle?: CSSProperties;
   onVisibleChange?: (visible: boolean) => void;
@@ -781,6 +783,7 @@ export const IFrameAwareDropdownMenu = (props: {
   return (
     <Dropdown
       disabled={props.disabled}
+      placement={props.placement}
       overlay={() => {
         const { menu } = props;
         const effectiveMenu = (

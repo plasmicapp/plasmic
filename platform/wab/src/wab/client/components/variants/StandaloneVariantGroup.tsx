@@ -9,6 +9,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { VariantPinState } from "@/wab/shared/PinManager";
 import { ensure, spawn } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   Component,
   ComponentVariantGroup,
@@ -67,6 +68,9 @@ function StandaloneVariant_(props: StandaloneVariantProps) {
       plumeDef={plumeDef}
       hasCodeExpression={hasCodeExpression}
       exprButton={{
+        props: DEVFLAGS.dockview
+          ? { onClick: () => setVisibleDataPicker(true) }
+          : {},
         wrap: (node) => (
           <VariantDataPicker
             studioCtx={studioCtx}

@@ -1,3 +1,4 @@
+import { BindingIdentity } from "@/wab/client/components/editor-sessions/binding-session";
 import { ArrayPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/ArrayPropEditor";
 import { BoolPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/BoolPropEditor";
 import { CardPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/CardPickerEditor";
@@ -174,6 +175,7 @@ const PropValueEditor_ = (
     onChange: (value: JsonValue | Expr | undefined) => void;
     onDelete?: () => void;
     controlExtras?: ControlExtras;
+    bindingTarget?: BindingIdentity;
     hideDefaultValueHint?: boolean;
   },
   ref,
@@ -937,16 +939,23 @@ const PropValueEditor_ = (
     }
     const data = {
       ...propData,
-      ...(tpl && mergeWithExternalData
-        ? {
-            ...env,
-            ..._getContextDependentValue(hackyCast(propType).extraData),
-          }
-        : {}),
+      ...(tpl &&
+        mergeWithExternalData && {
+          ...env,
+          ..._getContextDependentValue(hackyCast(propType).extraData),
+        }),
     };
     return (
       <DataPickerEditor
         viewCtx={viewCtx}
+        title={label}
+        target={
+          props.bindingTarget && {
+            key: props.bindingTarget.key,
+            exists: props.bindingTarget.exists,
+            read: props.bindingTarget.read,
+          }
+        }
         value={value as (string | number)[] | string}
         onChange={onChange}
         visible={isDataPickerVisible}
@@ -972,16 +981,16 @@ const PropValueEditor_ = (
     }
     const data = {
       ...propData,
-      ...(tpl && mergeWithExternalData
-        ? {
-            ...env,
-            ..._getContextDependentValue(hackyCast(propType).extraData),
-          }
-        : {}),
+      ...(tpl &&
+        mergeWithExternalData && {
+          ...env,
+          ..._getContextDependentValue(hackyCast(propType).extraData),
+        }),
     };
 
     return (
       <ExprEditor
+        title={label}
         value={value as Expr | null}
         onChange={onChange}
         data={data}
@@ -1320,8 +1329,11 @@ const PropValueEditor_ = (
         : undefined;
     return (
       <TemplatedStringPropEditor
+        key={props.bindingTarget?.key}
+        bindingTarget={props.bindingTarget}
         data={env}
         schema={schema}
+        title={label}
         viewCtx={viewCtx}
         value={isTemplatedStringEditorValue(value) ? value : undefined}
         readOnly={readOnly}

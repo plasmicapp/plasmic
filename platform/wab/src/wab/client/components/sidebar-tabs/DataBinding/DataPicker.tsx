@@ -1,11 +1,16 @@
+import {
+  BottomPanelButtons,
+  SessionStatus,
+} from "@/wab/client/components/BottomPanel";
 import type { FullCodeEditor } from "@/wab/client/components/coding/FullCodeEditor";
 import {
-  checkDisallowedStateBindingAssignment,
-  checkDisallowedUseOfLibs,
-  checkStrSizeLimit,
-  checkSyntaxError,
-  checkWindowGlobalUsage,
-} from "@/wab/client/components/sidebar-tabs/ComponentProps/CodeEditor";
+  BindingDraft,
+  BindingIdentity,
+  createBindingSession,
+  validateBindingCode,
+} from "@/wab/client/components/editor-sessions/binding-session";
+import { EditorSession } from "@/wab/client/components/editor-sessions/editor-session";
+import sty from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker.module.scss";
 import DataPickerColumn from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerColumn";
 import DataPickerGlobalSearchResultsItem from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerGlobalSearchResultsItem";
 import DataPickerSelectedItem from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerSelectedItem";
@@ -26,30 +31,34 @@ import {
   prepareEnvForDataPicker,
 } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import { Matcher } from "@/wab/client/components/view-common";
+import Button from "@/wab/client/components/widgets/Button";
 import { ModalScope } from "@/wab/client/components/widgets/ModalScope";
+import Searchbox from "@/wab/client/components/widgets/Searchbox";
 import { TextboxRef } from "@/wab/client/components/widgets/Textbox";
 import { useViewCtxMaybe } from "@/wab/client/contexts/StudioContexts";
 import {
   DefaultDataPickerProps,
   PlasmicDataPicker,
 } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPicker";
+import { useStudioCtxMaybe } from "@/wab/client/studio-ctx/StudioCtx";
+import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
-import { DATA_QUERY_LOWER, VARIABLE_LOWER } from "@/wab/shared/Labels";
+import {
+  DATA_QUERY_LOWER,
+  SERVER_QUERY_LOWER,
+  VARIABLE_LOWER,
+} from "@/wab/shared/Labels";
 import { ensure, isPrefixArray, sortBy } from "@/wab/shared/common";
 import { UnwrappedQueryResult } from "@/wab/shared/core/custom-functions";
 import { flattenedKeys } from "@/wab/shared/core/exprs";
 import { getFlattenedStateNames } from "@/wab/shared/core/states";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { formatErrorMessage } from "@/wab/shared/error-handling";
-import {
-  pathToString,
-  transformDataTokenPathToBundle,
-  transformDataTokenPathToDisplay,
-  transformDataTokensInCode,
-  transformDataTokensToDisplay,
-} from "@/wab/shared/eval/expression-parser";
-import { Component, Interaction } from "@/wab/shared/model/classes";
+import { pathToString } from "@/wab/shared/eval/expression-parser";
+import { Component, TplNode } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { head, mapValues, partition } from "lodash";
+import { observer } from "mobx-react";
 import * as React from "react";
 import { useUpdateEffect } from "react-use";
 
@@ -81,14 +90,6 @@ export interface DataPickerTypesSchema {
   [key: string]: string;
 }
 
-export const DataPickerRunCodeActionContext = React.createContext<
-  | {
-      interaction: Interaction;
-      stepValue: any;
-    }
-  | undefined
->(undefined);
-
 export interface DataPickerProps extends Omit<
   DefaultDataPickerProps,
   "expectedValues" | "hasExpectedValues"
@@ -109,14 +110,29 @@ export interface DataPickerProps extends Omit<
   // A brief description of what the expression is supposed to be used for
   context?: string;
   onRunClick?: (value: string) => void;
+  /** Rendered as a bottom panel tab rather than as a popover. */
+  docked?: boolean;
+  browseOnly?: boolean;
+  session?: EditorSession<BindingDraft>;
+  previewTpl?: TplNode;
+  previewComponent?: Component;
+  forDataRepCollection?: boolean;
+  target?: BindingIdentity;
+  viewCtx?: ViewCtx;
+  saveAndClose?: () => Promise<boolean>;
 }
 
 const DATA_PICKER_WIDTH = "70vw";
+const DOCKED_ROOT_STYLE: React.CSSProperties = {
+  width: "100%",
+  height: "100%",
+  minWidth: 0,
+};
+/** Drops a node the docked picker renders in <BottomPanelButtons/> instead. */
+const UNRENDERED = { render: () => null } as const;
 
 function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
   const {
-    value,
-    onChange,
     onCancel,
     data,
     schema,
@@ -124,51 +140,52 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
     onDelete,
     hideStateSwitch,
     expectedValues,
-    initialMode = "dataPicking",
     withAddQuery,
     onAddQuery,
     onAddVariableBtnClick,
     hidePreview,
     context,
+    docked,
+    browseOnly,
   } = props;
-  const viewCtx = useViewCtxMaybe();
+  const contextViewCtx = useViewCtxMaybe();
+  const studioCtx = useStudioCtxMaybe();
+  const viewCtx = props.viewCtx ?? contextViewCtx;
 
-  // Transform value from storage format to display format for DataPicker UI
-  const displayValue = React.useMemo(() => {
-    if (!value || !viewCtx) {
-      return value;
-    }
-    if (typeof value === "string") {
-      return transformDataTokensToDisplay(
-        value,
-        viewCtx.site,
-        viewCtx.siteInfo.id,
-      );
-    }
-    return transformDataTokenPathToDisplay(
-      value,
-      viewCtx.site,
-      viewCtx.siteInfo.id,
-    );
-  }, [value, viewCtx?.site, viewCtx?.siteInfo]);
-
-  const [codeEditing, setCodeEditing] = React.useState(
-    !displayValue
-      ? initialMode === "codeEditing"
-      : typeof displayValue === "string",
+  const latestProps = React.useRef(props);
+  latestProps.current = props;
+  const [localSession] = React.useState(
+    () =>
+      props.session ??
+      createBindingSession(
+        {
+          ...props,
+          target: undefined,
+          onChange: (value) => latestProps.current.onChange(value),
+        },
+        viewCtx,
+        { studioCtx },
+      ),
   );
+  const session = props.session ?? localSession;
+  const { codeEditing, code: currentCode } = session.draft;
+  const setCurrentCode = (code: string) =>
+    session.setDraft((previous) => ({ ...previous, code }));
+  const setCodeEditing = (editing: boolean) =>
+    session.setDraft((previous) => ({ ...previous, codeEditing: editing }));
+  const setPath = (path: (string | number)[]) =>
+    session.setDraft((previous) => ({
+      ...previous,
+      path,
+      code: pathToString(path),
+    }));
   const [query, setQuery] = React.useState("");
-  const [draft, setDraft] = React.useState<string | undefined>(
-    typeof displayValue === "string"
-      ? displayValue
-      : displayValue && typeof displayValue === "object"
-        ? pathToString(displayValue)
-        : undefined,
-  );
   const focusedTpl =
-    viewCtx?.focusedTpls().length === 1
+    props.previewTpl ??
+    (viewCtx?.focusedTpls().length === 1
       ? head(viewCtx.focusedTpls())
-      : undefined;
+      : undefined);
+  const component = props.previewComponent ?? viewCtx?.currentComponent();
   const fixedData = React.useMemo(
     // If schema is given, then include schema, mapped to undefined, in the
     // data env, even if it's not present in `data`
@@ -179,10 +196,10 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
           ...(schema ? mapValues(schema, () => undefined) : undefined),
           ...data,
         },
-        viewCtx?.currentComponent(),
+        component,
         focusedTpl,
       ),
-    [data, schema, viewCtx?.currentComponent(), focusedTpl],
+    [data, schema, component, focusedTpl],
   );
   // fixedData unwraps `$q` with `unwrapStatefulQueryResult`, but the code
   // editor preview needs real query results so `$q.x.data` throws on error.
@@ -202,21 +219,17 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
   const searchboxRef = React.useRef<TextboxRef>(null);
   const editorRef = React.useRef<FullCodeEditor>(null);
   const getFixedInitialColumns = (val: DataPickerValueType) =>
-    getFixedInitialColumnsFor(val, opts, fixedData, viewCtx?.component);
+    getFixedInitialColumnsFor(val, opts, fixedData, component);
   const [columns, setColumns] = React.useState<Array<Column>>(() =>
-    getFixedInitialColumns(displayValue),
+    getFixedInitialColumns(session.draft.path),
   );
   const selectedItem = React.useMemo(
     () => getLastSelectedItem(columns),
     [columns],
   );
-  const currentItemPath = React.useMemo(
-    () => getCurrentItemPath(columns),
-    [columns],
-  );
   useUpdateEffect(() => {
-    setColumns(getFixedInitialColumns(currentItemPath));
-  }, [showAdvancedFields]);
+    setColumns(getFixedInitialColumns(session.draft.path));
+  }, [showAdvancedFields, fixedData]);
 
   const getSearchResults = (): SearchResultItem[] => {
     if (columns.length === 0 || query === "") {
@@ -258,7 +271,7 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
             matcher: matcher,
             onClick: () => {
               setQuery("");
-              setDraft(pathToString(path));
+              setPath(path);
               setColumns([
                 ...newColumns,
                 {
@@ -302,7 +315,7 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
 
   const searchResults = React.useMemo(
     () => sortBy(getSearchResults(), (x) => x.depth),
-    [query, data],
+    [query, columns, fixedData, showAdvancedFields],
   );
 
   const onItemSelectedHandle = React.useCallback(
@@ -314,75 +327,146 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
         ...oldColumns,
         ...getItemChildColumns(curSelectedItem, opts),
       ]);
-      setDraft(pathToString(getItemPath(curSelectedItem)));
+      setPath(getItemPath(curSelectedItem));
       setQuery("");
       searchboxRef.current?.focus();
     },
-    [columns],
+    [columns, showAdvancedFields],
   );
 
-  const addQueryProps =
-    withAddQuery && onAddQuery
-      ? {
-          withAddQuery,
-          addQueryBtn: {
-            children: `Add new ${DATA_QUERY_LOWER}`,
-            onClick: () => onAddQuery(),
-          },
-        }
-      : {};
-
-  const addVariableProps = onAddVariableBtnClick
-    ? {
-        withAddVariable: true,
-        addVariableBtn: {
-          children: `Add new ${VARIABLE_LOWER}`,
-          onClick: () => onAddVariableBtnClick(),
-        },
-      }
-    : {};
-  if (codeEditing || !fixedData) {
-    const stringValue =
-      typeof displayValue === "object" && displayValue
-        ? pathToString(displayValue)
-        : displayValue;
-
-    const trySave = (val: string) => {
-      if (!checkStrSizeLimit(val)) {
-        return false;
-      }
-
-      if (!checkSyntaxError(val)) {
-        return false;
-      }
-
-      if (!checkDisallowedStateBindingAssignment(val)) {
-        return false;
-      }
-
-      if (!checkDisallowedUseOfLibs(val)) {
-        return false;
-      }
-
-      checkWindowGlobalUsage(val);
-
-      setDraft(val);
-      return true;
+  const addQueryProps = withAddQuery &&
+    onAddQuery && {
+      withAddQuery,
+      addQueryBtn: {
+        children: `Add new ${
+          DEVFLAGS.dockview ? SERVER_QUERY_LOWER : DATA_QUERY_LOWER
+        }`,
+        onClick: onAddQuery,
+      },
     };
+
+  const addVariableProps = onAddVariableBtnClick && {
+    withAddVariable: true,
+    addVariableBtn: {
+      children: `Add new ${VARIABLE_LOWER}`,
+      onClick: onAddVariableBtnClick,
+    },
+  };
+  const isCodeEditing = codeEditing || (!fixedData && !props.session);
+  const trySave = (code: string) => {
+    setCurrentCode(code);
+    return validateBindingCode(code);
+  };
+  const save = async () => {
+    if (props.saveAndClose) {
+      return props.saveAndClose();
+    }
+    return (await session.commit(true)).kind !== "blocked";
+  };
+  const runCode = () => {
+    if (editorRef.current && props.onRunClick) {
+      props.onRunClick(editorRef.current.getValue());
+    }
+  };
+
+  const searchboxProps: React.ComponentProps<typeof Searchbox> = {
+    ref: searchboxRef,
+    value: query,
+    onChange: (e) => setQuery(e.target.value),
+    onKeyDown: (e) => {
+      if (e.key === "ArrowUp") {
+        onItemSelectedHandle(
+          selectedItem.column,
+          selectedItem.item !== undefined
+            ? Math.max(selectedItem.item - 1, 0)
+            : 0,
+        );
+      } else if (e.key === "ArrowDown") {
+        onItemSelectedHandle(
+          selectedItem.column,
+          selectedItem.item !== undefined
+            ? Math.min(
+                selectedItem.item + 1,
+                columns[selectedItem.column].columnItems.length - 1,
+              )
+            : 0,
+        );
+      } else if (e.key === "ArrowLeft") {
+        const previousColumn = Math.max(selectedItem.column - 1, 0);
+        const previousSelectedItem = columns[previousColumn].selectedItem ?? 0;
+        onItemSelectedHandle(previousColumn, previousSelectedItem);
+      } else if (e.key === "ArrowRight") {
+        if (selectedItem.item === undefined) {
+          onItemSelectedHandle(selectedItem.column, 0);
+        } else {
+          const selItem =
+            columns[selectedItem.column].columnItems[selectedItem.item];
+          const nextColumn = selItem.value;
+          const variableType = getVariableType(nextColumn);
+          if (isListType(variableType)) {
+            const nextColumnKeys = getSupportedObjectKeys(nextColumn, opts);
+            if (nextColumnKeys.length !== 0) {
+              onItemSelectedHandle(selectedItem.column + 1, 0);
+            }
+          }
+        }
+      } else if (e.key === "Enter") {
+        setQuery("");
+      } else if (e.key === "Escape") {
+        onCancel();
+      } else {
+        return;
+      }
+      e.preventDefault();
+    },
+    noOutline: true,
+    autoFocus: !browseOnly,
+  };
+
+  // Docked, the picker's actions live in the panel's action row, next to where the query editors
+  // put theirs.
+  const dockedButtons =
+    docked && !browseOnly ? (
+      <BottomPanelButtons>
+        <Button id="data-picker-save-btn" type="primary" onClick={save}>
+          Save
+        </Button>
+        {props.isRunCodeInteraction && isCodeEditing && (
+          <Button onClick={runCode}>Run</Button>
+        )}
+        {onUnlink && <Button onClick={onUnlink}>Remove dynamic value</Button>}
+        {onDelete && <Button onClick={onDelete}>Delete</Button>}
+        <Button onClick={onCancel}>Cancel</Button>
+      </BottomPanelButtons>
+    ) : null;
+
+  const sessionStatus = !props.session && <SessionStatus session={session} />;
+  const rootProps = {
+    props: {
+      ref,
+      inert: session.pending ? "" : undefined,
+      "data-test-id": browseOnly ? "data-browser" : "data-picker",
+      style: docked ? DOCKED_ROOT_STYLE : { width: DATA_PICKER_WIDTH },
+    },
+  };
+
+  if (isCodeEditing) {
     return (
-      <ModalScope>
+      <ModalScope
+        containFocus={!docked}
+        autoFocus={!browseOnly}
+        style={docked ? { height: "100%" } : undefined}
+      >
+        {dockedButtons}
+        {sessionStatus}
         <PlasmicDataPicker
-          root={{
-            props: {
-              ref,
-              "data-test-id": "data-picker",
-              style: {
-                width: DATA_PICKER_WIDTH,
-              },
-            },
-          }}
-          withUnlink={onUnlink !== undefined}
-          withDeleteButton={onDelete !== undefined}
+          root={rootProps}
+          footer={docked && !expectedValues ? UNRENDERED : undefined}
+          header={
+            docked ? { props: { className: sty.dockedHeader } } : undefined
+          }
+          withUnlink={!docked && onUnlink !== undefined}
+          withDeleteButton={!docked && onDelete !== undefined}
           withoutStateSwitch={hideStateSwitch}
           stateSwitch={{
             props: {
@@ -390,37 +474,12 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
             },
           }}
           unlinkButton={{ onClick: onUnlink }}
-          deleteButton={{ onClick: onDelete }}
-          cancelButton={{
-            onClick: () => {
-              setDraft(undefined);
-              onCancel();
-            },
-          }}
-          saveButton={{
-            id: "data-picker-save-btn",
-            onClick: () => {
-              if (editorRef.current && trySave(editorRef.current.getValue())) {
-                const code = editorRef.current.getValue();
-                // Transform data tokens from display format to storage format.
-                const transformedCode = viewCtx
-                  ? transformDataTokensInCode(
-                      code,
-                      viewCtx.site,
-                      viewCtx.studioCtx.siteInfo.id,
-                    ).code
-                  : code;
-                onChange(transformedCode);
-              }
-            },
-          }}
-          runButton={{
-            onClick: () => {
-              if (editorRef.current && props.onRunClick) {
-                props.onRunClick(editorRef.current.getValue());
-              }
-            },
-          }}
+          deleteButton={docked ? UNRENDERED : { onClick: onDelete }}
+          cancelButton={docked ? UNRENDERED : { onClick: onCancel }}
+          saveButton={
+            docked ? UNRENDERED : { id: "data-picker-save-btn", onClick: save }
+          }
+          runButton={docked ? UNRENDERED : { onClick: runCode }}
           copilot={!!viewCtx?.studioCtx.codeCopilotEnabled()}
           items={{ ref: itemsRef }}
           codeEditing={true}
@@ -429,8 +488,9 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
             data: fixedData,
             previewData: codePreviewData,
             schema,
-            defaultValue: draft ?? stringValue ?? "",
+            defaultValue: currentCode,
             onSave: trySave,
+            onChange: setCurrentCode,
             hidePreview,
             context,
           }}
@@ -450,17 +510,28 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
   }
 
   return (
-    <ModalScope>
+    <ModalScope
+      containFocus={!docked}
+      autoFocus={!browseOnly}
+      style={docked ? { height: "100%" } : undefined}
+    >
+      {dockedButtons}
+      {sessionStatus}
       <PlasmicDataPicker
-        root={{
-          props: {
-            ref,
-            "data-test-id": "data-picker",
-            style: {
-              width: DATA_PICKER_WIDTH,
-            },
-          },
-        }}
+        root={rootProps}
+        footer={docked && !expectedValues ? UNRENDERED : undefined}
+        header={docked ? { props: { className: sty.dockedHeader } } : undefined}
+        title={
+          docked
+            ? {
+                render: () => (
+                  <div className={sty.dockedSearch}>
+                    <Searchbox {...searchboxProps} />
+                  </div>
+                ),
+              }
+            : undefined
+        }
         advancedToggle={
           !dataHasAdvancedFields
             ? undefined
@@ -474,14 +545,15 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
             setShowAdvancedFields(!showAdvancedFields);
           },
         }}
-        withUnlink={onUnlink !== undefined}
-        withDeleteButton={onDelete !== undefined}
+        withUnlink={!docked && onUnlink !== undefined}
+        withDeleteButton={!docked && onDelete !== undefined}
         empty={columns.length === 0}
         items={{ ref: itemsRef }}
         children={columns.map((colProps, idx) => {
           return (
             <DataPickerColumn
               {...colProps}
+              viewCtx={viewCtx}
               data={fixedData}
               columnIndex={idx}
               isActiveColumn={idx === selectedItem.column && query == ""}
@@ -490,6 +562,8 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
               onItemSelected={onItemSelectedHandle}
               opts={opts}
               onCancelDataPicker={onCancel}
+              docked={docked}
+              allowDragging={docked && !!viewCtx}
             />
           );
         })}
@@ -522,79 +596,12 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
           },
         }}
         unlinkButton={{ onClick: onUnlink }}
-        deleteButton={{ onClick: onDelete }}
-        cancelButton={{ onClick: onCancel }}
-        saveButton={{
-          id: "data-picker-save-btn",
-          onClick: () => {
-            let savedPath = currentItemPath;
-            if (viewCtx) {
-              savedPath = transformDataTokenPathToBundle(
-                savedPath,
-                viewCtx.site,
-                viewCtx.siteInfo.id,
-              );
-            }
-            onChange(savedPath);
-          },
-        }}
-        searchbox={{
-          ref: searchboxRef,
-          value: query,
-          onChange: (e) => setQuery(e.target.value),
-          onKeyDown: (e) => {
-            if (e.key === "ArrowUp") {
-              onItemSelectedHandle(
-                selectedItem.column,
-                selectedItem.item !== undefined
-                  ? Math.max(selectedItem.item - 1, 0)
-                  : 0,
-              );
-            } else if (e.key === "ArrowDown") {
-              onItemSelectedHandle(
-                selectedItem.column,
-                selectedItem.item !== undefined
-                  ? Math.min(
-                      selectedItem.item + 1,
-                      columns[selectedItem.column].columnItems.length - 1,
-                    )
-                  : 0,
-              );
-            } else if (e.key === "ArrowLeft") {
-              const previousColumn = Math.max(selectedItem.column - 1, 0);
-              const previousSelectedItem =
-                columns[previousColumn].selectedItem ?? 0;
-              onItemSelectedHandle(previousColumn, previousSelectedItem);
-            } else if (e.key === "ArrowRight") {
-              if (selectedItem.item === undefined) {
-                onItemSelectedHandle(selectedItem.column, 0);
-              } else {
-                const selItem =
-                  columns[selectedItem.column].columnItems[selectedItem.item];
-                const nextColumn = selItem.value;
-                const variableType = getVariableType(nextColumn);
-                if (isListType(variableType)) {
-                  const nextColumnKeys = getSupportedObjectKeys(
-                    nextColumn,
-                    opts,
-                  );
-                  if (nextColumnKeys.length !== 0) {
-                    onItemSelectedHandle(selectedItem.column + 1, 0);
-                  }
-                }
-              }
-            } else if (e.key === "Enter") {
-              setQuery("");
-            } else if (e.key === "Escape") {
-              onCancel();
-            } else {
-              return;
-            }
-            e.preventDefault();
-          },
-          noOutline: true,
-          autoFocus: true,
-        }}
+        deleteButton={docked ? UNRENDERED : { onClick: onDelete }}
+        cancelButton={docked ? UNRENDERED : { onClick: onCancel }}
+        saveButton={
+          docked ? UNRENDERED : { id: "data-picker-save-btn", onClick: save }
+        }
+        searchbox={docked ? UNRENDERED : searchboxProps}
         withSearchResult={query !== ""}
         searchResults={{
           ref: (_) => itemsRef.current?.scrollTo({ left: 10000 }),
@@ -806,7 +813,7 @@ function getCurrentItemPath(columns: Column[]): (string | number)[] {
   return ["undefined"];
 }
 
-const DataPicker = React.forwardRef(DataPicker_);
+const DataPicker = observer(React.forwardRef(DataPicker_));
 export default DataPicker;
 
 export const _testonly = {

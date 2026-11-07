@@ -1,0 +1,21 @@
+@import "src/wab/styles/_vars";
+
+.BoundInput {
+  border-radius: 6px;
+  box-shadow: 0 0 0 2px $blue9 !important;
+  position: relative;
+  z-index: 1;
+}
+
+// Most right-panel editors sit inside a ContextMenuIndicator. Accent that whole input instead of
+// only the nested dynamic-value chip that was clicked.
+:global(.qb-custom-widget):has(.BoundInput) {
+  border-radius: 6px;
+  box-shadow: 0 0 0 2px $blue9;
+  position: relative;
+  z-index: 1;
+
+  .BoundInput {
+    box-shadow: none !important;
+  }
+}

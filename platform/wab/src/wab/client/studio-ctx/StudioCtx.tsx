@@ -1,4 +1,3 @@
-import { LEFT_PANE_INIT_WIDTH } from "@/wab/client/ClientConstants";
 import { DragInsertManager } from "@/wab/client/Dnd";
 import {
   handleError,
@@ -27,6 +26,7 @@ import {
 } from "@/wab/client/clipboard/local";
 import { paste } from "@/wab/client/clipboard/paste";
 import { syncCodeComponentsAndHandleErrors } from "@/wab/client/code-components/code-components";
+import { BottomPanelState } from "@/wab/client/components/BottomPanelState";
 import {
   showForbiddenError,
   showReloadError,
@@ -95,6 +95,7 @@ import {
 import { PLATFORM } from "@/wab/client/platform";
 import { requestIdleCallbackAsync } from "@/wab/client/requestidlecallback";
 import { plasmicExtensionAvailable } from "@/wab/client/screenshot-util";
+import { StudioPaneSizes } from "@/wab/client/studio-ctx/StudioPaneSizes";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import {
   COMMENTS_DIALOG_RIGHT_ZOOM_PADDING,
@@ -981,6 +982,9 @@ export class StudioCtx extends WithDbCtx {
         },
       ),
     );
+    if (DEVFLAGS.dockview) {
+      this.disposals.push(this.bottomPanel.watch(this));
+    }
 
     const hostPageUrl = (toggleTrailingSlash: boolean) =>
       maybeToggleTrailingSlash(
@@ -1316,7 +1320,12 @@ export class StudioCtx extends WithDbCtx {
    * @param opts
    */
   changeSpawn(f: () => void, opts: StudioChangeOpts = {}) {
-    spawn(this.changeUnsafe(f, opts));
+    // Reuse the enclosing change so its caller observes synchronous failures.
+    if (this.isChanging()) {
+      f();
+    } else {
+      spawn(this.changeUnsafe(f, opts));
+    }
   }
 
   /**
@@ -3076,15 +3085,15 @@ export class StudioCtx extends WithDbCtx {
     return this._isCopilotChatOpen.get();
   }
 
-  private _xLeftPaneWidth = observable.box(LEFT_PANE_INIT_WIDTH);
+  readonly paneSizes = new StudioPaneSizes();
   get leftPaneWidth() {
     if (!this.leftTabKey) {
       return 0;
     }
-    return this._xLeftPaneWidth.get();
+    return this.paneSizes.leftWidth;
   }
   set leftPaneWidth(width: number) {
-    this._xLeftPaneWidth.set(width);
+    this.paneSizes.leftWidth = width;
   }
 
   private _xLeftTabKey: IObservableValue<LeftTabKey | undefined> =
@@ -4705,19 +4714,7 @@ export class StudioCtx extends WithDbCtx {
     }
   }
 
-  private _focusedBottomModalIndex = observable.box<number | undefined>();
-
-  get focusedBottomModalIndex() {
-    return this._focusedBottomModalIndex.get();
-  }
-
-  setFocusedBottomModalIndex(v: number | undefined) {
-    this._focusedBottomModalIndex.set(v);
-  }
-
-  isBottomModalFocused() {
-    return this.focusedBottomModalIndex != null;
-  }
+  readonly bottomPanel = new BottomPanelState(this.paneSizes);
 
   //
   // Manage undo / redo
@@ -4734,9 +4731,9 @@ export class StudioCtx extends WithDbCtx {
 
   async undo() {
     assert(!this._isChanging, "isChanging should be false");
-    if (this.isBottomModalFocused()) {
-      // If the bottom modal is open, the user was more likely trying to undo
-      // some settings there and not in Studio.
+    if (this.bottomPanel.focused) {
+      // If the user is working in the bottom panel, they were more likely trying to undo some
+      // settings there and not in Studio.
       return;
     }
     if (this.undoLog.canUndo()) {
@@ -4751,7 +4748,7 @@ export class StudioCtx extends WithDbCtx {
 
   async redo() {
     assert(!this._isChanging, "isChanging should be false");
-    if (this.isBottomModalFocused()) {
+    if (this.bottomPanel.focused) {
       return;
     }
     if (this.undoLog.canRedo()) {
@@ -5492,12 +5489,12 @@ export class StudioCtx extends WithDbCtx {
     });
   };
 
-  tryChangePageMeta = async (
+  tryChangePageMeta = (
     page: Component,
     key: "title" | "canonical",
     value: string | classes.TemplatedString | null,
   ) => {
-    return this.changeUnsafe(() => {
+    return this.changeSpawn(() => {
       if (!page.pageMeta) {
         return;
       }
@@ -5505,11 +5502,11 @@ export class StudioCtx extends WithDbCtx {
     });
   };
 
-  tryChangePageMetaDescription = async (
+  tryChangePageMetaDescription = (
     page: Component,
     value: string | classes.TemplatedString,
   ) => {
-    return this.changeUnsafe(() => {
+    return this.changeSpawn(() => {
       if (!page.pageMeta) {
         return;
       }
@@ -5517,11 +5514,11 @@ export class StudioCtx extends WithDbCtx {
     });
   };
 
-  tryChangePageMetaImage = async (
+  tryChangePageMetaImage = (
     page: Component,
     value: string | classes.ImageAssetRef | classes.TemplatedString | null,
   ) => {
-    return this.changeUnsafe(() => {
+    return this.changeSpawn(() => {
       if (!page.pageMeta) {
         return;
       }
@@ -5532,14 +5529,16 @@ export class StudioCtx extends WithDbCtx {
   // When adding a data query from a shortcut (such as from the DataPicker)
   // we set it here so the component query section can auto-open it.
   private _newlyAddedQuery = observable.box<
-    classes.ComponentDataQuery | undefined
+    classes.ComponentDataQuery | classes.ComponentServerQuery | undefined
   >();
 
   get newlyAddedQuery() {
     return this._newlyAddedQuery.get();
   }
 
-  set newlyAddedQuery(v: classes.ComponentDataQuery | undefined) {
+  set newlyAddedQuery(
+    v: classes.ComponentDataQuery | classes.ComponentServerQuery | undefined,
+  ) {
     this._newlyAddedQuery.set(v);
   }
 

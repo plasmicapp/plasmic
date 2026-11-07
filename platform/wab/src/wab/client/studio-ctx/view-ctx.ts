@@ -1341,6 +1341,8 @@ export class ViewCtx extends WithDbCtx {
     opts?: {
       forDataRepCollection?: boolean;
       keep$StateRef?: boolean;
+      anchorCloneKey?: string;
+      ignoreFocusedCloneKey?: boolean;
     },
   ) => {
     const closestEnv = computed(
@@ -1351,7 +1353,7 @@ export class ViewCtx extends WithDbCtx {
         // which causes upstream recomputation for every tpl every time
         // selection changes
         let bestTpl = tpl;
-        let vals = this.maybeTpl2ValsInContext(bestTpl);
+        let vals = this.maybeTpl2ValsInContext(bestTpl, opts);
         while (
           (!vals ||
             vals.length === 0 ||
@@ -1360,7 +1362,7 @@ export class ViewCtx extends WithDbCtx {
           bestTpl.parent
         ) {
           bestTpl = bestTpl.parent;
-          vals = this.maybeTpl2ValsInContext(bestTpl);
+          vals = this.maybeTpl2ValsInContext(bestTpl, opts);
         }
         if (!vals || vals.length === 0) {
           return undefined;

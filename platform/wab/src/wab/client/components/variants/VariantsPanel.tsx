@@ -81,6 +81,7 @@ import {
 } from "@/wab/shared/core/splits";
 import { isTplCodeComponent } from "@/wab/shared/core/tpls";
 import { ScreenSizeSpec } from "@/wab/shared/css-size";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   Component,
   ComponentVariantGroup,
@@ -1126,6 +1127,9 @@ const ComponentVariantGroupSection = observer(
         }
         hasCodeExpression={hasCodeExpression}
         exprButton={{
+          props: DEVFLAGS.dockview
+            ? { onClick: () => setVisibleDataPicker(true) }
+            : {},
           wrap: (node) => (
             <VariantDataPicker
               studioCtx={studioCtx}

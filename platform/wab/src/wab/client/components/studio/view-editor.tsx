@@ -4,6 +4,10 @@ import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
 import { WritableClipboard } from "@/wab/client/clipboard/WritableClipboard";
 import AutoOpenBanner from "@/wab/client/components/AutoOpenBanner";
 import { BottomModals } from "@/wab/client/components/BottomModal";
+import {
+  BottomPanel,
+  BottomPanelSlot,
+} from "@/wab/client/components/BottomPanel";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import PageSettings from "@/wab/client/components/PageSettings";
 import { CanvasDndOverlay } from "@/wab/client/components/canvas/CanvasDndOverlay";
@@ -24,24 +28,19 @@ import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { closestTaggedNonTextDomElt } from "@/wab/client/components/canvas/studio-canvas-util";
 import { getMergedTextArg } from "@/wab/client/components/canvas/view-ops";
 import { CommentsDialogs } from "@/wab/client/components/comments/CommentsDialogs";
-import CommentsTab from "@/wab/client/components/comments/CommentsTab";
 import { DevContainer } from "@/wab/client/components/dev";
 import { ComponentPresetsModal } from "@/wab/client/components/insert-panel/ComponentPresetsModal";
 import InsertPanelWrapper from "@/wab/client/components/insert-panel/InsertPanelWrapper";
 import { PreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import { makeFrameSizeMenu } from "@/wab/client/components/menus/FrameSizeMenu";
-import {
-  ComponentOrPageTab,
-  StyleTab,
-  StyleTabContext,
-} from "@/wab/client/components/sidebar-tabs/style-tab";
+import { dataBrowserTab } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerPanel";
 import { FocusedModeToolbar } from "@/wab/client/components/studio/FocusedModeToolbar/FocusedModeToolbar";
 import { GlobalCssVariables } from "@/wab/client/components/studio/GlobalCssVariables";
 import LeftPane from "@/wab/client/components/studio/LeftPane";
+import { RightPane } from "@/wab/client/components/studio/RightPane";
 import { TopFrameObserver } from "@/wab/client/components/studio/TopFrameObserver";
 import { TopModal } from "@/wab/client/components/studio/TopModal";
 import { CodePreviewPanel } from "@/wab/client/components/studio/code-preview/CodePreviewPanel";
-import { providesSidebarPopupSetting } from "@/wab/client/components/style-controls/StyleComponent";
 import { TopBar } from "@/wab/client/components/top-bar";
 import { getContextMenuForFocusedTpl } from "@/wab/client/components/tpl-menu";
 import * as widgets from "@/wab/client/components/widgets";
@@ -60,7 +59,7 @@ import { PLATFORM } from "@/wab/client/platform";
 import { bindShortcutHandlers } from "@/wab/client/shortcuts/shortcut-handler";
 import { shouldHandleStudioShortcut } from "@/wab/client/shortcuts/studio/studio-shortcut-handlers";
 import { STUDIO_SHORTCUTS } from "@/wab/client/shortcuts/studio/studio-shortcuts";
-import { RightTabKey, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
@@ -86,7 +85,6 @@ import { isBaseVariantFrame } from "@/wab/shared/component-arenas";
 import {
   isCodeComponent,
   isFrameComponent,
-  isPageComponent,
 } from "@/wab/shared/core/components";
 import { ExprCtx } from "@/wab/shared/core/exprs";
 import { getSiteArenas } from "@/wab/shared/core/sites";
@@ -110,7 +108,7 @@ import {
 import { TplVisibility } from "@/wab/shared/visibility-utils";
 import { Alert, notification } from "antd";
 import { ArgsProps } from "antd/lib/notification";
-import { default as cn, default as cx } from "classnames";
+import { default as cn } from "classnames";
 import $ from "jquery";
 import { throttle } from "lodash";
 import { runInAction } from "mobx";
@@ -863,9 +861,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       ignorableClassNames.some((cls) =>
         document.activeElement?.classList.contains(cls),
       );
-    return (
-      isActiveElementOnCanvas && !this.props.studioCtx.isBottomModalFocused()
-    );
+    return isActiveElementOnCanvas && !this.props.studioCtx.bottomPanel.focused;
   }
 
   private handleHotkey(
@@ -1804,157 +1800,162 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
 
           <div className="canvas-editor__hsplit">
             <LeftPane key={studioCtx.site.uid} studioCtx={studioCtx} />
-            <div
-              ref={this.canvasContainer}
-              className={cn("canvas-editor__canvas-container", {
-                "canvas-editor__canvas-container__focus_mode":
-                  studioCtx.focusedMode,
-              })}
-              onPointerDown={(e) => {
-                if (
-                  !studioCtx.isInteractiveMode &&
-                  !studioCtx.isSpaceDown() &&
-                  e.button === 0 &&
-                  ((e.target instanceof Element &&
-                    e.target.matches(".canvas-editor__canvas")) ||
-                    $(e.target).parents().is(".canvas-editor__frames"))
-                ) {
-                  // Make sure that the onBlur events are called before resetting
-                  // the focus.
-                  maybeInstance(document.activeElement, HTMLElement, (ae) =>
-                    ae.blur(),
-                  );
-                  spawn(
-                    studioCtx.changeUnsafe(() =>
-                      studioCtx.setStudioFocusOnFrame(
-                        // By clicking the empty area on the canvas, it will select
-                        // the current frame if using focused mode, otherwise
-                        // it'll just clear selection
-                        {
-                          frame: undefined,
-                          autoZoom: false,
-                        },
-                      ),
-                    ),
-                  );
-                }
-              }}
-              // Handle drag-n-drop files into blank canvas
-              onDrop={async (e) => this.handleDrop(e)}
-              // Prevents the file from being loaded in a new tab when dropped
-              onDragOver={(e) => e.preventDefault()}
-              onDragEnter={(e) => this.handleDragEnter(e)}
-              onMouseLeave={() => this.updateCursorLocation(null)}
-              onMouseMove={(e) => this.updateCursorLocation(e)}
-              onMouseDown={() => {
-                this.props.studioCtx.setWatchPlayerId(null);
-              }}
-              onMouseUp={() => {
-                this.props.studioCtx.setWatchPlayerId(null);
-              }}
-            >
-              {watchedPlayer && (
-                <MultiplayerFollowingBorder
-                  className="canvas-editor__watch-mode"
-                  name={watchedPlayer.user?.firstName ?? "Anon"}
-                  hexColor={watchedPlayer.color}
-                />
-              )}
-              {studioCtx.showDevControls && (
-                <div className="canvas-editor__top-pane">
-                  <div className="canvas-editor__top-pane__floating-elements-container">
-                    {studioCtx.alertBannerState && (
-                      <div className="canvas-editor__alert-banner-container">
-                        <AlertBanner studioCtx={studioCtx} />
-                      </div>
-                    )}
-                    {this.makeAlert()}
-                  </div>
-                </div>
-              )}
+            <div className="canvas-editor__center-column">
               <div
-                ref={this.canvasClipper}
-                className="canvas-editor__canvas-clipper"
-              >
-                {studioCtx.isDevMode && (
-                  <div className="canvas-editor__canvas-clipper-grid" />
-                )}
-                <div ref={this.canvas} className="canvas-editor__canvas">
-                  <div
-                    ref={this.canvasScaler}
-                    className="canvas-editor__scaler"
-                  >
-                    {getSiteArenas(studioCtx.site, { noSorting: true }).map(
-                      (arena) => (
-                        <CanvasArenaShell
-                          key={arena.uid}
-                          arena={arena}
-                          studioCtx={studioCtx}
-                          onFrameLoad={this.onFrameLoad}
-                        />
+                ref={this.canvasContainer}
+                className={cn("canvas-editor__canvas-container", {
+                  "canvas-editor__canvas-container__focus_mode":
+                    studioCtx.focusedMode,
+                })}
+                onPointerDown={(e) => {
+                  if (
+                    !studioCtx.isInteractiveMode &&
+                    !studioCtx.isSpaceDown() &&
+                    e.button === 0 &&
+                    ((e.target instanceof Element &&
+                      e.target.matches(".canvas-editor__canvas")) ||
+                      $(e.target).parents().is(".canvas-editor__frames"))
+                  ) {
+                    // Make sure that the onBlur events are called before resetting
+                    // the focus.
+                    maybeInstance(document.activeElement, HTMLElement, (ae) =>
+                      ae.blur(),
+                    );
+                    spawn(
+                      studioCtx.changeUnsafe(() =>
+                        studioCtx.setStudioFocusOnFrame(
+                          // By clicking the empty area on the canvas, it will select
+                          // the current frame if using focused mode, otherwise
+                          // it'll just clear selection
+                          {
+                            frame: undefined,
+                            autoZoom: false,
+                          },
+                        ),
                       ),
-                    )}
-                    <DevContainer
-                      className="abs"
-                      showControls={studioCtx.isDevMode}
-                    >
-                      <div className="canvas-editor__hoverbox-scroller">
-                        {this.viewCtx() && (
-                          <Spotlight viewCtx={this.ensureViewCtx()} />
-                        )}
-                        <PlayerBoxes />
-                        {!studioCtx.isInteractiveMode && <CloneBoxes />}
-                        {!studioCtx.isInteractiveMode && <PreselectBoxes />}
-                        {!studioCtx.isInteractiveMode && (
-                          <HoverBoxes studioCtx={studioCtx} />
-                        )}
-                        <MeasureTool />
-                        <FreestyleBox />
-                        <input
-                          className="hidden-image-selector"
-                          type="file"
-                          accept={".gif,.jpg,.jpeg,.png,.avif,.tif,.svg"}
-                        />
-                        <>
-                          {!studioCtx.isInteractiveMode &&
-                            this.props.studioCtx.viewCtxs.map((vc) => (
-                              <DndMarkers
-                                key={vc.arenaFrame().uid}
-                                viewCtx={vc}
-                              />
-                            ))}
-                        </>
-                        {!studioCtx.isInteractiveMode && this.viewCtx() && (
-                          <>
-                            <DndAdoptee key="dnd-adoptee" />
-                          </>
-                        )}
-                        <div
-                          className={
-                            studioCtx.dragInsertState() ? "DragInsertState" : ""
-                          }
-                        />
-                      </div>
-                    </DevContainer>
+                    );
+                  }
+                }}
+                // Handle drag-n-drop files into blank canvas
+                onDrop={async (e) => this.handleDrop(e)}
+                // Prevents the file from being loaded in a new tab when dropped
+                onDragOver={(e) => e.preventDefault()}
+                onDragEnter={(e) => this.handleDragEnter(e)}
+                onMouseLeave={() => this.updateCursorLocation(null)}
+                onMouseMove={(e) => this.updateCursorLocation(e)}
+                onMouseDown={() => {
+                  this.props.studioCtx.setWatchPlayerId(null);
+                }}
+                onMouseUp={() => {
+                  this.props.studioCtx.setWatchPlayerId(null);
+                }}
+              >
+                {watchedPlayer && (
+                  <MultiplayerFollowingBorder
+                    className="canvas-editor__watch-mode"
+                    name={watchedPlayer.user?.firstName ?? "Anon"}
+                    hexColor={watchedPlayer.color}
+                  />
+                )}
+                {studioCtx.showDevControls && (
+                  <div className="canvas-editor__top-pane">
+                    <div className="canvas-editor__top-pane__floating-elements-container">
+                      {studioCtx.alertBannerState && (
+                        <div className="canvas-editor__alert-banner-container">
+                          <AlertBanner studioCtx={studioCtx} />
+                        </div>
+                      )}
+                      {this.makeAlert()}
+                    </div>
                   </div>
-                  <div className="canvas-editor__viewport-click-guard" />
-                </div>
-                {!studioCtx.focusedMode && <VariantsBar />}
-              </div>
-              <CanvasDndOverlay container={this.canvasContainer} />
-              {this.viewCtx()?.editingTextContext() && (
-                <RichTextToolbar
-                  ctx={ensure(
-                    this.viewCtx()?.editingTextContext(),
-                    () => "Expected editingTextContent to exist",
+                )}
+                <div
+                  ref={this.canvasClipper}
+                  className="canvas-editor__canvas-clipper"
+                >
+                  {studioCtx.isDevMode && (
+                    <div className="canvas-editor__canvas-clipper-grid" />
                   )}
-                />
-              )}
-              {DEVFLAGS.codePreview && (
-                <CodePreviewPanel studioCtx={studioCtx} />
-              )}
-              <PlayerCursors />
-              <FocusedModeToolbar studioCtx={studioCtx} />
+                  <div ref={this.canvas} className="canvas-editor__canvas">
+                    <div
+                      ref={this.canvasScaler}
+                      className="canvas-editor__scaler"
+                    >
+                      {getSiteArenas(studioCtx.site, { noSorting: true }).map(
+                        (arena) => (
+                          <CanvasArenaShell
+                            key={arena.uid}
+                            arena={arena}
+                            studioCtx={studioCtx}
+                            onFrameLoad={this.onFrameLoad}
+                          />
+                        ),
+                      )}
+                      <DevContainer
+                        className="abs"
+                        showControls={studioCtx.isDevMode}
+                      >
+                        <div className="canvas-editor__hoverbox-scroller">
+                          {this.viewCtx() && (
+                            <Spotlight viewCtx={this.ensureViewCtx()} />
+                          )}
+                          <PlayerBoxes />
+                          {!studioCtx.isInteractiveMode && <CloneBoxes />}
+                          {!studioCtx.isInteractiveMode && <PreselectBoxes />}
+                          {!studioCtx.isInteractiveMode && (
+                            <HoverBoxes studioCtx={studioCtx} />
+                          )}
+                          <MeasureTool />
+                          <FreestyleBox />
+                          <input
+                            className="hidden-image-selector"
+                            type="file"
+                            accept={".gif,.jpg,.jpeg,.png,.avif,.tif,.svg"}
+                          />
+                          <>
+                            {!studioCtx.isInteractiveMode &&
+                              this.props.studioCtx.viewCtxs.map((vc) => (
+                                <DndMarkers
+                                  key={vc.arenaFrame().uid}
+                                  viewCtx={vc}
+                                />
+                              ))}
+                          </>
+                          {!studioCtx.isInteractiveMode && this.viewCtx() && (
+                            <>
+                              <DndAdoptee key="dnd-adoptee" />
+                            </>
+                          )}
+                          <div
+                            className={
+                              studioCtx.dragInsertState()
+                                ? "DragInsertState"
+                                : ""
+                            }
+                          />
+                        </div>
+                      </DevContainer>
+                    </div>
+                    <div className="canvas-editor__viewport-click-guard" />
+                  </div>
+                  {!studioCtx.focusedMode && <VariantsBar />}
+                </div>
+                <CanvasDndOverlay container={this.canvasContainer} />
+                {this.viewCtx()?.editingTextContext() && (
+                  <RichTextToolbar
+                    ctx={ensure(
+                      this.viewCtx()?.editingTextContext(),
+                      () => "Expected editingTextContent to exist",
+                    )}
+                  />
+                )}
+                {DEVFLAGS.codePreview && (
+                  <CodePreviewPanel studioCtx={studioCtx} />
+                )}
+                <PlayerCursors />
+                <FocusedModeToolbar studioCtx={studioCtx} />
+              </div>
+              {DEVFLAGS.dockview && <BottomPanelSlot slot="center" />}
             </div>
             <RightPane
               studioCtx={studioCtx}
@@ -1965,14 +1966,12 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
             </FloatingWindowLayer>
           </div>
 
-          <DevContainer
-            showControls={studioCtx.showDevControls}
-            defaultHidden={true}
-            className={cx({
-              "canvas-editor__bottom-pane": true,
-              "canvas-editor__bottom-pane--expanded": false,
-            })}
-          />
+          {DEVFLAGS.dockview && (
+            <>
+              <BottomPanelSlot slot="bottom" />
+              <BottomPanel rootTab={dataBrowserTab} />
+            </>
+          )}
         </div>
         {studioCtx.isDraggingObject() &&
           !this.dragState &&
@@ -1992,112 +1991,10 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
             />
           </TopModal>
         )}
-        <BottomModals
-          onFocusedIndexChange={(newIndex) =>
-            studioCtx.setFocusedBottomModalIndex(newIndex)
-          }
-        />
+        {!DEVFLAGS.dockview && <BottomModals />}
       </div>
     );
   }
 }
 
 export const ViewEditor = observer(ViewEditor_);
-
-const RightPane = observer(function RightPane(props: {
-  studioCtx: StudioCtx;
-  disabled?: boolean;
-}) {
-  const { studioCtx, disabled } = props;
-
-  const [hover, setHover] = React.useState(false);
-
-  const focusedViewCtx = studioCtx.focusedViewCtx();
-  const focusedOrFirstViewCtx = studioCtx.focusedOrFirstViewCtx();
-
-  const tabs: widgets.Tab[] = [];
-
-  // Element tabs are shown if an artboard is focused
-  // and element is selected (not frame)
-  if (focusedViewCtx && !studioCtx.focusedFrame()) {
-    tabs.push(
-      new widgets.Tab({
-        name: "Settings",
-        key: RightTabKey.settings,
-        contents: () => (
-          <StyleTabContext.Provider value={"settings-only"}>
-            <StyleTab studioCtx={studioCtx} viewCtx={focusedViewCtx} />
-          </StyleTabContext.Provider>
-        ),
-      }),
-    );
-    tabs.push(
-      new widgets.Tab({
-        name: "Design",
-        key: RightTabKey.style,
-        contents: () => (
-          <StyleTabContext.Provider value={"style-only"}>
-            <StyleTab studioCtx={studioCtx} viewCtx={focusedViewCtx} />
-          </StyleTabContext.Provider>
-        ),
-      }),
-    );
-  }
-
-  // Page/component tab is shown if an artboard is focused
-  // or defaults to the first artboard for dedicated arenas.
-  if (focusedOrFirstViewCtx) {
-    tabs.push(
-      new widgets.Tab({
-        name: isPageComponent(focusedOrFirstViewCtx.component)
-          ? "Page data"
-          : "Component data",
-        key: RightTabKey.component,
-        contents: () => (
-          <ComponentOrPageTab
-            studioCtx={studioCtx}
-            viewCtx={focusedOrFirstViewCtx}
-          />
-        ),
-      }),
-    );
-  }
-
-  React.useEffect(() => {
-    if (tabs.length === 1) {
-      studioCtx.switchRightTab(tabs[0].key as RightTabKey);
-    }
-  }, [tabs.length]);
-
-  return providesSidebarPopupSetting({ left: false })(
-    <DevContainer
-      className={cx({
-        "canvas-editor__right-pane": true,
-        dimfg: true,
-        monochrome: !hover,
-      })}
-      showControls={studioCtx.showDevControls}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-    >
-      {disabled && !studioCtx.showCommentsPanel && (
-        <div className="canvas-editor__disable-right-pane" />
-      )}
-      {studioCtx.showComments() && studioCtx.showCommentsPanel ? (
-        <CommentsTab />
-      ) : (
-        <widgets.Tabs
-          onSwitch={(tabKey: RightTabKey) => {
-            studioCtx.switchRightTab(tabKey);
-          }}
-          tabKey={studioCtx.rightTabKey}
-          useDefaultClasses={false}
-          tabBarClassName="hilite-tabs"
-          tabClassName="hilite-tab"
-          activeTabClassName="hilite-tab--active"
-          tabs={tabs}
-        />
-      )}
-    </DevContainer>,
-  );
-});

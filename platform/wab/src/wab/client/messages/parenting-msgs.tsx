@@ -10,7 +10,14 @@ export interface CantAddToSlotOutOfContext {
   tpl: TplSlot;
 }
 
-export type ClientCantAddChildMsg = CantAddChildMsg | CantAddToSlotOutOfContext;
+/** Reason why dragged data cannot be bound to a node. */
+export interface CantBindData {
+  type: "CantBindData";
+  message: string;
+}
+
+export type ClientCantAddChildMsg =
+  CantAddChildMsg | CantAddToSlotOutOfContext | CantBindData;
 
 export function renderCantAddMsg(
   msg: CantInsertTplReason | ClientCantAddChildMsg | CantAddSiblingMsg,
@@ -50,6 +57,8 @@ export function renderCantAddMsg(
       return `Cannot add elements to text blocks`;
     case "CantAddToTplComponent":
       return `Cannot add directly to a component instance; add to a component prop instead`;
+    case "CantBindData":
+      return msg.message;
     case "CantAddToSlotOutOfContext":
       return `Cannot add elements to this slot; turn on "Show default contents" first`;
     case "CantAddLinkedPropsToSlot":

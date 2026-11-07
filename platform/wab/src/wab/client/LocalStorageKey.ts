@@ -11,6 +11,9 @@ import { PLEXUS_STORAGE_KEY } from "@/wab/shared/insertables";
 export type LocalStorageKey =
   | "codegenType"
   | "githubState"
+  | "plasmic.bottom-panel-alignment"
+  | "plasmic.bottom-panel-height"
+  | "plasmic.right-pane-width"
   | "githubToken"
   | "plasmic-sso-email"
   | "plasmic.copilot.dialog-position"
@@ -25,6 +28,14 @@ export type LocalStorageKey =
   | `${typeof loggedAppUserStorageKey}.${ProjectId}`;
 
 export const codegenTypeKey: LocalStorageKey = "codegenType";
+
+export const bottomPanelAlignmentKey: LocalStorageKey =
+  "plasmic.bottom-panel-alignment";
+
+export const bottomPanelHeightKey: LocalStorageKey =
+  "plasmic.bottom-panel-height";
+
+export const rightPaneWidthKey: LocalStorageKey = "plasmic.right-pane-width";
 
 export const githubStateKey: LocalStorageKey = "githubState";
 

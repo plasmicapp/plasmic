@@ -8,7 +8,7 @@ import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { mkSectionUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { spawn, switchType } from "@/wab/shared/common";
+import { switchType } from "@/wab/shared/common";
 import { PageComponent } from "@/wab/shared/core/components";
 import {
   codeLit,
@@ -61,7 +61,7 @@ const PageMetaPanel = observer(function PageMetaPanel(props: {
         expr={titleExpr}
         onChange={(expr: Expr | undefined) => {
           const newTitle = convertExprToPageMetaString(expr);
-          spawn(sc.tryChangePageMeta(page, "title", newTitle));
+          sc.tryChangePageMeta(page, "title", newTitle);
         }}
         viewCtx={viewCtx}
         tpl={page.tplTree as TplTag}

@@ -1,4 +1,11 @@
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
+import {
+  getExprTransformationBasedOnPropType,
+  getExtraEnvFromPropType,
+  MaybeUnwrapExpr,
+} from "@/wab/client/components/editor-sessions/binding-prop-utils";
+import { BindingIdentity } from "@/wab/client/components/editor-sessions/binding-session";
+import { modelBindingTarget } from "@/wab/client/components/editor-sessions/model-binding-target";
 import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
 import { HrefQueryPopover } from "@/wab/client/components/sidebar-tabs/ComponentProps/HrefQueryPopover";
@@ -7,6 +14,10 @@ import {
   FallbackEditor,
 } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
+import {
+  canUseDataDragPath,
+  DataDropTargetHandlers,
+} from "@/wab/client/components/sidebar-tabs/DataBinding/data-drop";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { getInputTagType } from "@/wab/client/components/sidebar-tabs/HTMLAttributesSection";
 import {
@@ -69,7 +80,6 @@ import {
   filterFalsy,
   hackyCast,
   isOneOf,
-  leftZip,
   maybe,
   swallow,
   switchType,
@@ -116,12 +126,17 @@ import {
 } from "@/wab/shared/core/tpls";
 import { ComponentEvalContext } from "@/wab/shared/core/val-nodes";
 import {
+  canDropDataOnPropType,
+  computeDropReplacementExpr,
+} from "@/wab/shared/data-picker/data-drop-compat";
+import {
   computeDefinedIndicator,
   DefinedIndicatorType,
 } from "@/wab/shared/defined-indicator";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { makeDataTokenIdentifier } from "@/wab/shared/eval/expression-parser";
 import { getFolderDisplayName } from "@/wab/shared/folders/folders-util";
+import { Pt } from "@/wab/shared/geom";
 import { getInputTypeOptions } from "@/wab/shared/html-utils";
 import { RESET_CAP } from "@/wab/shared/Labels";
 import { isLinkCompatible } from "@/wab/shared/linked-props";
@@ -145,7 +160,6 @@ import {
   isKnownClassNamePropType,
   isKnownCustomCode,
   isKnownExpr,
-  isKnownFunctionExpr,
   isKnownObjectPath,
   isKnownQueryData,
   isKnownRenderExpr,
@@ -176,6 +190,7 @@ import {
   typeFactory,
 } from "@/wab/shared/model/model-util";
 import { hashExpr } from "@/wab/shared/site-diffs";
+import { isSlotVar } from "@/wab/shared/SlotUtils";
 import { getTplComponentArg, unsetTplComponentArg } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
@@ -473,6 +488,11 @@ function PropEditorRowWrapper_(props: {
   const { viewCtx, param, tpl, expsProvider } = props;
 
   const vtm = viewCtx.variantTplMgr();
+  const targetVariants = vtm.getTargetVariantComboForNode(tpl);
+  const ensureArgSetting = () =>
+    isSlotVar(tpl.component, param.variable)
+      ? vtm.ensureBaseVariantSetting(tpl)
+      : vtm.ensureVariantSetting(tpl, targetVariants);
   const effectiveVs = expsProvider.effectiveVs();
   const arg = effectiveVs.args.find((_arg) => _arg.param === param);
   const argSource = effectiveVs.getArgSource(param);
@@ -484,7 +504,7 @@ function PropEditorRowWrapper_(props: {
   );
   const onDeleteArg = () =>
     viewCtx.change(() => {
-      vtm.delArg(tpl, param.variable);
+      vtm.delArgFromVariantSetting(tpl, param.variable, ensureArgSetting());
     });
   const origExpr = maybe(arg, (x) => x.expr) || param.defaultExpr || undefined;
 
@@ -539,9 +559,13 @@ function PropEditorRowWrapper_(props: {
           />
         )
       }
+      bindingTarget={modelBindingTarget(viewCtx, tpl, targetVariants, {
+        kind: "arg",
+        param,
+      })}
       onChange={(expr) => {
         assert(!isDisabled, "Trying to override an invariantable prop");
-        viewCtx.change(() => {
+        return viewCtx.studioCtx.changeSpawn(() => {
           if (expr) {
             if (isKnownVarRef(expr)) {
               const baseArg = getTplComponentArg(
@@ -573,7 +597,12 @@ function PropEditorRowWrapper_(props: {
                 referencedParam.defaultExpr = clone(baseExpr);
               }
             } else {
-              vtm.setArg(tpl, param.variable, expr);
+              vtm.setArgUnderVariantSetting(
+                tpl,
+                param.variable,
+                expr,
+                ensureArgSetting(),
+              );
             }
           } else {
             if (isKnownVarRef(origExpr)) {
@@ -583,7 +612,11 @@ function PropEditorRowWrapper_(props: {
                 vtm.ensureBaseVariantSetting(tpl),
               );
             } else {
-              vtm.delArg(tpl, param.variable);
+              vtm.delArgFromVariantSetting(
+                tpl,
+                param.variable,
+                ensureArgSetting(),
+              );
             }
           }
         });
@@ -615,6 +648,7 @@ interface PropEditorRowProps {
   subtitle?: React.ReactNode;
   definedIndicator?: DefinedIndicatorType;
   valueSetState?: ValueSetState;
+  bindingTarget?: BindingIdentity;
   onChange: (expr: Expr | undefined) => void;
   onDelete?: () => void;
   about?: string;
@@ -666,7 +700,7 @@ export interface PropEditorRef {
   isFocused: () => boolean;
   element: HTMLElement | null;
   /** For editors that may implement dynamic values internally. */
-  useDynamicValue?: () => void;
+  useDynamicValue?: (expr?: ObjectPath | CustomCode, dropPt?: Pt) => void;
 }
 
 export const InnerPropEditorRow = observer(InnerPropEditorRow_);
@@ -821,6 +855,46 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     allowPointerInteractions &&
     !studioCtx.contentEditorMode &&
     !isCustomCode;
+
+  const dataDropTarget: DataDropTargetHandlers | undefined =
+    allowDynamicValue && allowPointerInteractions && canvasEnv
+      ? {
+          accepts: (payload) => {
+            const pathAcceptance = canUseDataDragPath(
+              payload,
+              canvasEnv,
+              viewCtx,
+            );
+            return pathAcceptance === true
+              ? canDropDataOnPropType(payload.varType, propType)
+              : pathAcceptance;
+          },
+          onDropData: (payload, dropPt) => {
+            const replacement = computeDropReplacementExpr(
+              exprRef.current,
+              payload.path,
+            );
+            if (
+              !replacement &&
+              isEditedAsTemplatedString &&
+              ref.current?.useDynamicValue
+            ) {
+              // Mixed static/dynamic content: insert at the drop point.
+              ref.current.useDynamicValue(
+                createExprForDataPickerValue(payload.path, undefined),
+                dropPt,
+              );
+              return;
+            }
+            onChange(
+              maybeWrapExpr(
+                replacement ??
+                  createExprForDataPickerValue(payload.path, undefined),
+              ),
+            );
+          },
+        }
+      : undefined;
 
   /**
    * Called when "Use dynamic value" is clicked.
@@ -996,7 +1070,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                       path: codeExpr.path,
                       fallback: undefined,
                     });
-                onChange(maybeWrapExpr(newExpr));
+                return onChange(maybeWrapExpr(newExpr));
               }
               setShowFallback(false);
             }}
@@ -1054,6 +1128,8 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     return (
       <DataPickerEditor
         viewCtx={viewCtx}
+        title={label}
+        target={props.bindingTarget}
         value={extractValueSavedFromDataPicker(codeExpr, exprCtx)}
         onChange={(val) => {
           if (!val) {
@@ -1063,7 +1139,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
             ? clone(codeExpr.fallback)
             : undefined;
           const newExpr = createExprForDataPickerValue(val, fallbackExpr);
-          onChange(maybeWrapExpr(newExpr));
+          return onChange(maybeWrapExpr(newExpr));
         }}
         onUnlink={() => onChange(maybeWrapExpr(codeExpr.fallback))}
         visible={isDataPickerVisible}
@@ -1121,13 +1197,14 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
         propType={propType}
         component={ownerComponent}
         disableDynamicValue={props.disableDynamicValue}
+        bindingTarget={props.bindingTarget}
         onChange={(val) => {
           if (exprLit == null && val == null) {
             return;
           }
           if (isRenderableType(wabType)) {
             assert(viewCtx, "viewCtx is required for renderable type");
-            viewCtx.change(() => {
+            return viewCtx.change(() => {
               const newExpr = updateOrCreateExpr(
                 expr,
                 wabType,
@@ -1136,13 +1213,13 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                 viewCtx,
               );
               if (newExpr !== expr) {
-                onChange(maybeWrapExpr(newExpr));
+                return onChange(maybeWrapExpr(newExpr));
               }
             });
           } else {
             const newExpr = updateOrCreateExpr(expr, wabType, val);
             if (newExpr !== expr) {
-              onChange(maybeWrapExpr(newExpr));
+              return onChange(maybeWrapExpr(newExpr));
             }
           }
         }}
@@ -1243,6 +1320,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                     onIndicatorClickDefault={onUseDynamicValueClick}
                     className="qb-custom-widget"
                     fullWidth={!isBooleanPropType(propType) || isCustomCode}
+                    dataDropTarget={dataDropTarget}
                   >
                     {referencedParam && !disableLinkToProp
                       ? renderEditorForReferencedParam()
@@ -1324,7 +1402,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                               path: codeExpr.path,
                               fallback: undefined,
                             });
-                        onChange(maybeWrapExpr(newExpr));
+                        return onChange(maybeWrapExpr(newExpr));
                       });
                       setShowFallback(false);
                     }}
@@ -1344,7 +1422,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                           return;
                         }
 
-                        viewCtx.change(() => {
+                        return viewCtx.change(() => {
                           const fallbackExpr = updateOrCreateExpr(
                             expr,
                             wabType,
@@ -1361,7 +1439,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                                 path: codeExpr.path,
                                 fallback: fallbackExpr,
                               });
-                          onChange(maybeWrapExpr(newExpr));
+                          return onChange(maybeWrapExpr(newExpr));
                         });
                       }}
                       onDelete={onDelete}
@@ -1531,7 +1609,7 @@ function PageHrefRows({
               ...newExpr.query,
               [key]: new TemplatedString({ text: [""] }),
             };
-            onChange(maybeWrapExpr(newExpr));
+            return onChange(maybeWrapExpr(newExpr));
           }}
         >
           <Button
@@ -1568,7 +1646,7 @@ function PageHrefRows({
             onClick={() => {
               const newExpr = clone(expr);
               newExpr.fragment = codeLit("");
-              onChange(maybeWrapExpr(newExpr));
+              return onChange(maybeWrapExpr(newExpr));
             }}
           >
             <span className="text-set">Add Fragment</span>
@@ -1602,7 +1680,7 @@ function PageHrefRows({
                 onChange={(checked) => {
                   const newExpr = clone(expr);
                   newExpr.encode = checked;
-                  onChange(maybeWrapExpr(newExpr));
+                  return onChange(maybeWrapExpr(newExpr));
                 }}
               >
                 {null}
@@ -1644,80 +1722,6 @@ function isBooleanPropType(propType: StudioPropType<any>) {
     return isBooleanPropType(propType.control);
   }
   return false;
-}
-
-export function getExtraEnvFromPropType(
-  propType: StudioPropType<any>,
-  componentPropValues: Record<string, any>,
-  ccContextData: any,
-  controlExtras: ControlExtras = { path: [] },
-) {
-  if (!isPlainObjectPropType(propType)) {
-    return {};
-  }
-  if (propType.type === "function" && "argValues" in propType) {
-    const argValues =
-      getContextDependentValue(
-        propType.argValues,
-        componentPropValues,
-        ccContextData,
-        controlExtras,
-      ) ?? [];
-    return Object.fromEntries(
-      leftZip(propType.argNames, argValues).map(([argName, argValue]) => [
-        argName,
-        argValue,
-      ]),
-    );
-  } else if (propType.type === "exprEditor") {
-    return (
-      getContextDependentValue(
-        propType.data,
-        componentPropValues,
-        ccContextData,
-        controlExtras,
-      ) ?? {}
-    );
-  } else {
-    return {};
-  }
-}
-
-type MaybeWrapExpr = (x: Expr | undefined | null) => Expr | undefined;
-type MaybeUnwrapExpr = (x: Expr | undefined | null) => Expr | undefined;
-
-function getExprTransformationBasedOnPropType(propType: StudioPropType<any>): {
-  maybeWrapExpr: MaybeWrapExpr;
-  maybeUnwrapExpr: MaybeUnwrapExpr;
-} {
-  if (isPlainObjectPropType(propType) && propType.type === "function") {
-    const argNames =
-      "argTypes" in propType
-        ? propType.argTypes.map(({ name }) => name)
-        : propType.argNames;
-    return {
-      maybeWrapExpr: (x: Expr | undefined | null) => {
-        if (x == null) {
-          return undefined;
-        }
-        return new FunctionExpr({
-          bodyExpr: x,
-          argNames,
-        });
-      },
-      maybeUnwrapExpr: (x: Expr | undefined | null) => {
-        if (x == null) {
-          return undefined;
-        }
-        return isKnownFunctionExpr(x) ? x.bodyExpr : undefined;
-      },
-    };
-  }
-  return {
-    maybeWrapExpr: (x: Expr | undefined | null) => (x == null ? undefined : x),
-    maybeUnwrapExpr: (x: Expr | undefined | null) =>
-      x == null ? undefined : x,
-  };
 }
 
 export const PropEditorRow = observer(PropEditorRow_);

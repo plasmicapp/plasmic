@@ -439,24 +439,12 @@ export function getSourceUiId(
       );
       return param ? mkComponentScopedUiId(param, component.uuid) : undefined;
     }
-    case "$q": {
-      // Accept `$q.<name>` or `$q.<name>.data`
-      const isQueryPath =
-        typeof name === "string" &&
-        (itemPath.length === 2 ||
-          (itemPath.length === 3 && itemPath[2] === "data"));
-      if (!component || !isQueryPath) {
-        return undefined;
-      }
-      const query = getComponentServerQueryByVarName(component, name);
-      return query ? mkComponentScopedUiId(query, component.uuid) : undefined;
-    }
+    case "$q":
     case "$queries": {
-      if (!component || itemPath.length !== 2 || typeof name !== "string") {
-        return undefined;
-      }
-      const query = getComponentDataQueryByVarName(component, name);
-      return query ? mkComponentScopedUiId(query, component.uuid) : undefined;
+      const query = getSourceQuery(itemPath, component);
+      return query && component
+        ? mkComponentScopedUiId(query, component.uuid)
+        : undefined;
     }
     case "$state": {
       if (!component || typeof name !== "string") {
@@ -481,6 +469,31 @@ export function getSourceUiId(
       }
       return undefined;
     }
+    default:
+      return undefined;
+  }
+}
+
+/** The query a `$q`/`$queries` row refers to, if `itemPath` points at one. */
+export function getSourceQuery(
+  itemPath: (string | number)[],
+  component: Component | undefined,
+) {
+  const [dollarVar, name] = itemPath;
+  if (!component || typeof name !== "string") {
+    return undefined;
+  }
+  switch (dollarVar) {
+    case "$q":
+      // Accept `$q.<name>` or `$q.<name>.data`
+      return itemPath.length === 2 ||
+        (itemPath.length === 3 && itemPath[2] === "data")
+        ? getComponentServerQueryByVarName(component, name)
+        : undefined;
+    case "$queries":
+      return itemPath.length === 2
+        ? getComponentDataQueryByVarName(component, name)
+        : undefined;
     default:
       return undefined;
   }

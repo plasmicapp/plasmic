@@ -121,6 +121,7 @@ import {
   isPrivateStyleVariant,
 } from "@/wab/shared/Variants";
 import { AddItemKey, WrapItemKey } from "@/wab/shared/add-item-keys";
+import { toVarName } from "@/wab/shared/codegen/util";
 import {
   hasMaxWidthVariant,
   hasNonResponsiveColumnsStyle,
@@ -139,6 +140,7 @@ import {
   tuple,
   withoutNils,
 } from "@/wab/shared/common";
+import { mkNormalizedRep } from "@/wab/shared/copilot/utils";
 import * as Components from "@/wab/shared/core/components";
 import {
   ComponentType,
@@ -196,6 +198,10 @@ import {
   parseCssNumericNew,
   tryGetCssInitial,
 } from "@/wab/shared/css";
+import {
+  computeDropCollectionExpr,
+  computeDropTextExpr,
+} from "@/wab/shared/data-picker/data-drop-compat";
 import { AddItemPrefs, getSimplifiedStyles } from "@/wab/shared/default-styles";
 import {
   computeDefinedIndicator,
@@ -228,6 +234,7 @@ import {
   ArenaFrame,
   Component,
   CustomCode,
+  ExprText,
   Mixin,
   ObjectPath,
   Param,
@@ -243,6 +250,7 @@ import {
   isKnownImageAssetRef,
   isKnownNodeMarker,
   isKnownRenderExpr,
+  isKnownTemplatedString,
   isKnownTplComponent,
   isKnownTplNode,
   isKnownTplTag,
@@ -3021,8 +3029,9 @@ export class ViewOps {
     adoptees: Adoptee[],
   ) {
     assert(
-      insertionSpec.type !== "ErrorInsertion",
-      "insertionSpec type should not be ErrorInsertion",
+      insertionSpec.type !== "ErrorInsertion" &&
+        insertionSpec.type !== "BindInsertion",
+      "insertionSpec type should not be ErrorInsertion or BindInsertion",
     );
     const insertableKey = ensureString(insertableSpec.key);
     const cmptTpl = insertableSpec.factory(
@@ -3912,6 +3921,64 @@ export class ViewOps {
       .getTargetVariantComboForNode(tpl, { forVisibility: true });
     const vs = ensureVariantSetting(tpl, combo);
     vs.dataCond = cond;
+  };
+
+  /**
+   * Replaces the text content of `tpl` with an expr bound to `path`, keeping the static text or
+   * existing fallback as with a sidebar drop.
+   */
+  bindTextContentToData = (
+    tpl: TplNode,
+    path: (string | number)[],
+    fallbackValue?: unknown,
+  ) => {
+    const vtm = this.viewCtx().variantTplMgr();
+    const combo = vtm.getTargetVariantComboForNode(tpl);
+    const vs = ensureVariantSetting(tpl, combo);
+    const oldText = vs.text ?? vtm.effectiveVariantSetting(tpl).text;
+    const isSubNode = Tpls.isTplTextBlock(tpl.parent);
+    // Mixed sub-node content has no drop point here, so it is replaced.
+    const expr =
+      computeDropTextExpr(oldText, path, isSubNode) ??
+      computeDropTextExpr(undefined, path, isSubNode)!;
+    if (
+      !isKnownTemplatedString(expr) &&
+      !expr.fallback &&
+      ["string", "number", "boolean"].includes(typeof fallbackValue)
+    ) {
+      expr.fallback = exprs.codeLit(fallbackValue as string | number | boolean);
+    }
+    vs.text = new ExprText({
+      expr,
+      html: isKnownExprText(oldText) ? oldText.html : false,
+    });
+  };
+
+  /** Repeats `tpl` over the collection at `path` (dataRep on the base VS). */
+  setDataRepCollection = (tpl: TplNode, path: (string | number)[]) => {
+    const baseVs = this.viewCtx().variantTplMgr().ensureBaseVariantSetting(tpl);
+    const collection = computeDropCollectionExpr(
+      baseVs.dataRep?.collection,
+      path,
+    );
+    if (baseVs.dataRep) {
+      baseVs.dataRep.collection = collection;
+    } else {
+      // Avoid shadowing repeat vars already in scope at tpl.
+      const env = this.viewCtx().getCanvasEnvForTpl(tpl, {
+        forDataRepCollection: true,
+      });
+      const envKeys = env ? Object.keys(env) : [];
+      const element = common.uniqueName(envKeys, "currentItem", {
+        separator: "",
+        normalize: toVarName,
+      });
+      const index = common.uniqueName([...envKeys, element], "currentIndex", {
+        separator: "",
+        normalize: toVarName,
+      });
+      baseVs.dataRep = mkNormalizedRep(collection, element, index);
+    }
   };
 
   tryInsertInsertableSpec<T>(

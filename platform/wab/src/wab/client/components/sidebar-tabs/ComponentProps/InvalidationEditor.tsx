@@ -256,6 +256,7 @@ export const InvalidationEditor = observer(function InvalidationKeysEditor({
         >
           <DataPickerEditor
             viewCtx={studioCtx.focusedViewCtx()}
+            title="Invalidation keys"
             value={extractValueSavedFromDataPicker(invalidationKeys, {
               projectFlags: studioCtx.projectFlags(),
               component: component ?? null,
@@ -266,7 +267,7 @@ export const InvalidationEditor = observer(function InvalidationKeysEditor({
                 return;
               }
               const newExpr = createExprForDataPickerValue(val);
-              onChange(
+              return onChange(
                 new QueryInvalidationExpr({
                   invalidationQueries: invalidationQueries,
                   invalidationKeys: newExpr,

@@ -176,7 +176,7 @@ test.describe("rich-text", () => {
     // should end the editing session and save the text.
     await editText("Hello world");
     const rightPaneTabBar = models.studio.frame.locator(
-      ".canvas-editor__right-pane .hilite-tabs",
+      ".canvas-editor__right-pane .hilite-tabs, .canvas-editor__right-pane .dv-tabs-and-actions-container",
     );
     const tabBarBox = await rightPaneTabBar.boundingBox();
     await rightPaneTabBar.click({

@@ -1,7 +1,9 @@
 import {
-  BottomModalButtons,
-  useBottomModalActions,
-} from "@/wab/client/components/BottomModal";
+  BottomPanelButtons,
+  useBottomPanelActions,
+} from "@/wab/client/components/BottomPanel";
+import { currentSelection } from "@/wab/client/components/BottomPanelState";
+import { EditorSession } from "@/wab/client/components/editor-sessions/editor-session";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { ChoicePropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/ChoicePropEditor";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
@@ -19,9 +21,9 @@ import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { ensure, mkShortId, spawn, swallow } from "@/wab/shared/common";
-import { ExprCtx } from "@/wab/shared/core/exprs";
-import { tryGetTplOwnerComponent } from "@/wab/shared/core/tpls";
+import { ensure, ensureArray, mkShortId, swallow } from "@/wab/shared/common";
+import { ExprCtx, clone } from "@/wab/shared/core/exprs";
+import { flattenTpls, tryGetTplOwnerComponent } from "@/wab/shared/core/tpls";
 import { getDataSourceMeta } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
   DataSourceMeta,
@@ -43,8 +45,8 @@ import {
 import { DataSourceSchema, TableSchema } from "@plasmicapp/data-sources";
 import { FormType, formTypeDescription } from "@plasmicpkgs/antd5";
 import { notification } from "antd";
-import { size } from "lodash";
-import { ok } from "neverthrow";
+import { mapValues, size } from "lodash";
+import { observer } from "mobx-react";
 import React from "react";
 
 type ConnectionData = {
@@ -165,8 +167,8 @@ export function FormDataConnectionPropEditor({
   disabled?: boolean;
 }) {
   const studioCtx = useStudioCtx();
-  const modalActions = useBottomModalActions();
-  const bottomModalKey = `form-data-connection-prop-editor-${value?.opId}`;
+  const modalActions = useBottomPanelActions();
+  const panelKey = `form-data-connection-prop-editor-${tpl.uuid}`;
 
   const lookupSpec = React.useMemo<LookupSpecDraft | undefined>(() => {
     if (!value) {
@@ -185,7 +187,7 @@ export function FormDataConnectionPropEditor({
       lookupFields: filters ? Object.keys(filters) : undefined,
       lookupValue: {
         value: filters,
-        bindings: value?.templates.filters?.bindings ?? {},
+        bindings: mapValues(value?.templates.filters?.bindings ?? {}, clone),
       },
     };
   }, [value]);
@@ -210,19 +212,34 @@ export function FormDataConnectionPropEditor({
       size="stretch"
       disabled={disabled}
       onClick={() => {
-        modalActions.open(bottomModalKey, {
-          children: (
-            <FormDataConnectionBottomModal
-              lookupSpec={lookupSpec}
-              modalKey={bottomModalKey}
-              initialSelectedFormOption={selectedFormOption}
-              onChange={onChange}
-              env={env}
-              schema={schema}
-              component={component}
-              tpl={tpl}
-            />
-          ),
+        const session = createFormConnectionSession(studioCtx, {
+          lookupSpec,
+          modalKey: panelKey,
+          initialSelectedFormOption: selectedFormOption,
+          onChange,
+          env,
+          schema,
+          component,
+          tpl,
+        });
+        void modalActions.open(panelKey, {
+          session,
+          title: "Configure form data connection",
+          selection: currentSelection(studioCtx.focusedViewCtx()),
+          content: {
+            kind: "formConnection",
+            session,
+            props: {
+              lookupSpec,
+              modalKey: panelKey,
+              initialSelectedFormOption: selectedFormOption,
+              onChange,
+              env,
+              schema,
+              component,
+              tpl,
+            },
+          },
         });
       }}
       data-test-id="form-data"
@@ -238,16 +255,11 @@ export function FormDataConnectionPropEditor({
   );
 }
 
-function FormDataConnectionBottomModal({
-  lookupSpec,
-  modalKey,
-  initialSelectedFormOption,
-  onChange,
-  env,
-  schema,
-  component,
-  tpl,
-}: {
+interface FormConnectionDraft {
+  lookup: LookupSpecDraft | undefined;
+  formType: FormType;
+}
+type FormDataConnectionProps = {
   lookupSpec: LookupSpecDraft | undefined;
   modalKey: string;
   initialSelectedFormOption: FormType;
@@ -256,215 +268,290 @@ function FormDataConnectionBottomModal({
   schema?: DataPickerTypesSchema;
   component?: Component;
   tpl: TplComponent;
-}) {
-  const studioCtx = useStudioCtx();
-  const [draft, setDraft] = React.useState(lookupSpec);
-  const [opDraft, setOpDraft] = React.useState<DataSourceOpExpr | undefined>(
-    undefined,
-  );
-  const [selectedFormOption, setSelectedFormOption] = React.useState(
-    initialSelectedFormOption,
-  );
-  const { sourceId, tableId } = draft ?? {};
-  const exprCtx: ExprCtx = {
-    projectFlags: studioCtx.projectFlags(),
-    component: component ?? null,
-    inStudio: true,
-  };
-  const modalActions = useBottomModalActions();
-  const readOnly = !studioCtx.appCtx.appConfig.enableDataQueries;
-  const { data: source } = useSource(studioCtx, sourceId);
-  const { data: sourceSchemaData } = useSourceSchemaData(
-    studioCtx,
-    sourceId,
-    source,
-  );
-  const tableSchema = useTableSchema(sourceSchemaData, tableId);
-  const sourceMeta = React.useMemo(
-    () => (source ? getDataSourceMeta(source.source) : undefined),
-    [source],
-  );
-  const [hideDataTab, setHideDataTab] = React.useState(
-    initialSelectedFormOption === FormType.NewEntry,
-  );
+};
 
-  const makeQueryFromDraft = async () => {
-    if (!sourceId) {
-      notification.error({
-        message: `Missing required fields: Integration`,
-      });
-      return;
-    }
-    if (typeof tableId !== "string" || !tableSchema || !sourceMeta) {
-      notification.error({
-        message: `Missing required fields: Table`,
-      });
-      return undefined;
-    }
-    let dataOp: DataSourceOpExpr;
-    if (selectedFormOption === FormType.NewEntry) {
-      const makeSchemaQuery = ensureDataSourceStandardQuery(
-        sourceMeta,
-        "getSchema",
-      );
-      dataOp = makeSchemaQuery(sourceId, tableId);
-    } else {
-      if (!draft?.lookupValue) {
-        notification.error({
-          message: `Missing required fields: Lookup value`,
-        });
-        return undefined;
-      }
-      const makeGetOneQuery = ensureDataSourceStandardQuery(
-        sourceMeta,
-        "getOne",
-      );
-      dataOp = makeGetOneQuery(sourceId, tableSchema, draft.lookupValue);
-    }
-    dataOp.opId = await getOpIdForDataSourceOpExpr(
-      studioCtx.appCtx.api,
-      dataOp,
-      exprCtx,
-      studioCtx.siteInfo.id,
-    );
-    return dataOp;
-  };
-  const onPreview = async () => {
-    const dataOp = await makeQueryFromDraft();
-    if (dataOp) {
-      setOpDraft(dataOp);
-      setHideDataTab(selectedFormOption === FormType.NewEntry);
-    }
-  };
-  const onSave = async () => {
-    if (!sourceMeta || !tableSchema) {
-      return;
-    }
-    const needsReset = draft?.tableId !== lookupSpec?.tableId;
-    const proceed =
-      !needsReset ||
-      (await reactConfirm({
-        message: (
-          <>
-            <p>
-              This will reset your form configuration (specifically, the Fields
-              prop and the On submit interaction)
-            </p>
-            <p>Are you sure you want to proceed?</p>
-          </>
+async function prepareFormConnection(
+  studioCtx: StudioCtx,
+  state: FormConnectionDraft,
+  component?: Component,
+) {
+  const { sourceId, tableId } = state.lookup ?? {};
+  if (!sourceId) {
+    throw new Error("Choose an integration before saving.");
+  }
+  const source = await studioCtx.appCtx.api.getDataSourceById(sourceId);
+  const sourceMeta = getDataSourceMeta(source.source);
+  const schemaOp = sourceMeta.studioOps.schemaOp;
+  const schema = schemaOp
+    ? await studioCtx.appCtx.api.executeDataSourceStudioOp(
+        studioCtx.siteInfo.id,
+        sourceId,
+        { name: schemaOp.name },
+      )
+    : undefined;
+  const tableSchema = schema?.tables.find((table) => table.id === tableId);
+  if (typeof tableId !== "string" || !tableSchema) {
+    throw new Error("Choose a table before saving.");
+  }
+  const lookupValue = state.lookup?.lookupValue;
+  if (
+    state.formType !== FormType.NewEntry &&
+    (!lookupValue?.value ||
+      size(lookupValue.value) === 0 ||
+      !ensureArray(state.lookup?.lookupFields ?? []).every((field) =>
+        Object.prototype.hasOwnProperty.call(lookupValue.value, field),
+      ))
+  ) {
+    throw new Error("Enter a lookup value before saving.");
+  }
+  const dataOp =
+    state.formType === FormType.NewEntry || !lookupValue
+      ? ensureDataSourceStandardQuery(sourceMeta, "getSchema")(
+          sourceId,
+          tableId,
+        )
+      : ensureDataSourceStandardQuery(sourceMeta, "getOne")(
+          sourceId,
+          tableSchema,
+          lookupValue,
+        );
+  dataOp.opId = await getOpIdForDataSourceOpExpr(
+    studioCtx.appCtx.api,
+    dataOp,
+    {
+      projectFlags: studioCtx.projectFlags(),
+      component: component ?? null,
+      inStudio: true,
+    },
+    studioCtx.siteInfo.id,
+  );
+  return { dataOp, sourceMeta, tableSchema };
+}
+
+export function createFormConnectionSession(
+  studioCtx: StudioCtx,
+  props: FormDataConnectionProps,
+) {
+  const { tpl, component, lookupSpec, onChange } = props;
+  return new EditorSession<FormConnectionDraft>({
+    studioCtx,
+    initial: {
+      lookup: props.lookupSpec,
+      formType: props.initialSelectedFormOption,
+    },
+    target: {
+      exists: () =>
+        studioCtx.site.components.some((owner) =>
+          flattenTpls(owner.tplTree).includes(tpl),
         ),
-      }));
-    if (!proceed) {
-      return;
-    }
-    const dataOp = await makeQueryFromDraft();
-    if (!dataOp) {
-      return;
-    }
-    if (needsReset) {
-      const baseVs = ensureBaseVariantSetting(tpl);
-      const tplMgr = new TplMgr({ site: studioCtx.site });
-      const submitExpr = await mkDefaultSubmit(studioCtx, tpl, {
-        formType: selectedFormOption,
-        dataOp,
-        sourceMeta,
-        tableSchema,
-        lookupValue: draft?.lookupValue,
-      });
-      spawn(
-        studioCtx.change(() => {
-          for (const vs of tpl.vsettings) {
-            tplMgr.delArg(
+      read: () =>
+        tpl.vsettings.flatMap((vs) =>
+          vs.args.filter((arg) =>
+            ["data", "dataFormItems", "onFinish"].includes(
+              arg.param.variable.name,
+            ),
+          ),
+        ),
+    },
+    prepare: async (state) => {
+      const draft = state.lookup;
+      const selectedFormOption = state.formType;
+      const { dataOp, sourceMeta, tableSchema } = await prepareFormConnection(
+        studioCtx,
+        state,
+        component,
+      );
+      const needsReset =
+        draft?.sourceId !== lookupSpec?.sourceId ||
+        draft?.tableId !== lookupSpec?.tableId ||
+        selectedFormOption !== props.initialSelectedFormOption;
+      if (
+        needsReset &&
+        !(await reactConfirm({
+          message:
+            "This will reset the form Fields and On submit interaction. Continue?",
+        }))
+      ) {
+        return {
+          kind: "blocked",
+          message: "The form connection was not saved.",
+        };
+      }
+      const submitExpr = needsReset
+        ? await mkDefaultSubmit(studioCtx, tpl, {
+            formType: selectedFormOption,
+            dataOp,
+            sourceMeta,
+            tableSchema,
+            lookupValue: draft?.lookupValue,
+          })
+        : undefined;
+      return {
+        apply: () => {
+          if (submitExpr) {
+            const baseVs = ensureBaseVariantSetting(tpl);
+            const tplMgr = new TplMgr({ site: studioCtx.site });
+            for (const vs of tpl.vsettings) {
+              tplMgr.delArg(
+                tpl,
+                vs,
+                ensure(
+                  tpl.component.params.find(
+                    (p) => p.variable.name === "dataFormItems",
+                  ),
+                  `forms should have a "dataFormItems" prop`,
+                ).variable,
+              );
+            }
+            tplMgr.setArg(
               tpl,
-              vs,
+              baseVs,
               ensure(
                 tpl.component.params.find(
-                  (p) => p.variable.name === "dataFormItems",
+                  (p) => p.variable.name === "onFinish",
                 ),
-                `forms should have a "dataFormItems" prop`,
+                `forms should have a "onFinish" prop`,
               ).variable,
+              submitExpr,
             );
           }
-          tplMgr.setArg(
-            tpl,
-            baseVs,
-            ensure(
-              tpl.component.params.find((p) => p.variable.name === "onFinish"),
-              `forms should have a "onFinish" prop`,
-            ).variable,
-            submitExpr,
-          );
-          return ok();
-        }),
-      );
-    }
-    onChange(dataOp);
-    modalActions.close(modalKey);
-  };
-  return (
-    <>
-      <div className="flex flex-row p-xxlg gap-xlg">
-        <div className="flex flex-col gap-xlg fill-width">
-          <LabeledItemRow label={"Form Type"} tooltip={formTypeDescription}>
-            <ChoicePropEditor
-              attr="formType"
-              options={formOptions}
-              value={selectedFormOption}
-              onChange={(newFormOption) => {
-                setSelectedFormOption(newFormOption);
-                setDraft({
-                  ...draft,
-                  lookupValue: undefined,
-                });
-              }}
-              defaultValueHint={"Select the form type..."}
-              valueSetState={
-                selectedFormOption !== undefined ? "isSet" : undefined
-              }
-              readOnly={readOnly}
-            />
-          </LabeledItemRow>
-          {selectedFormOption !== undefined && (
-            <DataSourceTablePicker
-              draft={draft}
-              onChange={(newDraft) => setDraft(newDraft)}
-              studioCtx={studioCtx}
-              env={env}
-              schema={schema}
-              requireLookupValue={selectedFormOption === FormType.UpdateEntry}
-              onlySchema={selectedFormOption === FormType.NewEntry}
-              exprCtx={exprCtx}
-              disabled={readOnly}
-            />
-          )}
-        </div>
-        <div className="fill-width">
-          {opDraft && (
-            <DataSourceOpPickerProvider
-              hideDataTab={hideDataTab}
-              preferredTab={
-                selectedFormOption === FormType.NewEntry ? "schema" : "data"
-              }
-            >
-              <DataSourceOpDraftPreview
-                env={env}
-                tableSchema={tableSchema}
-                opType={"read"}
-                value={opDraft}
-                exprCtx={exprCtx}
-                projectId={studioCtx.siteInfo.id}
+          onChange(dataOp);
+        },
+      };
+    },
+  });
+}
+
+export const FormDataConnectionPanel = observer(
+  function FormDataConnectionPanel({
+    session,
+    modalKey,
+    initialSelectedFormOption,
+    env,
+    schema,
+    component,
+  }: FormDataConnectionProps & {
+    session: EditorSession<FormConnectionDraft>;
+  }) {
+    const studioCtx = useStudioCtx();
+    const draft = session.draft.lookup;
+    const selectedFormOption = session.draft.formType;
+    const setDraft = (lookup: LookupSpecDraft | undefined) =>
+      session.setDraft((previous) => ({ ...previous, lookup }));
+    const setSelectedFormOption = (formType: FormType) =>
+      session.setDraft((previous) => ({ ...previous, formType }));
+    const [opDraft, setOpDraft] = React.useState<
+      DataSourceOpExpr | undefined
+    >();
+    const { sourceId, tableId } = draft ?? {};
+    const exprCtx: ExprCtx = {
+      projectFlags: studioCtx.projectFlags(),
+      component: component ?? null,
+      inStudio: true,
+    };
+    const modalActions = useBottomPanelActions();
+    const readOnly = !studioCtx.appCtx.appConfig.enableDataQueries;
+    const { data: source } = useSource(studioCtx, sourceId);
+    const { data: sourceSchemaData } = useSourceSchemaData(
+      studioCtx,
+      sourceId,
+      source,
+    );
+    const tableSchema = useTableSchema(sourceSchemaData, tableId);
+    const [hideDataTab, setHideDataTab] = React.useState(
+      initialSelectedFormOption === FormType.NewEntry,
+    );
+
+    const onPreview = async () => {
+      try {
+        const { dataOp } = await prepareFormConnection(
+          studioCtx,
+          session.draft,
+          component,
+        );
+        setOpDraft(dataOp);
+        setHideDataTab(selectedFormOption === FormType.NewEntry);
+      } catch (error) {
+        notification.error({
+          message:
+            error instanceof Error
+              ? error.message
+              : "Could not preview the connection.",
+        });
+      }
+    };
+    const onSave = () => modalActions.saveAndClose(modalKey);
+    return (
+      <>
+        <div className="flex flex-row p-xxlg gap-xlg">
+          <div className="flex flex-col gap-xlg fill-width">
+            <LabeledItemRow label={"Form Type"} tooltip={formTypeDescription}>
+              <ChoicePropEditor
+                readOnly={readOnly}
+                attr="formType"
+                options={formOptions}
+                value={selectedFormOption}
+                onChange={(newFormOption) => {
+                  setSelectedFormOption(newFormOption);
+                  setDraft({
+                    ...draft,
+                    lookupValue: undefined,
+                  });
+                }}
+                defaultValueHint={"Select the form type..."}
+                valueSetState={
+                  selectedFormOption !== undefined ? "isSet" : undefined
+                }
               />
-            </DataSourceOpPickerProvider>
-          )}
+            </LabeledItemRow>
+            {selectedFormOption !== undefined && (
+              <DataSourceTablePicker
+                disabled={readOnly}
+                draft={draft}
+                onChange={(newDraft) => setDraft(newDraft)}
+                studioCtx={studioCtx}
+                env={env}
+                schema={schema}
+                requireLookupValue={selectedFormOption === FormType.UpdateEntry}
+                onlySchema={selectedFormOption === FormType.NewEntry}
+                exprCtx={exprCtx}
+              />
+            )}
+          </div>
+          <div className="fill-width">
+            {opDraft && (
+              <DataSourceOpPickerProvider
+                hideDataTab={hideDataTab}
+                preferredTab={
+                  selectedFormOption === FormType.NewEntry ? "schema" : "data"
+                }
+              >
+                <DataSourceOpDraftPreview
+                  env={env}
+                  tableSchema={tableSchema}
+                  opType={"read"}
+                  value={opDraft}
+                  exprCtx={exprCtx}
+                  projectId={studioCtx.siteInfo.id}
+                />
+              </DataSourceOpPickerProvider>
+            )}
+          </div>
         </div>
-      </div>
-      <BottomModalButtons>
-        <Button onClick={onSave} type="primary" disabled={readOnly}>
-          Save
-        </Button>
-        <Button onClick={onPreview}>Preview</Button>
-        <Button onClick={() => modalActions.close(modalKey)}>Cancel</Button>
-      </BottomModalButtons>
-    </>
-  );
+        <BottomPanelButtons>
+          <Button onClick={onSave} type="primary" disabled={readOnly}>
+            Save
+          </Button>
+          <Button onClick={onPreview}>Preview</Button>
+          <Button onClick={() => modalActions.discard(modalKey)}>Cancel</Button>
+        </BottomPanelButtons>
+      </>
+    );
+  },
+);
+
+export interface FormConnectionPanelDescriptor {
+  kind: "formConnection";
+  props: FormDataConnectionProps;
+  session: EditorSession<FormConnectionDraft>;
 }

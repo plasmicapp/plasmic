@@ -20,7 +20,6 @@ $right-pane-content-width: 280px
 $right-pane-padding: 8px
 $right-pane-width: $right-pane-content-width + $scroll-width + $right-pane-padding * 2
 $right-float-pane-width: 255px
-$bottom-pane-height: 200px
 $left-tab-strip-width: 48px
 
 $link-color: $blue9
@@ -1002,6 +1001,13 @@ $dnd-container-error-color: rgba(255, 0, 0, 0.1)
 .dnd__container--error
   background: repeating-linear-gradient(45deg, $dnd-container-error-color, $dnd-container-error-color 10px, transparent 10px, transparent 20px)
   border-color: $error-bg
+.dnd__container--bind
+  border-style: solid
+  border-color: $indigo9
+  background: rgba(88, 80, 236, 0.08)
+.dnd__container-tag--bind
+  background-color: $indigo9
+  color: white
 .dnd__replace
   background: rgba($node-outline-color, 0.05)
 
@@ -3273,6 +3279,44 @@ $invalid-arg-color: #faad14
 .hilite-tab--tight
   height: $section-list-item-height
 
+// Restyle dockview chrome (tab strips) to match the studio's hilite-tabs look: transparent strip
+// with a bottom hairline, bold dim-gray tab labels, and a 2px underline on the hovered/active tab.
+// (dockview applies its theme class to the .dv-shell element ABOVE the element that receives our
+// className, so the vars below win over the theme's by custom-property inheritance proximity, not
+// specificity.)
+.studio-dock
+  --dv-tabs-and-actions-container-background-color: transparent
+  --dv-tabs-and-actions-container-height: 40px
+  --dv-tabs-and-actions-container-font-size: 12px
+  --dv-activegroup-visiblepanel-tab-background-color: transparent
+  --dv-activegroup-hiddenpanel-tab-background-color: transparent
+  --dv-inactivegroup-visiblepanel-tab-background-color: transparent
+  --dv-inactivegroup-hiddenpanel-tab-background-color: transparent
+  --dv-activegroup-visiblepanel-tab-color: #{$fg}
+  --dv-activegroup-hiddenpanel-tab-color: #{$dimfg}
+  --dv-inactivegroup-visiblepanel-tab-color: #{$fg}
+  --dv-inactivegroup-hiddenpanel-tab-color: #{$dimfg}
+  --dv-tab-divider-color: transparent
+  --dv-separator-border: transparent
+
+  .dv-tabs-and-actions-container
+    border-bottom: 1px solid $sand4
+    padding: 0 ($sidebar-section-hpadding - $sidebar-tab-hpadding)
+
+  .dv-tab
+    position: relative
+    font-weight: 600
+    // dockview's generic .dv-tab:focus-within::after rule (its focus outline) sets `top: 0` and
+    // `width: 100%`, which would flip this underline to the top of the focused (= just clicked)
+    // tab. Neutralize those.
+    &:hover::after,
+    &.dv-active-tab::after
+      @include hilite
+      top: auto
+      width: auto
+      bottom: 0
+      outline: none !important
+
 .style__assets__adder__container
   height: 24px
 
@@ -4055,6 +4099,17 @@ $color-stops-width: 100%
   flex-direction: row
   position: relative
   overflow: hidden
+
+// Canvas plus the (optionally centered) bottom panel, between the side panes
+.canvas-editor__center-column
+  flex: 1
+  min-width: 0
+  display: flex
+  flex-direction: column
+
+  > .canvas-editor__canvas-container
+    flex: 1 1 auto
+    min-height: 0
 .canvas-editor__alert-banner-container
   margin-bottom: 8px
   pointer-events: auto
@@ -4088,12 +4143,6 @@ $color-stops-width: 100%
 .canvas-editor__canvas__popup_live
   width: 100%
   height: 100%
-.canvas-editor__bottom-pane
-  height: 0
-  flex-shrink: 0
-.canvas-editor__bottom-pane--expanded
-  height: $bottom-pane-height
-  overflow: scroll
 // We need to clip the canvas content.
 .canvas-editor__canvas-clipper
   overflow: auto

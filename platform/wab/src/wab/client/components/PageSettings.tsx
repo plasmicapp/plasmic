@@ -3,6 +3,7 @@
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
 import styles from "@/wab/client/components/PageSettings.module.css";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
+import { acceptDataDrop } from "@/wab/client/components/sidebar-tabs/DataBinding/data-drop";
 import {
   convertExprToPageMetaString,
   convertPageMetaStringToExpr,
@@ -24,6 +25,7 @@ import { PageComponent } from "@/wab/shared/core/components";
 import {
   ExprCtx,
   asCode,
+  clone,
   codeLit,
   createExprForDataPickerValue,
   extractValueSavedFromDataPicker,
@@ -96,7 +98,7 @@ const ImageAssetPickerWithDynamicValue = observer(
     ) => {
       const value =
         raw && isKnownImageAsset(raw) ? new ImageAssetRef({ asset: raw }) : raw;
-      spawn(sc.tryChangePageMetaImage(page, value));
+      sc.tryChangePageMetaImage(page, value);
     };
 
     const switchToDynamicValue = () => {
@@ -136,6 +138,32 @@ const ImageAssetPickerWithDynamicValue = observer(
       </Menu>
     );
 
+    const dataDropTarget = pageMetaEnv
+      ? {
+          accepts: (payload) =>
+            acceptDataDrop(
+              payload,
+              pageMetaEnv,
+              viewCtx,
+              ["string"],
+              "Open Graph image only accepts strings",
+            ),
+          onDropData: (payload) => {
+            const currentExpr = isKnownTemplatedString(openGraphImage)
+              ? getLastDynExprFromTemplatedString(openGraphImage)
+              : undefined;
+            const fallback = currentExpr?.fallback
+              ? clone(currentExpr.fallback)
+              : typeof openGraphImage === "string"
+                ? codeLit(openGraphImage)
+                : undefined;
+            pageMeta.openGraphImage = mkTemplatedStringOfOneDynExpr(
+              createExprForDataPickerValue(payload.path, fallback),
+            );
+          },
+        }
+      : undefined;
+
     return (
       <ContextMenuIndicator
         menu={contextMenu}
@@ -143,11 +171,13 @@ const ImageAssetPickerWithDynamicValue = observer(
         onIndicatorClickDefault={switchToDynamicValue}
         className="qb-custom-widget"
         fullWidth={true}
+        dataDropTarget={dataDropTarget}
       >
         {isDynamic ? (
           <div className="flex-col">
             <DataPickerEditor
               viewCtx={viewCtx}
+              title="Open Graph image"
               value={extractValueSavedFromDataPicker(
                 getLastDynExprFromTemplatedString(
                   openGraphImage as TemplatedString,
@@ -160,11 +190,9 @@ const ImageAssetPickerWithDynamicValue = observer(
                 }
                 const dynExpr = createExprForDataPickerValue(val, undefined);
                 const templatedString = mkTemplatedStringOfOneDynExpr(dynExpr);
-                updateOpenGraphImage(templatedString);
+                return sc.tryChangePageMetaImage(page, templatedString);
               }}
-              onUnlink={() => {
-                updateOpenGraphImage(null);
-              }}
+              onUnlink={() => sc.tryChangePageMetaImage(page, null)}
               visible={isDataPickerVisible}
               setVisible={setIsDataPickerVisible}
               data={pageMetaEnv}
@@ -288,7 +316,7 @@ const PageSettings = observer(function PageSettings({
               expr={title}
               onChange={(expr) => {
                 const newTitle = convertExprToPageMetaString(expr);
-                spawn(sc.tryChangePageMeta(page, "title", newTitle));
+                sc.tryChangePageMeta(page, "title", newTitle);
               }}
               viewCtx={viewCtx}
               tpl={page.tplTree as TplTag}
@@ -308,7 +336,7 @@ const PageSettings = observer(function PageSettings({
               expr={description}
               onChange={(expr) => {
                 const newDesc = convertExprToPageMetaString(expr) ?? "";
-                spawn(sc.tryChangePageMetaDescription(page, newDesc));
+                sc.tryChangePageMetaDescription(page, newDesc);
               }}
               viewCtx={viewCtx}
               tpl={page.tplTree as TplTag}
@@ -327,7 +355,7 @@ const PageSettings = observer(function PageSettings({
               expr={canonical}
               onChange={(expr) => {
                 const newCanonical = convertExprToPageMetaString(expr);
-                spawn(sc.tryChangePageMeta(page, "canonical", newCanonical));
+                sc.tryChangePageMeta(page, "canonical", newCanonical);
               }}
               viewCtx={viewCtx}
               tpl={page.tplTree as TplTag}

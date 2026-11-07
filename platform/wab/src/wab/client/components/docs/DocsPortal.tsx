@@ -1,4 +1,3 @@
-import { BottomModalsProvider } from "@/wab/client/components/BottomModal";
 import DocsPortalBranches from "@/wab/client/components/docs/DocsPortalBranches";
 import {
   DocsPortalCtx,
@@ -65,21 +64,19 @@ const DocsPortal = observer(function DocsPortal(props: DocsPortalProps) {
           }),
           switchDefault({
             render: () => (
-              <BottomModalsProvider>
-                <PlasmicDocsPortal
-                  activeTab={docsCtx.docsTabKey}
-                  docsPortalHeader={{ projectName: studioCtx.siteInfo.name }}
-                  root={{
-                    style: {
-                      position: "absolute",
-                      left: 0,
-                      right: 0,
-                      top: 0,
-                      bottom: 0,
-                    },
-                  }}
-                />
-              </BottomModalsProvider>
+              <PlasmicDocsPortal
+                activeTab={docsCtx.docsTabKey}
+                docsPortalHeader={{ projectName: studioCtx.siteInfo.name }}
+                root={{
+                  style: {
+                    position: "absolute",
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    bottom: 0,
+                  },
+                }}
+              />
             ),
           }),
         ]}

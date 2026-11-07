@@ -16,7 +16,7 @@ import {
   notifyInstallableSuccess,
 } from "@/wab/client/components/modals/codeComponentModals";
 import { getPlumeImage } from "@/wab/client/components/plume/plume-display-utils";
-import { useServerQueryBottomModals } from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryBottomModal";
+import { useServerQueryPanels } from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryPanel";
 import {
   createAddCustomFunction,
   createAddCustomFunctionFromMeta,
@@ -151,7 +151,6 @@ import { UseComboboxGetItemPropsOptions } from "downshift";
 import L, { groupBy, partition, sortBy, uniq } from "lodash";
 import memoizeOne from "memoize-one";
 import { observer } from "mobx-react";
-import { ok } from "neverthrow";
 import * as React from "react";
 import { useMemo, useState } from "react";
 import { FocusScope } from "react-aria";
@@ -320,7 +319,7 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
   const contentRef = React.useRef<HTMLElement>(null);
   const listRef = React.useRef<VariableSizeList>(null);
   const focusManager = useFocusManager();
-  const serverQueryModals = useServerQueryBottomModals();
+  const serverQueryPanels = useServerQueryPanels();
 
   const vc = studioCtx.focusedViewCtx();
 
@@ -564,21 +563,15 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
           component: focusedViewCtx.component,
           inStudio: true,
         };
-        serverQueryModals.open(queryRef.uuid, {
+        serverQueryPanels.open(queryRef.uuid, {
           value: queryRef,
-          onSave: spawnWrapper(
-            async (newOp: ServerQueryOp, opExprName?: string) => {
-              await studioCtx.change(() => {
-                queryRef.op = newOp;
-                if (opExprName) {
-                  queryRef.name = opExprName;
-                }
-                return ok();
-              });
-              serverQueryModals.close(queryRef.uuid);
-            },
-          ),
-          onCancel: () => serverQueryModals.close(queryRef.uuid),
+          onSave: (newOp: ServerQueryOp, opExprName?: string) => {
+            queryRef.op = newOp;
+            if (opExprName) {
+              queryRef.name = opExprName;
+            }
+          },
+          onCancel: () => serverQueryPanels.close(queryRef.uuid),
           viewCtx: focusedViewCtx,
           tpl: focusedViewCtx.currentCtxTplRoot(),
           schema: focusedViewCtx.customFunctionsSchema(),

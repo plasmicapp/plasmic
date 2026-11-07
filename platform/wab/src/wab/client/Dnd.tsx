@@ -63,7 +63,11 @@ import {
   isSelectableLocked,
 } from "@/wab/shared/core/selection";
 import { SlotSelection } from "@/wab/shared/core/slots";
-import { isTplVariantable, prepareFocusedTpls } from "@/wab/shared/core/tpls";
+import {
+  flattenTpls,
+  isTplVariantable,
+  prepareFocusedTpls,
+} from "@/wab/shared/core/tpls";
 import {
   ValComponent,
   ValNode,
@@ -133,7 +137,8 @@ function DndTentativeContainerMarker_(props: { viewCtx: ViewCtx }) {
     if (
       insertion.type === "FreeBoxInsertion" ||
       insertion.type === "GridInsertion" ||
-      insertion.type === "ErrorInsertion"
+      insertion.type === "ErrorInsertion" ||
+      insertion.type === "BindInsertion"
     ) {
       return insertion.nodeBox.selectable;
     } else if (insertion.type === "SiblingInsertion") {
@@ -144,13 +149,15 @@ function DndTentativeContainerMarker_(props: { viewCtx: ViewCtx }) {
   }
 
   function createContainerIcon(container: Selectable) {
-    if (
-      ensure(
-        ins,
-        "Unexpected undefined ins. Should only call this function if ins is defined.",
-      ).type === "ErrorInsertion"
-    ) {
+    const insType = ensure(
+      ins,
+      "Unexpected undefined ins. Should only call this function if ins is defined.",
+    ).type;
+    if (insType === "ErrorInsertion") {
       return <div className="dnd__container-tag__icon">{ERROR_ICON}</div>;
+    }
+    if (insType === "BindInsertion") {
+      return null;
     }
     if (container instanceof SlotSelection) {
       return <div className="dnd__container-tag__icon">{SLOT_ICON}</div>;
@@ -193,6 +200,8 @@ function DndTentativeContainerMarker_(props: { viewCtx: ViewCtx }) {
   function tagContent(container: Selectable) {
     if (ins && ins.type === "ErrorInsertion") {
       return renderCantAddMsg(ins.msg);
+    } else if (ins && ins.type === "BindInsertion") {
+      return ins.kind === "text-content" ? "Replace text" : "Repeat element";
     } else if (
       container instanceof ValNode &&
       isTplVariantable(container.tpl)
@@ -228,6 +237,7 @@ function DndTentativeContainerMarker_(props: { viewCtx: ViewCtx }) {
         dnd__container: true,
         "dnd__container--free": ins.type === "FreeBoxInsertion",
         "dnd__container--error": ins.type === "ErrorInsertion",
+        "dnd__container--bind": ins.type === "BindInsertion",
       })}
       style={{
         top: containerRect.top,
@@ -243,6 +253,7 @@ function DndTentativeContainerMarker_(props: { viewCtx: ViewCtx }) {
           "dnd__container-tag": true,
           "node-outline-tag": true,
           "dnd__container-tag--error": ins.type === "ErrorInsertion",
+          "dnd__container-tag--bind": ins.type === "BindInsertion",
         })}
       >
         {createContainerIcon(containerVal)}
@@ -426,11 +437,48 @@ class ErrorInsertion {
   ) {}
 }
 
+type BindKind = "text-content" | "data-rep";
+
+/** Bind dragged data to the hovered node instead of inserting a new node. */
+export class BindInsertion {
+  readonly type = "BindInsertion";
+  constructor(
+    public readonly nodeBox: NodeBox,
+    public readonly kind: BindKind,
+    public readonly path: (string | number)[],
+    public readonly fallbackValue: unknown,
+  ) {}
+}
+
+/** Targeting hooks used only when dragging data out of the data picker. */
+export interface DataDragTargeting {
+  /** Path of the dragged data, carried onto the produced BindInsertion. */
+  path: (string | number)[];
+  /** Current runtime value of the dragged data, used as the expr fallback. */
+  fallbackValue: unknown;
+  /**
+   * Maps hovering the middle of a node to a bind action, error, or undefined to keep the normal
+   * insertion targeting.
+   */
+  getBindTarget: (
+    vc: ViewCtx,
+    sel: Selectable,
+    modifiers: ModifierStates | undefined,
+  ) => { kind: BindKind } | { error: ClientCantAddChildMsg } | undefined;
+  /** Whether the dragged data's root binding exists in the env at `tpl`. */
+  isAvailable: (
+    vc: ViewCtx,
+    tpl: TplNode,
+    where: "inside" | "outside",
+  ) => boolean;
+}
+
 export type InsertionSpec =
   | FreeBoxInsertion
   | SiblingInsertion
   | GridInsertion
-  | ErrorInsertion;
+  | ErrorInsertion
+  | BindInsertion;
 
 export function calcOffset(domElt: HTMLElement, clientPt: Pt, vc: ViewCtx) {
   const parentFrameBox = Box.fromRect(getPaddingRect(domElt));
@@ -457,9 +505,30 @@ function shouldInsertInReverseOrder(spec: InsertionSpec) {
   return ["after", "bottom", "right"].includes(spec.insertionBox.loc);
 }
 
+/** Applies a BindInsertion by mutating the hovered node's model. */
+function applyBindInsertion(
+  vc: ViewCtx,
+  ins: BindInsertion,
+  focusTpl: boolean,
+) {
+  const valNode = ensureInstance(ins.nodeBox.selectable, ValNode);
+  if (ins.kind === "text-content") {
+    vc.getViewOps().bindTextContentToData(
+      valNode.tpl,
+      ins.path,
+      ins.fallbackValue,
+    );
+  } else {
+    vc.getViewOps().setDataRepCollection(valNode.tpl, ins.path);
+  }
+  if (focusTpl) {
+    vc.setStudioFocusByTpl(valNode.tpl);
+  }
+}
+
 export function insertBySpec(
   vc: ViewCtx,
-  ins: Exclude<InsertionSpec, ErrorInsertion>,
+  ins: Exclude<InsertionSpec, ErrorInsertion | BindInsertion>,
   newNode: TplNode,
   focusNewTpl: boolean,
 ) {
@@ -511,6 +580,7 @@ export function insertBySpec(
       ensure(targetVal, "Unexpected undefined targetVal."),
     );
   }
+  return true;
 }
 
 export interface Adoptee {
@@ -743,7 +813,8 @@ export class DragMoveManager {
         if (
           this.isValidDragState() &&
           this.tentativeInsertion &&
-          this.tentativeInsertion.type !== "ErrorInsertion"
+          this.tentativeInsertion.type !== "ErrorInsertion" &&
+          this.tentativeInsertion.type !== "BindInsertion"
         ) {
           const tplToPositionStyle = new Map<TplNode, string | undefined>();
           for (let i = 0; i < this.objects.length; i++) {
@@ -781,6 +852,7 @@ export class DragInsertManager {
   constructor(
     private studioCtx: StudioCtx,
     targeters: NodeTargeter[],
+    private dataDrag?: DataDragTargeting,
   ) {
     this.targeters.push(...targeters);
   }
@@ -805,6 +877,7 @@ export class DragInsertManager {
     studioCtx: StudioCtx,
     spec: AddTplItem,
     opts?: CloneOpts,
+    dataDrag?: DataDragTargeting,
   ): Promise<DragInsertManager> {
     const targeters: NodeTargeter[] = [];
     const extraInfo = spec.asyncExtraInfo
@@ -819,12 +892,14 @@ export class DragInsertManager {
         await studioCtx.changeUnsafe(() => {
           const toInsert = spec.factory(vc, extraInfo);
           if (toInsert != null) {
-            targeters.push(new NodeTargeter(vc, [toInsert]));
+            targeters.push(
+              new NodeTargeter(vc, [toInsert], undefined, dataDrag),
+            );
           }
         });
       }
     }
-    return new DragInsertManager(studioCtx, targeters);
+    return new DragInsertManager(studioCtx, targeters, dataDrag);
   }
 
   clear() {
@@ -842,7 +917,7 @@ export class DragInsertManager {
     for (const targeter of this.targeters) {
       this.tentativeInsertion = isFreeMove
         ? targeter.getAbsInsertion(clientPt)
-        : targeter.getInsertion(clientPt);
+        : targeter.getInsertion(clientPt, modifiers);
       if (this.tentativeInsertion) {
         this.tentativeVc = targeter.vc;
         break;
@@ -855,20 +930,59 @@ export class DragInsertManager {
    * to create the new TplNode and inserts it at the insertion point.
    */
   endDrag(spec?: AddTplItem, extraInfo?: any): [ViewCtx, TplNode] | undefined {
-    this.clearTargeters();
-    if (
-      this.tentativeVc &&
-      this.tentativeInsertion &&
-      this.tentativeInsertion.type !== "ErrorInsertion"
-    ) {
-      const tpl = spec?.factory(this.tentativeVc, extraInfo);
-      if (tpl) {
-        this.studioCtx.setStudioFocusOnFrameContents(
-          this.tentativeVc.arenaFrame(),
-        );
-        insertBySpec(this.tentativeVc, this.tentativeInsertion, tpl, true);
-        return tuple(this.tentativeVc, tpl);
+    const vc = this.tentativeVc;
+    const ins = this.tentativeInsertion;
+    this.clear();
+    if (!spec || !vc || !ins || ins.type === "ErrorInsertion") {
+      return undefined;
+    }
+    if (this.dataDrag) {
+      const target =
+        ins.type === "SiblingInsertion"
+          ? ins.insertionBox.valNode.tpl
+          : asVal(ins.nodeBox.selectable)?.tpl;
+      const where =
+        ins.type === "SiblingInsertion" ||
+        (ins.type === "BindInsertion" && ins.kind === "data-rep")
+          ? "outside"
+          : "inside";
+      if (
+        !target ||
+        !flattenTpls(vc.currentComponent().tplTree).includes(target) ||
+        !this.dataDrag.isAvailable(vc, target, where)
+      ) {
+        return undefined;
       }
+      if (ins.type === "BindInsertion") {
+        const binding = this.dataDrag.getBindTarget(
+          vc,
+          ins.nodeBox.selectable,
+          {
+            altKey: ins.kind === "data-rep",
+            ctrlKey: false,
+            metaKey: false,
+            shiftKey: false,
+          },
+        );
+        if (!binding || !("kind" in binding) || binding.kind !== ins.kind) {
+          return undefined;
+        }
+      }
+    }
+    if (ins.type === "BindInsertion") {
+      const tpl = ensureInstance(ins.nodeBox.selectable, ValNode).tpl;
+      this.studioCtx.setStudioFocusOnFrameContents(vc.arenaFrame());
+      applyBindInsertion(vc, ins, true);
+      return tuple(vc, tpl);
+    }
+    const tpl = spec.factory(vc, extraInfo);
+    if (tpl) {
+      this.studioCtx.setStudioFocusOnFrameContents(vc.arenaFrame());
+      if (!insertBySpec(vc, ins, tpl, true)) {
+        return undefined;
+      }
+      spec.onInserted?.(vc, tpl);
+      return tuple(vc, tpl);
     }
     return undefined;
   }
@@ -902,8 +1016,52 @@ export class NodeTargeter {
     public vc: ViewCtx,
     private toInsert?: TplNode[],
     private cursorOffset?: Pt,
+    private dataDrag?: DataDragTargeting,
   ) {
     this.boxes = this.calcBoxes(toInsert);
+  }
+
+  /**
+   * For data drags, downgrades an insertion whose dragged path isn't available in the env at the
+   * target to an error marker.
+   */
+  private checkDataAvailability(ins: InsertionSpec | undefined) {
+    const dataDrag = this.dataDrag;
+    if (!ins || !dataDrag || ins.type === "ErrorInsertion") {
+      return ins;
+    }
+    const target = ((): [
+      TplNode | undefined,
+      "inside" | "outside",
+      NodeBox | undefined,
+    ] => {
+      if (ins.type === "SiblingInsertion") {
+        const valNode = ins.insertionBox.valNode;
+        return [
+          valNode.tpl,
+          "outside",
+          this.boxes.nodeBoxes.find((nb) => nb.selectable === valNode),
+        ];
+      }
+      if (ins.type === "BindInsertion") {
+        return [
+          ensureInstance(ins.nodeBox.selectable, ValNode).tpl,
+          ins.kind === "data-rep" ? "outside" : "inside",
+          ins.nodeBox,
+        ];
+      }
+      return [asVal(ins.nodeBox.selectable)?.tpl, "inside", ins.nodeBox];
+    })();
+    const [tpl, where, nodeBox] = target;
+    if (tpl && !dataDrag.isAvailable(this.vc, tpl, where)) {
+      return nodeBox
+        ? this.targetError(nodeBox, {
+            type: "CantBindData",
+            message: "This data is not available here",
+          })
+        : this.targetNothing();
+    }
+    return ins;
   }
 
   /**
@@ -913,16 +1071,23 @@ export class NodeTargeter {
    *
    * @param clientPt Mouse cursor in the client coordinate
    */
-  getInsertion(clientPt: Pt) {
+  getInsertion(clientPt: Pt, modifiers?: ModifierStates) {
+    return this.checkDataAvailability(
+      this.computeInsertion(clientPt, modifiers),
+    );
+  }
+
+  private computeInsertion(clientPt: Pt, modifiers?: ModifierStates) {
     const { frameRect, insertionBoxes, nodeBoxes, nodeBoxToBeforeAfter } =
       this.boxes;
 
     const rootNb = L.last(nodeBoxes);
 
-    // If we're directly over an InsertionBox, drop there.
+    // If we're directly over an InsertionBox, drop there. Alt on a data drag skips this: it forces
+    // binding to the hovered node instead.
     const insertionBox = insertionBoxes.find((ib) => ib.box.contains(clientPt));
 
-    if (insertionBox) {
+    if (insertionBox && !(this.dataDrag && modifiers?.altKey)) {
       return this.targetInsertionBox(insertionBox);
     }
 
@@ -945,6 +1110,21 @@ export class NodeTargeter {
     }
 
     for (const nodeBox of containingNodeBoxes) {
+      // Data drags can bind to the hovered node, edges still mean insert before/after.
+      if (this.dataDrag) {
+        const bindTarget = this.dataDrag.getBindTarget(
+          this.vc,
+          nodeBox.selectable,
+          modifiers,
+        );
+        if (bindTarget) {
+          if ("error" in bindTarget) {
+            return this.targetError(nodeBox, bindTarget.error);
+          }
+          return this.targetBind(nodeBox, bindTarget.kind);
+        }
+      }
+
       // If we're hovering over a grid, draw a mimic grid and handle its hover
       // events.
       // TODO allow dropping into grid slot even if there is stuff already
@@ -1095,6 +1275,10 @@ export class NodeTargeter {
    * @param clientPt mouse cursor in the client coordinate
    */
   getAbsInsertion(clientPt: Pt) {
+    return this.checkDataAvailability(this.computeAbsInsertion(clientPt));
+  }
+
+  private computeAbsInsertion(clientPt: Pt) {
     const { frameRect, nodeBoxes } = this.boxes;
 
     const rootNb = L.last(nodeBoxes);
@@ -1223,6 +1407,21 @@ export class NodeTargeter {
       ? clientPt.moveBy(this.cursorOffset.x, this.cursorOffset.y)
       : clientPt;
     const ins = new FreeBoxInsertion(nodeBox, slotted, targetPt);
+    this.vc.setDndTentativeInsertion(ins);
+    return ins;
+  }
+
+  private targetBind(nodeBox: NodeBox, kind: BindKind) {
+    const dataDrag = ensure(
+      this.dataDrag,
+      "targetBind is only reachable on data drags",
+    );
+    const ins = new BindInsertion(
+      nodeBox,
+      kind,
+      dataDrag.path,
+      dataDrag.fallbackValue,
+    );
     this.vc.setDndTentativeInsertion(ins);
     return ins;
   }
@@ -1418,13 +1617,11 @@ export class NodeTargeter {
     function* genNodeBoxes(viewCtx: ViewCtx) {
       for (const $domElt of domElts) {
         const domElt = $domElt[0];
-        if (
-          !(
-            !$domElt.is(canvasCtx.$userBody()) &&
-            hasLinkedSelectable($domElt, vc) &&
-            hasLayoutBox(domElt)
-          )
-        ) {
+        if (!(
+          !$domElt.is(canvasCtx.$userBody()) &&
+          hasLinkedSelectable($domElt, vc) &&
+          hasLayoutBox(domElt)
+        )) {
           continue;
         }
         const selectable = vc.dom2val($domElt);

@@ -1,8 +1,10 @@
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
-import DataPicker from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import {
+  DataPickerTrigger,
+  DataPickerTriggerHandle,
+} from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerPanel";
 import { ClickStopper } from "@/wab/client/components/widgets";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { zIndex } from "@/wab/client/z-index";
 import {
   PRIVATE_STYLE_VARIANTS_CAP,
   VARIANT_GROUP_LOWER,
@@ -32,6 +34,7 @@ import {
   StateAccessType,
   getAccessTypeDisplayName,
 } from "@/wab/shared/core/states";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   Component,
   ComponentVariantGroup,
@@ -41,7 +44,7 @@ import {
   isKnownComponentVariantGroup,
   isKnownObjectPath,
 } from "@/wab/shared/model/classes";
-import { Menu, Popover } from "antd";
+import { Menu } from "antd";
 import { ok } from "neverthrow";
 import React from "react";
 
@@ -408,73 +411,76 @@ export function VariantDataPicker(props: {
     visibleDataPicker,
     setVisibleDataPicker,
   } = props;
+  const pickerRef = React.useRef<DataPickerTriggerHandle>(null);
+  React.useEffect(() => {
+    if (DEVFLAGS.dockview && visibleDataPicker) {
+      pickerRef.current?.open();
+      setVisibleDataPicker(false);
+    }
+  }, [visibleDataPicker]);
   const viewCtx = studioCtx.focusedOrFirstViewCtx();
   const canvasEnv = viewCtx?.getCanvasEnvForTpl(component.tplTree);
   return (
     <ClickStopper>
-      <Popover
-        zIndex={zIndex.dataPicker}
-        content={
-          <DataPicker
-            value={extractValueSavedFromDataPicker(
-              group.linkedState.param.defaultExpr,
-              {
-                projectFlags: studioCtx.projectFlags(),
-                component,
-                inStudio: true,
-              },
-            )}
-            onChange={(val) => {
-              if (!val) {
-                return;
-              }
+      <DataPickerTrigger
+        ref={pickerRef}
+        visible={visibleDataPicker}
+        setVisible={setVisibleDataPicker}
+        title={`${group.param.variable.name} default`}
+        picker={{
+          value: extractValueSavedFromDataPicker(
+            group.linkedState.param.defaultExpr,
+            {
+              projectFlags: studioCtx.projectFlags(),
+              component,
+              inStudio: true,
+            },
+          ),
+          onChange: (val) => {
+            if (!val) {
+              return;
+            }
 
-              const newExpr = createExprForDataPickerValue(
-                val,
-                new CustomCode({ code: "undefined", fallback: undefined }),
-              );
-              spawn(
-                studioCtx.change(() => {
+            const newExpr = createExprForDataPickerValue(
+              val,
+              new CustomCode({ code: "undefined", fallback: undefined }),
+            );
+            spawn(
+              studioCtx
+                .change(() => {
                   studioCtx.siteOps().updateState(group.linkedState, {
                     initialValue: newExpr,
                   });
                   return ok();
+                })
+                .then(() => setVisibleDataPicker(false)),
+            );
+          },
+          onCancel: () => {
+            if (
+              isKnownObjectPath(group.linkedState.param.defaultExpr) &&
+              group.linkedState.param.defaultExpr.path.length === 1 &&
+              group.linkedState.param.defaultExpr.path[0] === "undefined"
+            ) {
+              spawn(
+                studioCtx.change(() => {
+                  studioCtx.siteOps().updateState(group.linkedState, {
+                    initialValue: null,
+                  });
+                  return ok();
                 }),
               );
+            }
 
-              setVisibleDataPicker(false);
-            }}
-            onCancel={() => {
-              if (
-                isKnownObjectPath(group.linkedState.param.defaultExpr) &&
-                group.linkedState.param.defaultExpr.path.length === 1 &&
-                group.linkedState.param.defaultExpr.path[0] === "undefined"
-              ) {
-                spawn(
-                  studioCtx.change(() => {
-                    studioCtx.siteOps().updateState(group.linkedState, {
-                      initialValue: null,
-                    });
-                    return ok();
-                  }),
-                );
-              }
-
-              setVisibleDataPicker(false);
-            }}
-            data={canvasEnv}
-            schema={studioCtx.customFunctionsSchema()}
-            expectedValues={getExpectedValuesForVariantGroup(group)}
-          />
-        }
-        trigger="click"
-        visible={visibleDataPicker}
-        onVisibleChange={(v) => setVisibleDataPicker(v)}
-        destroyTooltipOnHide={true}
-        overlayClassName="data-picker-popover-overlay"
+            setVisibleDataPicker(false);
+          },
+          data: canvasEnv,
+          schema: studioCtx.customFunctionsSchema(),
+          expectedValues: getExpectedValuesForVariantGroup(group),
+        }}
       >
         {children}
-      </Popover>
+      </DataPickerTrigger>
     </ClickStopper>
   );
 }
