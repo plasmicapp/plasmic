@@ -314,15 +314,6 @@ import {
 import fileUpload from "express-fileupload";
 
 const csrfFreeStaticRoutes = [
-  "/api/v1/admin/user",
-  "/api/v1/admin/resetPassword",
-  "/api/v1/admin/delete-project",
-  "/api/v1/admin/restore-project",
-  "/api/v1/admin/login-as",
-  "/api/v1/admin/devflags",
-  "/api/v1/admin/clone",
-  "/api/v1/admin/deactivate-user",
-  "/api/v1/admin/revert-project-revision",
   "/api/v1/plume-pkg/versions",
   "/api/v1/localization/gen-texts",
   "/api/v1/hosting-hit",
