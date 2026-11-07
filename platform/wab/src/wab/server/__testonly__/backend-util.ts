@@ -122,8 +122,7 @@ export async function createDatabase(name = "test") {
   };
 }
 
-// WITH (FORCE) signals every backend on the database, including autovacuum workers,
-// which superwab is not allowed to signal. Terminate just the client sessions instead.
+// Terminate client sessions before dropping the database.
 async function dropDatabase(sucon: Connection, dbname: string) {
   await sucon.query(
     `select pg_terminate_backend(pid) from pg_stat_activity

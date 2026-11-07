@@ -1,4 +1,5 @@
 import { logger } from "@/wab/server/observability";
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { isSlot } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import {
@@ -432,13 +433,22 @@ async function withFreshRegistries(func: () => Promise<void>) {
   }
 }
 
+const canvasPackagesDir = path.resolve(
+  path.join(__dirname, "../../../../../canvas-packages"),
+);
+
 function loadServerPackage(pkg: string) {
-  const pkgPath = path.resolve(
-    path.join(
-      __dirname,
-      `../../../../../canvas-packages/build-server/${pkg}.js`,
-    ),
-  );
+  // hostlessList.json is what esbuild compiles into build-server/,
+  // so it is the allowlist.
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const allowedPkgs = require(
+    path.join(canvasPackagesDir, "hostlessList.json"),
+  ) as string[];
+  if (!allowedPkgs.includes(pkg)) {
+    throw new BadRequestError(`Unknown hostless package: ${pkg}`);
+  }
+
+  const pkgPath = path.join(canvasPackagesDir, "build-server", `${pkg}.js`);
   logger.info(`Loading ${pkg} from ${pkgPath}`);
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires

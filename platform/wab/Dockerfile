@@ -120,6 +120,7 @@ COPY --from=builder --chown=node:node /platform/pnpm-workspace.yaml /platform/pn
 RUN pnpm --version && chmod -R a+rX "$COREPACK_HOME"
 COPY --from=builder --chown=node:node /platform/shared ./shared
 COPY --from=builder --chown=node:node /platform/wab ./wab
+COPY --from=builder --chown=node:node /platform/canvas-packages/hostlessList.json ./canvas-packages/hostlessList.json
 COPY --from=builder --chown=node:node /platform/loader-bundle-env ./loader-bundle-env
 COPY --from=builder --chown=node:node /platform/loader-html-hydrate ./loader-html-hydrate
 
