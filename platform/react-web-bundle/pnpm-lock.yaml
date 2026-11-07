@@ -420,8 +420,8 @@ packages:
     peerDependencies:
       rollup: ^1.20.0||^2.0.0
 
-  '@swc/helpers@0.5.23':
-    resolution: {integrity: sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw==}
+  '@swc/helpers@0.5.24':
+    resolution: {integrity: sha512-6tcXo4kA8HgGO7AVmawB57RYi/piBPYVHVcO6dXjX+SZw8GoHmi262sp4v2Ha2kNP9Cx84qei27yT+fjS1lxgg==}
 
   '@types/estree@0.0.39':
     resolution: {integrity: sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==}
@@ -1711,15 +1711,15 @@ snapshots:
 
   '@internationalized/date@3.12.4':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
 
   '@internationalized/number@3.6.9':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
 
   '@internationalized/string@3.2.10':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
@@ -1835,14 +1835,14 @@ snapshots:
 
   '@react-aria/checkbox@3.17.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-aria: 3.53.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/focus@3.22.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-aria: 3.53.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
@@ -1850,112 +1850,112 @@ snapshots:
   '@react-aria/interactions@3.28.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-types/shared': 3.37.0(react@18.3.1)
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-aria: 3.53.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/listbox@3.16.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-aria: 3.53.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/menu@3.22.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-aria: 3.53.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/overlays@3.32.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-aria: 3.53.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/select@3.18.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-aria: 3.53.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/separator@3.5.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-aria: 3.53.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/ssr@3.10.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-aria: 3.53.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/switch@3.8.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-aria: 3.53.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-aria/visually-hidden@3.9.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-aria: 3.53.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)
       react-dom: 19.2.8(react@18.3.1)
 
   '@react-stately/collections@3.13.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-dom: 19.2.8(react@18.3.1)
       react-stately: 3.51.0(react@18.3.1)
 
   '@react-stately/list@3.14.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-dom: 19.2.8(react@18.3.1)
       react-stately: 3.51.0(react@18.3.1)
 
   '@react-stately/menu@3.10.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-dom: 19.2.8(react@18.3.1)
       react-stately: 3.51.0(react@18.3.1)
 
   '@react-stately/overlays@3.7.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-dom: 19.2.8(react@18.3.1)
       react-stately: 3.51.0(react@18.3.1)
 
   '@react-stately/select@3.10.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-dom: 19.2.8(react@18.3.1)
       react-stately: 3.51.0(react@18.3.1)
 
   '@react-stately/toggle@3.10.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-dom: 19.2.8(react@18.3.1)
       react-stately: 3.51.0(react@18.3.1)
 
   '@react-stately/tree@3.10.1(react-dom@19.2.8(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       react-dom: 19.2.8(react@18.3.1)
       react-stately: 3.51.0(react@18.3.1)
@@ -2022,9 +2022,7 @@ snapshots:
       picomatch: 2.3.1
       rollup: 2.79.1
 
-  '@swc/helpers@0.5.23':
-    dependencies:
-      tslib: 2.9.1
+  '@swc/helpers@0.5.24': {}
 
   '@types/estree@0.0.39': {}
 
@@ -2989,7 +2987,7 @@ snapshots:
       '@internationalized/number': 3.6.9
       '@internationalized/string': 3.2.10
       '@react-types/shared': 3.37.0(react@18.3.1)
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       aria-hidden: 1.2.6
       clsx: 2.1.1
       react: 18.3.1
@@ -3008,7 +3006,7 @@ snapshots:
       '@internationalized/number': 3.6.9
       '@internationalized/string': 3.2.10
       '@react-types/shared': 3.37.0(react@18.3.1)
-      '@swc/helpers': 0.5.23
+      '@swc/helpers': 0.5.24
       react: 18.3.1
       use-sync-external-store: 1.7.0(react@18.3.1)
 
