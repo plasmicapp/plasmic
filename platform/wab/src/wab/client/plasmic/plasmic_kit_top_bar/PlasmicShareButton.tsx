@@ -14,15 +14,49 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
-  StrictProps,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -75,7 +109,7 @@ function PlasmicShareButton__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -112,7 +146,7 @@ function PlasmicShareButton__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  share: ["share"],
+  share: ["share"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -132,8 +166,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicShareButton__VariantsArgs;
     args?: PlasmicShareButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicShareButton__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicShareButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicShareButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -158,7 +193,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicShareButton__ArgProps,
-          internalVariantPropNames: PlasmicShareButton__VariantProps,
+          internalVariantPropNames: PlasmicShareButton__VariantProps
         }),
       [props, nodeName]
     );
@@ -166,7 +201,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "share") {
@@ -185,7 +220,7 @@ export const PlasmicShareButton = Object.assign(
 
     // Metadata about props expected for PlasmicShareButton
     internalVariantProps: PlasmicShareButton__VariantProps,
-    internalArgProps: PlasmicShareButton__ArgProps,
+    internalArgProps: PlasmicShareButton__ArgProps
   }
 );
 

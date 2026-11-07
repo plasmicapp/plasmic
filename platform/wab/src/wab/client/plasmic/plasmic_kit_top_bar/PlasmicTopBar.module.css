@@ -37,11 +37,8 @@
   padding-right: 10px;
   padding-left: 10px;
 }
-.svg__jQrU5 {
-  object-fit: cover;
-  width: 40px;
-  height: 40px;
-  color: var(--token-PTyaboLP9ZK);
+.logoLink {
+  cursor: pointer;
 }
 .titleSegment {
   display: flex;

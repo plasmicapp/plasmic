@@ -4536,6 +4536,19 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_top_bar/PlasmicAiButton.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "UShVQTUpmDCv",
+          "name": "Logo",
+          "type": "managed",
+          "projectId": "6CrqkTcB6gSAHoA8c8zpNz",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_top_bar/PlasmicLogo.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/top-bar/Logo.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_top_bar/PlasmicLogo.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -11239,6 +11252,6 @@
     "scheme": "theo",
     "tokensFilePath": "wab/styles/plasmic-tokens.theo.json"
   },
-  "cliVersion": "0.1.381",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.381/dist/plasmic.schema.json"
+  "cliVersion": "0.1.384",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.384/dist/plasmic.schema.json"
 }

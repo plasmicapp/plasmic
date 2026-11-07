@@ -14,15 +14,49 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
-  StrictProps,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -31,6 +65,7 @@ import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c
 import sty from "./PlasmicBranchSwitcher.module.css"; // plasmic-import: IQWpmX8J3t/css
 
 import GitBranchSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GitBranchSvg"; // plasmic-import: 4OBJfCUZH/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -75,7 +110,7 @@ function PlasmicBranchSwitcher__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -110,7 +145,7 @@ function PlasmicBranchSwitcher__RenderFunc(props: {
 
 const PlasmicDescendants = {
   root: ["root", "svg"],
-  svg: ["svg"],
+  svg: ["svg"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -131,8 +166,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicBranchSwitcher__VariantsArgs;
     args?: PlasmicBranchSwitcher__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicBranchSwitcher__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicBranchSwitcher__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicBranchSwitcher__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -157,7 +193,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicBranchSwitcher__ArgProps,
-          internalVariantPropNames: PlasmicBranchSwitcher__VariantProps,
+          internalVariantPropNames: PlasmicBranchSwitcher__VariantProps
         }),
       [props, nodeName]
     );
@@ -165,7 +201,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -185,7 +221,7 @@ export const PlasmicBranchSwitcher = Object.assign(
 
     // Metadata about props expected for PlasmicBranchSwitcher
     internalVariantProps: PlasmicBranchSwitcher__VariantProps,
-    internalArgProps: PlasmicBranchSwitcher__ArgProps,
+    internalArgProps: PlasmicBranchSwitcher__ArgProps
   }
 );
 

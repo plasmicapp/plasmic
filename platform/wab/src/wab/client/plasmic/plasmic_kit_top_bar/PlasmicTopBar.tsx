@@ -55,6 +55,7 @@ import {
   useGlobalActions
 } from "@plasmicapp/react-web/lib/host";
 
+import Logo from "../../components/top-bar/Logo"; // plasmic-import: UShVQTUpmDCv/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 import SaveIndicator from "../../components/top-bar/SaveIndicator"; // plasmic-import: HYPZr2nWSgs/component
 import BranchSwitcher from "../../components/top-bar/BranchSwitcher"; // plasmic-import: IQWpmX8J3t/component
@@ -83,8 +84,6 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicTopBar.module.css"; // plasmic-import: tNBvs5bIAy/css
 
-import MarkIcon from "../plasmic_kit_design_system/PlasmicIcon__Mark"; // plasmic-import: a6KJVu0om/icon
-import MarkFullColorIcon from "../plasmic_kit_design_system/PlasmicIcon__MarkFullColor"; // plasmic-import: l_n_OBLJg/icon
 import SegmentSeparatorIcon from "./icons/PlasmicIcon__SegmentSeparator"; // plasmic-import: yzguJQZL37/icon
 import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 import InfoIcon from "../plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
@@ -123,6 +122,7 @@ export type PlasmicTopBar__OverridesType = {
   root?: Flex__<"div">;
   left?: Flex__<"div">;
   logoLink?: Flex__<"a">;
+  logo?: Flex__<typeof Logo>;
   titleSegment?: Flex__<"div">;
   projectTitle?: Flex__<"div">;
   projectMenu?: Flex__<typeof MenuButton>;
@@ -235,14 +235,6 @@ function PlasmicTopBar__RenderFunc(props: {
     $refs
   });
 
-  const [isN83873812Hover, triggerN83873812HoverProps] = useTrigger(
-    "useHover",
-    {}
-  );
-  const triggers = {
-    hover_83873812: isN83873812Hover
-  };
-
   const styleTokensClassNames = _useStyleTokens();
 
   return (
@@ -279,7 +271,6 @@ function PlasmicTopBar__RenderFunc(props: {
       <div
         data-plasmic-name={"left"}
         data-plasmic-override={overrides.left}
-
         className={classNames("all", sty.left, {
           [sty.leftarenaType_page]: hasVariant($state, "arenaType", "page"),
           [sty.leftmode_preview]: hasVariant($state, "mode", "preview"),
@@ -294,38 +285,28 @@ function PlasmicTopBar__RenderFunc(props: {
           <PlasmicLink__
             data-plasmic-name={"logoLink"}
             data-plasmic-override={overrides.logoLink}
-
             className={classNames("all", "a", "a__6Crqk", sty.logoLink, {
               [sty.logoLinkmode_preview]: hasVariant($state, "mode", "preview")
             })}
             platform={"react"}
           >
-            <PlasmicIcon__
-              PlasmicIconType={
-                triggers.hover_83873812 ? MarkFullColorIcon : MarkIcon
-              }
-              className={classNames("all", sty.svg__jQrU5, {
-                [sty.svgmode_preview__jQrU5QMfAz]: hasVariant(
-                  $state,
-                  "mode",
-                  "preview"
-                )
+            <Logo
+              data-plasmic-name={"logo"}
+              data-plasmic-override={overrides.logo}
+              className={classNames("__wab_instance", sty.logo, {
+                [sty.logomode_preview]: hasVariant($state, "mode", "preview")
               })}
-              role={"img"}
-              data-plasmic-trigger-props={[triggerN83873812HoverProps]}
             />
           </PlasmicLink__>
         </div>
         <div
           data-plasmic-name={"titleSegment"}
           data-plasmic-override={overrides.titleSegment}
-
           className={classNames("all", sty.titleSegment)}
         >
           <div
             data-plasmic-name={"projectTitle"}
             data-plasmic-override={overrides.projectTitle}
-
             className={classNames("all", "__wab_text", sty.projectTitle, {
               [sty.projectTitlemode_preview]: hasVariant(
                 $state,
@@ -339,21 +320,18 @@ function PlasmicTopBar__RenderFunc(props: {
           <MenuButton
             data-plasmic-name={"projectMenu"}
             data-plasmic-override={overrides.projectMenu}
-
             className={classNames("__wab_instance", sty.projectMenu)}
           />
 
           <SaveIndicator
             data-plasmic-name={"saveIndicator"}
             data-plasmic-override={overrides.saveIndicator}
-
             className={classNames("__wab_instance", sty.saveIndicator)}
           />
         </div>
         <SegmentSeparatorIcon
           data-plasmic-name={"branchSeparator"}
           data-plasmic-override={overrides.branchSeparator}
-
           className={classNames("all", sty.branchSeparator)}
           role={"img"}
         />
@@ -361,20 +339,17 @@ function PlasmicTopBar__RenderFunc(props: {
         <div
           data-plasmic-name={"branchSegment"}
           data-plasmic-override={overrides.branchSegment}
-
           className={classNames("all", sty.branchSegment)}
         >
           <BranchSwitcher
             data-plasmic-name={"branchSwitcher"}
             data-plasmic-override={overrides.branchSwitcher}
-
             className={classNames("__wab_instance", sty.branchSwitcher)}
           />
         </div>
         <SegmentSeparatorIcon
           data-plasmic-name={"arenaSeparator"}
           data-plasmic-override={overrides.arenaSeparator}
-
           className={classNames("all", sty.arenaSeparator)}
           role={"img"}
         />
@@ -383,7 +358,6 @@ function PlasmicTopBar__RenderFunc(props: {
           <div
             data-plasmic-name={"arenaSegment"}
             data-plasmic-override={overrides.arenaSegment}
-
             className={classNames("all", sty.arenaSegment, {
               [sty.arenaSegmentmode_preview]: hasVariant(
                 $state,
@@ -395,7 +369,6 @@ function PlasmicTopBar__RenderFunc(props: {
             <ArenaSwitcher
               data-plasmic-name={"arenaSwitcher"}
               data-plasmic-override={overrides.arenaSwitcher}
-
               className={classNames("__wab_instance", sty.arenaSwitcher, {
                 [sty.arenaSwitchermode_preview]: hasVariant(
                   $state,
@@ -410,7 +383,6 @@ function PlasmicTopBar__RenderFunc(props: {
           <Select
             data-plasmic-name={"previewSelect"}
             data-plasmic-override={overrides.previewSelect}
-
             className={classNames("__wab_instance", sty.previewSelect, {
               [sty.previewSelectmode_preview]: hasVariant(
                 $state,
@@ -464,7 +436,6 @@ function PlasmicTopBar__RenderFunc(props: {
           <VariantsComboSelect
             data-plasmic-name={"variantsComboSelect"}
             data-plasmic-override={overrides.variantsComboSelect}
-
             className={classNames("__wab_instance", sty.variantsComboSelect, {
               [sty.variantsComboSelectmode_preview]: hasVariant(
                 $state,
@@ -504,7 +475,6 @@ function PlasmicTopBar__RenderFunc(props: {
         <div
           data-plasmic-name={"centerLive"}
           data-plasmic-override={overrides.centerLive}
-
           className={classNames("all", sty.centerLive, {
             [sty.centerLivemode_preview]: hasVariant($state, "mode", "preview"),
             [sty.centerLiveplasmicAdminMode]: hasVariant(
@@ -518,7 +488,6 @@ function PlasmicTopBar__RenderFunc(props: {
       <div
         data-plasmic-name={"right"}
         data-plasmic-override={overrides.right}
-
         className={classNames("all", sty.right, {
           [sty.rightmode_preview]: hasVariant($state, "mode", "preview"),
           [sty.rightplasmicAdminMode]: hasVariant(
@@ -531,7 +500,6 @@ function PlasmicTopBar__RenderFunc(props: {
         <FreeTrial
           data-plasmic-name={"freeTrial"}
           data-plasmic-override={overrides.freeTrial}
-
           className={classNames("__wab_instance", sty.freeTrial)}
           freeTrialTimeRemaining={"0 days left"}
           topBar={true}
@@ -551,7 +519,6 @@ function PlasmicTopBar__RenderFunc(props: {
         <ViewAsButton
           data-plasmic-name={"viewAsButton"}
           data-plasmic-override={overrides.viewAsButton}
-
           className={classNames("__wab_instance", sty.viewAsButton)}
         />
 
@@ -559,7 +526,6 @@ function PlasmicTopBar__RenderFunc(props: {
           <ZoomButton
             data-plasmic-name={"zoomButton"}
             data-plasmic-override={overrides.zoomButton}
-
             className={classNames("__wab_instance", sty.zoomButton, {
               [sty.zoomButtonmode_preview]: hasVariant(
                 $state,
@@ -573,7 +539,6 @@ function PlasmicTopBar__RenderFunc(props: {
           <ViewButton
             data-plasmic-name={"viewButton"}
             data-plasmic-override={overrides.viewButton}
-
             className={classNames("__wab_instance", sty.viewButton, {
               [sty.viewButtonmode_preview]: hasVariant(
                 $state,
@@ -597,7 +562,6 @@ function PlasmicTopBar__RenderFunc(props: {
             <IconButton
               data-plasmic-name={"play"}
               data-plasmic-override={overrides.play}
-
               children2={
                 <ChevronDownSvgIcon
                   className={classNames("all", sty.svg__erE2Y)}
@@ -625,7 +589,6 @@ function PlasmicTopBar__RenderFunc(props: {
           <LivePopOutButton
             data-plasmic-name={"livePopOutButton"}
             data-plasmic-override={overrides.livePopOutButton}
-
             className={classNames("__wab_instance", sty.livePopOutButton, {
               [sty.livePopOutButtonmode_preview]: hasVariant(
                 $state,
@@ -647,7 +610,6 @@ function PlasmicTopBar__RenderFunc(props: {
             <CommentButton
               data-plasmic-name={"commentButton"}
               data-plasmic-override={overrides.commentButton}
-
               className={classNames("__wab_instance", sty.commentButton, {
                 [sty.commentButtonmode_preview]: hasVariant(
                   $state,
@@ -660,7 +622,6 @@ function PlasmicTopBar__RenderFunc(props: {
             <AiButton
               data-plasmic-name={"aiButton"}
               data-plasmic-override={overrides.aiButton}
-
               className={classNames("__wab_instance", sty.aiButton, {
                 [sty.aiButtonmode_preview]: hasVariant(
                   $state,
@@ -675,7 +636,6 @@ function PlasmicTopBar__RenderFunc(props: {
           <CodeButton
             data-plasmic-name={"codeButton"}
             data-plasmic-override={overrides.codeButton}
-
             className={classNames("__wab_instance", {
               [sty.codeButtonmode_preview]: hasVariant(
                 $state,
@@ -689,7 +649,6 @@ function PlasmicTopBar__RenderFunc(props: {
             <ShareButton
               data-plasmic-name={"shareButton"}
               data-plasmic-override={overrides.shareButton}
-
               className={classNames("__wab_instance", sty.shareButton, {
                 [sty.shareButtonmode_preview]: hasVariant(
                   $state,
@@ -703,7 +662,6 @@ function PlasmicTopBar__RenderFunc(props: {
             <PublishButton
               data-plasmic-name={"publishButton"}
               data-plasmic-override={overrides.publishButton}
-
               className={classNames("__wab_instance", sty.publishButton, {
                 [sty.publishButtonhideAvatar]: hasVariant(
                   $state,
@@ -723,7 +681,6 @@ function PlasmicTopBar__RenderFunc(props: {
           <Button
             data-plasmic-name={"stop"}
             data-plasmic-override={overrides.stop}
-
             className={classNames("__wab_instance", sty.stop, {
               [sty.stopmode_preview]: hasVariant($state, "mode", "preview")
             })}
@@ -769,7 +726,6 @@ function PlasmicTopBar__RenderFunc(props: {
           <PlasmicImg__
             data-plasmic-name={"avatar"}
             data-plasmic-override={overrides.avatar}
-
             alt={""}
             className={classNames(sty.avatar, {
               [sty.avatararenaType_page]: hasVariant(
@@ -808,6 +764,7 @@ const PlasmicDescendants = {
     "root",
     "left",
     "logoLink",
+    "logo",
     "titleSegment",
     "projectTitle",
     "projectMenu",
@@ -839,6 +796,7 @@ const PlasmicDescendants = {
   left: [
     "left",
     "logoLink",
+    "logo",
     "titleSegment",
     "projectTitle",
     "projectMenu",
@@ -852,7 +810,8 @@ const PlasmicDescendants = {
     "previewSelect",
     "variantsComboSelect"
   ],
-  logoLink: ["logoLink"],
+  logoLink: ["logoLink", "logo"],
+  logo: ["logo"],
   titleSegment: [
     "titleSegment",
     "projectTitle",
@@ -908,6 +867,7 @@ type NodeDefaultElementType = {
   root: "div";
   left: "div";
   logoLink: "a";
+  logo: typeof Logo;
   titleSegment: "div";
   projectTitle: "div";
   projectMenu: typeof MenuButton;
@@ -1001,6 +961,7 @@ export const PlasmicTopBar = Object.assign(
     // Helper components rendering sub-elements
     left: makeNodeComponent("left"),
     logoLink: makeNodeComponent("logoLink"),
+    logo: makeNodeComponent("logo"),
     titleSegment: makeNodeComponent("titleSegment"),
     projectTitle: makeNodeComponent("projectTitle"),
     projectMenu: makeNodeComponent("projectMenu"),

@@ -14,16 +14,49 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -77,7 +110,7 @@ function PlasmicZoomButton__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -112,14 +145,14 @@ function PlasmicZoomButton__RenderFunc(props: {
     >
       {renderPlasmicSlot({
         defaultContents: "25%",
-        value: args.children,
+        value: args.children
       })}
     </Button>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root"],
+  root: ["root"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -139,8 +172,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicZoomButton__VariantsArgs;
     args?: PlasmicZoomButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicZoomButton__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicZoomButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicZoomButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -165,7 +199,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicZoomButton__ArgProps,
-          internalVariantPropNames: PlasmicZoomButton__VariantProps,
+          internalVariantPropNames: PlasmicZoomButton__VariantProps
         }),
       [props, nodeName]
     );
@@ -173,7 +207,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -192,7 +226,7 @@ export const PlasmicZoomButton = Object.assign(
 
     // Metadata about props expected for PlasmicZoomButton
     internalVariantProps: PlasmicZoomButton__VariantProps,
-    internalArgProps: PlasmicZoomButton__ArgProps,
+    internalArgProps: PlasmicZoomButton__ArgProps
   }
 );
 

@@ -14,18 +14,49 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  SingleBooleanChoiceArg,
-  StrictProps,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -34,6 +65,7 @@ import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c
 import sty from "./PlasmicAiButton.module.css"; // plasmic-import: BqSsxlQdj2F0/css
 
 import SparklesSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SparklesSvg"; // plasmic-import: 9Z0Cu-c5J/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -87,7 +119,7 @@ function PlasmicAiButton__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -100,8 +132,8 @@ function PlasmicAiButton__RenderFunc(props: {
         path: "active",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.active,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.active
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -111,7 +143,7 @@ function PlasmicAiButton__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -123,7 +155,7 @@ function PlasmicAiButton__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames("__wab_instance", sty.root, {
-        [sty.rootactive]: hasVariant($state, "active", "active"),
+        [sty.rootactive]: hasVariant($state, "active", "active")
       })}
       size={"medium"}
       type={hasVariant($state, "active", "active") ? ["primary"] : undefined}
@@ -140,14 +172,14 @@ function PlasmicAiButton__RenderFunc(props: {
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
         className={classNames("all", sty.freeBox, {
-          [sty.freeBoxactive]: hasVariant($state, "active", "active"),
+          [sty.freeBoxactive]: hasVariant($state, "active", "active")
         })}
       >
         <div
           data-plasmic-name={"text"}
           data-plasmic-override={overrides.text}
           className={classNames("all", "__wab_text", sty.text, {
-            [sty.textactive]: hasVariant($state, "active", "active"),
+            [sty.textactive]: hasVariant($state, "active", "active")
           })}
         >
           {"\u03b2eta"}
@@ -161,7 +193,7 @@ const PlasmicDescendants = {
   root: ["root", "svg", "freeBox", "text"],
   svg: ["svg"],
   freeBox: ["freeBox", "text"],
-  text: ["text"],
+  text: ["text"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -184,8 +216,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicAiButton__VariantsArgs;
     args?: PlasmicAiButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicAiButton__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicAiButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicAiButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -210,7 +243,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicAiButton__ArgProps,
-          internalVariantPropNames: PlasmicAiButton__VariantProps,
+          internalVariantPropNames: PlasmicAiButton__VariantProps
         }),
       [props, nodeName]
     );
@@ -218,7 +251,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -240,7 +273,7 @@ export const PlasmicAiButton = Object.assign(
 
     // Metadata about props expected for PlasmicAiButton
     internalVariantProps: PlasmicAiButton__VariantProps,
-    internalArgProps: PlasmicAiButton__ArgProps,
+    internalArgProps: PlasmicAiButton__ArgProps
   }
 );
 

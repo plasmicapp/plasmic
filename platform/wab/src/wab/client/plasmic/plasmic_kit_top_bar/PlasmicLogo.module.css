@@ -1,0 +1,32 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  min-width: 0;
+}
+.svg__n8ZRs {
+  object-fit: cover;
+  width: 40px;
+  height: 40px;
+  color: var(--token-PTyaboLP9ZK);
+  flex-shrink: 0;
+}
+.root:hover .svg__n8ZRs {
+  display: none;
+}
+.svg__kxmGo {
+  object-fit: cover;
+  width: 40px;
+  height: 40px;
+  color: var(--token-PTyaboLP9ZK);
+  flex-shrink: 0;
+  display: none;
+}
+.root:hover .svg__kxmGo {
+  display: block;
+}

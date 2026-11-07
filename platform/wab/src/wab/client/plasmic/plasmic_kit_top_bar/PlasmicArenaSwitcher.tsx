@@ -14,19 +14,49 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  PlasmicIcon as PlasmicIcon__,
-  SingleChoiceArg,
-  StrictProps,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -34,10 +64,11 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicArenaSwitcher.module.css"; // plasmic-import: OAMl2pw5C9W/css
 
-import MixedArenaIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__MixedArena"; // plasmic-import: ArS5N_7TRj/icon
-import PageIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__Page"; // plasmic-import: p8KOsO82kk/icon
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import PageIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__Page"; // plasmic-import: p8KOsO82kk/icon
 import ComponentSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg"; // plasmic-import: vJVrKlrDD/icon
+import MixedArenaIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__MixedArena"; // plasmic-import: ArS5N_7TRj/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -91,7 +122,7 @@ function PlasmicArenaSwitcher__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -104,8 +135,8 @@ function PlasmicArenaSwitcher__RenderFunc(props: {
         path: "arenaType",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.arenaType,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.arenaType
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -115,7 +146,7 @@ function PlasmicArenaSwitcher__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -136,10 +167,10 @@ function PlasmicArenaSwitcher__RenderFunc(props: {
             hasVariant($state, "arenaType", "mixed")
               ? MixedArenaIcon
               : hasVariant($state, "arenaType", "component")
-              ? ComponentSvgIcon
-              : hasVariant($state, "arenaType", "page")
-              ? PageIcon
-              : ArrowRightSvgIcon
+                ? ComponentSvgIcon
+                : hasVariant($state, "arenaType", "page")
+                  ? PageIcon
+                  : ArrowRightSvgIcon
           }
           className={classNames("all", sty.svg, {
             [sty.svgarenaType_component]: hasVariant(
@@ -148,7 +179,7 @@ function PlasmicArenaSwitcher__RenderFunc(props: {
               "component"
             ),
             [sty.svgarenaType_mixed]: hasVariant($state, "arenaType", "mixed"),
-            [sty.svgarenaType_page]: hasVariant($state, "arenaType", "page"),
+            [sty.svgarenaType_page]: hasVariant($state, "arenaType", "page")
           })}
           role={"img"}
         />
@@ -166,7 +197,7 @@ function PlasmicArenaSwitcher__RenderFunc(props: {
           data-plasmic-override={overrides.text}
           className={classNames("all", "__wab_text", sty.text, {
             [sty.textarenaType_mixed]: hasVariant($state, "arenaType", "mixed"),
-            [sty.textarenaType_page]: hasVariant($state, "arenaType", "page"),
+            [sty.textarenaType_page]: hasVariant($state, "arenaType", "page")
           })}
         >
           {"Arena Name"}
@@ -180,7 +211,7 @@ const PlasmicDescendants = {
   root: ["root", "svg", "freeBox", "text"],
   svg: ["svg"],
   freeBox: ["freeBox", "text"],
-  text: ["text"],
+  text: ["text"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -203,8 +234,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicArenaSwitcher__VariantsArgs;
     args?: PlasmicArenaSwitcher__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicArenaSwitcher__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicArenaSwitcher__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicArenaSwitcher__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -229,7 +261,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicArenaSwitcher__ArgProps,
-          internalVariantPropNames: PlasmicArenaSwitcher__VariantProps,
+          internalVariantPropNames: PlasmicArenaSwitcher__VariantProps
         }),
       [props, nodeName]
     );
@@ -237,7 +269,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -259,7 +291,7 @@ export const PlasmicArenaSwitcher = Object.assign(
 
     // Metadata about props expected for PlasmicArenaSwitcher
     internalVariantProps: PlasmicArenaSwitcher__VariantProps,
-    internalArgProps: PlasmicArenaSwitcher__ArgProps,
+    internalArgProps: PlasmicArenaSwitcher__ArgProps
   }
 );
 

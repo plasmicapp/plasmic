@@ -14,19 +14,50 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  SingleBooleanChoiceArg,
-  StrictProps,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import ActionMenuButton from "../../components/widgets/ActionMenuButton"; // plasmic-import: VNi6NC2QOI/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -34,9 +65,9 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "./plasmic_plasmic_kit_top_bar.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicCodeButton.module.css"; // plasmic-import: FCNHcPh1ZR/css
 
+import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -89,7 +120,7 @@ function PlasmicCodeButton__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -102,8 +133,8 @@ function PlasmicCodeButton__RenderFunc(props: {
         path: "hideMenu",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hideMenu,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hideMenu
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -113,7 +144,7 @@ function PlasmicCodeButton__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -155,7 +186,7 @@ function PlasmicCodeButton__RenderFunc(props: {
           data-plasmic-name={"button"}
           data-plasmic-override={overrides.button}
           className={classNames("__wab_instance", sty.button, {
-            [sty.buttonhideMenu]: hasVariant($state, "hideMenu", "hideMenu"),
+            [sty.buttonhideMenu]: hasVariant($state, "hideMenu", "hideMenu")
           })}
           endIcon={
             <ChevronDownSvgIcon
@@ -185,7 +216,7 @@ function PlasmicCodeButton__RenderFunc(props: {
 const PlasmicDescendants = {
   root: ["root", "menuButton", "button"],
   menuButton: ["menuButton"],
-  button: ["button"],
+  button: ["button"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -207,8 +238,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCodeButton__VariantsArgs;
     args?: PlasmicCodeButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicCodeButton__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicCodeButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCodeButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -233,7 +265,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCodeButton__ArgProps,
-          internalVariantPropNames: PlasmicCodeButton__VariantProps,
+          internalVariantPropNames: PlasmicCodeButton__VariantProps
         }),
       [props, nodeName]
     );
@@ -241,7 +273,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -262,7 +294,7 @@ export const PlasmicCodeButton = Object.assign(
 
     // Metadata about props expected for PlasmicCodeButton
     internalVariantProps: PlasmicCodeButton__VariantProps,
-    internalArgProps: PlasmicCodeButton__ArgProps,
+    internalArgProps: PlasmicCodeButton__ArgProps
   }
 );
 

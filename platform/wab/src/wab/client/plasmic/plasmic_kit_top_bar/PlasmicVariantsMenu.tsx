@@ -14,15 +14,48 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -79,7 +112,7 @@ function PlasmicVariantsMenu__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -125,7 +158,7 @@ function PlasmicVariantsMenu__RenderFunc(props: {
             sty.searchInput
           )}
           placeholder={"Search variants…"}
-          ref={(ref) => {
+          ref={ref => {
             $refs["searchInput"] = ref;
           }}
           size={1}
@@ -140,7 +173,7 @@ function PlasmicVariantsMenu__RenderFunc(props: {
       >
         {renderPlasmicSlot({
           defaultContents: null,
-          value: args.children,
+          value: args.children
         })}
       </div>
     </div>
@@ -152,7 +185,7 @@ const PlasmicDescendants = {
   freeBox: ["freeBox", "svg", "searchInput"],
   svg: ["svg"],
   searchInput: ["searchInput"],
-  variantsList: ["variantsList"],
+  variantsList: ["variantsList"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -176,8 +209,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicVariantsMenu__VariantsArgs;
     args?: PlasmicVariantsMenu__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicVariantsMenu__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicVariantsMenu__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicVariantsMenu__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -202,7 +236,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicVariantsMenu__ArgProps,
-          internalVariantPropNames: PlasmicVariantsMenu__VariantProps,
+          internalVariantPropNames: PlasmicVariantsMenu__VariantProps
         }),
       [props, nodeName]
     );
@@ -210,7 +244,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -233,7 +267,7 @@ export const PlasmicVariantsMenu = Object.assign(
 
     // Metadata about props expected for PlasmicVariantsMenu
     internalVariantProps: PlasmicVariantsMenu__VariantProps,
-    internalArgProps: PlasmicVariantsMenu__ArgProps,
+    internalArgProps: PlasmicVariantsMenu__ArgProps
   }
 );
 
