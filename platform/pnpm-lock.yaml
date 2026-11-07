@@ -14319,8 +14319,8 @@ packages:
       '@types/react':
         optional: true
 
-  react-parallax-tilt@1.7.350:
-    resolution: {integrity: sha512-OGu9lOQMQ8q5S2FCyC778S8gDBPa72yplG24aLQ71HoBXhVYcc/D1QYXQ29nTpSfeVXFJ6qCnT0YyDd8NG3SmA==}
+  react-parallax-tilt@1.7.351:
+    resolution: {integrity: sha512-Z52lVuFOuCFen8RziYLNSULAlt02W9Qbj+rHaEypOoMuQxb1xtESjjALa0jQ6NfBnB0vR61Cn4tS6eU6Vy4d5g==}
     peerDependencies:
       react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -20602,7 +20602,7 @@ snapshots:
       '@plasmicapp/host': 2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      react-parallax-tilt: 1.7.350(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-parallax-tilt: 1.7.351(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   '@plasmicpkgs/react-quill@1.0.127(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -21405,7 +21405,7 @@ snapshots:
 
   '@rc-component/async-validator@5.1.2':
     dependencies:
-      '@babel/runtime': 7.29.10
+      '@babel/runtime': 7.29.13
 
   '@rc-component/color-picker@1.5.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -22669,7 +22669,7 @@ snapshots:
 
   '@react-three/fiber@9.6.1(@types/react@18.3.18)(immer@10.2.0)(react-dom@18.3.1(react@18.3.1))(react-native@0.86.0(@babel/core@7.29.7)(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)(three@0.185.1)':
     dependencies:
-      '@babel/runtime': 7.29.10
+      '@babel/runtime': 7.29.13
       '@types/webxr': 0.5.24
       base64-js: 1.5.1
       buffer: 6.0.3
@@ -25192,7 +25192,7 @@ snapshots:
 
   babel-plugin-macros@3.1.0:
     dependencies:
-      '@babel/runtime': 7.29.10
+      '@babel/runtime': 7.29.13
       cosmiconfig: 7.1.0
       resolve: 1.22.12
 
@@ -28969,7 +28969,7 @@ snapshots:
 
   metro-runtime@0.84.6:
     dependencies:
-      '@babel/runtime': 7.29.10
+      '@babel/runtime': 7.29.13
       flow-enums-runtime: 0.0.6
 
   metro-source-map@0.84.6:
@@ -30675,7 +30675,7 @@ snapshots:
 
   rc-field-form@2.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@babel/runtime': 7.29.10
+      '@babel/runtime': 7.29.13
       '@rc-component/async-validator': 5.1.2
       rc-util: 5.44.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
@@ -31523,7 +31523,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  react-parallax-tilt@1.7.350(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-parallax-tilt@1.7.351(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
