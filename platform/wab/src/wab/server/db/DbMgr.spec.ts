@@ -1154,6 +1154,29 @@ describe("DbMgr", () => {
       expect(workspaces.length).toBe(1);
     }));
 
+  it("can soft-delete and restore a user", () =>
+    withDb(async (sudo, [user1]) => {
+      await sudo.deleteUser(user1, true);
+      expect(await sudo.tryGetUserByEmail(user1.email)).toBeUndefined();
+
+      await sudo.restoreUser(user1.id);
+      const restored = await sudo.getUserById(user1.id);
+      expect(restored.deletedAt).toBeNull();
+      expect(restored.deletedById).toBeNull();
+      expect(await sudo.comparePassword(user1.id, "!53kr3tz!")).toBe(true);
+    }));
+
+  it("refuses to restore a permanently deleted user", () =>
+    withDb(async (sudo, [user1]) => {
+      await sudo.deleteUser(user1, false);
+      await sudo.permanentlyDeleteUser(user1.id);
+
+      await expect(sudo.restoreUser(user1.id)).rejects.toThrow(
+        "Cannot restore a permanently deleted user",
+      );
+      expect(await sudo.tryGetUserById(user1.id)).toBeFalsy();
+    }));
+
   it("can get indirectly associated users for a team", () =>
     withDb(async (sudo, [user1, user2, user3], [db1], project) => {
       async function expectEffectiveTeam(users: User[]) {

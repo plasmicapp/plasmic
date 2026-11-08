@@ -1305,6 +1305,11 @@ export function addMainAppServerRoutes(
     withNext(adminRoutes.deactivateUser),
   );
   app.post(
+    "/api/v1/admin/reactivate-user",
+    adminOnly,
+    withNext(adminRoutes.reactivateUser),
+  );
+  app.post(
     "/api/v1/admin/upgrade-team",
     adminOnly,
     withNext(adminRoutes.upgradeTeam),

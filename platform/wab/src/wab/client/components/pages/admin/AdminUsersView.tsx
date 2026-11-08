@@ -5,7 +5,7 @@ import { AdminUserSelect } from "@/wab/client/components/pages/admin/AdminUserSe
 import { AdminUserTable } from "@/wab/client/components/pages/admin/AdminUserTable";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import { ApiProject } from "@/wab/shared/ApiSchema";
-import { Button, Form, Input, notification, Table } from "antd";
+import { Button, Form, Input, Table } from "antd";
 import React, { useState } from "react";
 
 export function AdminUsersView() {
@@ -14,7 +14,6 @@ export function AdminUsersView() {
       <UsersView />
       <UserProjects />
       <ChangePasswordView />
-      <DeactivateUserView />
     </>
   );
 }
@@ -26,6 +25,7 @@ function UsersView() {
       <h2>Users</h2>
       <AdminUserTable
         items={listUsers.value?.map((user) => ({ user })) ?? []}
+        onUsersChanged={listUsers.retry}
       />
     </div>
   );
@@ -154,40 +154,6 @@ function ChangePasswordView() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <Button htmlType={"submit"}>Change password</Button>
-      </Form>
-    </div>
-  );
-}
-
-function DeactivateUserView() {
-  const nonAuthCtx = useNonAuthCtx();
-
-  return (
-    <div>
-      <h2>Offload user</h2>
-      <p>
-        This deactivates the user in the database. You still need to follow{" "}
-        <a href="https://coda.io/d/Plasmic-Wiki_dHQygjmQczq/Offboarding-users_suPpD#_lu6Th">
-          directions here
-        </a>{" "}
-        to remove the user from mailing lists (if that's what they want).
-      </p>
-      <Form
-        onFinish={async (event) => {
-          try {
-            await nonAuthCtx.api.deactivateUserAsAdmin(event.email);
-            notification.success({
-              message: "User deactivated",
-            });
-          } catch (e) {
-            notification.error({ message: `${e}` });
-          }
-        }}
-      >
-        <Form.Item name="email" label="Email">
-          <Input type={"input"} placeholder="Email" />
-        </Form.Item>
-        <Button htmlType={"submit"}>Deactivate</Button>
       </Form>
     </div>
   );

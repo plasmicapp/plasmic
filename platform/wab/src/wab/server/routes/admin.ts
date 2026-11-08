@@ -354,12 +354,14 @@ export async function savePkgVersion(req: Request, res: Response) {
 
 export async function deactivateUser(req: Request, res: Response) {
   const mgr = superDbMgr(req);
-  const email = req.body.email;
-  const user = await mgr.tryGetUserByEmail(email);
-  if (!user) {
-    throw new Error("User not found");
-  }
-  await mgr.deleteUser(user, false);
+  const user = await mgr.getUserById(req.body.userId);
+  await mgr.deleteUser(user, !req.body.clearPassword);
+  res.json({});
+}
+
+export async function reactivateUser(req: Request, res: Response) {
+  const mgr = superDbMgr(req);
+  await mgr.restoreUser(req.body.userId);
   res.json({});
 }
 

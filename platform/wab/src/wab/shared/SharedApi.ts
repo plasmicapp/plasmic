@@ -186,6 +186,7 @@ import {
   UpdateSelfRequest,
   UpdateTeamRequest,
   UpdateWorkspaceRequest,
+  UserId,
   UsersResponse,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
@@ -1323,8 +1324,15 @@ export abstract class SharedApi {
     return res.rev;
   }
 
-  async deactivateUserAsAdmin(email: string): Promise<{}> {
-    return this.post("/admin/deactivate-user", { email });
+  async deactivateUserAsAdmin(
+    userId: UserId,
+    opts: { clearPassword: boolean },
+  ): Promise<{}> {
+    return this.post("/admin/deactivate-user", { userId, ...opts });
+  }
+
+  async reactivateUserAsAdmin(userId: UserId): Promise<{}> {
+    return this.post("/admin/reactivate-user", { userId });
   }
 
   async upgradeTeamAsAdmin(args: {

@@ -2115,6 +2115,16 @@ export class DbMgr implements MigrationDbMgr {
     await this.entMgr.save(user);
   }
 
+  async restoreUser(id: UserId) {
+    this.checkSuperUser();
+    const user = await findExactlyOne(this.users(), { id });
+    if (user.permanentlyDeletedAt) {
+      throw new BadRequestError("Cannot restore a permanently deleted user");
+    }
+    Object.assign(user, this.stampUndelete());
+    await this.entMgr.save(user);
+  }
+
   async createWhiteLabelUser(fields: {
     firstName: string;
     lastName: string;

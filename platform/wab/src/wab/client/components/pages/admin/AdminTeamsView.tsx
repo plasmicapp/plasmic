@@ -636,6 +636,7 @@ function Misc(props: TeamProps) {
 
 function Members({ team, perms, refetch }: TeamProps) {
   const nonAuthCtx = useNonAuthCtx();
+  const { listUsers } = useAdminCtx();
 
   // Each permission should already have a user,
   // but need to check and make the types happy.
@@ -650,6 +651,10 @@ function Members({ team, perms, refetch }: TeamProps) {
   return (
     <AdminUserTable<ApiPermission & { user: ApiUser }>
       items={items}
+      onUsersChanged={() => {
+        refetch();
+        listUsers.retry();
+      }}
       extraColumns={[
         {
           title: "Access Level",
