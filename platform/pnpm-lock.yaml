@@ -24242,7 +24242,7 @@ snapshots:
   '@types/request@2.48.13':
     dependencies:
       '@types/caseless': 0.12.5
-      '@types/node': 24.13.3
+      '@types/node': 25.9.9
       '@types/tough-cookie': 4.0.5
       form-data: 2.5.6
 
