@@ -1,4 +1,5 @@
 import { getGithubApp } from "@/wab/server/github/app";
+import { throwIfGithubRateLimited } from "@/wab/server/github/errors";
 import { App } from "@octokit/app";
 import { composePaginateRest } from "@octokit/plugin-paginate-rest";
 
@@ -51,11 +52,16 @@ export async function getDefaultBranch(
   owner: string,
   repo: string,
 ) {
-  const app = getGithubApp();
-  const octokit = await app.getInstallationOctokit(installationId);
-  const { data } = await octokit.request("GET /repos/{owner}/{repo}", {
-    owner,
-    repo,
-  });
-  return data.default_branch;
+  try {
+    const app = getGithubApp();
+    const octokit = await app.getInstallationOctokit(installationId);
+    const { data } = await octokit.request("GET /repos/{owner}/{repo}", {
+      owner,
+      repo,
+    });
+    return data.default_branch;
+  } catch (err) {
+    throwIfGithubRateLimited(err);
+    throw err;
+  }
 }

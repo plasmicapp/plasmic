@@ -1,6 +1,6 @@
-import { getStatusCodeFromResponse } from "@/wab/server/AppServer";
 import { getGithubApp } from "@/wab/server/github/app";
 import { getDefaultBranch } from "@/wab/server/github/branches";
+import { throwIfGithubRateLimited } from "@/wab/server/github/errors";
 import { GithubRef } from "@/wab/server/github/types";
 import {
   GitSyncAction,
@@ -35,46 +35,53 @@ interface FileArgs extends GithubRef {
 }
 
 async function createOrUpdateFile(args: FileArgs) {
-  const { installationId, owner, repo, branch, path, content, message } = args;
-
-  const app = getGithubApp();
-  const octokit = await app.getInstallationOctokit(installationId);
-
-  let sha: string | undefined = undefined;
   try {
-    const { data } = await octokit.request(
-      "GET /repos/{owner}/{repo}/contents/{path}",
-      {
-        owner,
-        repo,
-        path,
-      },
-    );
-    if ("sha" in data) {
-      sha = data.sha;
-    }
-    if ("content" in data) {
-      const existing = Buffer.from(data.content, "base64").toString("ascii");
-      if (content === existing) {
-        // Nothing to update.
-        return;
-      }
-    }
-  } catch (_) {}
+    const { installationId, owner, repo, branch, path, content, message } =
+      args;
 
-  await octokit.request("PUT /repos/{owner}/{repo}/contents/{path}", {
-    owner,
-    repo,
-    branch,
-    path,
-    message,
-    sha,
-    content: Buffer.from(content).toString("base64"),
-    committer: {
-      name: gitUserName,
-      email: gitUserEmail,
-    },
-  });
+    const app = getGithubApp();
+    const octokit = await app.getInstallationOctokit(installationId);
+
+    let sha: string | undefined = undefined;
+    try {
+      const { data } = await octokit.request(
+        "GET /repos/{owner}/{repo}/contents/{path}",
+        {
+          owner,
+          repo,
+          path,
+        },
+      );
+      if ("sha" in data) {
+        sha = data.sha;
+      }
+      if ("content" in data) {
+        const existing = Buffer.from(data.content, "base64").toString("ascii");
+        if (content === existing) {
+          return;
+        }
+      }
+    } catch (err) {
+      throwIfGithubRateLimited(err);
+    }
+
+    await octokit.request("PUT /repos/{owner}/{repo}/contents/{path}", {
+      owner,
+      repo,
+      branch,
+      path,
+      message,
+      sha,
+      content: Buffer.from(content).toString("base64"),
+      committer: {
+        name: gitUserName,
+        email: gitUserEmail,
+      },
+    });
+  } catch (err) {
+    throwIfGithubRateLimited(err);
+    throw err;
+  }
 }
 
 const dispatchWorkflow = readFileSync(`${__dirname}/plasmic.yml`).toString();
@@ -115,52 +122,62 @@ export async function createOrUpdatePushWorkflow(args: GithubRef) {
 }
 
 export async function triggerWorkflow(ref: GithubRef, data: WorkflowData) {
-  const { installationId, owner, repo } = ref;
+  try {
+    const { installationId, owner, repo } = ref;
 
-  const app = getGithubApp();
-  const octokit = await app.getInstallationOctokit(installationId);
-  await octokit.request("POST /repos/{owner}/{repo}/dispatches", {
-    owner,
-    repo,
-    event_type: "plasmic",
-    client_payload: {
-      data,
-    },
-  });
+    const app = getGithubApp();
+    const octokit = await app.getInstallationOctokit(installationId);
+    await octokit.request("POST /repos/{owner}/{repo}/dispatches", {
+      owner,
+      repo,
+      event_type: "plasmic",
+      client_payload: {
+        data,
+      },
+    });
+  } catch (err) {
+    throwIfGithubRateLimited(err);
+    throw err;
+  }
 }
 
 export async function tryGetLastUnfinishedWorkflowRun(
   ref: Omit<GithubRef, "branch">,
 ): Promise<GitWorkflowJobStatus> {
-  const { installationId, owner, repo } = ref;
+  try {
+    const { installationId, owner, repo } = ref;
 
-  const app = getGithubApp();
-  const octokit = await app.getInstallationOctokit(installationId);
-  const {
-    data: { workflow_runs: allRuns },
-  } = await octokit.request(
-    "GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs",
-    {
-      owner,
-      repo,
-      workflow_id: "plasmic.yml",
-    },
-  );
-  const unfinishedRuns = allRuns.filter((run) =>
-    ["requested", "waiting", "queued", "in_progress"].includes(
-      run.status as string,
-    ),
-  );
-  const run = unfinishedRuns[0];
-  if (!run) {
-    return { state: "unknown" };
+    const app = getGithubApp();
+    const octokit = await app.getInstallationOctokit(installationId);
+    const {
+      data: { workflow_runs: allRuns },
+    } = await octokit.request(
+      "GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs",
+      {
+        owner,
+        repo,
+        workflow_id: "plasmic.yml",
+      },
+    );
+    const unfinishedRuns = allRuns.filter((run) =>
+      ["requested", "waiting", "queued", "in_progress"].includes(
+        run.status as string,
+      ),
+    );
+    const run = unfinishedRuns[0];
+    if (!run) {
+      return { state: "unknown" };
+    }
+    const job = await getGitJob(ref, run.id);
+    return {
+      state: "running",
+      workflowRunId: run.id,
+      workflowJobUrl: job?.html_url,
+    };
+  } catch (err) {
+    throwIfGithubRateLimited(err);
+    throw err;
   }
-  const job = await getGitJob(ref, run.id);
-  return {
-    state: "running",
-    workflowRunId: run.id,
-    workflowJobUrl: job?.html_url,
-  };
 }
 
 export async function getGitJob(
@@ -169,9 +186,9 @@ export async function getGitJob(
 ): Promise<GitWorkflowJob | undefined> {
   const { installationId, owner, repo } = ref;
 
-  const app = getGithubApp();
-  const octokit = await app.getInstallationOctokit(installationId);
   try {
+    const app = getGithubApp();
+    const octokit = await app.getInstallationOctokit(installationId);
     const {
       data: { jobs },
     } = await octokit.request(
@@ -180,7 +197,8 @@ export async function getGitJob(
     );
     return jobs[0];
   } catch (err) {
-    if (getStatusCodeFromResponse(err) === 404) {
+    throwIfGithubRateLimited(err);
+    if (err.status === 404) {
       // Sometimes GitHub returns 404 if it has just created the workflow run.
       // In that case, it's safe to just return undefined.
       return undefined;
