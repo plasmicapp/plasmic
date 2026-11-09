@@ -19,6 +19,7 @@ import {
   ProofSafeDelete,
   SUPER_USER,
 } from "@/wab/server/db/DbMgr";
+import { getDevFlagsMergedWithOverrides } from "@/wab/server/db/appconfig";
 import {
   getHostlessDataVersionsHash,
   unbundleSite,
@@ -438,6 +439,10 @@ export async function doImportProject(
   const oldToNewUuid = new Map<string, string>();
   const newPkgVersionById = new Map<string, PkgVersion>();
   const oldToNewProjectId = new Map<ProjectId, ProjectId>();
+  const hostLessWorkspaceId = siteBundle.map[siteBundle.root]
+    .hostLessPackageInfo
+    ? (await getDevFlagsMergedWithOverrides(mgr)).hostLessWorkspaceId
+    : undefined;
 
   const migrateBundle = async (bundle: Bundle) => {
     const migrations = await getMigrationsToExecute(bundle.version);
@@ -562,6 +567,7 @@ export async function doImportProject(
     // Add main project mapping
     const { project: mainProject } = await mgr.createProject({
       name: opts?.projectName || `Imported Project`,
+      workspaceId: hostLessWorkspaceId,
     });
     oldToNewProjectId.set(oldProjectId as ProjectId, mainProject.id);
   }
@@ -693,6 +699,7 @@ export async function doImportProject(
           ? opts.projectName
           : `Imported Project`,
       projectId: opts?.keepProjectIdsAndNames ? oldProjectId : undefined,
+      workspaceId: hostLessWorkspaceId,
     });
     project = result.project;
     rev = result.rev;
@@ -715,18 +722,6 @@ export async function doImportProject(
       siteBundle.version,
     );
     Object.assign(siteBundle, newBundle);
-  }
-
-  if (unbundledSite.hostLessPackageInfo) {
-    const devflagsStr = (await mgr.tryGetDevFlagOverrides())?.data;
-    if (devflagsStr) {
-      const devflags = JSON.parse(devflagsStr);
-      const { hostLessWorkspaceId } = devflags;
-      await mgr.updateProject({
-        id: project.id,
-        workspaceId: hostLessWorkspaceId,
-      });
-    }
   }
 
   const sourceIds = getAllOpExprSourceIdsUsedInSite(unbundledSite);
