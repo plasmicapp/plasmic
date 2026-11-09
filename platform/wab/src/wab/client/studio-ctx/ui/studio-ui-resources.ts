@@ -34,6 +34,7 @@ import {
   tryGetImageAssetByUuid,
 } from "@/wab/shared/core/sites";
 import { getStateDisplayName } from "@/wab/shared/core/states";
+import { getSelectableThemesWithLegacyActive } from "@/wab/shared/core/theme-styles";
 import { getTplNodeLabel, tryGetTplByUuid } from "@/wab/shared/core/tpls";
 import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import {
@@ -48,6 +49,7 @@ import {
   Param,
   Site,
   StyleToken,
+  Theme,
   TplNode,
   Variant,
   isKnownStateParam,
@@ -179,6 +181,12 @@ export function resolveResourceLabel(
         ],
         (r) => r.name,
       )
+      .when(Theme, (theme) => {
+        const dep = site.projectDependencies.find(
+          (d) => d.site.activeTheme === theme,
+        );
+        return dep ? `Theme from ${dep.name}` : "This project's theme";
+      })
       .when(GlobalVariantGroup, (group) => group.param.variable.name)
       .when(Variant, (variant) => {
         const name = makeVariantName({ variant, site });
@@ -223,6 +231,11 @@ function findSiteScoped(
       );
     case "ImageAsset":
       return tryGetImageAssetByUuid(site, uuid, { includeDeps: "direct" });
+    case "Theme":
+      // A theme has no uuid of its own; it is keyed by its default style's uuid.
+      return getSelectableThemesWithLegacyActive(site).find(
+        (st) => st.theme.defaultStyle.uuid === uuid,
+      )?.theme;
     case "AnimationSequence":
       return allAnimationSequencesDict(site, { includeDeps: "direct" })[uuid];
     case "GlobalVariantGroup":

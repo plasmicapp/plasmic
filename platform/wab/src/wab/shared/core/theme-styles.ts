@@ -122,3 +122,14 @@ export function getSelectableThemes(site: Site): SelectableTheme[] {
   }
   return [...site.themes.map((theme) => ({ theme })), ...imported];
 }
+
+export function getSelectableThemesWithLegacyActive(
+  site: Site,
+): SelectableTheme[] {
+  const themes = getSelectableThemes(site);
+  // Legacy projects can have an active theme in neither site.themes nor a
+  // dependency.
+  return site.activeTheme && !themes.some((st) => st.theme === site.activeTheme)
+    ? [...themes, { theme: site.activeTheme }]
+    : themes;
+}

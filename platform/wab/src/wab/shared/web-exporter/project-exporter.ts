@@ -12,10 +12,7 @@ import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { isIcon } from "@/wab/shared/core/image-assets";
 import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import { generateKeyframesRule } from "@/wab/shared/core/styles";
-import {
-  getSelectableThemes,
-  type SelectableTheme,
-} from "@/wab/shared/core/theme-styles";
+import { getSelectableThemesWithLegacyActive } from "@/wab/shared/core/theme-styles";
 import { FinalToken, toFinalToken } from "@/wab/shared/core/tokens";
 import { parseScreenSpec } from "@/wab/shared/css-size";
 import { makeDataTokenIdentifier } from "@/wab/shared/eval/expression-parser";
@@ -135,22 +132,11 @@ export function buildProjectResource(
 
   const allFinalTokens = opts.tokens ? siteFinalStyleTokensAllDeps(site) : [];
 
-  let themes: SelectableTheme[] | undefined;
-  if (opts.themes) {
-    const selectable = getSelectableThemes(site);
-    themes =
-      opts.themes === "all"
-        ? [...selectable]
-        : selectable.filter((st) => st.theme === site.activeTheme);
-    // Legacy projects can have an active theme in neither site.themes nor a
-    // dependency.
-    if (
-      site.activeTheme &&
-      !themes.some((st) => st.theme === site.activeTheme)
-    ) {
-      themes.push({ theme: site.activeTheme });
-    }
-  }
+  const themes = opts.themes
+    ? getSelectableThemesWithLegacyActive(site).filter(
+        (st) => opts.themes === "all" || st.theme === site.activeTheme,
+      )
+    : undefined;
 
   // Resources owned by `dep`, or by `site` itself when `dep` is omitted. An imported
   // project omits the sections it has nothing in.
@@ -315,7 +301,7 @@ function buildAnimationSummary(
 
 export function buildThemeResource(
   theme: Theme,
-  opts: { active?: boolean; fromProject?: string } = {},
+  opts: { active: boolean; fromProject?: string },
 ): ThemeJson {
   const toThemeStyleModel = (
     selector: string,
@@ -328,7 +314,7 @@ export function buildThemeResource(
   return {
     __type: "Theme",
     uuid: theme.defaultStyle.uuid,
-    ...(opts.active ? { active: true } : {}),
+    active: opts.active,
     ...(opts.fromProject ? { fromProject: opts.fromProject } : {}),
     styles: [
       toThemeStyleModel(BASE_THEMABLE_TAG, theme.defaultStyle),

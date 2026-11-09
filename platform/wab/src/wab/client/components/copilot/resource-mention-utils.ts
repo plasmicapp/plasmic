@@ -8,7 +8,7 @@ import {
   isScreenVariantGroup,
   makeVariantName,
 } from "@/wab/shared/Variants";
-import { isNonNil } from "@/wab/shared/common";
+import { isNonNil, withoutNils } from "@/wab/shared/common";
 import {
   allComponentVariants,
   getParamDisplayName,
@@ -19,6 +19,7 @@ import { isIcon } from "@/wab/shared/core/image-assets";
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { getStateDisplayName } from "@/wab/shared/core/states";
+import { getSelectableThemesWithLegacyActive } from "@/wab/shared/core/theme-styles";
 import {
   flattenTpls,
   getTplNodeLabel,
@@ -108,9 +109,14 @@ export function mkMentionableResources({
   for (const dep of walkDependencyTree(site, "direct")) {
     searchable.push(...mkSiteScopedResources(dep.site, getDepName(dep)));
   }
+  const activeThemeUuid = site.activeTheme?.defaultStyle.uuid;
   return {
     selection: mkCanvasSelectionResources(focusedComponent, selectedTpls),
-    searchable,
+    searchable: searchable.map((resource) =>
+      resource.tag === "Theme" && resource.uuid === activeThemeUuid
+        ? { ...resource, detail: "active" }
+        : resource,
+    ),
   };
 }
 
@@ -274,6 +280,22 @@ const mkSiteScopedResources = maybeComputedFn(function mkSiteScopedResources(
     });
   }
 
+  const themes = isImported
+    ? isHostLessPackage(site)
+      ? []
+      : withoutNils([site.activeTheme])
+    : getSelectableThemesWithLegacyActive(site)
+        .filter((st) => !st.fromProject)
+        .map((st) => st.theme);
+  for (const theme of themes) {
+    resources.push({
+      tag: "Theme",
+      uuid: theme.defaultStyle.uuid,
+      name: isImported ? "Theme" : "This project's theme",
+      fromProject,
+    });
+  }
+
   // Of the screen variant groups, only the project's active one is mentionable (stored as `site.activeScreenVariantGroup`)
   const globalVariantGroups = site.globalVariantGroups.filter(
     (group) => !isScreenVariantGroup(group),
@@ -370,6 +392,8 @@ function mentionSearchKeywords(resource: MentionableResource): string[] {
       return ["image", "icon"];
     case "Mixin":
       return ["mixin", MIXIN_LOWER];
+    case "Theme":
+      return ["theme", "default styles"];
     case "AnimationSequence":
       return ["animation"];
     case "Variant":

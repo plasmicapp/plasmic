@@ -17,6 +17,7 @@ export const SITE_SCOPED_MENTION_TAGS = [
   "DataToken",
   "ImageAsset",
   "Mixin",
+  "Theme",
   "AnimationSequence",
   "GlobalVariantGroup",
   "GlobalVariant",

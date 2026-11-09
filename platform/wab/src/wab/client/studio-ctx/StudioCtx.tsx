@@ -805,6 +805,9 @@ export class StudioCtx extends WithDbCtx {
               case "Mixin":
                 this.switchLeftTab("mixins");
                 break;
+              case "Theme":
+                this.switchLeftTab("themes");
+                break;
               case "ImageAsset":
                 this.switchLeftTab("images");
                 break;

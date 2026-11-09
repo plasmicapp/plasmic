@@ -27,6 +27,7 @@ import {
   mkGlobalVariantGroup,
   mkVariant,
 } from "@/wab/shared/Variants";
+import { arrayWithout } from "@/wab/shared/collections";
 import { assert, ensure, mkShortId } from "@/wab/shared/common";
 import {
   ComponentType,
@@ -49,6 +50,7 @@ import {
   HostLessPackageInfo,
   Mixin,
   ProjectDependency,
+  Theme,
   TplNode,
 } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
@@ -240,6 +242,7 @@ function mkTestSite() {
     icon,
     dataUrilessImage,
     mixin,
+    theme: site.themes[0],
     variant,
     variantGroup,
     screenGroup,
@@ -410,6 +413,7 @@ function mkTestDep(
     dataToken,
     image,
     mixin,
+    theme: ensure(site.activeTheme, "createSite activates a default theme"),
     animation,
     propParam,
     stateParam,
@@ -595,6 +599,30 @@ describe("resolveResource: the site-wide resources", () => {
     expect(siteScoped("Mixin", fx.transitive.mixin.uuid)).toBeUndefined();
   });
 
+  it("resolves a theme by its default style's uuid", () => {
+    expect(siteScoped("Theme", fx.theme.defaultStyle.uuid)).toBe(fx.theme);
+  });
+
+  it("resolves a directly imported project's active theme", () => {
+    expect(siteScoped("Theme", fx.imported.theme.defaultStyle.uuid)).toBe(
+      fx.imported.theme,
+    );
+  });
+
+  it("does not resolve a transitively imported theme", () => {
+    expect(
+      siteScoped("Theme", fx.transitive.theme.defaultStyle.uuid),
+    ).toBeUndefined();
+  });
+
+  it("does not resolve a theme by a style preset's uuid", () => {
+    expect(siteScoped("Theme", fx.mixin.uuid)).toBeUndefined();
+  });
+
+  it("does not resolve a style preset by a theme's uuid", () => {
+    expect(siteScoped("Mixin", fx.theme.defaultStyle.uuid)).toBeUndefined();
+  });
+
   it("resolves a global variant group", () => {
     expect(siteScoped("GlobalVariantGroup", fx.variantGroup.uuid)).toBe(
       fx.variantGroup,
@@ -679,6 +707,15 @@ describe("resolveResourceLabel", () => {
     expect(label(mkSiteScopedUiId(fx.variantGroup))).toBe("Theme");
   });
 
+  it("names a theme for the project it comes from", () => {
+    const themeUiId = (theme: Theme) =>
+      mkSiteScopedUiId({ typeTag: "Theme", uuid: theme.defaultStyle.uuid });
+    expect(label(themeUiId(fx.theme))).toBe("This project's theme");
+    expect(label(themeUiId(fx.imported.theme))).toBe(
+      "Theme from Imported project",
+    );
+  });
+
   it("names a slot by the param it fills in", () => {
     expect(scoped("Tpl", fx.slot.uuid)).toBe("children");
   });
@@ -727,6 +764,37 @@ const mkResources = (
 const importedResources = (fx: ReturnType<typeof mkTestSite>) =>
   mkResources(fx).searchable.filter((resource) => resource.fromProject);
 
+describe("an orphan active theme (in neither site.themes nor a dependency)", () => {
+  const own = mkTestSite();
+  const uiId = mkSiteScopedUiId({
+    typeTag: "Theme",
+    uuid: own.theme.defaultStyle.uuid,
+  });
+  beforeAll(() => {
+    runInAction(() => {
+      own.site.activeTheme = own.theme;
+      writeable(own.site).themes = arrayWithout(own.site.themes, own.theme);
+    });
+  });
+
+  it("is still listed, as the active theme", () => {
+    expect(mkResources(own).searchable).toContainEqual({
+      tag: "Theme",
+      uuid: own.theme.defaultStyle.uuid,
+      name: "This project's theme",
+      detail: "active",
+    });
+  });
+
+  it("still resolves", () => {
+    expect(resolveResource(own.site, uiId)?.resource).toBe(own.theme);
+  });
+
+  it("is still labelled as this project's theme", () => {
+    expect(resolveResourceLabel(own.site, uiId)).toBe("This project's theme");
+  });
+});
+
 describe("mkMentionableResources", () => {
   it("lists the project's own resources, then its direct dependencies'", () => {
     const {
@@ -738,6 +806,7 @@ describe("mkMentionableResources", () => {
       image,
       icon,
       mixin,
+      theme,
       variantGroup,
       screenGroup,
       variant,
@@ -757,6 +826,12 @@ describe("mkMentionableResources", () => {
       { tag: "ImageAsset", uuid: image.uuid, name: "Hero" },
       { tag: "ImageAsset", uuid: icon.uuid, name: "Logo", detail: "icon" },
       { tag: "Mixin", uuid: mixin.uuid, name: "Elevated" },
+      {
+        tag: "Theme",
+        uuid: theme.defaultStyle.uuid,
+        name: "This project's theme",
+        detail: "active",
+      },
       {
         tag: "GlobalVariantGroup",
         uuid: screenGroup.uuid,
@@ -814,6 +889,12 @@ describe("mkMentionableResources", () => {
         fromProject,
       },
       {
+        tag: "Theme",
+        uuid: imported.theme.defaultStyle.uuid,
+        name: "Theme",
+        fromProject,
+      },
+      {
         tag: "GlobalVariantGroup",
         uuid: imported.variantGroup.uuid,
         name: "ImportedTheme",
@@ -833,6 +914,25 @@ describe("mkMentionableResources", () => {
         fromProject,
       },
     ]);
+  });
+
+  it("marks the active theme, even when an imported project owns it", () => {
+    const own = mkTestSite();
+    runInAction(() => {
+      own.site.activeTheme = own.imported.theme;
+    });
+
+    const themes = mkResources(own).searchable.filter(
+      (resource) => resource.tag === "Theme",
+    );
+    expect(themes).toEqual([
+      expect.objectContaining({ uuid: own.theme.defaultStyle.uuid }),
+      expect.objectContaining({
+        uuid: own.imported.theme.defaultStyle.uuid,
+        detail: "active",
+      }),
+    ]);
+    expect(themes[0]).not.toHaveProperty("detail");
   });
 
   it("keeps the registered tokens of a hostless package, which the tokens panel lists", () => {

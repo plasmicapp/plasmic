@@ -9,6 +9,7 @@ import {
   Mixin,
   Param,
   StyleToken,
+  Theme,
   TplNode,
   Variant,
 } from "@/wab/shared/model/classes";
@@ -19,6 +20,7 @@ export type SiteScopedModel =
   | DataToken
   | ImageAsset
   | Mixin
+  | Theme
   | AnimationSequence
   | GlobalVariantGroup
   | Variant;

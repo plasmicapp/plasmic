@@ -1,8 +1,12 @@
 import { generateSiteFromBundle } from "@/wab/shared/__testonly__/site-tests-utils";
 import { Bundle } from "@/wab/shared/bundler";
+import { arrayWithout } from "@/wab/shared/collections";
 import { ensure } from "@/wab/shared/common";
+import { writeable } from "@/wab/shared/core/sites";
 import {
   ensureThemeStyleMixin,
+  getSelectableThemes,
+  getSelectableThemesWithLegacyActive,
   isThemeStylePropAllowed,
   parseThemeSelector,
 } from "@/wab/shared/core/theme-styles";
@@ -77,6 +81,24 @@ describe("theme-styles with a site", () => {
 
   beforeEach(() => {
     site = generateSiteFromBundle(_bundle as [string, Bundle][]);
+  });
+
+  describe("getSelectableThemesWithLegacyActive", () => {
+    it("is the selectable themes when the active theme is among them", () => {
+      expect(getSelectableThemesWithLegacyActive(site)).toEqual(
+        getSelectableThemes(site),
+      );
+    });
+
+    it("also lists an active theme that is in neither site.themes nor a dependency", () => {
+      const theme = ensure(site.activeTheme, "Expected an active theme");
+      writeable(site).themes = arrayWithout(site.themes, theme);
+      expect(getSelectableThemes(site)).not.toContainEqual({ theme });
+      expect(getSelectableThemesWithLegacyActive(site)).toEqual([
+        ...getSelectableThemes(site),
+        { theme },
+      ]);
+    });
   });
 
   describe("ensureThemeStyleMixin", () => {

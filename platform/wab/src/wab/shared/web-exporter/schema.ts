@@ -832,9 +832,8 @@ export function themeSchema() {
     uuid: z.string().describe("Theme UUID."),
     active: z
       .boolean()
-      .optional()
       .describe(
-        "True for the project's currently active theme; at most one theme is active.",
+        "Whether this theme is active in the current project. At most one theme is active.",
       ),
     fromProject: z
       .string()
