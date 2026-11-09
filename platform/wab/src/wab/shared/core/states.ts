@@ -16,10 +16,7 @@ import {
   uniqueName,
   withoutNils,
 } from "@/wab/shared/common";
-import {
-  interpolatedStringFormatDescription,
-  interpolatedStringToExpr,
-} from "@/wab/shared/copilot/dynamic-value-input";
+import { interpolatedStringToExpr } from "@/wab/shared/copilot/dynamic-value-input";
 import {
   getComponentDisplayName,
   removeComponentParam,
@@ -1383,7 +1380,7 @@ Repeated element states (read with "[]" in the name, e.g. "email[].value") are n
       .string()
       .optional()
       .describe(
-        `New value (NewValue) or element to append (Push). Required by those operations only. ${interpolatedStringFormatDescription}`,
+        `New value (NewValue) or element to append (Push). Required by those operations only.`,
       ),
     startIndex: z
       .number()

@@ -46,15 +46,6 @@ import { mapValues, minBy } from "lodash";
 import { z } from "zod";
 
 /**
- * Description of copilot's dynamic-value input format, `{{ jsExpr }}` interpolation.
- * Content is static by default and a `{{ }}`-wrapped JS expression makes it dynamic.
- * `read` serializes exprs back in the same form (`exprToInterpolatedString`).
- * Kept short since it's repeated on every dynamic field; the chat system prompt and the
- * plasmic-designer skill explain the format.
- */
-export const interpolatedStringFormatDescription = `Static unless JS is wrapped in {{ }} (runtime data, or a non-string literal like "{{ 5 }}"); plain text is not quoted.`;
-
-/**
  * Converts `{{ jsExpr }}` interpolated string to `Expr`. A string with no `{{ }}`,
  * or one that simplifies to static text, becomes a static `codeLit`, otherwise
  * `ObjectPath` / `CustomCode` / `TemplatedString`.
