@@ -18810,7 +18810,7 @@ snapshots:
       '@jest/test-result': 30.5.1
       '@jest/transform': 30.5.1
       '@jest/types': 30.5.1
-      '@types/node': 24.13.3
+      '@types/node': 25.9.9
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       ci-info: 4.4.0
@@ -18818,7 +18818,7 @@ snapshots:
       fast-json-stable-stringify: 2.1.0
       graceful-fs: 4.2.11
       jest-changed-files: 30.5.1
-      jest-config: 30.5.1(@types/node@24.13.3)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.25.4))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.4.14))(@types/node@24.13.3)(typescript@7.0.2))
+      jest-config: 30.5.1(@types/node@25.9.9)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.25.4))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.4.14))(@types/node@24.13.3)(typescript@7.0.2))
       jest-haste-map: 30.5.1
       jest-message-util: 30.5.1
       jest-regex-util: 30.5.0
@@ -18889,7 +18889,7 @@ snapshots:
 
   '@jest/pattern@30.5.0':
     dependencies:
-      '@types/node': 24.13.3
+      '@types/node': 25.9.9
       jest-regex-util: 30.5.0
 
   '@jest/reporters@30.5.1':
@@ -18900,7 +18900,7 @@ snapshots:
       '@jest/transform': 30.5.1
       '@jest/types': 30.5.1
       '@jridgewell/trace-mapping': 0.3.31
-      '@types/node': 24.13.3
+      '@types/node': 25.9.9
       chalk: 4.1.2
       collect-v8-coverage: 1.0.3
       exit-x: 0.2.2
@@ -18984,7 +18984,7 @@ snapshots:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 24.13.3
+      '@types/node': 25.9.9
       '@types/yargs': 17.0.35
       chalk: 4.1.2
 
@@ -19004,7 +19004,7 @@ snapshots:
       '@jest/schemas': 30.5.0
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 24.13.3
+      '@types/node': 25.9.9
       '@types/yargs': 17.0.35
       chalk: 4.1.2
 
@@ -24093,7 +24093,7 @@ snapshots:
 
   '@types/node-fetch@2.6.13':
     dependencies:
-      '@types/node': 24.13.3
+      '@types/node': 25.9.9
       form-data: 4.0.6
 
   '@types/node@10.12.18': {}
@@ -24352,7 +24352,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 24.13.3
+      '@types/node': 25.9.9
     optional: true
 
   '@types/zen-observable@0.8.3': {}
@@ -25605,7 +25605,7 @@ snapshots:
 
   chrome-launcher@0.15.2:
     dependencies:
-      '@types/node': 24.13.3
+      '@types/node': 25.9.9
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -25622,7 +25622,7 @@ snapshots:
 
   chromium-edge-launcher@0.3.0:
     dependencies:
-      '@types/node': 24.13.3
+      '@types/node': 25.9.9
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -28089,6 +28089,39 @@ snapshots:
       - babel-plugin-macros
       - supports-color
 
+  jest-config@30.5.1(@types/node@25.9.9)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.25.4))(ts-node@10.9.2(@swc/core@1.15.43(@swc/helpers@0.4.14))(@types/node@24.13.3)(typescript@7.0.2)):
+    dependencies:
+      '@babel/core': 7.29.7
+      '@jest/get-type': 30.5.0
+      '@jest/pattern': 30.5.0
+      '@jest/test-sequencer': 30.5.1
+      '@jest/types': 30.5.1
+      babel-jest: 30.5.1(@babel/core@7.29.7)
+      chalk: 4.1.2
+      ci-info: 4.4.0
+      deepmerge: 4.3.1
+      glob: 13.0.6
+      graceful-fs: 4.2.11
+      jest-circus: 30.5.1(babel-plugin-macros@3.1.0)
+      jest-docblock: 30.5.0
+      jest-environment-node: 30.5.1
+      jest-regex-util: 30.5.0
+      jest-resolve: 30.5.1
+      jest-runner: 30.5.1
+      jest-util: 30.5.1
+      jest-validate: 30.5.1
+      parse-json: 5.2.0
+      pretty-format: 30.5.1
+      slash: 3.0.0
+      strip-json-comments: 3.1.1
+    optionalDependencies:
+      '@types/node': 25.9.9
+      esbuild-register: 3.6.0(esbuild@0.25.4)
+      ts-node: 10.9.2(@swc/core@1.15.43(@swc/helpers@0.4.14))(@types/node@24.13.3)(typescript@7.0.2)
+    transitivePeerDependencies:
+      - babel-plugin-macros
+      - supports-color
+
   jest-diff@29.7.0:
     dependencies:
       chalk: 4.1.2
@@ -28312,7 +28345,7 @@ snapshots:
   jest-util@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 24.13.3
+      '@types/node': 25.9.9
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -28375,13 +28408,13 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 24.13.3
+      '@types/node': 25.9.9
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
   jest-worker@29.7.0:
     dependencies:
-      '@types/node': 24.13.3
+      '@types/node': 25.9.9
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
