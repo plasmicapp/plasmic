@@ -87,11 +87,11 @@ export class CopilotRateLimitExceededError extends ApiError {
   statusCode = 429;
 }
 
-export class CopilotPlanRequiredError extends ApiError {
-  name = "CopilotPlanRequiredError";
-  statusCode = 403;
+export class CopilotLimitReachedError extends ApiError {
+  name = "CopilotLimitReachedError";
+  statusCode = 429;
   constructor() {
-    super("Plasmic AI is available on paid plans");
+    super("You have used today's free Plasmic AI.");
   }
 }
 
@@ -138,7 +138,7 @@ const errorNameRegistry = {
   BundleTypeError,
   EntityNotFound: NotFoundError,
   BadRequestError,
-  CopilotPlanRequiredError,
+  CopilotLimitReachedError,
   RateLimitedExceeded,
   CopilotRateLimitExceededError,
   GrantUserNotFoundError,

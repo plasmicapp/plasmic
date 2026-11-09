@@ -72,6 +72,7 @@ import {
   CommitGraph,
   ConfirmEmailRequest,
   ConfirmEmailResponse,
+  CopilotChatQuotaResponse,
   CreateBranchRequest,
   CreateBranchResponse,
   CreateProjectRequest,
@@ -2317,6 +2318,12 @@ export abstract class SharedApi {
     request: QueryCopilotRequest,
   ): Promise<QueryCopilotResponse> {
     return this.post(`/copilot`, request, true);
+  }
+
+  async getCopilotChatQuota(
+    projectId: ProjectId,
+  ): Promise<CopilotChatQuotaResponse> {
+    return this.get(`/copilot/chat/${projectId}/quota`);
   }
 
   async sendCopilotFeedback(request: SendCopilotFeedbackRequest) {

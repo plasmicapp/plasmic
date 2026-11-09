@@ -437,6 +437,7 @@ const DEFAULT_DEVFLAGS = {
   showCopilot: true,
   enableChatCopilot: false,
   enableQueryMigrationCopilot: false,
+  chatCopilotFreeDailyTokenLimit: 0,
   chatCopilotModelProviderOpts: {
     provider: "VertexAnthropic",
     modelName: "claude-sonnet-5",

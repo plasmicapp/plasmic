@@ -3,7 +3,7 @@ import {
   AuthError,
   BadRequestError,
   BundleTypeError,
-  CopilotPlanRequiredError,
+  CopilotLimitReachedError,
   CopilotRateLimitExceededError,
   ForbiddenError,
   NotFoundError,
@@ -26,7 +26,7 @@ describe("isExpectedApiError", () => {
       new PreconditionFailedError("x"),
       new RateLimitedExceeded("x"),
       new CopilotRateLimitExceededError("x"),
-      new CopilotPlanRequiredError(),
+      new CopilotLimitReachedError(),
     ]) {
       expect(isExpectedApiError(err)).toBe(true);
     }

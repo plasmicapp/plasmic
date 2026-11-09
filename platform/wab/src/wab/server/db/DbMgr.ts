@@ -107,7 +107,6 @@ import { KnownProvider } from "@/wab/server/util/passport-multi-oauth2";
 import { UniqueViolationError } from "@/wab/shared/ApiErrors/cms-errors";
 import {
   BadRequestError,
-  CopilotPlanRequiredError,
   CopilotRateLimitExceededError,
   GrantUserNotFoundError,
   UnauthorizedError,
@@ -6368,19 +6367,13 @@ export class DbMgr implements MigrationDbMgr {
     await this.entMgr.save(perm);
   }
 
-  async useCopilotAndCheckRateLimit(opts?: { checkTeamHasPlan?: ProjectId }) {
+  async useCopilotAndCheckRateLimit() {
     if (this.actor.type === "SuperUser") {
       return;
     }
     const COPILOT_DAILY_RATE_LIMIT = 100;
     this.checkNormalUser();
     const userId = ensure(this.tryGetNormalActorId(), "Must have an user id");
-    if (opts?.checkTeamHasPlan) {
-      const team = await this.getTeamByProjectId(opts.checkTeamHasPlan);
-      if (!team || !(await isPaidTeam(team, this))) {
-        throw new CopilotPlanRequiredError();
-      }
-    }
 
     const yesterday = new Date();
     yesterday.setHours(yesterday.getHours() - 24);

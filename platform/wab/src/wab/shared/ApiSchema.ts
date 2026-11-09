@@ -5,7 +5,10 @@
 import { StyleTokenType } from "@/wab/commons/StyleToken";
 import { Bundle } from "@/wab/shared/bundles";
 import { Dict } from "@/wab/shared/collections";
-import { CopilotChat } from "@/wab/shared/copilot/prompt-utils";
+import {
+  CopilotChat,
+  CopilotChatQuota,
+} from "@/wab/shared/copilot/prompt-utils";
 import { ModelProviderOpts } from "@/wab/shared/copilot/provider";
 import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
@@ -2025,6 +2028,11 @@ export type QueryCopilotChatUiStreamRequest = {
   modelProviderOverride?: ModelProviderOpts;
   copilotSystemPromptOverride?: string;
 } & CopilotChat;
+
+export interface CopilotChatQuotaResponse {
+  /** Null without a limit, like on paid plans. */
+  quota: CopilotChatQuota | null;
+}
 
 export type QueryCopilotRequest =
   QueryCopilotCodeRequest | QueryCopilotSqlCodeRequest;

@@ -1,6 +1,6 @@
 import {
   AuthError,
-  CopilotPlanRequiredError,
+  CopilotLimitReachedError,
   CopilotRateLimitExceededError,
   ForbiddenError,
   NotFoundError,
@@ -19,7 +19,7 @@ const EXPECTED_API_ERRORS = [
   PreconditionFailedError,
   RateLimitedExceeded,
   CopilotRateLimitExceededError,
-  CopilotPlanRequiredError,
+  CopilotLimitReachedError,
 ];
 
 export function isExpectedApiError(err: unknown): boolean {

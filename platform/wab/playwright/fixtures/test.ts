@@ -28,6 +28,11 @@ export const testModels = base.extend<TestFixtures>({
     async ({ page }, use) => {
       const attempted: string[] = [];
       await page.route("**/api/v1/copilot**", async (route) => {
+        // Reads the free allowance when the chat opens, no model is involved.
+        if (route.request().url().endsWith("/quota")) {
+          await route.fulfill({ json: { quota: null } });
+          return;
+        }
         attempted.push(route.request().url());
         await route.abort("failed");
       });

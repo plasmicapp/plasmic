@@ -42,14 +42,15 @@ export function checkIsTeamOnPaidTier(
   return !!tierId && tierId !== DEVFLAGS.freeTier.id && !team.onTrial;
 }
 
-/** Whether the user gets general chat, not only the modes free tiers allow. */
 export function canUseChatCopilot(
   email: string | undefined | null,
   team: Pick<ApiTeam, "featureTierId" | "featureTier" | "onTrial"> | undefined,
   devflags: DevFlagsType,
 ): boolean {
   return (
-    isAdminTeamEmail(email, devflags) || (!!team && checkIsTeamOnPaidTier(team))
+    isAdminTeamEmail(email, devflags) ||
+    (!!team && checkIsTeamOnPaidTier(team)) ||
+    (!!email && devflags.chatCopilotFreeDailyTokenLimit > 0)
   );
 }
 

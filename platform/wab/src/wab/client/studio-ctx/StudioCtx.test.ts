@@ -77,12 +77,21 @@ function mockTeam(overrides: Partial<ApiTeam>): ApiTeam {
 }
 
 describe("chatCopilotEnabled", () => {
-  function setup(team: ApiTeam) {
+  function setup(team: ApiTeam, chatCopilotFreeDailyTokenLimit = 0) {
     return fakeStudioCtx({
       teams: [team],
       siteInfo: { teamId: TEAM_ID },
-      devFlagOverrides: { enableChatCopilot: true },
+      devFlagOverrides: {
+        enableChatCopilot: true,
+        chatCopilotFreeDailyTokenLimit,
+      },
     });
+  }
+
+  function logIn(appCtx: ReturnType<typeof setup>["appCtx"]) {
+    appCtx.selfInfo = {
+      email: "customer@example.com",
+    } as NonNullable<typeof appCtx.selfInfo>;
   }
 
   it("inherits an enterprise tier without a child Stripe customer", () => {
@@ -95,23 +104,39 @@ describe("chatCopilotEnabled", () => {
     expect(studioCtx.chatCopilotEnabled()).toBe(true);
   });
 
-  it("allows paid plans but rejects trials and free teams", () => {
+  it("allows a logged-in user on any team when free chat is on", () => {
+    const { studioCtx, appCtx } = setup(
+      mockTeam({ featureTierId: DEVFLAGS.freeTier.id }),
+      500_000,
+    );
+    logIn(appCtx);
+    expect(studioCtx.chatCopilotEnabled()).toBe(true);
+  });
+
+  it("allows only paid plans when a limit of 0 turns free chat off", () => {
+    const isEnabled = (team: ApiTeam) => {
+      const { studioCtx, appCtx } = setup(team);
+      logIn(appCtx);
+      return studioCtx.chatCopilotEnabled();
+    };
     expect(
-      setup(
-        mockTeam({ featureTierId: "paid" as FeatureTierId }),
-      ).studioCtx.chatCopilotEnabled(),
+      isEnabled(mockTeam({ featureTierId: "paid" as FeatureTierId })),
     ).toBe(true);
     expect(
-      setup(
+      isEnabled(
         mockTeam({ featureTierId: "paid" as FeatureTierId, onTrial: true }),
-      ).studioCtx.chatCopilotEnabled(),
+      ),
     ).toBe(false);
-    expect(setup(mockTeam({})).studioCtx.chatCopilotEnabled()).toBe(false);
-    expect(
-      setup(
-        mockTeam({ featureTierId: DEVFLAGS.freeTier.id }),
-      ).studioCtx.chatCopilotEnabled(),
-    ).toBe(false);
+    expect(isEnabled(mockTeam({ featureTierId: DEVFLAGS.freeTier.id }))).toBe(
+      false,
+    );
+  });
+
+  it("leaves general chat off for anonymous users", () => {
+    const { studioCtx } = setup(
+      mockTeam({ featureTierId: DEVFLAGS.freeTier.id }),
+    );
+    expect(studioCtx.chatCopilotEnabled()).toBe(false);
   });
 
   it.each(["viewer", "commenter", "content", "editor"] as const)(
