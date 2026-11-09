@@ -5,7 +5,9 @@
   position: relative;
   background: var(--token-iR8SeEwQZ);
   flex-direction: column;
-  box-shadow: 0px 12px 60px 0px #00000026, 0px 16px 64px 0px #00005508;
+  box-shadow:
+    0px 12px 60px 0px #00000026,
+    0px 16px 64px 0px #00005508;
   min-width: 0;
   border-radius: 1px;
   border: 1px solid var(--token-JpKJ41ZaDWOC);
@@ -56,8 +58,8 @@
   flex-shrink: 0;
 }
 .listSectionSeparatorresourceType_workspace__umB8EN5Uns:global(
-    .__wab_instance
-  ) {
+  .__wab_instance
+) {
   flex-shrink: 0;
 }
 .freeBox__yn7Fa {
@@ -255,6 +257,10 @@
 }
 .freeBox__ekPne {
   display: flex;
+}
+.freeBoxstate_unlogged__ekPnEvijMz {
+  column-gap: 0.25em;
+  row-gap: 0px;
 }
 .text__sNt5G {
   position: relative;

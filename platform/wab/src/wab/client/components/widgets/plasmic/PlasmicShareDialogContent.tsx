@@ -16,30 +16,55 @@ import * as React from "react";
 import {
   Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
   PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
   generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import { _useStyleTokens } from "../../../plasmic/plasmic_kit_share_dialog/PlasmicStyleTokensProvider"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/styleTokensProvider
-import ListSectionSeparator from "../../ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
 import ActionMenuButton from "../ActionMenuButton"; // plasmic-import: VNi6NC2QOI/component
-import Button from "../Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import ListSectionSeparator from "../../ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
 import Checkbox from "../Checkbox"; // plasmic-import: W-rO7NZqPjZ/component
+import Button from "../Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Select from "../Select"; // plasmic-import: j_4IQyOWK2b/component
 import Select__Option from "../Select__Option"; // plasmic-import: rr-LWdMni2G/component
 import Textbox from "../Textbox"; // plasmic-import: pA22NEzDCsn_/component
 import PermissionItem from "./PermissionItem"; // plasmic-import: GFrmKeyhlA/component
+import { _useGlobalVariants } from "../../../plasmic/plasmic_kit_share_dialog/plasmic"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/projectModule
+import { _useStyleTokens } from "../../../plasmic/plasmic_kit_share_dialog/PlasmicStyleTokensProvider"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -47,14 +72,14 @@ import "../../../plasmic/PP__plasmickit_share_dialog.css"; // plasmic-import: kA
 import sty from "./PlasmicShareDialogContent.module.css"; // plasmic-import: cWsnP3_PIix/css
 
 import LinkIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Link"; // plasmic-import: BQBWbw0fg66Lw/icon
-import ResetIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Reset"; // plasmic-import: Dj3u-HuPv94sN/icon
-import LockIcon from "../../../plasmic/plasmic_kit_design_system/PlasmicIcon__Lock"; // plasmic-import: xWjo2JPAc6/icon
-import ArrowRightSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ArrowUpRightSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowUpRightSvg"; // plasmic-import: N_BtK6grX/icon
 import ChevronDownSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import CloseSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
 import PlusSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 import SearchSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
+import CloseSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import ArrowRightSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ArrowUpRightSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowUpRightSvg"; // plasmic-import: N_BtK6grX/icon
+import ResetIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Reset"; // plasmic-import: Dj3u-HuPv94sN/icon
+import LockIcon from "../../../plasmic/plasmic_kit_design_system/PlasmicIcon__Lock"; // plasmic-import: xWjo2JPAc6/icon
 
 createPlasmicElementProxy;
 
@@ -146,7 +171,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -159,28 +184,28 @@ function PlasmicShareDialogContent__RenderFunc(props: {
         path: "state",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.state,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.state
       },
       {
         path: "shareByLinkAllowed",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.shareByLinkAllowed,
+          $props.shareByLinkAllowed
       },
       {
         path: "resourceType",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.resourceType,
+          $props.resourceType
       },
       {
         path: "permsCascade",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.permsCascade,
+          $props.permsCascade
       },
       {
         path: "shareByLinkSwitch.isChecked",
@@ -201,33 +226,33 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   throw e;
                 }
               })()
-            : "isChecked",
+            : "isChecked"
       },
       {
         path: "shareByLinkPermDropdown.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "value1",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "value1"
       },
       {
         path: "newUserRoleDropdown.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "value1",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "value1"
       },
       {
         path: "noShareByLink",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.noShareByLink,
+          $props.noShareByLink
       },
       {
         path: "everyoneElseDropdown.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "value1",
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "value1"
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -237,7 +262,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -287,7 +312,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
             "noPermToShare"
           ),
           [sty.rootstate_submitting]: hasVariant($state, "state", "submitting"),
-          [sty.rootstate_unlogged]: hasVariant($state, "state", "unlogged"),
+          [sty.rootstate_unlogged]: hasVariant($state, "state", "unlogged")
         }
       )}
     >
@@ -322,7 +347,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
             $state,
             "state",
             "noPermToShare"
-          ),
+          )
         })}
       >
         <div
@@ -336,7 +361,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               $state,
               "resourceType",
               "workspace"
-            ),
+            )
           })}
         >
           <div
@@ -365,16 +390,16 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 $state,
                 "shareByLinkAllowed",
                 "yes"
-              ),
+              )
             })}
           >
             {hasVariant($state, "resourceType", "team")
               ? "Organization members"
               : hasVariant($state, "resourceType", "workspace")
-              ? "Workspace members"
-              : hasVariant($state, "resourceType", "project")
-              ? "Share this project"
-              : "Who can open this Plasmic project?"}
+                ? "Workspace members"
+                : hasVariant($state, "resourceType", "project")
+                  ? "Share this project"
+                  : "Who can open this Plasmic project?"}
           </div>
           <ActionMenuButton
             data-plasmic-name={"projectActionMenu"}
@@ -384,7 +409,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 $state,
                 "resourceType",
                 "project"
-              ),
+              )
             })}
             hasIcon={true}
             icon={
@@ -406,7 +431,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               [sty.listSectionSeparatorresourceType_project__umB8Ewbkdw]:
                 hasVariant($state, "resourceType", "project"),
               [sty.listSectionSeparatorresourceType_workspace__umB8EN5Uns]:
-                hasVariant($state, "resourceType", "workspace"),
+                hasVariant($state, "resourceType", "workspace")
             }
           )}
         />
@@ -415,12 +440,12 @@ function PlasmicShareDialogContent__RenderFunc(props: {
           hasVariant($state, "noShareByLink", "noShareByLink")
             ? false
             : hasVariant($state, "resourceType", "workspace")
-            ? true
-            : hasVariant($state, "resourceType", "project")
-            ? true
-            : hasVariant($state, "shareByLinkAllowed", "yes")
-            ? true
-            : true
+              ? true
+              : hasVariant($state, "resourceType", "project")
+                ? true
+                : hasVariant($state, "shareByLinkAllowed", "yes")
+                  ? true
+                  : true
         ) ? (
           <div
             className={classNames("all", sty.freeBox__yn7Fa, {
@@ -458,7 +483,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 $state,
                 "shareByLinkAllowed",
                 "yes"
-              ),
+              )
             })}
           >
             <div
@@ -497,7 +522,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   $state,
                   "shareByLinkAllowed",
                   "yes"
-                ),
+                )
               })}
             >
               <Checkbox
@@ -543,28 +568,28 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     $state,
                     "state",
                     "unlogged"
-                  ),
+                  )
                 })}
                 isChecked={
                   generateStateValueProp($state, [
                     "shareByLinkSwitch",
-                    "isChecked",
+                    "isChecked"
                   ]) ?? false
                 }
                 isDisabled={
                   hasVariant($state, "state", "noPermToShare")
                     ? true
                     : hasVariant($state, "state", "unlogged")
-                    ? true
-                    : hasVariant($state, "state", "submitting")
-                    ? true
-                    : undefined
+                      ? true
+                      : hasVariant($state, "state", "submitting")
+                        ? true
+                        : undefined
                 }
                 onChange={async (...eventArgs: any) => {
                   ((...eventArgs) => {
                     generateStateOnChangeProp($state, [
                       "shareByLinkSwitch",
-                      "isChecked",
+                      "isChecked"
                     ])(eventArgs[0]);
                   }).apply(null, eventArgs);
 
@@ -585,8 +610,8 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 hasVariant($state, "shareByLinkAllowed", "no")
                   ? false
                   : hasVariant($state, "shareByLinkAllowed", "yes")
-                  ? true
-                  : true
+                    ? true
+                    : true
               ) ? (
                 <Button
                   data-plasmic-name={"copyLink"}
@@ -611,7 +636,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                       $state,
                       "shareByLinkAllowed",
                       "yes"
-                    ),
+                    )
                   })}
                   endIcon={
                     <ChevronDownSvgIcon
@@ -645,7 +670,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                           $state,
                           "resourceType",
                           "team"
-                        ),
+                        )
                       }
                     )}
                   >
@@ -658,8 +683,8 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               hasVariant($state, "resourceType", "workspace")
                 ? false
                 : hasVariant($state, "shareByLinkAllowed", "no")
-                ? false
-                : true
+                  ? false
+                  : true
             ) ? (
               <div
                 className={classNames("all", sty.freeBox__fdzf5, {
@@ -689,7 +714,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     $state,
                     "shareByLinkAllowed",
                     "yes"
-                  ),
+                  )
                 })}
               >
                 <div
@@ -710,7 +735,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                       $state,
                       "shareByLinkAllowed",
                       "yes"
-                    ),
+                    )
                   })}
                 >
                   {hasVariant($state, "resourceType", "team")
@@ -725,7 +750,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     sty.shareByLinkPermDropdown,
                     {
                       [sty.shareByLinkPermDropdownresourceType_project]:
-                        hasVariant($state, "resourceType", "project"),
+                        hasVariant($state, "resourceType", "project")
                     }
                   )}
                   icon={
@@ -738,7 +763,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     ((...eventArgs) => {
                       generateStateOnChangeProp($state, [
                         "shareByLinkPermDropdown",
-                        "value",
+                        "value"
                       ])(eventArgs[0]);
                     }).apply(null, eventArgs);
 
@@ -753,7 +778,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   type={"bordered"}
                   value={generateStateValueProp($state, [
                     "shareByLinkPermDropdown",
-                    "value",
+                    "value"
                   ])}
                 >
                   <Select__Option
@@ -815,7 +840,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               $state,
               "state",
               "unlogged"
-            ),
+            )
           })}
         >
           <div
@@ -844,7 +869,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 $state,
                 "state",
                 "unlogged"
-              ),
+              )
             })}
           >
             <div
@@ -878,7 +903,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   $state,
                   "state",
                   "noPermToShare"
-                ),
+                )
               })}
             >
               <Textbox
@@ -888,10 +913,10 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   hasVariant($state, "state", "noPermToShare")
                     ? true
                     : hasVariant($state, "state", "unlogged")
-                    ? true
-                    : hasVariant($state, "state", "submitting")
-                    ? true
-                    : undefined
+                      ? true
+                      : hasVariant($state, "state", "submitting")
+                        ? true
+                        : undefined
                 }
                 error={
                   hasVariant($state, "state", "invalidEmail") ? true : undefined
@@ -928,7 +953,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     $state,
                     "state",
                     "unlogged"
-                  ),
+                  )
                 })}
               >
                 {"as"}
@@ -949,7 +974,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     $state,
                     "state",
                     "unlogged"
-                  ),
+                  )
                 })}
               >
                 <Select
@@ -970,7 +995,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                         $state,
                         "state",
                         "submitting"
-                      ),
+                      )
                     }
                   )}
                   icon={
@@ -983,7 +1008,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     ((...eventArgs) => {
                       generateStateOnChangeProp($state, [
                         "newUserRoleDropdown",
-                        "value",
+                        "value"
                       ])(eventArgs[0]);
                     }).apply(null, eventArgs);
 
@@ -998,7 +1023,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   type={"bordered"}
                   value={generateStateValueProp($state, [
                     "newUserRoleDropdown",
-                    "value",
+                    "value"
                   ])}
                 >
                   <Select__Option
@@ -1021,7 +1046,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   $state,
                   "resourceType",
                   "team"
-                ),
+                )
               })}
             >
               <Button
@@ -1031,12 +1056,12 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   hasVariant($state, "state", "noPermToShare")
                     ? true
                     : hasVariant($state, "state", "unlogged")
-                    ? true
-                    : hasVariant($state, "state", "invalidEmail")
-                    ? true
-                    : hasVariant($state, "state", "submitting")
-                    ? true
-                    : undefined
+                      ? true
+                      : hasVariant($state, "state", "invalidEmail")
+                        ? true
+                        : hasVariant($state, "state", "submitting")
+                          ? true
+                          : undefined
                 }
                 endIcon={
                   <ChevronDownSvgIcon
@@ -1056,10 +1081,10 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 {hasVariant($state, "state", "noPermToShare")
                   ? "Invite"
                   : hasVariant($state, "state", "unlogged")
-                  ? "Invite"
-                  : hasVariant($state, "state", "submitting")
-                  ? "Inviting..."
-                  : "Invite"}
+                    ? "Invite"
+                    : hasVariant($state, "state", "submitting")
+                      ? "Inviting..."
+                      : "Invite"}
               </Button>
             </div>
           </div>
@@ -1067,8 +1092,8 @@ function PlasmicShareDialogContent__RenderFunc(props: {
             hasVariant($state, "state", "noPermToShare")
               ? true
               : hasVariant($state, "state", "unlogged")
-              ? true
-              : false
+                ? true
+                : false
           ) ? (
             <div
               className={classNames("all", sty.freeBox__dYv8H, {
@@ -1106,7 +1131,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   $state,
                   "state",
                   "unlogged"
-                ),
+                )
               })}
             >
               <div
@@ -1140,7 +1165,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     $state,
                     "state",
                     "unlogged"
-                  ),
+                  )
                 })}
               >
                 <div
@@ -1154,14 +1179,14 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                       $state,
                       "state",
                       "unlogged"
-                    ),
+                    )
                   })}
                 >
                   {hasVariant($state, "state", "noPermToShare")
                     ? "You don't have permission to share this resource."
                     : hasVariant($state, "state", "unlogged")
-                    ? "Please "
-                    : "Invitees can directly create an account, skipping the waitlist."}
+                      ? "Please"
+                      : "Invitees can directly create an account, skipping the waitlist."}
                 </div>
                 {(hasVariant($state, "state", "unlogged") ? true : false) ? (
                   <PlasmicLink__
@@ -1193,7 +1218,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                           $state,
                           "state",
                           "unlogged"
-                        ),
+                        )
                       }
                     )}
                     href={
@@ -1204,7 +1229,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     platform={"react"}
                   >
                     {hasVariant($state, "state", "unlogged")
-                      ? "login"
+                      ? "log in"
                       : "Invitees can directly create an account, skipping the waitlist."}
                   </PlasmicLink__>
                 ) : null}
@@ -1224,12 +1249,12 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                           $state,
                           "state",
                           "unlogged"
-                        ),
+                        )
                       }
                     )}
                   >
                     {hasVariant($state, "state", "unlogged")
-                      ? " to send invitations."
+                      ? "to send invitations."
                       : "Invitees can directly create an account, skipping the waitlist."}
                   </div>
                 ) : null}
@@ -1251,7 +1276,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 $state,
                 "resourceType",
                 "project"
-              ),
+              )
             })}
           >
             <div
@@ -1265,7 +1290,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   $state,
                   "resourceType",
                   "project"
-                ),
+                )
               })}
             >
               <div
@@ -1279,7 +1304,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     $state,
                     "resourceType",
                     "workspace"
-                  ),
+                  )
                 })}
               >
                 {"Who has access"}
@@ -1311,7 +1336,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   $state,
                   "state",
                   "noPermToShare"
-                ),
+                )
               })}
             >
               <div className={classNames("all", "__wab_text", sty.text___5SoD)}>
@@ -1357,7 +1382,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     $state,
                     "permsCascade",
                     "showTeam"
-                  ),
+                  )
                 })}
               >
                 <Button
@@ -1393,7 +1418,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     $state,
                     "resourceType",
                     "project"
-                  ),
+                  )
                 })}
               >
                 <div
@@ -1557,7 +1582,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   />
                 </React.Fragment>
               ),
-              value: args.existingPermItems,
+              value: args.existingPermItems
             })}
           </div>
         </div>
@@ -1567,7 +1592,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               $state,
               "resourceType",
               "project"
-            ),
+            )
           })}
         >
           {(hasVariant($state, "resourceType", "project") ? true : false) ? (
@@ -1577,7 +1602,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 sty.listSectionSeparator__d7H,
                 {
                   [sty.listSectionSeparatorresourceType_project__d7Hwbkdw]:
-                    hasVariant($state, "resourceType", "project"),
+                    hasVariant($state, "resourceType", "project")
                 }
               )}
             />
@@ -1587,12 +1612,12 @@ function PlasmicShareDialogContent__RenderFunc(props: {
           hasVariant($state, "permsCascade", "showWorkspace")
             ? true
             : hasVariant($state, "resourceType", "workspace")
-            ? false
-            : hasVariant($state, "resourceType", "project")
-            ? true
-            : hasVariant($state, "shareByLinkAllowed", "no")
-            ? false
-            : false
+              ? false
+              : hasVariant($state, "resourceType", "project")
+                ? true
+                : hasVariant($state, "shareByLinkAllowed", "no")
+                  ? false
+                  : false
         ) ? (
           <div
             className={classNames("all", sty.freeBox__s80E, {
@@ -1625,7 +1650,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 $state,
                 "shareByLinkAllowed",
                 "yes"
-              ),
+              )
             })}
           >
             <div
@@ -1634,7 +1659,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   $state,
                   "permsCascade",
                   "showWorkspace"
-                ),
+                )
               })}
             >
               <LockIcon
@@ -1643,7 +1668,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     $state,
                     "permsCascade",
                     "showWorkspace"
-                  ),
+                  )
                 })}
                 role={"img"}
               />
@@ -1669,7 +1694,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     $state,
                     "shareByLinkAllowed",
                     "yes"
-                  ),
+                  )
                 })}
               >
                 {hasVariant($state, "resourceType", "team")
@@ -1688,7 +1713,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     $state,
                     "resourceType",
                     "project"
-                  ),
+                  )
                 }
               )}
               icon={
@@ -1701,7 +1726,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 ((...eventArgs) => {
                   generateStateOnChangeProp($state, [
                     "everyoneElseDropdown",
-                    "value",
+                    "value"
                   ])(eventArgs[0]);
                 }).apply(null, eventArgs);
 
@@ -1717,7 +1742,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               type={"seamless"}
               value={generateStateValueProp($state, [
                 "everyoneElseDropdown",
-                "value",
+                "value"
               ])}
             >
               <Select__Option
@@ -1751,7 +1776,7 @@ const PlasmicDescendants = {
     "teamLink",
     "workspaceName",
     "workspaceLink",
-    "everyoneElseDropdown",
+    "everyoneElseDropdown"
   ],
   projectActionMenu: ["projectActionMenu"],
   shareByLinkSwitch: ["shareByLinkSwitch"],
@@ -1767,7 +1792,7 @@ const PlasmicDescendants = {
     "teamName",
     "teamLink",
     "workspaceName",
-    "workspaceLink",
+    "workspaceLink"
   ],
   newUserEmail: ["newUserEmail"],
   newUserRoleDropdown: ["newUserRoleDropdown"],
@@ -1778,13 +1803,13 @@ const PlasmicDescendants = {
     "teamName",
     "teamLink",
     "workspaceName",
-    "workspaceLink",
+    "workspaceLink"
   ],
   teamName: ["teamName"],
   teamLink: ["teamLink"],
   workspaceName: ["workspaceName"],
   workspaceLink: ["workspaceLink"],
-  everyoneElseDropdown: ["everyoneElseDropdown"],
+  everyoneElseDropdown: ["everyoneElseDropdown"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -1819,8 +1844,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicShareDialogContent__VariantsArgs;
     args?: PlasmicShareDialogContent__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicShareDialogContent__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicShareDialogContent__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicShareDialogContent__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -1845,7 +1871,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicShareDialogContent__ArgProps,
-          internalVariantPropNames: PlasmicShareDialogContent__VariantProps,
+          internalVariantPropNames: PlasmicShareDialogContent__VariantProps
         }),
       [props, nodeName]
     );
@@ -1853,7 +1879,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -1887,7 +1913,7 @@ export const PlasmicShareDialogContent = Object.assign(
 
     // Metadata about props expected for PlasmicShareDialogContent
     internalVariantProps: PlasmicShareDialogContent__VariantProps,
-    internalArgProps: PlasmicShareDialogContent__ArgProps,
+    internalArgProps: PlasmicShareDialogContent__ArgProps
   }
 );
 

@@ -15,26 +15,51 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
   PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
   generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
   useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import { _useStyleTokens } from "../../../plasmic/plasmic_kit_share_dialog/PlasmicStyleTokensProvider"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/styleTokensProvider
 import IconButton from "../IconButton"; // plasmic-import: LPry-TF4j22a/component
 import Select from "../Select"; // plasmic-import: j_4IQyOWK2b/component
 import Select__Option from "../Select__Option"; // plasmic-import: rr-LWdMni2G/component
+import { _useGlobalVariants } from "../../../plasmic/plasmic_kit_share_dialog/plasmic"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/projectModule
+import { _useStyleTokens } from "../../../plasmic/plasmic_kit_share_dialog/PlasmicStyleTokensProvider"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -42,9 +67,9 @@ import "../../../plasmic/PP__plasmickit_share_dialog.css"; // plasmic-import: kA
 import sty from "./PlasmicPermissionItem.module.css"; // plasmic-import: GFrmKeyhlA/css
 
 import ResetIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Reset"; // plasmic-import: Dj3u-HuPv94sN/icon
-import ChevronDownSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import PlusSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 import Trash2SvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__Trash2Svg"; // plasmic-import: nS4_I75qv/icon
+import ChevronDownSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -111,7 +136,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -124,20 +149,20 @@ function PlasmicPermissionItem__RenderFunc(props: {
         path: "role",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.role,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.role
       },
       {
         path: "loading",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.loading,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.loading
       },
       {
         path: "roleDropdown.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "viewer",
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => "viewer"
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -147,12 +172,12 @@ function PlasmicPermissionItem__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const [isRootHover, triggerRootHoverProps] = useTrigger("useHover", {});
   const triggers = {
-    hover_root: isRootHover,
+    hover_root: isRootHover
   };
 
   const styleTokensClassNames = _useStyleTokens();
@@ -172,21 +197,21 @@ function PlasmicPermissionItem__RenderFunc(props: {
         sty.root,
         {
           [sty.rootloading]: hasVariant($state, "loading", "loading"),
-          [sty.rootrole_owner]: hasVariant($state, "role", "owner"),
+          [sty.rootrole_owner]: hasVariant($state, "role", "owner")
         }
       )}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
       {renderPlasmicSlot({
         defaultContents: "yang@plasmic.app",
-        value: args.email,
+        value: args.email
       })}
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
         className={classNames("all", sty.freeBox, {
           [sty.freeBoxloading]: hasVariant($state, "loading", "loading"),
-          [sty.freeBoxrole_owner]: hasVariant($state, "role", "owner"),
+          [sty.freeBoxrole_owner]: hasVariant($state, "role", "owner")
         })}
       >
         {(hasVariant($state, "role", "owner") ? true : false) ? (
@@ -194,7 +219,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
             data-plasmic-name={"owner"}
             data-plasmic-override={overrides.owner}
             className={classNames("all", "__wab_text", sty.owner, {
-              [sty.ownerrole_owner]: hasVariant($state, "role", "owner"),
+              [sty.ownerrole_owner]: hasVariant($state, "role", "owner")
             })}
           >
             {hasVariant($state, "role", "owner") ? "Owner" : "Enter some text"}
@@ -209,7 +234,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
                 />
               ),
 
-              value: args.spinner,
+              value: args.spinner
             })
           : null}
         <IconButton
@@ -222,7 +247,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
             />
           }
           className={classNames("__wab_instance", sty.deleteBtn, {
-            [sty.deleteBtnrole_owner]: hasVariant($state, "role", "owner"),
+            [sty.deleteBtnrole_owner]: hasVariant($state, "role", "owner")
           })}
           withRedBackgroundHover={true}
         >
@@ -242,7 +267,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
                 "loading",
                 "loading"
               ),
-              [sty.roleDropdownrole_owner]: hasVariant($state, "role", "owner"),
+              [sty.roleDropdownrole_owner]: hasVariant($state, "role", "owner")
             })}
             icon={
               <PlusSvgIcon
@@ -308,7 +333,7 @@ const PlasmicDescendants = {
   freeBox: ["freeBox", "owner", "deleteBtn", "roleDropdown"],
   owner: ["owner"],
   deleteBtn: ["deleteBtn"],
-  roleDropdown: ["roleDropdown"],
+  roleDropdown: ["roleDropdown"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -332,8 +357,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPermissionItem__VariantsArgs;
     args?: PlasmicPermissionItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicPermissionItem__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicPermissionItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicPermissionItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -358,7 +384,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPermissionItem__ArgProps,
-          internalVariantPropNames: PlasmicPermissionItem__VariantProps,
+          internalVariantPropNames: PlasmicPermissionItem__VariantProps
         }),
       [props, nodeName]
     );
@@ -366,7 +392,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -389,7 +415,7 @@ export const PlasmicPermissionItem = Object.assign(
 
     // Metadata about props expected for PlasmicPermissionItem
     internalVariantProps: PlasmicPermissionItem__VariantProps,
-    internalArgProps: PlasmicPermissionItem__ArgProps,
+    internalArgProps: PlasmicPermissionItem__ArgProps
   }
 );
 

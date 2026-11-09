@@ -11252,6 +11252,6 @@
     "scheme": "theo",
     "tokensFilePath": "wab/styles/plasmic-tokens.theo.json"
   },
-  "cliVersion": "0.1.384",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.384/dist/plasmic.schema.json"
+  "cliVersion": "0.1.385",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.385/dist/plasmic.schema.json"
 }
