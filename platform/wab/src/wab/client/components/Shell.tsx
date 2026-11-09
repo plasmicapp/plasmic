@@ -20,7 +20,7 @@ import * as Sentry from "@sentry/browser";
 import { createBrowserHistory } from "history";
 import * as React from "react";
 import { OverlayProvider } from "react-aria";
-import * as ReactDOM from "react-dom";
+import type { Root as ReactRoot } from "react-dom/client";
 
 const localStoragePrefixesThatAreSafeToRemove = ["__mpq_"];
 
@@ -67,7 +67,7 @@ console.log = function () {};
  * many application modules as possible are imported via this hot module and
  * there's no import path to them from the root main.tsx.
  */
-export function main() {
+export function main(root: ReactRoot) {
   if (!DEVFLAGS.uncatchErrors) {
     window.onunhandledrejection = (e: PromiseRejectionEvent) => {
       handleError(normalizeError(e.reason));
@@ -94,8 +94,6 @@ export function main() {
   initObservability();
 
   (window as any).commithash = ENV.COMMITHASH;
-
-  const appContainerElement = document.querySelector(".app-container");
 
   monkeyPatchConsoleLog();
 
@@ -128,13 +126,12 @@ export function main() {
       }
     });
 
-    ReactDOM.render(<Shell />, appContainerElement);
+    root.render(<Shell />);
   } else {
-    ReactDOM.render(
+    root.render(
       <HostFrameCtxProvider>
         <Shell />
       </HostFrameCtxProvider>,
-      appContainerElement,
     );
   }
 

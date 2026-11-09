@@ -41,10 +41,10 @@ export function useDataTokenSuggestionsMenu(
   const cancelPendingOpen = () => clearTimeout(openTimer.current);
   React.useEffect(() => cancelPendingOpen, []);
 
-  const [anchor, setAnchor] = React.useState<HTMLElement | null>(null);
   const overlayRef = React.useRef<HTMLDivElement>(null);
-  const anchorRef = React.useRef<HTMLElement | null>(null);
-  anchorRef.current = anchor;
+  // Downshift recreates its merged callback ref on each render. Updating state
+  // from that ref can loop as React detaches and reattaches it during a commit.
+  const anchorRef = React.useRef<HTMLDivElement | null>(null);
 
   const {
     isOpen,
@@ -77,7 +77,9 @@ export function useDataTokenSuggestionsMenu(
     offset: 4,
     isOpen: isMenuOpen,
   });
-  const anchorWidth = useElementWidth(anchor, { enabled: isMenuOpen });
+  const anchorWidth = useElementWidth(anchorRef.current, {
+    enabled: isMenuOpen,
+  });
 
   const menu = ReactDOM.createPortal(
     <DropdownOverlay
@@ -136,7 +138,7 @@ export function useDataTokenSuggestionsMenu(
     openMenu,
     getComboboxProps: (
       options?: Omit<Parameters<typeof getComboboxProps>[0], "ref">,
-    ) => getComboboxProps({ ...options, ref: setAnchor }),
+    ) => getComboboxProps({ ...options, ref: anchorRef }),
     getInputProps: (options: UseComboboxGetInputPropsOptions = {}) => {
       const { onKeyDown, onBlur, onFocus, onContextMenu, ...rest } = options;
       const {

@@ -11,6 +11,7 @@ import { MenuProps } from "antd/lib/menu";
 import L from "lodash";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 export type MenuType = React.ReactElement | (() => React.ReactElement);
 
@@ -46,17 +47,20 @@ export function maybeShowContextMenu(
   const div = document.createElement("div");
   div.style.zIndex = "1";
   document.body.appendChild(div);
+  const root = createRoot(div);
+  let destroyed = false;
 
   function destroy() {
-    contextMenuHandled = false;
-    const unmountResult = ReactDOM.unmountComponentAtNode(div);
-
-    if (unmountResult && div.parentNode) {
-      div.parentNode.removeChild(div);
+    if (destroyed) {
+      return;
     }
+    destroyed = true;
+    contextMenuHandled = false;
+    root.unmount();
+    div.remove();
   }
 
-  ReactDOM.render(
+  root.render(
     <AntdConfigProvider>
       <ContextMenu
         overlay={menu}
@@ -65,7 +69,6 @@ export function maybeShowContextMenu(
         onHide={destroy}
       />
     </AntdConfigProvider>,
-    div,
   );
 
   return { destroy };

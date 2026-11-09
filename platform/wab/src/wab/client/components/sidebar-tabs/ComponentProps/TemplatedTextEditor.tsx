@@ -204,6 +204,7 @@ export const TemplatedTextEditor = React.forwardRef<
     );
 
     const [validSqlString, setValidSqlString] = React.useState(true);
+    const [moved, setMoved] = useState(false);
     const studioCtx = useStudioCtx();
     const viewCtx = studioCtx.focusedViewCtx();
 
@@ -288,6 +289,9 @@ export const TemplatedTextEditor = React.forwardRef<
 
         const newVal = resolveTemplatedString(newValue);
 
+        // Update the hover caret after Slate applies the edit. Rendering during
+        // keydown can clear the DOM selection before the browser uses it.
+        setMoved(false);
         openMenu();
 
         if (sql) {
@@ -355,8 +359,6 @@ export const TemplatedTextEditor = React.forwardRef<
       return ranges;
     }, []);
 
-    const [moved, setMoved] = useState(false);
-
     const previousValue = React.useRef(value);
     // Slate doesn't support changing the values externally, so we need to keep
     // track of it
@@ -408,10 +410,7 @@ export const TemplatedTextEditor = React.forwardRef<
               readOnly={readOnly || disabled}
               disabled={disabled}
               {...getInputProps({
-                onKeyDown: (event) => {
-                  setMoved(false);
-                  onKeyDown?.(event);
-                },
+                onKeyDown,
                 onBlur: (event) => onBlur?.(event),
               })}
             />

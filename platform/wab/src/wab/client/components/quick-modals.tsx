@@ -10,7 +10,7 @@ import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { Form } from "antd";
 import { Rule } from "antd/lib/form";
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 /**
  * Shows a React element appended to the end of document.  As such, it is outside of
@@ -24,14 +24,18 @@ import ReactDOM from "react-dom";
 function showTemporaryWidget(children: React.ReactElement<any>) {
   const div = document.createElement("div");
   document.body.appendChild(div);
+  const root = createRoot(div);
+  let destroyed = false;
   function destroy() {
-    const unmountResult = ReactDOM.unmountComponentAtNode(div);
-    if (unmountResult && div.parentNode) {
-      div.parentNode.removeChild(div);
+    if (destroyed) {
+      return;
     }
+    destroyed = true;
+    root.unmount();
+    div.remove();
   }
 
-  ReactDOM.render(<AntdConfigProvider>{children}</AntdConfigProvider>, div);
+  root.render(<AntdConfigProvider>{children}</AntdConfigProvider>);
   return { destroy };
 }
 

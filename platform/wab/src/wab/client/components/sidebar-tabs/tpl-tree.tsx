@@ -175,11 +175,23 @@ const TplTreeNode = observer(function TplTreeNode(props: {
     isDropParent,
   } = props;
 
+  const visibleChangeCallback = React.useCallback(
+    (visible: boolean) => {
+      if (visible) {
+        viewCtx.tryBlurEditingText();
+      }
+    },
+    [viewCtx],
+  );
+
   const commentsCtx = useStudioCtx().commentsCtx;
-  const component = $$$(item).owningComponent();
-  const isInFrame = !!viewCtx
-    .componentStackFrames()
-    .find((f) => f.tplComponent.component === component);
+  // A child can render after its node is detached, before the parent removes it.
+  const component = $$$(item).tryGetOwningComponent();
+  const isInFrame =
+    !!component &&
+    !!viewCtx
+      .componentStackFrames()
+      .find((f) => f.tplComponent.component === component);
   if (!isInFrame) {
     return null;
   }
@@ -785,15 +797,6 @@ const TplTreeNode = observer(function TplTreeNode(props: {
       }
     });
   };
-
-  const visibleChangeCallback = React.useCallback(
-    (visible: boolean) => {
-      if (visible) {
-        viewCtx.tryBlurEditingText();
-      }
-    },
-    [viewCtx],
-  );
 
   return (
     <div

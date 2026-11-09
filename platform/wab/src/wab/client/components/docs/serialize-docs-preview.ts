@@ -267,7 +267,6 @@ function createPreviewModule(
     lang: "tsx",
     source: `
 import React from "react";
-import ReactDOM from "react-dom";
 ${depCssImports}
 import ${className} from "./${importedFileName}";
 ${component ? makePlumeDepsImports(docsCtx.studioCtx.site, component) : ""}
@@ -287,12 +286,6 @@ PlasmicComponent.getPlumeType = function({ component }) {
 }
 
 export function __run() {
-  try {
-    ReactDOM.unmountComponentAtNode(document.getElementById("plasmic-app"));
-  } catch {
-    // Swallow errors when unmounting
-  }
-
   document.body.style.overflow = "auto";
 
   ${before}

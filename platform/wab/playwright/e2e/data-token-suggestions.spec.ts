@@ -36,6 +36,34 @@ test.describe("data token suggestions popover", () => {
     return input.locator('[contenteditable="true"]');
   }
 
+  test("preserves typed characters and selection replacements in text props", async ({
+    models,
+    page,
+  }) => {
+    const studio = models.studio;
+    await studio.leftPanel.createNewPage("TestPage");
+    await studio.rightPanel.clickPageData();
+    await studio.rightPanel.addServerQueryButton.click();
+    await studio.rightPanel.serverQueriesSection
+      .locator('[data-plasmic-role="labeled-item"]')
+      .last()
+      .click();
+    const editable = studio.serverQueryPanel.locator(
+      '[data-plasmic-prop="host"] [contenteditable="true"]',
+    );
+    await editable.click();
+    await page.keyboard.type("https://example.com");
+    await expect(editable).toHaveText("https://example.com");
+    // Show the hover caret again before selecting and replacing existing text.
+    await page.mouse.move(0, 0);
+    await editable.hover();
+    await editable.click();
+    await page.keyboard.press("ControlOrMeta+A");
+    await page.keyboard.press("Backspace");
+    await page.keyboard.type("replacement");
+    await expect(editable).toHaveText("replacement");
+  });
+
   test("suggests tokens for string component props", async ({ models }) => {
     const studio = models.studio;
 
