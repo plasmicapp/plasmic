@@ -201,4 +201,61 @@ describe("project routes", () => {
       expect(body.project.secretApiToken).toBeUndefined();
     });
   });
+
+  describe("unowned project", () => {
+    /** A separate session that never logs in. */
+    let anon: ApiTester;
+
+    beforeEach(() => {
+      anon = new ApiTester(baseURL);
+    });
+
+    afterEach(async () => {
+      await anon.dispose();
+    });
+
+    it("is no longer viewable by others once claimed", async () => {
+      // Anonymous users create unowned projects, as plasmic.app/ai does.
+      const { csrf } = await api.req("get", "/api/v1/auth/csrf");
+      const {
+        project: { id: projectId },
+      } = await api.req(
+        "post",
+        "/api/v1/projects",
+        { name: "Copilot", isPublic: true },
+        { headers: { "X-CSRF-Token": csrf } },
+      );
+      const projectUrl = `/api/v1/projects/${projectId}`;
+
+      // Before it is claimed, anyone with the link can open it.
+      const beforeClaim = await anon.rawReq("get", projectUrl);
+      expect(beforeClaim.status()).toEqual(200);
+      expect((await beforeClaim.json()).project.createdById).toBeNull();
+
+      // The first logged-in user to open it claims it.
+      const claim = await api.rawReq(
+        "get",
+        projectUrl,
+        undefined,
+        asUser(user),
+      );
+      expect(claim.status()).toEqual(200);
+      const afterClaim = await api.rawReq(
+        "get",
+        projectUrl,
+        undefined,
+        asUser(user),
+      );
+      expect(afterClaim.status()).toEqual(200);
+      expect((await afterClaim.json()).owner.id).toEqual(user.id);
+
+      // Neither anonymous users nor other users can open it anymore.
+      expect((await anon.rawReq("get", projectUrl)).status()).toEqual(403);
+      expect(
+        (
+          await api.rawReq("get", projectUrl, undefined, asUser(contentUser))
+        ).status(),
+      ).toEqual(403);
+    });
+  });
 });

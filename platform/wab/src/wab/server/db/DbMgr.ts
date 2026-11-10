@@ -2872,6 +2872,7 @@ export class DbMgr implements MigrationDbMgr {
     Object.assign(project, this.stampUpdate(), {
       createdById: userId,
       workspaceId: personalWorkspace.id,
+      readableByPublic: false,
     });
     await this.entMgr.save(project);
     const user = await this.getUserById(userId);
