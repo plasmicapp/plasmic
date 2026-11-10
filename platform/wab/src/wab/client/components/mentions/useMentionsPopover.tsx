@@ -85,13 +85,17 @@ export function useMentionsPopover<T>({
           .map((x) => x.item);
 
   const overlayRef = React.useRef<HTMLDivElement>(null);
+  const anchorRef = React.useMemo(
+    () => ({ current: anchorElement }),
+    [anchorElement],
+  );
 
   const inputWidth = useElementWidth(anchorElement, {
     enabled: matchInputWidth,
   });
 
   const { overlayProps: overlayPositionProps } = useOverlayPosition({
-    targetRef: { current: anchorElement },
+    targetRef: anchorRef,
     overlayRef,
     placement: "bottom left",
     offset,
@@ -106,7 +110,7 @@ export function useMentionsPopover<T>({
   // else dismisses. Focus survives such clicks because the popover suppresses
   // the default mousedown below.
   useInteractOutside({
-    ref: { current: anchorElement },
+    ref: anchorRef,
     onInteractOutside: (event) => {
       if (
         overlayRef.current &&

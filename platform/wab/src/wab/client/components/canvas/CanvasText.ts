@@ -13,6 +13,7 @@ import {
   focusSlateEditor,
   mkTplTagElement,
   ParagraphElement,
+  syncSlateSelectionFromDom,
   TplTagElement,
 } from "@/wab/client/components/canvas/slate";
 import { SubDeps } from "@/wab/client/components/canvas/subdeps";
@@ -852,6 +853,9 @@ function mkRunFn(
 ): RunFn {
   return async function (act: string, params: any) {
     sub.slateReact.ReactEditor.focus(editor);
+    // The toolbar click may land before Slate's throttled selectionchange
+    // handler has copied the user's selection into the editor.
+    syncSlateSelectionFromDom(editor, sub);
     for (const { fn } of mkRichTextShortcuts(sub).filter(
       ({ action }) => act === action,
     )) {
@@ -1202,69 +1206,88 @@ export const mkCanvasText = ownedComputedFn(
                 return;
               }
 
-              if (isSpace(event.nativeEvent)) {
-                editor.insertText(" ");
-                // some accessible code components like button may trigger press events when pressing space
-                // `stopPropagation` alone does not stop propagation of events to code components, and thus events may leak
-                event.preventDefault();
-              }
               if (
                 isModEnter(event.nativeEvent) ||
                 isEscape(event.nativeEvent)
               ) {
                 event.preventDefault();
                 endEditing();
+                return;
               }
 
-              if (
-                event.nativeEvent.key === "Enter" &&
-                (inline || isInInlineNodeMarker(editor, sub))
-              ) {
-                // Disable line breaks inside inline marker tpls.
+              // Each branch below reads `editor.selection`, which can lag the
+              // browser caret, so it syncs first. A branch that syncs must
+              // also cancel the key: once Slate re-renders it writes
+              // `editor.selection` back to the DOM, and that would undo a
+              // caret move the browser made in the meantime. Keys this handler
+              // doesn't consume (Shift+Arrow, Home, End) must not sync.
+
+              if (isSpace(event.nativeEvent)) {
+                syncSlateSelectionFromDom(editor, sub);
+                editor.insertText(" ");
+                // some accessible code components like button may trigger press events when pressing space
+                // `stopPropagation` alone does not stop propagation of events to code components, and thus events may leak
                 event.preventDefault();
                 return;
               }
 
-              const { selection } = editor;
-              if (selection && Range.isCollapsed(selection)) {
-                // If Enter is pressed and we're in a block-level marker, we may
-                // want to leave the block. We let maybeLeaveBlock decide whether
-                // to do that; if it returns true, it did that so we must prevent
-                // default.
+              if (event.nativeEvent.key === "Enter") {
+                // An Enter this branch doesn't cancel becomes a `beforeinput`,
+                // which Slate cancels and applies from the model, so syncing
+                // is safe either way.
+                syncSlateSelectionFromDom(editor, sub);
+                if (inline || isInInlineNodeMarker(editor, sub)) {
+                  // Disable line breaks inside inline marker tpls.
+                  event.preventDefault();
+                  return;
+                }
+                const { selection } = editor;
                 if (
-                  event.nativeEvent.key === "Enter" &&
+                  selection &&
+                  Range.isCollapsed(selection) &&
                   isInNodeMarker(editor, sub)
                 ) {
-                  if (maybeAddNewItem(editor, sub)) {
+                  // Inside a block-level marker, Enter may add an item or leave
+                  // the block. If either helper did that, it handled the key.
+                  if (
+                    maybeAddNewItem(editor, sub) ||
+                    maybeLeaveBlock(editor, sub)
+                  ) {
                     event.preventDefault();
-                    return;
-                  }
-                  if (maybeLeaveBlock(editor, sub)) {
-                    event.preventDefault();
-                    return;
                   }
                 }
-
-                // Let cursor step into and out inline elements without stepping
-                // over characters.
-                if (isHotkey("left")(event.nativeEvent)) {
-                  event.preventDefault();
-                  Transforms.move(editor, { unit: "offset", reverse: true });
-                  return;
-                }
-                if (isHotkey("right")(event.nativeEvent)) {
-                  event.preventDefault();
-                  Transforms.move(editor, { unit: "offset" });
-                  return;
-                }
+                return;
               }
 
-              mkRichTextShortcuts(sub)
-                .filter(({ hotkey }) => hotkey?.(event.nativeEvent))
-                .forEach(({ fn }) => {
-                  event.preventDefault();
-                  spawn(fn(editor, shortcutOpts, sub));
-                });
+              const isLeft = isHotkey("left")(event.nativeEvent);
+              if (isLeft || isHotkey("right")(event.nativeEvent)) {
+                syncSlateSelectionFromDom(editor, sub);
+                event.preventDefault();
+                const { selection } = editor;
+                if (selection && Range.isCollapsed(selection)) {
+                  // Let cursor step into and out inline elements without
+                  // stepping over characters.
+                  Transforms.move(editor, { unit: "offset", reverse: isLeft });
+                } else if (selection) {
+                  // Slate's own keydown handler would do this, but it never
+                  // runs here because this handler stops propagation.
+                  Transforms.collapse(editor, {
+                    edge: isLeft ? "start" : "end",
+                  });
+                }
+                return;
+              }
+
+              const shortcuts = mkRichTextShortcuts(sub).filter(({ hotkey }) =>
+                hotkey?.(event.nativeEvent),
+              );
+              if (shortcuts.length > 0) {
+                syncSlateSelectionFromDom(editor, sub);
+                event.preventDefault();
+                shortcuts.forEach(({ fn }) =>
+                  spawn(fn(editor, shortcutOpts, sub)),
+                );
+              }
             },
 
             // Shouldn't leak key events to code components.

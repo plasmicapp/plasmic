@@ -198,6 +198,71 @@ test.describe("rich-text", () => {
     await expect(textElement).toContainText("Goodbye world");
   });
 
+  test("space replaces a freshly made selection", async ({ page, models }) => {
+    await models.studio.leftPanel.addNewFrame();
+    const artboardFrame = models.studio.frame
+      .locator("iframe")
+      .first()
+      .contentFrame();
+    const artboardBody = artboardFrame.locator("body");
+
+    await artboardBody.click();
+    await models.studio.focusCreatedFrameRoot();
+    await models.studio.leftPanel.insertNode("Text");
+
+    const textEditor = artboardFrame.locator(".__wab_editor");
+    await textEditor.dblclick({ force: true });
+
+    const contentEditable = textEditor.locator('[contenteditable="true"]');
+    await contentEditable.press(`${modifierKey}+a`);
+    await page.keyboard.insertText("onetwo");
+
+    // Select "two" with quick Shift+ArrowLefts and press Space right away,
+    // before Slate's throttled selectionchange handler catches up. Every
+    // Shift+ArrowLeft must count (the editor must not snap the browser
+    // selection back), and Space should replace the selection rather than
+    // insert at the old caret.
+    await page.keyboard.press("Shift+ArrowLeft");
+    await page.keyboard.press("Shift+ArrowLeft");
+    await page.keyboard.press("Shift+ArrowLeft");
+    await page.keyboard.press("Space");
+    await page.keyboard.insertText("2");
+
+    await expect(contentEditable).toHaveText("one 2");
+  });
+
+  test("arrow collapses a freshly made selection", async ({ page, models }) => {
+    await models.studio.leftPanel.addNewFrame();
+    const artboardFrame = models.studio.frame
+      .locator("iframe")
+      .first()
+      .contentFrame();
+    const artboardBody = artboardFrame.locator("body");
+
+    await artboardBody.click();
+    await models.studio.focusCreatedFrameRoot();
+    await models.studio.leftPanel.insertNode("Text");
+
+    const textEditor = artboardFrame.locator(".__wab_editor");
+    await textEditor.dblclick({ force: true });
+
+    const contentEditable = textEditor.locator('[contenteditable="true"]');
+    await contentEditable.press(`${modifierKey}+a`);
+    await page.keyboard.insertText("onetwo");
+
+    // Select "two" with quick Shift+ArrowLefts, then press ArrowLeft before
+    // Slate's throttled selectionchange handler catches up. The keydown
+    // handler consumes ArrowLeft, so it must collapse the selection to its
+    // start rather than leave the stale selection in place.
+    await page.keyboard.press("Shift+ArrowLeft");
+    await page.keyboard.press("Shift+ArrowLeft");
+    await page.keyboard.press("Shift+ArrowLeft");
+    await page.keyboard.press("ArrowLeft");
+    await page.keyboard.insertText("X");
+
+    await expect(contentEditable).toHaveText("oneXtwo");
+  });
+
   // Playwright's "Desktop Chrome" device always reports a Windows user
   // agent, so slate's platform-aware redo hotkey expects the Windows combo
   // on every host. (Undo's generic "mod+z" instead resolves "mod" via

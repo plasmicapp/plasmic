@@ -115,6 +115,30 @@ test.describe("copilot mentions", () => {
     await expect(popover).toHaveCount(0);
   });
 
+  test("clicking elsewhere in the prompt while the popover is open moves the caret", async ({
+    page,
+    models,
+  }) => {
+    await addPageWithElement(models);
+
+    await page.keyboard.press("ControlOrMeta+k");
+    const prompt = page.locator('[data-test-id="copilot-chat-prompt-editor"]');
+    const popover = page.locator('[data-test-id="mentions-popover"]');
+    await prompt.click();
+    await page.keyboard.type("hello world @");
+    await expect(popover).toBeVisible();
+
+    // Click at the very start of the text. The popover must not pin the caret
+    // where it was (a re-render while the popover is open used to snap the
+    // caret back before Slate had seen the click).
+    await prompt
+      .locator("[data-slate-string]")
+      .click({ position: { x: 2, y: 8 } });
+    await expect(popover).toHaveCount(0);
+    await page.keyboard.type("X");
+    await expect(prompt).toHaveText("Xhello world @");
+  });
+
   test("shows the hint on a bare @ when there is nothing to mention", async ({
     page,
     models,

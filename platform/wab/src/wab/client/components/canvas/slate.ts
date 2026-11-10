@@ -2,14 +2,18 @@ import { TagName } from "@/wab/shared/html";
 import type { Expr } from "@/wab/shared/model/classes";
 import { CSSProperties } from "react";
 import * as slate from "slate";
+import * as slateDom from "slate-dom";
 import type { HistoryEditor } from "slate-history";
 import * as slateReact from "slate-react";
 import type { MakeADT } from "ts-adt/MakeADT";
 
 interface SlateLibs {
   slate: typeof slate;
+  slateDom: typeof slateDom;
   slateReact: typeof slateReact;
 }
+
+const defaultLibs: SlateLibs = { slate, slateDom, slateReact };
 
 type ParagraphAttributes = {
   children: slate.Descendant[];
@@ -86,7 +90,7 @@ export function resetNodes(
     nodes?: slate.Node | slate.Node[];
     at?: slate.Location;
   } = {},
-  libs: SlateLibs = { slate, slateReact },
+  libs: SlateLibs = defaultLibs,
 ): void {
   const { Editor, Node, Point, Transforms } = libs.slate;
 
@@ -125,7 +129,7 @@ export function resetNodes(
  */
 export function marksForToolbar(
   editor: slate.Editor,
-  libs: SlateLibs = { slate, slateReact },
+  libs: SlateLibs = defaultLibs,
 ): Omit<slate.Text, "text"> | null {
   const { Editor, Node, Range } = libs.slate;
 
@@ -149,6 +153,52 @@ export function marksForToolbar(
 }
 
 /**
+ * Copies the browser's selection into `editor.selection`.
+ *
+ * Slate throttles selectionchange handling, so its selection can lag
+ * behind the DOM when a keydown handler runs. Call this before reading
+ * the selection or editing based on it.
+ *
+ * For keydown handlers, only sync when the handler consumes the key.
+ * Otherwise, the browser may move the caret afterward, and Slate's
+ * resulting render can restore the earlier selection.
+ */
+export function syncSlateSelectionFromDom(
+  editor: slate.Editor,
+  libs: SlateLibs = defaultLibs,
+): void {
+  const { Range, Transforms } = libs.slate;
+  const { IS_NODE_MAP_DIRTY } = libs.slateDom;
+  const { ReactEditor } = libs.slateReact;
+
+  if (
+    !ReactEditor.isFocused(editor) ||
+    ReactEditor.isComposing(editor) ||
+    // Pending operations haven't rendered yet, so DOM offsets don't map onto
+    // the model. The model is already ahead of the DOM in that case.
+    IS_NODE_MAP_DIRTY.get(editor)
+  ) {
+    return;
+  }
+  const domSelection = ReactEditor.getWindow(editor).getSelection();
+  if (
+    !domSelection ||
+    domSelection.rangeCount === 0 ||
+    !ReactEditor.hasEditableTarget(editor, domSelection.anchorNode) ||
+    !ReactEditor.hasTarget(editor, domSelection.focusNode)
+  ) {
+    return;
+  }
+  const range = ReactEditor.toSlateRange(editor, domSelection, {
+    exactMatch: false,
+    suppressThrow: true,
+  });
+  if (range && !(editor.selection && Range.equals(range, editor.selection))) {
+    Transforms.select(editor, range);
+  }
+}
+
+/**
  * Focuses the editor and sets the selection.
  *
  * This is useful because just `ReactEditor.focus(editor)` selects the start of
@@ -157,7 +207,7 @@ export function marksForToolbar(
 export function focusSlateEditor(
   editor: slate.Editor,
   select: "all" | "end",
-  libs: SlateLibs = { slate, slateReact },
+  libs: SlateLibs = defaultLibs,
 ): void {
   const { Editor, Transforms } = libs.slate;
   const { ReactEditor } = libs.slateReact;

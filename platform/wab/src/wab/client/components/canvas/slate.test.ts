@@ -1,12 +1,16 @@
-import { marksForToolbar } from "@/wab/client/components/canvas/slate";
+import {
+  marksForToolbar,
+  syncSlateSelectionFromDom,
+} from "@/wab/client/components/canvas/slate";
 import { CSSProperties } from "@/wab/shared/element-repr/element-repr-v2";
 import {
-  createEditor,
   Descendant,
   Editor,
   Element,
+  Range,
   Text,
   Transforms,
+  createEditor,
 } from "slate";
 
 /** Used to hold multiple inline texts. */
@@ -197,5 +201,72 @@ describe("marksForToolbar", () => {
         focus: Editor.end(editor, []),
       });
     });
+  });
+});
+
+describe("syncSlateSelectionFromDom", () => {
+  function setup(opts: {
+    focused?: boolean;
+    composing?: boolean;
+    inEditor?: boolean;
+    dirty?: boolean;
+    domRange: Range | null;
+  }) {
+    const editor = createEditor();
+    editor.children = [p(span("hello world"))];
+    Transforms.select(editor, Editor.start(editor, []));
+    const domSelection = {
+      rangeCount: 1,
+      anchorNode: {},
+      focusNode: {},
+    };
+    const ReactEditor = {
+      isFocused: () => opts.focused ?? true,
+      isComposing: () => opts.composing ?? false,
+      getWindow: () => ({ getSelection: () => domSelection }),
+      hasEditableTarget: () => opts.inEditor ?? true,
+      hasTarget: () => opts.inEditor ?? true,
+      toSlateRange: () => opts.domRange,
+    };
+    const IS_NODE_MAP_DIRTY = new WeakMap<Editor, boolean>();
+    if (opts.dirty) {
+      IS_NODE_MAP_DIRTY.set(editor, true);
+    }
+    const libs = {
+      slate: { Range, Transforms },
+      slateDom: { IS_NODE_MAP_DIRTY },
+      slateReact: { ReactEditor },
+    } as unknown as Parameters<typeof syncSlateSelectionFromDom>[1];
+    return { editor, libs };
+  }
+
+  const word: Range = {
+    anchor: { path: [0, 0], offset: 6 },
+    focus: { path: [0, 0], offset: 11 },
+  };
+
+  it("copies a newer browser selection into the editor", () => {
+    const { editor, libs } = setup({ domRange: word });
+    syncSlateSelectionFromDom(editor, libs);
+    expect(editor.selection).toEqual(word);
+  });
+
+  it.each([
+    ["the editor isn't focused", { focused: false }],
+    ["the editor is composing", { composing: true }],
+    ["the selection is outside the editor", { inEditor: false }],
+    ["the editor has unrendered operations", { dirty: true }],
+  ])("does nothing when %s", (_, opts) => {
+    const { editor, libs } = setup({ ...opts, domRange: word });
+    const before = editor.selection;
+    syncSlateSelectionFromDom(editor, libs);
+    expect(editor.selection).toEqual(before);
+  });
+
+  it("does nothing when the browser selection can't be mapped", () => {
+    const { editor, libs } = setup({ domRange: null });
+    const before = editor.selection;
+    syncSlateSelectionFromDom(editor, libs);
+    expect(editor.selection).toEqual(before);
   });
 });
