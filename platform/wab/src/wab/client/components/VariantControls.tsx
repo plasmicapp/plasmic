@@ -1,4 +1,5 @@
 import {
+  CssSelector,
   getVariantIdentifier,
   Selector,
   SelectorsInput,
@@ -6,12 +7,17 @@ import {
   styleOrCodeComponentVariantToSelectors,
 } from "@/wab/client/components/sidebar/RuleSetControls";
 import S from "@/wab/client/components/VariantControls.module.scss";
+import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
 import Button from "@/wab/client/components/widgets/Button";
 import {
   EditableLabel,
   EditableLabelHandles,
 } from "@/wab/client/components/widgets/EditableLabel";
-import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import {
+  RightTabKey,
+  StudioCtx,
+  useStudioCtx,
+} from "@/wab/client/studio-ctx/StudioCtx";
 import { InlineEdit } from "@/wab/commons/components/InlineEdit";
 import { spawn } from "@/wab/shared/common";
 import { isTplCodeComponent, isTplTag } from "@/wab/shared/core/tpls";
@@ -27,7 +33,7 @@ import {
   StyleOrCodeComponentVariant,
   toVariantKey,
 } from "@/wab/shared/Variants";
-import { Menu } from "antd";
+import { Menu, notification } from "antd";
 import { default as classNames, default as cn } from "classnames";
 import { sumBy } from "lodash";
 import { observer } from "mobx-react";
@@ -270,6 +276,40 @@ function StyleOrCodeComponentVariantLabel_(
     );
   }, [toVariantKey(variant)]);
 
+  const createStyleVariant = (selector: CssSelector) => {
+    const displayName = selector.preset?.displayName ?? selector.cssSelector;
+    spawn(
+      (async () => {
+        let isNew = false;
+        await studioCtx.change(() => {
+          const [interactionVariant, created] = studioCtx
+            .tplMgr()
+            .createStyleVariant(component, [selector.cssSelector]);
+          isNew = created;
+          studioCtx
+            .siteOps()
+            .removeStyleOrCodeComponentVariantIfDuplicateOrEmpty(
+              component,
+              variant,
+            );
+          makeVariantsController(studioCtx)?.onAddedVariant(
+            interactionVariant,
+            { focusFrame: true },
+          );
+          return ok();
+        });
+        props.onBlur?.();
+        studioCtx.switchRightTab(RightTabKey.component);
+        notification.info({
+          message: isNew
+            ? `Created component interaction variant "${displayName}"`
+            : `Switched to existing component interaction variant "${displayName}"`,
+          description: `${displayName} on the root element is a component state, so it lives under Interaction Variants in the Component tab.`,
+        });
+      })(),
+    );
+  };
+
   return (
     <div
       className={classNames({
@@ -295,6 +335,9 @@ function StyleOrCodeComponentVariantLabel_(
               onBlur={() => {
                 spawn(
                   studioCtx.change(() => {
+                    if (!component.variants.includes(variant)) {
+                      return ok();
+                    }
                     if (isCodeComponentVariant(variant)) {
                       variant.codeComponentVariantKeys =
                         chosenSelectors.map(getVariantIdentifier);
@@ -321,6 +364,14 @@ function StyleOrCodeComponentVariantLabel_(
                 props?.onSelectorsChange?.(sels);
               }}
               forPrivateStyleVariant={isPrivate}
+              onInteractionSelectorSelected={
+                isPrivate &&
+                forRoot &&
+                variant.selectors?.length === 0 &&
+                chosenSelectors.length === 0
+                  ? createStyleVariant
+                  : undefined
+              }
               forTag={forTag}
               className="textbox--listitem focused-input-bg"
               focusedClassName="focused"

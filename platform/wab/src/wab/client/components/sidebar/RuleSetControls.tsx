@@ -33,6 +33,8 @@ export type Selector = TaggedUnion<
   }
 >;
 
+export type CssSelector = Extract<Selector, { type: "CssSelector" }>;
+
 function selectorToReactKey(selector: Selector): string {
   return `${selector.type}-${getVariantIdentifier(selector)}`;
 }
@@ -115,6 +117,7 @@ export function styleOrCodeComponentVariantToSelectors(
 export interface SelectorsInputProps {
   selectors: Selector[];
   onChange?: (selectors: Selector[]) => void;
+  onInteractionSelectorSelected?: (selector: CssSelector) => void;
   onBlur?: (x: any) => void;
   onClick?: (e: React.MouseEvent) => void;
   onOuterClick?: () => void;
@@ -140,16 +143,23 @@ export function SelectorsInput({
   focusedClassName,
   forRoot,
   codeComponent,
+  onInteractionSelectorSelected,
 }: SelectorsInputProps) {
   const [text, setText] = useState("");
   const matcher = new Matcher(text);
   const isTypingPseudoSelector = text.startsWith(":");
+  const isRootPrivateStyleVariant = !!forRoot && forPrivateStyleVariant;
+  const isTypedSelectorRejected =
+    isRootPrivateStyleVariant &&
+    !onInteractionSelectorSelected &&
+    isTypingPseudoSelector &&
+    !text.startsWith("::");
 
   // Get all applicable selectors to the current element
   const applicableSelectors: Selector[] = codeComponent
     ? getCodeComponentSelectors(codeComponent)
     : [
-        ...(isTypingPseudoSelector
+        ...(isTypingPseudoSelector && !isTypedSelectorRejected
           ? [
               {
                 type: "CssSelector" as const,
@@ -158,11 +168,16 @@ export function SelectorsInput({
               },
             ]
           : []),
-        ...getApplicableSelectors(
-          forTag,
-          forPrivateStyleVariant,
-          forRoot ?? false,
-        ).map((preset) => ({
+        ...[
+          ...getApplicableSelectors(
+            forTag,
+            forPrivateStyleVariant,
+            forRoot ?? false,
+          ),
+          ...(onInteractionSelectorSelected
+            ? getApplicableSelectors(forTag, false, true)
+            : []),
+        ].map((preset) => ({
           type: "CssSelector" as const,
           cssSelector: preset.cssSelector,
           preset,
@@ -244,6 +259,14 @@ export function SelectorsInput({
         </Tooltip>
       )}
       onSelect={(newSelector: Selector) => {
+        if (
+          onInteractionSelectorSelected &&
+          newSelector.type === "CssSelector" &&
+          !newSelector.cssSelector.startsWith("::")
+        ) {
+          onInteractionSelectorSelected(newSelector);
+          return true;
+        }
         onChange([...selectors, newSelector]);
         console.log("SelectorsInput.onChange", [...selectors, newSelector]);
         return true;

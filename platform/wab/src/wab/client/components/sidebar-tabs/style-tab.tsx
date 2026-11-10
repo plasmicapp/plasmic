@@ -159,8 +159,12 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
   // Compute checks for ApplyMenu visibility
   const canShowAnimations =
     isTag && canRenderPrivateStyleVariants(tpl, viewCtx) && showStyleSections;
+  const ownerComponent = viewCtx.currentTplComponent().component;
+  const isPageRoot =
+    isPageComponent(ownerComponent) && tpl === ownerComponent.tplTree;
   const canShowElementVariants =
     canRenderPrivateStyleVariants(tpl, viewCtx) &&
+    !isPageRoot &&
     !showPrivateStyleVariants &&
     showStyleSections;
   const canShowMixins =

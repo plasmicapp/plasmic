@@ -74,6 +74,7 @@ import {
   tryArrayWithout,
 } from "@/wab/shared/collections";
 import {
+  arrayEqIgnoreOrder,
   assert,
   check,
   ensure,
@@ -721,6 +722,15 @@ export class TplMgr {
     tpl: TplNode,
     selectors: string[] = [],
   ) {
+    const existingVariant = component.variants.find(
+      (v) =>
+        isPrivateStyleVariant(v) &&
+        v.forTpl === tpl &&
+        arrayEqIgnoreOrder(v.selectors, selectors),
+    );
+    if (existingVariant) {
+      return existingVariant;
+    }
     const variant = mkVariant({
       name: "",
       forTpl: tpl,
