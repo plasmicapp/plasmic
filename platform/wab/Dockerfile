@@ -16,16 +16,13 @@
 # pulling in Node patch regressions on rebuild.
 FROM node:24.22.1-alpine AS builder
 
-ENV PUPPETEER_SKIP_DOWNLOAD=1
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-ENV CYPRESS_INSTALL_BINARY=0
-ENV PLAYWRIGHT_DOWNLOAD_HOST=https://playwright-akamai.azureedge.net
 
 # make + bubblewrap for wab codegen and the runtime code-eval sandbox;
-# build-base/g++/gcc/python3/libc-dev to compile native addons (bcrypt, sharp,
-# @swc/core, ...) during pnpm install.
-RUN apk add --no-cache make~=4 bubblewrap~=0.12 python3 build-base bash g++ gcc libc-dev
+RUN apk add --no-cache make~=4 bubblewrap~=0.12 python3 build-base bash
+
+# Use the image's Node headers instead of downloading them for native addons.
+ENV npm_config_nodedir=/usr/local
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -97,7 +94,7 @@ FROM node:24.22.1-alpine AS runner
 
 # make + bubblewrap for the runtime code-eval sandbox; toolchain kept so native
 # addons that resolve a prebuilt binary at load time still have their deps.
-RUN apk add --no-cache make~=4 bubblewrap~=0.12 python3 build-base bash g++ gcc libc-dev
+RUN apk add --no-cache make~=4 bubblewrap~=0.12 python3 build-base bash
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"

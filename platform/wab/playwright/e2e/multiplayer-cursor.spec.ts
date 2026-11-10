@@ -54,7 +54,8 @@ testMultiplayer.describe("multiplayer cursors", () => {
       const componentName = "CursorTestComponent";
 
       // Setup: Admin creates component and adds elements
-      await goToProject(admin.page, `/projects/${projectId}`);
+      // Cursor coordinates are replayed across sessions, so their layouts must match.
+      await goToProject(admin.page, `/projects/${projectId}?dockview=false`);
       const adminStudio = admin.models.studio;
 
       await adminStudio.createComponentFromNav(componentName);

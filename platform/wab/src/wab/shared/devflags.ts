@@ -627,6 +627,7 @@ export function applyDevFlagOverridesToTarget(
 
 export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
   mergeSane(target, {
+    dockview: true,
     plexus: true,
     branching: true,
     logToConsole: true,

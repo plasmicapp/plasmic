@@ -16,6 +16,17 @@ import {
 } from "@/wab/shared/model/classes";
 
 describe("canDropDataOnPropType", () => {
+  it("only accepts strings and empty values for link targets", () => {
+    for (const varType of ["string", "null", "undefined"] as const) {
+      expect(canDropDataOnPropType(varType, { type: "target" })).toBe(true);
+    }
+    for (const varType of ["boolean", "number"] as const) {
+      expect(canDropDataOnPropType(varType, { type: "target" })).toBe(
+        "This field only accepts link target strings such as _blank",
+      );
+    }
+  });
+
   it("allows scalar values on compatible primitive props", () => {
     expect(canDropDataOnPropType("number", "string")).toBe(true);
     expect(canDropDataOnPropType("number", "number")).toBe(true);

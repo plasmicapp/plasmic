@@ -11,6 +11,7 @@ export function useStickToBottom(
 ): StickToBottom {
   const [isStuck, _setIsStuck] = React.useState(true);
   const isStuckRef = React.useRef(true);
+  const lastScrollTopRef = React.useRef(0);
   const setIsStuck = React.useCallback((stuck: boolean) => {
     isStuckRef.current = stuck;
     _setIsStuck(stuck);
@@ -22,13 +23,16 @@ export function useStickToBottom(
     }
 
     setIsStuck(true);
-    let lastScrollTop = scroller.scrollTop;
+    lastScrollTopRef.current = scroller.scrollTop;
 
     const onScroll = () => {
-      const movedUp = scroller.scrollTop < lastScrollTop;
-      lastScrollTop = scroller.scrollTop;
+      const movedUp = scroller.scrollTop < lastScrollTopRef.current;
+      const movedDown = scroller.scrollTop > lastScrollTopRef.current;
+      lastScrollTopRef.current = scroller.scrollTop;
       if (isAtBottom(scroller)) {
-        setIsStuck(true);
+        if (movedDown) {
+          setIsStuck(true);
+        }
       } else if (movedUp) {
         setIsStuck(false);
       }
@@ -41,7 +45,7 @@ export function useStickToBottom(
         scrollToBottom(scroller);
       }
       // Shrinking clamps the scroll position up; don't mistake that for the user.
-      lastScrollTop = scroller.scrollTop;
+      lastScrollTopRef.current = scroller.scrollTop;
     });
 
     scroller.addEventListener("scroll", onScroll);
@@ -56,6 +60,10 @@ export function useStickToBottom(
   const stick = React.useCallback(
     (shouldStick: boolean) => {
       setIsStuck(shouldStick);
+      if (scroller) {
+        // A queued scroll event must not undo an explicit stop at the bottom.
+        lastScrollTopRef.current = scroller.scrollTop;
+      }
       if (shouldStick && scroller) {
         scrollToBottom(scroller);
       }

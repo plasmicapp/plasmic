@@ -22,31 +22,18 @@ test.describe("routing", () => {
 
     await expect(page).not.toHaveURL(/branch=/, { timeout: 15_000 });
 
-    // Poll across up to 3 arena artboards for text, until one matches or timeout expires.
-    async function getFrameWithText(text: string, timeout = 30_000) {
-      let found: FrameLocator | undefined;
-      await expect
-        .poll(
-          async () => {
-            for (const index of [0, 1, 2]) {
-              const frame = models.studio.getComponentFrameByIndex(index);
-              if (
-                await frame
-                  .getByText(text)
-                  .first()
-                  .isVisible()
-                  .catch(() => false)
-              ) {
-                found = frame;
-                return true;
-              }
-            }
-            return false;
-          },
-          { timeout },
-        )
-        .toBe(true);
-      return found!;
+    const componentFrame = models.studio.frame
+      .locator(".canvas-editor__viewport[data-test-frame-uid]:visible")
+      .first()
+      .contentFrame();
+
+    async function getFrameWithText(text: string) {
+      await expect(componentFrame.getByText(text, { exact: true })).toBeVisible(
+        {
+          timeout: 30_000,
+        },
+      );
+      return componentFrame;
     }
 
     // Edit the rendered text node by editing the canvas (mirrors canvas text-edit flow).
@@ -71,7 +58,11 @@ test.describe("routing", () => {
       await models.studio.waitForSave();
     }
 
-    const mainFrame = await models.studio.createNewComponent("DisplayBranch");
+    // Use the component arena so branch switches keep the edited artboard in view.
+    // createNewComponent() also creates a scratch artboard that can be offscreen.
+    await models.studio.leftPanel.addComponent("DisplayBranch");
+    await models.studio.switchArena("DisplayBranch");
+    const mainFrame = componentFrame;
     await models.studio.focusFrameRoot(mainFrame);
 
     await models.studio.leftPanel.insertNode("Text");

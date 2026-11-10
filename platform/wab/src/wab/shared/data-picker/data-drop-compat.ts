@@ -43,7 +43,6 @@ const STRING_PROP_TYPES = new Set([
   "imageUrl",
   "cardPicker",
   "code",
-  "target",
 ]);
 
 /**
@@ -76,6 +75,13 @@ export function canDropDataOnPropType(
 
   if (!SCALAR_TYPES.has(varType)) {
     return "This data type is not supported here";
+  }
+
+  // The target switch stores strings such as "_blank", not booleans.
+  if (propTypeType === "target") {
+    return varType === "string" || varType === "null" || varType === "undefined"
+      ? true
+      : "This field only accepts link target strings such as _blank";
   }
 
   if (STRING_PROP_TYPES.has(propTypeType ?? "")) {
