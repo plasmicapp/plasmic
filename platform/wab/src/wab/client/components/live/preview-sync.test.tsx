@@ -86,6 +86,7 @@ afterEach(() => {
 const spec: PreviewRender = {
   root: "./root.tsx",
   isPage: true,
+  defaultCss: "./default.css",
   depCss: [],
   propsModule: "./props.ts",
   globalVariants: [],
@@ -98,6 +99,7 @@ const update = (
   modules: [
     { name: "./root.tsx", lang: "tsx", source },
     { name: "./props.ts", lang: "ts", source: "export default {}" },
+    { name: "./default.css", lang: "css", source: "" },
   ],
   render: spec,
 });
@@ -293,6 +295,26 @@ it("includes the JSX pragma in the transpilation cache key", async () => {
   expect(codes[0]).toContain("React.createElement");
   expect(codes[1]).toContain("createPlasmicElementProxy");
   dispose();
+});
+
+it("loads the default styles before CSS that components import ahead of them", async () => {
+  const value = update(`import React from "react"; import "./tokens";
+    import "./default.css"; import "./project.css";
+    export default () => <h1>Styled</h1>;`);
+  value.modules.push(
+    {
+      name: "./tokens.tsx",
+      lang: "tsx",
+      source: 'import "./project.css"; export const tokens = {};',
+    },
+    { name: "./project.css", lang: "css", source: "" },
+  );
+  await deliver(value);
+  expect(
+    [...document.querySelectorAll<HTMLStyleElement>("style[data-live-module]")]
+      .map((style) => style.dataset.liveModule)
+      .filter((name) => name?.endsWith(".css")),
+  ).toEqual(["default.css", "project.css"]);
 });
 
 it("updates component and global variants without losing component state", async () => {

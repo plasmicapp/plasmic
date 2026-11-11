@@ -40,6 +40,7 @@ import {
 import {
   makeCodeComponentHelperSkeletonIdFileName,
   makeComponentSkeletonIdFileName,
+  makeDefaultStyleCssFileName,
   makeGlobalVariantIdFileName,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import {
@@ -506,6 +507,7 @@ function createPreviewRender(
     render: {
       root: `./${rootOutput.skeletonModuleFileName}`,
       isPage: rootOutput.isPage,
+      defaultCss: `./${makeDefaultStyleCssFileName({ targetEnv: "preview" })}`,
       // The referenced dependencies' project CSS, including ones with no
       // rendered component (e.g. one contributing just a token or animation).
       depCss: depProjectConfigs.map((dep) => `./${dep.cssFileName}`),
