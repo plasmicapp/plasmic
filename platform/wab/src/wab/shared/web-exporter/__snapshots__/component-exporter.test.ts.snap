@@ -28,129 +28,154 @@ exports[`Component Serialization > serializes all components 1`] = `
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY>
+      <ITEM>
+        <VariantGroup name="color" uuid="kyBwZDLobzZL" type="single"></VariantGroup>
+      </ITEM>
+      <ITEM>
+        <VariantGroup name="type" uuid="GXBnRw2UgmJ_" type="single"></VariantGroup>
+      </ITEM>
+      <ITEM>
+        <VariantGroup name="size" uuid="a1bGF3vC1yAt" type="single"></VariantGroup>
+      </ITEM>
+      <ITEM>
+        <VariantGroup name="iconStart" uuid="SXKoCEOeUIvF" type="toggle"></VariantGroup>
+      </ITEM>
+      <ITEM>
+        <VariantGroup name="iconEnd" uuid="iC6ubpmkl2Fy" type="toggle"></VariantGroup>
+      </ITEM>
+      <ITEM>
+        <VariantGroup name="roundedFull" uuid="twR9qJQT992R" type="toggle"></VariantGroup>
+      </ITEM>
+      <ITEM>
+        <VariantGroup name="flatSide" uuid="eRHH6C72RAjF" type="multi"></VariantGroup>
+      </ITEM>
+    </ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY>
       <ITEM>
-        <ComponentVariant type="single" group="color">
+        <ComponentVariant group="color">
           <variant>
             <Variant name="neutral" uuid="sy5AokJJ7g7H"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="single" group="color">
+        <ComponentVariant group="color">
           <variant>
             <Variant name="muted" uuid="gdLWnA57ufpt"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="single" group="color">
+        <ComponentVariant group="color">
           <variant>
             <Variant name="success" uuid="4EM17LBKD7cA"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="single" group="color">
+        <ComponentVariant group="color">
           <variant>
             <Variant name="warning" uuid="rS75iYmeFNPU"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="single" group="color">
+        <ComponentVariant group="color">
           <variant>
             <Variant name="errorDestructive" uuid="UZpDGjtFbbo-"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="single" group="type">
+        <ComponentVariant group="type">
           <variant>
             <Variant name="soft" uuid="NzLhyUcNJ56l"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="single" group="type">
+        <ComponentVariant group="type">
           <variant>
             <Variant name="bordered" uuid="CFlf6CAr5PRq"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="single" group="size">
+        <ComponentVariant group="size">
           <variant>
             <Variant name="extraSmall" uuid="RDlJE6wlLaV0"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="single" group="size">
+        <ComponentVariant group="size">
           <variant>
             <Variant name="small" uuid="1Wus14yXOz6z"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="single" group="size">
+        <ComponentVariant group="size">
           <variant>
             <Variant name="large" uuid="f0h7JomxhfMB"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="single" group="size">
+        <ComponentVariant group="size">
           <variant>
             <Variant name="extraLarge" uuid="IL042y6ZmTqU"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="boolean" group="iconStart">
+        <ComponentVariant group="iconStart">
           <variant>
             <Variant name="iconStart" uuid="sHwmv6VTmYIE"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="boolean" group="iconEnd">
+        <ComponentVariant group="iconEnd">
           <variant>
             <Variant name="iconEnd" uuid="WG_MUEe-AF5Z"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="boolean" group="roundedFull">
+        <ComponentVariant group="roundedFull">
           <variant>
             <Variant name="roundedFull" uuid="rnbD-4X93Vp0"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="multi" group="flatSide">
+        <ComponentVariant group="flatSide">
           <variant>
             <Variant name="top" uuid="LAvN7TnRtX1E"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="multi" group="flatSide">
+        <ComponentVariant group="flatSide">
           <variant>
             <Variant name="right" uuid="F877AcVY27WU"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="multi" group="flatSide">
+        <ComponentVariant group="flatSide">
           <variant>
             <Variant name="bottom" uuid="JG2Gsxo917WB"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="multi" group="flatSide">
+        <ComponentVariant group="flatSide">
           <variant>
             <Variant name="left" uuid="ZDz-CWXMxtWT"></Variant>
           </variant>
@@ -791,6 +816,9 @@ exports[`Component Serialization > serializes all components 1`] = `
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY></ARRAY>
   </variants>
@@ -833,6 +861,9 @@ exports[`Component Serialization > serializes all components 1`] = `
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY></ARRAY>
   </variants>
@@ -910,17 +941,24 @@ exports[`Component Serialization > serializes all components 1`] = `
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY>
+      <ITEM>
+        <VariantGroup name="type" uuid="UAXxQrR3OEMH" type="single"></VariantGroup>
+      </ITEM>
+    </ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY>
       <ITEM>
-        <ComponentVariant type="single" group="type">
+        <ComponentVariant group="type">
           <variant>
             <Variant name="soft" uuid="tPGQI9ximkgA"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="single" group="type">
+        <ComponentVariant group="type">
           <variant>
             <Variant name="plain" uuid="gcKc5e0uirg6"></Variant>
           </variant>
@@ -994,6 +1032,9 @@ exports[`Component Serialization > serializes all components 1`] = `
   <props>
     <ARRAY></ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY></ARRAY>
   </variants>
@@ -1027,10 +1068,17 @@ exports[`Component Serialization > serializes all components 1`] = `
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY>
+      <ITEM>
+        <VariantGroup name="noTrigger" uuid="bG5ngoIC4vTR" type="toggle"></VariantGroup>
+      </ITEM>
+    </ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY>
       <ITEM>
-        <ComponentVariant type="boolean" group="noTrigger">
+        <ComponentVariant group="noTrigger">
           <variant>
             <Variant name="noTrigger" uuid="XcAK-UZkDgAi"></Variant>
           </variant>
@@ -1169,6 +1217,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <props>
     <ARRAY></ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY>
       <ITEM>
@@ -1322,31 +1373,41 @@ Join our Slack community (icon in bottom left) for help any time.</div>
   <props>
     <ARRAY></ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY>
+      <ITEM>
+        <VariantGroup name="size" uuid="pNJZolAhY51b" type="single"></VariantGroup>
+      </ITEM>
+      <ITEM>
+        <VariantGroup name="requirementIndicator" uuid="k7M0ZdEXwgyp" type="single"></VariantGroup>
+      </ITEM>
+    </ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY>
       <ITEM>
-        <ComponentVariant type="single" group="size">
+        <ComponentVariant group="size">
           <variant>
             <Variant name="sm" uuid="Mc-Oh4udbRX7"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="single" group="size">
+        <ComponentVariant group="size">
           <variant>
             <Variant name="lg" uuid="VHb-pUA8lidW"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="single" group="requirementIndicator">
+        <ComponentVariant group="requirementIndicator">
           <variant>
             <Variant name="optional" uuid="-6wdZI4H74qM"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="single" group="requirementIndicator">
+        <ComponentVariant group="requirementIndicator">
           <variant>
             <Variant name="required" uuid="Kfk1fRQ40Hgx"></Variant>
           </variant>
@@ -1459,6 +1520,9 @@ Join our Slack community (icon in bottom left) for help any time.</div>
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY></ARRAY>
   </variants>
@@ -1498,6 +1562,9 @@ Join our Slack community (icon in bottom left) for help any time.</div>
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY></ARRAY>
   </variants>
@@ -1536,6 +1603,9 @@ Join our Slack community (icon in bottom left) for help any time.</div>
   <props>
     <ARRAY></ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY></ARRAY>
   </variants>
@@ -1573,10 +1643,17 @@ Join our Slack community (icon in bottom left) for help any time.</div>
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY>
+      <ITEM>
+        <VariantGroup name="noTrigger" uuid="S2QppZj-UJav" type="toggle"></VariantGroup>
+      </ITEM>
+    </ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY>
       <ITEM>
-        <ComponentVariant type="boolean" group="noTrigger">
+        <ComponentVariant group="noTrigger">
           <variant>
             <Variant name="noTrigger" uuid="phcL-adiLQWW"></Variant>
           </variant>
@@ -1703,10 +1780,17 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <props>
     <ARRAY></ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY>
+      <ITEM>
+        <VariantGroup name="dark" uuid="uss4qvLOhMPV" type="toggle"></VariantGroup>
+      </ITEM>
+    </ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY>
       <ITEM>
-        <ComponentVariant type="boolean" group="dark">
+        <ComponentVariant group="dark">
           <variant>
             <Variant name="dark" uuid="8X2l3Su5Ev8K"></Variant>
           </variant>
@@ -1775,6 +1859,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY></ARRAY>
   </variants>
@@ -1838,6 +1925,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY></ARRAY>
   </variants>
@@ -1869,6 +1959,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY></ARRAY>
   </variants>
@@ -1952,6 +2045,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY></ARRAY>
   </variants>
@@ -2020,17 +2116,24 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY>
+      <ITEM>
+        <VariantGroup name="type" uuid="c-2128YCJCzi" type="single"></VariantGroup>
+      </ITEM>
+    </ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY>
       <ITEM>
-        <ComponentVariant type="single" group="type">
+        <ComponentVariant group="type">
           <variant>
             <Variant name="soft" uuid="0bSTNkoe1NSD"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="single" group="type">
+        <ComponentVariant group="type">
           <variant>
             <Variant name="plain" uuid="AUJGtdMM0Zz4"></Variant>
           </variant>
@@ -2136,6 +2239,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY></ARRAY>
   </variants>
@@ -2195,6 +2301,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY></ARRAY>
   </variants>
@@ -2225,6 +2334,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY></ARRAY>
   </variants>
@@ -2263,6 +2375,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY></ARRAY>
   </variants>
@@ -2393,24 +2508,37 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY>
+      <ITEM>
+        <VariantGroup name="multiLine" uuid="z8E67z-VXRlY" type="toggle"></VariantGroup>
+      </ITEM>
+      <ITEM>
+        <VariantGroup name="iconStart" uuid="zxTb8Xtq4b3n" type="toggle"></VariantGroup>
+      </ITEM>
+      <ITEM>
+        <VariantGroup name="iconEnd" uuid="8QWfr5cB4yr9" type="toggle"></VariantGroup>
+      </ITEM>
+    </ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY>
       <ITEM>
-        <ComponentVariant type="boolean" group="multiLine">
+        <ComponentVariant group="multiLine">
           <variant>
             <Variant name="multiLine" uuid="ujPUz5-pNQo3"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="boolean" group="iconStart">
+        <ComponentVariant group="iconStart">
           <variant>
             <Variant name="iconStart" uuid="Y1wfrLkCK3tp"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="boolean" group="iconEnd">
+        <ComponentVariant group="iconEnd">
           <variant>
             <Variant name="iconEnd" uuid="lZuHYDu-P997"></Variant>
           </variant>
@@ -2647,59 +2775,72 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY>
+      <ITEM>
+        <VariantGroup name="type" uuid="hpnMoJ7gjfB-" type="single"></VariantGroup>
+      </ITEM>
+      <ITEM>
+        <VariantGroup name="flat" uuid="kfDTPRwlVuMP" type="multi"></VariantGroup>
+      </ITEM>
+      <ITEM>
+        <VariantGroup name="padded" uuid="KtNEZcT-fjAB" type="multi"></VariantGroup>
+      </ITEM>
+    </ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY>
       <ITEM>
-        <ComponentVariant type="single" group="type">
+        <ComponentVariant group="type">
           <variant>
             <Variant name="soft" uuid="0cXa8u_Fd6-c"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="single" group="type">
+        <ComponentVariant group="type">
           <variant>
             <Variant name="plain" uuid="9cJ3z_ZYGZvt"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="multi" group="flat">
+        <ComponentVariant group="flat">
           <variant>
             <Variant name="top" uuid="pUxG-pkjbXcJ"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="multi" group="flat">
+        <ComponentVariant group="flat">
           <variant>
             <Variant name="right" uuid="jFOHHIE_LIsW"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="multi" group="flat">
+        <ComponentVariant group="flat">
           <variant>
             <Variant name="bottom" uuid="oRa7KNUAvba6"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="multi" group="flat">
+        <ComponentVariant group="flat">
           <variant>
             <Variant name="left" uuid="f-jiC3pxjmB0"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="multi" group="padded">
+        <ComponentVariant group="padded">
           <variant>
             <Variant name="left" uuid="aIRXAYdM6pXb"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="multi" group="padded">
+        <ComponentVariant group="padded">
           <variant>
             <Variant name="right" uuid="t5DeV--6wj_c"></Variant>
           </variant>
@@ -2893,59 +3034,72 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY>
+      <ITEM>
+        <VariantGroup name="type" uuid="AIAlHK8xMaWc" type="single"></VariantGroup>
+      </ITEM>
+      <ITEM>
+        <VariantGroup name="flat" uuid="zC_Pu5P2m4Gm" type="multi"></VariantGroup>
+      </ITEM>
+      <ITEM>
+        <VariantGroup name="padded" uuid="RxwazcdzVwDV" type="multi"></VariantGroup>
+      </ITEM>
+    </ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY>
       <ITEM>
-        <ComponentVariant type="single" group="type">
+        <ComponentVariant group="type">
           <variant>
             <Variant name="soft" uuid="BYaTSYRbp5k-"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="single" group="type">
+        <ComponentVariant group="type">
           <variant>
             <Variant name="plain" uuid="RVfUSn_4OlZE"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="multi" group="flat">
+        <ComponentVariant group="flat">
           <variant>
             <Variant name="top" uuid="uub7dYD9Ahd9"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="multi" group="flat">
+        <ComponentVariant group="flat">
           <variant>
             <Variant name="right" uuid="YEvyTqML8ybV"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="multi" group="flat">
+        <ComponentVariant group="flat">
           <variant>
             <Variant name="bottom" uuid="DoKOv7moJkW2"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="multi" group="flat">
+        <ComponentVariant group="flat">
           <variant>
             <Variant name="left" uuid="EDke_10m8Cz5"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="multi" group="padded">
+        <ComponentVariant group="padded">
           <variant>
             <Variant name="left" uuid="PscEmlQHZllk"></Variant>
           </variant>
         </ComponentVariant>
       </ITEM>
       <ITEM>
-        <ComponentVariant type="multi" group="padded">
+        <ComponentVariant group="padded">
           <variant>
             <Variant name="right" uuid="tbJOPfM389OI"></Variant>
           </variant>
@@ -3145,6 +3299,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY></ARRAY>
   </variants>
@@ -3189,6 +3346,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY></ARRAY>
   </variants>
@@ -3211,6 +3371,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       </ITEM>
     </ARRAY>
   </props>
+  <variantGroups>
+    <ARRAY></ARRAY>
+  </variantGroups>
   <variants>
     <ARRAY></ARRAY>
   </variants>
@@ -3347,6 +3510,50 @@ exports[`Component Serialization > serializes all components 2`] = `
     ],
     "type": "plain",
     "uuid": "OD5_PLaXT_1t",
+    "variantGroups": [
+      {
+        "__type": "VariantGroup",
+        "name": "color",
+        "type": "single",
+        "uuid": "kyBwZDLobzZL",
+      },
+      {
+        "__type": "VariantGroup",
+        "name": "type",
+        "type": "single",
+        "uuid": "GXBnRw2UgmJ_",
+      },
+      {
+        "__type": "VariantGroup",
+        "name": "size",
+        "type": "single",
+        "uuid": "a1bGF3vC1yAt",
+      },
+      {
+        "__type": "VariantGroup",
+        "name": "iconStart",
+        "type": "toggle",
+        "uuid": "SXKoCEOeUIvF",
+      },
+      {
+        "__type": "VariantGroup",
+        "name": "iconEnd",
+        "type": "toggle",
+        "uuid": "iC6ubpmkl2Fy",
+      },
+      {
+        "__type": "VariantGroup",
+        "name": "roundedFull",
+        "type": "toggle",
+        "uuid": "twR9qJQT992R",
+      },
+      {
+        "__type": "VariantGroup",
+        "name": "flatSide",
+        "type": "multi",
+        "uuid": "eRHH6C72RAjF",
+      },
+    ],
     "variantSettings": [
       {
         "__type": "VariantOverride",
@@ -4109,7 +4316,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "color",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "neutral",
@@ -4119,7 +4325,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "color",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "muted",
@@ -4129,7 +4334,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "color",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "success",
@@ -4139,7 +4343,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "color",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "warning",
@@ -4149,7 +4352,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "color",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "errorDestructive",
@@ -4159,7 +4361,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "type",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "soft",
@@ -4169,7 +4370,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "type",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "bordered",
@@ -4179,7 +4379,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "size",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "extraSmall",
@@ -4189,7 +4388,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "size",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "small",
@@ -4199,7 +4397,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "size",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "large",
@@ -4209,7 +4406,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "size",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "extraLarge",
@@ -4219,7 +4415,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "iconStart",
-        "type": "boolean",
         "variant": {
           "__type": "Variant",
           "name": "iconStart",
@@ -4229,7 +4424,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "iconEnd",
-        "type": "boolean",
         "variant": {
           "__type": "Variant",
           "name": "iconEnd",
@@ -4239,7 +4433,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "roundedFull",
-        "type": "boolean",
         "variant": {
           "__type": "Variant",
           "name": "roundedFull",
@@ -4249,7 +4442,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "flatSide",
-        "type": "multi",
         "variant": {
           "__type": "Variant",
           "name": "top",
@@ -4259,7 +4451,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "flatSide",
-        "type": "multi",
         "variant": {
           "__type": "Variant",
           "name": "right",
@@ -4269,7 +4460,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "flatSide",
-        "type": "multi",
         "variant": {
           "__type": "Variant",
           "name": "bottom",
@@ -4279,7 +4469,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "flatSide",
-        "type": "multi",
         "variant": {
           "__type": "Variant",
           "name": "left",
@@ -4342,6 +4531,7 @@ exports[`Component Serialization > serializes all components 2`] = `
     ],
     "type": "plain",
     "uuid": "eTjAMScYpz_5",
+    "variantGroups": [],
     "variants": [],
   },
   "Checkbox Group": {
@@ -4431,6 +4621,7 @@ exports[`Component Serialization > serializes all components 2`] = `
     ],
     "type": "plain",
     "uuid": "8weYhId3_t7B",
+    "variantGroups": [],
     "variants": [],
   },
   "Combobox": {
@@ -4571,11 +4762,18 @@ exports[`Component Serialization > serializes all components 2`] = `
     ],
     "type": "plain",
     "uuid": "m10qGbJjM9JU",
+    "variantGroups": [
+      {
+        "__type": "VariantGroup",
+        "name": "type",
+        "type": "single",
+        "uuid": "UAXxQrR3OEMH",
+      },
+    ],
     "variants": [
       {
         "__type": "ComponentVariant",
         "group": "type",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "soft",
@@ -4585,7 +4783,6 @@ exports[`Component Serialization > serializes all components 2`] = `
       {
         "__type": "ComponentVariant",
         "group": "type",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "plain",
@@ -4609,6 +4806,7 @@ exports[`Component Serialization > serializes all components 2`] = `
     "props": [],
     "type": "plain",
     "uuid": "8ANP8VyLXTfo",
+    "variantGroups": [],
     "variants": [],
   },
   "Drawer": {
@@ -4764,6 +4962,14 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "plain",
     "uuid": "66fbwz7FPx2e",
+    "variantGroups": [
+      {
+        "__type": "VariantGroup",
+        "name": "noTrigger",
+        "type": "toggle",
+        "uuid": "bG5ngoIC4vTR",
+      },
+    ],
     "variantSettings": [
       {
         "__type": "VariantOverride",
@@ -4794,7 +5000,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "noTrigger",
-        "type": "boolean",
         "variant": {
           "__type": "Variant",
           "name": "noTrigger",
@@ -4912,6 +5117,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
     ],
     "type": "page",
     "uuid": "ypvAo6PBDTFP",
+    "variantGroups": [],
     "variantSettings": [
       {
         "__type": "VariantOverride",
@@ -5027,6 +5233,20 @@ Join our Slack community (icon in bottom left) for help any time.</div>
     ],
     "type": "plain",
     "uuid": "JVCv_cilvEWB",
+    "variantGroups": [
+      {
+        "__type": "VariantGroup",
+        "name": "size",
+        "type": "single",
+        "uuid": "pNJZolAhY51b",
+      },
+      {
+        "__type": "VariantGroup",
+        "name": "requirementIndicator",
+        "type": "single",
+        "uuid": "k7M0ZdEXwgyp",
+      },
+    ],
     "variantSettings": [
       {
         "__type": "VariantOverride",
@@ -5109,7 +5329,6 @@ Join our Slack community (icon in bottom left) for help any time.</div>
       {
         "__type": "ComponentVariant",
         "group": "size",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "sm",
@@ -5119,7 +5338,6 @@ Join our Slack community (icon in bottom left) for help any time.</div>
       {
         "__type": "ComponentVariant",
         "group": "size",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "lg",
@@ -5129,7 +5347,6 @@ Join our Slack community (icon in bottom left) for help any time.</div>
       {
         "__type": "ComponentVariant",
         "group": "requirementIndicator",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "optional",
@@ -5139,7 +5356,6 @@ Join our Slack community (icon in bottom left) for help any time.</div>
       {
         "__type": "ComponentVariant",
         "group": "requirementIndicator",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "required",
@@ -5193,6 +5409,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
     ],
     "type": "plain",
     "uuid": "pzmtbEh09pA0",
+    "variantGroups": [],
     "variants": [],
   },
   "Menu Popover": {
@@ -5254,6 +5471,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
     ],
     "type": "plain",
     "uuid": "8w0OrLGU6fuW",
+    "variantGroups": [],
     "variants": [],
   },
   "Menu Section": {
@@ -5278,6 +5496,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
     "props": [],
     "type": "plain",
     "uuid": "Fx3lwSohpxtr",
+    "variantGroups": [],
     "variants": [],
   },
   "Modal": {
@@ -5422,6 +5641,14 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "plain",
     "uuid": "JMMmDTbwlNba",
+    "variantGroups": [
+      {
+        "__type": "VariantGroup",
+        "name": "noTrigger",
+        "type": "toggle",
+        "uuid": "S2QppZj-UJav",
+      },
+    ],
     "variantSettings": [
       {
         "__type": "VariantOverride",
@@ -5445,7 +5672,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "noTrigger",
-        "type": "boolean",
         "variant": {
           "__type": "Variant",
           "name": "noTrigger",
@@ -5474,6 +5700,14 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "plain",
     "uuid": "1tPqNrfR1BwC",
+    "variantGroups": [
+      {
+        "__type": "VariantGroup",
+        "name": "dark",
+        "type": "toggle",
+        "uuid": "uss4qvLOhMPV",
+      },
+    ],
     "variantSettings": [
       {
         "__type": "VariantOverride",
@@ -5497,7 +5731,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "dark",
-        "type": "boolean",
         "variant": {
           "__type": "Variant",
           "name": "dark",
@@ -5612,6 +5845,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "plain",
     "uuid": "1QxpUBoAwkD7",
+    "variantGroups": [],
     "variants": [],
   },
   "Radio": {
@@ -5655,6 +5889,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "plain",
     "uuid": "DhF49R8vE8x5",
+    "variantGroups": [],
     "variants": [],
   },
   "Radio Group": {
@@ -5738,6 +5973,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "plain",
     "uuid": "tNAN12ZT21NW",
+    "variantGroups": [],
     "variants": [],
   },
   "Range Slider": {
@@ -5859,6 +6095,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "plain",
     "uuid": "9TpJxmLV-WtC",
+    "variantGroups": [],
     "variants": [],
   },
   "Select": {
@@ -5977,11 +6214,18 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "plain",
     "uuid": "XFH-QbD_Wj0E",
+    "variantGroups": [
+      {
+        "__type": "VariantGroup",
+        "name": "type",
+        "type": "single",
+        "uuid": "c-2128YCJCzi",
+      },
+    ],
     "variants": [
       {
         "__type": "ComponentVariant",
         "group": "type",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "soft",
@@ -5991,7 +6235,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "type",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "plain",
@@ -6119,6 +6362,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "plain",
     "uuid": "O3lbnxqQd9_J",
+    "variantGroups": [],
     "variants": [],
   },
   "Slider Thumb": {
@@ -6143,6 +6387,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "plain",
     "uuid": "bGKMrtyTL9ht",
+    "variantGroups": [],
     "variants": [],
   },
   "Switch": {
@@ -6220,6 +6465,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "plain",
     "uuid": "bpAscHZX1liV",
+    "variantGroups": [],
     "variants": [],
   },
   "TestComponent": {
@@ -6241,6 +6487,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "plain",
     "uuid": "JqzpTYaVCfc0",
+    "variantGroups": [],
     "variants": [],
   },
   "Text Field": {
@@ -6692,6 +6939,26 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "plain",
     "uuid": "M0hmO976FWhA",
+    "variantGroups": [
+      {
+        "__type": "VariantGroup",
+        "name": "multiLine",
+        "type": "toggle",
+        "uuid": "z8E67z-VXRlY",
+      },
+      {
+        "__type": "VariantGroup",
+        "name": "iconStart",
+        "type": "toggle",
+        "uuid": "zxTb8Xtq4b3n",
+      },
+      {
+        "__type": "VariantGroup",
+        "name": "iconEnd",
+        "type": "toggle",
+        "uuid": "8QWfr5cB4yr9",
+      },
+    ],
     "variantSettings": [
       {
         "__type": "VariantOverride",
@@ -6756,7 +7023,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "multiLine",
-        "type": "boolean",
         "variant": {
           "__type": "Variant",
           "name": "multiLine",
@@ -6766,7 +7032,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "iconStart",
-        "type": "boolean",
         "variant": {
           "__type": "Variant",
           "name": "iconStart",
@@ -6776,7 +7041,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "iconEnd",
-        "type": "boolean",
         "variant": {
           "__type": "Variant",
           "name": "iconEnd",
@@ -7171,6 +7435,26 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "plain",
     "uuid": "EceIiqvGOOKH",
+    "variantGroups": [
+      {
+        "__type": "VariantGroup",
+        "name": "type",
+        "type": "single",
+        "uuid": "hpnMoJ7gjfB-",
+      },
+      {
+        "__type": "VariantGroup",
+        "name": "flat",
+        "type": "multi",
+        "uuid": "kfDTPRwlVuMP",
+      },
+      {
+        "__type": "VariantGroup",
+        "name": "padded",
+        "type": "multi",
+        "uuid": "KtNEZcT-fjAB",
+      },
+    ],
     "variantSettings": [
       {
         "__type": "VariantOverride",
@@ -7318,7 +7602,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "type",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "soft",
@@ -7328,7 +7611,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "type",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "plain",
@@ -7338,7 +7620,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "flat",
-        "type": "multi",
         "variant": {
           "__type": "Variant",
           "name": "top",
@@ -7348,7 +7629,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "flat",
-        "type": "multi",
         "variant": {
           "__type": "Variant",
           "name": "right",
@@ -7358,7 +7638,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "flat",
-        "type": "multi",
         "variant": {
           "__type": "Variant",
           "name": "bottom",
@@ -7368,7 +7647,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "flat",
-        "type": "multi",
         "variant": {
           "__type": "Variant",
           "name": "left",
@@ -7378,7 +7656,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "padded",
-        "type": "multi",
         "variant": {
           "__type": "Variant",
           "name": "left",
@@ -7388,7 +7665,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "padded",
-        "type": "multi",
         "variant": {
           "__type": "Variant",
           "name": "right",
@@ -7507,6 +7783,26 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "plain",
     "uuid": "WPRFFrib1Q9_",
+    "variantGroups": [
+      {
+        "__type": "VariantGroup",
+        "name": "type",
+        "type": "single",
+        "uuid": "AIAlHK8xMaWc",
+      },
+      {
+        "__type": "VariantGroup",
+        "name": "flat",
+        "type": "multi",
+        "uuid": "zC_Pu5P2m4Gm",
+      },
+      {
+        "__type": "VariantGroup",
+        "name": "padded",
+        "type": "multi",
+        "uuid": "RxwazcdzVwDV",
+      },
+    ],
     "variantSettings": [
       {
         "__type": "VariantOverride",
@@ -7654,7 +7950,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "type",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "soft",
@@ -7664,7 +7959,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "type",
-        "type": "single",
         "variant": {
           "__type": "Variant",
           "name": "plain",
@@ -7674,7 +7968,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "flat",
-        "type": "multi",
         "variant": {
           "__type": "Variant",
           "name": "top",
@@ -7684,7 +7977,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "flat",
-        "type": "multi",
         "variant": {
           "__type": "Variant",
           "name": "right",
@@ -7694,7 +7986,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "flat",
-        "type": "multi",
         "variant": {
           "__type": "Variant",
           "name": "bottom",
@@ -7704,7 +7995,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "flat",
-        "type": "multi",
         "variant": {
           "__type": "Variant",
           "name": "left",
@@ -7714,7 +8004,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "padded",
-        "type": "multi",
         "variant": {
           "__type": "Variant",
           "name": "left",
@@ -7724,7 +8013,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       {
         "__type": "ComponentVariant",
         "group": "padded",
-        "type": "multi",
         "variant": {
           "__type": "Variant",
           "name": "right",
@@ -7842,6 +8130,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "plain",
     "uuid": "ASiSVqfHCthg",
+    "variantGroups": [],
     "variants": [],
   },
   "hostless-plasmic-head": {
@@ -7876,6 +8165,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "code",
     "uuid": "3Q5tZgoUcjgc",
+    "variantGroups": [],
     "variants": [],
   },
   "plasmic-data-source-fetcher": {
@@ -7912,6 +8202,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     ],
     "type": "code",
     "uuid": "eG7R2DxKySYs",
+    "variantGroups": [],
     "variants": [],
   },
 }

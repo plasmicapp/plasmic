@@ -6,6 +6,8 @@ import {
 } from "@/wab/client/components/variants/variant-menu";
 import { EditableLabelHandles } from "@/wab/client/components/widgets/EditableLabel";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { UiActionsWrapper } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
+import { mkComponentScopedUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { VariantPinState } from "@/wab/shared/PinManager";
 import { ensure, spawn } from "@/wab/shared/common";
@@ -56,134 +58,138 @@ function StandaloneVariant_(props: StandaloneVariantProps) {
   const [visibleDataPicker, setVisibleDataPicker] = React.useState(false);
 
   return (
-    <VariantRow
-      studioCtx={studioCtx}
-      isStandalone
-      variant={props.group.variants[0]}
-      viewCtx={viewCtx}
-      pinState={pinState}
-      onClick={onClick}
-      onToggle={onToggle}
-      onTarget={onTarget}
-      plumeDef={plumeDef}
-      hasCodeExpression={hasCodeExpression}
-      exprButton={{
-        props: DEVFLAGS.dockview
-          ? { onClick: () => setVisibleDataPicker(true) }
-          : {},
-        wrap: (node) => (
-          <VariantDataPicker
-            studioCtx={studioCtx}
-            component={props.component}
-            group={props.group}
-            visibleDataPicker={visibleDataPicker}
-            setVisibleDataPicker={setVisibleDataPicker}
-          >
-            {node}
-          </VariantDataPicker>
-        ),
-      }}
-      menu={makeVariantMenu({
-        isStandalone: true,
-        variant: props.group.variants[0],
-        component,
-        onRemove: () =>
-          spawn(studioCtx.siteOps().removeVariantGroup(component, props.group)),
-        onClone: () =>
-          spawn(
-            studioCtx.change(() => {
-              const newVariantGroup = tplMgr.cloneVariantGroup(
-                component,
-                props.group,
-              );
-              props.onClone?.(newVariantGroup);
-              return ok();
-            }),
+    <UiActionsWrapper uiId={mkComponentScopedUiId(props.group, component.uuid)}>
+      <VariantRow
+        studioCtx={studioCtx}
+        isStandalone
+        variant={props.group.variants[0]}
+        viewCtx={viewCtx}
+        pinState={pinState}
+        onClick={onClick}
+        onToggle={onToggle}
+        onTarget={onTarget}
+        plumeDef={plumeDef}
+        hasCodeExpression={hasCodeExpression}
+        exprButton={{
+          props: DEVFLAGS.dockview
+            ? { onClick: () => setVisibleDataPicker(true) }
+            : {},
+          wrap: (node) => (
+            <VariantDataPicker
+              studioCtx={studioCtx}
+              component={props.component}
+              group={props.group}
+              visibleDataPicker={visibleDataPicker}
+              setVisibleDataPicker={setVisibleDataPicker}
+            >
+              {node}
+            </VariantDataPicker>
           ),
-        onCopyTo: (toVariant) =>
-          spawn(
-            studioCtx.change(() => {
-              tplMgr.copyToVariant(
-                component,
-                props.group.variants[0],
-                toVariant,
-              );
-              return ok();
-            }),
-          ),
-        onMove: (toGroup) =>
-          spawn(
-            studioCtx.change(() => {
-              tplMgr.moveVariant(component, props.group.variants[0], toGroup);
-              return ok();
-            }),
-          ),
-        onRename: () =>
-          spawn(
-            studioCtx.change(() => {
-              if (ref.current) {
-                ref.current.setEditing(true);
-              }
-              return ok();
-            }),
-          ),
-        onChangeAccessType: (accessType) => {
-          const state = ensure(
-            props.group.linkedState,
-            "Variant group is expected to have linked state",
-          );
-          spawn(
-            studioCtx.change(() => {
-              studioCtx.siteOps().updateState(state, {
-                accessType,
-              });
-              return ok();
-            }),
-          );
-        },
-        onEditDynamicValue: () => {
-          spawn(
-            studioCtx.change(() => {
-              if (!props.group.param.defaultExpr) {
-                studioCtx.siteOps().updateState(props.group.linkedState, {
-                  initialValue: new ObjectPath({
-                    path: ["undefined"],
-                    fallback: null,
-                  }),
+        }}
+        menu={makeVariantMenu({
+          isStandalone: true,
+          variant: props.group.variants[0],
+          component,
+          onRemove: () =>
+            spawn(
+              studioCtx.siteOps().removeVariantGroup(component, props.group),
+            ),
+          onClone: () =>
+            spawn(
+              studioCtx.change(() => {
+                const newVariantGroup = tplMgr.cloneVariantGroup(
+                  component,
+                  props.group,
+                );
+                props.onClone?.(newVariantGroup);
+                return ok();
+              }),
+            ),
+          onCopyTo: (toVariant) =>
+            spawn(
+              studioCtx.change(() => {
+                tplMgr.copyToVariant(
+                  component,
+                  props.group.variants[0],
+                  toVariant,
+                );
+                return ok();
+              }),
+            ),
+          onMove: (toGroup) =>
+            spawn(
+              studioCtx.change(() => {
+                tplMgr.moveVariant(component, props.group.variants[0], toGroup);
+                return ok();
+              }),
+            ),
+          onRename: () =>
+            spawn(
+              studioCtx.change(() => {
+                if (ref.current) {
+                  ref.current.setEditing(true);
+                }
+                return ok();
+              }),
+            ),
+          onChangeAccessType: (accessType) => {
+            const state = ensure(
+              props.group.linkedState,
+              "Variant group is expected to have linked state",
+            );
+            spawn(
+              studioCtx.change(() => {
+                studioCtx.siteOps().updateState(state, {
+                  accessType,
                 });
-              }
-              setVisibleDataPicker(true);
-              return ok();
-            }),
-          );
-        },
+                return ok();
+              }),
+            );
+          },
+          onEditDynamicValue: () => {
+            spawn(
+              studioCtx.change(() => {
+                if (!props.group.param.defaultExpr) {
+                  studioCtx.siteOps().updateState(props.group.linkedState, {
+                    initialValue: new ObjectPath({
+                      path: ["undefined"],
+                      fallback: null,
+                    }),
+                  });
+                }
+                setVisibleDataPicker(true);
+                return ok();
+              }),
+            );
+          },
 
-        onRemoveDynamicValue: () => {
-          spawn(
-            studioCtx.change(() => {
-              studioCtx.siteOps().updateState(props.group.linkedState, {
-                initialValue: null,
-              });
-              return ok();
-            }),
-          );
-        },
-      })}
-      label={
-        <>
-          <VariantLabel
-            ref={ref}
-            doubleClickToEdit
-            onRenamed={props.onRenamed}
-            variant={props.group.variants[0]}
-            defaultEditing={props.defaultEditing}
-          />
-        </>
-      }
-      isDraggable={props.isDraggable}
-      dragHandleProps={props.dragHandleProps}
-      isDragging={props.isDragging}
-    />
+          onRemoveDynamicValue: () => {
+            spawn(
+              studioCtx.change(() => {
+                studioCtx.siteOps().updateState(props.group.linkedState, {
+                  initialValue: null,
+                });
+                return ok();
+              }),
+            );
+          },
+        })}
+        label={
+          <>
+            <VariantLabel
+              ref={ref}
+              doubleClickToEdit
+              onRenamed={props.onRenamed}
+              variant={props.group.variants[0]}
+              defaultEditing={props.defaultEditing}
+            />
+          </>
+        }
+        isDraggable={props.isDraggable}
+        dragHandleProps={props.dragHandleProps}
+        isDragging={props.isDragging}
+      />
+    </UiActionsWrapper>
   );
 }
 

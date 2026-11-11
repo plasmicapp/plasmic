@@ -6,6 +6,8 @@ import {
   getBaseVariant,
   getVariantGroupName,
   isScreenVariantGroup,
+  isStandaloneVariant,
+  isStandaloneVariantGroup,
   makeVariantName,
 } from "@/wab/shared/Variants";
 import { isNonNil, withoutNils } from "@/wab/shared/common";
@@ -186,19 +188,32 @@ function mkComponentScopedResources(
   }));
   resources.push(...naturalSortByName(legacyQueries));
 
+  const groups = component.variantGroups
+    // A standalone group is its one variant, which is listed below.
+    .filter((group) => !isStandaloneVariantGroup(group))
+    .map((group) => ({
+      tag: "ComponentVariantGroup" as const,
+      uuid: group.uuid,
+      componentUuid,
+      name: group.param.variable.name,
+    }));
+  resources.push(...naturalSortByName(groups));
+
   const variants = allComponentVariants(component).map((variant) => ({
     tag: "Variant" as const,
     uuid: variant.uuid,
     componentUuid,
     name: makeVariantName({ variant, site }),
-    detail:
-      getVariantGroupName(variant) ??
-      (variant.forTpl
-        ? getTplNodeLabel(
-            variant.forTpl,
-            getEffectiveVariantSetting(variant.forTpl, [baseVariant]).rsh(),
-          )
-        : undefined),
+    // Show the group name as the detail, nothing for standalone groups
+    detail: isStandaloneVariant(variant)
+      ? undefined
+      : (getVariantGroupName(variant) ??
+        (variant.forTpl
+          ? getTplNodeLabel(
+              variant.forTpl,
+              getEffectiveVariantSetting(variant.forTpl, [baseVariant]).rsh(),
+            )
+          : undefined)),
   }));
   resources.push(...naturalSortByName(variants));
 
@@ -397,10 +412,13 @@ function mentionSearchKeywords(resource: MentionableResource): string[] {
     case "AnimationSequence":
       return ["animation"];
     case "Variant":
-    case "GlobalVariant":
       return ["variant"];
-    case "GlobalVariantGroup":
+    case "GlobalVariant":
+      return ["global variant", "variant"];
+    case "ComponentVariantGroup":
       return ["variant group"];
+    case "GlobalVariantGroup":
+      return ["global variant group", "variant group"];
     case "PropParam":
       return ["prop"];
     case "StateParam":

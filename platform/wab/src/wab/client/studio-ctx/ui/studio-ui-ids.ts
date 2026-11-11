@@ -3,6 +3,7 @@ import {
   Component,
   ComponentDataQuery,
   ComponentServerQuery,
+  ComponentVariantGroup,
   DataToken,
   GlobalVariantGroup,
   ImageAsset,
@@ -26,7 +27,12 @@ export type SiteScopedModel =
   | Variant;
 
 export type ComponentScopedModel =
-  ComponentDataQuery | ComponentServerQuery | Param | Variant | TplNode;
+  | ComponentDataQuery
+  | ComponentServerQuery
+  | ComponentVariantGroup
+  | Param
+  | Variant
+  | TplNode;
 
 export type SiteScopedTag =
   Exclude<SiteScopedModel, Variant>["typeTag"] | "GlobalVariant";

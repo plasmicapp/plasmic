@@ -93,6 +93,7 @@ import {
 } from "@/wab/shared/web-exporter/component-utils";
 import {
   type ComponentJson,
+  type ComponentVariantGroupJson,
   type CustomCodeExprJson,
   type DataQueryJson,
   type ElementJson,
@@ -831,11 +832,6 @@ function getComponentVariants(component: Component): SerializableVariant[] {
 
   for (const variantGroup of component.variantGroups) {
     const group = paramToVarName(component, variantGroup.param);
-    const type = isStandaloneVariantGroup(variantGroup)
-      ? "boolean"
-      : variantGroup.multi
-        ? "multi"
-        : "single";
     for (const variant of variantGroup.variants) {
       result.push({
         variant,
@@ -846,7 +842,6 @@ function getComponentVariants(component: Component): SerializableVariant[] {
             name: toVarName(variant.name),
             uuid: variant.uuid,
           },
-          type,
           group,
         },
       });
@@ -869,6 +864,19 @@ function getComponentVariants(component: Component): SerializableVariant[] {
   }
 
   return result;
+}
+
+function buildVariantGroups(component: Component): ComponentVariantGroupJson[] {
+  return component.variantGroups.map((variantGroup) => ({
+    __type: "VariantGroup",
+    name: paramToVarName(component, variantGroup.param),
+    uuid: variantGroup.uuid,
+    type: isStandaloneVariantGroup(variantGroup)
+      ? "toggle"
+      : variantGroup.multi
+        ? "multi"
+        : "single",
+  }));
 }
 
 function buildComponentVariantDefs(component: Component): VariantDefJson[] {
@@ -965,6 +973,7 @@ export function buildComponentResource(
     ...(pageMeta ? { pageMeta } : {}),
     ...(fromProject ? { fromProject } : {}),
     props: buildComponentProps(component),
+    variantGroups: buildVariantGroups(component),
     variants: buildComponentVariantDefs(component),
     ...(states.length > 0 ? { states } : {}),
     ...(interactions.length > 0 ? { interactions } : {}),

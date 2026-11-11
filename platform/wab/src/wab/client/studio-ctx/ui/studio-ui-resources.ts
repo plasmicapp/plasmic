@@ -42,6 +42,7 @@ import {
   Component,
   ComponentDataQuery,
   ComponentServerQuery,
+  ComponentVariantGroup,
   DataToken,
   GlobalVariantGroup,
   ImageAsset,
@@ -187,7 +188,10 @@ export function resolveResourceLabel(
         );
         return dep ? `Theme from ${dep.name}` : "This project's theme";
       })
-      .when(GlobalVariantGroup, (group) => group.param.variable.name)
+      .when(
+        [GlobalVariantGroup, ComponentVariantGroup],
+        (group) => group.param.variable.name,
+      )
       .when(Variant, (variant) => {
         const name = makeVariantName({ variant, site });
         return variant.forTpl
@@ -256,6 +260,8 @@ function findComponentScoped(
   uuid: string,
 ): ComponentScopedModel | undefined {
   switch (tag) {
+    case "ComponentVariantGroup":
+      return owner.variantGroups.find((g) => g.uuid === uuid);
     case "Variant":
       return allComponentVariants(owner).find((v) => v.uuid === uuid);
     case "GlobalVariantGroupParam":

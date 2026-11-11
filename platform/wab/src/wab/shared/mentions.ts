@@ -26,6 +26,7 @@ export const SITE_SCOPED_MENTION_TAGS = [
 export type SiteScopedMentionTag = (typeof SITE_SCOPED_MENTION_TAGS)[number];
 
 export const COMPONENT_SCOPED_MENTION_TAGS = [
+  "ComponentVariantGroup",
   "Variant",
   "PropParam",
   "StateParam",

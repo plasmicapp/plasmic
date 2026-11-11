@@ -50,7 +50,10 @@ import {
   UiActionsWrapper,
   useModelUiActionHandler,
 } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
-import { mkSiteScopedUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
+import {
+  mkComponentScopedUiId,
+  mkSiteScopedUiId,
+} from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { testIds } from "@/wab/client/test-ids";
 import { VariantPinState } from "@/wab/shared/PinManager";
@@ -1094,126 +1097,130 @@ const ComponentVariantGroupSection = observer(
 
     const ref = React.useRef<EditableLabelHandles>(null);
     return (
-      <VariantSection
-        key={group.uuid}
-        icon={<Icon icon={icon || VariantGroupIcon} />}
-        isDraggable={isDraggable}
-        isDragging={isDragging}
-        dragHandleProps={dragHandleProps}
-        title={
-          <EditableGroupLabel
-            group={group}
-            defaultEditing={justAdded}
-            onEdit={(name) => onRename(name)}
-            ref={ref}
-          />
-        }
-        emptyAddButtonText={`Add variant option`}
-        onAddNewVariant={
-          justAdded
-            ? undefined
-            : () =>
+      <UiActionsWrapper uiId={mkComponentScopedUiId(group, component.uuid)}>
+        <VariantSection
+          key={group.uuid}
+          icon={<Icon icon={icon || VariantGroupIcon} />}
+          isDraggable={isDraggable}
+          isDragging={isDragging}
+          dragHandleProps={dragHandleProps}
+          title={
+            <EditableGroupLabel
+              group={group}
+              defaultEditing={justAdded}
+              onEdit={(name) => onRename(name)}
+              ref={ref}
+            />
+          }
+          emptyAddButtonText={`Add variant option`}
+          onAddNewVariant={
+            justAdded
+              ? undefined
+              : () =>
+                  studioCtx
+                    .change(() => {
+                      const variant = studioCtx
+                        .tplMgr()
+                        .createVariant(component, group);
+                      onAddedVariant(variant);
+                      return ok();
+                    })
+                    .then(() =>
+                      notifyLinkedPropDrift(studioCtx, component, group.param),
+                    )
+          }
+          hasCodeExpression={hasCodeExpression}
+          exprButton={{
+            props: DEVFLAGS.dockview
+              ? { onClick: () => setVisibleDataPicker(true) }
+              : {},
+            wrap: (node) => (
+              <VariantDataPicker
+                studioCtx={studioCtx}
+                component={component}
+                group={group}
+                visibleDataPicker={visibleDataPicker}
+                setVisibleDataPicker={setVisibleDataPicker}
+              >
+                {node}
+              </VariantDataPicker>
+            ),
+          }}
+          menu={makeVariantGroupMenu({
+            group,
+            onToggleMulti: () =>
+              spawn(
                 studioCtx
                   .change(() => {
-                    const variant = studioCtx
-                      .tplMgr()
-                      .createVariant(component, group);
-                    onAddedVariant(variant);
+                    studioCtx
+                      .siteOps()
+                      .updateVariantGroupMulti(group, !group.multi);
                     return ok();
                   })
                   .then(() =>
                     notifyLinkedPropDrift(studioCtx, component, group.param),
-                  )
-        }
-        hasCodeExpression={hasCodeExpression}
-        exprButton={{
-          props: DEVFLAGS.dockview
-            ? { onClick: () => setVisibleDataPicker(true) }
-            : {},
-          wrap: (node) => (
-            <VariantDataPicker
-              studioCtx={studioCtx}
-              component={component}
-              group={group}
-              visibleDataPicker={visibleDataPicker}
-              setVisibleDataPicker={setVisibleDataPicker}
-            >
-              {node}
-            </VariantDataPicker>
-          ),
-        }}
-        menu={makeVariantGroupMenu({
-          group,
-          onToggleMulti: () =>
-            spawn(
-              studioCtx
-                .change(() => {
-                  studioCtx
-                    .siteOps()
-                    .updateVariantGroupMulti(group, !group.multi);
+                  ),
+              ),
+
+            onRemove: () =>
+              spawn(
+                studioCtx.change(() => {
+                  spawn(
+                    studioCtx.siteOps().removeVariantGroup(component, group),
+                  );
                   return ok();
-                })
-                .then(() =>
-                  notifyLinkedPropDrift(studioCtx, component, group.param),
-                ),
-            ),
+                }),
+              ),
 
-          onRemove: () =>
-            spawn(
-              studioCtx.change(() => {
-                spawn(studioCtx.siteOps().removeVariantGroup(component, group));
-                return ok();
-              }),
-            ),
-
-          onChangeAccessType: (accessType) => {
-            const state = ensure(
-              group.linkedState,
-              "Variant group is expected to have linked state",
-            );
-            spawn(
-              studioCtx.change(() => {
-                studioCtx.siteOps().updateState(state, {
-                  accessType,
-                });
-                return ok();
-              }),
-            );
-          },
-
-          onRename: () => ref.current && ref.current.setEditing(true),
-
-          onEditDynamicValue: () => {
-            spawn(
-              studioCtx.change(() => {
-                if (!group.param.defaultExpr) {
-                  studioCtx.siteOps().updateState(group.linkedState, {
-                    initialValue: new ObjectPath({
-                      path: ["undefined"],
-                      fallback: null,
-                    }),
+            onChangeAccessType: (accessType) => {
+              const state = ensure(
+                group.linkedState,
+                "Variant group is expected to have linked state",
+              );
+              spawn(
+                studioCtx.change(() => {
+                  studioCtx.siteOps().updateState(state, {
+                    accessType,
                   });
-                }
-                setVisibleDataPicker(true);
-                return ok();
-              }),
-            );
-          },
+                  return ok();
+                }),
+              );
+            },
 
-          onRemoveDynamicValue: () => {
-            spawn(
-              studioCtx.change(() => {
-                studioCtx.siteOps().updateState(group.linkedState, {
-                  initialValue: null,
-                });
-                return ok();
-              }),
-            );
-          },
-        })}
-      >
-        {children}
-      </VariantSection>
+            onRename: () => ref.current && ref.current.setEditing(true),
+
+            onEditDynamicValue: () => {
+              spawn(
+                studioCtx.change(() => {
+                  if (!group.param.defaultExpr) {
+                    studioCtx.siteOps().updateState(group.linkedState, {
+                      initialValue: new ObjectPath({
+                        path: ["undefined"],
+                        fallback: null,
+                      }),
+                    });
+                  }
+                  setVisibleDataPicker(true);
+                  return ok();
+                }),
+              );
+            },
+
+            onRemoveDynamicValue: () => {
+              spawn(
+                studioCtx.change(() => {
+                  studioCtx.siteOps().updateState(group.linkedState, {
+                    initialValue: null,
+                  });
+                  return ok();
+                }),
+              );
+            },
+          })}
+        >
+          {children}
+        </VariantSection>
+      </UiActionsWrapper>
     );
   },
 );

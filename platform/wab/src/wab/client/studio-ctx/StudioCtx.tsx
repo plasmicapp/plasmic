@@ -873,6 +873,7 @@ export class StudioCtx extends WithDbCtx {
                 }
                 break;
               }
+              case "ComponentVariantGroup":
               case "ComponentDataQuery":
               case "ComponentServerQuery":
               case "PropParam":

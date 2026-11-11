@@ -180,6 +180,7 @@ export function componentSummarySchema() {
   return componentSchema()
     .omit({
       props: true,
+      variantGroups: true,
       variants: true,
       states: true,
       baseVariantTplTree: true,
@@ -215,6 +216,9 @@ export function componentSchema() {
     props: z
       .array(propSchema())
       .describe("Component props (non-variant params)."),
+    variantGroups: z
+      .array(componentVariantGroupSchema())
+      .describe("Variant groups; their variants are listed under variants."),
     variants: z
       .array(variantDefSchema())
       .describe("Component variant definitions (group + element variants)."),
@@ -640,6 +644,18 @@ export function exprSchema() {
   return exprSchemaSingleton;
 }
 
+export function componentVariantGroupSchema() {
+  return z.object({
+    __type: z.literal("VariantGroup"),
+    name: z.string(),
+    uuid: z.string(),
+    type: z.enum(["single", "multi", "toggle"]),
+  });
+}
+export type ComponentVariantGroupJson = z.infer<
+  ReturnType<typeof componentVariantGroupSchema>
+>;
+
 export function variantDefSchema() {
   return z.discriminatedUnion("__type", [
     componentVariantDefSchema(),
@@ -652,11 +668,6 @@ export function componentVariantDefSchema() {
   return z.object({
     __type: z.literal("ComponentVariant"),
     variant: variantSchema().describe("Variant identity."),
-    type: z
-      .enum(["single", "multi", "boolean"])
-      .describe(
-        "Variant group kind: single (one-of-many), multi (any-of-many), or boolean (standalone).",
-      ),
     group: z.string().describe("Owning variant group name."),
   });
 }

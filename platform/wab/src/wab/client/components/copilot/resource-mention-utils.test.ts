@@ -20,7 +20,7 @@ import {
 import { mkDataToken } from "@/wab/commons/DataToken";
 import { mkStyleToken } from "@/wab/commons/StyleToken";
 import { FREE_CONTAINER_LOWER } from "@/wab/shared/Labels";
-import { TplMgr } from "@/wab/shared/TplMgr";
+import { TplMgr, VariantOptionsType } from "@/wab/shared/TplMgr";
 import {
   VariantGroupType,
   getBaseVariant,
@@ -212,15 +212,27 @@ function mkTestSite() {
   // built by hand misses; without it `getEffectiveVariantSetting` throws.
   deepTrackComponents(site);
   const tplMgr = new TplMgr({ site });
-  const componentVariant = runInAction(() => {
-    const group = tplMgr.createVariantGroup({ component, name: "Size" });
-    return tplMgr.createVariant(component, group, "Large");
-  });
+  const { componentVariantGroup, componentVariant, standaloneGroup } =
+    runInAction(() => {
+      const group = tplMgr.createVariantGroup({ component, name: "Size" });
+      return {
+        componentVariantGroup: group,
+        componentVariant: tplMgr.createVariant(component, group, "Large"),
+        // A standalone group is its one variant.
+        standaloneGroup: tplMgr.createVariantGroup({
+          component,
+          name: "Compact",
+          optionsType: VariantOptionsType.standalone,
+        }),
+      };
+    });
 
   return {
     site,
     component,
+    componentVariantGroup,
     componentVariant,
+    standaloneGroup,
     page,
     codeComponent,
     tpl,
@@ -684,6 +696,15 @@ describe("resolveResource: the resources a component owns", () => {
     );
   });
 
+  it("resolves a variant group, standalone or not", () => {
+    expect(scoped("ComponentVariantGroup", fx.componentVariantGroup.uuid)).toBe(
+      fx.componentVariantGroup,
+    );
+    expect(scoped("ComponentVariantGroup", fx.standaloneGroup.uuid)).toBe(
+      fx.standaloneGroup,
+    );
+  });
+
   it("resolves a slot as the element it is", () => {
     expect(scoped("Tpl", fx.slot.uuid)).toBe(fx.slot);
   });
@@ -731,8 +752,11 @@ describe("resolveResourceLabel", () => {
     );
   });
 
-  it("names a group variant by itself", () => {
+  it("names a group variant by itself, and a variant group by its name", () => {
     expect(scoped("Variant", fx.componentVariant.uuid)).toBe("Large");
+    expect(scoped("ComponentVariantGroup", fx.componentVariantGroup.uuid)).toBe(
+      "Size",
+    );
   });
 
   it("names a style variant by its selectors, an element state by its element too", () => {
@@ -1005,7 +1029,9 @@ describe("mkMentionableResources", () => {
       implicitState,
       serverQuery,
       legacyQuery,
+      componentVariantGroup,
       componentVariant,
+      standaloneGroup,
       elementState,
       interactionVariant,
     } = fixture;
@@ -1061,10 +1087,23 @@ describe("mkMentionableResources", () => {
         name: "listUsers",
       },
       {
+        tag: "ComponentVariantGroup",
+        uuid: componentVariantGroup.uuid,
+        componentUuid,
+        name: "Size",
+      },
+      {
         tag: "Variant",
         uuid: getBaseVariant(component).uuid,
         componentUuid,
         name: "base",
+      },
+      // The standalone group's one variant, carrying the group's name.
+      {
+        tag: "Variant",
+        uuid: standaloneGroup.variants[0].uuid,
+        componentUuid,
+        name: "Compact",
       },
       // An element state is qualified by the element it is on.
       {
