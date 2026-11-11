@@ -10,6 +10,7 @@ import { ensure, spawn } from "@/wab/shared/common";
 import type { WindowWithLiveFrame } from "@/wab/shared/live-frame-types";
 import * as asynclib from "async";
 import { IAutorunOptions, autorun } from "mobx";
+import { Result, err, ok } from "neverthrow";
 
 export function syncPreview(
   win: Window,
@@ -19,9 +20,13 @@ export function syncPreview(
 ) {
   const queue = makeRenderQueue(win, onDone);
   const dispose = autorun(() => {
-    const update = build();
-    if (update) {
-      queue.push(update);
+    try {
+      const update = build();
+      if (update) {
+        queue.push(ok(update));
+      }
+    } catch (error) {
+      queue.push(err(error));
     }
   }, options);
   return () => {
@@ -71,12 +76,13 @@ function makeRenderQueue(win: Window, onDone: (error?: unknown) => void) {
   let disposed = false;
   // Cargo holds updates until the previous render commits, then delivers the latest
   const queue = asynclib.cargo(
-    safeCallbackify(async (tasks: PreviewUpdate[]) => {
+    safeCallbackify(async (tasks: Result<PreviewUpdate, unknown>[]) => {
       try {
-        const { modules, render } = ensure(
-          tasks[tasks.length - 1],
-          "cargo has tasks",
-        );
+        const task = ensure(tasks[tasks.length - 1], "cargo has tasks");
+        if (task.isErr()) {
+          throw task.error;
+        }
+        const { modules, render } = task.value;
         const compiled = await Promise.all(modules.map(transpile));
         if (!disposed) {
           await liveFrame(win).update(compiled, render);
@@ -88,7 +94,13 @@ function makeRenderQueue(win: Window, onDone: (error?: unknown) => void) {
         if (!disposed) {
           // Compilation fails in Studio and evaluation in the frame. Both must
           // replace stale content with the same visible error.
-          await liveFrame(win).showError(error);
+          try {
+            await liveFrame(win).showError(error);
+          } catch (displayError) {
+            // If the frame navigated or its host is broken, report the
+            // original failure and let later updates recover.
+            console.error("Failed to display preview error", displayError);
+          }
         }
         if (!disposed) {
           onDone(error);
@@ -97,9 +109,9 @@ function makeRenderQueue(win: Window, onDone: (error?: unknown) => void) {
     }),
   );
   return {
-    push: (update: PreviewUpdate) => {
+    push: (task: Result<PreviewUpdate, unknown>) => {
       if (!disposed) {
-        spawn(queue.push(update));
+        spawn(queue.push(task));
       }
     },
     dispose: () => {

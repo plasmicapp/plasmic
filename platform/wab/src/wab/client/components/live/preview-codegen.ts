@@ -168,12 +168,7 @@ function createReferencedComponentModules(
           : getComponentProjectConfig(studioCtx, component, depsProjectConfigs);
       modules.push(
         ...createComponentModules(
-          createComponentOutput(
-            studioCtx,
-            component,
-            componentProjectConfig,
-            false,
-          ),
+          createComponentOutput(studioCtx, component, componentProjectConfig),
         ),
       );
     }
@@ -191,7 +186,7 @@ export function buildPreviewModules(
   // Memoized, so this is the output already emitted as the root's modules.
   const rootOutput =
     rootComponent && !isCodeComponent(rootComponent)
-      ? createComponentOutput(studioCtx, rootComponent, projectConfig, false)
+      ? createComponentOutput(studioCtx, rootComponent, projectConfig)
       : undefined;
   modules.push(
     ...[...extractUsedIconAssetsForComponents(site, [...components])]
@@ -350,7 +345,7 @@ function createCodeComponentHelperModule(
 ) {
   const importName = getCodeComponentHelperImportName(component);
   const mkImpl = (): string => {
-    return `([...(window as any).__PlasmicComponentRegistry, ...((window as any).__PlasmicBuiltinRegistry ?? [])]).find(
+    return `([...((window as any).__PlasmicComponentRegistry ?? []), ...((window as any).__PlasmicBuiltinRegistry ?? [])]).find(
       ({meta}) => meta.name === ${jsLiteral(component.name)}
     ).meta.componentHelpers?.helpers`;
   };
@@ -397,13 +392,13 @@ function createCodeComponentModule(
     } else {
       return `ensure(
         ([
-          ...(window as any).__PlasmicComponentRegistry,
+          ...((window as any).__PlasmicComponentRegistry ?? []),
           ...((window as any).__PlasmicContextRegistry ?? []),
           ...((window as any).__PlasmicBuiltinRegistry ?? [])
         ]).find(
           ({meta}) => meta.name === ${jsLiteral(component.name)}
         )
-      , "${codeComponentNotFoundMessage(component.name)}").component`;
+      , ${jsLiteral(codeComponentNotFoundMessage(component.name))}).component`;
     }
   };
   const source = `
@@ -566,46 +561,52 @@ function getComponentProjectConfig(
 // time a component's code becomes useless for this purpose is when we delete it,
 // which is rare.
 
+function makePreviewExportOpts(site: Site): ExportOpts {
+  return {
+    lang: "ts",
+    platform: "react",
+    forceAllProps: true,
+    uncontrolledProps: true,
+    shouldTransformWritableStates: true,
+    forceRootDisabled: false,
+    imageOpts: {
+      scheme: "cdn",
+    },
+    localization:
+      site.flags.usePlasmicTranslation && site.flags.keyScheme
+        ? ({
+            keyScheme: site.flags.keyScheme,
+            tagPrefix: site.flags.tagPrefix,
+          } as LocalizationConfig)
+        : undefined,
+    stylesOpts: { scheme: "css" },
+    codeOpts: { reactRuntime: "classic" },
+    fontOpts: { scheme: "import" },
+    codeComponentStubs: false,
+    skinnyReactWeb: false,
+    skinny: false,
+    importHostFromReactWeb: false,
+    idFileNames: true,
+    hostLessComponentsConfig: "stub",
+
+    useComponentSubstitutionApi: false,
+    useGlobalVariantsSubstitutionApi: false,
+    useCodeComponentHelpersRegistry: false,
+    useCustomFunctionsStub: true,
+    isLivePreview: true,
+    targetEnv: "preview",
+  };
+}
+
 const createProjectOutput = computedFn(
   trackCoarsely(function createProjectOutput(
     site: Site,
     projectId: ProjectId,
     projectName: string,
   ) {
-    const exportOpts: ExportOpts = {
-      lang: "ts",
-      platform: "react",
-      forceAllProps: true,
-      uncontrolledProps: true,
-      shouldTransformWritableStates: true,
-      forceRootDisabled: false,
-      imageOpts: {
-        scheme: "cdn",
-      },
-      localization:
-        site.flags.usePlasmicTranslation && site.flags.keyScheme
-          ? ({
-              keyScheme: site.flags.keyScheme,
-              tagPrefix: site.flags.tagPrefix,
-            } as LocalizationConfig)
-          : undefined,
-      stylesOpts: { scheme: "css" },
-      codeOpts: { reactRuntime: "classic" },
-      fontOpts: { scheme: "import" },
-      codeComponentStubs: false,
-      skinnyReactWeb: false,
-      skinny: false,
-      importHostFromReactWeb: false,
-      idFileNames: true,
-      hostLessComponentsConfig: "stub",
-
+    const exportOpts = {
+      ...makePreviewExportOpts(site),
       relPathFromManagedToImplDir: ".",
-      useComponentSubstitutionApi: false,
-      useGlobalVariantsSubstitutionApi: false,
-      useCodeComponentHelpersRegistry: false,
-      useCustomFunctionsStub: true,
-      isLivePreview: true,
-      targetEnv: "preview",
     };
     return exportProjectConfig(
       site,
@@ -625,43 +626,8 @@ const createComponentOutput = computedFn(
     studioCtx: PreviewCodegenContext,
     component: Component,
     projectConfig: ProjectConfig,
-    forceRootDisabled: boolean,
   ) {
-    const exportOpts: ExportOpts = {
-      lang: "ts",
-      platform: "react",
-      forceAllProps: true,
-      uncontrolledProps: true,
-      shouldTransformWritableStates: true,
-      forceRootDisabled: forceRootDisabled,
-      imageOpts: {
-        scheme: "cdn",
-      },
-      localization:
-        studioCtx.site.flags.usePlasmicTranslation &&
-        studioCtx.site.flags.keyScheme
-          ? ({
-              keyScheme: studioCtx.site.flags.keyScheme,
-              tagPrefix: studioCtx.site.flags.tagPrefix,
-            } as LocalizationConfig)
-          : undefined,
-      stylesOpts: { scheme: "css" },
-      codeOpts: { reactRuntime: "classic" },
-      fontOpts: { scheme: "import" },
-      codeComponentStubs: false,
-      skinnyReactWeb: false,
-      skinny: false,
-      importHostFromReactWeb: false,
-      idFileNames: true,
-      hostLessComponentsConfig: "stub",
-
-      useComponentSubstitutionApi: false,
-      useGlobalVariantsSubstitutionApi: false,
-      useCodeComponentHelpersRegistry: false,
-      useCustomFunctionsStub: true,
-      isLivePreview: true,
-      targetEnv: "preview",
-    };
+    const exportOpts = makePreviewExportOpts(studioCtx.site);
     const siteGenHelper = new SiteGenHelper(studioCtx.site, false);
     const cssVarResolver = new CssVarResolver(
       siteGenHelper.allStyleTokensAndOverrides(),
@@ -733,10 +699,8 @@ const createCustomFunctionsModule = computedFn(
         ({ customFunction: fn }) =>
           `export const ${customFunctionImportAlias(
             fn,
-          )} = ((window as any).__PlasmicFunctionsRegistry ?? []).find((r) => r.meta.name === "${
-            fn.importName
-          }" && r.meta.namespace == ${
-            fn.namespace ? `"${fn.namespace}"` : "null"
+          )} = ((window as any).__PlasmicFunctionsRegistry ?? []).find((r) => r.meta.name === ${jsLiteral(fn.importName)} && r.meta.namespace == ${
+            fn.namespace ? jsLiteral(fn.namespace) : "null"
           })?.function;`,
       )
       .join("\n")}
@@ -745,9 +709,7 @@ const createCustomFunctionsModule = computedFn(
           ({ codeLibrary }) =>
             `export const ${codeLibraryImportAlias(
               codeLibrary,
-            )} = ((window as any).__PlasmicLibraryRegistry ?? []).find((l) => l.meta.name === "${
-              codeLibrary.name
-            }")?.lib;`,
+            )} = ((window as any).__PlasmicLibraryRegistry ?? []).find((l) => l.meta.name === ${jsLiteral(codeLibrary.name)})?.lib;`,
         )
         .join("\n")}`.trim();
     return {

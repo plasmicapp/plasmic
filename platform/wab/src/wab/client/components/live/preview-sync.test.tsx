@@ -364,3 +364,54 @@ it("does not deliver pending updates after disposal", async () => {
   expect(fake.update).not.toHaveBeenCalled();
   expect(onDone).not.toHaveBeenCalled();
 });
+
+it("replaces stale content after generation fails and recovers on the next edit", async () => {
+  await deliver(update());
+  const failure = new Error("generation failed");
+  const broken = observable.box(true);
+  const results: unknown[] = [];
+  const dispose = syncPreview(
+    { __plasmicLive: frame } as unknown as Window,
+    () => {
+      if (broken.get()) {
+        throw failure;
+      }
+      return update();
+    },
+    (error) => results.push(error),
+  );
+  try {
+    await vi.waitFor(() => expect(results).toEqual([failure]));
+    expect(container.textContent).toContain("generation failed");
+    expect(container.textContent).not.toContain("Fresh preview");
+    runInAction(() => broken.set(false));
+    await vi.waitFor(() => expect(results).toEqual([failure, undefined]));
+    expect(container.textContent).toBe("Fresh preview");
+  } finally {
+    dispose();
+  }
+});
+
+it("reports the original error and continues when the host cannot display it", async () => {
+  vi.spyOn(console, "error").mockImplementation(() => undefined);
+  const failure = new Error("frame update failed");
+  const fake = {
+    ...frame,
+    update: vi.fn().mockRejectedValueOnce(failure).mockResolvedValue(undefined),
+    showError: vi.fn().mockRejectedValue(new Error("host unavailable")),
+  };
+  const value = observable.box(update(), { deep: false });
+  const results: unknown[] = [];
+  const dispose = syncPreview(
+    { __plasmicLive: fake } as unknown as Window,
+    () => value.get(),
+    (error) => results.push(error),
+  );
+  try {
+    await vi.waitFor(() => expect(results).toEqual([failure]));
+    runInAction(() => value.set(update()));
+    await vi.waitFor(() => expect(results).toEqual([failure, undefined]));
+  } finally {
+    dispose();
+  }
+});

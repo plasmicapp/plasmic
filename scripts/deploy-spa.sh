@@ -24,7 +24,7 @@ cp -al ./. "$STAGE/"
 rm -rf "$STAGE"/index.html "$STAGE"/favicon.ico "$STAGE"/robots.txt \
   "$STAGE"/*.worker.js* "$STAGE"/static/host.html "$STAGE"/static/popup.html \
   "$STAGE"/static/img \
-  "$STAGE"/static/css/normalize.css "$STAGE"/static/js/getlibs.js \
+  "$STAGE"/static/css/normalize.css \
   "$STAGE"/static/js/preamble.js "$STAGE"/static/js/loader-hydrate.js* \
   "$STAGE"/static/js/studio.js
 
@@ -36,7 +36,7 @@ gcloud storage cp -r --quiet ./static/img \
   "gs://$GCS_BUCKET/static/" --cache-control "$SHORT"
 gcloud storage cp --quiet ./static/css/normalize.css \
   "gs://$GCS_BUCKET/static/css/" --cache-control "$SHORT"
-gcloud storage cp --quiet ./static/js/getlibs.js ./static/js/preamble.js \
+gcloud storage cp --quiet ./static/js/preamble.js \
   ./static/js/loader-hydrate.js* "gs://$GCS_BUCKET/static/js/" \
   --cache-control "$SHORT"
 gcloud storage cp --quiet ./static/host.html ./static/popup.html \

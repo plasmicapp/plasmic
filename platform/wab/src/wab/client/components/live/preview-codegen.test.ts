@@ -199,3 +199,24 @@ it("builds a 404 for a root deleted while it is previewed", () => {
   });
   expect(result.render).toEqual({ notFound: "/deleted" });
 });
+
+it("escapes code-component names and reports a missing host registry", async () => {
+  const ctx = loadFixture("custom-functions-test");
+  const component = ensure(
+    ctx.site.components.find(isCodeComponent),
+    "fixture code component",
+  );
+  component.name = 'Quoted "component"\\name';
+  const { modules } = buildPreviewModules(ctx, component);
+  const stub = ensure(
+    modules.find((mod) => mod.source.includes("[host-app-error]")),
+    "code-component stub",
+  );
+  const { transform } = await import("sucrase");
+  const { code } = transform(stub.source, {
+    transforms: ["typescript", "jsx", "imports"],
+  });
+  expect(() => new Function("window", "exports", code)({}, {})).toThrow(
+    `[host-app-error] Code component '${component.name}' was not found in the current host app.`,
+  );
+});
