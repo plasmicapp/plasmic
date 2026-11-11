@@ -1,4 +1,8 @@
 import { getTplSlots } from "@/wab/shared/SlotUtils";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { ensureVariantSetting, mkVariant } from "@/wab/shared/Variants";
+import { generateSiteFromBundle } from "@/wab/shared/__testonly__/site-tests-utils";
+import { Bundle } from "@/wab/shared/bundler";
 import {
   cachedExprsInSite,
   componentToDeepReferenced,
@@ -6,19 +10,24 @@ import {
   componentToReferenced,
   componentToReferencers,
   componentToTplComponents,
+  componentToUsedImageAssets,
   componentToUsedMixins,
   customFunctionsAndLibsUsedByComponent,
   customFunctionsAndLibsUsedByComponents,
   deepComponentToReferencers,
+  extractImageAssetRefsByAttrs,
   findNonEmptyCombos,
   flattenComponent,
 } from "@/wab/shared/cached-selectors";
 import { arrayWithout } from "@/wab/shared/collections";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import { codeLit } from "@/wab/shared/core/exprs";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { mkImageAssetRef } from "@/wab/shared/core/image-assets";
 import { ChangeRecorder } from "@/wab/shared/core/observable-model";
 import { createSite } from "@/wab/shared/core/sites";
 import {
+  TplTagType,
   flattenTpls,
   isTplComponent,
   mkTplComponent,
@@ -29,11 +38,16 @@ import {
   CodeLibrary,
   Component,
   CustomCode,
+  ImageAsset,
+  ImageAssetRef,
+  ProjectDependency,
   Site,
   TplTag,
   Variant,
   isKnownTplTag,
 } from "@/wab/shared/model/classes";
+import { assertSiteInvariants } from "@/wab/shared/site-invariants";
+import _bundle from "@/wab/shared/web-exporter/bundles/starter-project-desktop-first.json";
 import L from "lodash";
 
 function mkRandom(seed: number) {
@@ -279,4 +293,236 @@ describe("customFunctionsAndLibsUsedByComponents", () => {
       ).toEqual([[lib, "all"]]);
     }
   });
+});
+
+describe("componentToUsedImageAssets", () => {
+  let site: Site;
+  let tplMgr: TplMgr;
+  const addAsset = (name: string, type: ImageAssetType) =>
+    tplMgr.addImageAsset({
+      name,
+      type,
+      dataUri: `https://example.com/${name}`,
+    });
+  const ref = (asset: ImageAsset) => new ImageAssetRef({ asset });
+  const background = (...assets: ImageAsset[]) =>
+    assets
+      .map((a) => `${mkImageAssetRef(a)} top 50% left 50% / cover`)
+      .join(", ");
+  const mkImg = (baseVariant: Variant, asset: ImageAsset) =>
+    mkTplTagX("img", {
+      type: TplTagType.Image,
+      baseVariant,
+      attrs: { src: ref(asset) },
+    });
+  const mkIcon = (baseVariant: Variant, asset: ImageAsset) =>
+    mkTplTagX("svg", {
+      type: TplTagType.Image,
+      baseVariant,
+      attrs: { outerHTML: ref(asset) },
+    });
+  const addComponent = (tplTree: (baseVariant: Variant) => TplTag) => {
+    const component = mkComponent({
+      name: `Comp${site.components.length}`,
+      type: ComponentType.Plain,
+      tplTree,
+    });
+    site.components = [...site.components, component];
+    return component;
+  };
+  const used = (component: Component) => {
+    const assets = componentToUsedImageAssets(site, component);
+    expect([...extractImageAssetRefsByAttrs(site, component)]).toEqual(assets);
+    return assets.map((a) => a.name);
+  };
+
+  beforeEach(() => {
+    site = createSite();
+    tplMgr = new TplMgr({ site });
+  });
+
+  it("finds pictures and icons set in attrs, in every variant", () => {
+    const photo = addAsset("photo", ImageAssetType.Picture);
+    const hoverPhoto = addAsset("hoverPhoto", ImageAssetType.Picture);
+    const icon = addAsset("icon", ImageAssetType.Icon);
+    const hoverIcon = addAsset("hoverIcon", ImageAssetType.Icon);
+    addAsset("unused", ImageAssetType.Picture);
+    let img!: TplTag;
+    let svg!: TplTag;
+    const component = addComponent((baseVariant) => {
+      img = mkImg(baseVariant, photo);
+      svg = mkIcon(baseVariant, icon);
+      return mkTplTagX("div", { baseVariant }, [img, svg]);
+    });
+    const hover = mkVariant({ name: "hover", selectors: [":hover"] });
+    const imgVs = ensureVariantSetting(img, [hover]);
+    imgVs.attrs = { ...imgVs.attrs, src: ref(hoverPhoto) };
+    const svgVs = ensureVariantSetting(svg, [hover]);
+    svgVs.attrs = { ...svgVs.attrs, outerHTML: ref(hoverIcon) };
+    expect(used(component)).toEqual([
+      "photo",
+      "hoverPhoto",
+      "icon",
+      "hoverIcon",
+    ]);
+  });
+
+  it("ignores an icon's src and a picture's outerHTML", () => {
+    const photo = addAsset("photo", ImageAssetType.Picture);
+    const icon = addAsset("icon", ImageAssetType.Icon);
+    const component = addComponent((baseVariant) =>
+      mkTplTagX("div", { baseVariant }, [
+        mkTplTagX("img", {
+          type: TplTagType.Image,
+          baseVariant,
+          attrs: { outerHTML: ref(icon) },
+        }),
+        mkTplTagX("svg", {
+          type: TplTagType.Image,
+          baseVariant,
+          attrs: { src: ref(photo) },
+        }),
+      ]),
+    );
+    expect(used(component)).toEqual([]);
+  });
+
+  it("finds background images in rule sets, variant settings and mixins", () => {
+    const [a, b, c, d, e] = ["a", "b", "c", "d", "e"].map((name) =>
+      addAsset(name, ImageAssetType.Picture),
+    );
+    const mixin = tplMgr.addMixin("bg mixin");
+    mixin.rs.values = { ...mixin.rs.values, background: background(e) };
+    let child!: TplTag;
+    const component = addComponent((baseVariant) => {
+      child = mkTplTagX("div", {
+        baseVariant,
+        styles: { background: background(b, c) },
+      });
+      return mkTplTagX(
+        "div",
+        { baseVariant, styles: { background: background(a) } },
+        [child],
+      );
+    });
+    const hover = mkVariant({ name: "hover", selectors: [":hover"] });
+    const vs = ensureVariantSetting(child, [hover]);
+    vs.rs.values = { ...vs.rs.values, background: background(d, a) };
+    vs.rs.mixins = [...vs.rs.mixins, mixin];
+    expect(used(component)).toEqual(["a", "b", "c", "e", "d"]);
+  });
+
+  it("finds background images of dependencies but not unknown ones", () => {
+    const local = addAsset("local", ImageAssetType.Picture);
+    const depSite = createSite();
+    const depAsset = new TplMgr({ site: depSite }).addImageAsset({
+      name: "fromDep",
+      type: ImageAssetType.Picture,
+    });
+    site.projectDependencies = [
+      new ProjectDependency({
+        name: "Dep",
+        pkgId: "dep-pkg-id",
+        projectId: "dep-project-id",
+        version: "0.0.1",
+        uuid: "dep-uuid",
+        site: depSite,
+      }),
+    ];
+    const unknown = new TplMgr({ site: createSite() }).addImageAsset({
+      name: "unknown",
+      type: ImageAssetType.Picture,
+    });
+    const component = addComponent((baseVariant) =>
+      mkTplTagX("div", {
+        baseVariant,
+        styles: { background: background(unknown, depAsset, local) },
+      }),
+    );
+    expect(used(component)).toEqual(["fromDep", "local"]);
+  });
+
+  it("dedupes assets across tpls, in first-seen order", () => {
+    const [a, b, c] = ["a", "b", "c"].map((name) =>
+      addAsset(name, ImageAssetType.Picture),
+    );
+    const icon = addAsset("icon", ImageAssetType.Icon);
+    const component = addComponent((baseVariant) =>
+      mkTplTagX("div", { baseVariant, styles: { background: background(b) } }, [
+        mkImg(baseVariant, a),
+        mkIcon(baseVariant, icon),
+        mkImg(baseVariant, b),
+        mkTplTagX("div", {
+          baseVariant,
+          styles: { background: background(c, a) },
+        }),
+        mkIcon(baseVariant, icon),
+        mkImg(baseVariant, c),
+      ]),
+    );
+    expect(used(component)).toEqual(["b", "a", "icon", "c"]);
+  });
+
+  it("updates cached assets after background, mixin, and site asset edits", () => {
+    const a = addAsset("a", ImageAssetType.Picture);
+    const b = addAsset("b", ImageAssetType.Picture);
+    const mixin = tplMgr.addMixin("background");
+    mixin.rs.values = { background: background(a) };
+    const component = addComponent((baseVariant) =>
+      mkTplTagX("div", { baseVariant }),
+    );
+    const rs = ensureVariantSetting(component.tplTree, [
+      component.variants[0],
+    ]).rs;
+    rs.mixins = [mixin];
+    const recorder = new ChangeRecorder({ site });
+    try {
+      expect(used(component)).toEqual(["a"]);
+      recorder.withRecording(() => {
+        mixin.rs.values = { background: background(b) };
+      });
+      expect(used(component)).toEqual(["b"]);
+      recorder.withRecording(() => {
+        rs.values = { background: background(a) };
+      });
+      expect(used(component)).toEqual(["b", "a"]);
+      recorder.withRecording(() => {
+        mixin.rs.values = {};
+        site.imageAssets = [a];
+      });
+      expect(used(component)).toEqual(["a"]);
+      recorder.withRecording(() => {
+        site.imageAssets = [a, b];
+        mixin.rs.values = { background: background(b) };
+      });
+      expect(used(component)).toEqual(["b", "a"]);
+    } finally {
+      recorder.dispose();
+    }
+  });
+
+  it("finds the icons of a component made only of icons", () => {
+    const [x, y] = ["x", "y"].map((name) =>
+      addAsset(name, ImageAssetType.Icon),
+    );
+    const component = addComponent((baseVariant) =>
+      mkTplTagX("svg", {
+        type: TplTagType.Image,
+        baseVariant,
+        attrs: { outerHTML: ref(x) },
+        // An icon's background images aren't counted
+        styles: { background: background(y) },
+      }),
+    );
+    expect(used(component)).toEqual(["x"]);
+    const empty = addComponent((baseVariant) =>
+      mkTplTagX("div", { baseVariant }),
+    );
+    expect(used(empty)).toEqual([]);
+  });
+});
+
+it("validates image references in the starter project", () => {
+  const site = generateSiteFromBundle(_bundle as [string, Bundle][]);
+  assertSiteInvariants(site);
 });
