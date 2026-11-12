@@ -8,6 +8,7 @@ import { InternalDbMgr } from "@/wab/server/db/internal/InternalDbMgr";
 import { seedTestFeatureTiers } from "@/wab/server/db/seed/feature-tier";
 import { SubscriptionStatusRecord } from "@/wab/server/entities/CustomEntities";
 import { Permission, Team } from "@/wab/server/entities/Entities";
+import { getProjectIdAndTokenForDomain } from "@/wab/server/routes/internal/hosting";
 import {
   cancelSubscription,
   updatePaymentMethod,
@@ -75,7 +76,7 @@ async function setupTrial(...[sudo, users, dbs, project, em]: DbTestArgs) {
     { type: "workspace" as const, id: workspace.id },
     { type: "project" as const, id: project.id },
   ];
-  return { sudo, users, dbs, em, team, teamFt, req, resources };
+  return { sudo, users, dbs, em, team, teamFt, req, resources, project };
 }
 
 beforeEach(() => {
@@ -399,6 +400,42 @@ describe("syncTeamSubscription", () => {
       }
       expect(list).toHaveBeenCalled();
       expect(await em.count(SubscriptionStatusRecord)).toBeGreaterThan(1);
+    }));
+
+  it("restores the hosted badge after cancellation without republishing the project", () =>
+    withTrial(async (fixture) => {
+      const { sudo, team, req, project } = fixture;
+      const projectId = project.id;
+      const domain = "badge-regression.plasmic.run";
+      await sudo.setDomainsForProject([domain], projectId);
+      await sudo.updateProjectExtraData(projectId, { hideHostingBadge: true });
+      const ctx = await subscribe(fixture);
+      vi.spyOn(stripe.subscriptions, "list").mockResolvedValue({
+        data: [],
+        has_more: false,
+      } as any);
+      vi.spyOn(stripe.paymentMethods, "list").mockResolvedValue({
+        data: [],
+        has_more: false,
+      } as any);
+      req.query = { domain };
+      const res = mock<Response>();
+
+      for (const [status, showBadge] of [
+        ["active", false],
+        ["past_due", false],
+        ["canceled", true],
+      ] as const) {
+        await syncTeamSubscription(ctx, team.id, stripeSub(status));
+        await getProjectIdAndTokenForDomain(req, res);
+        expect(res.json).toHaveBeenLastCalledWith(
+          expect.objectContaining({ projectId, showBadge }),
+        );
+      }
+      // The entitlement overrides the saved preference
+      expect(
+        (await sudo.getProjectById(projectId)).extraData?.hideHostingBadge,
+      ).toBe(true);
     }));
 
   it.each(["incomplete", "trialing"] as const)(
