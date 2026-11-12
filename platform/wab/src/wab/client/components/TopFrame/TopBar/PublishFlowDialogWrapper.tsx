@@ -116,8 +116,7 @@ interface PublishFlowDialogWrapperProps {
   activatedBranch: ApiBranch | undefined;
   editorPerm: boolean;
   latestPublishedVersionData:
-    | { revisionId: string; version: string }
-    | undefined;
+    { revisionId: string; version: string } | undefined;
   revisionNum: number;
   showPublishModal: boolean;
   keepPublishModalOpen: boolean;
@@ -450,7 +449,10 @@ export const PublishFlowDialogWrapper = observer(
             setVersionDescription("");
             setStatusSaveVersion({ ..._statusSaveVersion });
 
-            if (publishResult === "PaywallError") {
+            if (
+              publishResult === "PaywallError" ||
+              publishResult === "RolePaywallError"
+            ) {
               return;
             }
 
@@ -548,7 +550,11 @@ export const PublishFlowDialogWrapper = observer(
     }, [statusSaveVersion, statusPushDeploy, statusWebhooks]);
 
     React.useEffect(() => {
-      if (publishState === "failure") {
+      // Role paywall failures are already reported by StudioCtx.publish().
+      if (
+        publishState === "failure" &&
+        statusSaveVersion?.result !== "RolePaywallError"
+      ) {
         if (statusSaveVersion?.result === "PaywallError") {
           notification.error({
             message: personalProjectPaywallMessage,

@@ -580,6 +580,7 @@ export enum PublishResult {
   UnknownError = "UnknownError",
   // eslint-disable-next-line @typescript-eslint/no-shadow
   PaywallError = "PaywallError",
+  RolePaywallError = "RolePaywallError",
 }
 
 export interface SaveTplAsPresetState {
@@ -6543,6 +6544,10 @@ export class StudioCtx extends WithDbCtx {
     } catch (e) {
       // TODO
       if (e instanceof PaywallError) {
+        if (e.type === "requireRole") {
+          notification.error({ message: e.message, duration: 0 });
+          return PublishResult.RolePaywallError;
+        }
         if (e.type === "requireTeam") {
           notification.error({
             message: personalProjectPaywallMessage,

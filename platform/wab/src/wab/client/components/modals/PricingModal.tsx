@@ -19,6 +19,7 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
+import { rolePaywallMessage } from "@/wab/shared/billing/billing-util";
 import { assert, assertNever, ensure } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
@@ -512,7 +513,7 @@ function UpsellForm(
 
 export class PaywallError extends Error {
   constructor(
-    public type: "requireTeam" | "billing",
+    public type: "requireTeam" | "requireRole" | "billing",
     msg: string,
     public feature?: string,
   ) {
@@ -546,6 +547,10 @@ export async function maybeShowPaywall<T>(
   const res = await action();
   if (res.paywall === "pass") {
     return res.response;
+  }
+
+  if (res.paywall === "requireRole") {
+    throw new PaywallError("requireRole", rolePaywallMessage);
   }
 
   if (res.paywall === "requireTeam") {

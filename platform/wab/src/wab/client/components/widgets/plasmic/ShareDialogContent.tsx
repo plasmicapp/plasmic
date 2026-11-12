@@ -164,9 +164,9 @@ function ShareDialogContent(props: ShareDialogContentProps) {
       await reloadPerms(newPerms);
       return { enqueued };
     } catch (err) {
-      if (err instanceof PaywallError && err.type === "requireTeam") {
+      if (err instanceof PaywallError && (err.type === "requireTeam" || err.type === "requireRole")) {
         notification.warning({
-          message: personalProjectPaywallMessage,
+          message: err.type === "requireRole" ? err.message : personalProjectPaywallMessage,
           duration: 0,
         });
         return {};

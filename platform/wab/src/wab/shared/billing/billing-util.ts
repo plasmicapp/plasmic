@@ -9,6 +9,9 @@ import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
 import { MakeADT } from "ts-adt/MakeADT";
 
+export const rolePaywallMessage =
+  "This project uses Designer or Content creator roles that are not available on its current plan. Change these roles to supported roles in the organization, workspace, or project sharing settings, or upgrade to a plan that includes them.";
+
 export type SubscriptionStatus = MakeADT<
   "type",
   {

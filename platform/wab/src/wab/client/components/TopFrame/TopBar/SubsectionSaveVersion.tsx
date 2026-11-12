@@ -8,6 +8,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicSubsectionSaveVersion";
 import type { PublishResult } from "@/wab/client/studio-ctx/StudioCtx";
 import { ApiProject } from "@/wab/shared/ApiSchema";
+import { rolePaywallMessage } from "@/wab/shared/billing/billing-util";
 import { spawn } from "@/wab/shared/common";
 import {
   INITIAL_VERSION_NUMBER,
@@ -168,6 +169,8 @@ function SubsectionSaveVersion(props: SubsectionSaveVersionProps) {
           "Error: No new changes to publish."
         ) : result === "UnknownError" ? (
           "Error: Unknown error."
+        ) : result === "RolePaywallError" ? (
+          rolePaywallMessage
         ) : result === "PaywallError" ? (
           "Error: Paywall error."
         ) : (

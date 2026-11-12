@@ -297,7 +297,7 @@ describe("downgrade on trial expiration", () => {
           await maybeTriggerPaywall(req, resources, {}, "publish", undefined, {
             verifyMonthlyViews: true,
           }),
-        ).toMatchObject({ paywall: "requireTeam" });
+        ).toEqual({ paywall: "requireRole" });
         await sudo.sudoUpdateTeam({
           id: team.id,
           featureTierId: teamFt.id,
