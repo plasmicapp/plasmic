@@ -1,6 +1,6 @@
 {
   "name": "plasmicpkgs-dev",
-  "version": "0.0.100",
+  "version": "0.0.101",
   "private": true,
   "scripts": {
     "dev": "next dev",
