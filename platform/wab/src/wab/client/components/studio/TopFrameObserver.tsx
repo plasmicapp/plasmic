@@ -258,7 +258,7 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
        * List the project resources that can be `@`-mentioned in Copilot Chat.
        */
       async listMentionableResources(): Promise<MentionableResources> {
-        const viewCtx = studioCtx.focusedViewCtx();
+        const viewCtx = studioCtx.focusedOrFirstViewCtx();
         return mkMentionableResources({
           site: studioCtx.site,
           focusedComponent: viewCtx?.currentComponent(),

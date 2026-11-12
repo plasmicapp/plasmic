@@ -1,6 +1,6 @@
 import { Page, expect } from "@playwright/test";
 import { PageModels, test } from "../fixtures/test";
-import { goToProject } from "../utils/studio-utils";
+import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
 const PAGE_NAME = "MentionsPage";
 const ELEMENT_NAME = "MentionsHeader";
@@ -38,7 +38,10 @@ test.afterEach(async ({ apiClient }) => {
  */
 test.describe("copilot mentions", () => {
   test("offers the canvas selections on a bare @", async ({ page, models }) => {
-    await addPageWithElement(models);
+    await models.studio.createNewPageInOwnArena(PAGE_NAME);
+    await waitForFrameToLoad(page);
+    await models.studio.insertTextNodeWithContent("hello");
+    await models.studio.renameSelectionTag(ELEMENT_NAME);
 
     // Opened by shortcut rather than by URL, so the canvas selection survives.
     await page.keyboard.press("ControlOrMeta+k");
@@ -91,6 +94,44 @@ test.describe("copilot mentions", () => {
     await expect(popover.getByText("(unnamed text)")).toBeVisible();
     await page.keyboard.press("Enter");
     await expect(prompt).toContainText("@(unnamed text)");
+
+    await prompt.click();
+    await page.keyboard.press("ControlOrMeta+a");
+    await page.keyboard.press("Backspace");
+
+    const expectBareMention = async ({ element }: { element: boolean }) => {
+      await prompt.click();
+      await page.keyboard.type("@");
+      await expect(popover.getByText("Current page")).toBeVisible();
+      await expect(popover.getByText(PAGE_NAME)).toBeVisible();
+      await expect(popover.getByText("Current element")).toHaveCount(
+        element ? 1 : 0,
+      );
+      await page.keyboard.press("Backspace");
+    };
+
+    const label = labels.filter({ hasText: ELEMENT_NAME });
+    for (const designMode of [true, false]) {
+      await test.step(designMode ? "design mode" : "focus mode", async () => {
+        await models.studio.setDesignMode(designMode);
+
+        await label.click();
+        await expectBareMention({ element: true });
+
+        // Takes focus back from the chat, so Esc reaches the canvas.
+        await label.click();
+        // Esc drops focus from the frame
+        await page.keyboard.press("Escape");
+        await expect
+          .poll(() =>
+            models.studio.frame
+              .locator("body")
+              .evaluate(() => !!(window as any).dbg.studioCtx.focusedViewCtx()),
+          )
+          .toBe(false);
+        await expectBareMention({ element: false });
+      });
+    }
   });
 
   test("searches the project once the user types", async ({ page, models }) => {

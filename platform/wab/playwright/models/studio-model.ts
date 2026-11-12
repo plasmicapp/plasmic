@@ -595,21 +595,27 @@ export class StudioModel extends BaseModel {
     await this.page.keyboard.press("Delete");
   }
 
-  async turnOffDesignMode() {
+  async setDesignMode(on: boolean) {
     const viewMenu = this.frame.locator("#view-menu");
     await viewMenu.click();
     await this.page.waitForTimeout(200);
-    const turnOffOption = this.frame.getByText("Turn off design mode");
-    const isVisible = await turnOffOption
+    const option = this.frame.getByText(
+      `Turn ${on ? "on" : "off"} design mode`,
+    );
+    const isVisible = await option
       .isVisible({ timeout: 1000 })
       .catch(() => false);
     if (isVisible) {
-      await turnOffOption.click();
+      await option.click();
       await this.page.waitForTimeout(200);
     } else {
       await this.page.keyboard.press("Escape");
       await this.page.waitForTimeout(200);
     }
+  }
+
+  async turnOffDesignMode() {
+    await this.setDesignMode(false);
   }
 
   async selectRootNode() {
