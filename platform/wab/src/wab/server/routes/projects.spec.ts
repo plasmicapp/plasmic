@@ -14,6 +14,7 @@ import {
 } from "@/wab/server/db/DbMgr";
 import { Project, User } from "@/wab/server/entities/Entities";
 import { ensure } from "@/wab/shared/common";
+import { io } from "socket.io-client";
 
 describe("project routes", () => {
   let api: ApiTester;
@@ -113,6 +114,78 @@ describe("project routes", () => {
       },
     };
   }
+
+  describe.each(["missing", "invalid"])(
+    "%s project credentials",
+    (credentials) => {
+      function headers(): Record<string, string> {
+        return credentials === "invalid"
+          ? { "x-plasmic-api-project-tokens": `${project.id}:incorrect` }
+          : {};
+      }
+
+      it("emits an access error before disconnecting socket subscribers", async () => {
+        const socket = io(baseURL, {
+          path: "/api/v1/socket",
+          extraHeaders: headers(),
+          autoConnect: false,
+          reconnection: false,
+        });
+        const errors: string[] = [];
+        let timeout: ReturnType<typeof setTimeout> | undefined;
+        try {
+          const disconnected = new Promise<string>((resolve, reject) => {
+            timeout = setTimeout(
+              () => reject(new Error("Socket did not disconnect")),
+              10000,
+            );
+            socket.on("connect_error", reject);
+            socket.on("error", (error) => errors.push(error));
+            socket.on("disconnect", resolve);
+            socket.on("initServerInfo", () => {
+              socket.emit("subscribe", {
+                namespace: "projects",
+                projectIds: [project.id],
+              });
+            });
+          });
+          socket.connect();
+          expect(await disconnected).toEqual("io server disconnect");
+          expect(errors).toEqual([`No read access to projects ${project.id}`]);
+        } finally {
+          clearTimeout(timeout);
+          socket.disconnect();
+        }
+      });
+
+      it.each(["preview", "versioned"])(
+        "returns an actionable loader %s error",
+        async (route) => {
+          const id = route === "versioned" ? `${project.id}@0.0.1` : project.id;
+          const response = await api.rawReq(
+            "get",
+            `/api/v1/loader/code/${route}?platform=react&projectId=${encodeURIComponent(id)}`,
+            undefined,
+            // A header for another project reaches the project permission check;
+            // no header at all is rejected earlier by API authentication.
+            {
+              headers:
+                credentials === "missing"
+                  ? { "x-plasmic-api-project-tokens": "other-project:token" }
+                  : headers(),
+            },
+          );
+          expect(response.status()).toEqual(401);
+          expect(await response.json()).toMatchObject({
+            error: {
+              message:
+                "Project ID and/or project API token are missing or incorrect",
+            },
+          });
+        },
+      );
+    },
+  );
 
   describe("secret API token", () => {
     it.each([
@@ -250,7 +323,7 @@ describe("project routes", () => {
       expect((await afterClaim.json()).owner.id).toEqual(user.id);
 
       // Neither anonymous users nor other users can open it anymore.
-      expect((await anon.rawReq("get", projectUrl)).status()).toEqual(403);
+      expect((await anon.rawReq("get", projectUrl)).status()).toEqual(401);
       expect(
         (
           await api.rawReq("get", projectUrl, undefined, asUser(contentUser))

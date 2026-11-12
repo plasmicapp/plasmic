@@ -2692,55 +2692,67 @@ export class DbMgr implements MigrationDbMgr {
         includeDeleted,
       );
 
-      // Having a valid project API token should give us read access.
+      // Projects with no owner that are public can be edited.
+      if (isUnownedProject(project)) {
+        return;
+      }
+
+      // Projects open to everyone grant their default access level.
       if (
-        accessLevelRank(requireLevel) <= accessLevelRank("viewer") &&
-        this.projectIdsAndTokens?.find(
+        !project.inviteOnly &&
+        accessLevelRank(project.defaultAccessLevel) >=
+          accessLevelRank(requireLevel)
+      ) {
+        return;
+      }
+
+      const hasPublicToken =
+        !!project.projectApiToken &&
+        this.projectIdsAndTokens?.some(
           (p) =>
             p.projectId === projectId &&
             p.projectApiToken === project.projectApiToken,
-        )
-      ) {
-        return;
-      }
-
-      // Having a valid secret API token should give us write access.
-      if (
-        accessLevelRank(requireLevel) <= accessLevelRank("editor") &&
-        this.projectIdsAndTokens?.find(
+        );
+      const hasSecretToken =
+        !!project.secretApiToken &&
+        this.projectIdsAndTokens?.some(
           (p) =>
             p.projectId === projectId &&
             p.projectApiToken === project.secretApiToken,
-        )
-      ) {
-        return;
-      }
+        );
 
-      // having inviteOnly false and required permission less than default gives us default permission access
+      // Public tokens grant read access; secret tokens grant write access.
       if (
-        !project.inviteOnly &&
-        accessLevelRank(requireLevel) <=
-          accessLevelRank(project.defaultAccessLevel)
+        (hasPublicToken &&
+          accessLevelRank("viewer") >= accessLevelRank(requireLevel)) ||
+        (hasSecretToken &&
+          accessLevelRank("editor") >= accessLevelRank(requireLevel))
       ) {
         return;
       }
 
       const selfLevel = await this._getActorAccessLevelToProject(project);
-      const msg = `${await this.describeActor()} tried to ${action} project ${projectId}, but their access level ${humanLevel(
-        selfLevel,
-      )} didn't meet required level ${humanLevel(requireLevel)}. ${
-        suggestion ?? ""
-      }`;
+      if (accessLevelRank(selfLevel) >= accessLevelRank(requireLevel)) {
+        return;
+      }
 
-      const satisfied =
-        accessLevelRank(selfLevel) >= accessLevelRank(requireLevel) ||
-        isUnownedProject(project); // project with no owner and public can be edited
-      if (!satisfied && this.projectIdsAndTokens) {
-        throw new ForbiddenError(
-          "Project ID and/or tokens are incorrect (and/or user has insufficient permissions)",
+      if (
+        this.actor.type === "AnonUser" &&
+        !hasPublicToken &&
+        !hasSecretToken
+      ) {
+        throw new UnauthorizedError(
+          "Project ID and/or project API token are missing or incorrect",
         );
       }
-      checkPermissions(satisfied, msg);
+
+      throw new ForbiddenError(
+        `${await this.describeActor()} tried to ${action} project ${projectId}, but their access level ${humanLevel(
+          selfLevel,
+        )} didn't meet required level ${humanLevel(requireLevel)}. ${
+          suggestion ?? ""
+        }`,
+      );
     },
     (projectId, requireLevel, _action, _suggestion, includeDeleted) =>
       JSON.stringify([projectId, requireLevel, includeDeleted]),
@@ -3781,7 +3793,7 @@ export class DbMgr implements MigrationDbMgr {
     );
     const devflags = await getDevFlagsMergedWithOverrides(this);
     if (!devflags.serverPublishProjectIds.includes(projectId)) {
-      throw new UnauthorizedError("Access denied");
+      throw new ForbiddenError();
     }
 
     const pkg = await this.getPkgByProjectId(projectId);
@@ -6567,7 +6579,7 @@ export class DbMgr implements MigrationDbMgr {
       throw new Error("Super user must specify userId to use");
     }
     if (!userId) {
-      throw new UnauthorizedError("Must be logged in");
+      throw new UnauthorizedError();
     }
     return userId;
   }
@@ -6644,7 +6656,7 @@ export class DbMgr implements MigrationDbMgr {
 
   async createTemporaryTeamApiToken() {
     if (!this.teamApiToken) {
-      throw new ForbiddenError("Missing team API token");
+      throw new UnauthorizedError("Missing team API token");
     }
     const apiToken = await findExactlyOne(this.teamApiTokens(), {
       where: { token: this.teamApiToken, deletedAt: IsNull() },
@@ -8002,7 +8014,7 @@ export class DbMgr implements MigrationDbMgr {
         }
         return;
       }
-      throw new ForbiddenError(
+      throw new UnauthorizedError(
         `Tried accessing database with id ${databaseId} without the correct token`,
       );
     }

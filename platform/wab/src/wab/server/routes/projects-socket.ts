@@ -13,6 +13,7 @@ import {
 import { SocketUser } from "@/wab/server/extensions";
 import { logger } from "@/wab/server/observability";
 import { parseProjectIdsAndTokensHeader } from "@/wab/server/routes/util";
+import { UnauthorizedError } from "@/wab/shared/ApiErrors/errors";
 import {
   InitServerInfo,
   ServerPlayerInfo,
@@ -418,7 +419,11 @@ async function verifyProjectPermissions(
       );
       return true;
     } catch (err) {
-      if (err instanceof ForbiddenError || err instanceof NotFoundError) {
+      if (
+        err instanceof UnauthorizedError ||
+        err instanceof ForbiddenError ||
+        err instanceof NotFoundError
+      ) {
         return false;
       } else {
         throw err;

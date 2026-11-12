@@ -110,7 +110,7 @@ export function parseProjectIdsAndTokensHeader(value: any) {
     .map((val) => {
       const [projectId, projectApiToken] = val.split(":");
       if (!projectId || !projectApiToken) {
-        throw new BadRequestError(
+        throw new UnauthorizedError(
           `Invalid values for x-plasmic-api-project-tokens header`,
         );
       }
@@ -134,7 +134,7 @@ export function parseCmsIdsAndTokensHeader(value: any) {
     .map((val) => {
       const [databaseId, token] = val.split(":");
       if (!databaseId || !token) {
-        throw new BadRequestError(
+        throw new UnauthorizedError(
           `Invalid values for x-plasmic-api-cms-tokens header`,
         );
       }

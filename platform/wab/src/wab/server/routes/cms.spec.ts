@@ -445,7 +445,7 @@ describe("CMS public routes", () => {
       });
     });
 
-    it("responds 403 if x-plasmic-api-cms-tokens is invalid", async () => {
+    it("responds 401 if x-plasmic-api-cms-tokens is invalid", async () => {
       const res =
         await publicApi.tsRestClient.publicCmsReadsContract.queryTable({
           params: {
@@ -458,9 +458,9 @@ describe("CMS public routes", () => {
         });
       const {
         body: { error },
-      } = expectStatus(res, 403);
+      } = expectStatus(res, 401);
       expect(error).toMatchObject({
-        statusCode: 403,
+        statusCode: 401,
       });
     });
 

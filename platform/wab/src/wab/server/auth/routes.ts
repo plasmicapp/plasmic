@@ -758,7 +758,12 @@ export async function ssoLogin(
   next: NextFunction,
 ) {
   await new Promise<void>((resolve) =>
-    passport.authenticate("sso", {}, () => resolve())(req, res, next),
+    passport.authenticate("sso", {}, (err: Error | null) => {
+      if (err) {
+        next(err);
+      }
+      resolve();
+    })(req, res, next),
   );
 }
 
@@ -820,14 +825,14 @@ export async function authApiTokenMiddleware(
     token as string,
   );
   if (!apiToken) {
-    throw new UnauthorizedError("Invalid API token");
+    throw new UnauthorizedError();
   }
 
   if (!user) {
     throw new UnauthorizedError(
       `Error - the email in plasmic.json (${email}) must match the email of the API token (${
         apiToken.user?.email || "<unknown>"
-      }), which is the email you use to sign into Plasmic.`,
+      }), which is the email you use to sign in to Plasmic.`,
     );
   }
   req.user = user;
@@ -870,7 +875,7 @@ export function apiAuth(
     );
   }
 
-  throw new UnauthorizedError("Unauthenticated API request.");
+  throw new UnauthorizedError();
 }
 
 export async function getApiTokenUser(

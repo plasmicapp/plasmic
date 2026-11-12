@@ -22,7 +22,7 @@ function whiteLabelMgr(req: Request) {
     !req.apiTeam.whiteLabelName ||
     req.apiTeam.whiteLabelName !== req.params.whiteLabelName
   ) {
-    throw new ForbiddenError(`Cannot use white label API`);
+    throw new ForbiddenError();
   }
 
   return userDbMgr(req);
@@ -36,7 +36,7 @@ function whiteLabelMgr(req: Request) {
 export async function openJwt(req: Request, res: Response, next: NextFunction) {
   const token = req.query.token;
   if (!token || typeof token !== "string") {
-    throw new BadRequestError(`Missing JWT token to open Plasmic page`);
+    throw new UnauthorizedError(`Missing JWT token to open Plasmic page`);
   }
 
   const url = req.query.url;
@@ -68,13 +68,13 @@ export async function openJwt(req: Request, res: Response, next: NextFunction) {
     });
   } catch (err) {
     logger.info(`Error openJwt ${err}`);
-    throw new UnauthorizedError(`Invalid token`);
+    throw new UnauthorizedError();
   }
 
   const payload = asValidJwtPayload(jwtPayload);
   logger.info(`JWT token payload`, payload);
   if (payload.team !== team.whiteLabelName) {
-    throw new UnauthorizedError(`Invalid token`);
+    throw new UnauthorizedError();
   }
 
   const user = await superMgr.getUserByWhiteLabelId(
@@ -96,13 +96,13 @@ export async function openJwt(req: Request, res: Response, next: NextFunction) {
 function asValidJwtPayload(payload: any) {
   if (!payload || payload == null || typeof payload !== "object") {
     logger.info(`Error validating jwt: not an object`);
-    throw new UnauthorizedError(`Invalid token`);
+    throw new UnauthorizedError();
   }
   if (payload.team && payload.externalUserId) {
     return payload as TeamJwtOpenPayload;
   }
   logger.info(`Error validating jwt: not all necessary fields: ${payload}`);
-  throw new UnauthorizedError(`Invalid token`);
+  throw new UnauthorizedError();
 }
 
 export async function createWhiteLabelUser(req: Request, res: Response) {

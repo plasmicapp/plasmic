@@ -7,15 +7,18 @@ import { seedTestDb } from "@/wab/server/db/DbInit";
 import {
   ANON_USER,
   DbMgr,
+  ForbiddenError,
   NotFoundError,
   SkipSafeDelete,
   normalActor,
+  teamActor,
 } from "@/wab/server/db/DbMgr";
 import { seedTestFeatureTiers } from "@/wab/server/db/seed/feature-tier";
 import {
   CmsRow,
   FeatureTier,
   Permission,
+  Project,
   Team,
   User,
 } from "@/wab/server/entities/Entities";
@@ -41,6 +44,30 @@ import * as uuid from "uuid";
 import { mock } from "vitest-mock-extended";
 
 describe("DbMgr.CMS", () => {
+  it("distinguishes invalid CMS credentials from insufficient token access", () =>
+    withDb(async (_sudo, _users, [ownerDb], _project, em) => {
+      const { workspace } = await getTeamAndWorkspace(ownerDb());
+      const database = await ownerDb().createCmsDatabase({
+        name: "Auth errors",
+        workspaceId: workspace.id,
+      });
+      const makeDb = (token: string) =>
+        new DbMgr(em, ANON_USER, {
+          cmsIdsAndTokens: [{ databaseId: database.id, token }],
+        });
+      await expect(
+        makeDb("incorrect").getCmsDatabaseById(database.id),
+      ).rejects.toBeInstanceOf(UnauthorizedError);
+      await expect(
+        makeDb(database.publicToken).getCmsDatabaseById(database.id),
+      ).resolves.toMatchObject({ id: database.id });
+      await expect(
+        makeDb(database.publicToken).updateCmsDatabaseById(database.id, {
+          name: "Denied",
+        }),
+      ).rejects.toBeInstanceOf(ForbiddenError);
+    }));
+
   it("can duplicate the database", () =>
     withDb(async (sudo, [user1], [db1]) => {
       const { team, workspace } = await getTeamAndWorkspace(db1());
@@ -1736,6 +1763,78 @@ describe("DbMgr", () => {
       const expected = [{ userId: user1.id, accessLevel: "owner" }];
       expect(teamPerms).toMatchObject(expected);
       expect(workspacePerms).toMatchObject(expected);
+    }));
+
+  it("distinguishes invalid project credentials from insufficient access", () =>
+    withDb(async (_sudo, [owner, other], [ownerDb], project, em) => {
+      const token = ensure(
+        project.projectApiToken,
+        "Expected public project token",
+      );
+      const makeDb = (projectApiToken: string) =>
+        new DbMgr(em, ANON_USER, {
+          projectIdsAndTokens: [{ projectId: project.id, projectApiToken }],
+        });
+      await expect(
+        new DbMgr(em, ANON_USER).checkProjectPerms(
+          project.id,
+          "viewer",
+          "read",
+        ),
+      ).rejects.toBeInstanceOf(UnauthorizedError);
+      await expect(
+        makeDb("incorrect").checkProjectPerms(project.id, "viewer", "read"),
+      ).rejects.toBeInstanceOf(UnauthorizedError);
+      await expect(
+        makeDb(token).checkProjectPerms(project.id, "viewer", "read"),
+      ).resolves.toBeUndefined();
+      await expect(
+        makeDb(token).checkProjectPerms(project.id, "editor", "edit"),
+      ).rejects.toBeInstanceOf(ForbiddenError);
+
+      // A bad project token must not override a valid user or team identity.
+      const options = {
+        projectIdsAndTokens: [
+          { projectId: project.id, projectApiToken: "incorrect" },
+        ],
+      };
+      await expect(
+        new DbMgr(em, normalActor(owner.id), options).checkProjectPerms(
+          project.id,
+          "editor",
+          "edit",
+        ),
+      ).resolves.toBeUndefined();
+      await expect(
+        new DbMgr(em, normalActor(other.id), options).checkProjectPerms(
+          project.id,
+          "editor",
+          "edit",
+        ),
+      ).rejects.toBeInstanceOf(ForbiddenError);
+      const { team } = await getTeamAndWorkspace(ownerDb());
+      await expect(
+        new DbMgr(em, teamActor(team.id), options).checkProjectPerms(
+          project.id,
+          "editor",
+          "edit",
+        ),
+      ).resolves.toBeUndefined();
+
+      // Public access remains available without credentials.
+      await ownerDb().updateProject({ id: project.id, readableByPublic: true });
+      await expect(
+        makeDb("incorrect").checkProjectPerms(project.id, "viewer", "read"),
+      ).resolves.toBeUndefined();
+
+      await em.update(Project, project.id, { createdById: null });
+      await expect(
+        new DbMgr(em, ANON_USER).checkProjectPerms(
+          project.id,
+          "editor",
+          "edit",
+        ),
+      ).resolves.toBeUndefined();
     }));
 
   it("API tokens work", () =>

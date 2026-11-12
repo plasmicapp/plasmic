@@ -1,8 +1,13 @@
 import {
+  parseCmsIdsAndTokensHeader,
   parseJsonQueryParam,
+  parseProjectIdsAndTokensHeader,
   parseQueryParams,
 } from "@/wab/server/routes/util";
-import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
+import {
+  BadRequestError,
+  UnauthorizedError,
+} from "@/wab/shared/ApiErrors/errors";
 
 describe("parseQueryParams", () => {
   it("parses JSON query values", () => {
@@ -75,5 +80,25 @@ describe("parseJsonQueryParam", () => {
     ).toThrow(
       new BadRequestError("Query parameter branchId must be a JSON string"),
     );
+  });
+});
+
+describe.each([
+  ["project", parseProjectIdsAndTokensHeader],
+  ["CMS", parseCmsIdsAndTokensHeader],
+])("%s credential header", (_name, parse) => {
+  it.each(["id", ":token", "id:", "id:token,"])(
+    "rejects incomplete credential pairs as unauthorized: %s",
+    (value) => {
+      expect(() => parse(value)).toThrow(UnauthorizedError);
+    },
+  );
+
+  it("leaves token verification to the permission checks", () => {
+    expect(parse("id:unknown-token")).toHaveLength(1);
+  });
+
+  it("allows an absent header so other authentication methods can be used", () => {
+    expect(parse(undefined)).toBeUndefined();
   });
 });

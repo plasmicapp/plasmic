@@ -17,7 +17,7 @@ import {
   OAuth2Config,
 } from "@/wab/server/util/passport-multi-oauth2";
 import {
-  BadRequestError,
+  ForbiddenError,
   UnauthorizedError,
 } from "@/wab/shared/ApiErrors/errors";
 import { SsoConfigId, UserId } from "@/wab/shared/ApiSchema";
@@ -58,7 +58,7 @@ export async function setupPassport(
       const mgr = new DbMgr(getManager(), SUPER_USER);
       const user = await mgr.tryGetUserById(id);
       if (!user) {
-        throw new UnauthorizedError("Must be logged in");
+        throw new UnauthorizedError();
       }
       return user;
     });
@@ -146,9 +146,7 @@ export async function setupPassport(
       },
       (req, accessToken, refreshToken, profile, done) => {
         asyncToCallback(done as StandardCallback<User>, async () => {
-          if (!profile) {
-            throw new BadRequestError(`Unable to obtain Profile`);
-          }
+          ensure(profile, "SSO strategy must provide a user profile");
 
           const row = await extractSsoConfig(req);
           profile.tenantId = row.tenantId;
@@ -273,7 +271,7 @@ export async function extractSsoConfig(req: Request) {
   const db = userDbMgr(req);
   const sso = await db.getSsoConfigByTenantId(tenantId);
   if (!sso) {
-    throw new BadRequestError(`Not configured to use SSO`);
+    throw new ForbiddenError(`Not configured to use SSO`);
   }
   return sso;
 }

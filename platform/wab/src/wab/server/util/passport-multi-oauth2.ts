@@ -1,4 +1,3 @@
-import { logger } from "@/wab/server/observability";
 import type * as express from "express";
 import { _StrategyOptionsBase } from "passport-google-oauth20";
 import {
@@ -58,8 +57,7 @@ export class MultiOAuth2Strategy extends AbstractStrategy {
   ): void {
     this.opts.getOAuth2Options(req, (err, res) => {
       if (err) {
-        logger.error("ERROR", err);
-        throw err;
+        return this.error(err);
       }
       const fullOptions = {
         ...this.opts,

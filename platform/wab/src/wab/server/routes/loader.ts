@@ -28,7 +28,11 @@ import { setSentryErrorContext } from "@/wab/server/observability/sentry-filters
 import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import { makeS3Client } from "@/wab/server/util/s3-util";
 import { prefillCloudfront } from "@/wab/server/workers/prefill-cloudfront";
-import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
+import {
+  BadRequestError,
+  NotFoundError,
+  UnauthorizedError,
+} from "@/wab/shared/ApiErrors/errors";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
 import { toClassName } from "@/wab/shared/codegen/util";
@@ -571,7 +575,7 @@ async function buildLoader(
     (p) => p.projectId === projectId,
   )?.projectApiToken;
   if (!token) {
-    throw new BadRequestError(`No project token specified for ${projectId}`);
+    throw new UnauthorizedError(`No project token specified for ${projectId}`);
   }
 
   await mgr.checkProjectPerms(projectId, "viewer", "get");
