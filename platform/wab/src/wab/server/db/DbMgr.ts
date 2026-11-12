@@ -4799,7 +4799,11 @@ export class DbMgr implements MigrationDbMgr {
       };
     } else {
       const pkg = await this.getPkgByProjectId(projectId);
-      assert(!!pkg, "Pkg must exist");
+      if (!pkg) {
+        throw new NotFoundError(
+          `Project ${projectId} has no published versions. Publish a version or request "latest" to sync the current draft.`,
+        );
+      }
       // If versionOrTag is not a valid version range, assume it's a tag
       const pkgVersion = ensure(
         semver.validRange(versionOrTag)
