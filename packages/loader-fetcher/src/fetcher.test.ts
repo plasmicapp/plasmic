@@ -1,5 +1,10 @@
-import { describe, expect, it, vi } from "vitest";
-import { FetcherOptions, PlasmicModulesFetcher } from "./fetcher";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { Api, LoaderBundleOutput } from "./api";
+import {
+  FetcherOptions,
+  PlasmicModulesFetcher,
+  internal_getCachedBundleInNodeServer,
+} from "./fetcher";
 
 const FETCHER_OPTIONS: FetcherOptions = {
   projects: [
@@ -16,6 +21,71 @@ const FETCHER_OPTIONS: FetcherOptions = {
 };
 
 describe("PlasmicModulesFetcher", () => {
+  describe("Node server bundle cache", () => {
+    beforeEach(() => {
+      vi.stubGlobal("__PLASMIC_BUNDLES", undefined);
+    });
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+      vi.restoreAllMocks();
+    });
+
+    it.each([
+      [
+        "API host",
+        { preview: true, apiHost: "https://one.example" },
+        { preview: true, apiHost: "https://two.example" },
+      ],
+      [
+        "CDN host",
+        { cdnHost: "https://one.example" },
+        { cdnHost: "https://two.example" },
+      ],
+      [
+        "translation prefix",
+        { i18n: { keyScheme: "content", tagPrefix: "one" } },
+        { i18n: { keyScheme: "content", tagPrefix: "two" } },
+      ],
+      [
+        "Next.js app router",
+        { platform: "nextjs", platformOptions: { nextjs: { appDir: true } } },
+        { platform: "nextjs", platformOptions: { nextjs: { appDir: false } } },
+      ],
+    ] satisfies [string, Partial<FetcherOptions>, Partial<FetcherOptions>][])(
+      "keeps Node server bundles separate by %s",
+      async (_label, optionA, optionB) => {
+        const optsA = { ...FETCHER_OPTIONS, ...optionA };
+        const optsB = { ...FETCHER_OPTIONS, ...optionB };
+        const fetcherA = new PlasmicModulesFetcher(optsA);
+        const fetcherB = new PlasmicModulesFetcher(optsB);
+        const bundleA: LoaderBundleOutput = {
+          projects: [],
+          modules: { browser: [], server: [] },
+          components: [],
+          globalGroups: [],
+          activeSplits: [],
+          bundleKey: "A",
+          filteredIds: {},
+          deferChunksByDefault: false,
+          disableRootLoadingBoundaryByDefault: false,
+        };
+        const bundleB = { ...bundleA, bundleKey: "B" };
+        vi.spyOn(Api.prototype, "fetchLoaderData")
+          .mockResolvedValueOnce(bundleA)
+          .mockResolvedValueOnce(bundleB);
+        await fetcherA.fetchAllData();
+        expect(internal_getCachedBundleInNodeServer(optsB)).toBeUndefined();
+        await fetcherB.fetchAllData();
+        expect(internal_getCachedBundleInNodeServer(optsA)).toBe(bundleA);
+        expect(internal_getCachedBundleInNodeServer(optsB)).toBe(bundleB);
+        expect(internal_getCachedBundleInNodeServer({ ...optsA })).toBe(
+          bundleA,
+        );
+      },
+    );
+  });
+
   describe("getCachedOrFetch", () => {
     it("should properly clean up curFetch in successful request", async () => {
       const fetcher = new PlasmicModulesFetcher(FETCHER_OPTIONS);
@@ -28,7 +98,7 @@ describe("PlasmicModulesFetcher", () => {
       await fetcher.fetchAllData();
       expect(fetchLoaderData).toHaveBeenCalledWith(
         ["projA", "projB@1.0.0"],
-        expect.anything()
+        expect.anything(),
       );
       expect(fetcher.curFetch).toBeUndefined();
     });
@@ -47,7 +117,7 @@ describe("PlasmicModulesFetcher", () => {
       // await expect(fetcher.fetchAllData()).rejects.toThrow("error");
       expect(fetchLoaderData).toHaveBeenCalledWith(
         ["projA", "projB@1.0.0"],
-        expect.anything()
+        expect.anything(),
       );
       expect(fetcher.curFetch).toBeUndefined();
     });
