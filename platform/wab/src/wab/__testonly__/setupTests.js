@@ -1,0 +1,27 @@
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import * as jestExtendedMatchers from "jest-extended";
+import { expect } from "vitest";
+
+DEVFLAGS.hostUrl = "http://localhost";
+expect.extend(jestExtendedMatchers);
+
+function hasEquals(x) {
+  return typeof x === "object" && x && "equals" in x;
+}
+
+// Tells vitest to use this function to test equality in toEquals, toMatchObject, etc.
+expect.addEqualityTesters([
+  (a, b) => {
+    // Ignore mobx's boxed ObservableValue since it breaks observable-model.spec.ts.
+    // To fix it, we need to add custom .equals for our generated schema.
+    if (
+      hasEquals(a) &&
+      hasEquals(b) &&
+      a.constructor.name !== "ObservableValue" &&
+      b.constructor.name !== "ObservableValue"
+    ) {
+      return a.equals(b) && b.equals(a);
+    }
+    return undefined; // continue to next tester
+  },
+]);

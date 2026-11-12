@@ -95,6 +95,7 @@ export default defineConfig({
           include: ["src/**/*.{spec,test}.{js,jsx,ts,tsx}"],
           exclude: ["src/wab/server/**"],
           environment: "jsdom",
+          setupFiles: ["./src/wab/client/__testonly__/setupTests.js"],
           // DEVFLAGS.hostUrl is http://localhost in tests; keep the document on
           // the same origin so app-hosting URL checks pass.
           environmentOptions: {
@@ -109,7 +110,7 @@ export default defineConfig({
     ],
     globals: true,
     silent: "passed-only",
-    setupFiles: ["./src/wab/client/__testonly__/setupTests.js"],
+    setupFiles: ["./src/wab/__testonly__/setupTests.js"],
     coverage: {
       include: ["src/**/*.{js,jsx,ts,tsx}"],
       exclude: ["src/**/*.d.ts"],

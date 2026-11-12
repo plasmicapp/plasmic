@@ -1,16 +1,12 @@
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { notification } from "antd";
 import "fake-indexeddb/auto";
-import * as jestExtendedMatchers from "jest-extended";
 import { TransformStream } from "stream/web";
 import { TextDecoder, TextEncoder } from "util";
-import { expect, vi } from "vitest";
+import { vi } from "vitest";
 import "whatwg-fetch";
 import { BroadcastChannel as NodeBroadcastChannel } from "worker_threads";
 
 import "@/wab/client/__testonly__/initTests";
-
-expect.extend(jestExtendedMatchers);
 
 // Use mocks for code that doesn't work in JSDOM
 vi.mock("@/wab/client/image/metadata");
@@ -29,8 +25,6 @@ vi.mock(
     getSortedHostLessPkgs: async (pkgs) => pkgs.map((pkg) => [pkg, ""]),
   }),
 );
-
-DEVFLAGS.hostUrl = "http://localhost";
 
 // antd's static notifications render in their own React root and auto-close on timer.
 // In CI it can fire after jsdom teardown, which fails the run
