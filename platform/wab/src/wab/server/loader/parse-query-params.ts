@@ -1,37 +1,61 @@
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
-import { GlobalVariantSpec } from "@plasmicapp/loader-react";
-import { isArray } from "lodash";
+import { zParseJson } from "@/wab/shared/utils/zod-utils";
+import { z } from "zod";
 
-export const parseComponentProps = (rawComponentProps?: any) => {
-  if (!rawComponentProps) {
+const componentPropsSchema = z
+  .string()
+  .transform(zParseJson(z.record(z.string(), z.unknown())));
+
+const globalVariantsSchema = z.string().transform(
+  zParseJson(
+    z.array(
+      z.object({
+        name: z.string().min(1),
+        projectId: z.string().optional(),
+        value: z.union(
+          [z.boolean(), z.number(), z.string(), z.array(z.string())],
+          {
+            errorMap: () => ({
+              message: "Expected boolean, number, string, or string array",
+            }),
+          },
+        ),
+      }),
+    ),
+  ),
+);
+
+function parseQueryParam<T>(
+  schema: z.ZodType<T, z.ZodTypeDef, string>,
+  name: string,
+  raw: unknown,
+): T | undefined {
+  if (!raw) {
     return undefined;
   }
-  try {
-    const componentProps = JSON.parse(rawComponentProps);
-    if (!componentProps || isArray(componentProps)) {
-      throw null;
-    }
-    return componentProps;
-  } catch (e) {
-    throw new BadRequestError("Invalid componentProps value");
+  const result = schema.safeParse(raw);
+  if (!result.success) {
+    throw new BadRequestError(`Invalid ${name} value`, {
+      issues: result.error.issues.map(
+        (issue) => `${[name, ...issue.path].join(".")}: ${issue.message}`,
+      ),
+    });
   }
-};
+  return result.data;
+}
 
-export const parseGlobalVariants = (rawGlobalVariants?: any) => {
-  if (!rawGlobalVariants) {
-    return undefined;
-  }
-  const globalVariants = JSON.parse(rawGlobalVariants);
-  if (isArray(globalVariants)) {
-    for (const variant of globalVariants) {
-      if (!variant.name || !variant.value) {
-        throw new BadRequestError(
-          "Invalid globalVariants.name or globalVariants.value",
-        );
-      }
-    }
-    return globalVariants as GlobalVariantSpec[];
-  } else {
-    throw new BadRequestError("globalVariants must be an array of objects");
-  }
-};
+export function parseComponentProps(rawComponentProps?: unknown) {
+  return parseQueryParam(
+    componentPropsSchema,
+    "componentProps",
+    rawComponentProps,
+  );
+}
+
+export function parseGlobalVariants(rawGlobalVariants?: unknown) {
+  return parseQueryParam(
+    globalVariantsSchema,
+    "globalVariants",
+    rawGlobalVariants,
+  );
+}
