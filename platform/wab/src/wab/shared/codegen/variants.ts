@@ -199,18 +199,13 @@ export function serializeVariantGroupMembersType(vg: VariantGroup) {
 export function extractUsedGlobalVariantsForComponents(
   site: Site,
   components: ReadonlyArray<Component>,
-  usePlasmicImg: boolean,
   allTokensDict?: Readonly<{ [uuid: string]: FinalToken<StyleToken> }>,
 ) {
   const usedGlobalVariants = new Set<Variant>();
   for (const component of components) {
     xAddAll(
       usedGlobalVariants,
-      extractUsedGlobalVariantsForNodes(
-        site,
-        flattenComponent(component),
-        usePlasmicImg,
-      ),
+      extractUsedGlobalVariantsForNodes(site, flattenComponent(component)),
     );
   }
 
@@ -236,7 +231,6 @@ export function extractUsedGlobalVariantsForComponents(
 export function extractUsedGlobalVariantsForNodes(
   site: Site,
   nodes: ReadonlyArray<TplNode>,
-  usePlasmicImg: boolean,
 ) {
   const usedGlobalVariants = new Set<Variant>();
   const siteGlobalVariantGroups = allGlobalVariantGroups(site, {
@@ -247,11 +241,7 @@ export function extractUsedGlobalVariantsForNodes(
   for (const node of nodes) {
     if (isTplVariantable(node)) {
       for (const vs of node.vsettings) {
-        for (const v of getUsedGlobalVariantsForNonCss(
-          vs,
-          node,
-          usePlasmicImg,
-        )) {
+        for (const v of getUsedGlobalVariantsForNonCss(vs, node)) {
           if (
             v.parent &&
             isGlobalVariantGroup(v.parent) &&
@@ -269,7 +259,6 @@ export function extractUsedGlobalVariantsForNodes(
 export function getUsedGlobalVariantsForNonCss(
   vs: VariantSetting,
   tpl: TplNode,
-  usePlasmicImg: boolean,
 ) {
   return vs.variants.filter((v) => {
     if (isGlobalVariant(v)) {
@@ -290,7 +279,6 @@ export function getUsedGlobalVariantsForNonCss(
           return true;
         }
         if (
-          usePlasmicImg &&
           isTplTag(tpl) &&
           tpl.tag === "img" &&
           plasmicImgAttrStyles.some((p) => exp.has(p))

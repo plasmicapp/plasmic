@@ -121,7 +121,6 @@ export const SwitchPlugin: PlumePlugin = {
               `"${paramToVarName(ctx.component, param)}"?: ${serializeParamType(
                 component,
                 param,
-                ctx.projectFlags,
               )}`,
           )
           .join(";\n")}

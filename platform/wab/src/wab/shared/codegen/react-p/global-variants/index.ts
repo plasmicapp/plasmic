@@ -17,7 +17,6 @@ import {
   makeUniqueUseScreenVariantsName,
 } from "@/wab/shared/codegen/variants";
 import { FinalToken } from "@/wab/shared/core/tokens";
-import { DevFlagsType } from "@/wab/shared/devflags";
 import {
   Component,
   Site,
@@ -106,19 +105,16 @@ export function serializeUseGlobalVariants(groups: Set<VariantGroup>) {
 /**
  * @param siteGenHelper Helper for the Site containing the component and global variant groups. Shared across components of a codegen request so the site's tokens are only computed once.
  * @param component The component to get the used global variant groups for
- * @param projectFlags The project flags
  * @returns The global variant groups that the component must read from to apply token CSS and JS changes
  */
 export function getUsedGlobalVariantGroups(
   siteGenHelper: SiteGenHelper,
   component: Component,
-  projectFlags: DevFlagsType,
 ) {
   return getReferencedVariantGroups([
     ...extractUsedGlobalVariantsForComponents(
       siteGenHelper.site,
       [component],
-      projectFlags.usePlasmicImg,
       siteGenHelper.allStyleTokensAndOverridesDict(),
     ),
     // These global variants are not necessarily used by the component, but they contribute to varianted values of style tokens, which may be used within the component's slots, so we still include them.

@@ -47,8 +47,7 @@ function _ContentPanelSection(props: ContentPanelSectionProps) {
   const viewCtx = expsProvider.viewCtx;
   const rsh = expsProvider.mergedExp();
   const tpl = expsProvider.tpl;
-  const shouldShowPlasmicImgOptimizationProps =
-    viewCtx.projectFlags().usePlasmicImg && isTplTagOrComponent(tpl);
+  const shouldShowPlasmicImgOptimizationProps = isTplTagOrComponent(tpl);
 
   const pos = ObjectPosition.parse(rsh.get("object-position"));
   return (

@@ -94,7 +94,6 @@ describe("allGlobalVariantGroups", () => {
       imageAssets: [],
       activeScreenVariantGroup: screenGroup,
       flags: {
-        usePlasmicImg: true,
         useLoadingState: true,
       },
       hostLessPackageInfo: null,

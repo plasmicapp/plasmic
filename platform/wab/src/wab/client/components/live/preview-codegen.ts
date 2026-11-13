@@ -206,17 +206,12 @@ export function buildPreviewModules(
 export function buildDocsPreviewModules(
   studioCtx: PreviewCodegenContext,
   component: Component | undefined,
-  usePlasmicImg: boolean,
 ) {
   const site = studioCtx.site;
   const result = buildComponentModules(studioCtx, component);
   const globalGroups = [
     ...getReferencedVariantGroups(
-      extractUsedGlobalVariantsForComponents(
-        site,
-        [...result.components],
-        usePlasmicImg,
-      ),
+      extractUsedGlobalVariantsForComponents(site, [...result.components]),
     ),
   ];
   result.modules.push(

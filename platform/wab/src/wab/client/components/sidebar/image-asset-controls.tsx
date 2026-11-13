@@ -579,7 +579,7 @@ export function getCmsImageUrl(uploaded: ImageUploadResponse) {
   const imgId = ensure(last(uploaded.dataUri.split("/")), "Expected imgId");
   let imgUrl = uploaded.dataUri;
 
-  if (!uploaded.mimeType?.includes("svg")) {
+  if (DEVFLAGS.imgOptimizerHost && !uploaded.mimeType?.includes("svg")) {
     imgUrl = `${
       DEVFLAGS.imgOptimizerHost
     }/img-optimizer/v1/img?src=${encodeURIComponent(imgId)}&f=webp&q=75`;

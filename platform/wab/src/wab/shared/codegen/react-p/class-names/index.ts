@@ -53,7 +53,6 @@ import {
   sortedVariantCombos,
 } from "@/wab/shared/variant-sort";
 import { sortBy, uniqBy } from "lodash";
-import { shouldUsePlasmicImg } from "src/wab/shared/codegen/react-p/image";
 
 export function makeCssClassNameForVariantCombo(
   variantCombo: VariantCombo,
@@ -231,9 +230,7 @@ export function serializeClassNames(
   // are used first, because when you build css modules, they css rules will
   // be ordered by usage first (rather than import first)
   if (isTplTag(node)) {
-    const tag = shouldUsePlasmicImg(node, ctx.projectFlags)
-      ? "PlasmicImg"
-      : node.tag;
+    const tag = node.tag === "img" ? "PlasmicImg" : node.tag;
 
     const defaultClassnames = defaultStyleClassNames(
       useCssModules ? "" : makeDefaultStyleClassNameBase(ctx.exportOpts),

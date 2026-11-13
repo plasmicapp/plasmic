@@ -242,7 +242,6 @@ export function createSite(params: Partial<SiteParams> = {}) {
     projectDependencies: [],
     activeScreenVariantGroup: screenGroup,
     flags: {
-      usePlasmicImg: true,
       useLoadingState: true,
     },
     hostLessPackageInfo: null,

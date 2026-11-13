@@ -418,10 +418,8 @@ const DEFAULT_DEVFLAGS = {
       projectId: [],
     },
   ]),
-  // Turns on PlasmicImg for all
-  usePlasmicImg: false,
   usePlasmicTranslation: false,
-  imgOptimizerHost: "https://img.plasmic.app",
+  imgOptimizerHost: process.env.IMAGE_OPTIMIZER_HOST || "",
   revisionNum: undefined,
   secretApiTokenTeams: ["teamId"],
   showFullPreviewWarning: true,
@@ -641,7 +639,6 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
 }
 
 const perProjectFlags: (keyof DevFlagsType)[] = [
-  "usePlasmicImg",
   "usePlasmicTranslation",
   "useLoadingState",
   "useWhitespaceNormal",

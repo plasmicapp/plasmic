@@ -126,7 +126,6 @@ export const CheckboxPlugin: PlumePlugin = {
               `"${paramToVarName(ctx.component, param)}"?: ${serializeParamType(
                 component,
                 param,
-                ctx.projectFlags,
               )}`,
           )
           .join(";\n")}

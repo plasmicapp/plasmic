@@ -93,7 +93,7 @@ it.each([
         appUser: {},
       };
       const live = buildPreviewUpdate(ctx, route);
-      const docs = buildDocsPreviewModules(ctx, component, false);
+      const docs = buildDocsPreviewModules(ctx, component);
       expect(buildPreviewUpdate(ctx, route)).toEqual(live);
       // Both consumers must receive the same component implementations and JSX pragma.
       const docsByName = new Map(docs.modules.map((mod) => [mod.name, mod]));

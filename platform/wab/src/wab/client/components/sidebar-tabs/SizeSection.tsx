@@ -613,8 +613,7 @@ const FlexGrowControls = observer(function FlexGrowControls(props: {
       return exp().get(prop);
     }
 
-    return expsProvider.studioCtx.appCtx.appConfig.usePlasmicImg &&
-      expsProvider instanceof TplExpsProvider &&
+    return expsProvider instanceof TplExpsProvider &&
       isTplImage(expsProvider.tpl)
       ? false
       : true;

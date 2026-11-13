@@ -142,7 +142,6 @@ export function exportReactPlain(
   const usedGlobalVariantGroups = getUsedGlobalVariantGroups(
     siteHelper,
     component,
-    projectFlags,
   );
   const variantComboChecker = makeVariantComboChecker(
     component,

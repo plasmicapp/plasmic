@@ -119,7 +119,6 @@ export const MenuButtonPlugin: PlumePlugin = {
               `"${paramToVarName(ctx.component, param)}"?: ${serializeParamType(
                 component,
                 param,
-                ctx.projectFlags,
               )}`,
           )
           .join(";\n")}

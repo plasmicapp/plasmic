@@ -34,7 +34,6 @@ import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { ParamExportType } from "@/wab/shared/core/lang";
 import { isOnChangeParam } from "@/wab/shared/core/states";
 import { makeStyleExprClassName } from "@/wab/shared/core/styles";
-import { DevFlagsType } from "@/wab/shared/devflags";
 import {
   LocalizableStringSource,
   makeLocalizationStringKey,
@@ -132,7 +131,6 @@ export function serializeParamsTypeContent(ctx: SerializerBaseContext) {
         `"${paramToVarName(ctx.component, p)}"?: ${serializeParamType(
           ctx.component,
           p,
-          ctx.projectFlags,
         )};`,
     )
     .join("\n");
@@ -167,17 +165,13 @@ export const ${makeArgPropsName(
 /**
  * Outputs the typescript type for the argument Param
  */
-export function serializeParamType(
-  component: Component,
-  param: Param,
-  projectFlags: DevFlagsType,
-) {
+export function serializeParamType(component: Component, param: Param) {
   const variantGroup = findVariantGroupForParam(component, param);
   if (variantGroup) {
     // This param corresponds to a VariantGroup, so it's typed to the
     // VariantGroup's members
     return serializeVariantArgsGroupType(variantGroup);
-  } else if (isImageType(param.type) && projectFlags.usePlasmicImg) {
+  } else if (isImageType(param.type)) {
     return `React.ComponentProps<typeof PlasmicImg__>["src"]`;
   } else if (isKnownFunctionType(param.type)) {
     return `(${param.type.params

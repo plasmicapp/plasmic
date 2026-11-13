@@ -2047,7 +2047,7 @@ function computeTplComponentArgs(
       .when(ImageAssetRef, (_expr) =>
         ofCodeComponent
           ? _expr.asset.dataUri
-          : maybeMakePlasmicImgSrc(_expr.asset, exprCtx),
+          : maybeMakePlasmicImgSrc(_expr.asset),
       )
       .when(VariantsRef, (_expr) =>
         _expr.variants.map((v) => toVarName(v.name)),
@@ -2386,7 +2386,7 @@ function renderTplTag(
     delete evaledAttrs["outerHTML"];
     evaledAttrs["src"] = placeholderImgUrl(node.tag === "svg");
     tag = "img";
-  } else if (node.tag === "img" && ctx.projectFlags.usePlasmicImg) {
+  } else if (node.tag === "img") {
     tag = ctx.sub.reactWeb.PlasmicImg;
   } else if (node.tag === "svg") {
     tag = mkCanvasIcon(ctx.sub.React);
@@ -2456,7 +2456,6 @@ function renderTplTag(
         }
       }
     });
-    attrs["loader"] = "plasmic";
   }
   const state = ctx.ownerComponent?.states.find(
     (istate) => istate.tplNode === node,
@@ -2661,9 +2660,7 @@ function evalTagAttrExprToString(
       if (isTplIcon(tpl) && attr === "outerHTML" && dataUri) {
         return JSON.stringify(parseDataUrlToSvgXml(dataUri));
       }
-      return JSON.stringify(
-        maybeMakePlasmicImgSrc(imageAssetRef.asset, exprCtx),
-      );
+      return JSON.stringify(maybeMakePlasmicImgSrc(imageAssetRef.asset));
     })
     .when(PageHref, (pageHref: PageHref) => {
       return asCode(pageHref, exprCtx).code;

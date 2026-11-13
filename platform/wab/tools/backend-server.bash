@@ -7,5 +7,6 @@ REACT_APP_DEFAULT_HOST_URL=${HOST_URL} \
         CODEGEN_HOST=${REACT_APP_DEV_PROXY:-${CODEGEN_HOST:-http://localhost:3003}} \
         SITE_ASSETS_BUCKET=plasmic-site-assets \
         SITE_ASSETS_BASE_URL='https://site-assets.plasmic.app/' \
+        IMAGE_OPTIMIZER_HOST=https://img.plasmic.app \
         DISABLE_BWRAP=1 \
         bash tools/run.bash src/wab/server/main.ts

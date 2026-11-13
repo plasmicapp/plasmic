@@ -75,6 +75,7 @@ import {
   getUsedGlobalVariantGroups,
   serializeGlobalVariantValues,
 } from "@/wab/shared/codegen/react-p/global-variants";
+import { getPlasmicImgLoader } from "@/wab/shared/codegen/react-p/image";
 import { optimizeGeneratedCodeForHostlessPackages } from "@/wab/shared/codegen/react-p/optimize-hostless-packages";
 import {
   makePageMetadataOutput,
@@ -375,7 +376,6 @@ import {
 import { JsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
 import { makeVariantComboSorter } from "@/wab/shared/variant-sort";
 import L, { repeat } from "lodash";
-import { shouldUsePlasmicImg } from "src/wab/shared/codegen/react-p/image";
 import type { SetRequired } from "type-fest";
 
 export function exportStyleConfig(
@@ -742,7 +742,6 @@ export function exportReactPresentational(
   const usedGlobalVariantGroups = getUsedGlobalVariantGroups(
     componentGenHelper.siteHelper,
     component,
-    projectFlags,
   );
   const variantComboChecker = makeVariantComboChecker(
     component,
@@ -1724,29 +1723,28 @@ export function serializeTplTagBase(
       attrs["alt"] = codeLit("").code;
     }
 
-    if (shouldUsePlasmicImg(node, ctx.projectFlags)) {
-      tag = "PlasmicImg__";
-      plasmicImgAttrStyles.forEach((prop) => {
-        const reactProp = toReactAttr(`display-${prop}`);
-        if (!(reactProp in attrs)) {
-          attrs[reactProp] = conditionalStyleProp(
-            ctx,
-            node,
-            orderedVsettings,
-            prop,
-            (val) =>
-              val
-                ? deriveSizeStyleValue(
-                    prop as any,
-                    ctx.cssVarResolver.tryResolveTokenOrMixinRef(val),
-                  )
-                : undefined,
-          );
-        }
-      });
-      if (ctx.exportOpts.imageOpts.scheme === "cdn") {
-        attrs["loader"] = jsLiteral("plasmic");
+    tag = "PlasmicImg__";
+    plasmicImgAttrStyles.forEach((prop) => {
+      const reactProp = toReactAttr(`display-${prop}`);
+      if (!(reactProp in attrs)) {
+        attrs[reactProp] = conditionalStyleProp(
+          ctx,
+          node,
+          orderedVsettings,
+          prop,
+          (val) =>
+            val
+              ? deriveSizeStyleValue(
+                  prop as any,
+                  ctx.cssVarResolver.tryResolveTokenOrMixinRef(val),
+                )
+              : undefined,
+        );
       }
+    });
+    const loader = getPlasmicImgLoader(ctx.exportOpts.imageOpts);
+    if (loader) {
+      attrs["loader"] = jsLiteral(loader);
     }
   }
 
@@ -2630,7 +2628,7 @@ function serializeDefaultElementType(
   node: TplTag | TplComponent,
 ) {
   if (isTplTag(node)) {
-    if (shouldUsePlasmicImg(node, ctx.projectFlags)) {
+    if (node.tag === "img") {
       return `typeof PlasmicImg__`;
     } else {
       return jsString(node.tag);
@@ -2684,7 +2682,6 @@ export function serializeDefaultExternalProps(
             `"${paramToVarName(ctx.component, param)}"?: ${serializeParamType(
               component,
               param,
-              ctx.projectFlags,
             )}`,
         )
         // should only include className to Plasmic component, if it's root supports className

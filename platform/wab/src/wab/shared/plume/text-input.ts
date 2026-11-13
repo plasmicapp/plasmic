@@ -94,7 +94,6 @@ export const TextInputPlugin: PlumePlugin = {
               `"${paramToVarName(ctx.component, param)}"?: ${serializeParamType(
                 component,
                 param,
-                ctx.projectFlags,
               )}`,
           )
           .join(";\n")}

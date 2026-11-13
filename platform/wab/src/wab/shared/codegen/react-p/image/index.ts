@@ -1,16 +1,12 @@
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
+import { ImageExportOpts } from "@/wab/shared/codegen/types";
 import { jsLiteral, toVarName } from "@/wab/shared/codegen/util";
 import { ensure, maybe } from "@/wab/shared/common";
-import { ExprCtx } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/shared/core/tpls";
-import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
-import { ImageAsset, TplTag } from "@/wab/shared/model/classes";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { ImageAsset } from "@/wab/shared/model/classes";
 import { last } from "lodash";
-
-export function shouldUsePlasmicImg(node: TplTag, projectFlags: DevFlagsType) {
-  return node.tag === "img" && projectFlags.usePlasmicImg;
-}
 
 export function makeImportedPictureRef(asset: ImageAsset) {
   return `${toVarName(`${asset.name}-${asset.uuid}`)}`;
@@ -20,19 +16,15 @@ export function makePictureRefToken(asset: ImageAsset) {
   return `Plasmic_Image_${asset.uuid}__Ref`;
 }
 
-export function maybeMakePlasmicImgSrc(asset: ImageAsset, exprCtx: ExprCtx) {
+export function maybeMakePlasmicImgSrc(asset: ImageAsset) {
   if (!asset.dataUri) {
     return undefined;
   }
 
-  // Don't use PlasmicImg if...
+  // Return just the URL, so PlasmicImg renders a plain <img>, if...
   if (
     // Not a Picture
     asset.type !== ImageAssetType.Picture ||
-    // Not enabled for project
-    !exprCtx.projectFlags.usePlasmicImg ||
-    // No imgOptimizerHost set
-    !DEVFLAGS.imgOptimizerHost ||
     // No known full width/height
     !asset.width ||
     !asset.height
@@ -49,9 +41,9 @@ export function maybeMakePlasmicImgSrc(asset: ImageAsset, exprCtx: ExprCtx) {
 
   return {
     src:
-      !imgId || imgId.endsWith(".svg")
-        ? asset.dataUri
-        : `${DEVFLAGS.imgOptimizerHost}/img-optimizer/v1/img/${imgId}`,
+      DEVFLAGS.imgOptimizerHost && imgId && !imgId.endsWith(".svg")
+        ? `${DEVFLAGS.imgOptimizerHost}/img-optimizer/v1/img/${imgId}`
+        : asset.dataUri,
     fullWidth: asset.width,
     fullHeight: asset.height,
     aspectRatio: maybe(
@@ -59,6 +51,27 @@ export function maybeMakePlasmicImgSrc(asset: ImageAsset, exprCtx: ExprCtx) {
       (aspectRatio) => aspectRatio / ASPECT_RATIO_SCALE_FACTOR,
     ),
   };
+}
+
+/**
+ * Returns the `loader` prop for PlasmicImg:
+ * - `"plasmic"` to use the built-in loader for img.plasmic.app
+ * - any other string is the base URL of a custom image optimizer host
+ * - `undefined` to omit the prop, so images are served as-is
+ */
+export function getPlasmicImgLoader(
+  imageOpts: ImageExportOpts,
+): "plasmic" | string | undefined {
+  if (imageOpts.scheme !== "cdn" || !DEVFLAGS.imgOptimizerHost) {
+    return undefined;
+  }
+
+  // The "plasmic" loader sends requests to img.plasmic.app. Other hosts are
+  // passed as the loader's base URL, which needs a newer
+  // @plasmicapp/react-web, so keep "plasmic" for img.plasmic.app.
+  return DEVFLAGS.imgOptimizerHost === "https://img.plasmic.app"
+    ? "plasmic"
+    : DEVFLAGS.imgOptimizerHost;
 }
 
 export function getSerializedImgSrcForAsset(
@@ -81,7 +94,7 @@ export function getSerializedImgSrcForAsset(
     return srcStr ?? jsLiteral(asset.dataUri ?? "");
   }
 
-  const maybeSrcObject = maybeMakePlasmicImgSrc(asset, ctx.exprCtx);
+  const maybeSrcObject = maybeMakePlasmicImgSrc(asset);
   if (srcStr) {
     if (typeof maybeSrcObject === "object" && maybeSrcObject) {
       // We need to replace `maybeSrcObject.src` by `srcStr`. However, we

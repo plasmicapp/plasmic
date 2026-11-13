@@ -95,7 +95,6 @@ export function serializeDependentModules(docsCtx: DocsPortalCtx) {
   return buildDocsPreviewModules(
     docsCtx.studioCtx,
     docsCtx.tryGetFocusedComponent(),
-    docsCtx.studioCtx.appCtx.appConfig.usePlasmicImg,
   );
 }
 
