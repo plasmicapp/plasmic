@@ -20,6 +20,7 @@ import InfoIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Info";
 import GatsbyIcon from "@/wab/commons/images/gatsby.svg";
 import NextjsIcon from "@/wab/commons/images/nextjs.svg";
 import ReactIcon from "@/wab/commons/images/react.svg";
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiProject,
   GitRepository,
@@ -31,7 +32,7 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { assertNever, ensure, spawn } from "@/wab/shared/common";
 import { isValidSubdomainPart } from "@/wab/shared/strs";
-import { Tooltip } from "antd";
+import { Tooltip, notification } from "antd";
 import * as React from "react";
 import { useRef, useState } from "react";
 
@@ -168,13 +169,27 @@ function GithubIntegration(props: GithubIntegrationProps) {
         return;
       }
 
-      const response = await appCtx.api.setupNewGithubRepo({
-        org,
-        name,
-        privateRepo,
-        projectId,
-        domain,
-      });
+      const response = await appCtx.api
+        .setupNewGithubRepo({
+          org,
+          name,
+          privateRepo,
+          projectId,
+          domain,
+        })
+        .catch((error) => {
+          if (error instanceof BadRequestError) {
+            notification.error({
+              message: "Could not create GitHub repository",
+              description: error.message,
+            });
+            return undefined;
+          }
+          throw error;
+        });
+      if (!response) {
+        return;
+      }
 
       if (response.type === "KnownError") {
         switch (response.knownError) {

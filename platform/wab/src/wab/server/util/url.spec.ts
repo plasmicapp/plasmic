@@ -38,6 +38,12 @@ describe("fetchUntrusted", () => {
     expect(ssrf!.internalServer.requestCount()).toBe(0);
   });
 
+  it("rejects a malformed URL as unsafe", async () => {
+    await expect(
+      fetchUntrusted({ method: "GET", url: "htp//not a url" }),
+    ).rejects.toThrow(UnsafeUrlError);
+  });
+
   it("does not fetch an internal IP via external redirect", async () => {
     await expect(
       fetchUntrusted({ method: "GET", url: ssrf!.externalBadServer.url }),

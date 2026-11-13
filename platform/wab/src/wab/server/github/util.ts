@@ -1,5 +1,7 @@
 import { Config } from "@/wab/server/config";
 import { Project, User } from "@/wab/server/entities/Entities";
+import { isGithubRateLimited } from "@/wab/server/github/errors";
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { assert } from "@/wab/shared/common";
 import { Octokit } from "@octokit/core";
 
@@ -14,6 +16,32 @@ export async function assertCanUseGithubRepository(
     repo,
   });
   assert(data.permissions?.push, "No push access to repository");
+}
+
+/** Classify repo creation failures; preserve outages and rate limits. */
+export function mapCreateRepoError(e: Error): "repo exists" | Error {
+  const httpErr = e as Error & {
+    status?: number;
+    errors?: { message?: string }[];
+    response?: {
+      data?: { errors?: { message?: string }[] };
+      headers?: Record<string, string | undefined>;
+    };
+  };
+  const errors = httpErr.response?.data?.errors ?? httpErr.errors;
+  if (
+    Array.isArray(errors) &&
+    errors.some((x) => x?.message === "name already exists on this account")
+  ) {
+    return "repo exists";
+  }
+  if (
+    (httpErr.status === 403 || httpErr.status === 422) &&
+    !isGithubRateLimited(httpErr)
+  ) {
+    return new BadRequestError(e.message);
+  }
+  return e;
 }
 
 export function mkCommitMessage(

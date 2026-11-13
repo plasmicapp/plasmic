@@ -37,11 +37,21 @@ describe("uploadFileToS3", () => {
     expect(mockUploadDone).toHaveBeenCalledTimes(1);
   });
 
-  it("rejects a truncated jpeg as a bad request without uploading", async () => {
-    const jpeg = await makeJpeg();
-    const result = await uploadFileToS3(jpeg.subarray(0, jpeg.length / 2));
-    expect(result.isErr()).toBe(true);
-    expect(result._unsafeUnwrapErr()).toBeInstanceOf(BadRequestError);
-    expect(mockUploadDone).not.toHaveBeenCalled();
-  });
+  it.each([
+    [
+      "a truncated jpeg",
+      async () => {
+        const jpeg = await makeJpeg();
+        return jpeg.subarray(0, jpeg.length / 2);
+      },
+    ],
+    ["an unsupported file type", async () => Buffer.from("not an image")],
+  ] as const)(
+    "rejects %s as a bad request without uploading",
+    async (_, makeBuffer) => {
+      const result = await uploadFileToS3(await makeBuffer());
+      expect(result._unsafeUnwrapErr()).toBeInstanceOf(BadRequestError);
+      expect(mockUploadDone).not.toHaveBeenCalled();
+    },
+  );
 });

@@ -44,6 +44,17 @@ describe("triggerWebhookOnly", () => {
     expect(ssrf!.internalServer.requestCount()).toBe(0);
   });
 
+  it("reports a malformed URL as an invalid URL result", async () => {
+    expect(
+      await triggerWebhookOnly({
+        method: "GET",
+        url: "htp//not a url",
+        headers: [],
+        payload: "",
+      }),
+    ).toEqual({ status: 400, data: "Invalid URL" });
+  });
+
   it("does not follow redirects", async () => {
     const response = await triggerWebhookOnly({
       method: "GET",

@@ -1,8 +1,13 @@
 import "@/wab/server/extensions";
 import { makeS3Client } from "@/wab/server/util/s3-util";
+import { NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import { GetClipResponse } from "@/wab/shared/ApiSchema";
 import { ensure, ensureType } from "@/wab/shared/common";
-import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  GetObjectCommand,
+  GetObjectCommandOutput,
+  PutObjectCommand,
+} from "@aws-sdk/client-s3";
 import { Request, Response } from "express-serve-static-core";
 
 const CLIP_BUCKET = process.env.CLIP_BUCKET ?? "plasmic-clips";
@@ -31,12 +36,20 @@ export async function putClip(req: Request, res: Response) {
 export async function getClip(req: Request, res: Response) {
   const { clipId } = req.params;
   const s3 = makeS3Client();
-  const result = await s3.send(
-    new GetObjectCommand({
-      Bucket: CLIP_BUCKET,
-      Key: clipId,
-    }),
-  );
+  let result: GetObjectCommandOutput;
+  try {
+    result = await s3.send(
+      new GetObjectCommand({
+        Bucket: CLIP_BUCKET,
+        Key: clipId,
+      }),
+    );
+  } catch (err) {
+    if (err?.name === "NoSuchKey") {
+      throw new NotFoundError("Clip not found");
+    }
+    throw err;
+  }
   const content = await ensure(
     result.Body,
     "Unexpected empty clip body",

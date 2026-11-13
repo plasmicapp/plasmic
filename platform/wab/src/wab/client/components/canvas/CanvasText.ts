@@ -1220,7 +1220,7 @@ export const mkCanvasText = ownedComputedFn(
               // also cancel the key: once Slate re-renders it writes
               // `editor.selection` back to the DOM, and that would undo a
               // caret move the browser made in the meantime. Keys this handler
-              // doesn't consume (Shift+Arrow, Home, End) must not sync.
+              // doesn't consume (Home, End) must not sync.
 
               if (isSpace(event.nativeEvent)) {
                 syncSlateSelectionFromDom(editor, sub);
@@ -1259,12 +1259,26 @@ export const mkCanvasText = ownedComputedFn(
                 return;
               }
 
-              const isLeft = isHotkey("left")(event.nativeEvent);
-              if (isLeft || isHotkey("right")(event.nativeEvent)) {
+              const extendLeft = isHotkey("shift+left")(event.nativeEvent);
+              const extendRight = isHotkey("shift+right")(event.nativeEvent);
+              const isLeft = isHotkey("left")(event.nativeEvent) || extendLeft;
+              if (
+                isLeft ||
+                isHotkey("right")(event.nativeEvent) ||
+                extendRight
+              ) {
                 syncSlateSelectionFromDom(editor, sub);
                 event.preventDefault();
                 const { selection } = editor;
-                if (selection && Range.isCollapsed(selection)) {
+                if (selection && (extendLeft || extendRight)) {
+                  // Keep selection extension in Slate so a render cannot undo
+                  // a browser caret move before selectionchange catches up.
+                  Transforms.move(editor, {
+                    unit: "character",
+                    reverse: isLeft,
+                    edge: "focus",
+                  });
+                } else if (selection && Range.isCollapsed(selection)) {
                   // Let cursor step into and out inline elements without
                   // stepping over characters.
                   Transforms.move(editor, { unit: "offset", reverse: isLeft });

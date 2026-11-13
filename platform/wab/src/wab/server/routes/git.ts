@@ -4,7 +4,10 @@ import { detectSyncOptions } from "@/wab/server/github/detect";
 import { runGitJob } from "@/wab/server/github/gitjobs";
 import { setupGithubPages } from "@/wab/server/github/pages";
 import { fetchGithubRepositories } from "@/wab/server/github/repos";
-import { assertCanUseGithubRepository } from "@/wab/server/github/util";
+import {
+  assertCanUseGithubRepository,
+  mapCreateRepoError,
+} from "@/wab/server/github/util";
 import {
   createOrUpdatePushWorkflow,
   createOrUpdateWorkflow,
@@ -165,17 +168,7 @@ export async function setupNewGithubRepo(req: Request, res: Response) {
                     }),
               (e) => e as Error,
             )()
-          ).mapErr((e) => {
-            if ("errors" in e) {
-              const error = e["errors"]?.[0];
-              if (
-                error?.["message"] === "name already exists on this account"
-              ) {
-                return "repo exists" as const;
-              }
-            }
-            return e;
-          });
+          ).mapErr(mapCreateRepoError);
 
           const [owner, repo] = data.full_name.split("/");
 

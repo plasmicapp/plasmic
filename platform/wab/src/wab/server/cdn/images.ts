@@ -66,7 +66,7 @@ export async function uploadFileToS3(
   }
 
   if (!fileType && (imageOnly || !mime || !ext)) {
-    return err(new Error("Invalid file type"));
+    return err(new BadRequestError("Unsupported file type"));
   }
 
   const fileHash = md5(fileBuffer);

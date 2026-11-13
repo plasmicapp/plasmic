@@ -44,12 +44,19 @@ export async function fetchUntrusted<T = string>(
       transformResponse,
     });
   } catch (err) {
-    if (isRequestFilteringAgentError(err)) {
+    if (isRequestFilteringAgentError(err) || isInvalidUrlError(err)) {
       throw new UnsafeUrlError(req.url ?? "");
     } else {
       throw err;
     }
   }
+}
+
+function isInvalidUrlError(error: unknown): boolean {
+  return (
+    error instanceof TypeError &&
+    (error as TypeError & { code?: string }).code === "ERR_INVALID_URL"
+  );
 }
 
 /**
