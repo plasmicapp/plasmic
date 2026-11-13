@@ -58,9 +58,7 @@ export function getTextWithScrolling(
     return truncateAtWordBoundary(normalized, maxLength);
   }
 
-  const query = matcher._query.toLowerCase();
-  const lowerText = normalized.toLowerCase();
-  const matchIndex = lowerText.indexOf(query);
+  const matchIndex = matcher.findMatchIndex(normalized);
 
   // If no match, or match is early enough
   if (matchIndex === -1 || matchIndex < maxLength - 10) {
@@ -94,23 +92,81 @@ export function getTextWithScrolling(
 
   return result;
 }
+
+// Code search tolerates whitespace around symbols (e.g. `${ a }` and `${a}`),
+// while keeping Unicode identifier characters together.
+function codeWordPattern(word: string) {
+  return (
+    word.match(
+      /[\p{ID_Continue}$\u200c\u200d]+|[^\p{ID_Continue}$\u200c\u200d]/gu,
+    ) ?? []
+  )
+    .map((token) => L.escapeRegExp(token))
+    .join("\\s*");
+}
+
 export class Matcher {
   _query: /*TWZ*/ string;
-  _typeaheadPatternGlobal: /*TWZ*/ RegExp;
-  _typeaheadPatternOnce: /*TWZ*/ RegExp;
-  constructor(rawQuery: string, opts: { matchMiddleOfWord?: boolean } = {}) {
+  _boldPattern: RegExp;
+  private readonly wordPatterns: RegExp[];
+  private readonly matchCode: boolean;
+  constructor(
+    rawQuery: string,
+    opts: { matchMiddleOfWord?: boolean; matchCode?: boolean } = {},
+  ) {
     const matchMiddleOfWord = opts.matchMiddleOfWord ?? true;
     this._query = rawQuery.trim();
     const patPrefix = matchMiddleOfWord ? "" : "\\b";
-    const patternStr = [...simpleWords(this._query)]
-      .map((word: /*TWZ*/ string) => patPrefix + L.escapeRegExp(word))
-      .join(".*");
-    // We use two here since RegExps are stateful if g flag is used.
-    this._typeaheadPatternGlobal = new RegExp(`${patternStr}`, "gi");
-    this._typeaheadPatternOnce = new RegExp(`${patternStr}`, "i");
+    const words = [...simpleWords(this._query)];
+    const toPattern = (word: string) =>
+      patPrefix +
+      (opts.matchCode ? codeWordPattern(word) : L.escapeRegExp(word));
+    this.matchCode = opts.matchCode ?? false;
+    this.wordPatterns = words.map((word) => new RegExp(toPattern(word), "gi"));
+    // Bold words separately so a snippet that cuts off the full match still shows.
+    const boldWords = words.some((word) => word.length > 1)
+      ? words.filter((word) => word.length > 1)
+      : words;
+    this._boldPattern = new RegExp(
+      L.sortBy(boldWords, (word) => -word.length)
+        .map(toPattern)
+        .join("|"),
+      "gi",
+    );
   }
-  matches(text: /*TWZ*/ string) {
-    return !this.hasQuery() || this._typeaheadPatternOnce.test(text);
+  matches(text: string | undefined) {
+    return this.findMatchIndex(text) !== -1;
+  }
+  findMatchIndex(text: string = ""): number {
+    if (!this.hasQuery()) {
+      return 0;
+    }
+    // Scan each word once in order, without backtracking over earlier matches.
+    // Outside code search, query words must match within a single line.
+    const parts = this.matchCode ? [text] : text.split(/[\n\r\u2028\u2029]/);
+    let offset = 0;
+    for (const part of parts) {
+      let end = 0;
+      let start = -1;
+      let matched = true;
+      for (const pattern of this.wordPatterns) {
+        pattern.lastIndex = end;
+        const match = pattern.exec(part);
+        if (!match) {
+          matched = false;
+          break;
+        }
+        if (start === -1) {
+          start = match.index;
+        }
+        end = pattern.lastIndex;
+      }
+      if (matched) {
+        return offset + start;
+      }
+      offset += part.length + 1;
+    }
+    return -1;
   }
   hasQuery() {
     return this._query !== "";
@@ -119,8 +175,7 @@ export class Matcher {
     if (!this.hasQuery()) {
       return text;
     } else {
-      const pat = this._typeaheadPatternGlobal;
-      return boldSnippets(text, pat, className);
+      return boldSnippets(text, this._boldPattern, className);
     }
   }
   boldSnippetsWithScrolling(
