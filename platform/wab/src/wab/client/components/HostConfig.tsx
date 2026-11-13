@@ -146,8 +146,8 @@ export function HostConfig({
               defaultUrl={currentUrl}
               confirmDisabled={isLoading || isRefreshingProjectData}
               onConfirm={async (url, parsedUrl) => {
-                await doUpdateUrl(branches, url);
                 await appCtx.api.addTrustedHost(parsedUrl.origin);
+                await doUpdateUrl(branches, url);
               }}
               onClear={async () => {
                 await doUpdateUrl(branches, null);

@@ -176,7 +176,6 @@ function PlasmicDialogHeader__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-
         className={classNames("all", sty.freeBox)}
       >
         {renderPlasmicSlot({

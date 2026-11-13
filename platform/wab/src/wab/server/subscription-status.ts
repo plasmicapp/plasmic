@@ -1,9 +1,10 @@
 import type { DbMgr } from "@/wab/server/db/DbMgr";
-import { SubscriptionStatusRecord } from "@/wab/server/entities/CustomEntities";
-import { Team } from "@/wab/server/entities/Entities";
+import { SubscriptionStatusRecord, Team } from "@/wab/server/entities/Entities";
 import { TeamId, TeamSubscriptionStatus } from "@/wab/shared/ApiSchema";
+import { getPastDuePhase } from "@/wab/shared/billing/billing-util";
 import { chunk, uniq } from "lodash";
 import type Stripe from "stripe";
+import { Temporal } from "temporal-polyfill";
 import type { EntityManager } from "typeorm";
 
 // A child organization inherits its parent's plan (see mkApiTeam).
@@ -71,8 +72,12 @@ export async function loadSubscriptionStatuses(mgr: DbMgr, teams: Team[]) {
     const record = records.get(team.id);
     return team.stripeSubscriptionId &&
       record?.stripeSubscriptionId === team.stripeSubscriptionId
-      ? record.status
-      : deriveSubscriptionStatus(team, null);
+      ? {
+          status: record.status,
+          pastDuePhaseOverride: record.pastDuePhaseOverride,
+          pastDueLastDay: getPastDueLastDay(record)?.toString() ?? null,
+        }
+      : { status: deriveSubscriptionStatus(team, null), pastDueLastDay: null };
   });
 }
 
@@ -84,6 +89,56 @@ export function isPaidSubscriptionStatus(
 }
 
 export async function isPaidTeam(team: Team, mgr: DbMgr): Promise<boolean> {
-  const [status] = await loadSubscriptionStatuses(mgr, [team]);
+  const [{ status }] = await loadSubscriptionStatuses(mgr, [team]);
   return isPaidSubscriptionStatus(status);
+}
+
+/** Like isPaidTeam, but a past-due team loses paid access once editing is blocked. */
+export async function isPaidTeamNotBlocked(
+  team: Team,
+  mgr: DbMgr,
+): Promise<boolean> {
+  const [{ status, pastDueLastDay, pastDuePhaseOverride }] =
+    await loadSubscriptionStatuses(mgr, [team]);
+  return (
+    isPaidSubscriptionStatus(status) &&
+    getPastDuePhase({
+      subscriptionStatus: status,
+      pastDueLastDay,
+      pastDuePhaseOverride,
+    }) !== "blocked"
+  );
+}
+
+const PAST_DUE_GRACE_DAYS = 7;
+export const PAST_DUE_WARNING_HOURS = 48;
+// Teams already past due at launch get a full grace period from this date.
+export const PAST_DUE_POLICY_START = Temporal.PlainDate.from("2026-11-20");
+
+/** Last calendar day of editing, inclusive in every timezone. */
+export function getPastDueLastDay(
+  record: Pick<SubscriptionStatusRecord, "status" | "createdAt">,
+): Temporal.PlainDate | null {
+  if (record.status !== "past_due") {
+    return null;
+  }
+  const started = Temporal.Instant.from(record.createdAt.toISOString())
+    .toZonedDateTimeISO("UTC")
+    .toPlainDate();
+  const since =
+    Temporal.PlainDate.compare(started, PAST_DUE_POLICY_START) < 0
+      ? PAST_DUE_POLICY_START
+      : started;
+  return since.add({ days: PAST_DUE_GRACE_DAYS });
+}
+
+export async function getTeamSubscription(mgr: DbMgr, team: Team) {
+  const [{ status, pastDueLastDay, pastDuePhaseOverride }] =
+    await loadSubscriptionStatuses(mgr, [team]);
+  return {
+    subscriptionStatus: status,
+    pastDueLastDay,
+    pastDuePhaseOverride: pastDuePhaseOverride ?? null,
+    billingTeamId: getEntitledTeam(team).id,
+  };
 }

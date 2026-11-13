@@ -14,22 +14,50 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
   useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -37,10 +65,10 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicListItem.module.css"; // plasmic-import: v31d9_ANqk/css
 
+import GripSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GripSvg"; // plasmic-import: jxIRSIMqs/icon
 import ComponentIcon from "../plasmic_kit/PlasmicIcon__Component"; // plasmic-import: nNWEF4jI3s5DI/icon
 import EyeIcon from "../plasmic_kit/PlasmicIcon__Eye"; // plasmic-import: A2FnGYgDh4e3U/icon
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import GripSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GripSvg"; // plasmic-import: jxIRSIMqs/icon
 
 createPlasmicElementProxy;
 
@@ -174,7 +202,7 @@ function PlasmicListItem__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -187,96 +215,93 @@ function PlasmicListItem__RenderFunc(props: {
         path: "isSelected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isSelected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isSelected
       },
       {
         path: "isFocused",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isFocused,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isFocused
       },
       {
         path: "showActions",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.showActions,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.showActions
       },
       {
         path: "isDragging",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isDragging,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isDragging
       },
       {
         path: "isDraggable",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.isDraggable,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isDraggable
       },
       {
         path: "showAddendums",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.showAddendums,
+          $props.showAddendums
       },
       {
         path: "hideIcon",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hideIcon,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hideIcon
       },
       {
         path: "hasMenu",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hasMenu,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hasMenu
       },
       {
         path: "showAdditionalRow",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.showAdditionalRow,
+          $props.showAdditionalRow
       },
       {
         path: "color",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.color,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.color
       },
       {
         path: "alwaysShowDragHandle",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.alwaysShowDragHandle,
+          $props.alwaysShowDragHandle
       },
       {
         path: "hasRightContents",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.hasRightContents,
+          $props.hasRightContents
       },
       {
         path: "isHighlighted",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.isHighlighted,
+          $props.isHighlighted
       },
       {
         path: "removeAdditionalRowLeftPadding",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.removeAdditionalRowLeftPadding,
-      },
+          $props.removeAdditionalRowLeftPadding
+      }
     ],
-
     [$props, $ctx, $refs]
   );
 
@@ -285,12 +310,12 @@ function PlasmicListItem__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const [isRootHover, triggerRootHoverProps] = useTrigger("useHover", {});
   const triggers = {
-    hover_root: isRootHover,
+    hover_root: isRootHover
   };
 
   const styleTokensClassNames = _useStyleTokens();
@@ -383,7 +408,7 @@ function PlasmicListItem__RenderFunc(props: {
           [sty.rootshowAdditionalRow_color_variant_hasMenu]:
             hasVariant($state, "color", "variant") &&
             hasVariant($state, "showAdditionalRow", "showAdditionalRow") &&
-            hasVariant($state, "hasMenu", "hasMenu"),
+            hasVariant($state, "hasMenu", "hasMenu")
         }
       )}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
@@ -441,7 +466,7 @@ function PlasmicListItem__RenderFunc(props: {
             $state,
             "showAdditionalRow",
             "showAdditionalRow"
-          ),
+          )
         })}
       >
         {(
@@ -449,12 +474,12 @@ function PlasmicListItem__RenderFunc(props: {
           hasVariant($state, "isDraggable", "isDraggable")
             ? true
             : hasVariant($state, "alwaysShowDragHandle", "alwaysShowDragHandle")
-            ? true
-            : hasVariant($state, "isDraggable", "isDraggable")
-            ? true
-            : hasVariant($state, "isDragging", "isDragging")
-            ? true
-            : false
+              ? true
+              : hasVariant($state, "isDraggable", "isDraggable")
+                ? true
+                : hasVariant($state, "isDragging", "isDragging")
+                  ? true
+                  : false
         ) ? (
           <div
             data-plasmic-name={"dragHandle"}
@@ -474,7 +499,7 @@ function PlasmicListItem__RenderFunc(props: {
                 $state,
                 "isDragging",
                 "isDragging"
-              ),
+              )
             })}
           >
             <GripSvgIcon
@@ -510,7 +535,7 @@ function PlasmicListItem__RenderFunc(props: {
                   $state,
                   "showAddendums",
                   "showAddendums"
-                ),
+                )
               })}
               role={"img"}
             />
@@ -540,7 +565,7 @@ function PlasmicListItem__RenderFunc(props: {
                 $state,
                 "showActions",
                 "showActions"
-              ),
+              )
             })}
           >
             {renderPlasmicSlot({
@@ -573,8 +598,8 @@ function PlasmicListItem__RenderFunc(props: {
                 ),
                 [sty.slotTargetIconshowAddendums_color_variant]:
                   hasVariant($state, "color", "variant") &&
-                  hasVariant($state, "showAddendums", "showAddendums"),
-              }),
+                  hasVariant($state, "showAddendums", "showAddendums")
+              })
             })}
           </div>
         ) : null}
@@ -637,7 +662,7 @@ function PlasmicListItem__RenderFunc(props: {
             ),
             [sty.labelContainershowAddendums_color_variant]:
               hasVariant($state, "color", "variant") &&
-              hasVariant($state, "showAddendums", "showAddendums"),
+              hasVariant($state, "showAddendums", "showAddendums")
           })}
         >
           <div
@@ -678,7 +703,7 @@ function PlasmicListItem__RenderFunc(props: {
                 $state,
                 "showAddendums",
                 "showAddendums"
-              ),
+              )
             })}
           >
             {renderPlasmicSlot({
@@ -758,8 +783,8 @@ function PlasmicListItem__RenderFunc(props: {
                     "showAdditionalRow",
                     "showAdditionalRow"
                   ) &&
-                  hasVariant($state, "hasMenu", "hasMenu"),
-              }),
+                  hasVariant($state, "hasMenu", "hasMenu")
+              })
             })}
           </div>
           {(
@@ -767,8 +792,8 @@ function PlasmicListItem__RenderFunc(props: {
             triggers.hover_root
               ? true
               : hasVariant($state, "hasRightContents", "hasRightContents")
-              ? true
-              : false
+                ? true
+                : false
           ) ? (
             <div
               data-plasmic-name={"rightContentContainer"}
@@ -783,7 +808,7 @@ function PlasmicListItem__RenderFunc(props: {
                   $state,
                   "hasRightContents",
                   "hasRightContents"
-                ),
+                )
               })}
             >
               {renderPlasmicSlot({
@@ -825,8 +850,8 @@ function PlasmicListItem__RenderFunc(props: {
                     $state,
                     "showActions",
                     "showActions"
-                  ),
-                }),
+                  )
+                })
               })}
             </div>
           ) : null}
@@ -867,7 +892,7 @@ function PlasmicListItem__RenderFunc(props: {
                 $state,
                 "showAdditionalRow",
                 "showAdditionalRow"
-              ),
+              )
             })}
           >
             {renderPlasmicSlot({
@@ -930,8 +955,8 @@ function PlasmicListItem__RenderFunc(props: {
                   $state,
                   "showAdditionalRow",
                   "showAdditionalRow"
-                ),
-              }),
+                )
+              })
             })}
           </div>
         ) : null}
@@ -969,7 +994,7 @@ function PlasmicListItem__RenderFunc(props: {
               [sty.actionsContainershowAddendums_showActions_color_variant]:
                 hasVariant($state, "color", "variant") &&
                 hasVariant($state, "showAddendums", "showAddendums") &&
-                hasVariant($state, "showActions", "showActions"),
+                hasVariant($state, "showActions", "showActions")
             })}
           >
             {renderPlasmicSlot({
@@ -994,7 +1019,6 @@ function PlasmicListItem__RenderFunc(props: {
                   />
                 </IconButton>
               ),
-
               value: args.actions,
               className: classNames(sty.slotTargetActions, {
                 [sty.slotTargetActionscolor_variant]: hasVariant(
@@ -1095,8 +1119,8 @@ function PlasmicListItem__RenderFunc(props: {
                   hasVariant($state, "isSelected", "isSelected") &&
                   hasVariant($state, "isFocused", "isFocused") &&
                   hasVariant($state, "showActions", "showActions") &&
-                  hasVariant($state, "showAddendums", "showAddendums"),
-              }),
+                  hasVariant($state, "showAddendums", "showAddendums")
+              })
             })}
           </div>
         ) : null}
@@ -1115,7 +1139,7 @@ function PlasmicListItem__RenderFunc(props: {
               hasVariant($state, "hasMenu", "hasMenu"),
             [sty.menuButtonisHighlighted_hasMenu]:
               hasVariant($state, "hasMenu", "hasMenu") &&
-              hasVariant($state, "isHighlighted", "isHighlighted"),
+              hasVariant($state, "isHighlighted", "isHighlighted")
           })}
         />
       </div>
@@ -1160,12 +1184,12 @@ function PlasmicListItem__RenderFunc(props: {
               $state,
               "showAdditionalRow",
               "showAdditionalRow"
-            ),
+            )
           })}
         >
           {renderPlasmicSlot({
             defaultContents: null,
-            value: args.additional,
+            value: args.additional
           })}
         </div>
       ) : null}
@@ -1186,9 +1210,8 @@ const PlasmicDescendants = {
     "addendumContainer",
     "actionsContainer",
     "menuButton",
-    "additional",
+    "additional"
   ],
-
   main: [
     "main",
     "dragHandle",
@@ -1199,9 +1222,8 @@ const PlasmicDescendants = {
     "rightContentContainer",
     "addendumContainer",
     "actionsContainer",
-    "menuButton",
+    "menuButton"
   ],
-
   dragHandle: ["dragHandle", "svg"],
   svg: ["svg"],
   iconContainer: ["iconContainer"],
@@ -1211,7 +1233,7 @@ const PlasmicDescendants = {
   addendumContainer: ["addendumContainer"],
   actionsContainer: ["actionsContainer"],
   menuButton: ["menuButton"],
-  additional: ["additional"],
+  additional: ["additional"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -1236,14 +1258,15 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicListItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicListItem__VariantsArgs;
     args?: PlasmicListItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicListItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicListItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicListItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -1268,7 +1291,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicListItem__ArgProps,
-          internalVariantPropNames: PlasmicListItem__VariantProps,
+          internalVariantPropNames: PlasmicListItem__VariantProps
         }),
       [props, nodeName]
     );
@@ -1276,7 +1299,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -1306,7 +1329,7 @@ export const PlasmicListItem = Object.assign(
 
     // Metadata about props expected for PlasmicListItem
     internalVariantProps: PlasmicListItem__VariantProps,
-    internalArgProps: PlasmicListItem__ArgProps,
+    internalArgProps: PlasmicListItem__ArgProps
   }
 );
 

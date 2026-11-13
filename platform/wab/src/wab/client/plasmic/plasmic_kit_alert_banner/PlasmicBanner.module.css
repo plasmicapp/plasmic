@@ -1,5 +1,6 @@
 .root {
-  box-shadow: 0px 8px 32px -8px var(--token-XeFw4MGauXBT),
+  box-shadow:
+    0px 8px 32px -8px var(--token-XeFw4MGauXBT),
     0px 8px 20px -16px var(--token-JrjdlBU-a5Ju);
   display: inline-flex;
   width: auto;
@@ -97,25 +98,25 @@
 .action1Btn:global(.__wab_instance) {
   position: relative;
 }
-.svg___0GJus {
+.svg__f5FXy {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.svg__dqwMt {
+.svg__lw0Rj {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.svg__jM6X2 {
+.svg__zdXxT {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.svg__l872E {
+.svg__jv5M9 {
   display: flex;
   position: relative;
   object-fit: cover;

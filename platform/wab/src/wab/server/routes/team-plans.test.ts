@@ -6,13 +6,22 @@ import {
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { InternalDbMgr } from "@/wab/server/db/internal/InternalDbMgr";
 import { seedTestFeatureTiers } from "@/wab/server/db/seed/feature-tier";
-import { SubscriptionStatusRecord } from "@/wab/server/entities/CustomEntities";
-import { Permission, Team } from "@/wab/server/entities/Entities";
+import { setupEmailTest } from "@/wab/server/emails/__testonly__/email-test-util";
+import {
+  Permission,
+  SubscriptionStatusRecord,
+  Team,
+} from "@/wab/server/entities/Entities";
 import { getProjectIdAndTokenForDomain } from "@/wab/server/routes/internal/hosting";
+import { sendPastDueWarnings } from "@/wab/server/internal/sync-subscriptions";
 import {
   cancelSubscription,
   updatePaymentMethod,
 } from "@/wab/server/routes/internal/payment";
+import {
+  getProjectSubscriptionStatus,
+  getSubscriptionStatus,
+} from "@/wab/server/routes/subscription-status";
 import {
   checkFreeTrialDuration,
   maybeTriggerPaywall,
@@ -20,7 +29,11 @@ import {
   syncTeamSubscription,
 } from "@/wab/server/routes/team-plans";
 import { mkApiTeams } from "@/wab/server/routes/teams";
-import { isPaidTeam } from "@/wab/server/subscription-status";
+import {
+  PAST_DUE_POLICY_START,
+  getTeamSubscription,
+  isPaidTeam,
+} from "@/wab/server/subscription-status";
 import {
   StripeCustomerId,
   StripeSubscriptionId,
@@ -31,6 +44,7 @@ import { DEVFLAGS } from "@/wab/shared/devflags";
 import { pluralizeResourceId } from "@/wab/shared/perms";
 import { Request, Response } from "express-serve-static-core";
 import Stripe from "stripe";
+import { Temporal } from "temporal-polyfill";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("@/wab/server/app-backend-real", () => ({ runAppServer: vi.fn() }));
@@ -547,7 +561,6 @@ describe("syncTeamSubscription", () => {
         await fixture.sudo.getTeamById(fixture.team.id),
       ]);
       expect(apiTeam).toMatchObject({
-        subscriptionStatus: "paid",
         onTrial: false,
       });
     }));
@@ -595,7 +608,6 @@ describe("syncTeamSubscription", () => {
         await sudo.getTeamById(team.id),
       ]);
       expect(apiTeam).toMatchObject({
-        subscriptionStatus: "manual",
         onTrial: false,
       });
     }));
@@ -651,7 +663,6 @@ describe("syncTeamSubscription", () => {
       expect((await latestRecord(sudo, team.id))?.status).toBe("free");
       const [apiTeam] = await mkApiTeams(sudo, [loaded]);
       expect(apiTeam).toMatchObject({
-        subscriptionStatus: "free",
         onTrial: false,
         featureTier: null,
       });
@@ -682,10 +693,10 @@ describe("syncTeamSubscription", () => {
         stripeSubscriptionId: "sub_new" as StripeSubscriptionId,
       });
       // A record for the previous subscription is stale until the new one syncs.
-      const [unsynced] = await mkApiTeams(sudo, [
-        await sudo.getTeamById(team.id),
-      ]);
-      expect(unsynced.subscriptionStatus).toBe("paid");
+      expect(
+        (await getTeamSubscription(sudo, await sudo.getTeamById(team.id)))
+          .subscriptionStatus,
+      ).toBe("paid");
       await syncTeamSubscription(
         ctx,
         team.id,
@@ -693,14 +704,203 @@ describe("syncTeamSubscription", () => {
       );
       expect(await em.count(SubscriptionStatusRecord)).toBe(3);
       const parent = await sudo.getTeamById(team.id);
-      const child = Object.assign(new Team(), {
+      const child: Team = Object.assign(new Team(), {
         id: "child",
         featureTierId: null,
         parentTeam: parent,
       });
-      const [childApi, parentApi] = await mkApiTeams(sudo, [child, parent]);
+      const [childApi, parentApi] = await Promise.all(
+        [child, parent].map((t) => getTeamSubscription(sudo, t)),
+      );
       expect(childApi.subscriptionStatus).toBe("past_due");
       expect(parentApi.subscriptionStatus).toBe("past_due");
-      expect(childApi.featureTier).toEqual(parentApi.featureTier);
+      expect(childApi.billingTeamId).toBe(parent.id);
+      expect(parentApi.billingTeamId).toBe(parent.id);
+      expect(childApi.pastDueLastDay).toEqual(parentApi.pastDueLastDay);
+
+      // A child with its own plan does not inherit its parent's billing.
+      child.featureTierId = parent.featureTierId;
+      const ownPlanApi = await getTeamSubscription(sudo, child);
+      expect(ownPlanApi.billingTeamId).toBe(child.id);
+      expect(ownPlanApi.subscriptionStatus).toBe("manual");
+      expect(ownPlanApi.pastDueLastDay).toBeNull();
+    }));
+
+  describe("past due", () => {
+    const LATER =
+      PAST_DUE_POLICY_START.toZonedDateTime("UTC").epochMilliseconds + 30 * DAY;
+    beforeEach(() => {
+      vi.spyOn(Date, "now").mockReturnValue(LATER);
+      vi.spyOn(Temporal.Now, "instant").mockReturnValue(
+        Temporal.Instant.fromEpochMilliseconds(LATER),
+      );
+    });
+
+    async function startPastDue(
+      fixture: Awaited<ReturnType<typeof setupTrial>>,
+      since: number,
+    ) {
+      const ctx = await subscribe(fixture);
+      await syncTeamSubscription(ctx, fixture.team.id, stripeSub("active"));
+      await syncTeamSubscription(ctx, fixture.team.id, stripeSub("past_due"));
+      const record = ensure(
+        await latestRecord(fixture.sudo, fixture.team.id),
+        "Expected status record",
+      );
+      await fixture.em.update(SubscriptionStatusRecord, record.id, {
+        createdAt: new Date(since),
+      });
+      return record;
+    }
+
+    async function lastDay({ sudo, team }: { sudo: DbMgr; team: Team }) {
+      return (await getTeamSubscription(sudo, await sudo.getTeamById(team.id)))
+        .pastDueLastDay;
+    }
+
+    it("blocks a grace period after the episode starts, no earlier than the policy", () =>
+      withTrial(async (fixture) => {
+        const ctx = await subscribe(fixture);
+        await syncTeamSubscription(ctx, fixture.team.id, stripeSub("active"));
+        expect(await lastDay(fixture)).toBeNull();
+        await startPastDue(fixture, LATER - 5 * DAY);
+        expect(await lastDay(fixture)).toEqual(
+          PAST_DUE_POLICY_START.add({ days: 32 }).toString(),
+        );
+        await startPastDue(fixture, LATER);
+        expect(await lastDay(fixture)).toEqual(
+          PAST_DUE_POLICY_START.add({ days: 37 }).toString(),
+        );
+        await startPastDue(
+          fixture,
+          PAST_DUE_POLICY_START.toZonedDateTime("UTC").epochMilliseconds -
+            30 * DAY,
+        );
+        expect(await lastDay(fixture)).toEqual(
+          PAST_DUE_POLICY_START.add({ days: 7 }).toString(),
+        );
+      }));
+
+    it.each(["grace", "blocked"] as const)(
+      "preserves manual %s on sync, inherits it, and resets it for a new episode",
+      (phase) =>
+        withTrial(async (fixture) => {
+          const { sudo, team, em } = fixture;
+          const record = await startPastDue(fixture, LATER - 10 * DAY);
+          await em.update(SubscriptionStatusRecord, record.id, {
+            pastDuePhaseOverride: phase,
+          });
+          const ctx = { superMgr: sudo, devflags: DEVFLAGS };
+          await syncTeamSubscription(ctx, team.id, stripeSub("past_due"));
+          const parent = await sudo.getTeamById(team.id);
+          const child = Object.assign(new Team(), {
+            id: "child",
+            featureTierId: null,
+            parentTeam: parent,
+          });
+          expect(await getTeamSubscription(sudo, child)).toMatchObject({
+            pastDuePhaseOverride: phase,
+          });
+          const { config, mailer } = setupEmailTest();
+          expect(
+            await sendPastDueWarnings({
+              mgr: InternalDbMgr.fromDbMgr(sudo),
+              mailer,
+              config,
+            }),
+          ).toEqual({ warned: 0, warnFailed: 0 });
+          expect(mailer.sendMail).not.toHaveBeenCalled();
+          await syncTeamSubscription(ctx, team.id, stripeSub("active"));
+          await syncTeamSubscription(ctx, team.id, stripeSub("past_due"));
+          expect(await getTeamSubscription(sudo, parent)).toMatchObject({
+            pastDuePhaseOverride: null,
+          });
+        }),
+    );
+
+    it("emails each episode once, within 48 hours of the block", () =>
+      withTrial(async (fixture) => {
+        const { sudo, users, em, team } = fixture;
+        await em.update(Team, team.id, { billingEmail: "billing@example.com" });
+        const { config, mailer } = setupEmailTest();
+        const mgr = InternalDbMgr.fromDbMgr(sudo);
+        const warn = () => sendPastDueWarnings({ mgr, mailer, config });
+
+        await startPastDue(fixture, LATER - 4 * DAY);
+        expect(await warn()).toEqual({ warned: 0, warnFailed: 0 });
+
+        mailer.sendMail.mockRejectedValueOnce(new Error("mailer down"));
+        const record = await startPastDue(fixture, LATER - 7 * DAY);
+        expect(
+          await sendPastDueWarnings({
+            mgr,
+            mailer,
+            config,
+            syncedTeamIds: new Set(),
+          }),
+        ).toEqual({ warned: 0, warnFailed: 0 });
+        expect(mailer.sendMail).not.toHaveBeenCalled();
+
+        expect(await warn()).toEqual({ warned: 0, warnFailed: 1 });
+        expect(await warn()).toEqual({ warned: 1, warnFailed: 0 });
+        expect(await warn()).toEqual({ warned: 0, warnFailed: 0 });
+        expect(mailer.sendMail).toHaveBeenCalledTimes(2);
+        expect(mailer.sendMail).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            to: ["billing@example.com", users[0].email],
+          }),
+        );
+        expect(
+          (await em.findOne(SubscriptionStatusRecord, record.id))
+            ?.blockWarningSentAt,
+        ).toBeInstanceOf(Date);
+
+        // A new episode warns again, unless its subscription is stale.
+        await startPastDue(fixture, LATER - 7 * DAY);
+        await sudo.sudoUpdateTeam({
+          id: team.id,
+          stripeSubscriptionId: "sub_new" as StripeSubscriptionId,
+        });
+        expect(await warn()).toEqual({ warned: 0, warnFailed: 0 });
+      }));
+  });
+});
+
+describe("subscription status endpoints", () => {
+  it("separates billing data and respects team and project permissions", () =>
+    withTrial(async ({ req, dbs, users, resources, sudo, team }) => {
+      const projectId = ensure(
+        resources.find((r) => r.type === "project"),
+        "Expected project",
+      ).id;
+      req.params = { teamId: team.id };
+      expect(await getSubscriptionStatus(req)).toEqual(
+        expect.objectContaining({
+          billingTeamId: team.id,
+          subscriptionStatus: "trial",
+        }),
+      );
+      expect(
+        (await mkApiTeams(sudo, [await sudo.getTeamById(team.id)]))[0],
+      ).not.toHaveProperty("subscriptionStatus");
+
+      req.user = users[1];
+      await expect(getSubscriptionStatus(req)).rejects.toThrow();
+      req.params = { projectId };
+      await expect(getProjectSubscriptionStatus(req)).rejects.toThrow();
+      await dbs[0]().grantProjectPermissionByEmail(
+        projectId,
+        users[1].email,
+        "content",
+      );
+      expect(await getProjectSubscriptionStatus(req)).toEqual(
+        expect.objectContaining({ billingTeamId: team.id }),
+      );
+      await dbs[0]().grantProjectPermissionByEmail(
+        projectId,
+        users[1].email,
+        "viewer",
+      );
+      expect(await getProjectSubscriptionStatus(req)).toEqual(null);
     }));
 });

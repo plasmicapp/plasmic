@@ -1,5 +1,6 @@
 import { freeTrialKey } from "@/wab/client/LocalStorageKey";
 import FreeTrialModal from "@/wab/client/components/dashboard/FreeTrialModal";
+import { TeamBillingAlertHeader } from "@/wab/client/components/dashboard/TeamBillingAlert";
 import WorkspaceSection from "@/wab/client/components/dashboard/WorkspaceSection";
 import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
 import { Spinner } from "@/wab/client/components/widgets";
@@ -148,12 +149,17 @@ function TeamPageContent_(
       <PlasmicTeamPage
         root={{ ref }}
         header={{
-          team,
-          perms,
-          numMembers,
-          numProjects,
-          filterProps,
-          onUpdate,
+          props: {
+            team,
+            perms,
+            numMembers,
+            numProjects,
+            filterProps,
+            onUpdate,
+          },
+          wrap: (node) => (
+            <TeamBillingAlertHeader team={team}>{node}</TeamBillingAlertHeader>
+          ),
         }}
         {...rest}
       >

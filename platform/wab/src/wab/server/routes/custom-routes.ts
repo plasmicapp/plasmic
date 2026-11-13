@@ -1,8 +1,10 @@
-import { withNext } from "@/wab/server/routes/util";
+import { subscriptionStatusServer } from "@/wab/server/routes/subscription-status";
+import { createTsRestEndpoints, withNext } from "@/wab/server/routes/util";
 import {
   GetSubscriptionResponse,
   RevalidatePlasmicHostingResponse,
 } from "@/wab/shared/ApiSchema";
+import { subscriptionStatusContract } from "@/wab/shared/api/subscription-status";
 import { Application, Request, Response } from "express";
 
 export const ROUTES_WITH_TIMING = [];
@@ -19,6 +21,11 @@ function addHostingRoutes(app: Application) {
 }
 
 function addPaymentRoutes(app: Application) {
+  createTsRestEndpoints(
+    subscriptionStatusContract,
+    subscriptionStatusServer,
+    app,
+  );
   app.get(
     "/api/v1/billing/subscription/:teamId",
     withNext(getBillingSubscription),

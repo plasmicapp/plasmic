@@ -557,6 +557,7 @@ export function filteredApi(
       return f(key);
     },
     getModelUpdates: checkProjectIdInFirstArg,
+    getProjectSubscription: checkProjectIdInFirstArg,
     getSiteInfo: (f) => async (siteId, opts) => {
       // The only projects we need to fetch are the site itself and the
       // insertable templates (imported projects use `getPkgVersion`).

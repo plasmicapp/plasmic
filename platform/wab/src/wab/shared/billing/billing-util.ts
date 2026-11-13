@@ -1,12 +1,14 @@
 import {
   ApiFeatureTier,
   ApiTeam,
+  ApiTeamSubscription,
   BillingFrequency,
   StripePriceId,
 } from "@/wab/shared/ApiSchema";
 import { assert } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
+import { Temporal } from "temporal-polyfill";
 import { MakeADT } from "ts-adt/MakeADT";
 
 export const rolePaywallMessage =
@@ -45,31 +47,79 @@ export function checkIsTeamOnPaidTier(
   return !!tierId && tierId !== DEVFLAGS.freeTier.id && !team.onTrial;
 }
 
+type PastDueSubscription = Pick<
+  ApiTeamSubscription,
+  "subscriptionStatus" | "pastDueLastDay" | "pastDuePhaseOverride"
+>;
+
+export function getPastDuePhase(
+  teamSub: PastDueSubscription,
+  now = Temporal.Now.instant(),
+): "grace" | "blocked" | null {
+  if (teamSub.subscriptionStatus !== "past_due") {
+    return null;
+  }
+  if (
+    teamSub.pastDuePhaseOverride === "grace" ||
+    teamSub.pastDuePhaseOverride === "blocked"
+  ) {
+    return teamSub.pastDuePhaseOverride;
+  }
+  if (!teamSub.pastDueLastDay) {
+    return null;
+  }
+  return Temporal.Instant.compare(
+    getPastDueBlocksAt(teamSub.pastDueLastDay),
+    now,
+  ) <= 0
+    ? "blocked"
+    : "grace";
+}
+
+function isPastDueBlocked(teamSub: PastDueSubscription) {
+  return getPastDuePhase(teamSub) === "blocked";
+}
+
 export function canUseChatCopilot(
   email: string | undefined | null,
   team: Pick<ApiTeam, "featureTierId" | "featureTier" | "onTrial"> | undefined,
   devflags: DevFlagsType,
+  subscription?: PastDueSubscription | null,
 ): boolean {
   return (
     isAdminTeamEmail(email, devflags) ||
-    (!!team && checkIsTeamOnPaidTier(team)) ||
+    (!!team &&
+      checkIsTeamOnPaidTier(team) &&
+      (!subscription || !isPastDueBlocked(subscription))) ||
     (!!email && devflags.chatCopilotFreeDailyTokenLimit > 0)
   );
 }
 
 /** Display the authoritative status sent by the server. */
-export function getSubscriptionStatus(team: ApiTeam): SubscriptionStatus {
+export function getSubscriptionStatus(
+  team: Pick<ApiTeam, "id" | "featureTier"> & PastDueSubscription,
+): SubscriptionStatus {
   const freeTier = DEVFLAGS.freeTier;
   switch (team.subscriptionStatus) {
     case "free":
       return { type: "valid", free: true, tier: freeTier };
-    case "past_due":
+    case "past_due": {
+      const lastDay =
+        team.pastDueLastDay && Temporal.PlainDate.from(team.pastDueLastDay);
+      const editing =
+        team.pastDuePhaseOverride === "grace"
+          ? "Editing remains available while your payment issue is resolved."
+          : isPastDueBlocked(team)
+            ? "Editing is paused until payment is made."
+            : !lastDay
+              ? "Please update your payment method."
+              : `Editing is available through ${lastDay.toLocaleString(undefined, { dateStyle: "long" })}. Update your payment method to keep editing.`;
       return {
         type: "invalid",
-        errorMsg:
-          "Failed to process your credit card. Please go to your team settings and update your credit card information.",
+        errorMsg: `Payment failed. ${editing}`,
         freeTier,
       };
+    }
     case "trial":
     case "paid":
     case "manual":
@@ -133,4 +183,14 @@ export function calculateBill(
 
 function tierIncludesMinSeats(tier: ApiFeatureTier) {
   return !["Basic", "Growth"].includes(tier.name);
+}
+
+/** End of the last allowed day in UTC-12, the latest timezone. */
+export function getPastDueBlocksAt(
+  lastDay: Temporal.PlainDate | string,
+): Temporal.Instant {
+  return Temporal.PlainDate.from(lastDay)
+    .add({ days: 1 })
+    .toZonedDateTime("-12:00")
+    .toInstant();
 }

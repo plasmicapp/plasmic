@@ -1183,7 +1183,7 @@ export class DbMgr implements MigrationDbMgr {
     }
     checkPermissions(
       (await loadSubscriptionStatuses(this, await qb.getMany())).every(
-        isPaidSubscriptionStatus,
+        ({ status }) => isPaidSubscriptionStatus(status),
       ),
       `You can only have one unpaid ${ORGANIZATION_LOWER}. Upgrade or delete your existing ${ORGANIZATION_LOWER} before ${action}.`,
     );

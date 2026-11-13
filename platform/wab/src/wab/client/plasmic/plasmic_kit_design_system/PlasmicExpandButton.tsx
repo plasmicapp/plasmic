@@ -14,20 +14,49 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  PlasmicIcon as PlasmicIcon__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  StrictProps,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -35,8 +64,8 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicExpandButton.module.css"; // plasmic-import: JJhv0MV9DH/css
 
-import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import ChevronLeftSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronLeftSvg"; // plasmic-import: 0-_N6JM-u/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import ChevronRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronRightSvg"; // plasmic-import: HBGx-zeiX/icon
 
 createPlasmicElementProxy;
@@ -96,7 +125,7 @@ function PlasmicExpandButton__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -109,20 +138,20 @@ function PlasmicExpandButton__RenderFunc(props: {
         path: "right",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.right,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.right
       },
       {
         path: "isExpanded",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isExpanded,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isExpanded
       },
       {
         path: "size",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.size,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.size
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -132,7 +161,7 @@ function PlasmicExpandButton__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -151,7 +180,7 @@ function PlasmicExpandButton__RenderFunc(props: {
       }
       className={classNames("__wab_instance", sty.root, {
         [sty.rootisExpanded]: hasVariant($state, "isExpanded", "isExpanded"),
-        [sty.rootsize_small]: hasVariant($state, "size", "small"),
+        [sty.rootsize_small]: hasVariant($state, "size", "small")
       })}
       isActive={
         hasVariant($state, "isExpanded", "isExpanded") ? true : undefined
@@ -164,8 +193,8 @@ function PlasmicExpandButton__RenderFunc(props: {
           hasVariant($state, "isExpanded", "isExpanded")
             ? ChevronDownSvgIcon
             : hasVariant($state, "right", "right")
-            ? ChevronRightSvgIcon
-            : ChevronLeftSvgIcon
+              ? ChevronRightSvgIcon
+              : ChevronLeftSvgIcon
         }
         className={classNames("all", sty.svg__y7QMe, {
           [sty.svgisExpanded__y7QMe5Dg9P]: hasVariant(
@@ -177,7 +206,7 @@ function PlasmicExpandButton__RenderFunc(props: {
             hasVariant($state, "right", "right") &&
             hasVariant($state, "isExpanded", "isExpanded"),
           [sty.svgright__y7QMejego8]: hasVariant($state, "right", "right"),
-          [sty.svgsize_small__y7QMeyBaWa]: hasVariant($state, "size", "small"),
+          [sty.svgsize_small__y7QMeyBaWa]: hasVariant($state, "size", "small")
         })}
         role={"img"}
       />
@@ -186,7 +215,7 @@ function PlasmicExpandButton__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root"],
+  root: ["root"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -206,8 +235,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicExpandButton__VariantsArgs;
     args?: PlasmicExpandButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicExpandButton__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicExpandButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicExpandButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -232,7 +262,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicExpandButton__ArgProps,
-          internalVariantPropNames: PlasmicExpandButton__VariantProps,
+          internalVariantPropNames: PlasmicExpandButton__VariantProps
         }),
       [props, nodeName]
     );
@@ -240,7 +270,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -259,7 +289,7 @@ export const PlasmicExpandButton = Object.assign(
 
     // Metadata about props expected for PlasmicExpandButton
     internalVariantProps: PlasmicExpandButton__VariantProps,
-    internalArgProps: PlasmicExpandButton__ArgProps,
+    internalArgProps: PlasmicExpandButton__ArgProps
   }
 );
 

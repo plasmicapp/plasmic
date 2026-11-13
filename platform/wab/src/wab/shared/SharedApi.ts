@@ -43,6 +43,7 @@ import {
   ApiTeam,
   ApiTeamDiscourseInfo,
   ApiTeamMeta,
+  ApiTeamSubscription,
   ApiTeamSupportUrls,
   ApiUpdateDataSourceRequest,
   ApiUser,
@@ -169,7 +170,6 @@ import {
   SubscriptionIntentResponse,
   TeamApiToken,
   TeamId,
-  TeamSubscriptionStatus,
   TeamWhiteLabelInfo,
   ThreadCommentData,
   ThreadHistoryId,
@@ -242,6 +242,7 @@ export interface SiteInfo {
   appAuthProvider?: AppAuthProvider;
   readableByPublic: boolean;
   isMainBranchProtected: boolean;
+  teamSubscription: ApiTeamSubscription | null;
   revisions: ProjectRevision[];
 }
 
@@ -929,6 +930,16 @@ export abstract class SharedApi {
     return this.get(`/teams/${teamId}`);
   }
 
+  async getTeamSubscription(teamId: TeamId): Promise<ApiTeamSubscription> {
+    return this.get(`/teams/${teamId}/subscription-status`);
+  }
+
+  async getProjectSubscription(
+    projectId: string,
+  ): Promise<ApiTeamSubscription | null> {
+    return this.get(`/projects/${projectId}/subscription-status`);
+  }
+
   async getTeamMeta(teamId: TeamId): Promise<{ meta: ApiTeamMeta }> {
     return this.get(`/teams/${teamId}/meta`);
   }
@@ -1018,9 +1029,7 @@ export abstract class SharedApi {
     return this.post(`/teams/${teamId}/trial`);
   }
 
-  async refreshSubscription(teamId: TeamId): Promise<{
-    subscriptionStatus: TeamSubscriptionStatus;
-  }> {
+  async refreshSubscription(teamId: TeamId): Promise<ApiTeamSubscription> {
     return this.post(`/admin/teams/${teamId}/refresh-subscription`);
   }
 

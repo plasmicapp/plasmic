@@ -1,7 +1,7 @@
 import { apiKey, invalidationKey } from "@/wab/client/api";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
-import { BranchId, ProjectId } from "@/wab/shared/ApiSchema";
+import { BranchId, ProjectId, TeamId } from "@/wab/shared/ApiSchema";
 import { withoutNils } from "@/wab/shared/common";
 import { keyBy } from "lodash";
 import useSWR from "swr";
@@ -94,6 +94,32 @@ export function useUsersMap(
       }
       const users = (await appCtx.api.getUsersById(actualUserIds)).users;
       return keyBy(users, (u) => u.id);
+    },
+  );
+}
+
+export function useTeamSubscription(
+  appCtx: AppCtx,
+  teamId: TeamId | undefined,
+  { poll = true }: { poll?: boolean } = {},
+) {
+  return useSWR(
+    teamId ? apiKey("getTeamSubscription", teamId) : null,
+    async () => {
+      if (!teamId) {
+        return undefined;
+      }
+      // Publish the plan and status together, including during polling.
+      const [subscription, { team }] = await Promise.all([
+        appCtx.api.getTeamSubscription(teamId),
+        appCtx.api.getTeam(teamId),
+      ]);
+      return { ...subscription, team };
+    },
+    {
+      revalidateOnMount: true,
+      refreshInterval: poll ? 60_000 : 0,
+      revalidateOnFocus: poll,
     },
   );
 }

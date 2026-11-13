@@ -15,19 +15,49 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import { BaseLabel } from "@plasmicpkgs/react-aria/skinny/registerLabel";
-import { _useStyleTokens } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -90,7 +120,7 @@ function PlasmicLabel__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -103,15 +133,15 @@ function PlasmicLabel__RenderFunc(props: {
         path: "size",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.size,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.size
       },
       {
         path: "requirementIndicator",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.requirementIndicator,
-      },
+          $props.requirementIndicator
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -121,7 +151,7 @@ function PlasmicLabel__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -151,7 +181,7 @@ function PlasmicLabel__RenderFunc(props: {
             "required"
           ),
           [sty.rootsize_lg]: hasVariant($state, "size", "lg"),
-          [sty.rootsize_sm]: hasVariant($state, "size", "sm"),
+          [sty.rootsize_sm]: hasVariant($state, "size", "sm")
         }
       )}
     >
@@ -165,7 +195,7 @@ function PlasmicLabel__RenderFunc(props: {
             "optional"
           ),
           [sty.freeBoxsize_lg]: hasVariant($state, "size", "lg"),
-          [sty.freeBoxsize_sm]: hasVariant($state, "size", "sm"),
+          [sty.freeBoxsize_sm]: hasVariant($state, "size", "sm")
         })}
       >
         {renderPlasmicSlot({
@@ -183,8 +213,8 @@ function PlasmicLabel__RenderFunc(props: {
               "required"
             ),
             [sty.slotTargetChildrensize_lg]: hasVariant($state, "size", "lg"),
-            [sty.slotTargetChildrensize_sm]: hasVariant($state, "size", "sm"),
-          }),
+            [sty.slotTargetChildrensize_sm]: hasVariant($state, "size", "sm")
+          })
         })}
         <div
           data-plasmic-name={"text"}
@@ -199,7 +229,7 @@ function PlasmicLabel__RenderFunc(props: {
               $state,
               "requirementIndicator",
               "required"
-            ),
+            )
           })}
         >
           {hasVariant($state, "requirementIndicator", "required")
@@ -214,7 +244,7 @@ function PlasmicLabel__RenderFunc(props: {
 const PlasmicDescendants = {
   root: ["root", "freeBox", "text"],
   freeBox: ["freeBox", "text"],
-  text: ["text"],
+  text: ["text"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -236,7 +266,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLabel__VariantsArgs;
     args?: PlasmicLabel__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLabel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicLabel__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLabel__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -261,7 +293,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLabel__ArgProps,
-          internalVariantPropNames: PlasmicLabel__VariantProps,
+          internalVariantPropNames: PlasmicLabel__VariantProps
         }),
       [props, nodeName]
     );
@@ -269,7 +301,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -290,7 +322,7 @@ export const PlasmicLabel = Object.assign(
 
     // Metadata about props expected for PlasmicLabel
     internalVariantProps: PlasmicLabel__VariantProps,
-    internalArgProps: PlasmicLabel__ArgProps,
+    internalArgProps: PlasmicLabel__ArgProps
   }
 );
 

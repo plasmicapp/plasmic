@@ -205,7 +205,6 @@ function PlasmicChip__RenderFunc(props: {
         <CloseSvgIcon
           data-plasmic-name={"closeIcon"}
           data-plasmic-override={overrides.closeIcon}
-
           className={classNames("all", sty.closeIcon, {
             [sty.closeIcondeletable]: hasVariant(
               $state,

@@ -373,6 +373,9 @@ function CheckStripeSubscription({ team, refetch }: TeamProps) {
         const res = await nonAuthCtx.api.refreshSubscription(team.id);
         notification.info({
           message: `Organization ${team.name} has subscription status ${res.subscriptionStatus}`,
+          description:
+            res.pastDueLastDay &&
+            `Last day of Studio editing: ${res.pastDueLastDay}`,
         });
         refetch();
       }}

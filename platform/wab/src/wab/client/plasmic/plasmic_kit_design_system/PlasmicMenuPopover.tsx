@@ -15,26 +15,52 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   generateOnMutateForSpec,
+  generateStateOnChangeProp,
   generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
   initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
-
 import {
-  BaseListBox,
-  listboxHelpers as BaseListBox_Helpers,
-} from "@plasmicpkgs/react-aria/skinny/registerListBox";
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
+
 import { BasePopover } from "@plasmicpkgs/react-aria/skinny/registerPopover";
+import { BaseListBox } from "@plasmicpkgs/react-aria/skinny/registerListBox";
+import { listboxHelpers as BaseListBox_Helpers } from "@plasmicpkgs/react-aria/skinny/registerListBox";
 import MenuItem from "../../components/plexus/MenuItem"; // plasmic-import: HuWzUuHGp49C/component
 import MenuSection from "../../components/plexus/MenuSection"; // plasmic-import: YvSNiHRodZSY/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -87,7 +113,7 @@ function PlasmicMenuPopover__RenderFunc(props: {
     () =>
       Object.assign(
         {
-          offset: 2,
+          offset: 2
         },
         Object.fromEntries(
           Object.entries(props.args).filter(([_, v]) => v !== undefined)
@@ -98,7 +124,7 @@ function PlasmicMenuPopover__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -114,8 +140,8 @@ function PlasmicMenuPopover__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props["initialSelectedKey"],
 
-        onMutate: generateOnMutateForSpec("selectedValue", BaseListBox_Helpers),
-      },
+        onMutate: generateOnMutateForSpec("selectedValue", BaseListBox_Helpers)
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -125,7 +151,7 @@ function PlasmicMenuPopover__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -169,17 +195,17 @@ function PlasmicMenuPopover__RenderFunc(props: {
           },
           selectedKeys: generateStateValueProp($state, [
             "ariaListBox",
-            "selectedValue",
+            "selectedValue"
           ]),
-          selectionMode: "single",
+          selectionMode: "single"
         };
         initializeCodeComponentStates(
           $state,
           [
             {
               name: "selectedValue",
-              plasmicStateName: "ariaListBox.selectedValue",
-            },
+              plasmicStateName: "ariaListBox.selectedValue"
+            }
           ],
           [],
           BaseListBox_Helpers ?? {},
@@ -247,7 +273,7 @@ function PlasmicMenuPopover__RenderFunc(props: {
                   />
                 </React.Fragment>
               ),
-              value: args.menuItems,
+              value: args.menuItems
             })}
           </BaseListBox>
         );
@@ -258,7 +284,7 @@ function PlasmicMenuPopover__RenderFunc(props: {
 
 const PlasmicDescendants = {
   root: ["root", "ariaListBox"],
-  ariaListBox: ["ariaListBox"],
+  ariaListBox: ["ariaListBox"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -279,8 +305,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicMenuPopover__VariantsArgs;
     args?: PlasmicMenuPopover__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicMenuPopover__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicMenuPopover__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicMenuPopover__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -305,7 +332,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicMenuPopover__ArgProps,
-          internalVariantPropNames: PlasmicMenuPopover__VariantProps,
+          internalVariantPropNames: PlasmicMenuPopover__VariantProps
         }),
       [props, nodeName]
     );
@@ -313,7 +340,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -333,7 +360,7 @@ export const PlasmicMenuPopover = Object.assign(
 
     // Metadata about props expected for PlasmicMenuPopover
     internalVariantProps: PlasmicMenuPopover__VariantProps,
-    internalArgProps: PlasmicMenuPopover__ArgProps,
+    internalArgProps: PlasmicMenuPopover__ArgProps
   }
 );
 

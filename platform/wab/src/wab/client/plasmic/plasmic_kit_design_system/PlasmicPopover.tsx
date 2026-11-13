@@ -15,28 +15,61 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
   generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import { BaseDialog } from "@plasmicpkgs/react-aria/skinny/registerDialog";
 import { BaseDialogTrigger } from "@plasmicpkgs/react-aria/skinny/registerDialogTrigger";
+import { PlexusButton } from "../../components/plexus/PlexusButton"; // plasmic-import: sbyrU_8SkoWY/component
 import { BasePopover } from "@plasmicpkgs/react-aria/skinny/registerPopover";
 import OverlayArrow from "../../components/plexus/OverlayArrow"; // plasmic-import: FRA2fXjcDHo2/component
-import { PlexusButton } from "../../components/plexus/PlexusButton"; // plasmic-import: sbyrU_8SkoWY/component
-import { _useStyleTokens } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
+import { BaseDialog } from "@plasmicpkgs/react-aria/skinny/registerDialog";
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicPopover.module.css"; // plasmic-import: FYmdApEkhOiH/css
+
+import Circle2Icon from "./icons/PlasmicIcon__Circle2"; // plasmic-import: y6Ei15gXp_-T/icon
+import ChevronDownIcon from "./icons/PlasmicIcon__ChevronDown"; // plasmic-import: C21gcG8B3Wlx/icon
 
 createPlasmicElementProxy;
 
@@ -99,7 +132,7 @@ function PlasmicPopover__RenderFunc(props: {
         {
           shouldFlip: true,
           offset: 12,
-          placement: "bottom",
+          placement: "bottom"
         },
         Object.fromEntries(
           Object.entries(props.args).filter(([_, v]) => v !== undefined)
@@ -110,7 +143,7 @@ function PlasmicPopover__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -125,8 +158,8 @@ function PlasmicPopover__RenderFunc(props: {
         variableType: "boolean",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
 
-        onChangeProp: "onOpenChange",
-      },
+        onChangeProp: "onOpenChange"
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -136,7 +169,7 @@ function PlasmicPopover__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -205,7 +238,7 @@ function PlasmicPopover__RenderFunc(props: {
                   </div>
                 </div>
               ),
-              value: args.content,
+              value: args.content
             })}
           </BaseDialog>
         </BasePopover>
@@ -214,7 +247,7 @@ function PlasmicPopover__RenderFunc(props: {
       onOpenChange={async (...eventArgs: any) => {
         generateStateOnChangeProp($state, [
           "ariaDialogTrigger",
-          "isOpen",
+          "isOpen"
         ]).apply(null, eventArgs);
       }}
       trigger={renderPlasmicSlot({
@@ -225,7 +258,7 @@ function PlasmicPopover__RenderFunc(props: {
           />
         ),
 
-        value: args.trigger,
+        value: args.trigger
       })}
     />
   ) as React.ReactElement | null;
@@ -236,11 +269,11 @@ const PlasmicDescendants = {
     "ariaDialogTrigger",
     "ariaPopover",
     "overlayArrow",
-    "ariaDialog",
+    "ariaDialog"
   ],
   ariaPopover: ["ariaPopover", "overlayArrow", "ariaDialog"],
   overlayArrow: ["overlayArrow"],
-  ariaDialog: ["ariaDialog"],
+  ariaDialog: ["ariaDialog"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -263,7 +296,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPopover__VariantsArgs;
     args?: PlasmicPopover__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicPopover__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicPopover__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicPopover__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -288,7 +323,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPopover__ArgProps,
-          internalVariantPropNames: PlasmicPopover__VariantProps,
+          internalVariantPropNames: PlasmicPopover__VariantProps
         }),
       [props, nodeName]
     );
@@ -296,7 +331,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "ariaDialogTrigger") {
@@ -318,7 +353,7 @@ export const PlasmicPopover = Object.assign(
 
     // Metadata about props expected for PlasmicPopover
     internalVariantProps: PlasmicPopover__VariantProps,
-    internalArgProps: PlasmicPopover__ArgProps,
+    internalArgProps: PlasmicPopover__ArgProps
   }
 );
 

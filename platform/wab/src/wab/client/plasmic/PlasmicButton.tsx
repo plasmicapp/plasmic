@@ -442,7 +442,6 @@ function PlasmicButton__RenderFunc(props: {
         <div
           data-plasmic-name={"startIconContainer"}
           data-plasmic-override={overrides.startIconContainer}
-
           className={classNames("all", sty.startIconContainer, {
             [sty.startIconContainercolor_purple]: hasVariant(
               $state,
@@ -690,7 +689,6 @@ function PlasmicButton__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-
         className={classNames("all", sty.freeBox, {
           [sty.freeBoxcolor_blue]: hasVariant($state, "color", "blue"),
           [sty.freeBoxcolor_green]: hasVariant($state, "color", "green"),
@@ -1067,7 +1065,6 @@ function PlasmicButton__RenderFunc(props: {
         <div
           data-plasmic-name={"endIconContainer"}
           data-plasmic-override={overrides.endIconContainer}
-
           className={classNames("all", sty.endIconContainer, {
             [sty.endIconContainercolor_blue]: hasVariant(
               $state,

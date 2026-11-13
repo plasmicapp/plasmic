@@ -7,6 +7,7 @@ import { TopFrameTourState } from "@/wab/client/tours/tutorials/TutorialTours";
 import {
   ApiBranch,
   ApiTeam,
+  ApiTeamSubscription,
   CopilotChatOpenOpts,
 } from "@/wab/shared/ApiSchema";
 import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
@@ -53,6 +54,7 @@ export interface TopFrameApi {
       | undefined,
   ): Promise<void>;
   setActivatedBranch(branch: ApiBranch | undefined): Promise<void>;
+  setTeamSubscription(subscription: ApiTeamSubscription | null): Promise<void>;
 
   pickDataSource(opts: {
     sourceType?: DataSourceType;

@@ -106,7 +106,6 @@ function mkApiTeam(
       parentTeamId: team.parentTeamId,
       featureTier: team.featureTier || team.parentTeam?.featureTier || null,
       uiConfig: mergeUiConfigs(team.parentTeam?.uiConfig, team.uiConfig),
-      subscriptionStatus,
       onTrial: subscriptionStatus === "trial",
     },
   );
@@ -117,7 +116,7 @@ export async function mkApiTeams(
   teams: Team[],
 ): Promise<ApiTeam[]> {
   const statuses = await loadSubscriptionStatuses(mgr, teams);
-  return teams.map((team, i) => mkApiTeam(team, statuses[i]));
+  return teams.map((team, i) => mkApiTeam(team, statuses[i].status));
 }
 
 export const _testonly = { mkApiTeam };

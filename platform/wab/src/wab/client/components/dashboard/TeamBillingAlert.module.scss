@@ -1,0 +1,46 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 24px 24px 0;
+  padding: 9px;
+  border-radius: 8px;
+  background: var(--token-M6q4nJev3CK);
+  color: var(--token-MuSUbZOS_NL);
+  font-weight: 600;
+}
+
+// Matches the sticky offset of the page headers it wraps.
+.stickyHeader {
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 48px;
+  z-index: 1;
+  background: #ffffff;
+}
+
+.errorIcon {
+  color: var(--token-M6q4nJev3CK);
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.manageBilling {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  color: inherit;
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    color: inherit;
+    background: rgba(255, 255, 255, 0.15);
+    text-decoration: none;
+  }
+}

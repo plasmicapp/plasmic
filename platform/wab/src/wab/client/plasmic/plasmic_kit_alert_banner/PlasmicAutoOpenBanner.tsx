@@ -14,15 +14,49 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
-  StrictProps,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import Banner from "../../components/Banner"; // plasmic-import: LlDTs6h34ISG/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 29njzcsBEPR4koRddw4knF/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 29njzcsBEPR4koRddw4knF/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -73,7 +107,7 @@ function PlasmicAutoOpenBanner__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -100,7 +134,7 @@ function PlasmicAutoOpenBanner__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root"],
+  root: ["root"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -120,8 +154,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicAutoOpenBanner__VariantsArgs;
     args?: PlasmicAutoOpenBanner__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicAutoOpenBanner__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicAutoOpenBanner__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicAutoOpenBanner__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -146,7 +181,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicAutoOpenBanner__ArgProps,
-          internalVariantPropNames: PlasmicAutoOpenBanner__VariantProps,
+          internalVariantPropNames: PlasmicAutoOpenBanner__VariantProps
         }),
       [props, nodeName]
     );
@@ -154,7 +189,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -173,7 +208,7 @@ export const PlasmicAutoOpenBanner = Object.assign(
 
     // Metadata about props expected for PlasmicAutoOpenBanner
     internalVariantProps: PlasmicAutoOpenBanner__VariantProps,
-    internalArgProps: PlasmicAutoOpenBanner__ArgProps,
+    internalArgProps: PlasmicAutoOpenBanner__ArgProps
   }
 );
 

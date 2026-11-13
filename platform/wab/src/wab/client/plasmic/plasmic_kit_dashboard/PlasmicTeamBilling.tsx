@@ -192,21 +192,6 @@ function PlasmicTeamBilling__RenderFunc(props: {
       )}
     >
       <div
-        className={classNames("all", sty.freeBox__nOs6U, {
-          [sty.freeBoxshowBillingError__nOs6UXmPkf]: hasVariant(
-            $state,
-            "showBillingError",
-            "showBillingError"
-          ),
-        })}
-      >
-        {renderPlasmicSlot({
-          defaultContents: "ERROR: Cannot process payment",
-          value: args.billingError,
-          className: classNames(sty.slotTargetBillingError),
-        })}
-      </div>
-      <div
         className={classNames("all", sty.freeBox__ftaU, {
           [sty.freeBoxshowBillingError__ftaUXmPkf]: hasVariant(
             $state,

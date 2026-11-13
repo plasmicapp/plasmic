@@ -7,14 +7,16 @@ import {
   PlasmicAlertBanner__VariantsArgs,
 } from "@/wab/client/components/widgets/plasmic/PlasmicAlertBanner";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { assert } from "@/wab/shared/common";
+import { assert, ensure } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { createPath } from "history";
 import React, { useEffect } from "react";
+import { Temporal } from "temporal-polyfill";
 
 export interface AlertData {
   stateVariant: PlasmicAlertBanner__VariantsArgs["state"];
   actionFn: (studioCtx: StudioCtx) => Promise<void>;
+  message?: (studioCtx: StudioCtx) => string | undefined;
 }
 
 export const AlertSpec = {
@@ -70,7 +72,7 @@ export const AlertSpec = {
       assert(window.top, "Unexpected null reference");
       window.top.location.href = APP_ROUTES.signup.fill(
         {},
-        { continueTo: createPath(studioCtx.appCtx.history.location) }
+        { continueTo: createPath(studioCtx.appCtx.history.location) },
       );
     },
   },
@@ -81,7 +83,7 @@ export const AlertSpec = {
       assert(window.top, "Unexpected null reference");
       window.top.location.href = APP_ROUTES.signup.fill(
         {},
-        { continueTo: createPath(studioCtx.appCtx.history.location) }
+        { continueTo: createPath(studioCtx.appCtx.history.location) },
       );
     },
   },
@@ -111,6 +113,31 @@ export const AlertSpec = {
     stateVariant: "protectedMainBranch",
     actionFn: async (studioCtx: StudioCtx) => {},
   },
+
+  PastDueGrace: {
+    stateVariant: "pastDueGrace",
+    actionFn: async () => {},
+    message: (studioCtx: StudioCtx) => {
+      const subscription = studioCtx.siteInfo.teamSubscription;
+      if (subscription?.pastDuePhaseOverride === "grace") {
+        return "Payment failed. Editing remains available while your payment issue is resolved.";
+      }
+      if (!subscription?.pastDueLastDay) {
+        return undefined;
+      }
+      const lastDay = Temporal.PlainDate.from(
+        subscription.pastDueLastDay,
+      ).toLocaleString(undefined, { dateStyle: "long" });
+      return `Payment failed. Update your payment method by ${lastDay} to keep editing.`;
+    },
+  },
+
+  PastDueBlocked: {
+    stateVariant: "pastDueBlocked",
+    actionFn: async () => {},
+    message: () =>
+      "Editing is paused until payment is made.",
+  },
 } as const;
 
 (window as any).alertspec = AlertSpec;
@@ -135,24 +162,50 @@ export const AlertBanner = observer(function AlertBanner_({
     return <></>;
   }
 
+  const pastDue =
+    alertState === AlertSpec.PastDueGrace ||
+    alertState === AlertSpec.PastDueBlocked;
+
   return (
     <PlasmicAlertBanner
       root={{
         className: "over-dark-mask",
       }}
       variants={{ state: alertState.stateVariant }}
+      message={
+        alertState.message?.(studioCtx) ??
+        (pastDue ? "Payment failed. Please update your payment method." : undefined)
+      }
       overrides={{
+        actionLink: pastDue
+          ? {
+              as: "a",
+              props: {
+                href: APP_ROUTES.orgBilling.fill({
+                  teamId: ensure(
+                    studioCtx.siteInfo.teamSubscription,
+                    "Expected project subscription",
+                  ).billingTeamId,
+                }),
+                target: "_blank",
+                rel: "noopener noreferrer",
+              },
+            }
+          : undefined,
+        actionLinkIcon: { "aria-hidden": true },
         actionBtn: {
           onClick: () => alertState.actionFn(studioCtx),
         },
 
-        dismissBtn: {
-          "data-test-id": "alert-banner-dismiss",
-          onClick: (event) => {
-            event.stopPropagation();
-            studioCtx.alertBannerState.set(null);
-          },
-        } as any,
+        dismissBtn: pastDue
+          ? { render: () => null }
+          : ({
+              "data-test-id": "alert-banner-dismiss",
+              onClick: (event) => {
+                event.stopPropagation();
+                studioCtx.alertBannerState.set(null);
+              },
+            } as any),
 
         watchBtn: {
           onClick: () => studioCtx.enterWatchMode(),

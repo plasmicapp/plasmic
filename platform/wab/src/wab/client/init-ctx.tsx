@@ -77,6 +77,7 @@ export async function loadSiteDbCtx(
   siteInfo.hasAppAuth = hasAppAuth;
   siteInfo.appAuthProvider = appAuthProvider;
   siteInfo.isMainBranchProtected = isMainBranchProtected;
+  siteInfo.teamSubscription = await baseApi.getProjectSubscription(siteId);
 
   const bundle = getBundle(rev, appCtx.lastBundleVersion);
   const { site, depPkgs: depPkgVersions } = unbundleSite(

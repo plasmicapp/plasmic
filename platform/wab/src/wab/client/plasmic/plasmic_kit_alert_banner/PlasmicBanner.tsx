@@ -14,20 +14,49 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  PlasmicIcon as PlasmicIcon__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  StrictProps,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 29njzcsBEPR4koRddw4knF/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 29njzcsBEPR4koRddw4knF/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -35,9 +64,11 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "../PP__plasmickit_alert_banner.css"; // plasmic-import: 29njzcsBEPR4koRddw4knF/projectcss
 import sty from "./PlasmicBanner.module.css"; // plasmic-import: LlDTs6h34ISG/css
 
-import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
-import EyeExclamationSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EyeExclamationSvg"; // plasmic-import: 0dLCQ-imlG_u/icon
 import WarningTriangleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
+import EyeExclamationSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EyeExclamationSvg"; // plasmic-import: 0dLCQ-imlG_u/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
 
 createPlasmicElementProxy;
 
@@ -122,7 +153,7 @@ function PlasmicBanner__RenderFunc(props: {
       Object.assign(
         {
           message: "This is normal text",
-          dismissible: false,
+          dismissible: false
         },
         Object.fromEntries(
           Object.entries(props.args).filter(([_, v]) => v !== undefined)
@@ -133,7 +164,7 @@ function PlasmicBanner__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -146,26 +177,26 @@ function PlasmicBanner__RenderFunc(props: {
         path: "type",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type
       },
       {
         path: "size",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.size,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.size
       },
       {
         path: "block",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.block,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.block
       },
       {
         path: "iconType",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.iconType,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.iconType
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -175,7 +206,7 @@ function PlasmicBanner__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -198,7 +229,7 @@ function PlasmicBanner__RenderFunc(props: {
           [sty.rootsize_small]: hasVariant($state, "size", "small"),
           [sty.roottype__default]: hasVariant($state, "type", "_default"),
           [sty.roottype_error]: hasVariant($state, "type", "error"),
-          [sty.roottype_info]: hasVariant($state, "type", "info"),
+          [sty.roottype_info]: hasVariant($state, "type", "info")
         }
       )}
     >
@@ -220,7 +251,7 @@ function PlasmicBanner__RenderFunc(props: {
               ),
               [sty.iconsize_small]: hasVariant($state, "size", "small"),
               [sty.icontype_error]: hasVariant($state, "type", "error"),
-              [sty.icontype_info]: hasVariant($state, "type", "info"),
+              [sty.icontype_info]: hasVariant($state, "type", "info")
             })}
             role={"img"}
           />
@@ -231,7 +262,7 @@ function PlasmicBanner__RenderFunc(props: {
               $state,
               "type",
               "error"
-            ),
+            )
           })}
         >
           <div
@@ -245,7 +276,7 @@ function PlasmicBanner__RenderFunc(props: {
                 $state,
                 "type",
                 "info"
-              ),
+              )
             })}
           >
             <React.Fragment>
@@ -275,7 +306,7 @@ function PlasmicBanner__RenderFunc(props: {
                 $state,
                 "type",
                 "info"
-              ),
+              )
             })}
           >
             <React.Fragment>
@@ -302,7 +333,7 @@ function PlasmicBanner__RenderFunc(props: {
             $state,
             "type",
             "_default"
-          ),
+          )
         })}
       >
         {(() => {
@@ -328,15 +359,15 @@ function PlasmicBanner__RenderFunc(props: {
                 "_default"
               ),
               [sty.action1Btntype_error]: hasVariant($state, "type", "error"),
-              [sty.action1Btntype_info]: hasVariant($state, "type", "info"),
+              [sty.action1Btntype_info]: hasVariant($state, "type", "info")
             })}
             onClick={args.onClickAction1}
             type={
               hasVariant($state, "type", "info")
                 ? ["backlitInfo"]
                 : hasVariant($state, "type", "error")
-                ? ["backlitError"]
-                : ["link"]
+                  ? ["backlitError"]
+                  : ["link"]
             }
           >
             <div
@@ -380,15 +411,15 @@ function PlasmicBanner__RenderFunc(props: {
             data-plasmic-override={overrides.action2Btn}
             className={classNames("__wab_instance", sty.action2Btn, {
               [sty.action2Btntype_error]: hasVariant($state, "type", "error"),
-              [sty.action2Btntype_info]: hasVariant($state, "type", "info"),
+              [sty.action2Btntype_info]: hasVariant($state, "type", "info")
             })}
             onClick={args.onClickAction2}
             type={
               hasVariant($state, "type", "info")
                 ? ["backlitInfo"]
                 : hasVariant($state, "type", "error")
-                ? ["backlitError"]
-                : ["link"]
+                  ? ["backlitError"]
+                  : ["link"]
             }
           >
             <div
@@ -438,7 +469,7 @@ function PlasmicBanner__RenderFunc(props: {
               className={classNames("all", sty.svg, {
                 [sty.svgsize_small]: hasVariant($state, "size", "small"),
                 [sty.svgtype_error]: hasVariant($state, "type", "error"),
-                [sty.svgtype_info]: hasVariant($state, "type", "info"),
+                [sty.svgtype_info]: hasVariant($state, "type", "info")
               })}
               role={"img"}
             />
@@ -458,7 +489,7 @@ const PlasmicDescendants = {
     "action2Btn",
     "visit",
     "dismissBtn",
-    "svg",
+    "svg"
   ],
   icon: ["icon"],
   action1Btn: ["action1Btn", "visit2"],
@@ -466,7 +497,7 @@ const PlasmicDescendants = {
   action2Btn: ["action2Btn", "visit"],
   visit: ["visit"],
   dismissBtn: ["dismissBtn", "svg"],
-  svg: ["svg"],
+  svg: ["svg"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -493,8 +524,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicBanner__VariantsArgs;
     args?: PlasmicBanner__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicBanner__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicBanner__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicBanner__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -519,7 +551,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicBanner__ArgProps,
-          internalVariantPropNames: PlasmicBanner__VariantProps,
+          internalVariantPropNames: PlasmicBanner__VariantProps
         }),
       [props, nodeName]
     );
@@ -527,7 +559,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -553,7 +585,7 @@ export const PlasmicBanner = Object.assign(
 
     // Metadata about props expected for PlasmicBanner
     internalVariantProps: PlasmicBanner__VariantProps,
-    internalArgProps: PlasmicBanner__ArgProps,
+    internalArgProps: PlasmicBanner__ArgProps
   }
 );
 

@@ -15,27 +15,55 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
   generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import { BaseButton } from "@plasmicpkgs/react-aria/skinny/registerButton";
 import { BaseComboBox } from "@plasmicpkgs/react-aria/skinny/registerComboBox";
-import Description from "../../components/plexus/Description"; // plasmic-import: hGC02-wRlm3F/component
 import Label from "../../components/plexus/Label"; // plasmic-import: Hxtf0EKrkmO5/component
-import MenuItem from "../../components/plexus/MenuItem"; // plasmic-import: HuWzUuHGp49C/component
-import MenuPopover from "../../components/plexus/MenuPopover"; // plasmic-import: cplpbevCTFb_/component
-import MenuSection from "../../components/plexus/MenuSection"; // plasmic-import: YvSNiHRodZSY/component
 import TextInput from "../../components/plexus/TextInput"; // plasmic-import: J_e2eE41048e/component
+import { BaseButton } from "@plasmicpkgs/react-aria/skinny/registerButton";
+import Description from "../../components/plexus/Description"; // plasmic-import: hGC02-wRlm3F/component
+import MenuPopover from "../../components/plexus/MenuPopover"; // plasmic-import: cplpbevCTFb_/component
+import MenuItem from "../../components/plexus/MenuItem"; // plasmic-import: HuWzUuHGp49C/component
+import MenuSection from "../../components/plexus/MenuSection"; // plasmic-import: YvSNiHRodZSY/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -43,7 +71,7 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicCombobox.module.css"; // plasmic-import: zIW2sbKF4DAY/css
 
-import ChevronDownIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__ChevronDown"; // plasmic-import: C21gcG8B3Wlx/icon
+import ChevronDownIcon from "./icons/PlasmicIcon__ChevronDown"; // plasmic-import: C21gcG8B3Wlx/icon
 
 createPlasmicElementProxy;
 
@@ -139,7 +167,7 @@ function PlasmicCombobox__RenderFunc(props: {
         {
           placeholder: "Select an item",
           showLabel: true,
-          showDescription: false,
+          showDescription: false
         },
         Object.fromEntries(
           Object.entries(props.args).filter(([_, v]) => v !== undefined)
@@ -150,7 +178,7 @@ function PlasmicCombobox__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -165,7 +193,7 @@ function PlasmicCombobox__RenderFunc(props: {
         variableType: "boolean",
 
         valueProp: "isOpen",
-        onChangeProp: "onOpenChange",
+        onChangeProp: "onOpenChange"
       },
       {
         path: "ariaComboBox.selectedValue",
@@ -173,21 +201,21 @@ function PlasmicCombobox__RenderFunc(props: {
         variableType: "text",
 
         valueProp: "value",
-        onChangeProp: "onChange",
+        onChangeProp: "onChange"
       },
       {
         path: "type",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type
       },
       {
         path: "textInput.value",
         type: "private",
         variableType: "text",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props["defaultValue"],
-      },
+          $props["defaultValue"]
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -197,7 +225,7 @@ function PlasmicCombobox__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -205,12 +233,12 @@ function PlasmicCombobox__RenderFunc(props: {
   const [$ccVariants, setDollarCcVariants] = React.useState<
     Record<string, boolean>
   >({
-    disabled: false,
+    disabled: false
   });
   const updateVariant = React.useCallback(
     (changes: Record<string, boolean>) => {
-      setDollarCcVariants((prev) => {
-        if (!Object.keys(changes).some((k) => prev[k] !== changes[k])) {
+      setDollarCcVariants(prev => {
+        if (!Object.keys(changes).some(k => prev[k] !== changes[k])) {
           return prev;
         }
         return { ...prev, ...changes };
@@ -235,7 +263,7 @@ function PlasmicCombobox__RenderFunc(props: {
         sty.ariaComboBox,
         {
           [sty.ariaComboBoxtype_plain]: hasVariant($state, "type", "plain"),
-          [sty.ariaComboBoxtype_soft]: hasVariant($state, "type", "soft"),
+          [sty.ariaComboBoxtype_soft]: hasVariant($state, "type", "soft")
         }
       )}
       isDisabled={args.disabled}
@@ -249,13 +277,13 @@ function PlasmicCombobox__RenderFunc(props: {
       onSelectionChange={async (...eventArgs: any) => {
         generateStateOnChangeProp($state, [
           "ariaComboBox",
-          "selectedValue",
+          "selectedValue"
         ]).apply(null, eventArgs);
       }}
       plasmicUpdateVariant={updateVariant}
       selectedKey={generateStateValueProp($state, [
         "ariaComboBox",
-        "selectedValue",
+        "selectedValue"
       ])}
     >
       {$props.showLabel ? (
@@ -266,7 +294,7 @@ function PlasmicCombobox__RenderFunc(props: {
         >
           {renderPlasmicSlot({
             defaultContents: "Label",
-            value: args.label,
+            value: args.label
           })}
         </Label>
       ) : null}
@@ -320,7 +348,7 @@ function PlasmicCombobox__RenderFunc(props: {
         >
           {renderPlasmicSlot({
             defaultContents: "Description...",
-            value: args.description,
+            value: args.description
           })}
         </Description>
       ) : null}
@@ -365,7 +393,7 @@ function PlasmicCombobox__RenderFunc(props: {
               />
             </React.Fragment>
           ),
-          value: args.items,
+          value: args.items
         })}
         offset={2}
       />
@@ -382,7 +410,7 @@ const PlasmicDescendants = {
     "ariaButton",
     "svg",
     "description",
-    "menuPopover",
+    "menuPopover"
   ],
   label: ["label"],
   freeBox: ["freeBox", "textInput", "ariaButton", "svg"],
@@ -390,7 +418,7 @@ const PlasmicDescendants = {
   ariaButton: ["ariaButton", "svg"],
   svg: ["svg"],
   description: ["description"],
-  menuPopover: ["menuPopover"],
+  menuPopover: ["menuPopover"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -417,7 +445,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCombobox__VariantsArgs;
     args?: PlasmicCombobox__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCombobox__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicCombobox__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCombobox__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -442,7 +472,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCombobox__ArgProps,
-          internalVariantPropNames: PlasmicCombobox__VariantProps,
+          internalVariantPropNames: PlasmicCombobox__VariantProps
         }),
       [props, nodeName]
     );
@@ -450,7 +480,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "ariaComboBox") {
@@ -476,7 +506,7 @@ export const PlasmicCombobox = Object.assign(
 
     // Metadata about props expected for PlasmicCombobox
     internalVariantProps: PlasmicCombobox__VariantProps,
-    internalArgProps: PlasmicCombobox__ArgProps,
+    internalArgProps: PlasmicCombobox__ArgProps
   }
 );
 

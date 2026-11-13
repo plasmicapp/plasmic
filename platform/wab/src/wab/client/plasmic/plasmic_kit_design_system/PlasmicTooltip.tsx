@@ -15,19 +15,49 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
   generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import { BaseTooltip } from "@plasmicpkgs/react-aria/skinny/registerTooltip";
 import OverlayArrow from "../../components/plexus/OverlayArrow"; // plasmic-import: FRA2fXjcDHo2/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -103,7 +133,7 @@ function PlasmicTooltip__RenderFunc(props: {
           closeDelay: 0,
           placement: "top",
           showArrow: false,
-          offset: 10,
+          offset: 10
         },
         Object.fromEntries(
           Object.entries(props.args).filter(([_, v]) => v !== undefined)
@@ -114,7 +144,7 @@ function PlasmicTooltip__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -127,8 +157,8 @@ function PlasmicTooltip__RenderFunc(props: {
         path: "ariaTooltip.isOpen",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => false,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => false
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -138,7 +168,7 @@ function PlasmicTooltip__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -219,7 +249,7 @@ function PlasmicTooltip__RenderFunc(props: {
                 </React.Fragment>
               ),
               value: args.content,
-              className: classNames(sty.slotTargetContent),
+              className: classNames(sty.slotTargetContent)
             })}
           </div>
         </React.Fragment>
@@ -233,7 +263,7 @@ function PlasmicTooltip__RenderFunc(props: {
           </div>
         ),
         value: args.trigger,
-        className: classNames(sty.slotTargetTrigger),
+        className: classNames(sty.slotTargetTrigger)
       })}
     </BaseTooltip>
   ) as React.ReactElement | null;
@@ -242,7 +272,7 @@ function PlasmicTooltip__RenderFunc(props: {
 const PlasmicDescendants = {
   ariaTooltip: ["ariaTooltip", "overlayArrow", "freeBox"],
   overlayArrow: ["overlayArrow"],
-  freeBox: ["freeBox"],
+  freeBox: ["freeBox"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -264,8 +294,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTooltip__VariantsArgs;
     args?: PlasmicTooltip__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicTooltip__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicTooltip__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTooltip__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -290,7 +321,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicTooltip__ArgProps,
-          internalVariantPropNames: PlasmicTooltip__VariantProps,
+          internalVariantPropNames: PlasmicTooltip__VariantProps
         }),
       [props, nodeName]
     );
@@ -298,7 +329,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "ariaTooltip") {
@@ -319,7 +350,7 @@ export const PlasmicTooltip = Object.assign(
 
     // Metadata about props expected for PlasmicTooltip
     internalVariantProps: PlasmicTooltip__VariantProps,
-    internalArgProps: PlasmicTooltip__ArgProps,
+    internalArgProps: PlasmicTooltip__ArgProps
   }
 );
 

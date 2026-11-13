@@ -315,7 +315,6 @@ function PlasmicSelect__RenderFunc(props: {
         <button
           data-plasmic-name={"trigger"}
           data-plasmic-override={overrides.trigger}
-
           className={classNames("all", "button", "button__tXkSR", sty.trigger, {
             [sty.trigger___focusVisibleWithin]:
               triggers.focusVisibleWithin_root,
@@ -356,7 +355,6 @@ function PlasmicSelect__RenderFunc(props: {
           <div
             data-plasmic-name={"contentContainer"}
             data-plasmic-override={overrides.contentContainer}
-
             className={classNames("all", sty.contentContainer, {
               [sty.contentContainerhasIcon]: hasVariant(
                 $state,
@@ -475,7 +473,6 @@ function PlasmicSelect__RenderFunc(props: {
           <PlasmicIcon__
             data-plasmic-name={"dropdownIcon"}
             data-plasmic-override={overrides.dropdownIcon}
-
             PlasmicIconType={
               hasVariant($state, "isOpen", "isOpen")
                 ? ChevronUpSvgIcon
@@ -518,7 +515,6 @@ function PlasmicSelect__RenderFunc(props: {
           <Select__Overlay
             data-plasmic-name={"overlay"}
             data-plasmic-override={overrides.overlay}
-
             className={classNames("__wab_instance", sty.overlay, {
               [sty.overlayisOpen]: hasVariant($state, "isOpen", "isOpen")
             })}
@@ -527,7 +523,6 @@ function PlasmicSelect__RenderFunc(props: {
             <div
               data-plasmic-name={"optionsContainer"}
               data-plasmic-override={overrides.optionsContainer}
-
               className={classNames("all", sty.optionsContainer, {
                 [sty.optionsContainerisOpen]: hasVariant(
                   $state,

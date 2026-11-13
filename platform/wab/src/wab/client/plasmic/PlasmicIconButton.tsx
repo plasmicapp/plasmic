@@ -708,7 +708,6 @@ function PlasmicIconButton__RenderFunc(props: {
         <DotsHorizontalIcon
           data-plasmic-name={"svg"}
           data-plasmic-override={overrides.svg}
-
           className={classNames("all", sty.svg, {
             [sty.svgisActive]: hasVariant($state, "isActive", "isActive"),
             [sty.svgisLoading]: hasVariant($state, "isLoading", "isLoading"),

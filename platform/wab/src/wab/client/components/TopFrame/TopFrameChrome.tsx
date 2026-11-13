@@ -46,6 +46,7 @@ import {
   ApiBranch,
   ApiPermission,
   ApiProject,
+  ApiTeamSubscription,
   CopilotChatOpenOpts,
   MergeSrcDst,
   ProjectId,
@@ -113,6 +114,7 @@ export interface TopFrameChromeProps {
       }
     | undefined;
   activatedBranch: ApiBranch | undefined;
+  teamSubscription: ApiTeamSubscription | null;
   dataSourcePicker:
     | {
         args: TopFrameApiArgs<"pickDataSource">;
@@ -157,6 +159,7 @@ export function TopFrameChrome({
     appCtx.selfInfo?.email,
     projectTeam,
     appCtx.appConfig,
+    rest.teamSubscription,
   );
 
   React.useEffect(() => {
@@ -587,6 +590,8 @@ export function useTopFrameState({
     pathOrComponent: string;
     componentName: string;
   }>();
+  const [teamSubscription, setTeamSubscription] =
+    React.useState<ApiTeamSubscription | null>(null);
   const [activatedBranch, setActivatedBranch] = React.useState<
     ApiBranch | undefined
   >();
@@ -658,6 +663,7 @@ export function useTopFrameState({
         setLatestPublishedVersionData,
       ),
       setSubjectComponentInfo: asyncWrapper(setSubjectComponentInfo),
+      setTeamSubscription: asyncWrapper(setTeamSubscription),
       setActivatedBranch: asyncWrapper((x) => {
         setActivatedBranch(x);
       }),
@@ -743,6 +749,7 @@ export function useTopFrameState({
     noComponents,
     subjectComponentInfo,
     activatedBranch,
+    teamSubscription,
     isLocalizationEnabled,
     localizationScheme,
     dataSourcePicker,

@@ -157,6 +157,14 @@ export type BillingFrequency = "month" | "year";
 export type TeamSubscriptionStatus =
   "paid" | "past_due" | "trial" | "manual" | "free";
 
+export interface ApiTeamSubscription {
+  subscriptionStatus: TeamSubscriptionStatus;
+  /** Inclusive last day of editing, serialized as YYYY-MM-DD. */
+  pastDueLastDay: string | null;
+  pastDuePhaseOverride?: "grace" | "blocked" | null;
+  billingTeamId: TeamId;
+}
+
 export interface ApiTeam extends ApiEntityBase {
   id: TeamId;
   parentTeamId: TeamId | null;
@@ -175,7 +183,6 @@ export interface ApiTeam extends ApiEntityBase {
   //  Ideally we should deserialize these back into Dates in the API client.
   trialStartDate: Date | string | null;
   trialDays: number | null;
-  subscriptionStatus: TeamSubscriptionStatus;
   onTrial: boolean;
   whiteLabelName: string | null;
   whiteLabelInfo: TeamWhiteLabelInfo | null;

@@ -1,3 +1,4 @@
+import { TeamBillingAlert } from "@/wab/client/components/dashboard/TeamBillingAlert";
 import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
@@ -75,6 +76,7 @@ function WorkspacePage_(
   return (
     <>
       {documentTitle(workspace.name)}
+      <TeamBillingAlert team={workspace.team} perms={appCtx.perms} />
       <PlasmicWorkspacePage
         workspaceSection={{
           ref,

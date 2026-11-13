@@ -14,20 +14,49 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  SingleBooleanChoiceArg,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
   useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -35,9 +64,9 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicInlineEditable.module.css"; // plasmic-import: btpz7A3thO/css
 
+import SearchSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
 import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
 import EditSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EditSvg"; // plasmic-import: _Qa2gdunG/icon
-import SearchSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
 
 createPlasmicElementProxy;
 
@@ -111,7 +140,7 @@ function PlasmicInlineEditable__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -124,20 +153,20 @@ function PlasmicInlineEditable__RenderFunc(props: {
         path: "editing",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.editing,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.editing
       },
       {
         path: "disabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.disabled,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.disabled
       },
       {
         path: "medium",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.medium,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.medium
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -147,12 +176,12 @@ function PlasmicInlineEditable__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const [isRootHover, triggerRootHoverProps] = useTrigger("useHover", {});
   const triggers = {
-    hover_root: isRootHover,
+    hover_root: isRootHover
   };
 
   const styleTokensClassNames = _useStyleTokens();
@@ -173,7 +202,7 @@ function PlasmicInlineEditable__RenderFunc(props: {
         {
           [sty.rootdisabled]: hasVariant($state, "disabled", "disabled"),
           [sty.rootediting]: hasVariant($state, "editing", "editing"),
-          [sty.rootmedium]: hasVariant($state, "medium", "medium"),
+          [sty.rootmedium]: hasVariant($state, "medium", "medium")
         }
       )}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
@@ -197,8 +226,8 @@ function PlasmicInlineEditable__RenderFunc(props: {
                 $state,
                 "medium",
                 "medium"
-              ),
-            }),
+              )
+            })
           })
         : null}
       {(hasVariant($state, "editing", "editing") ? true : false) ? (
@@ -207,7 +236,7 @@ function PlasmicInlineEditable__RenderFunc(props: {
           data-plasmic-override={overrides.textbox}
           className={classNames("__wab_instance", sty.textbox, {
             [sty.textboxdisabled]: hasVariant($state, "disabled", "disabled"),
-            [sty.textboxediting]: hasVariant($state, "editing", "editing"),
+            [sty.textboxediting]: hasVariant($state, "editing", "editing")
           })}
           placeholder={args.placeholder}
           prefixIcon={
@@ -247,12 +276,8 @@ function PlasmicInlineEditable__RenderFunc(props: {
                 "editing",
                 "editing"
               ),
-              [sty.slotTargetIconmedium]: hasVariant(
-                $state,
-                "medium",
-                "medium"
-              ),
-            }),
+              [sty.slotTargetIconmedium]: hasVariant($state, "medium", "medium")
+            })
           })
         : null}
     </div>
@@ -261,7 +286,7 @@ function PlasmicInlineEditable__RenderFunc(props: {
 
 const PlasmicDescendants = {
   root: ["root", "textbox"],
-  textbox: ["textbox"],
+  textbox: ["textbox"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -282,8 +307,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicInlineEditable__VariantsArgs;
     args?: PlasmicInlineEditable__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicInlineEditable__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicInlineEditable__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicInlineEditable__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -308,7 +334,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicInlineEditable__ArgProps,
-          internalVariantPropNames: PlasmicInlineEditable__VariantProps,
+          internalVariantPropNames: PlasmicInlineEditable__VariantProps
         }),
       [props, nodeName]
     );
@@ -316,7 +342,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -336,7 +362,7 @@ export const PlasmicInlineEditable = Object.assign(
 
     // Metadata about props expected for PlasmicInlineEditable
     internalVariantProps: PlasmicInlineEditable__VariantProps,
-    internalArgProps: PlasmicInlineEditable__ArgProps,
+    internalArgProps: PlasmicInlineEditable__ArgProps
   }
 );
 

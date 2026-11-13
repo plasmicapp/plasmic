@@ -1,3 +1,4 @@
+import { useTeamSubscription } from "@/wab/client/api-hooks";
 import { AppCtx } from "@/wab/client/app-ctx";
 import {
   promptBilling,
@@ -9,6 +10,7 @@ import {
   reactHardConfirm,
   reactPrompt,
 } from "@/wab/client/components/quick-modals";
+import { Spinner } from "@/wab/client/components/widgets";
 import {
   DefaultTeamBillingProps,
   PlasmicTeamBilling,
@@ -19,6 +21,7 @@ import {
   BillingFrequency,
   TeamMember,
 } from "@/wab/shared/ApiSchema";
+import { ORGANIZATION_CAP } from "@/wab/shared/Labels";
 import {
   calculateBill,
   getSubscriptionStatus,
@@ -26,7 +29,6 @@ import {
 import { ensure } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { ORGANIZATION_CAP } from "@/wab/shared/Labels";
 import { isUpgradableTier } from "@/wab/shared/pricing/pricing-utils";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
@@ -46,7 +48,7 @@ interface TeamBillingProps extends DefaultTeamBillingProps {
 function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
   const {
     appCtx,
-    team,
+    team: initialTeam,
     members,
     availFeatureTiers,
     canStartFreeTrial,
@@ -54,17 +56,15 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
     disabled,
     ...rest
   } = props;
+  const { data: subscription, mutate: refreshSubscription } =
+    useTeamSubscription(appCtx, initialTeam.id);
+  const team = subscription?.team ?? initialTeam;
   const [billingEmail, setBillingEmail] = React.useState(team.billingEmail);
   const [billingFreq, setBillingFreq] = React.useState<BillingFrequency>(
     team.billingFrequency ?? "year",
   );
 
   // Figure out the current plan we're on
-  const subStatus = getSubscriptionStatus(team);
-
-  const billingError =
-    subStatus.type === "invalid" ? subStatus.errorMsg : undefined;
-
   const currentBill = React.useMemo(() => {
     if (!team.featureTier || !team.seats || !team.billingFrequency) {
       return null;
@@ -115,6 +115,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
     }
 
     // Refresh the latest team data
+    await refreshSubscription();
     await onChange();
   };
 
@@ -141,11 +142,13 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
     }
 
     // Refresh the latest team data
+    await refreshSubscription();
     await onChange();
   };
 
   const startFreeTrial = async () => {
     await appCtx.api.startFreeTrial(team.id);
+    await refreshSubscription();
     await onChange();
   };
 
@@ -157,12 +160,18 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
     await upsell(tier, "Change seat count");
   };
 
+  if (!subscription) {
+    return <Spinner />;
+  }
+
+  const subStatus = getSubscriptionStatus({ ...team, ...subscription });
+  const billingError = subStatus.type === "invalid";
+
   return (
     <PlasmicTeamBilling
       root={{ ref }}
       {...rest}
-      showBillingError={!!billingError}
-      billingError={billingError}
+      showBillingError={billingError}
       billingFrequencyToggle={{
         // Don't let users switch billingFreq if they already have a subscription
         isDisabled: !(subStatus.type === "valid" && subStatus.free),
@@ -177,11 +186,13 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
       }}
       priceTierPicker={{
         appCtx: appCtx,
-        disabled: disabled || !!billingError,
+        disabled: disabled || billingError,
         billingFrequency: billingFreq,
         availableTiers: availFeatureTiers,
         currentFeatureTier:
-          subStatus.type === "valid" ? subStatus.tier : subStatus.freeTier,
+          subStatus.type === "valid"
+            ? subStatus.tier
+            : (team.featureTier ?? subStatus.freeTier),
         canStartFreeTrial,
         onSelectFeatureTier: upsell,
         onManageSeats:
@@ -263,6 +274,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
             reason: cancelReason,
           });
           // Refresh the latest team data
+          await refreshSubscription();
           await onChange();
         },
         disabled: disabled,

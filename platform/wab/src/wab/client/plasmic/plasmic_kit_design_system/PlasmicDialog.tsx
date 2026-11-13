@@ -16,18 +16,48 @@ import * as React from "react";
 import {
   Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import { BaseDialog } from "@plasmicpkgs/react-aria/skinny/registerDialog";
 import ListSectionSeparator from "../../components/ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -94,7 +124,7 @@ function PlasmicDialog__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -107,8 +137,8 @@ function PlasmicDialog__RenderFunc(props: {
         path: "show",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.show,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.show
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -118,7 +148,7 @@ function PlasmicDialog__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -138,7 +168,7 @@ function PlasmicDialog__RenderFunc(props: {
         sty.root,
         {
           [sty.rootshow_footer]: hasVariant($state, "show", "footer"),
-          [sty.rootshow_header]: hasVariant($state, "show", "header"),
+          [sty.rootshow_header]: hasVariant($state, "show", "header")
         }
       )}
     >
@@ -149,7 +179,7 @@ function PlasmicDialog__RenderFunc(props: {
                 {"Header"}
               </div>
             ),
-            value: args.header,
+            value: args.header
           })
         : null}
       <ListSectionSeparator
@@ -161,7 +191,7 @@ function PlasmicDialog__RenderFunc(props: {
               $state,
               "show",
               "header"
-            ),
+            )
           }
         )}
       />
@@ -174,7 +204,7 @@ function PlasmicDialog__RenderFunc(props: {
             $state,
             "show",
             "header"
-          ),
+          )
         })}
       >
         {renderPlasmicSlot({
@@ -190,7 +220,7 @@ function PlasmicDialog__RenderFunc(props: {
               </div>
             </div>
           ),
-          value: args.content,
+          value: args.content
         })}
       </div>
       <ListSectionSeparator
@@ -207,7 +237,7 @@ function PlasmicDialog__RenderFunc(props: {
               $state,
               "show",
               "header"
-            ),
+            )
           }
         )}
       />
@@ -219,7 +249,7 @@ function PlasmicDialog__RenderFunc(props: {
                 {"Footer"}
               </div>
             ),
-            value: args.footer,
+            value: args.footer
           })
         : null}
     </BaseDialog>
@@ -228,7 +258,7 @@ function PlasmicDialog__RenderFunc(props: {
 
 const PlasmicDescendants = {
   root: ["root", "scrollableContent"],
-  scrollableContent: ["scrollableContent"],
+  scrollableContent: ["scrollableContent"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -249,8 +279,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDialog__VariantsArgs;
     args?: PlasmicDialog__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicDialog__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicDialog__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDialog__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -275,7 +306,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicDialog__ArgProps,
-          internalVariantPropNames: PlasmicDialog__VariantProps,
+          internalVariantPropNames: PlasmicDialog__VariantProps
         }),
       [props, nodeName]
     );
@@ -283,7 +314,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -303,7 +334,7 @@ export const PlasmicDialog = Object.assign(
 
     // Metadata about props expected for PlasmicDialog
     internalVariantProps: PlasmicDialog__VariantProps,
-    internalArgProps: PlasmicDialog__ArgProps,
+    internalArgProps: PlasmicDialog__ArgProps
   }
 );
 

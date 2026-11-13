@@ -49,7 +49,7 @@ export const loadConfig = memoizeOne((): Config => {
   return config;
 });
 
-function parseConfigFromEnv(): Config {
+export function parseConfigFromEnv(): Config {
   const config = Object.assign({}, DEFAULT_CONFIG);
   const mailConfig = process.env["MAIL_CONFIG"]
     ? JSON.parse(process.env["MAIL_CONFIG"])

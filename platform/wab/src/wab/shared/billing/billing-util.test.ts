@@ -1,10 +1,16 @@
 import { _testonly as featureTiers } from "@/wab/server/db/seed/feature-tier";
-import { ApiTeam, TeamSubscriptionStatus } from "@/wab/shared/ApiSchema";
+import {
+  ApiTeam,
+  ApiTeamSubscription,
+  TeamSubscriptionStatus,
+} from "@/wab/shared/ApiSchema";
 import {
   calculateBill,
+  getPastDuePhase,
   getSubscriptionStatus,
 } from "@/wab/shared/billing/billing-util";
 import { DEVFLAGS } from "@/wab/shared/devflags";
+import { Temporal } from "temporal-polyfill";
 
 describe("calculateBill", () => {
   it("works for current feature tier", () => {
@@ -62,7 +68,7 @@ describe("getSubscriptionStatus", () => {
       "past_due",
       {
         type: "invalid",
-        errorMsg: expect.stringContaining("Failed to process your credit card"),
+        errorMsg: expect.stringContaining("Payment failed."),
         freeTier: DEVFLAGS.freeTier,
       },
     ],
@@ -72,7 +78,58 @@ describe("getSubscriptionStatus", () => {
         id: "team",
         subscriptionStatus,
         featureTier: tier,
-      } as ApiTeam),
+      } as ApiTeam & ApiTeamSubscription),
     ).toEqual(expected);
+  });
+});
+
+describe("getPastDuePhase", () => {
+  const sub = {
+    subscriptionStatus: "past_due" as const,
+    pastDueLastDay: "2026-12-31",
+  };
+
+  it("allows the entire last day even in UTC-12", () => {
+    expect(
+      getPastDuePhase(sub, Temporal.Instant.from("2027-01-01T11:59:59.999Z")),
+    ).toBe("grace");
+    expect(
+      getPastDuePhase(sub, Temporal.Instant.from("2027-01-01T12:00:00Z")),
+    ).toBe("blocked");
+  });
+
+  it("honors overrides only while past due, including without a deadline", () => {
+    const now = Temporal.Instant.from("2027-01-02T12:00:00Z");
+    expect(
+      getPastDuePhase({ ...sub, pastDuePhaseOverride: "grace" }, now),
+    ).toBe("grace");
+    expect(
+      getPastDuePhase(
+        { ...sub, pastDueLastDay: null, pastDuePhaseOverride: "blocked" },
+        now,
+      ),
+    ).toBe("blocked");
+    expect(
+      getPastDuePhase(
+        { ...sub, subscriptionStatus: "paid", pastDuePhaseOverride: "blocked" },
+        now,
+      ),
+    ).toBeNull();
+    expect(
+      getSubscriptionStatus({
+        ...sub,
+        id: "team" as ApiTeam["id"],
+        featureTier: null,
+        pastDuePhaseOverride: "grace",
+      }),
+    ).toMatchObject({
+      errorMsg:
+        "Payment failed. Editing remains available while your payment issue is resolved.",
+    });
+  });
+
+  it("ignores paid subscriptions and missing deadlines", () => {
+    expect(getPastDuePhase({ ...sub, subscriptionStatus: "paid" })).toBeNull();
+    expect(getPastDuePhase({ ...sub, pastDueLastDay: null })).toBeNull();
   });
 });

@@ -14,23 +14,50 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  PlasmicIcon as PlasmicIcon__,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
   useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import * as pp from "@plasmicapp/react-web";
 
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -38,9 +65,9 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicCheckbox.module.css"; // plasmic-import: W-rO7NZqPjZ/css
 
+import SquareSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SquareSvg"; // plasmic-import: zkj00JjZV/icon
 import CheckTrueIcon from "../plasmic_kit/PlasmicIcon__CheckTrue"; // plasmic-import: ckLkdbD6DMjvM/icon
 import SquareMinusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SquareMinusSvg"; // plasmic-import: 6a2Ojnos7/icon
-import SquareSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SquareSvg"; // plasmic-import: zkj00JjZV/icon
 
 createPlasmicElementProxy;
 
@@ -125,7 +152,7 @@ function PlasmicCheckbox__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -138,13 +165,13 @@ function PlasmicCheckbox__RenderFunc(props: {
         path: "noLabel",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noLabel,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noLabel
       },
       {
         path: "isDisabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isDisabled,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isDisabled
       },
       {
         path: "isChecked",
@@ -152,27 +179,27 @@ function PlasmicCheckbox__RenderFunc(props: {
         variableType: "boolean",
 
         valueProp: "isChecked",
-        onChangeProp: "onChange",
+        onChangeProp: "onChange"
       },
       {
         path: "isIndeterminate",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.isIndeterminate,
+          $props.isIndeterminate
       },
       {
         path: "medium",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.medium,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.medium
       },
       {
         path: "color",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.color,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.color
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -182,7 +209,7 @@ function PlasmicCheckbox__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const [isRootFocusWithin, triggerRootFocusWithinProps] = useTrigger(
@@ -191,11 +218,11 @@ function PlasmicCheckbox__RenderFunc(props: {
   );
   const [isRootNotFocusVisibleWithin, triggerRootNotFocusVisibleWithinProps] =
     useTrigger("useFocusVisibleWithin", {
-      isTextInput: false,
+      isTextInput: false
     });
   const triggers = {
     focusWithinNotFocusVisibleWithin_root:
-      isRootFocusWithin && !isRootNotFocusVisibleWithin,
+      isRootFocusWithin && !isRootNotFocusVisibleWithin
   };
 
   const styleTokensClassNames = _useStyleTokens();
@@ -307,12 +334,12 @@ function PlasmicCheckbox__RenderFunc(props: {
             hasVariant($state, "color", "red") &&
             hasVariant($state, "medium", "medium") &&
             hasVariant($state, "noLabel", "noLabel"),
-          [sty.rootnoLabel]: hasVariant($state, "noLabel", "noLabel"),
+          [sty.rootnoLabel]: hasVariant($state, "noLabel", "noLabel")
         }
       )}
       data-plasmic-trigger-props={[
         triggerRootFocusWithinProps,
-        triggerRootNotFocusVisibleWithinProps,
+        triggerRootNotFocusVisibleWithinProps
       ]}
     >
       <PlasmicIcon__
@@ -322,8 +349,8 @@ function PlasmicCheckbox__RenderFunc(props: {
           hasVariant($state, "isIndeterminate", "isIndeterminate")
             ? SquareMinusSvgIcon
             : hasVariant($state, "isChecked", "isChecked")
-            ? CheckTrueIcon
-            : SquareSvgIcon
+              ? CheckTrueIcon
+              : SquareSvgIcon
         }
         className={classNames("all", sty.svg, {
           [sty.svg___focusWithin__notFocusVisibleWithin]:
@@ -369,7 +396,7 @@ function PlasmicCheckbox__RenderFunc(props: {
             hasVariant($state, "color", "red") &&
             hasVariant($state, "medium", "medium") &&
             hasVariant($state, "isChecked", "isChecked"),
-          [sty.svgnoLabel]: hasVariant($state, "noLabel", "noLabel"),
+          [sty.svgnoLabel]: hasVariant($state, "noLabel", "noLabel")
         })}
         role={"img"}
       />
@@ -389,7 +416,7 @@ function PlasmicCheckbox__RenderFunc(props: {
               $state,
               "noLabel",
               "noLabel"
-            ),
+            )
           })}
         >
           {renderPlasmicSlot({
@@ -427,8 +454,8 @@ function PlasmicCheckbox__RenderFunc(props: {
                 $state,
                 "noLabel",
                 "noLabel"
-              ),
-            }),
+              )
+            })
           })}
         </div>
       ) : null}
@@ -443,7 +470,7 @@ function useBehavior<P extends pp.CheckboxProps>(
   if (!("children" in props)) {
     props = {
       ...props,
-      children: "Enter some text",
+      children: "Enter some text"
     };
   }
 
@@ -454,12 +481,12 @@ function useBehavior<P extends pp.CheckboxProps>(
       isCheckedVariant: { group: "isChecked", variant: "isChecked" },
       isIndeterminateVariant: {
         group: "isIndeterminate",
-        variant: "isIndeterminate",
+        variant: "isIndeterminate"
       },
       isDisabledVariant: { group: "isDisabled", variant: "isDisabled" },
       noLabelVariant: { group: "noLabel", variant: "noLabel" },
       labelSlot: "children",
-      root: "root",
+      root: "root"
     },
     ref
   );
@@ -468,7 +495,7 @@ function useBehavior<P extends pp.CheckboxProps>(
 const PlasmicDescendants = {
   root: ["root", "svg", "labelContainer"],
   svg: ["svg"],
-  labelContainer: ["labelContainer"],
+  labelContainer: ["labelContainer"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -490,8 +517,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCheckbox__VariantsArgs;
     args?: PlasmicCheckbox__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicCheckbox__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicCheckbox__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCheckbox__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -516,7 +544,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCheckbox__ArgProps,
-          internalVariantPropNames: PlasmicCheckbox__VariantProps,
+          internalVariantPropNames: PlasmicCheckbox__VariantProps
         }),
       [props, nodeName]
     );
@@ -524,7 +552,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -547,7 +575,7 @@ export const PlasmicCheckbox = Object.assign(
     internalVariantProps: PlasmicCheckbox__VariantProps,
     internalArgProps: PlasmicCheckbox__ArgProps,
 
-    useBehavior,
+    useBehavior
   }
 );
 

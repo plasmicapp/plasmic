@@ -2,6 +2,7 @@ import {
   getTeamMenuItems,
   TeamMenu,
 } from "@/wab/client/components/dashboard/dashboard-actions";
+import { TeamBillingAlertHeader } from "@/wab/client/components/dashboard/TeamBillingAlert";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
@@ -69,6 +70,11 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
     <PlasmicTeamSettings
       root={{ ref }}
       {...rest}
+      header={{
+        wrap: (node) => (
+          <TeamBillingAlertHeader team={team}>{node}</TeamBillingAlertHeader>
+        ),
+      }}
       teamName={team.name}
       teamMenuButton={
         teamMenuItems.length > 0
@@ -119,7 +125,6 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
               });
               return;
             }
-            // Confirm user is trying to transfer "owner" to another member.
             const confirm = await reactConfirm({
               title: `Transfer ownership`,
               message: (
@@ -169,7 +174,7 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
               members,
               availFeatureTiers,
               canStartFreeTrial: data.canStartFreeTrial,
-              onChange: () => {
+              onChange: async () => {
                 refetchData();
               },
               disabled: readOnly,

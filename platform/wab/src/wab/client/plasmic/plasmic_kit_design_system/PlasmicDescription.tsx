@@ -15,16 +15,49 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import { BaseText } from "@plasmicpkgs/react-aria/skinny/registerText";
-import { _useStyleTokens } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -75,7 +108,7 @@ function PlasmicDescription__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -107,7 +140,7 @@ function PlasmicDescription__RenderFunc(props: {
       >
         {renderPlasmicSlot({
           defaultContents: "Description\u2026",
-          value: args.children,
+          value: args.children
         })}
       </div>
     </BaseText>
@@ -116,7 +149,7 @@ function PlasmicDescription__RenderFunc(props: {
 
 const PlasmicDescendants = {
   root: ["root", "freeBox"],
-  freeBox: ["freeBox"],
+  freeBox: ["freeBox"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -137,7 +170,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDescription__VariantsArgs;
     args?: PlasmicDescription__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicDescription__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicDescription__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDescription__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -162,7 +197,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicDescription__ArgProps,
-          internalVariantPropNames: PlasmicDescription__VariantProps,
+          internalVariantPropNames: PlasmicDescription__VariantProps
         }),
       [props, nodeName]
     );
@@ -170,7 +205,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -190,7 +225,7 @@ export const PlasmicDescription = Object.assign(
 
     // Metadata about props expected for PlasmicDescription
     internalVariantProps: PlasmicDescription__VariantProps,
-    internalArgProps: PlasmicDescription__ArgProps,
+    internalArgProps: PlasmicDescription__ArgProps
   }
 );
 

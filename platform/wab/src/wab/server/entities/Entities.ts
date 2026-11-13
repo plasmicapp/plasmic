@@ -31,6 +31,7 @@ import type {
   StripePriceId,
   StripeSubscriptionId,
   TeamId,
+  TeamSubscriptionStatus,
   TeamWhiteLabelInfo,
   UserId,
   UserWhiteLabelInfo,
@@ -207,6 +208,29 @@ export class Team extends Base<"TeamId"> {
 
   @ManyToOne((_type) => Team)
   parentTeam: Team | null;
+}
+
+@Entity("subscription_status")
+@Index("subscription_status_team_updated", ["teamId", "updatedAt"])
+export class SubscriptionStatusRecord extends Base<"SubscriptionStatusRecordId"> {
+  @ManyToOne(() => Team, { onDelete: "CASCADE" })
+  team?: Team;
+
+  @Column("text")
+  teamId: TeamId;
+
+  @Column("text", { nullable: true })
+  stripeSubscriptionId: StripeSubscriptionId | null;
+
+  @Column("text")
+  status: TeamSubscriptionStatus;
+
+  @Column("timestamptz", { nullable: true })
+  blockWarningSentAt: Date | null;
+
+  // Applies while this subscription remains past due, null uses the automatic deadline.
+  @Column("text", { name: "past_due_phase_override", nullable: true })
+  pastDuePhaseOverride: "grace" | "blocked" | null;
 }
 
 @Entity()

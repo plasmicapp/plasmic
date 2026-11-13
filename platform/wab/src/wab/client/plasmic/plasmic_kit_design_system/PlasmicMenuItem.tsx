@@ -15,18 +15,50 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import { BaseListBoxItem } from "@plasmicpkgs/react-aria/skinny/registerListBoxItem";
-import {
-  BaseText,
-  BaseText as BaseText2,
-} from "@plasmicpkgs/react-aria/skinny/registerText";
+import { BaseText } from "@plasmicpkgs/react-aria/skinny/registerText";
+import { BaseText as BaseText2 } from "@plasmicpkgs/react-aria/skinny/registerText";
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -81,7 +113,7 @@ function PlasmicMenuItem__RenderFunc(props: {
       Object.assign(
         {
           value: ``,
-          label: "Item 1",
+          label: "Item 1"
         },
         Object.fromEntries(
           Object.entries(props.args).filter(([_, v]) => v !== undefined)
@@ -92,7 +124,7 @@ function PlasmicMenuItem__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -109,12 +141,12 @@ function PlasmicMenuItem__RenderFunc(props: {
     focused: false,
     focusVisible: false,
     selected: false,
-    disabled: false,
+    disabled: false
   });
   const updateVariant = React.useCallback(
     (changes: Record<string, boolean>) => {
-      setDollarCcVariants((prev) => {
-        if (!Object.keys(changes).some((k) => prev[k] !== changes[k])) {
+      setDollarCcVariants(prev => {
+        if (!Object.keys(changes).some(k => prev[k] !== changes[k])) {
           return prev;
         }
         return { ...prev, ...changes };
@@ -200,7 +232,7 @@ function PlasmicMenuItem__RenderFunc(props: {
 const PlasmicDescendants = {
   root: ["root", "ariaText", "ariaDescription"],
   ariaText: ["ariaText"],
-  ariaDescription: ["ariaDescription"],
+  ariaDescription: ["ariaDescription"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -222,8 +254,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicMenuItem__VariantsArgs;
     args?: PlasmicMenuItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicMenuItem__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicMenuItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicMenuItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -248,7 +281,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicMenuItem__ArgProps,
-          internalVariantPropNames: PlasmicMenuItem__VariantProps,
+          internalVariantPropNames: PlasmicMenuItem__VariantProps
         }),
       [props, nodeName]
     );
@@ -256,7 +289,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -277,7 +310,7 @@ export const PlasmicMenuItem = Object.assign(
 
     // Metadata about props expected for PlasmicMenuItem
     internalVariantProps: PlasmicMenuItem__VariantProps,
-    internalArgProps: PlasmicMenuItem__ArgProps,
+    internalArgProps: PlasmicMenuItem__ArgProps
   }
 );
 

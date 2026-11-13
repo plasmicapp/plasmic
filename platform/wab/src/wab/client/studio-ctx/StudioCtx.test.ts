@@ -1,5 +1,6 @@
 import { mockDeepAuto } from "@/wab/__testonly__/mock";
 import { fakeStudioCtx } from "@/wab/client/__testonly__/fake-init-ctx";
+import { AlertSpec } from "@/wab/client/components/widgets/plasmic/AlertBanner";
 import { createStyleTokensTool } from "@/wab/client/copilot/enterprise/tools/createStyleTokens";
 import { deleteStyleTokensTool } from "@/wab/client/copilot/enterprise/tools/deleteStyleTokens";
 import { navigateTool } from "@/wab/client/copilot/enterprise/tools/navigate";
@@ -27,7 +28,9 @@ import {
   isStudioMcpEnabled,
   mergeUiConfigs,
 } from "@/wab/shared/ui-config-utils";
+import { resetNowInternalState } from "mobx-utils";
 import { ok } from "neverthrow";
+import { Temporal } from "temporal-polyfill";
 
 import _bundle from "@/wab/shared/web-exporter/bundles/starter-project-desktop-first.json";
 
@@ -139,6 +142,24 @@ describe("chatCopilotEnabled", () => {
     expect(studioCtx.chatCopilotEnabled()).toBe(false);
   });
 
+  it("rejects past-due teams after the grace period", () => {
+    const pastDue = (blocked: boolean) => {
+      const { studioCtx } = setup(
+        mockTeam({ featureTierId: "paid" as FeatureTierId }),
+      );
+      studioCtx.siteInfo.teamSubscription = {
+        subscriptionStatus: "past_due",
+        billingTeamId: TEAM_ID,
+        pastDueLastDay: Temporal.Now.plainDateISO("UTC")
+          .add({ days: blocked ? -2 : 1 })
+          .toString(),
+      };
+      return studioCtx.chatCopilotEnabled();
+    };
+    expect(pastDue(false)).toBe(true);
+    expect(pastDue(true)).toBe(false);
+  });
+
   it.each(["viewer", "commenter", "content", "editor"] as const)(
     "checks project access for %s",
     (accessLevel) => {
@@ -230,6 +251,114 @@ describe("AI features in UI config", () => {
     expect(merged.studioMcp).toBe(false);
     expect(isStudioMcpEnabled(merged)).toBe(false);
     expect(isStudioMcpEnabled({})).toBe(true);
+  });
+});
+
+describe("blockChanges", () => {
+  beforeEach(() => {
+    resetNowInternalState();
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-12-31T11:59:58Z"));
+  });
+  afterEach(() => vi.useRealTimers());
+  const pastDue = (lastDay: string) =>
+    // No teams: project-level collaborators only see the project's team status.
+    fakeStudioCtx({
+      siteInfo: {
+        teamId: TEAM_ID,
+        teamSubscription: {
+          billingTeamId: TEAM_ID,
+          subscriptionStatus: "past_due",
+          pastDueLastDay: lastDay,
+        },
+      },
+    }).studioCtx;
+
+  it("locks an open tab at the deadline and clears the warning after payment", () => {
+    const studioCtx = pastDue("2026-12-30");
+    try {
+      studioCtx.alertBannerState.set(AlertSpec.PastDueGrace);
+      expect(studioCtx.blockChanges).toBe(false);
+      // Clock ticks must not reset locks set by other Studio errors.
+      studioCtx.blockChanges = true;
+      vi.advanceTimersByTime(1000);
+      expect(studioCtx.blockChanges).toBe(true);
+      studioCtx.blockChanges = false;
+      vi.advanceTimersByTime(2000);
+      expect(studioCtx.blockChanges).toBe(true);
+      expect(studioCtx.alertBannerState.get()).toBe(AlertSpec.PastDueBlocked);
+      studioCtx.dbCtx().setSiteInfo({
+        ...studioCtx.siteInfo,
+        teamSubscription: {
+          billingTeamId: TEAM_ID,
+          subscriptionStatus: "paid",
+          pastDueLastDay: null,
+        },
+      });
+      expect(studioCtx.blockChanges).toBe(false);
+      expect(studioCtx.alertBannerState.get()).toBeNull();
+    } finally {
+      studioCtx.dispose();
+    }
+  });
+
+  it.each(["loading", "viewer"])(
+    "clears a past-due alert after recovery while %s",
+    (state) => {
+      const studioCtx = pastDue("2026-12-30");
+      try {
+        studioCtx.alertBannerState.set(AlertSpec.PastDueGrace);
+        if (state === "loading") {
+          studioCtx.editMode = false;
+        } else {
+          studioCtx.siteInfo.createdById = "owner" as UserId;
+          studioCtx.siteInfo.perms = [];
+          studioCtx.siteInfo.readableByPublic = true;
+        }
+        studioCtx
+          .dbCtx()
+          .setSiteInfo({ ...studioCtx.siteInfo, teamSubscription: null });
+        expect(studioCtx.alertBannerState.get()).toBeNull();
+        expect(AlertSpec.PastDueGrace.message(studioCtx)).toBeUndefined();
+        expect(studioCtx.blockChanges).toBe(true);
+      } finally {
+        studioCtx.dispose();
+      }
+    },
+  );
+
+  it("keeps a stale project locked when payment recovers", () => {
+    const studioCtx = pastDue("2026-12-29");
+    try {
+      studioCtx.isAtTip = false;
+      const alert = studioCtx.alertBannerState.get();
+      studioCtx.dbCtx().setSiteInfo({
+        ...studioCtx.siteInfo,
+        teamSubscription: {
+          billingTeamId: TEAM_ID,
+          subscriptionStatus: "paid",
+          pastDueLastDay: null,
+        },
+      });
+      expect(studioCtx.blockChanges).toBe(true);
+      expect(studioCtx.alertBannerState.get()).toBe(alert);
+    } finally {
+      studioCtx.dispose();
+    }
+  });
+
+  it("keeps the past-due lock when loading toggles edit mode", () => {
+    const grace = pastDue("2026-12-30");
+    const blocked = pastDue("2026-12-29");
+    expect(grace.pastDueAlert()).toBe(AlertSpec.PastDueGrace);
+    expect(blocked.pastDueAlert()).toBe(AlertSpec.PastDueBlocked);
+    for (const studioCtx of [grace, blocked]) {
+      studioCtx.editMode = false;
+      expect(studioCtx.blockChanges).toBe(true);
+      studioCtx.editMode = true;
+    }
+    expect(grace.blockChanges).toBe(false);
+    expect(blocked.blockChanges).toBe(true);
   });
 });
 

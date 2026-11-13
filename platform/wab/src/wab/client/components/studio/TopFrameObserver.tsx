@@ -1,3 +1,4 @@
+import { apiKey } from "@/wab/client/api";
 import {
   MentionableResources,
   mkMentionableResources,
@@ -45,12 +46,12 @@ import { formatErrorMessage } from "@/wab/shared/error-handling";
 import { Component } from "@/wab/shared/model/classes";
 import { notification } from "antd";
 import * as Comlink from "comlink";
-import { sortBy } from "lodash";
-import { autorun, computed } from "mobx";
+import { isEqual, sortBy } from "lodash";
+import { autorun, comparer, computed, reaction } from "mobx";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
 import React from "react";
-import { mutate as swrMutate } from "swr";
+import useSWR, { mutate as swrMutate } from "swr";
 
 import { useTopFrameApi } from "@/wab/client/contexts/AppContexts";
 import { LocalizationConfig } from "@/wab/shared/localization";
@@ -91,6 +92,21 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
   const studioCtx = useStudioCtx();
   const previewCtx = usePreviewCtx();
   const topFrameApi = useTopFrameApi();
+  const { data: subscription } = useSWR(
+    apiKey("getProjectSubscription", studioCtx.siteInfo.id),
+    () => studioCtx.appCtx.api.getProjectSubscription(studioCtx.siteInfo.id),
+    { refreshInterval: 60_000 },
+  );
+  React.useEffect(() => {
+    if (
+      subscription !== undefined &&
+      !isEqual(subscription, studioCtx.siteInfo.teamSubscription)
+    ) {
+      studioCtx
+        .dbCtx()
+        .setSiteInfo({ ...studioCtx.siteInfo, teamSubscription: subscription });
+    }
+  }, [studioCtx, subscription]);
 
   const hostFrameApi = React.useMemo<HostFrameApi>(
     () => ({
@@ -390,6 +406,14 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
 
         spawn(topFrameApi.setSubjectComponentInfo(componentInfo));
       }),
+      reaction(
+        () => studioCtx.siteInfo.teamSubscription,
+        (subscription) =>
+          spawn(
+            topFrameApi.setTeamSubscription(jsonClone(subscription ?? null)),
+          ),
+        { fireImmediately: true, equals: comparer.structural },
+      ),
       studioCtx.showBranching() &&
         autorun(() => {
           const branchInfo = studioCtx.dbCtx().branchInfo;

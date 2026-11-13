@@ -1,3 +1,4 @@
+import { useTeamSubscription } from "@/wab/client/api-hooks";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { isHostFrame } from "@/wab/client/cli-routes";
 import UpsellCheckout from "@/wab/client/components/modals/UpsellCheckout";
@@ -183,7 +184,8 @@ function UpsellForm(
   const resetErrorMsg = () => setErrorMsg(initErrorMsg());
 
   // The team we want to upsell
-  const team = target.team;
+  const { data: subscription } = useTeamSubscription(appCtx, target.team.id);
+  const team = subscription?.team ?? target.team;
   const [teamMeta, setTeamMeta] = React.useState<ApiTeamMeta | undefined>(
     undefined,
   );
@@ -268,7 +270,8 @@ function UpsellForm(
   const hasActiveSubscription =
     !!team.featureTierId &&
     !!team.stripeSubscriptionId &&
-    team.subscriptionStatus !== "free";
+    !!subscription &&
+    subscription.subscriptionStatus !== "free";
 
   // Prevent submitting an unchanged subscription (allow changing seats or converting trial)
   const isCurrentSubscription =
@@ -469,7 +472,7 @@ function UpsellForm(
           <Form>
             <UpsellCheckout
               appCtx={appCtx}
-              disabled={waiting || !canUpdateBilling}
+              disabled={waiting || !subscription || !canUpdateBilling}
               isCurrentSubscription={isCurrentSubscription}
               hasActiveSubscription={hasActiveSubscription}
               onFreeTrial={team.onTrial}

@@ -185,6 +185,8 @@ test.describe("copilot mentions", () => {
     models,
   }) => {
     await models.studio.switchArena("Custom arena 1");
+    // Move focus out of the arena picker before using a Studio shortcut.
+    await models.studio.frame.getByText("This custom arena is empty.").click();
 
     await page.keyboard.press("ControlOrMeta+k");
     const prompt = page.locator('[data-test-id="copilot-chat-prompt-editor"]');

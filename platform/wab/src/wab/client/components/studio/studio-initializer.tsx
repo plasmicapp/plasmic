@@ -106,6 +106,8 @@ class StudioInitializer_ extends React.Component<
     } else if (!studioCtx.canEditBranch()) {
       studioCtx.alertBannerState.set(AlertSpec.ProtectedMainBranch);
       studioCtx.blockChanges = true;
+    } else {
+      studioCtx.alertBannerState.set(studioCtx.pastDueAlert());
     }
 
     initBuiltinActions({

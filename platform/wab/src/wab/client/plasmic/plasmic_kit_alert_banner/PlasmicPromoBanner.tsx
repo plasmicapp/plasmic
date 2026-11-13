@@ -14,15 +14,48 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
-  PlasmicLink as PlasmicLink__,
-  StrictProps,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 29njzcsBEPR4koRddw4knF/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 29njzcsBEPR4koRddw4knF/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -73,7 +106,7 @@ function PlasmicPromoBanner__RenderFunc(props: {
       Object.assign(
         {
           message: "Sign up!",
-          bannerUrl: "https://studio.plasmic.app/signup",
+          bannerUrl: "https://studio.plasmic.app/signup"
         },
         Object.fromEntries(
           Object.entries(props.args).filter(([_, v]) => v !== undefined)
@@ -84,7 +117,7 @@ function PlasmicPromoBanner__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -139,7 +172,7 @@ function PlasmicPromoBanner__RenderFunc(props: {
 
 const PlasmicDescendants = {
   root: ["root", "text"],
-  text: ["text"],
+  text: ["text"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -160,8 +193,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPromoBanner__VariantsArgs;
     args?: PlasmicPromoBanner__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicPromoBanner__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicPromoBanner__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicPromoBanner__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -186,7 +220,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPromoBanner__ArgProps,
-          internalVariantPropNames: PlasmicPromoBanner__VariantProps,
+          internalVariantPropNames: PlasmicPromoBanner__VariantProps
         }),
       [props, nodeName]
     );
@@ -194,7 +228,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -214,7 +248,7 @@ export const PlasmicPromoBanner = Object.assign(
 
     // Metadata about props expected for PlasmicPromoBanner
     internalVariantProps: PlasmicPromoBanner__VariantProps,
-    internalArgProps: PlasmicPromoBanner__ArgProps,
+    internalArgProps: PlasmicPromoBanner__ArgProps
   }
 );
 

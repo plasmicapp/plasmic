@@ -14,19 +14,48 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  PlasmicLink as PlasmicLink__,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  SingleBooleanChoiceArg,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -100,7 +129,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -113,21 +142,21 @@ function PlasmicFreeTrial__RenderFunc(props: {
         path: "topBar",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.topBar,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.topBar
       },
       {
         path: "accountSection",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.accountSection,
+          $props.accountSection
       },
       {
         path: "trialEnded",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.trialEnded,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.trialEnded
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -137,7 +166,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -164,7 +193,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
             "accountSection"
           ),
           [sty.roottopBar]: hasVariant($state, "topBar", "topBar"),
-          [sty.roottrialEnded]: hasVariant($state, "trialEnded", "trialEnded"),
+          [sty.roottrialEnded]: hasVariant($state, "trialEnded", "trialEnded")
         }
       )}
       platform={"react"}
@@ -185,7 +214,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
             $state,
             "trialEnded",
             "trialEnded"
-          ),
+          )
         })}
       >
         <BookmarkSvgIcon
@@ -198,7 +227,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
               "accountSection"
             ),
             [sty.svgtopBar]: hasVariant($state, "topBar", "topBar"),
-            [sty.svgtrialEnded]: hasVariant($state, "trialEnded", "trialEnded"),
+            [sty.svgtrialEnded]: hasVariant($state, "trialEnded", "trialEnded")
           })}
           role={"img"}
         />
@@ -219,7 +248,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
               $state,
               "trialEnded",
               "trialEnded"
-            ),
+            )
           })}
         >
           <div
@@ -236,14 +265,14 @@ function PlasmicFreeTrial__RenderFunc(props: {
                 $state,
                 "trialEnded",
                 "trialEnded"
-              ),
+              )
             })}
           >
             {hasVariant($state, "trialEnded", "trialEnded")
               ? "Trial ended"
               : hasVariant($state, "topBar", "topBar")
-              ? "Trial"
-              : "Scale plan trial"}
+                ? "Trial"
+                : "Scale plan trial"}
           </div>
           {renderPlasmicSlot({
             defaultContents: "0 days left",
@@ -261,8 +290,8 @@ function PlasmicFreeTrial__RenderFunc(props: {
                 $state,
                 "trialEnded",
                 "trialEnded"
-              ),
-            }),
+              )
+            })
           })}
         </div>
       </div>
@@ -273,7 +302,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
 const PlasmicDescendants = {
   root: ["root", "svg", "text"],
   svg: ["svg"],
-  text: ["text"],
+  text: ["text"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -295,8 +324,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicFreeTrial__VariantsArgs;
     args?: PlasmicFreeTrial__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicFreeTrial__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicFreeTrial__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicFreeTrial__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -321,7 +351,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicFreeTrial__ArgProps,
-          internalVariantPropNames: PlasmicFreeTrial__VariantProps,
+          internalVariantPropNames: PlasmicFreeTrial__VariantProps
         }),
       [props, nodeName]
     );
@@ -329,7 +359,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -350,7 +380,7 @@ export const PlasmicFreeTrial = Object.assign(
 
     // Metadata about props expected for PlasmicFreeTrial
     internalVariantProps: PlasmicFreeTrial__VariantProps,
-    internalArgProps: PlasmicFreeTrial__ArgProps,
+    internalArgProps: PlasmicFreeTrial__ArgProps
   }
 );
 

@@ -23,7 +23,7 @@ describe("mkApiTeam", () => {
       styleSectionVisibilities: undefined,
     });
     expect(apiTeam.onTrial).toEqual(false);
-    expect(apiTeam.subscriptionStatus).toEqual("free");
+    expect(apiTeam).not.toHaveProperty("subscriptionStatus");
   });
   it("derives onTrial from the authoritative status", () => {
     const team = {

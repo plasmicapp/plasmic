@@ -19,7 +19,28 @@ test.describe("host-app", () => {
   });
 
   test("Should work", async ({ page, models }) => {
+    const hostSetupEvents: string[] = [];
+    page.on("response", (response) => {
+      if (
+        response.request().method() === "POST" &&
+        new URL(response.url()).pathname === "/api/v1/hosts" &&
+        response.ok()
+      ) {
+        hostSetupEvents.push("trusted");
+      }
+    });
+    page.on("request", (request) => {
+      if (
+        request.method() === "PUT" &&
+        new URL(request.url()).pathname ===
+          `/api/v1/projects/${projectId}/update-host`
+      ) {
+        hostSetupEvents.push("updated");
+      }
+    });
     await models.studio.rightPanel.configureProjectAppHost("plasmic-host");
+    // Trust must be saved before the host update refreshes Studio.
+    expect(hostSetupEvents).toEqual(["trusted", "updated"]);
     await waitForFrameToLoad(page);
 
     await models.studio.leftPanel.addNewFrame();
@@ -130,6 +151,7 @@ test.describe("host-app", () => {
     await models.studio.rightPanel.checkNoErrors();
 
     const consoleLogs: string[] = [];
+    await models.studio.waitForSave();
     const consoleListener = (msg: ConsoleMessage) => {
       if (msg.type() === "log") {
         consoleLogs.push(msg.text());

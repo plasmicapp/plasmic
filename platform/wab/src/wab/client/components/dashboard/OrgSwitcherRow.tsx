@@ -1,3 +1,4 @@
+import { TeamBillingErrorIcon } from "@/wab/client/components/dashboard/TeamBillingAlert";
 import { getOrgInitials } from "@/wab/client/components/dashboard/org-utils";
 import { RawAvatar } from "@/wab/client/components/studio/Avatar";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
@@ -42,6 +43,11 @@ function OrgSwitcherRow_(
       plan={getExternalPriceTierName(org.featureTier?.name)}
       // Free orgs are the design's base state.
       status={status.status === "free" ? undefined : status.status}
+      statusIndicator={
+        rest.selected
+          ? undefined
+          : { children: <TeamBillingErrorIcon team={org} /> }
+      }
       avatarContainer={
         <RawAvatar
           name={org.name}

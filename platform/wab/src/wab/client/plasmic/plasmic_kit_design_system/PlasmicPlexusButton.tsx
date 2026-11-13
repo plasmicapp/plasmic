@@ -16,28 +16,56 @@ import * as React from "react";
 import {
   Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import { BaseButton } from "@plasmicpkgs/react-aria/skinny/registerButton";
-import { _useStyleTokens } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import "../PP__plasmickit_design_system.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicPlexusButton.module.css"; // plasmic-import: sbyrU_8SkoWY/css
 
-import ChevronDownIcon from "./icons/PlasmicIcon__ChevronDown"; // plasmic-import: C21gcG8B3Wlx/icon
 import Circle2Icon from "./icons/PlasmicIcon__Circle2"; // plasmic-import: y6Ei15gXp_-T/icon
+import ChevronDownIcon from "./icons/PlasmicIcon__ChevronDown"; // plasmic-import: C21gcG8B3Wlx/icon
 
 createPlasmicElementProxy;
 
@@ -143,7 +171,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
       Object.assign(
         {
           linkTo: "",
-          openLinkInNewTab: false,
+          openLinkInNewTab: false
         },
         Object.fromEntries(
           Object.entries(props.args).filter(([_, v]) => v !== undefined)
@@ -154,7 +182,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -167,45 +195,44 @@ function PlasmicPlexusButton__RenderFunc(props: {
         path: "color",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.color,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.color
       },
       {
         path: "size",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.size,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.size
       },
       {
         path: "iconStart",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.iconStart,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.iconStart
       },
       {
         path: "iconEnd",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.iconEnd,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.iconEnd
       },
       {
         path: "roundedFull",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.roundedFull,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.roundedFull
       },
       {
         path: "type",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type
       },
       {
         path: "flatSide",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.flatSide,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.flatSide
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -215,7 +242,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -227,12 +254,12 @@ function PlasmicPlexusButton__RenderFunc(props: {
     pressed: false,
     focused: false,
     focusVisible: false,
-    disabled: false,
+    disabled: false
   });
   const updateVariant = React.useCallback(
     (changes: Record<string, boolean>) => {
-      setDollarCcVariants((prev) => {
-        if (!Object.keys(changes).some((k) => prev[k] !== changes[k])) {
+      setDollarCcVariants(prev => {
+        if (!Object.keys(changes).some(k => prev[k] !== changes[k])) {
           return prev;
         }
         return { ...prev, ...changes };
@@ -327,7 +354,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
             hasVariant($state, "type", "soft"),
           [sty.roottype_soft_color_warning]:
             hasVariant($state, "color", "warning") &&
-            hasVariant($state, "type", "soft"),
+            hasVariant($state, "type", "soft")
         }
       )}
       href={args.linkTo}
@@ -354,10 +381,10 @@ function PlasmicPlexusButton__RenderFunc(props: {
         hasVariant($state, "type", "bordered") && $ccVariants["pressed"]
           ? true
           : hasVariant($state, "type", "bordered") && $ccVariants["hovered"]
-          ? true
-          : hasVariant($state, "type", "soft")
-          ? true
-          : false
+            ? true
+            : hasVariant($state, "type", "soft")
+              ? true
+              : false
       ) ? (
         <div
           data-plasmic-name={"softBackground"}
@@ -399,7 +426,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
               "type",
               "bordered"
             ),
-            [sty.softBackgroundtype_soft]: hasVariant($state, "type", "soft"),
+            [sty.softBackgroundtype_soft]: hasVariant($state, "type", "soft")
           })}
         />
       ) : null}
@@ -435,7 +462,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
             [sty.bordertype_bordered_color_muted]:
               hasVariant($state, "color", "muted") &&
               hasVariant($state, "type", "bordered"),
-            [sty.bordertype_soft]: hasVariant($state, "type", "soft"),
+            [sty.bordertype_soft]: hasVariant($state, "type", "soft")
           })}
         />
       ) : null}
@@ -496,7 +523,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
             "type",
             "clear"
           ),
-          [sty.interactionEffecttype_soft]: hasVariant($state, "type", "soft"),
+          [sty.interactionEffecttype_soft]: hasVariant($state, "type", "soft")
         })}
         style={
           hasVariant($state, "type", "bordered") && $ccVariants["pressed"]
@@ -549,7 +576,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
             $state,
             "type",
             "clear"
-          ),
+          )
         })}
       >
         <div
@@ -589,7 +616,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
             ),
             [sty.freeBoxtype_soft_color_neutral__yCk3Ff8Mx2QVhYc]:
               hasVariant($state, "color", "neutral") &&
-              hasVariant($state, "type", "soft"),
+              hasVariant($state, "type", "soft")
           })}
         >
           {renderPlasmicSlot({
@@ -706,8 +733,8 @@ function PlasmicPlexusButton__RenderFunc(props: {
                 hasVariant($state, "type", "soft"),
               [sty.slotTargetStarttype_soft_color_warning]:
                 hasVariant($state, "color", "warning") &&
-                hasVariant($state, "type", "soft"),
-            }),
+                hasVariant($state, "type", "soft")
+            })
           })}
         </div>
         {renderPlasmicSlot({
@@ -828,8 +855,8 @@ function PlasmicPlexusButton__RenderFunc(props: {
               hasVariant($state, "type", "soft"),
             [sty.slotTargetLabeltype_soft_color_warning]:
               hasVariant($state, "color", "warning") &&
-              hasVariant($state, "type", "soft"),
-          }),
+              hasVariant($state, "type", "soft")
+          })
         })}
         <div
           className={classNames("all", sty.freeBox__w5P1T, {
@@ -855,7 +882,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
             ),
             [sty.freeBoxtype_clear_color_neutral__w5P1Tr7V1GQVhYc]:
               hasVariant($state, "color", "neutral") &&
-              hasVariant($state, "type", "clear"),
+              hasVariant($state, "type", "clear")
           })}
         >
           {renderPlasmicSlot({
@@ -973,8 +1000,8 @@ function PlasmicPlexusButton__RenderFunc(props: {
                 hasVariant($state, "type", "soft"),
               [sty.slotTargetEndtype_soft_color_warning]:
                 hasVariant($state, "color", "warning") &&
-                hasVariant($state, "type", "soft"),
-            }),
+                hasVariant($state, "type", "soft")
+            })
           })}
         </div>
       </div>
@@ -986,7 +1013,7 @@ const PlasmicDescendants = {
   root: ["root", "softBackground", "border", "interactionEffect"],
   softBackground: ["softBackground"],
   border: ["border"],
-  interactionEffect: ["interactionEffect"],
+  interactionEffect: ["interactionEffect"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -1009,7 +1036,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPlexusButton__VariantsArgs;
     args?: PlasmicPlexusButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicPlexusButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicPlexusButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicPlexusButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -1034,7 +1063,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPlexusButton__ArgProps,
-          internalVariantPropNames: PlasmicPlexusButton__VariantProps,
+          internalVariantPropNames: PlasmicPlexusButton__VariantProps
         }),
       [props, nodeName]
     );
@@ -1042,7 +1071,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -1064,7 +1093,7 @@ export const PlasmicPlexusButton = Object.assign(
 
     // Metadata about props expected for PlasmicPlexusButton
     internalVariantProps: PlasmicPlexusButton__VariantProps,
-    internalArgProps: PlasmicPlexusButton__ArgProps,
+    internalArgProps: PlasmicPlexusButton__ArgProps
   }
 );
 

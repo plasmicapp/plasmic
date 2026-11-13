@@ -195,7 +195,10 @@ import {
 } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import type { ServerToClientEvents } from "@/wab/shared/api/socket";
-import { canUseChatCopilot } from "@/wab/shared/billing/billing-util";
+import {
+  canUseChatCopilot,
+  getPastDuePhase,
+} from "@/wab/shared/billing/billing-util";
 import { BoundedCache } from "@/wab/shared/bounded-cache";
 import {
   Bundle,
@@ -441,12 +444,13 @@ import {
   runInAction,
   when,
 } from "mobx";
-import { computedFn } from "mobx-utils";
+import { computedFn, now } from "mobx-utils";
 import { Result, err, ok } from "neverthrow";
 import React, { useContext } from "react";
 import semver from "semver";
 import * as Signals from "signals";
 import { mutate } from "swr";
+import { Temporal } from "temporal-polyfill";
 
 (window as any).dbg.classes = classes;
 
@@ -939,13 +943,42 @@ export class StudioCtx extends WithDbCtx {
       ),
       autorun(
         () => {
-          if (!this.canEditProject() || !this.canEditBranch()) {
+          if (
+            !this.isAtTip ||
+            !this.canEditProject() ||
+            !this.canEditBranch() ||
+            this.pastDuePhase() === "blocked"
+          ) {
             this.blockChanges = true;
           } else {
             this.blockChanges = false;
           }
         },
         { name: "StudioCtx.updateBlockChanges" },
+      ),
+      reaction(
+        () => this.pastDuePhase(),
+        (phase) => {
+          const alert = this.alertBannerState.get();
+          if (
+            phase === null &&
+            (alert === AlertSpec.PastDueGrace ||
+              alert === AlertSpec.PastDueBlocked)
+          ) {
+            this.alertBannerState.set(null);
+            return;
+          }
+          if (
+            this.canEditProject() &&
+            this.canEditBranch() &&
+            this.isAtTip &&
+            (!alert ||
+              alert === AlertSpec.PastDueGrace ||
+              alert === AlertSpec.PastDueBlocked)
+          ) {
+            this.alertBannerState.set(this.pastDueAlert());
+          }
+        },
       ),
       autorun(
         () => {
@@ -1238,6 +1271,9 @@ export class StudioCtx extends WithDbCtx {
       hasAppAuth,
       appAuthProvider,
       isMainBranchProtected,
+      teamSubscription: await this.appCtx.api.getProjectSubscription(
+        this.siteInfo.id,
+      ),
     });
     return this.siteInfo;
   }
@@ -3376,6 +3412,26 @@ export class StudioCtx extends WithDbCtx {
     return this.appCtx.getAllTeams().find((t) => t.id === this.siteInfo.teamId);
   }
 
+  pastDuePhase = computedFn(() => {
+    const sub = this.siteInfo.teamSubscription;
+    // Observe time so an open Studio tab locks when its grace period ends.
+    return sub?.subscriptionStatus === "past_due"
+      ? getPastDuePhase(sub, Temporal.Instant.fromEpochMilliseconds(now(1000)))
+      : null;
+  });
+
+  pastDueAlert() {
+    if (!canUserEditProject(this.appCtx.selfInfo, this.siteInfo)) {
+      return null;
+    }
+    const phase = this.pastDuePhase();
+    return phase === "blocked"
+      ? AlertSpec.PastDueBlocked
+      : phase === "grace"
+        ? AlertSpec.PastDueGrace
+        : null;
+  }
+
   //
   // Copy/paste commands
   //
@@ -3491,6 +3547,7 @@ export class StudioCtx extends WithDbCtx {
       this.appCtx.selfInfo?.email,
       this.appCtx.teams.find((t) => t.id === this.siteInfo.teamId),
       this.appCtx.appConfig,
+      this.siteInfo.teamSubscription,
     );
   }
 
@@ -6158,7 +6215,9 @@ export class StudioCtx extends WithDbCtx {
       runInAction(() => {
         // Disable saves while we load
         this.editMode = false;
-        this.alertBannerState.set(editMode ? null : AlertSpec.ViewOld);
+        this.alertBannerState.set(
+          editMode ? this.pastDueAlert() : AlertSpec.ViewOld,
+        );
         this.setHighLevelFocusOnly(undefined, undefined); // Hide the focused box
       });
       const {
@@ -6701,7 +6760,7 @@ export class StudioCtx extends WithDbCtx {
     if (!this.canEditBranch()) {
       this.alertBannerState.set(AlertSpec.ProtectedMainBranch);
     } else if (this.alertBannerState.get() === AlertSpec.ProtectedMainBranch) {
-      this.alertBannerState.set(null);
+      this.alertBannerState.set(this.pastDueAlert());
     }
   }
 

@@ -15,27 +15,59 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import { _useStyleTokens } from "../../../plasmic/plasmic_kit_alert_banner/PlasmicStyleTokensProvider"; // plasmic-import: 29njzcsBEPR4koRddw4knF/styleTokensProvider
 import Button from "../Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import { _useGlobalVariants } from "../../../plasmic/plasmic_kit_alert_banner/plasmic"; // plasmic-import: 29njzcsBEPR4koRddw4knF/projectModule
+import { _useStyleTokens } from "../../../plasmic/plasmic_kit_alert_banner/PlasmicStyleTokensProvider"; // plasmic-import: 29njzcsBEPR4koRddw4knF/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import "../../../plasmic/PP__plasmickit_alert_banner.css"; // plasmic-import: 29njzcsBEPR4koRddw4knF/projectcss
 import sty from "./PlasmicAlertBanner.module.css"; // plasmic-import: DCWq1LLaJ6e/css
 
-import CloseIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
-import ChevronDownSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import WarningTriangleSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
+import ChevronDownSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowUpRightSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowUpRightSvg"; // plasmic-import: N_BtK6grX/icon
+import CloseIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
 
 createPlasmicElementProxy;
 
@@ -53,7 +85,9 @@ export type PlasmicAlertBanner__VariantMembers = {
     | "watch"
     | "invariantError"
     | "protectedMainBranch"
-    | "welcomeGuest";
+    | "welcomeGuest"
+    | "pastDueGrace"
+    | "pastDueBlocked";
 };
 export type PlasmicAlertBanner__VariantsArgs = {
   state?: SingleChoiceArg<
@@ -70,6 +104,8 @@ export type PlasmicAlertBanner__VariantsArgs = {
     | "invariantError"
     | "protectedMainBranch"
     | "welcomeGuest"
+    | "pastDueGrace"
+    | "pastDueBlocked"
   >;
 };
 type VariantPropType = keyof PlasmicAlertBanner__VariantsArgs;
@@ -77,20 +113,25 @@ export const PlasmicAlertBanner__VariantProps = new Array<VariantPropType>(
   "state"
 );
 
-export type PlasmicAlertBanner__ArgsType = {};
+export type PlasmicAlertBanner__ArgsType = { message?: React.ReactNode };
 type ArgPropType = keyof PlasmicAlertBanner__ArgsType;
-export const PlasmicAlertBanner__ArgProps = new Array<ArgPropType>();
+export const PlasmicAlertBanner__ArgProps = new Array<ArgPropType>("message");
 
 export type PlasmicAlertBanner__OverridesType = {
   root?: Flex__<"div">;
+  messageContainer?: Flex__<"div">;
   watchBtn?: Flex__<typeof Button>;
   visit2?: Flex__<"div">;
+  actionLink?: Flex__<"div">;
+  span?: Flex__<"span">;
+  actionLinkIcon?: Flex__<"svg">;
   actionBtn?: Flex__<typeof Button>;
   visit?: Flex__<"div">;
   dismissBtn?: Flex__<"div">;
 };
 
 export interface DefaultAlertBannerProps {
+  message?: React.ReactNode;
   state?: SingleChoiceArg<
     | "readOnly"
     | "concurrentEdit"
@@ -105,6 +146,8 @@ export interface DefaultAlertBannerProps {
     | "invariantError"
     | "protectedMainBranch"
     | "welcomeGuest"
+    | "pastDueGrace"
+    | "pastDueBlocked"
   >;
   className?: string;
 }
@@ -132,7 +175,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -145,8 +188,8 @@ function PlasmicAlertBanner__RenderFunc(props: {
         path: "state",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.state,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.state
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -156,7 +199,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -188,6 +231,16 @@ function PlasmicAlertBanner__RenderFunc(props: {
           ),
           [sty.rootstate_notChrome]: hasVariant($state, "state", "notChrome"),
           [sty.rootstate_outOfDate]: hasVariant($state, "state", "outOfDate"),
+          [sty.rootstate_pastDueBlocked]: hasVariant(
+            $state,
+            "state",
+            "pastDueBlocked"
+          ),
+          [sty.rootstate_pastDueGrace]: hasVariant(
+            $state,
+            "state",
+            "pastDueGrace"
+          ),
           [sty.rootstate_permError]: hasVariant($state, "state", "permError"),
           [sty.rootstate_protectedMainBranch]: hasVariant(
             $state,
@@ -203,12 +256,22 @@ function PlasmicAlertBanner__RenderFunc(props: {
             $state,
             "state",
             "welcomeGuest"
-          ),
+          )
         }
       )}
     >
       <div
         className={classNames("all", sty.freeBox__ncsVm, {
+          [sty.freeBoxstate_pastDueBlocked__ncsVmr390X]: hasVariant(
+            $state,
+            "state",
+            "pastDueBlocked"
+          ),
+          [sty.freeBoxstate_pastDueGrace__ncsVmA86Fb]: hasVariant(
+            $state,
+            "state",
+            "pastDueGrace"
+          ),
           [sty.freeBoxstate_unlogged__ncsVmt672P]: hasVariant(
             $state,
             "state",
@@ -218,7 +281,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
             $state,
             "state",
             "welcomeGuest"
-          ),
+          )
         })}
       >
         <div
@@ -262,7 +325,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
               $state,
               "state",
               "welcomeGuest"
-            ),
+            )
           })}
         >
           <WarningTriangleSvgIcon
@@ -271,6 +334,16 @@ function PlasmicAlertBanner__RenderFunc(props: {
                 $state,
                 "state",
                 "invariantError"
+              ),
+              [sty.svgstate_pastDueBlocked___0Dd3Ar390X]: hasVariant(
+                $state,
+                "state",
+                "pastDueBlocked"
+              ),
+              [sty.svgstate_pastDueGrace___0Dd3Aa86Fb]: hasVariant(
+                $state,
+                "state",
+                "pastDueGrace"
               ),
               [sty.svgstate_protectedMainBranch___0Dd3Atcl19]: hasVariant(
                 $state,
@@ -281,7 +354,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
                 $state,
                 "state",
                 "readOnly"
-              ),
+              )
             })}
             role={"img"}
           />
@@ -327,213 +400,300 @@ function PlasmicAlertBanner__RenderFunc(props: {
               $state,
               "state",
               "welcomeGuest"
-            ),
+            )
           })}
         >
-          <div
-            className={classNames("all", "__wab_text", sty.text__su8VU, {
-              [sty.textstate_authError__su8VUaPWsX]: hasVariant(
-                $state,
-                "state",
-                "authError"
-              ),
-              [sty.textstate_concurrentEdit__su8VUsWvup]: hasVariant(
-                $state,
-                "state",
-                "concurrentEdit"
-              ),
-              [sty.textstate_invariantError__su8VUw3Sap]: hasVariant(
-                $state,
-                "state",
-                "invariantError"
-              ),
-              [sty.textstate_notChrome__su8VUYjAIr]: hasVariant(
-                $state,
-                "state",
-                "notChrome"
-              ),
-              [sty.textstate_outOfDate__su8VUTk56P]: hasVariant(
-                $state,
-                "state",
-                "outOfDate"
-              ),
-              [sty.textstate_permError__su8VUwZSk1]: hasVariant(
-                $state,
-                "state",
-                "permError"
-              ),
-              [sty.textstate_protectedMainBranch__su8VUtcl19]: hasVariant(
-                $state,
-                "state",
-                "protectedMainBranch"
-              ),
-              [sty.textstate_readOnly__su8VUkX362]: hasVariant(
-                $state,
-                "state",
-                "readOnly"
-              ),
-              [sty.textstate_saveFailed__su8VUr5KvU]: hasVariant(
-                $state,
-                "state",
-                "saveFailed"
-              ),
-              [sty.textstate_unlogged__su8VUt672P]: hasVariant(
-                $state,
-                "state",
-                "unlogged"
-              ),
-              [sty.textstate_viewOld__su8VUbUuHg]: hasVariant(
-                $state,
-                "state",
-                "viewOld"
-              ),
-              [sty.textstate_watch__su8VUCfKC]: hasVariant(
-                $state,
-                "state",
-                "watch"
-              ),
-              [sty.textstate_welcomeGuest__su8VUg2Bk]: hasVariant(
-                $state,
-                "state",
-                "welcomeGuest"
-              ),
-            })}
-          >
-            {hasVariant($state, "state", "welcomeGuest")
-              ? "Welcome to Plasmic!"
-              : hasVariant($state, "state", "protectedMainBranch")
-              ? "The main branch is currently protected."
-              : hasVariant($state, "state", "invariantError")
-              ? "Could not save your project."
-              : hasVariant($state, "state", "watch")
-              ? "You are in watch mode"
-              : hasVariant($state, "state", "permError")
-              ? "Sorry, we're not able to save."
-              : hasVariant($state, "state", "unlogged")
-              ? "You are not logged in."
-              : hasVariant($state, "state", "outOfDate")
-              ? "An update to Plasmic is available."
-              : hasVariant($state, "state", "authError")
-              ? "You are no longer logged in."
-              : hasVariant($state, "state", "notChrome")
-              ? "Sorry, you're using an unsupported browser."
-              : hasVariant($state, "state", "viewOld")
-              ? "You are viewing a read-only version."
-              : hasVariant($state, "state", "saveFailed")
-              ? "We're having trouble saving this project."
-              : hasVariant($state, "state", "concurrentEdit")
-              ? "Someone else has edited the project,"
-              : hasVariant($state, "state", "readOnly")
-              ? "You only have read permission to this project."
-              : "This is bold text."}
-          </div>
-          <div
-            className={classNames("all", "__wab_text", sty.text__n3UE1, {
-              [sty.textstate_authError__n3UE1APWsX]: hasVariant(
-                $state,
-                "state",
-                "authError"
-              ),
-              [sty.textstate_concurrentEdit__n3UE1SWvup]: hasVariant(
-                $state,
-                "state",
-                "concurrentEdit"
-              ),
-              [sty.textstate_invariantError__n3UE1W3Sap]: hasVariant(
-                $state,
-                "state",
-                "invariantError"
-              ),
-              [sty.textstate_notChrome__n3UE1YjAIr]: hasVariant(
-                $state,
-                "state",
-                "notChrome"
-              ),
-              [sty.textstate_outOfDate__n3UE1Tk56P]: hasVariant(
-                $state,
-                "state",
-                "outOfDate"
-              ),
-              [sty.textstate_permError__n3UE1WZSk1]: hasVariant(
-                $state,
-                "state",
-                "permError"
-              ),
-              [sty.textstate_protectedMainBranch__n3UE1Tcl19]: hasVariant(
-                $state,
-                "state",
-                "protectedMainBranch"
-              ),
-              [sty.textstate_readOnly__n3UE1KX362]: hasVariant(
-                $state,
-                "state",
-                "readOnly"
-              ),
-              [sty.textstate_saveFailed__n3UE1R5KvU]: hasVariant(
-                $state,
-                "state",
-                "saveFailed"
-              ),
-              [sty.textstate_unlogged__n3UE1T672P]: hasVariant(
-                $state,
-                "state",
-                "unlogged"
-              ),
-              [sty.textstate_viewOld__n3UE1BUuHg]: hasVariant(
-                $state,
-                "state",
-                "viewOld"
-              ),
-              [sty.textstate_watch__n3UE1CfKC]: hasVariant(
-                $state,
-                "state",
-                "watch"
-              ),
-              [sty.textstate_welcomeGuest__n3UE1G2Bk]: hasVariant(
-                $state,
-                "state",
-                "welcomeGuest"
-              ),
-            })}
-          >
-            {hasVariant($state, "state", "welcomeGuest")
-              ? "Sign up or log in to edit and save this project."
-              : hasVariant($state, "state", "protectedMainBranch")
-              ? "Switch to a different branch to edit project content."
-              : hasVariant($state, "state", "invariantError")
-              ? "The last action you took resulted in an invalid state. We're looking into it!"
-              : hasVariant($state, "state", "watch")
-              ? "You can see the project while others make changes, but you cannot edit it."
-              : hasVariant($state, "state", "permError")
-              ? "Please reload the project."
-              : hasVariant($state, "state", "unlogged")
-              ? "You can explore and make changes, but they won't be saved."
-              : hasVariant($state, "state", "outOfDate")
-              ? "Please reload the project."
-              : hasVariant($state, "state", "authError")
-              ? "Please try logging in again."
-              : hasVariant($state, "state", "notChrome")
-              ? "Right now, Plasmic Studio only works well with Chrome. We're working on it!"
-              : hasVariant($state, "state", "viewOld")
-              ? "To return to edit mode, reload the project"
-              : hasVariant($state, "state", "saveFailed")
-              ? "We'll keep trying, but know that your changes may not be saved. "
-              : hasVariant($state, "state", "concurrentEdit")
-              ? "so this is a stale version. Would you like to watch for new changes?"
-              : hasVariant($state, "state", "readOnly")
-              ? "You can make a copy of this project for yourself. Any changes to this project won't be saved."
-              : "This is normal text"}
-          </div>
+          {(
+            hasVariant($state, "state", "pastDueBlocked")
+              ? false
+              : hasVariant($state, "state", "pastDueGrace")
+                ? false
+                : true
+          ) ? (
+            <div
+              className={classNames("all", "__wab_text", sty.text__su8VU, {
+                [sty.textstate_authError__su8VUaPWsX]: hasVariant(
+                  $state,
+                  "state",
+                  "authError"
+                ),
+                [sty.textstate_concurrentEdit__su8VUsWvup]: hasVariant(
+                  $state,
+                  "state",
+                  "concurrentEdit"
+                ),
+                [sty.textstate_invariantError__su8VUw3Sap]: hasVariant(
+                  $state,
+                  "state",
+                  "invariantError"
+                ),
+                [sty.textstate_notChrome__su8VUYjAIr]: hasVariant(
+                  $state,
+                  "state",
+                  "notChrome"
+                ),
+                [sty.textstate_outOfDate__su8VUTk56P]: hasVariant(
+                  $state,
+                  "state",
+                  "outOfDate"
+                ),
+                [sty.textstate_pastDueBlocked__su8VUr390X]: hasVariant(
+                  $state,
+                  "state",
+                  "pastDueBlocked"
+                ),
+                [sty.textstate_pastDueGrace__su8VUa86Fb]: hasVariant(
+                  $state,
+                  "state",
+                  "pastDueGrace"
+                ),
+                [sty.textstate_permError__su8VUwZSk1]: hasVariant(
+                  $state,
+                  "state",
+                  "permError"
+                ),
+                [sty.textstate_protectedMainBranch__su8VUtcl19]: hasVariant(
+                  $state,
+                  "state",
+                  "protectedMainBranch"
+                ),
+                [sty.textstate_readOnly__su8VUkX362]: hasVariant(
+                  $state,
+                  "state",
+                  "readOnly"
+                ),
+                [sty.textstate_saveFailed__su8VUr5KvU]: hasVariant(
+                  $state,
+                  "state",
+                  "saveFailed"
+                ),
+                [sty.textstate_unlogged__su8VUt672P]: hasVariant(
+                  $state,
+                  "state",
+                  "unlogged"
+                ),
+                [sty.textstate_viewOld__su8VUbUuHg]: hasVariant(
+                  $state,
+                  "state",
+                  "viewOld"
+                ),
+                [sty.textstate_watch__su8VUCfKC]: hasVariant(
+                  $state,
+                  "state",
+                  "watch"
+                ),
+                [sty.textstate_welcomeGuest__su8VUg2Bk]: hasVariant(
+                  $state,
+                  "state",
+                  "welcomeGuest"
+                )
+              })}
+            >
+              {hasVariant($state, "state", "welcomeGuest")
+                ? "Welcome to Plasmic!"
+                : hasVariant($state, "state", "protectedMainBranch")
+                  ? "The main branch is currently protected."
+                  : hasVariant($state, "state", "invariantError")
+                    ? "Could not save your project."
+                    : hasVariant($state, "state", "watch")
+                      ? "You are in watch mode"
+                      : hasVariant($state, "state", "permError")
+                        ? "Sorry, we're not able to save."
+                        : hasVariant($state, "state", "unlogged")
+                          ? "You are not logged in."
+                          : hasVariant($state, "state", "outOfDate")
+                            ? "An update to Plasmic is available."
+                            : hasVariant($state, "state", "authError")
+                              ? "You are no longer logged in."
+                              : hasVariant($state, "state", "notChrome")
+                                ? "Sorry, you're using an unsupported browser."
+                                : hasVariant($state, "state", "viewOld")
+                                  ? "You are viewing a read-only version."
+                                  : hasVariant($state, "state", "saveFailed")
+                                    ? "We're having trouble saving this project."
+                                    : hasVariant(
+                                          $state,
+                                          "state",
+                                          "concurrentEdit"
+                                        )
+                                      ? "Someone else has edited the project,"
+                                      : hasVariant($state, "state", "readOnly")
+                                        ? "You only have read permission to this project."
+                                        : "This is bold text."}
+            </div>
+          ) : null}
+          {(
+            hasVariant($state, "state", "pastDueBlocked")
+              ? false
+              : hasVariant($state, "state", "pastDueGrace")
+                ? false
+                : true
+          ) ? (
+            <div
+              className={classNames("all", "__wab_text", sty.text__n3UE1, {
+                [sty.textstate_authError__n3UE1APWsX]: hasVariant(
+                  $state,
+                  "state",
+                  "authError"
+                ),
+                [sty.textstate_concurrentEdit__n3UE1SWvup]: hasVariant(
+                  $state,
+                  "state",
+                  "concurrentEdit"
+                ),
+                [sty.textstate_invariantError__n3UE1W3Sap]: hasVariant(
+                  $state,
+                  "state",
+                  "invariantError"
+                ),
+                [sty.textstate_notChrome__n3UE1YjAIr]: hasVariant(
+                  $state,
+                  "state",
+                  "notChrome"
+                ),
+                [sty.textstate_outOfDate__n3UE1Tk56P]: hasVariant(
+                  $state,
+                  "state",
+                  "outOfDate"
+                ),
+                [sty.textstate_pastDueBlocked__n3UE1R390X]: hasVariant(
+                  $state,
+                  "state",
+                  "pastDueBlocked"
+                ),
+                [sty.textstate_pastDueGrace__n3UE1A86Fb]: hasVariant(
+                  $state,
+                  "state",
+                  "pastDueGrace"
+                ),
+                [sty.textstate_permError__n3UE1WZSk1]: hasVariant(
+                  $state,
+                  "state",
+                  "permError"
+                ),
+                [sty.textstate_protectedMainBranch__n3UE1Tcl19]: hasVariant(
+                  $state,
+                  "state",
+                  "protectedMainBranch"
+                ),
+                [sty.textstate_readOnly__n3UE1KX362]: hasVariant(
+                  $state,
+                  "state",
+                  "readOnly"
+                ),
+                [sty.textstate_saveFailed__n3UE1R5KvU]: hasVariant(
+                  $state,
+                  "state",
+                  "saveFailed"
+                ),
+                [sty.textstate_unlogged__n3UE1T672P]: hasVariant(
+                  $state,
+                  "state",
+                  "unlogged"
+                ),
+                [sty.textstate_viewOld__n3UE1BUuHg]: hasVariant(
+                  $state,
+                  "state",
+                  "viewOld"
+                ),
+                [sty.textstate_watch__n3UE1CfKC]: hasVariant(
+                  $state,
+                  "state",
+                  "watch"
+                ),
+                [sty.textstate_welcomeGuest__n3UE1G2Bk]: hasVariant(
+                  $state,
+                  "state",
+                  "welcomeGuest"
+                )
+              })}
+            >
+              {hasVariant($state, "state", "welcomeGuest")
+                ? "Sign up or log in to edit and save this project."
+                : hasVariant($state, "state", "protectedMainBranch")
+                  ? "Switch to a different branch to edit project content."
+                  : hasVariant($state, "state", "invariantError")
+                    ? "The last action you took resulted in an invalid state. We're looking into it!"
+                    : hasVariant($state, "state", "watch")
+                      ? "You can see the project while others make changes, but you cannot edit it."
+                      : hasVariant($state, "state", "permError")
+                        ? "Please reload the project."
+                        : hasVariant($state, "state", "unlogged")
+                          ? "You can explore and make changes, but they won't be saved."
+                          : hasVariant($state, "state", "outOfDate")
+                            ? "Please reload the project."
+                            : hasVariant($state, "state", "authError")
+                              ? "Please try logging in again."
+                              : hasVariant($state, "state", "notChrome")
+                                ? "Right now, Plasmic Studio only works well with Chrome. We're working on it!"
+                                : hasVariant($state, "state", "viewOld")
+                                  ? "To return to edit mode, reload the project"
+                                  : hasVariant($state, "state", "saveFailed")
+                                    ? "We'll keep trying, but know that your changes may not be saved. "
+                                    : hasVariant(
+                                          $state,
+                                          "state",
+                                          "concurrentEdit"
+                                        )
+                                      ? "so this is a stale version. Would you like to watch for new changes?"
+                                      : hasVariant($state, "state", "readOnly")
+                                        ? "You can make a copy of this project for yourself. Any changes to this project won't be saved."
+                                        : "This is normal text"}
+            </div>
+          ) : null}
+          {(
+            hasVariant($state, "state", "pastDueBlocked")
+              ? true
+              : hasVariant($state, "state", "pastDueGrace")
+                ? true
+                : false
+          ) ? (
+            <div
+              data-plasmic-name={"messageContainer"}
+              data-plasmic-override={overrides.messageContainer}
+              className={classNames("all", sty.messageContainer, {
+                [sty.messageContainerstate_pastDueBlocked]: hasVariant(
+                  $state,
+                  "state",
+                  "pastDueBlocked"
+                ),
+                [sty.messageContainerstate_pastDueGrace]: hasVariant(
+                  $state,
+                  "state",
+                  "pastDueGrace"
+                )
+              })}
+            >
+              {renderPlasmicSlot({
+                defaultContents: (
+                  <span
+                    className={classNames(
+                      "all",
+                      "span",
+                      "span__29njz",
+                      "__wab_text",
+                      sty.span__zMdVn
+                    )}
+                  >
+                    {
+                      "Payment for Team Acme failed. Update it by Oct 27 to keep editing."
+                    }
+                  </span>
+                ),
+                value: args.message
+              })}
+            </div>
+          ) : null}
         </div>
       </div>
       {(
         hasVariant($state, "state", "notChrome")
           ? false
           : hasVariant($state, "state", "saveFailed")
-          ? false
-          : hasVariant($state, "state", "concurrentEdit")
-          ? true
-          : false
+            ? false
+            : hasVariant($state, "state", "concurrentEdit")
+              ? true
+              : false
       ) ? (
         <Button
           data-plasmic-name={"watchBtn"}
@@ -586,7 +746,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
               $state,
               "state",
               "welcomeGuest"
-            ),
+            )
           })}
           endIcon={
             <ChevronDownSvgIcon
@@ -646,7 +806,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
                 $state,
                 "state",
                 "welcomeGuest"
-              ),
+              )
             })}
           >
             {hasVariant($state, "state", "concurrentEdit") ? "Watch" : "Button"}
@@ -684,25 +844,73 @@ function PlasmicAlertBanner__RenderFunc(props: {
             $state,
             "state",
             "watch"
-          ),
+          )
         })}
       >
         {(
-          hasVariant($state, "state", "welcomeGuest")
+          hasVariant($state, "state", "pastDueBlocked")
             ? true
-            : hasVariant($state, "state", "protectedMainBranch")
-            ? true
-            : hasVariant($state, "state", "watch")
-            ? true
-            : hasVariant($state, "state", "unlogged")
-            ? true
-            : hasVariant($state, "state", "notChrome")
+            : hasVariant($state, "state", "pastDueGrace")
+              ? true
+              : false
+        ) ? (
+          <div
+            data-plasmic-name={"actionLink"}
+            data-plasmic-override={overrides.actionLink}
+            className={classNames("all", sty.actionLink, {
+              [sty.actionLinkstate_pastDueBlocked]: hasVariant(
+                $state,
+                "state",
+                "pastDueBlocked"
+              ),
+              [sty.actionLinkstate_pastDueGrace]: hasVariant(
+                $state,
+                "state",
+                "pastDueGrace"
+              )
+            })}
+          >
+            <span
+              data-plasmic-name={"span"}
+              data-plasmic-override={overrides.span}
+              className={classNames(
+                "all",
+                "span",
+                "span__29njz",
+                "__wab_text",
+                sty.span
+              )}
+            >
+              {"Update payment"}
+            </span>
+            <ArrowUpRightSvgIcon
+              data-plasmic-name={"actionLinkIcon"}
+              data-plasmic-override={overrides.actionLinkIcon}
+              className={classNames("all", sty.actionLinkIcon)}
+              role={"img"}
+            />
+          </div>
+        ) : null}
+        {(
+          hasVariant($state, "state", "pastDueBlocked")
             ? false
-            : hasVariant($state, "state", "saveFailed")
-            ? false
-            : hasVariant($state, "state", "readOnly")
-            ? true
-            : true
+            : hasVariant($state, "state", "pastDueGrace")
+              ? false
+              : hasVariant($state, "state", "welcomeGuest")
+                ? true
+                : hasVariant($state, "state", "protectedMainBranch")
+                  ? true
+                  : hasVariant($state, "state", "watch")
+                    ? true
+                    : hasVariant($state, "state", "unlogged")
+                      ? true
+                      : hasVariant($state, "state", "notChrome")
+                        ? false
+                        : hasVariant($state, "state", "saveFailed")
+                          ? false
+                          : hasVariant($state, "state", "readOnly")
+                            ? true
+                            : true
         ) ? (
           <Button
             data-plasmic-name={"actionBtn"}
@@ -713,7 +921,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
                 $state,
                 "state",
                 "protectedMainBranch"
-              ),
+              )
             })}
             endIcon={
               <ChevronDownSvgIcon
@@ -734,12 +942,12 @@ function PlasmicAlertBanner__RenderFunc(props: {
               hasVariant($state, "state", "welcomeGuest")
                 ? ["backlitInfo"]
                 : hasVariant($state, "state", "watch")
-                ? ["backlitInfo"]
-                : hasVariant($state, "state", "unlogged")
-                ? ["backlitInfo"]
-                : hasVariant($state, "state", "readOnly")
-                ? ["backlitInfo"]
-                : ["backlitError"]
+                  ? ["backlitInfo"]
+                  : hasVariant($state, "state", "unlogged")
+                    ? ["backlitInfo"]
+                    : hasVariant($state, "state", "readOnly")
+                      ? ["backlitInfo"]
+                      : ["backlitError"]
             }
           >
             <div
@@ -796,151 +1004,204 @@ function PlasmicAlertBanner__RenderFunc(props: {
                   $state,
                   "state",
                   "welcomeGuest"
-                ),
+                )
               })}
             >
               {hasVariant($state, "state", "welcomeGuest")
                 ? "Sign up / Log in"
                 : hasVariant($state, "state", "invariantError")
-                ? "Reload Project"
-                : hasVariant($state, "state", "watch")
-                ? "Leave watch mode"
-                : hasVariant($state, "state", "permError")
-                ? "Reload Project"
-                : hasVariant($state, "state", "unlogged")
-                ? "Sign up / Log in"
-                : hasVariant($state, "state", "outOfDate")
-                ? "Reload Project"
-                : hasVariant($state, "state", "authError")
-                ? "Reload Project"
-                : hasVariant($state, "state", "viewOld")
-                ? "Back to current version"
-                : hasVariant($state, "state", "concurrentEdit")
-                ? "Reload Project"
-                : hasVariant($state, "state", "readOnly")
-                ? "Copy Project"
-                : "Button"}
+                  ? "Reload Project"
+                  : hasVariant($state, "state", "watch")
+                    ? "Leave watch mode"
+                    : hasVariant($state, "state", "permError")
+                      ? "Reload Project"
+                      : hasVariant($state, "state", "unlogged")
+                        ? "Sign up / Log in"
+                        : hasVariant($state, "state", "outOfDate")
+                          ? "Reload Project"
+                          : hasVariant($state, "state", "authError")
+                            ? "Reload Project"
+                            : hasVariant($state, "state", "viewOld")
+                              ? "Back to current version"
+                              : hasVariant($state, "state", "concurrentEdit")
+                                ? "Reload Project"
+                                : hasVariant($state, "state", "readOnly")
+                                  ? "Copy Project"
+                                  : "Button"}
             </div>
           </Button>
         ) : null}
-        <div
-          data-plasmic-name={"dismissBtn"}
-          data-plasmic-override={overrides.dismissBtn}
-          className={classNames("all", sty.dismissBtn, {
-            [sty.dismissBtnstate_authError]: hasVariant(
-              $state,
-              "state",
-              "authError"
-            ),
-            [sty.dismissBtnstate_invariantError]: hasVariant(
-              $state,
-              "state",
-              "invariantError"
-            ),
-            [sty.dismissBtnstate_outOfDate]: hasVariant(
-              $state,
-              "state",
-              "outOfDate"
-            ),
-            [sty.dismissBtnstate_permError]: hasVariant(
-              $state,
-              "state",
-              "permError"
-            ),
-            [sty.dismissBtnstate_readOnly]: hasVariant(
-              $state,
-              "state",
-              "readOnly"
-            ),
-            [sty.dismissBtnstate_saveFailed]: hasVariant(
-              $state,
-              "state",
-              "saveFailed"
-            ),
-            [sty.dismissBtnstate_unlogged]: hasVariant(
-              $state,
-              "state",
-              "unlogged"
-            ),
-            [sty.dismissBtnstate_viewOld]: hasVariant(
-              $state,
-              "state",
-              "viewOld"
-            ),
-            [sty.dismissBtnstate_watch]: hasVariant($state, "state", "watch"),
-            [sty.dismissBtnstate_welcomeGuest]: hasVariant(
-              $state,
-              "state",
-              "welcomeGuest"
-            ),
-          })}
-        >
-          <CloseIcon
-            className={classNames("all", sty.svg__sdZvA, {
-              [sty.svgstate_authError__sdZvAaPWsX]: hasVariant(
+        {(
+          hasVariant($state, "state", "pastDueBlocked")
+            ? false
+            : hasVariant($state, "state", "invariantError")
+              ? true
+              : hasVariant($state, "state", "permError")
+                ? true
+                : hasVariant($state, "state", "outOfDate")
+                  ? true
+                  : hasVariant($state, "state", "authError")
+                    ? true
+                    : true
+        ) ? (
+          <div
+            data-plasmic-name={"dismissBtn"}
+            data-plasmic-override={overrides.dismissBtn}
+            className={classNames("all", sty.dismissBtn, {
+              [sty.dismissBtnstate_authError]: hasVariant(
                 $state,
                 "state",
                 "authError"
               ),
-              [sty.svgstate_concurrentEdit__sdZvAsWvup]: hasVariant(
-                $state,
-                "state",
-                "concurrentEdit"
-              ),
-              [sty.svgstate_invariantError__sdZvAw3Sap]: hasVariant(
+              [sty.dismissBtnstate_invariantError]: hasVariant(
                 $state,
                 "state",
                 "invariantError"
               ),
-              [sty.svgstate_readOnly__sdZvAkX362]: hasVariant(
+              [sty.dismissBtnstate_outOfDate]: hasVariant(
+                $state,
+                "state",
+                "outOfDate"
+              ),
+              [sty.dismissBtnstate_pastDueBlocked]: hasVariant(
+                $state,
+                "state",
+                "pastDueBlocked"
+              ),
+              [sty.dismissBtnstate_pastDueGrace]: hasVariant(
+                $state,
+                "state",
+                "pastDueGrace"
+              ),
+              [sty.dismissBtnstate_permError]: hasVariant(
+                $state,
+                "state",
+                "permError"
+              ),
+              [sty.dismissBtnstate_readOnly]: hasVariant(
                 $state,
                 "state",
                 "readOnly"
               ),
-              [sty.svgstate_saveFailed__sdZvAr5KvU]: hasVariant(
+              [sty.dismissBtnstate_saveFailed]: hasVariant(
                 $state,
                 "state",
                 "saveFailed"
               ),
-              [sty.svgstate_unlogged__sdZvAt672P]: hasVariant(
+              [sty.dismissBtnstate_unlogged]: hasVariant(
                 $state,
                 "state",
                 "unlogged"
               ),
-              [sty.svgstate_watch__sdZvACfKC]: hasVariant(
+              [sty.dismissBtnstate_viewOld]: hasVariant(
                 $state,
                 "state",
-                "watch"
+                "viewOld"
               ),
-              [sty.svgstate_welcomeGuest__sdZvAg2Bk]: hasVariant(
+              [sty.dismissBtnstate_watch]: hasVariant($state, "state", "watch"),
+              [sty.dismissBtnstate_welcomeGuest]: hasVariant(
                 $state,
                 "state",
                 "welcomeGuest"
-              ),
+              )
             })}
-            role={"img"}
-          />
-        </div>
+          >
+            <CloseIcon
+              className={classNames("all", sty.svg__sdZvA, {
+                [sty.svgstate_authError__sdZvAaPWsX]: hasVariant(
+                  $state,
+                  "state",
+                  "authError"
+                ),
+                [sty.svgstate_concurrentEdit__sdZvAsWvup]: hasVariant(
+                  $state,
+                  "state",
+                  "concurrentEdit"
+                ),
+                [sty.svgstate_invariantError__sdZvAw3Sap]: hasVariant(
+                  $state,
+                  "state",
+                  "invariantError"
+                ),
+                [sty.svgstate_pastDueBlocked__sdZvAr390X]: hasVariant(
+                  $state,
+                  "state",
+                  "pastDueBlocked"
+                ),
+                [sty.svgstate_pastDueGrace__sdZvAa86Fb]: hasVariant(
+                  $state,
+                  "state",
+                  "pastDueGrace"
+                ),
+                [sty.svgstate_readOnly__sdZvAkX362]: hasVariant(
+                  $state,
+                  "state",
+                  "readOnly"
+                ),
+                [sty.svgstate_saveFailed__sdZvAr5KvU]: hasVariant(
+                  $state,
+                  "state",
+                  "saveFailed"
+                ),
+                [sty.svgstate_unlogged__sdZvAt672P]: hasVariant(
+                  $state,
+                  "state",
+                  "unlogged"
+                ),
+                [sty.svgstate_watch__sdZvACfKC]: hasVariant(
+                  $state,
+                  "state",
+                  "watch"
+                ),
+                [sty.svgstate_welcomeGuest__sdZvAg2Bk]: hasVariant(
+                  $state,
+                  "state",
+                  "welcomeGuest"
+                )
+              })}
+              role={"img"}
+            />
+          </div>
+        ) : null}
       </div>
     </div>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root", "watchBtn", "visit2", "actionBtn", "visit", "dismissBtn"],
+  root: [
+    "root",
+    "messageContainer",
+    "watchBtn",
+    "visit2",
+    "actionLink",
+    "span",
+    "actionLinkIcon",
+    "actionBtn",
+    "visit",
+    "dismissBtn"
+  ],
+  messageContainer: ["messageContainer"],
   watchBtn: ["watchBtn", "visit2"],
   visit2: ["visit2"],
+  actionLink: ["actionLink", "span", "actionLinkIcon"],
+  span: ["span"],
+  actionLinkIcon: ["actionLinkIcon"],
   actionBtn: ["actionBtn", "visit"],
   visit: ["visit"],
-  dismissBtn: ["dismissBtn"],
+  dismissBtn: ["dismissBtn"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
+  messageContainer: "div";
   watchBtn: typeof Button;
   visit2: "div";
+  actionLink: "div";
+  span: "span";
+  actionLinkIcon: "svg";
   actionBtn: typeof Button;
   visit: "div";
   dismissBtn: "div";
@@ -957,8 +1218,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicAlertBanner__VariantsArgs;
     args?: PlasmicAlertBanner__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicAlertBanner__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicAlertBanner__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicAlertBanner__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -983,7 +1245,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicAlertBanner__ArgProps,
-          internalVariantPropNames: PlasmicAlertBanner__VariantProps,
+          internalVariantPropNames: PlasmicAlertBanner__VariantProps
         }),
       [props, nodeName]
     );
@@ -991,7 +1253,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -1007,15 +1269,19 @@ export const PlasmicAlertBanner = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
+    messageContainer: makeNodeComponent("messageContainer"),
     watchBtn: makeNodeComponent("watchBtn"),
     visit2: makeNodeComponent("visit2"),
+    actionLink: makeNodeComponent("actionLink"),
+    span: makeNodeComponent("span"),
+    actionLinkIcon: makeNodeComponent("actionLinkIcon"),
     actionBtn: makeNodeComponent("actionBtn"),
     visit: makeNodeComponent("visit"),
     dismissBtn: makeNodeComponent("dismissBtn"),
 
     // Metadata about props expected for PlasmicAlertBanner
     internalVariantProps: PlasmicAlertBanner__VariantProps,
-    internalArgProps: PlasmicAlertBanner__ArgProps,
+    internalArgProps: PlasmicAlertBanner__ArgProps
   }
 );
 

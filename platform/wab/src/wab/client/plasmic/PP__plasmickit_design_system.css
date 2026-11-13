@@ -272,6 +272,17 @@
   --plasmic-mixin-thin-inner-focus-ring_white-space: var(
     --mixin-Vssos8bDV_white-space
   );
+  --mixin-1xdBUFNW6VWK_box-shadow:
+    0px 6px 16px 0px var(--token-VEgqNiouHaAh),
+    0px 3px 6px -4px var(--token-WbdRZ5gvp6S8),
+    0px 9px 28px 8px var(--token-h3n_6qpT3Tc4);
+  --plasmic-mixin-overlay-shadow_box-shadow: var(
+    --mixin-1xdBUFNW6VWK_box-shadow
+  );
+  --mixin-1xdBUFNW6VWK_white-space: pre-wrap;
+  --plasmic-mixin-overlay-shadow_white-space: var(
+    --mixin-1xdBUFNW6VWK_white-space
+  );
 }
 
 :where(.all) {

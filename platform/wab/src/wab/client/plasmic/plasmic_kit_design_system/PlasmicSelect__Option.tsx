@@ -14,20 +14,50 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  SingleBooleanChoiceArg,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import * as pp from "@plasmicapp/react-web";
 
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -103,7 +133,7 @@ function PlasmicSelect__Option__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -116,28 +146,28 @@ function PlasmicSelect__Option__RenderFunc(props: {
         path: "isSelected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isSelected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isSelected
       },
       {
         path: "isHighlighted",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.isHighlighted,
+          $props.isHighlighted
       },
       {
         path: "isDisabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isDisabled,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isDisabled
       },
       {
         path: "isUnsetOption",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.isUnsetOption,
-      },
+          $props.isUnsetOption
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -147,11 +177,11 @@ function PlasmicSelect__Option__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const superContexts = {
-    Select: React.useContext(SUPER__PlasmicSelect.Context),
+    Select: React.useContext(SUPER__PlasmicSelect.Context)
   };
 
   const styleTokensClassNames = _useStyleTokens();
@@ -213,7 +243,7 @@ function PlasmicSelect__Option__RenderFunc(props: {
             $state,
             "isUnsetOption",
             "isUnsetOption"
-          ),
+          )
         }
       )}
     >
@@ -240,7 +270,7 @@ function PlasmicSelect__Option__RenderFunc(props: {
             $state,
             "isUnsetOption",
             "isUnsetOption"
-          ),
+          )
         })}
       >
         {renderPlasmicSlot({
@@ -266,8 +296,8 @@ function PlasmicSelect__Option__RenderFunc(props: {
               $state,
               "isUnsetOption",
               "isUnsetOption"
-            ),
-          }),
+            )
+          })
         })}
       </div>
     </div>
@@ -286,11 +316,11 @@ function useBehavior<P extends pp.BaseSelectOptionProps>(
       isDisabledVariant: { group: "isDisabled", variant: "isDisabled" },
       isHighlightedVariant: {
         group: "isHighlighted",
-        variant: "isHighlighted",
+        variant: "isHighlighted"
       },
       labelSlot: "children",
       root: "root",
-      labelContainer: "labelContainer",
+      labelContainer: "labelContainer"
     },
     ref
   );
@@ -298,7 +328,7 @@ function useBehavior<P extends pp.BaseSelectOptionProps>(
 
 const PlasmicDescendants = {
   root: ["root", "labelContainer"],
-  labelContainer: ["labelContainer"],
+  labelContainer: ["labelContainer"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -319,8 +349,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSelect__Option__VariantsArgs;
     args?: PlasmicSelect__Option__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicSelect__Option__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicSelect__Option__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicSelect__Option__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -345,7 +376,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicSelect__Option__ArgProps,
-          internalVariantPropNames: PlasmicSelect__Option__VariantProps,
+          internalVariantPropNames: PlasmicSelect__Option__VariantProps
         }),
       [props, nodeName]
     );
@@ -353,7 +384,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -375,7 +406,7 @@ export const PlasmicSelect__Option = Object.assign(
     internalVariantProps: PlasmicSelect__Option__VariantProps,
     internalArgProps: PlasmicSelect__Option__ArgProps,
 
-    useBehavior,
+    useBehavior
   }
 );
 

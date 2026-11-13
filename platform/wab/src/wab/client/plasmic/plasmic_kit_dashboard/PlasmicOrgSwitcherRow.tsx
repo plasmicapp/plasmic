@@ -98,6 +98,7 @@ export const PlasmicOrgSwitcherRow__ArgProps = new Array<ArgPropType>(
 export type PlasmicOrgSwitcherRow__OverridesType = {
   root?: Flex__<"div">;
   svg?: Flex__<"svg">;
+  statusIndicator?: Flex__<"div">;
 };
 
 export interface DefaultOrgSwitcherRowProps {
@@ -335,6 +336,8 @@ function PlasmicOrgSwitcherRow__RenderFunc(props: {
         </div>
       </div>
       <div
+        data-plasmic-name={"statusIndicator"}
+        data-plasmic-override={overrides.statusIndicator}
         className={classNames("all", sty.freeBox__xyuOq, {
           [sty.freeBox___focusVisible__xyuOqw8Hrx]: triggers.focusVisible_root,
           [sty.freeBoxselected__xyuOqSyBw]: hasVariant(
@@ -361,7 +364,8 @@ function PlasmicOrgSwitcherRow__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "svg"],
+  root: ["root", "statusIndicator", "svg"],
+  statusIndicator: ["statusIndicator", "svg"],
   svg: ["svg"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -370,6 +374,7 @@ type DescendantsType<T extends NodeNameType> =
 type NodeDefaultElementType = {
   root: "div";
   svg: "svg";
+  statusIndicator: "div";
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -435,6 +440,7 @@ export const PlasmicOrgSwitcherRow = Object.assign(
   {
     // Helper components rendering sub-elements
     svg: makeNodeComponent("svg"),
+    statusIndicator: makeNodeComponent("statusIndicator"),
 
     // Metadata about props expected for PlasmicOrgSwitcherRow
     internalVariantProps: PlasmicOrgSwitcherRow__VariantProps,

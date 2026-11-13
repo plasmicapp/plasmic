@@ -14,18 +14,48 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  SingleBooleanChoiceArg,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -86,7 +116,7 @@ function PlasmicTextWithInfo__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -99,8 +129,8 @@ function PlasmicTextWithInfo__RenderFunc(props: {
         path: "medium",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.medium,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.medium
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -110,7 +140,7 @@ function PlasmicTextWithInfo__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -133,13 +163,13 @@ function PlasmicTextWithInfo__RenderFunc(props: {
     >
       {renderPlasmicSlot({
         defaultContents: "Enter some text",
-        value: args.children,
+        value: args.children
       })}
       <InformationSvgIcon
         data-plasmic-name={"icon"}
         data-plasmic-override={overrides.icon}
         className={classNames("all", sty.icon, {
-          [sty.iconmedium]: hasVariant($state, "medium", "medium"),
+          [sty.iconmedium]: hasVariant($state, "medium", "medium")
         })}
         role={"img"}
       />
@@ -149,7 +179,7 @@ function PlasmicTextWithInfo__RenderFunc(props: {
 
 const PlasmicDescendants = {
   root: ["root", "icon"],
-  icon: ["icon"],
+  icon: ["icon"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -170,8 +200,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTextWithInfo__VariantsArgs;
     args?: PlasmicTextWithInfo__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicTextWithInfo__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicTextWithInfo__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTextWithInfo__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -196,7 +227,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicTextWithInfo__ArgProps,
-          internalVariantPropNames: PlasmicTextWithInfo__VariantProps,
+          internalVariantPropNames: PlasmicTextWithInfo__VariantProps
         }),
       [props, nodeName]
     );
@@ -204,7 +235,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -224,7 +255,7 @@ export const PlasmicTextWithInfo = Object.assign(
 
     // Metadata about props expected for PlasmicTextWithInfo
     internalVariantProps: PlasmicTextWithInfo__VariantProps,
-    internalArgProps: PlasmicTextWithInfo__ArgProps,
+    internalArgProps: PlasmicTextWithInfo__ArgProps
   }
 );
 

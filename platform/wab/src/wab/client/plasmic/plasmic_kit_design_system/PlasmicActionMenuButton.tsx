@@ -234,7 +234,6 @@ function PlasmicActionMenuButton__RenderFunc(props: {
       <button
         data-plasmic-name={"actionButton"}
         data-plasmic-override={overrides.actionButton}
-
         className={classNames(
           "all",
           "button",
@@ -296,7 +295,6 @@ function PlasmicActionMenuButton__RenderFunc(props: {
         <div
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
-
           className={classNames("all", sty.freeBox, {
             [sty.freeBoxhasIcon]: hasVariant($state, "hasIcon", "hasIcon"),
             [sty.freeBoxtype_primary_hasIcon]:
@@ -392,7 +390,6 @@ function PlasmicActionMenuButton__RenderFunc(props: {
       <IconButton
         data-plasmic-name={"menuTrigger"}
         data-plasmic-override={overrides.menuTrigger}
-
         children2={
           <ChevronDownSvgIcon
             className={classNames("all", sty.svg__u6RFr)}

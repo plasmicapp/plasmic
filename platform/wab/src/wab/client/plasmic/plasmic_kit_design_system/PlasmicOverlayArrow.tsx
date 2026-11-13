@@ -15,18 +15,49 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
 import { BaseOverlayArrow } from "@plasmicpkgs/react-aria/skinny/registerOverlayArrow";
-import { _useStyleTokens } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -85,7 +116,7 @@ function PlasmicOverlayArrow__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -98,8 +129,8 @@ function PlasmicOverlayArrow__RenderFunc(props: {
         path: "dark",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.dark,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.dark
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -109,7 +140,7 @@ function PlasmicOverlayArrow__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -119,12 +150,12 @@ function PlasmicOverlayArrow__RenderFunc(props: {
   >({
     placementTop: false,
     placementLeft: false,
-    placementRight: false,
+    placementRight: false
   });
   const updateVariant = React.useCallback(
     (changes: Record<string, boolean>) => {
-      setDollarCcVariants((prev) => {
-        if (!Object.keys(changes).some((k) => prev[k] !== changes[k])) {
+      setDollarCcVariants(prev => {
+        if (!Object.keys(changes).some(k => prev[k] !== changes[k])) {
           return prev;
         }
         return { ...prev, ...changes };
@@ -154,7 +185,7 @@ function PlasmicOverlayArrow__RenderFunc(props: {
         data-plasmic-name={"svg"}
         data-plasmic-override={overrides.svg}
         className={classNames("all", sty.svg, {
-          [sty.svgdark]: hasVariant($state, "dark", "dark"),
+          [sty.svgdark]: hasVariant($state, "dark", "dark")
         })}
         role={"img"}
       />
@@ -164,7 +195,7 @@ function PlasmicOverlayArrow__RenderFunc(props: {
 
 const PlasmicDescendants = {
   root: ["root", "svg"],
-  svg: ["svg"],
+  svg: ["svg"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -185,7 +216,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicOverlayArrow__VariantsArgs;
     args?: PlasmicOverlayArrow__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicOverlayArrow__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicOverlayArrow__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicOverlayArrow__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -210,7 +243,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicOverlayArrow__ArgProps,
-          internalVariantPropNames: PlasmicOverlayArrow__VariantProps,
+          internalVariantPropNames: PlasmicOverlayArrow__VariantProps
         }),
       [props, nodeName]
     );
@@ -218,7 +251,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -238,7 +271,7 @@ export const PlasmicOverlayArrow = Object.assign(
 
     // Metadata about props expected for PlasmicOverlayArrow
     internalVariantProps: PlasmicOverlayArrow__VariantProps,
-    internalArgProps: PlasmicOverlayArrow__ArgProps,
+    internalArgProps: PlasmicOverlayArrow__ArgProps
   }
 );
 

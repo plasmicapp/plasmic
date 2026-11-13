@@ -16,25 +16,48 @@ import * as React from "react";
 import {
   Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   generateOnMutateForSpec,
+  generateStateOnChangeProp,
   generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
+  get as $stateGet,
   hasVariant,
   initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
-
 import {
-  BaseTextArea,
-  inputHelpers as BaseTextArea_Helpers,
-} from "@plasmicpkgs/react-aria/skinny/registerTextArea";
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
+
+import { BaseTextArea } from "@plasmicpkgs/react-aria/skinny/registerTextArea";
+import { inputHelpers as BaseTextArea_Helpers } from "@plasmicpkgs/react-aria/skinny/registerTextArea";
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -148,7 +171,7 @@ function PlasmicTextAreaInput__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -165,32 +188,32 @@ function PlasmicTextAreaInput__RenderFunc(props: {
         valueProp: "value",
         onChangeProp: "onChange",
 
-        onMutate: generateOnMutateForSpec("value", BaseTextArea_Helpers),
+        onMutate: generateOnMutateForSpec("value", BaseTextArea_Helpers)
       },
       {
         path: "type",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type
       },
       {
         path: "flat",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.flat,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.flat
       },
       {
         path: "padded",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.padded,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.padded
       },
       {
         path: "autoResize",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.autoResize,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.autoResize
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -200,7 +223,7 @@ function PlasmicTextAreaInput__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -211,12 +234,12 @@ function PlasmicTextAreaInput__RenderFunc(props: {
     focused: false,
     focusVisible: false,
     hovered: false,
-    disabled: false,
+    disabled: false
   });
   const updateVariant = React.useCallback(
     (changes: Record<string, boolean>) => {
-      setDollarCcVariants((prev) => {
-        if (!Object.keys(changes).some((k) => prev[k] !== changes[k])) {
+      setDollarCcVariants(prev => {
+        if (!Object.keys(changes).some(k => prev[k] !== changes[k])) {
           return prev;
         }
         return { ...prev, ...changes };
@@ -253,7 +276,7 @@ function PlasmicTextAreaInput__RenderFunc(props: {
           [sty.ariaTextAreapadded_right]: hasVariant($state, "padded", "right"),
           [sty.ariaTextAreatype_minimal]: hasVariant($state, "type", "minimal"),
           [sty.ariaTextAreatype_plain]: hasVariant($state, "type", "plain"),
-          [sty.ariaTextAreatype_soft]: hasVariant($state, "type", "soft"),
+          [sty.ariaTextAreatype_soft]: hasVariant($state, "type", "soft")
         }
       ),
       defaultValue: args.defaultValue,
@@ -270,15 +293,15 @@ function PlasmicTextAreaInput__RenderFunc(props: {
       placeholder: args.placeholder,
       plasmicUpdateVariant: updateVariant,
       readOnly: args.readOnly,
-      value: generateStateValueProp($state, ["ariaTextArea", "value"]),
+      value: generateStateValueProp($state, ["ariaTextArea", "value"])
     };
     initializeCodeComponentStates(
       $state,
       [
         {
           name: "value",
-          plasmicStateName: "ariaTextArea.value",
-        },
+          plasmicStateName: "ariaTextArea.value"
+        }
       ],
       [],
       BaseTextArea_Helpers ?? {},
@@ -298,7 +321,7 @@ function PlasmicTextAreaInput__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  ariaTextArea: ["ariaTextArea"],
+  ariaTextArea: ["ariaTextArea"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -318,7 +341,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTextAreaInput__VariantsArgs;
     args?: PlasmicTextAreaInput__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicTextAreaInput__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicTextAreaInput__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTextAreaInput__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -343,7 +368,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicTextAreaInput__ArgProps,
-          internalVariantPropNames: PlasmicTextAreaInput__VariantProps,
+          internalVariantPropNames: PlasmicTextAreaInput__VariantProps
         }),
       [props, nodeName]
     );
@@ -351,7 +376,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "ariaTextArea") {
@@ -370,7 +395,7 @@ export const PlasmicTextAreaInput = Object.assign(
 
     // Metadata about props expected for PlasmicTextAreaInput
     internalVariantProps: PlasmicTextAreaInput__VariantProps,
-    internalArgProps: PlasmicTextAreaInput__ArgProps,
+    internalArgProps: PlasmicTextAreaInput__ArgProps
   }
 );
 

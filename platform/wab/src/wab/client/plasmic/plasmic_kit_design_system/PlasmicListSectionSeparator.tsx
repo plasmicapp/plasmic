@@ -14,17 +14,48 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  SingleBooleanChoiceArg,
-  StrictProps,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -81,7 +112,7 @@ function PlasmicListSectionSeparator__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -94,8 +125,8 @@ function PlasmicListSectionSeparator__RenderFunc(props: {
         path: "center",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.center,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.center
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -105,7 +136,7 @@ function PlasmicListSectionSeparator__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -131,7 +162,7 @@ function PlasmicListSectionSeparator__RenderFunc(props: {
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
           className={classNames("all", sty.freeBox, {
-            [sty.freeBoxcenter]: hasVariant($state, "center", "center"),
+            [sty.freeBoxcenter]: hasVariant($state, "center", "center")
           })}
         />
       ) : null}
@@ -141,7 +172,7 @@ function PlasmicListSectionSeparator__RenderFunc(props: {
 
 const PlasmicDescendants = {
   root: ["root", "freeBox"],
-  freeBox: ["freeBox"],
+  freeBox: ["freeBox"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -162,8 +193,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicListSectionSeparator__VariantsArgs;
     args?: PlasmicListSectionSeparator__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicListSectionSeparator__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicListSectionSeparator__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicListSectionSeparator__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -188,7 +220,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicListSectionSeparator__ArgProps,
-          internalVariantPropNames: PlasmicListSectionSeparator__VariantProps,
+          internalVariantPropNames: PlasmicListSectionSeparator__VariantProps
         }),
       [props, nodeName]
     );
@@ -196,7 +228,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -216,7 +248,7 @@ export const PlasmicListSectionSeparator = Object.assign(
 
     // Metadata about props expected for PlasmicListSectionSeparator
     internalVariantProps: PlasmicListSectionSeparator__VariantProps,
-    internalArgProps: PlasmicListSectionSeparator__ArgProps,
+    internalArgProps: PlasmicListSectionSeparator__ArgProps
   }
 );
 
