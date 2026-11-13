@@ -34,7 +34,11 @@ import { Request, Response } from "express-serve-static-core";
 export const checkLegacyDataSourceOpRateLimit = createInlineRateLimiter({
   windowMs: 60 * 60 * 1000, // 1 hour
   limit: (req) => req.devflags.limitDataQueries ?? 0,
-  skip: (req) => req.devflags.limitDataQueries === null,
+  skip: (req) =>
+    req.devflags.limitDataQueries === null ||
+    req.devflags.limitDataQueriesExemptDataSourceIds.includes(
+      req.params.dataSourceId,
+    ),
   keyGenerator: (req) => req.params.dataSourceId,
   makeError: () =>
     new RateLimitedExceeded(

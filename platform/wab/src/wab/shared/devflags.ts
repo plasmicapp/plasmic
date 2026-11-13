@@ -576,6 +576,8 @@ const DEFAULT_DEVFLAGS = {
   enableDataQueries: false,
   // Limits CALLING legacy data queries to this rate per hour. 0 to block.
   limitDataQueries: null as number | null,
+  // Legacy data source IDs exempt from limitDataQueries, to keep them working.
+  limitDataQueriesExemptDataSourceIds: [] as string[],
   // Disable the public copilot interaction
   disablePublicCopilot: false,
   // Preset animations importable project id
