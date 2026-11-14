@@ -147,7 +147,7 @@ export function AppAuthPage() {
                 }}
               >
                 {" "}
-                Log out{" "}
+                Sign out{" "}
               </LinkButton>{" "}
               to sign in with a different email.
             </p>
@@ -289,7 +289,7 @@ export function AppAuthForm({
   return (
     <IntakeFlowForm>
       <div>
-        You are logging in to <b>{appName}</b>
+        You are signing in to <b>{appName}</b>
       </div>
       <div className={"LoginForm__Controls"}>
         <div className={"LoginForm__Oauth"}>
@@ -306,7 +306,7 @@ export function AppAuthForm({
             onFailure={(reason) => {
               setOauthFeedback({
                 type: "error",
-                content: "Unexpected error occurred logging in.",
+                content: "An unexpected error occurred while signing in.",
               });
             }}
             googleAuthUrl={APP_ROUTES.googleAuth.fill({})}
@@ -470,7 +470,7 @@ export function AppEmailVerification(props: {
                   }}
                 >
                   {" "}
-                  Log out{" "}
+                  Sign out{" "}
                 </LinkButton>{" "}
                 to sign in with a different email.
               </p>
@@ -530,7 +530,7 @@ export function AppEmailVerification(props: {
                   }}
                 >
                   {" "}
-                  Log out{" "}
+                  Sign out{" "}
                 </LinkButton>{" "}
                 to sign in with a different email.
               </p>

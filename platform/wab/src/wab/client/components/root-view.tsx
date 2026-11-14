@@ -700,7 +700,7 @@ export function Root() {
                           route: APP_ROUTES.sso,
                           render: () => (
                             <NormalNonAuthLayout nonAuthCtx={nonAuthCtx}>
-                              {documentTitle("Log in with SSO")}
+                              {documentTitle("Sign in with SSO")}
                               <SsoLoginForm onLoggedIn={reloadData} />
                             </NormalNonAuthLayout>
                           ),

@@ -999,7 +999,7 @@ function AppAuthMetrics() {
             dataIndex: "projectId",
           },
           {
-            title: "Active users that logged in",
+            title: "Active users who signed in",
             dataIndex: "amount",
           },
         ]}

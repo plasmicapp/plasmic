@@ -53,7 +53,7 @@ In Figma desktop, choose **Plugins → Development → Import plugin from manife
 
 ## Troubleshoot
 
-- **Export hangs:** check bridge assets, HTTPS, iframe URL, manifest allowlist, framing headers, and login redirects in Figma’s developer console.
+- **Export hangs:** check bridge assets, HTTPS, iframe URL, manifest allowlist, framing headers, and redirects when signing in in Figma’s developer console.
 - **Upload fails:** check the PUT response and app logs for storage permissions, routing, or request size limits.
 - **Paste cannot find the clip:** verify the plugin’s destination and Studio’s bucket/endpoint match. The published plugin uses production storage.
 

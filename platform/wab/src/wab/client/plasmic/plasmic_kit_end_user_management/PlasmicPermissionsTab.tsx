@@ -114,7 +114,7 @@ function PlasmicPermissionsTab__RenderFunc(props: {
     >
       <div className={classNames("all", sty.freeBox__zZaCn)}>
         <div className={classNames("all", "__wab_text", sty.text___71ZHi)}>
-          {"Who can log in?"}
+          {"Who can sign in?"}
         </div>
       </div>
       <form

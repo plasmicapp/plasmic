@@ -32,7 +32,7 @@ packages, so local SDK/CLI edits need to be published before the suite can valid
 
 The read-only fixture project is
 https://studio.plasmic.app/projects/YeV7hBtta1Q9hvodwJjB6. Its project API token is
-supplied by the test; a personal Plasmic login is not required.
+supplied by the test; a personal Plasmic account is not required.
 
 ## Running with Docker
 

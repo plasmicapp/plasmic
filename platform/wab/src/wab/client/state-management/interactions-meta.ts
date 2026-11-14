@@ -706,7 +706,7 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
     }),
   },
   login: {
-    displayName: "Log in",
+    displayName: "Sign in",
     hidden: (ctx) => !(ctx.siteInfo.appAuthProvider === "plasmic-auth"),
     parameters: {
       continueTo: {
@@ -714,11 +714,11 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
         type: "href",
       },
     },
-    getDefaultName: () => "Log in",
+    getDefaultName: () => "Sign in",
     getDefaultArgs: () => ({}),
   },
   logout: {
-    displayName: "Log out",
+    displayName: "Sign out",
     hidden: (ctx) => !(ctx.siteInfo.appAuthProvider === "plasmic-auth"),
     parameters: {
       continueTo: {
@@ -726,7 +726,7 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
         type: "href",
       },
     },
-    getDefaultName: () => "Log out",
+    getDefaultName: () => "Sign out",
     getDefaultArgs: () => ({}),
   },
 };

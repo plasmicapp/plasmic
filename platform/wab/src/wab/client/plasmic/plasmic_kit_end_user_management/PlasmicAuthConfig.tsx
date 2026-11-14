@@ -127,7 +127,7 @@ function PlasmicAuthConfig__RenderFunc(props: {
               {"Authentication"}
             </div>
             <div className={classNames("all", "__wab_text", sty.text__ipbcz)}>
-              {"Configure how users login to your app"}
+              {"Configure how users sign in to your app"}
             </div>
           </div>
           <IconButton

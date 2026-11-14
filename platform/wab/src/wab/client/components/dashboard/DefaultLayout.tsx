@@ -68,7 +68,7 @@ function DefaultLayout_(
           await appCtx.logout();
         }}
       >
-        Sign Out
+        Sign out
       </Menu.Item>
     </Menu>
   );

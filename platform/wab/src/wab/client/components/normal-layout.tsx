@@ -71,7 +71,7 @@ export class NormalLayout extends AppComponent {
             await this.logout();
           }}
         >
-          Sign Out
+          Sign out
         </Menu.Item>
       </Menu>
     );

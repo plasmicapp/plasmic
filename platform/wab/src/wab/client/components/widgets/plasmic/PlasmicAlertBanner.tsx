@@ -500,11 +500,11 @@ function PlasmicAlertBanner__RenderFunc(props: {
                       : hasVariant($state, "state", "permError")
                         ? "Sorry, we're not able to save."
                         : hasVariant($state, "state", "unlogged")
-                          ? "You are not logged in."
+                          ? "You are not signed in."
                           : hasVariant($state, "state", "outOfDate")
                             ? "An update to Plasmic is available."
                             : hasVariant($state, "state", "authError")
-                              ? "You are no longer logged in."
+                              ? "You are no longer signed in."
                               : hasVariant($state, "state", "notChrome")
                                 ? "Sorry, you're using an unsupported browser."
                                 : hasVariant($state, "state", "viewOld")
@@ -609,7 +609,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
               })}
             >
               {hasVariant($state, "state", "welcomeGuest")
-                ? "Sign up or log in to edit and save this project."
+                ? "Sign up or sign in to edit and save this project."
                 : hasVariant($state, "state", "protectedMainBranch")
                   ? "Switch to a different branch to edit project content."
                   : hasVariant($state, "state", "invariantError")
@@ -623,7 +623,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
                           : hasVariant($state, "state", "outOfDate")
                             ? "Please reload the project."
                             : hasVariant($state, "state", "authError")
-                              ? "Please try logging in again."
+                              ? "Please try signing in again."
                               : hasVariant($state, "state", "notChrome")
                                 ? "Right now, Plasmic Studio only works well with Chrome. We're working on it!"
                                 : hasVariant($state, "state", "viewOld")
@@ -1008,7 +1008,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
               })}
             >
               {hasVariant($state, "state", "welcomeGuest")
-                ? "Sign up / Log in"
+                ? "Sign up or sign in"
                 : hasVariant($state, "state", "invariantError")
                   ? "Reload Project"
                   : hasVariant($state, "state", "watch")
@@ -1016,7 +1016,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
                     : hasVariant($state, "state", "permError")
                       ? "Reload Project"
                       : hasVariant($state, "state", "unlogged")
-                        ? "Sign up / Log in"
+                        ? "Sign up or sign in"
                         : hasVariant($state, "state", "outOfDate")
                           ? "Reload Project"
                           : hasVariant($state, "state", "authError")

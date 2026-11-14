@@ -275,7 +275,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
               if (accessLevel === "owner") {
                 const selfEmail = ensure(
                   appCtx.selfInfo?.email,
-                  "Must be logged in to transfer ownership"
+                  "Sign in to transfer ownership"
                 );
                 const confirmed = await reactConfirm({
                   title: "Transfer ownership",

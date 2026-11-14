@@ -178,7 +178,7 @@ or more specific mechanisms such as incremental static revalidation or dynamic f
 ## Who uses Plasmic?
 
 Plasmic is used by companies ranging from Fortune 500s to boutique brands to solo makers.
-It's used for websites ranging from headless commerce storefronts to marketing websites to logged-in app content.
+It's used for websites ranging from headless commerce storefronts to marketing websites to app content that requires users to sign in.
 
 Check out the [Case Studies and Community Showcase][customers].
 

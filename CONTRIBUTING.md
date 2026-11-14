@@ -97,7 +97,7 @@ Then kill and restart the verdaccio server:
 verdaccio &
 ```
 
-Finally, in order to publish, you may be required to have a user login.
+Finally, in order to publish, you may be required to have a user account.
 Create this one-time in your Verdaccio--it doesn't matter what user/password/email you input:
 
 ```

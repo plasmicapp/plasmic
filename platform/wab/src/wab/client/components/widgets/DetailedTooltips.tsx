@@ -554,7 +554,7 @@ export function RolesTooltip() {
       {`
 Here you define the roles that you can assign users/groups to (in the Permissions tab).
 
-Then, throughout your application, you can set the required role on queries, pages, and components. For instance, only admins should be able to update all records, or only logged-in users can access a page.
+Then, throughout your application, you can set the required role on queries, pages, and components. For instance, only admins should be able to update all records, or only users who are signed in can access a page.
 
 Roles are ordered--higher roles can do anything lower roles can do.
 
@@ -582,7 +582,7 @@ export function AuthRedirectsTooltip() {
   return (
     <StandardMarkdown>
       {`
-This lists allowed URLs to redirect the user to after successful login with Plasmic Auth.
+This lists allowed URLs to redirect the user to after signing in with Plasmic Auth.
 
 Only needed if you are not using Plasmic Hosting and are using codebase integration. This affects what you can pass to the \`authRedirectUri\` prop in \`PlasmicRootProvider\`.
 

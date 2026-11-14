@@ -56,7 +56,7 @@ function StarterProject(props: StarterProjectProps) {
   const isChecked =
     props.type &&
     getExtraData(
-      ensure(appCtx.selfInfo, "Must be logged in"),
+      ensure(appCtx.selfInfo, "Sign in to create a project"),
     ).starterProgress.includes(props.tag);
 
   function renderAuthor() {
@@ -154,7 +154,7 @@ function StarterProject(props: StarterProjectProps) {
             if (props.tag) {
               await appCtx.api.updateSelfInfo(
                 updateExtraDataJson(
-                  ensure(appCtx.selfInfo, "Must be logged in"),
+                  ensure(appCtx.selfInfo, "Sign in to create a project"),
                   {
                     starterProgress: (orig) => L.union(orig, [props.tag]),
                   },

@@ -239,12 +239,12 @@ export function showCanvasAuthNotification(
   mode: "preview mode" | "interactive mode",
 ) {
   notification.info({
-    message: `Login and logout not supported in ${mode}`,
+    message: `Signing in and signing out are not supported in ${mode}`,
     description: (
       <p>
-        Plasmic Studio detected and ignored a login or logout event. To view
-        this artboard as a different user, click the "View as..." dropdown in
-        the top bar.
+        Plasmic Studio ignored an attempt to sign in or sign out. To view this
+        artboard as a different user, click the "View as..." dropdown in the top
+        bar.
       </p>
     ),
   });

@@ -117,7 +117,7 @@ function PlasmicPermissionRuleGroup__RenderFunc(props: {
                 sty.permissionRule__lhnJ2
               )}
               isGroup={true}
-              ruleName={"Logged in users"}
+              ruleName={"Users who are signed in"}
             />
 
             <PermissionRule
@@ -127,7 +127,7 @@ function PlasmicPermissionRuleGroup__RenderFunc(props: {
               )}
               hasMenu={true}
               isGroup={true}
-              ruleName={"Logged in users"}
+              ruleName={"Users who are signed in"}
               withoutBorder={true}
             />
           </React.Fragment>

@@ -159,7 +159,7 @@ function MyExistingPage() {
           }
 
 
-          // Add onClick handler to the login button
+          // Add an onClick handler to the button for signing in
           login: {
             onClick: () => navigateToLogin(),
           }

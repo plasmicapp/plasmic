@@ -6,7 +6,7 @@ export class AuthPage extends BaseModel {
   readonly passwordInput: Locator = this.page.locator('input[name="password"]');
   readonly submitButton: Locator = this.page.locator('button[type="submit"]');
   readonly signOutDropdownItem: Locator = this.page.getByRole("menuitem", {
-    name: "Sign Out",
+    name: "Sign out",
     exact: true,
   });
 

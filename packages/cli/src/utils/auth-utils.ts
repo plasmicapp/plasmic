@@ -112,7 +112,7 @@ export async function startAuth(opts: Partial<CommonArgs> & { host: string }) {
       `\nIf your browser doesn't automatically open, enter the following URL:\n${url}\n`
     );
 
-    logger.info(`Please log in and authorize Plasmic CLI.`);
+    logger.info(`Please sign in and authorize Plasmic CLI.`);
     const polling = authByPolling(opts.host, initToken);
     polling.promise.then((auth) => {
       if (prompt) {

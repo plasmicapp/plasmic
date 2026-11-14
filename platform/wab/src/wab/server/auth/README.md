@@ -5,7 +5,7 @@ multiple strategies for signing in, such as password, Google, Okta, etc.
 
 ## Google
 
-To set up Google sign-in for local development, follow these instructions:
+To set up signing in with Google for local development, follow these instructions:
 
 1. Sign in to https://console.cloud.google.com/.
 2. Create a separate project for Plasmic development.

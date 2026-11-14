@@ -231,9 +231,9 @@ export function StudioFrame({
     return (
       <Modal open footer={null} title="Project is hosted by another app">
         The project {project.name} is <i>app-hosted</i>. This means it's running
-        a third-party app that can show anything on screen, including the
-        Plasmic login screen. Only open projects that are hosted by domains you
-        trust! [
+        a third-party app that can show anything on screen, including the screen
+        where you sign in to Plasmic. Only open projects that are hosted by
+        domains you trust! [
         <a href="https://www.plasmic.app/learn/app-hosting/" target="_blank">
           Learn more about app hosting
         </a>

@@ -119,8 +119,8 @@ export function AdminUserTable<T extends Item = Item>({
         ? "Deactivated and cleared password for"
         : "Deactivated",
       effect: clearPassword
-        ? "The user can't log in. Their password is cleared, so after reactivation they must reset it or sign in with Google/SSO."
-        : "The user can't log in. Their password is kept, so they can log in normally after reactivation.",
+        ? "The user can't sign in. Their password is cleared, so after reactivation they must reset it or sign in with Google/SSO."
+        : "The user can't sign in. Their password is kept, so they can sign in normally after reactivation.",
       danger: true,
       run: () =>
         nonAuthCtx.api.deactivateUserAsAdmin(user.id, { clearPassword }),
@@ -133,7 +133,7 @@ export function AdminUserTable<T extends Item = Item>({
       action: "Reactivate",
       done: "Reactivated",
       effect:
-        "The user can log in again. If their password was cleared when they were deactivated, they must reset it or sign in with Google/SSO.",
+        "The user can sign in again. If their password was cleared when they were deactivated, they must reset it or sign in with Google/SSO.",
       run: () => nonAuthCtx.api.reactivateUserAsAdmin(user.id),
     });
   }
@@ -187,7 +187,7 @@ export function AdminUserTable<T extends Item = Item>({
               <div className="flex flex-vcenter gap-m nowrap">
                 {!item.user.deletedAt && (
                   <LinkButton onClick={() => handleLogin(item.user.email)}>
-                    Login
+                    Sign in as user
                   </LinkButton>
                 )}
                 {item.user.deletedAt ? (

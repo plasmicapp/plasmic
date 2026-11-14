@@ -134,9 +134,9 @@ export function EmailVerification(props: EmailVerificationProps) {
                 Not you?{" "}
                 <LinkButton onClick={async () => await appCtx.logout()}>
                   {" "}
-                  Log out{" "}
+                  Sign out{" "}
                 </LinkButton>{" "}
-                to log in with a different email.
+                to sign in with a different email.
               </p>
             </div>
           ) : mode === "email-sent" ? (
@@ -185,9 +185,9 @@ export function EmailVerification(props: EmailVerificationProps) {
                 Not you?{" "}
                 <LinkButton onClick={async () => await appCtx.logout()}>
                   {" "}
-                  Log out{" "}
+                  Sign out{" "}
                 </LinkButton>{" "}
-                to log in with a different email.
+                to sign in with a different email.
               </p>
             </div>
           ) : (

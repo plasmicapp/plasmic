@@ -1229,7 +1229,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     platform={"react"}
                   >
                     {hasVariant($state, "state", "unlogged")
-                      ? "log in"
+                      ? "Sign in"
                       : "Invitees can directly create an account, skipping the waitlist."}
                   </PlasmicLink__>
                 ) : null}

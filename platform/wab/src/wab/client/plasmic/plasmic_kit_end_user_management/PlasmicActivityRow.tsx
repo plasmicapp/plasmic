@@ -179,7 +179,7 @@ function PlasmicActivityRow__RenderFunc(props: {
           </div>
           <div className={classNames("all", sty.freeBox__jnPaY)}>
             {renderPlasmicSlot({
-              defaultContents: "Logged in",
+              defaultContents: "Signed in",
               value: args.status,
               className: classNames(sty.slotTargetStatus),
             })}

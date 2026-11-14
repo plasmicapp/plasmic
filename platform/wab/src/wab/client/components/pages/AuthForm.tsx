@@ -133,7 +133,7 @@ export function useAuthForm({
         } else {
           setFormFeedback({
             type: "error",
-            content: "Unexpected error occurred logging in.",
+            content: "An unexpected error occurred while signing in.",
           });
         }
       }
@@ -147,7 +147,7 @@ export function useAuthForm({
       } else {
         setFormFeedback({
           type: "error",
-          content: "Unexpected error occurred logging in.",
+          content: "An unexpected error occurred while signing in.",
         });
         throw err;
       }
@@ -230,7 +230,7 @@ export function AuthForm({ mode, onLoggedIn }: AuthFormProps) {
                   onFailure={(reason) => {
                     setOauthFeedback({
                       type: "error",
-                      content: "Unexpected error occurred logging in.",
+                      content: "An unexpected error occurred while signing in.",
                     });
                   }}
                   googleAuthUrl={APP_ROUTES.googleAuth.fill({})}
@@ -577,7 +577,7 @@ export function SsoLoginForm(props: { onLoggedIn: () => void }) {
             type={"primary"}
             size={"large"}
           >
-            Login
+            Sign in
           </Button>
           <br />
           <LinkButton onClick={() => setMode(nonAuthCtx, "sign in")}>

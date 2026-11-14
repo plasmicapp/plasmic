@@ -438,7 +438,7 @@ function PlasmicPageSettings__RenderFunc(props: {
             className={classNames("all", sty.loginRequiredLabel)}
           >
             <div className={classNames("all", "__wab_text", sty.text__fdmLq)}>
-              {"Login needed"}
+              {"Require users to sign in"}
             </div>
           </div>
           <Switch
