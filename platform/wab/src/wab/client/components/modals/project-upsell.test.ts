@@ -3,9 +3,11 @@ import { getProjectUpsellAction } from "@/wab/client/components/modals/project-u
 import {
   ApiPermission,
   ApiTeam,
+  ApiWorkspace,
   FeatureTierId,
   TeamId,
   UserId,
+  WorkspaceId,
 } from "@/wab/shared/ApiSchema";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { AccessLevel } from "@/wab/shared/EntUtil";
@@ -17,7 +19,6 @@ function mkTeam(id: string, fields: Partial<ApiTeam> = {}): ApiTeam {
   return {
     id: id as TeamId,
     name: id,
-    createdAt: "2026-01-01",
     featureTier: null,
     featureTierId: null,
     onTrial: false,
@@ -26,15 +27,24 @@ function mkTeam(id: string, fields: Partial<ApiTeam> = {}): ApiTeam {
   } as ApiTeam;
 }
 
+function mkWorkspace(name: string, team: ApiTeam): ApiWorkspace {
+  return {
+    id: `${team.id}/${name}` as WorkspaceId,
+    name,
+    team,
+  } as ApiWorkspace;
+}
+
 function mkAppCtx(
   teams: ApiTeam[],
   access: Record<string, AccessLevel>,
+  workspaces: ApiWorkspace[] = [],
 ): AppCtx {
   const perms = Object.entries(access).map(
     ([teamId, accessLevel]) =>
       ({ teamId, userId: USER_ID, accessLevel }) as ApiPermission,
   );
-  return { teams, perms, selfInfo: { id: USER_ID } } as AppCtx;
+  return { teams, perms, workspaces, selfInfo: { id: USER_ID } } as AppCtx;
 }
 
 function mkProject(teamId: TeamId | null, createdById: UserId = USER_ID) {
@@ -99,43 +109,52 @@ describe("getProjectUpsellAction", () => {
     });
   });
 
-  it("moves a personal project into an organization on a paid plan", () => {
-    const appCtx = mkAppCtx([personal, freeOrg, paidOrg], {
-      "free-org": "owner",
-      "paid-org": "editor",
+  it("offers paid organizations first, then organizations to upgrade, each sorted by name", () => {
+    const paid2 = mkTeam("paid-2", {
+      name: "Studio 2",
+      featureTierId: PAID_TIER,
     });
+    const paid10 = mkTeam("paid-10", {
+      name: "Studio 10",
+      featureTierId: PAID_TIER,
+    });
+    const free2 = mkTeam("free-2", {
+      name: "Agency 2",
+      featureTierId: DEVFLAGS.freeTier.id,
+    });
+    const free10 = mkTeam("free-10", {
+      name: "Agency 10",
+      featureTierId: DEVFLAGS.freeTier.id,
+    });
+    const site10 = mkWorkspace("Site 10", paid2);
+    const site2 = mkWorkspace("Site 2", paid2);
+    const apps = mkWorkspace("apps", paid2);
+    const appCtx = mkAppCtx(
+      [personal, free10, paid10, free2, paid2],
+      {
+        "free-10": "owner",
+        "free-2": "owner",
+        "paid-10": "editor",
+        "paid-2": "editor",
+      },
+      [site10, mkWorkspace("Drafts", personal), apps, site2],
+    );
     expect(getProjectUpsellAction(appCtx, mkProject(personal.id))).toEqual({
       type: "move",
-      team: paidOrg,
+      destinationOrgs: [
+        { org: paid2, needsUpgrade: false, workspaces: [apps, site2, site10] },
+        { org: paid10, needsUpgrade: false, workspaces: [] },
+        { org: free2, needsUpgrade: true, workspaces: [] },
+        { org: free10, needsUpgrade: true, workspaces: [] },
+      ],
     });
   });
 
-  it("treats an organization on a trial as one to upgrade, not move into", () => {
+  it("treats an organization on a trial as one to upgrade", () => {
     const appCtx = mkAppCtx([personal, trialOrg], { "trial-org": "owner" });
     expect(getProjectUpsellAction(appCtx, mkProject(personal.id))).toEqual({
-      type: "upgradeAndMove",
-      team: trialOrg,
-    });
-  });
-
-  it("upgrades an organization then moves a personal project into it", () => {
-    const appCtx = mkAppCtx([personal, freeOrg], { "free-org": "owner" });
-    expect(getProjectUpsellAction(appCtx, mkProject(personal.id))).toEqual({
-      type: "upgradeAndMove",
-      team: freeOrg,
-    });
-  });
-
-  it("picks the oldest organization the user can upgrade", () => {
-    const older = mkTeam("older", { createdAt: "2025-01-01" });
-    const newer = mkTeam("newer", { createdAt: "2026-06-01" });
-    const appCtx = mkAppCtx([personal, newer, older], {
-      older: "owner",
-      newer: "owner",
-    });
-    expect(getProjectUpsellAction(appCtx, mkProject(personal.id))).toEqual({
-      type: "upgradeAndMove",
-      team: older,
+      type: "move",
+      destinationOrgs: [{ org: trialOrg, needsUpgrade: true, workspaces: [] }],
     });
   });
 

@@ -1,25 +1,18 @@
 import OrgSwitcherRow from "@/wab/client/components/dashboard/OrgSwitcherRow";
-import { promptNewTeam } from "@/wab/client/components/dashboard/dashboard-actions";
 import { getOrgInitials } from "@/wab/client/components/dashboard/org-utils";
 import { CreateNewMenuItemContent } from "@/wab/client/components/menu-builder";
-import {
-  canUpgradeTeam,
-  promptTeamUpgrade,
-} from "@/wab/client/components/modals/PricingModal";
+import { canUpgradeTeam } from "@/wab/client/components/modals/PricingModal";
 import { RawAvatar } from "@/wab/client/components/studio/Avatar";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultOrgSwitcherProps,
   PlasmicOrgSwitcher,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicOrgSwitcher";
-import { useHistory } from "@/wab/client/route/HistoryProvider";
-import { ApiTeam, TeamId } from "@/wab/shared/ApiSchema";
-import { spawn } from "@/wab/shared/common";
+import { ApiTeam } from "@/wab/shared/ApiSchema";
 import {
   getExternalPriceTierName,
   getOrgStatus,
 } from "@/wab/shared/pricing/pricing-utils";
-import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Dropdown, MenuProps } from "antd";
 import { observer } from "mobx-react";
@@ -30,22 +23,33 @@ const CREATE_ORG_KEY = "create";
 export interface OrgSwitcherProps extends DefaultOrgSwitcherProps {
   selectedOrg?: ApiTeam;
   orgs?: ApiTeam[];
+  onSelectOrg?: (org: ApiTeam) => void;
+  onCreateOrg?: () => void;
+  onUpgradeOrg?: (org: ApiTeam) => void;
 }
 
 function OrgSwitcher_(props: OrgSwitcherProps, ref: HTMLElementRefOf<"div">) {
-  const { selectedOrg, orgs = [], ...rest } = props;
+  const {
+    selectedOrg,
+    orgs = [],
+    onSelectOrg,
+    onCreateOrg,
+    onUpgradeOrg,
+    ...rest
+  } = props;
   const appCtx = useAppCtx();
-  const history = useHistory();
   const [open, setOpen] = React.useState(false);
 
-  const createOrg = () => spawn(promptNewTeam(appCtx, history));
+  const createOrgButton = onCreateOrg
+    ? { props: { onClick: onCreateOrg } }
+    : { render: () => null };
 
   if (!selectedOrg) {
     return (
       <PlasmicOrgSwitcher
         root={{ ref }}
         className={rest.className}
-        createOrgButton={{ props: { onClick: createOrg } }}
+        createOrgButton={createOrgButton}
         hasNoOrg={true}
       />
     );
@@ -62,18 +66,25 @@ function OrgSwitcher_(props: OrgSwitcherProps, ref: HTMLElementRefOf<"div">) {
           <OrgSwitcherRow org={org} selected={org.id === selectedOrg.id} />
         ),
       })),
-      { type: "divider" as const },
-      {
-        key: CREATE_ORG_KEY,
-        label: <CreateNewMenuItemContent entity="organization" />,
-      },
+      ...(onCreateOrg
+        ? [
+            { type: "divider" as const },
+            {
+              key: CREATE_ORG_KEY,
+              label: <CreateNewMenuItemContent entity="organization" />,
+            },
+          ]
+        : []),
     ],
     onClick: ({ key }) => {
       setOpen(false);
       if (key === CREATE_ORG_KEY) {
-        createOrg();
-      } else {
-        history.push(APP_ROUTES.org.fill({ teamId: key as TeamId }));
+        onCreateOrg?.();
+        return;
+      }
+      const org = orgs.find((o) => o.id === key);
+      if (org) {
+        onSelectOrg?.(org);
       }
     },
   };
@@ -97,11 +108,11 @@ function OrgSwitcher_(props: OrgSwitcherProps, ref: HTMLElementRefOf<"div">) {
             onClick: () => setOpen((o) => !o),
           },
         }}
-        createOrgButton={{ props: { onClick: createOrg } }}
+        createOrgButton={createOrgButton}
         upgradeBtn={{
           props: {
             "data-test-id": "org-switcher-upgrade",
-            onClick: () => spawn(promptTeamUpgrade(appCtx, selectedOrg)),
+            onClick: () => onUpgradeOrg?.(selectedOrg),
           },
         }}
         {...rest}
@@ -114,7 +125,9 @@ function OrgSwitcher_(props: OrgSwitcherProps, ref: HTMLElementRefOf<"div">) {
           status.status === "trial" ? status.trialDaysLeft : undefined
         }
         canUpgrade={
-          status.status !== "paid" && canUpgradeTeam(appCtx, selectedOrg)
+          !!onUpgradeOrg &&
+          status.status !== "paid" &&
+          canUpgradeTeam(appCtx, selectedOrg)
         }
         avatar={
           <RawAvatar

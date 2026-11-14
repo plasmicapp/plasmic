@@ -1,0 +1,128 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--token-1eDPHMktFbaJ);
+  width: 100%;
+  min-width: 0;
+}
+.intro {
+  margin: 0;
+}
+.orgField {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--token-O2OprmOFWLju);
+  width: 100%;
+}
+.orgLabel {
+  display: flex;
+  flex-direction: column;
+  color: var(--token-RTPypKCJE4bm);
+  font-weight: 500;
+  margin: 0;
+}
+.orgSwitcher:global(.__wab_instance) {
+  max-width: 100%;
+  width: 100%;
+}
+.img__mIdN {
+  animation: none;
+  object-fit: cover;
+  max-width: 100%;
+  height: 20px;
+}
+.img__mIdN > picture > img {
+  object-fit: cover;
+}
+.workspaceField {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--token-O2OprmOFWLju);
+  width: 100%;
+}
+.workspaceLabel {
+  display: flex;
+  flex-direction: column;
+  color: var(--token-RTPypKCJE4bm);
+  font-weight: 500;
+  margin: 0;
+}
+.workspaceSelect:global(.__wab_instance) {
+  max-width: 100%;
+  width: 100%;
+}
+.svg__goWxs {
+  position: relative;
+  object-fit: cover;
+  min-width: 16px;
+  min-height: 16px;
+  width: 16px;
+  height: 16px;
+}
+.workspaceNameField {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--token-O2OprmOFWLju);
+  width: 100%;
+}
+.workspaceNameLabel {
+  display: flex;
+  flex-direction: column;
+  color: var(--token-RTPypKCJE4bm);
+  font-weight: 500;
+  margin: 0;
+}
+.workspaceNameInput:global(.__wab_instance) {
+  max-width: 100%;
+  width: 100%;
+}
+.svg__glE2S {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.svg__w6Pqa {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.actions {
+  display: flex;
+  flex-direction: row;
+  column-gap: var(--token-O2OprmOFWLju);
+  align-items: center;
+}
+.submitButton:global(.__wab_instance) {
+  max-width: 100%;
+}
+.svg__ubd4U {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.svg___6SPCp {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.cancelButton:global(.__wab_instance) {
+  max-width: 100%;
+}
+.svg__iq8Yt {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.svg__nru6F {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}

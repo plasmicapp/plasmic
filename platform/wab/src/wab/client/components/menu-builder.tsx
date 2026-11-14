@@ -138,7 +138,7 @@ export function MenuItemContent(props: {
 
 /** Content for a "Create new <entity>" menu item. */
 export function CreateNewMenuItemContent(props: {
-  entity: "data token" | "prop" | "organization";
+  entity: "data token" | "prop" | "organization" | "workspace";
 }) {
   return (
     <div className="flex flex-vcenter">

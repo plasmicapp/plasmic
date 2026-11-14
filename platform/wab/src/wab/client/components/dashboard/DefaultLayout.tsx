@@ -1,7 +1,11 @@
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import NavButton from "@/wab/client/components/dashboard/NavButton";
-import { promptNewWorkspace } from "@/wab/client/components/dashboard/dashboard-actions";
+import {
+  promptNewTeam,
+  promptNewWorkspace,
+} from "@/wab/client/components/dashboard/dashboard-actions";
 import { getDefaultOrg } from "@/wab/client/components/dashboard/org-utils";
+import { promptTeamUpgrade } from "@/wab/client/components/modals/PricingModal";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
@@ -13,7 +17,7 @@ import DotSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon
 import { useHistory } from "@/wab/client/route/HistoryProvider";
 import { useBrowserNotification } from "@/wab/client/utils/useBrowserNotification";
 import { ApiTeam, ApiWorkspace } from "@/wab/shared/ApiSchema";
-import { ensure } from "@/wab/shared/common";
+import { ensure, spawn } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Dropdown, Menu } from "antd";
@@ -120,7 +124,16 @@ function DefaultLayout_(
           selected: activeNav === "myProjects",
         },
       }}
-      orgSwitcher={{ props: { selectedOrg, orgs } }}
+      orgSwitcher={{
+        props: {
+          selectedOrg,
+          orgs,
+          onSelectOrg: (org) =>
+            history.push(APP_ROUTES.org.fill({ teamId: org.id })),
+          onCreateOrg: () => spawn(promptNewTeam(appCtx, history)),
+          onUpgradeOrg: (org) => spawn(promptTeamUpgrade(appCtx, org)),
+        },
+      }}
       workspaces={{
         children: workspaces.map((w) => (
           <NavButton

@@ -6,10 +6,17 @@ import {
   maybeShowPaywall,
   promptTeamUpgrade,
 } from "@/wab/client/components/modals/PricingModal";
+import {
+  NEW_WORKSPACE_NAME,
+  ProjectDestination,
+  ProjectDestinationOrg,
+} from "@/wab/client/components/modals/ProjectDestinationForm";
+import { promptProjectDestination } from "@/wab/client/components/modals/ProjectDestinationModal";
 import { ApiProject, ApiTeam } from "@/wab/shared/ApiSchema";
 import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
 import { checkIsTeamOnPaidTier } from "@/wab/shared/billing/billing-util";
 import { assertNever } from "@/wab/shared/common";
+import { naturalSortByName } from "@/wab/shared/sort";
 import sortBy from "lodash/sortBy";
 
 /**
@@ -20,10 +27,8 @@ export type ProjectUpsellAction =
   | { type: "upgrade"; team: ApiTeam }
   // The project's organization, which the user can't upgrade.
   | { type: "askAdmin"; team: ApiTeam | undefined }
-  // A personal project; the user already has an organization on a paid plan.
-  | { type: "move"; team: ApiTeam }
-  // A personal project; the user has an organization they can upgrade.
-  | { type: "upgradeAndMove"; team: ApiTeam }
+  // A personal project; the user picks one of destination organizations
+  | { type: "move"; destinationOrgs: ProjectDestinationOrg[] }
   // A personal project and no organization at all.
   | { type: "createOrg" };
 
@@ -41,24 +46,31 @@ export function getProjectUpsellAction(
       : { type: "askAdmin", team: projectTeam };
   }
 
-  // Same order as the dashboard's upsell redirect: the oldest organization wins.
+  // Paid organizations first, each part sorted by name.
   const orgs = sortBy(
-    appCtx.teams.filter(
-      (t) => !t.personalTeamOwnerId && canIEditTeam(appCtx, t),
+    naturalSortByName(
+      appCtx.teams.filter(
+        (t) =>
+          !t.personalTeamOwnerId &&
+          canIEditTeam(appCtx, t) &&
+          (checkIsTeamOnPaidTier(t) || canUpgradeTeam(appCtx, t)),
+      ),
     ),
-    (t) => new Date(t.createdAt).getTime(),
+    (t) => !checkIsTeamOnPaidTier(t),
   );
 
-  const paidOrg = orgs.find((t) => checkIsTeamOnPaidTier(t));
-  if (paidOrg) {
-    return { type: "move", team: paidOrg };
-  }
-
-  const upgradableOrg = orgs.find((t) => canUpgradeTeam(appCtx, t));
-  if (upgradableOrg) {
-    return { type: "upgradeAndMove", team: upgradableOrg };
-  }
-  return { type: "createOrg" };
+  return orgs.length > 0
+    ? {
+        type: "move",
+        destinationOrgs: orgs.map((org) => ({
+          org,
+          needsUpgrade: !checkIsTeamOnPaidTier(org),
+          workspaces: naturalSortByName(
+            appCtx.workspaces.filter((w) => w.team.id === org.id),
+          ),
+        })),
+      }
+    : { type: "createOrg" };
 }
 
 /**
@@ -80,47 +92,60 @@ export async function runProjectUpsellAction(
       await appCtx.reloadAppCtx();
       return true;
     }
-    case "move":
-      await moveProjectToOrg(appCtx, project, action.team);
-      return true;
-    case "upgradeAndMove": {
-      if (!(await promptTeamUpgrade(appCtx, action.team, opts))) {
-        return false;
-      }
-      await moveProjectToOrg(appCtx, project, action.team);
-      return true;
+    case "move": {
+      const destination = await promptProjectDestination(
+        appCtx,
+        action.destinationOrgs,
+      );
+      return destination
+        ? moveProjectToPaidOrg(appCtx, project, destination, opts)
+        : false;
     }
     case "createOrg": {
       const { team } = await appCtx.api.createTeam(
         `${appCtx.selfInfo?.firstName ?? "My"}'s ${ORGANIZATION_LOWER}`,
       );
       await appCtx.reloadAppCtx();
-      if (!(await promptTeamUpgrade(appCtx, team, opts))) {
-        return false;
-      }
-      await moveProjectToOrg(appCtx, project, team);
-      return true;
+      // A new organization has no workspaces yet.
+      return moveProjectToPaidOrg(
+        appCtx,
+        project,
+        { type: "newWorkspace", org: team, name: NEW_WORKSPACE_NAME },
+        opts,
+      );
     }
     default:
       return assertNever(action);
   }
 }
 
-async function moveProjectToOrg(
+async function moveProjectToPaidOrg(
   appCtx: AppCtx,
   project: Pick<ApiProject, "id">,
-  team: ApiTeam,
+  destination: ProjectDestination,
+  opts: PromptTeamUpgradeOpts,
 ) {
-  const workspace = appCtx.workspaces.find((w) => w.team.id === team.id);
+  if (
+    !checkIsTeamOnPaidTier(destination.org) &&
+    !(await promptTeamUpgrade(appCtx, destination.org, opts))
+  ) {
+    return false;
+  }
   const workspaceId =
-    workspace?.id ??
-    (
-      await maybeShowPaywall(appCtx, () =>
-        appCtx.api.createWorkspace({ teamId: team.id, name: "Projects" }),
-      )
-    ).workspace.id;
+    destination.type === "workspace"
+      ? destination.workspace.id
+      : (
+          await maybeShowPaywall(appCtx, () =>
+            appCtx.api.createWorkspace({
+              teamId: destination.org.id,
+              name: destination.name,
+            }),
+          )
+        ).workspace.id;
+
   await maybeShowPaywall(appCtx, () =>
     appCtx.api.setSiteInfo(project.id, { workspaceId }),
   );
   await appCtx.reloadAppCtx();
+  return true;
 }

@@ -1028,6 +1028,20 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicOrgSwitcherRow.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "0IP5JRrLvEE0",
+          "name": "ProjectDestinationForm",
+          "type": "managed",
+          "projectId": "ooL7EhXDmFQWnW9sxtchhE",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicProjectDestinationForm.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/modals/ProjectDestinationForm.tsx",
+            "exportName": "ProjectDestinationForm"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicProjectDestinationForm.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [

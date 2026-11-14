@@ -2593,6 +2593,16 @@
           "assetId": "ooL7EhXDmFQWnW9sxtchhE",
           "type": "projectCss",
           "checksum": "55c136d1a63511eee4c4a84c6bb6b667"
+        },
+        {
+          "type": "renderModule",
+          "assetId": "0IP5JRrLvEE0",
+          "checksum": "d9bf604df4c666ea99aba625ae126149"
+        },
+        {
+          "type": "cssRules",
+          "assetId": "0IP5JRrLvEE0",
+          "checksum": "d9bf604df4c666ea99aba625ae126149"
         }
       ],
       "projectId": "ooL7EhXDmFQWnW9sxtchhE",
