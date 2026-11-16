@@ -356,6 +356,9 @@ function fixCSSValueUnsafe(key: string, value: string): Record<string, string> {
   }
 
   const fixedValue = getFixedValue();
+  if (!fixedValue) {
+    return {};
+  }
 
   // Parse before ignoring so a malformed value is reported either way.
   const valueNode = cssParse(fixedValue, { context: "value" });

@@ -1333,6 +1333,16 @@ describe("fixCSSValue", () => {
     });
   });
 
+  it("ignores env(...) without a fallback value", () => {
+    // Reject undefined properties too.
+    expect(
+      fixCSSValue("padding-bottom", "env(safe-area-inset-bottom)"),
+    ).toStrictEqual({});
+    expect(fixCSSValue("padding", "env(safe-area-inset-top)")).toStrictEqual(
+      {},
+    );
+  });
+
   it("transforms 'inline-flex' into 'flex'", () => {
     expect(fixCSSValue("display", "inline-flex")).toEqual({ display: "flex" });
   });
