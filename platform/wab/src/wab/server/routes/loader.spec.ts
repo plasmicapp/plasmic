@@ -168,9 +168,7 @@ describe("loader", () => {
       {},
     );
     expect(res.status()).toEqual(404);
-    expect(res.headers()["cache-control"]).toEqual(
-      "no-store, no-cache, must-revalidate, private",
-    );
+    expect(res.headers()["cache-control"]).toEqual("s-maxage=30");
   });
 
   it("fails if any project is unpublished", async () => {
@@ -179,9 +177,27 @@ describe("loader", () => {
       {},
     );
     expect(res.status()).toEqual(400);
-    expect(res.headers()["cache-control"]).toEqual(
-      "no-store, no-cache, must-revalidate, private",
-    );
+    expect(res.headers()["cache-control"]).toEqual("s-maxage=30");
+  });
+
+  it("does not cache a 401 for a token that can't view the project", async () => {
+    // apiAuth lets any project token header through; the permission check
+    // inside the route rejects it, and that response depends on the token.
+    const otherApi = new PublicApiTester(baseURL, {
+      "x-plasmic-api-project-tokens": `${projects[0].id}:not-the-token`,
+    });
+    try {
+      const res = await otherApi.rawReq(
+        "get",
+        `/api/v1/loader/code/published?projectId=${projects[0].id}`,
+      );
+      expect(res.status()).toEqual(401);
+      expect(res.headers()["cache-control"]).toEqual(
+        "no-store, no-cache, must-revalidate, private",
+      );
+    } finally {
+      await otherApi.dispose();
+    }
   });
 
   it("resolves component as HTML", async () => {

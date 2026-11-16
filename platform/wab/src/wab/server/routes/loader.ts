@@ -32,6 +32,7 @@ import {
   BadRequestError,
   NotFoundError,
   UnauthorizedError,
+  transformErrors,
 } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
@@ -118,11 +119,24 @@ export async function buildPublishedLoaderAssets(req: Request, res: Response) {
     skipHead,
   } = getLoaderOptions(req);
 
-  const resolvedProjectIdSpecs = await getResolvedProjectVersions(
-    mgr,
-    projectIdSpecs,
-    { prefilledOnly: true },
-  );
+  let resolvedProjectIdSpecs: string[];
+  try {
+    resolvedProjectIdSpecs = await getResolvedProjectVersions(
+      mgr,
+      projectIdSpecs,
+      { prefilledOnly: true },
+    );
+  } catch (err) {
+    // An unpublished project (400) or one with no prefilled version for the tag
+    // (404) is the same answer for every caller allowed to see it, so cache it
+    // as briefly as the redirect a publish turns it into. 401 and 403 depend on
+    // the token, which isn't in the cache key, so they stay no-store.
+    const apiErr = transformErrors(err);
+    if (apiErr instanceof BadRequestError || apiErr instanceof NotFoundError) {
+      setAsCacheableRedirect(res);
+    }
+    throw err;
+  }
 
   const query = makeCacheableVersionedLoaderQuery({
     platform,
