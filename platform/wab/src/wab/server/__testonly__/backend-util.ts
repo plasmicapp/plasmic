@@ -137,6 +137,7 @@ export async function createBackend(
   dburi: string,
   opts?: {
     preferredPorts?: number[];
+    adminEmails?: string[];
   },
 ) {
   const port = await getPort(
@@ -156,7 +157,7 @@ export async function createBackend(
         databaseUri: dburi,
         port: port,
         host: `http://localhost:${port}`,
-        adminEmails: [],
+        adminEmails: opts?.adminEmails ?? [],
         production: false,
         sessionSecret: "secret",
         mailFrom: "",
