@@ -104,7 +104,6 @@ export interface TopFrameOnNextCtx {
   appCtx: AppCtx;
   topFrameApi: TopFrameApi;
   projectId: ProjectId;
-  domain: string;
 }
 
 export type StudioTutorialStep = TutorialStep<OnNextCtx>;

@@ -15,26 +15,53 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
   PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
   generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import WebhookEvent from "../../components/webhooks/WebhookEvent"; // plasmic-import: MtBpr4iNob/component
-import WebhooksHistory from "../../components/webhooks/WebhooksHistory"; // plasmic-import: Ynwp30ZgYk/component
-import WebhooksItem from "../../components/webhooks/WebhooksItem"; // plasmic-import: mSgnlB96I5A/component
-import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Checkbox from "../../components/widgets/Checkbox"; // plasmic-import: W-rO7NZqPjZ/component
+import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import WebhooksItem from "../../components/webhooks/WebhooksItem"; // plasmic-import: mSgnlB96I5A/component
+import WebhookHeader from "../../components/webhooks/WebhookHeader"; // plasmic-import: OkB-fXuJPc/component
+import WebhooksHistory from "../../components/webhooks/WebhooksHistory"; // plasmic-import: Ynwp30ZgYk/component
+import WebhookEvent from "../../components/webhooks/WebhookEvent"; // plasmic-import: MtBpr4iNob/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -42,9 +69,9 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicSubsectionWebhooks.module.css"; // plasmic-import: 9EUA-QZFp69/css
 
+import Icon4Icon from "./icons/PlasmicIcon__Icon4"; // plasmic-import: ICm0kU5OI3/icon
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import Icon4Icon from "./icons/PlasmicIcon__Icon4"; // plasmic-import: ICm0kU5OI3/icon
 
 createPlasmicElementProxy;
 
@@ -109,7 +136,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -122,20 +149,20 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
         path: "collapse",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.collapse,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.collapse
       },
       {
         path: "view",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.view,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.view
       },
       {
         path: "checkbox.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -145,7 +172,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -165,7 +192,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
         sty.root,
         {
           [sty.rootcollapse]: hasVariant($state, "collapse", "collapse"),
-          [sty.rootview_status]: hasVariant($state, "view", "status"),
+          [sty.rootview_status]: hasVariant($state, "view", "status")
         }
       )}
     >
@@ -173,7 +200,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
         className={classNames("all", sty.freeBox__qQdPq, {
           [sty.freeBoxcollapse_view_status__qQdPqJe1PNVFkKr]:
             hasVariant($state, "view", "status") &&
-            hasVariant($state, "collapse", "collapse"),
+            hasVariant($state, "collapse", "collapse")
         })}
       />
 
@@ -186,14 +213,14 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
             $state,
             "view",
             "status"
-          ),
+          )
         })}
       >
         <div
           className={classNames("all", sty.freeBox__iatl5, {
             [sty.freeBoxcollapse_view_status__iatl5Je1PNVFkKr]:
               hasVariant($state, "view", "status") &&
-              hasVariant($state, "collapse", "collapse"),
+              hasVariant($state, "collapse", "collapse")
           })}
         >
           <div className={classNames("all", sty.freeBox__ybU34)}>
@@ -207,7 +234,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                     $state,
                     "view",
                     "status"
-                  ),
+                  )
                 })}
                 isChecked={
                   generateStateValueProp($state, ["checkbox", "isChecked"]) ??
@@ -217,7 +244,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                   ((...eventArgs) => {
                     generateStateOnChangeProp($state, [
                       "checkbox",
-                      "isChecked",
+                      "isChecked"
                     ])(eventArgs[0]);
                   }).apply(null, eventArgs);
 
@@ -238,7 +265,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                     $state,
                     "view",
                     "status"
-                  ),
+                  )
                 })}
                 role={"img"}
               />
@@ -254,7 +281,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
               $state,
               "view",
               "status"
-            ),
+            )
           })}
         >
           {(hasVariant($state, "view", "status") ? false : true) ? (
@@ -287,7 +314,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                     $state,
                     "view",
                     "status"
-                  ),
+                  )
                 })}
               >
                 {hasVariant($state, "collapse", "collapse") ? "Show" : "Remove"}
@@ -300,8 +327,8 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
         hasVariant($state, "view", "status")
           ? false
           : hasVariant($state, "collapse", "collapse")
-          ? false
-          : true
+            ? false
+            : true
       ) ? (
         <div
           className={classNames("all", sty.freeBox__jxYbj, {
@@ -314,7 +341,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
               $state,
               "view",
               "status"
-            ),
+            )
           })}
         >
           <div
@@ -323,7 +350,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                 $state,
                 "view",
                 "status"
-              ),
+              )
             })}
           >
             <div
@@ -358,7 +385,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                 $state,
                 "view",
                 "status"
-              ),
+              )
             })}
           >
             {renderPlasmicSlot({
@@ -379,7 +406,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                   />
                 </React.Fragment>
               ),
-              value: args.children,
+              value: args.children
             })}
           </div>
           <div
@@ -388,7 +415,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                 $state,
                 "view",
                 "status"
-              ),
+              )
             })}
           >
             <div className={classNames("all", sty.freeBox__gzP9)}>
@@ -447,8 +474,8 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
         hasVariant($state, "collapse", "collapse")
           ? false
           : hasVariant($state, "view", "status")
-          ? true
-          : false
+            ? true
+            : false
       ) ? (
         <WebhooksHistory
           data-plasmic-name={"history"}
@@ -457,7 +484,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
             [sty.historycollapse_view_status]:
               hasVariant($state, "view", "status") &&
               hasVariant($state, "collapse", "collapse"),
-            [sty.historyview_status]: hasVariant($state, "view", "status"),
+            [sty.historyview_status]: hasVariant($state, "view", "status")
           })}
           events={
             <React.Fragment>
@@ -473,7 +500,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                       $state,
                       "view",
                       "status"
-                    ),
+                    )
                   }
                 )}
                 method={"GET"}
@@ -489,7 +516,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                       $state,
                       "view",
                       "status"
-                    ),
+                    )
                   }
                 )}
                 status={"404"}
@@ -507,7 +534,7 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                       $state,
                       "view",
                       "status"
-                    ),
+                    )
                   }
                 )}
                 expanded={true}
@@ -544,7 +571,7 @@ const PlasmicDescendants = {
     "learnMoreLink",
     "viewHistoryButton",
     "addButton",
-    "history",
+    "history"
   ],
   checkbox: ["checkbox"],
   removeButton: ["removeButton"],
@@ -552,7 +579,7 @@ const PlasmicDescendants = {
   learnMoreLink: ["learnMoreLink"],
   viewHistoryButton: ["viewHistoryButton"],
   addButton: ["addButton"],
-  history: ["history"],
+  history: ["history"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -579,8 +606,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSubsectionWebhooks__VariantsArgs;
     args?: PlasmicSubsectionWebhooks__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicSubsectionWebhooks__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicSubsectionWebhooks__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicSubsectionWebhooks__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -605,7 +633,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicSubsectionWebhooks__ArgProps,
-          internalVariantPropNames: PlasmicSubsectionWebhooks__VariantProps,
+          internalVariantPropNames: PlasmicSubsectionWebhooks__VariantProps
         }),
       [props, nodeName]
     );
@@ -613,7 +641,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -639,7 +667,7 @@ export const PlasmicSubsectionWebhooks = Object.assign(
 
     // Metadata about props expected for PlasmicSubsectionWebhooks
     internalVariantProps: PlasmicSubsectionWebhooks__VariantProps,
-    internalArgProps: PlasmicSubsectionWebhooks__ArgProps,
+    internalArgProps: PlasmicSubsectionWebhooks__ArgProps
   }
 );
 

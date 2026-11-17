@@ -14,19 +14,48 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
-  PlasmicIcon as PlasmicIcon__,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  SingleChoiceArg,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -34,8 +63,8 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicGitJobStep.module.css"; // plasmic-import: JzpEJAQTjPX/css
 
-import CheckSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CheckSvg"; // plasmic-import: f0RrtBrXp/icon
 import ChevronRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronRightSvg"; // plasmic-import: HBGx-zeiX/icon
+import CheckSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CheckSvg"; // plasmic-import: f0RrtBrXp/icon
 import WarningTriangleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
 
 createPlasmicElementProxy;
@@ -90,7 +119,7 @@ function PlasmicGitJobStep__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -103,8 +132,8 @@ function PlasmicGitJobStep__RenderFunc(props: {
         path: "status",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.status,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.status
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -114,7 +143,7 @@ function PlasmicGitJobStep__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -136,7 +165,7 @@ function PlasmicGitJobStep__RenderFunc(props: {
         sty.root,
         {
           [sty.rootstatus_started]: hasVariant($state, "status", "started"),
-          [sty.rootstatus_unstarted]: hasVariant($state, "status", "unstarted"),
+          [sty.rootstatus_unstarted]: hasVariant($state, "status", "unstarted")
         }
       )}
     >
@@ -147,14 +176,14 @@ function PlasmicGitJobStep__RenderFunc(props: {
           hasVariant($state, "status", "finished")
             ? CheckSvgIcon
             : hasVariant($state, "status", "failed")
-            ? WarningTriangleSvgIcon
-            : ChevronRightSvgIcon
+              ? WarningTriangleSvgIcon
+              : ChevronRightSvgIcon
         }
         className={classNames("all", sty.svg, {
           [sty.svgstatus_failed]: hasVariant($state, "status", "failed"),
           [sty.svgstatus_finished]: hasVariant($state, "status", "finished"),
           [sty.svgstatus_started]: hasVariant($state, "status", "started"),
-          [sty.svgstatus_unstarted]: hasVariant($state, "status", "unstarted"),
+          [sty.svgstatus_unstarted]: hasVariant($state, "status", "unstarted")
         })}
         role={"img"}
       />
@@ -187,8 +216,8 @@ function PlasmicGitJobStep__RenderFunc(props: {
               $state,
               "status",
               "unstarted"
-            ),
-          }),
+            )
+          })
         })}
       </div>
     </li>
@@ -198,7 +227,7 @@ function PlasmicGitJobStep__RenderFunc(props: {
 const PlasmicDescendants = {
   root: ["root", "svg", "freeBox"],
   svg: ["svg"],
-  freeBox: ["freeBox"],
+  freeBox: ["freeBox"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -220,8 +249,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicGitJobStep__VariantsArgs;
     args?: PlasmicGitJobStep__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicGitJobStep__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicGitJobStep__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicGitJobStep__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -246,7 +276,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicGitJobStep__ArgProps,
-          internalVariantPropNames: PlasmicGitJobStep__VariantProps,
+          internalVariantPropNames: PlasmicGitJobStep__VariantProps
         }),
       [props, nodeName]
     );
@@ -254,7 +284,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -275,7 +305,7 @@ export const PlasmicGitJobStep = Object.assign(
 
     // Metadata about props expected for PlasmicGitJobStep
     internalVariantProps: PlasmicGitJobStep__VariantProps,
-    internalArgProps: PlasmicGitJobStep__ArgProps,
+    internalArgProps: PlasmicGitJobStep__ArgProps
   }
 );
 

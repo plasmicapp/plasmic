@@ -1241,7 +1241,7 @@ export function mkUuid<T extends string = string>(): T {
 }
 
 /** Alphabet: 123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ */
-const shortUuid58 = ShortUuid(constants.flickrBase58);
+export const shortUuid58 = ShortUuid(constants.flickrBase58);
 
 /** Generates a UUID with 122 bits of randomness, encoded into a 58-symbol alphabet. */
 export function mkShortUuid<T extends string = string>(): T {

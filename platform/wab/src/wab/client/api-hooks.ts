@@ -6,10 +6,10 @@ import { withoutNils } from "@/wab/shared/common";
 import { keyBy } from "lodash";
 import useSWR from "swr";
 
-export function useGetDomainsForProject(projectId: ProjectId) {
+export function useGetDomainsForProject(projectId: ProjectId, enabled = true) {
   const appCtx = useAppCtx();
   const response = useSWR(
-    apiKey(`getDomainsForProject`, projectId),
+    enabled ? apiKey(`getDomainsForProject`, projectId) : null,
     () =>
       appCtx.appConfig.enablePlasmicHosting
         ? appCtx.api.getDomainsForProject(projectId)

@@ -1,5 +1,6 @@
 import { reportError } from "@/wab/client/ErrorNotifications";
 import { tourSeenForProjectKey } from "@/wab/client/LocalStorageKey";
+import { useGetDomainsForProject } from "@/wab/client/api-hooks";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { topFrameTourSignals } from "@/wab/client/components/TopFrame/TopFrameChrome";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
@@ -23,7 +24,8 @@ import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { zIndex } from "@/wab/client/z-index";
 import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
 import { ProjectId } from "@/wab/shared/ApiSchema";
-import { mkShortId, spawn, waitUntil } from "@/wab/shared/common";
+import { spawn, waitUntil } from "@/wab/shared/common";
+import { DomainValidator } from "@/wab/shared/hosting";
 import * as Sentry from "@sentry/browser";
 import { notification } from "antd";
 import { observer } from "mobx-react";
@@ -556,12 +558,6 @@ export interface TopFrameTourState {
   stepIndex: number;
 }
 
-function generateCustomDomain(appCtx: AppCtx, tour: string) {
-  const uniqueId = mkShortId().toLowerCase();
-  const tourPrefix = "portfolio-";
-  return `${tourPrefix}${uniqueId}.${appCtx.appConfig.plasmicHostingSubdomainSuffix}`;
-}
-
 export function TopFrameTours(props: {
   appCtx: AppCtx;
   tourState: TopFrameTourState;
@@ -578,10 +574,13 @@ export function TopFrameTours(props: {
     currentStep?.target,
   );
 
-  const domain = React.useMemo(
-    () => generateCustomDomain(appCtx, tourState.tour),
-    [appCtx, tourState.tour],
+  const { data: domainsResult } = useGetDomainsForProject(
+    projectId,
+    tourState.run && !!currentTutorial,
   );
+  const domain = new DomainValidator(
+    appCtx.appConfig.plasmicHostingSubdomainSuffix,
+  ).extractSubdomain(domainsResult?.domains ?? []);
 
   function trackCurrentStepTourEvent(status: TourStepMeta["status"]) {
     trackTourEvent({
@@ -612,7 +611,6 @@ export function TopFrameTours(props: {
     appCtx,
     topFrameApi,
     projectId,
-    domain,
   };
 
   const advanceToNextStep = async () => {

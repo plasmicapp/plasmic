@@ -15,27 +15,54 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
   PlasmicImg as PlasmicImg__,
   PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
   generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Checkbox from "../../components/widgets/Checkbox"; // plasmic-import: W-rO7NZqPjZ/component
+import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import ExpandButton from "../../components/widgets/ExpandButton"; // plasmic-import: JJhv0MV9DH/component
-import GitJobStep from "../../components/widgets/GitJobStep"; // plasmic-import: JzpEJAQTjPX/component
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
+import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
+import Select__OptionGroup from "../../components/widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
+import GitJobStep from "../../components/widgets/GitJobStep"; // plasmic-import: JzpEJAQTjPX/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -43,12 +70,12 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicSubsectionPlasmicHosting.module.css"; // plasmic-import: aeDQsBfp-eA/css
 
-import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
-import OpenIcon from "../plasmic_kit/PlasmicIcon__Open"; // plasmic-import: 7D0GDLdF72udM/icon
-import TriangleBottomIcon from "../plasmic_kit/PlasmicIcon__TriangleBottom"; // plasmic-import: A8NQUZ7Lg1OHO/icon
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import TriangleBottomIcon from "../plasmic_kit/PlasmicIcon__TriangleBottom"; // plasmic-import: A8NQUZ7Lg1OHO/icon
 import GlobeSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GlobeSvg"; // plasmic-import: gcxY0Mwvj/icon
+import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
+import OpenIcon from "../plasmic_kit/PlasmicIcon__Open"; // plasmic-import: 7D0GDLdF72udM/icon
 import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 import image2DAmIiITwd from "./images/image2.svg"; // plasmic-import: dAMIiI_twd/picture
 
@@ -126,7 +153,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -139,26 +166,26 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
         path: "collapse",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.collapse,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.collapse
       },
       {
         path: "view",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.view,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.view
       },
       {
         path: "checkbox.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
       },
       {
         path: "pushAs.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -168,7 +195,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -197,7 +224,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
             $state,
             "view",
             "status"
-          ),
+          )
         })}
       >
         <div
@@ -206,7 +233,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
               $state,
               "collapse",
               "collapse"
-            ),
+            )
           })}
         >
           <div className={classNames("all", sty.freeBox__hq1LL)}>
@@ -252,7 +279,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                   src: image2DAmIiITwd,
                   fullWidth: 150,
                   fullHeight: 150,
-                  aspectRatio: 1,
+                  aspectRatio: 1
                 }}
               />
             ) : null}
@@ -263,7 +290,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                 $state,
                 "collapse",
                 "collapse"
-              ),
+              )
             })}
           >
             {"Publish to Plasmic Hosting"}
@@ -297,7 +324,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                   $state,
                   "collapse",
                   "collapse"
-                ),
+                )
               })}
             >
               {hasVariant($state, "collapse", "collapse") ? "Show" : "Remove"}
@@ -334,8 +361,8 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
         hasVariant($state, "view", "status")
           ? true
           : hasVariant($state, "collapse", "collapse")
-          ? false
-          : true
+            ? false
+            : true
       ) ? (
         <div
           className={classNames("all", sty.freeBox__xJMn, {
@@ -348,7 +375,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
               $state,
               "view",
               "status"
-            ),
+            )
           })}
         >
           <div
@@ -357,7 +384,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                 $state,
                 "view",
                 "status"
-              ),
+              )
             })}
           >
             <div className={classNames("all", "__wab_text", sty.text__wYnuA)}>
@@ -410,7 +437,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                   {renderPlasmicSlot({
                     defaultContents: "",
                     value: args.changesSummary,
-                    className: classNames(sty.slotTargetChangesSummary),
+                    className: classNames(sty.slotTargetChangesSummary)
                   })}
                 </div>
               ) : null}
@@ -449,7 +476,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                   $state,
                   "view",
                   "status"
-                ),
+                )
               })}
             >
               <div
@@ -458,7 +485,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                     $state,
                     "view",
                     "status"
-                  ),
+                  )
                 })}
               >
                 <GlobeSvgIcon
@@ -467,7 +494,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                       $state,
                       "view",
                       "setup"
-                    ),
+                    )
                   })}
                   role={"img"}
                 />
@@ -486,7 +513,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                         $state,
                         "collapse",
                         "collapse"
-                      ),
+                      )
                     }
                   )}
                   platform={"react"}
@@ -552,7 +579,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                     $state,
                     "view",
                     "setup"
-                  ),
+                  )
                 })}
                 endIcon={
                   <ChevronDownSvgIcon
@@ -648,7 +675,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                         ((...eventArgs) => {
                           generateStateOnChangeProp($state, [
                             "pushAs",
-                            "value",
+                            "value"
                           ])(eventArgs[0]);
                         }).apply(null, eventArgs);
 
@@ -663,7 +690,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                       type={"bordered"}
                       value={generateStateValueProp($state, [
                         "pushAs",
-                        "value",
+                        "value"
                       ])}
                     />
                   </div>
@@ -688,7 +715,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                           sty.title
                         )}
                         placeholder={"Title (optional)"}
-                        ref={(ref) => {
+                        ref={ref => {
                           $refs["title"] = ref;
                         }}
                         size={1}
@@ -716,7 +743,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                           sty.description
                         )}
                         placeholder={"Description (optional)"}
-                        ref={(ref) => {
+                        ref={ref => {
                           $refs["description"] = ref;
                         }}
                         rows={3}
@@ -737,7 +764,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
               $state,
               "view",
               "status"
-            ),
+            )
           })}
         >
           <ul
@@ -831,7 +858,7 @@ const PlasmicDescendants = {
     "title",
     "description",
     "steps",
-    "githubPagesDelayNotice",
+    "githubPagesDelayNotice"
   ],
   checkbox: ["checkbox"],
   img: ["img"],
@@ -850,7 +877,7 @@ const PlasmicDescendants = {
   title: ["title"],
   description: ["description"],
   steps: ["steps"],
-  githubPagesDelayNotice: ["githubPagesDelayNotice"],
+  githubPagesDelayNotice: ["githubPagesDelayNotice"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -888,8 +915,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSubsectionPlasmicHosting__VariantsArgs;
     args?: PlasmicSubsectionPlasmicHosting__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicSubsectionPlasmicHosting__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicSubsectionPlasmicHosting__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicSubsectionPlasmicHosting__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -915,7 +943,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicSubsectionPlasmicHosting__ArgProps,
           internalVariantPropNames:
-            PlasmicSubsectionPlasmicHosting__VariantProps,
+            PlasmicSubsectionPlasmicHosting__VariantProps
         }),
       [props, nodeName]
     );
@@ -923,7 +951,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -960,7 +988,7 @@ export const PlasmicSubsectionPlasmicHosting = Object.assign(
 
     // Metadata about props expected for PlasmicSubsectionPlasmicHosting
     internalVariantProps: PlasmicSubsectionPlasmicHosting__VariantProps,
-    internalArgProps: PlasmicSubsectionPlasmicHosting__ArgProps,
+    internalArgProps: PlasmicSubsectionPlasmicHosting__ArgProps
   }
 );
 

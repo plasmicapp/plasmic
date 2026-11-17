@@ -10,6 +10,7 @@ import {
   canUpgradeTeam,
   promptBilling,
 } from "@/wab/client/components/modals/PricingModal";
+import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { ImageUploader } from "@/wab/client/components/style-controls/ImageSelector";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
@@ -121,6 +122,7 @@ function PlasmicHostingSettings_(
     usePlasmicHostingSettings(projectId);
 
   const [saving, setSaving] = useState(false);
+  const [subdomainError, setSubdomainError] = useState<string>();
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState<any | null>(null);
 
@@ -132,6 +134,51 @@ function PlasmicHostingSettings_(
   const domainValidator = new DomainValidator(
     appConfig.plasmicHostingSubdomainSuffix,
   );
+
+  const suffix = appConfig.plasmicHostingSubdomainSuffix;
+  const savedSubdomain = domainValidator.extractSubdomain(
+    domainsResult?.domains ?? [],
+  );
+  const freeSubdomain = domainsResult?.freeSubdomain;
+  // Free projects cannot choose a name, only use the server-issued one.
+  const locked = !!domainsResult && !domainsResult.canChooseSubdomain;
+
+  async function saveSubdomain(subdomain: string | undefined) {
+    setSaving(true);
+    try {
+      const { status } = await api.setSubdomainForProject(subdomain, projectId);
+      setSubdomainError(
+        status === "DomainUpdated"
+          ? undefined
+          : status === "UpgradeRequired"
+            ? "Choosing your own subdomain requires a paid plan."
+            : status === "DomainUsedElsewhereInPlasmic"
+              ? locked
+                ? "This address is no longer available. Please try again."
+                : "This address is already taken. Please choose another."
+              : "Could not save this address. Please try again.",
+      );
+      await mutate(apiKey("getDomainsForProject", projectId));
+    } catch (err) {
+      setSubdomainError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const promptUpgrade =
+    projectTeam && canUpgradeTeam(appCtx, projectTeam)
+      ? async () => {
+          const { tiers } = await api.listCurrentFeatureTiers();
+          await promptBilling({
+            appCtx,
+            availableTiers: tiers,
+            title: "",
+            target: { team: projectTeam },
+          });
+          await mutate(apiKey("getDomainsForProject", projectId));
+        }
+      : undefined;
 
   const settings: HostingSettings = {
     subdomain:
@@ -158,7 +205,9 @@ function PlasmicHostingSettings_(
 
   const debouncedSubdomain = useDebounce(data.subdomain, 1500);
   const { data: domainStatus } = useSWR(
-    debouncedSubdomain ? ([`checkDomain`, debouncedSubdomain] as const) : null,
+    debouncedSubdomain && !locked
+      ? ([`checkDomain`, debouncedSubdomain] as const)
+      : null,
     async ([_key, subdomainToCheck]): Promise<
       CheckDomainResponse & { domain: string; subdomain: string }
     > => {
@@ -240,37 +289,72 @@ function PlasmicHostingSettings_(
       root={{ ref }}
       {...rest}
       subdomain={
-        domainStatus && !domainStatus.status.isValid
-          ? "error"
-          : saving
-            ? "loading"
+        saving
+          ? "loading"
+          : subdomainError || (domainStatus && !domainStatus.status.isValid)
+            ? "error"
             : undefined
       }
-      subdomainSuffix={"." + appConfig.plasmicHostingSubdomainSuffix}
+      subdomainSuffix={"." + suffix}
+      subdomainMode={
+        locked
+          ? savedSubdomain
+            ? "freeAssigned"
+            : "freeUnassigned"
+          : undefined
+      }
+      canUpgrade={!!promptUpgrade}
+      freeSubdomainDescription={{
+        children: `Get a free, automatically generated subdomain on ${suffix}.`,
+      }}
+      addFreeSubdomainButton={{
+        disabled: saving || !freeSubdomain,
+        onClick: spawnWrapper(async () => {
+          if (freeSubdomain) {
+            await saveSubdomain(freeSubdomain);
+          }
+        }),
+      }}
+      freeSubdomainLink={{
+        children: savedSubdomain,
+        href: `https://${savedSubdomain}`,
+      }}
+      removeSubdomainButton={{
+        disabled: saving,
+        onClick: spawnWrapper(async () => {
+          if (
+            savedSubdomain === freeSubdomain ||
+            (await reactConfirm({
+              title: `Remove ${savedSubdomain}?`,
+              message:
+                "Choosing your own name requires a paid plan, so you cannot add this address again.",
+              confirmLabel: "Remove",
+            }))
+          ) {
+            await saveSubdomain(undefined);
+          }
+        }),
+      }}
+      freeSubdomainErrorFeedback={{ children: subdomainError }}
       subdomainForm={{
         onSubmit: spawnWrapper(async (e) => {
           e.preventDefault();
-          setSaving(true);
-          const subdomain = data.subdomain
-            ? data.subdomain.toLowerCase()
-            : undefined;
-          try {
-            await api.setSubdomainForProject(
-              subdomain
-                ? `${subdomain}.${appConfig.plasmicHostingSubdomainSuffix}`
-                : undefined,
-              projectId,
-            );
-            await mutate(apiKey("getDomainsForProject", projectId));
-          } finally {
-            setSaving(false);
+          if (saving || !domainsResult || locked) {
+            return;
           }
+          await saveSubdomain(
+            data.subdomain
+              ? `${data.subdomain.toLowerCase()}.${suffix}`
+              : undefined,
+          );
         }),
       }}
       subdomainInput={{
         value: data.subdomain,
+        disabled: !domainsResult,
         onChange: (e) => {
           const subdomain = e.target.value;
+          setSubdomainError(undefined);
           setData((data_) => ({
             ...data_,
             subdomain: subdomain,
@@ -279,15 +363,18 @@ function PlasmicHostingSettings_(
       }}
       saveSubdomainButton={{
         htmlType: "submit",
-        // checked domain must be different from the saved one
         disabled:
-          !domainStatus || // domain must be checked
-          !domainStatus.status.isValid || // checked domain must be valid
-          domainStatus.subdomain !== data.subdomain || // checked domain must be the same as the one in the input
+          saving ||
+          !domainsResult ||
+          !domainStatus ||
+          !domainStatus.status.isValid ||
+          domainStatus.subdomain !== data.subdomain ||
           data.subdomain === settings.subdomain,
       }}
       subdomainErrorFeedback={{
-        children: domainStatus ? (
+        children: subdomainError ? (
+          <>{subdomainError}</>
+        ) : domainStatus ? (
           <>
             <strong>{domainStatus.domain}</strong> is not available. Please
             choose another subdomain.
@@ -411,29 +498,9 @@ function PlasmicHostingSettings_(
         isDisabled: isTeamOnFreeTierOrTrial,
       }}
       paidFeaturesInfoText={
-        !isTeamOnFreeTierOrTrial
-          ? {
-              render: () => null,
-            }
-          : null
+        isTeamOnFreeTierOrTrial ? undefined : { render: () => null }
       }
-      upgradeNowLink={
-        projectTeam && canUpgradeTeam(appCtx, projectTeam)
-          ? {
-              onClick: async () => {
-                const { tiers } = await appCtx.api.listCurrentFeatureTiers();
-                await promptBilling({
-                  appCtx,
-                  availableTiers: tiers,
-                  title: "",
-                  target: { team: projectTeam },
-                });
-              },
-            }
-          : {
-              render: () => null,
-            }
-      }
+      upgradeNowLink={{ onClick: promptUpgrade }}
       faviconControlContainer={
         <div className="flex flex-vcenter gap-lg">
           {hostingSettings?.favicon && (

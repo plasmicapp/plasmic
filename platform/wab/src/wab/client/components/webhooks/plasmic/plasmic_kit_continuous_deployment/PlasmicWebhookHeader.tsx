@@ -15,18 +15,49 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import { _useStyleTokens } from "../../../../plasmic/plasmic_kit_continuous_deployment/PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 import IconButton from "../../../widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useGlobalVariants } from "../../../../plasmic/plasmic_kit_continuous_deployment/plasmic"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectModule
+import { _useStyleTokens } from "../../../../plasmic/plasmic_kit_continuous_deployment/PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -34,8 +65,8 @@ import "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit
 import sty from "./PlasmicWebhookHeader.module.css"; // plasmic-import: OkB-fXuJPc/css
 
 import PlusIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
-import TrashIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
 import ChevronDownSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import TrashIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
 
 createPlasmicElementProxy;
 
@@ -95,7 +126,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -108,14 +139,14 @@ function PlasmicWebhookHeader__RenderFunc(props: {
         path: "showAdd",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.showAdd,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.showAdd
       },
       {
         path: "hideDelete",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hideDelete,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hideDelete
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -125,7 +156,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -147,7 +178,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
           [sty.roothideDelete]: hasVariant($state, "hideDelete", "hideDelete"),
           [sty.rootshowAdd_hideDelete]:
             hasVariant($state, "hideDelete", "hideDelete") &&
-            hasVariant($state, "showAdd", "showAdd"),
+            hasVariant($state, "showAdd", "showAdd")
         }
       )}
     >
@@ -164,7 +195,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
           data-plasmic-override={overrides.keyInput}
           className={classNames("all", "input", "input__fpbcK", sty.keyInput)}
           placeholder={"Enter key…"}
-          ref={(ref) => {
+          ref={ref => {
             $refs["keyInput"] = ref;
           }}
           size={1}
@@ -177,7 +208,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
           data-plasmic-override={overrides.valueInput}
           className={classNames("all", "input", "input__fpbcK", sty.valueInput)}
           placeholder={"Enter value…"}
-          ref={(ref) => {
+          ref={ref => {
             $refs["valueInput"] = ref;
           }}
           size={1}
@@ -199,7 +230,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
           ),
           [sty.freeBoxshowAdd_hideDelete__pVez5RbWrKOQpov]:
             hasVariant($state, "hideDelete", "hideDelete") &&
-            hasVariant($state, "showAdd", "showAdd"),
+            hasVariant($state, "showAdd", "showAdd")
         })}
       >
         {(hasVariant($state, "showAdd", "showAdd") ? true : false) ? (
@@ -213,7 +244,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
               />
             }
             className={classNames("__wab_instance", sty.addButton, {
-              [sty.addButtonshowAdd]: hasVariant($state, "showAdd", "showAdd"),
+              [sty.addButtonshowAdd]: hasVariant($state, "showAdd", "showAdd")
             })}
             size={"vertical"}
           >
@@ -241,7 +272,7 @@ function PlasmicWebhookHeader__RenderFunc(props: {
               ),
               [sty.deleteButtonshowAdd_hideDelete]:
                 hasVariant($state, "hideDelete", "hideDelete") &&
-                hasVariant($state, "showAdd", "showAdd"),
+                hasVariant($state, "showAdd", "showAdd")
             })}
             size={"vertical"}
           >
@@ -262,7 +293,7 @@ const PlasmicDescendants = {
   keyInput: ["keyInput"],
   valueInput: ["valueInput"],
   addButton: ["addButton"],
-  deleteButton: ["deleteButton"],
+  deleteButton: ["deleteButton"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -287,8 +318,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicWebhookHeader__VariantsArgs;
     args?: PlasmicWebhookHeader__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicWebhookHeader__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicWebhookHeader__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicWebhookHeader__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -313,7 +345,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicWebhookHeader__ArgProps,
-          internalVariantPropNames: PlasmicWebhookHeader__VariantProps,
+          internalVariantPropNames: PlasmicWebhookHeader__VariantProps
         }),
       [props, nodeName]
     );
@@ -321,7 +353,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -345,7 +377,7 @@ export const PlasmicWebhookHeader = Object.assign(
 
     // Metadata about props expected for PlasmicWebhookHeader
     internalVariantProps: PlasmicWebhookHeader__VariantProps,
-    internalArgProps: PlasmicWebhookHeader__ArgProps,
+    internalArgProps: PlasmicWebhookHeader__ArgProps
   }
 );
 

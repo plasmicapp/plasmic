@@ -14,18 +14,48 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
-  SingleBooleanChoiceArg,
-  StrictProps,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -88,7 +118,7 @@ function PlasmicErrorFeedback__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -101,8 +131,8 @@ function PlasmicErrorFeedback__RenderFunc(props: {
         path: "warning",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.warning,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.warning
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -112,7 +142,7 @@ function PlasmicErrorFeedback__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -137,7 +167,7 @@ function PlasmicErrorFeedback__RenderFunc(props: {
         data-plasmic-name={"svg"}
         data-plasmic-override={overrides.svg}
         className={classNames("all", sty.svg, {
-          [sty.svgwarning]: hasVariant($state, "warning", "warning"),
+          [sty.svgwarning]: hasVariant($state, "warning", "warning")
         })}
         role={"img"}
       />
@@ -154,8 +184,8 @@ function PlasmicErrorFeedback__RenderFunc(props: {
             $state,
             "warning",
             "warning"
-          ),
-        }),
+          )
+        })
       })}
     </div>
   ) as React.ReactElement | null;
@@ -163,7 +193,7 @@ function PlasmicErrorFeedback__RenderFunc(props: {
 
 const PlasmicDescendants = {
   root: ["root", "svg"],
-  svg: ["svg"],
+  svg: ["svg"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -184,8 +214,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicErrorFeedback__VariantsArgs;
     args?: PlasmicErrorFeedback__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicErrorFeedback__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicErrorFeedback__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicErrorFeedback__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -210,7 +241,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicErrorFeedback__ArgProps,
-          internalVariantPropNames: PlasmicErrorFeedback__VariantProps,
+          internalVariantPropNames: PlasmicErrorFeedback__VariantProps
         }),
       [props, nodeName]
     );
@@ -218,7 +249,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -238,7 +269,7 @@ export const PlasmicErrorFeedback = Object.assign(
 
     // Metadata about props expected for PlasmicErrorFeedback
     internalVariantProps: PlasmicErrorFeedback__VariantProps,
-    internalArgProps: PlasmicErrorFeedback__ArgProps,
+    internalArgProps: PlasmicErrorFeedback__ArgProps
   }
 );
 

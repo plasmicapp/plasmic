@@ -15,29 +15,57 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
   PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import { _useStyleTokens } from "../../../../plasmic/plasmic_kit_continuous_deployment/PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 import IconButton from "../../../widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useGlobalVariants } from "../../../../plasmic/plasmic_kit_continuous_deployment/plasmic"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectModule
+import { _useStyleTokens } from "../../../../plasmic/plasmic_kit_continuous_deployment/PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicWebhookEvent.module.css"; // plasmic-import: MtBpr4iNob/css
 
-import ChevronDownSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import ChevronLeftSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronLeftSvg"; // plasmic-import: 0-_N6JM-u/icon
+import ChevronDownSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -111,7 +139,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -124,14 +152,14 @@ function PlasmicWebhookEvent__RenderFunc(props: {
         path: "state",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.state,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.state
       },
       {
         path: "expanded",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.expanded,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.expanded
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -141,7 +169,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -161,7 +189,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
         sty.root,
         {
           [sty.rootexpanded]: hasVariant($state, "expanded", "expanded"),
-          [sty.rootstate_failed]: hasVariant($state, "state", "failed"),
+          [sty.rootstate_failed]: hasVariant($state, "state", "failed")
         }
       )}
     >
@@ -176,7 +204,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
             $state,
             "state",
             "failed"
-          ),
+          )
         })}
       >
         <div
@@ -185,7 +213,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
               $state,
               "state",
               "loading"
-            ),
+            )
           })}
         >
           <div
@@ -194,7 +222,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
                 $state,
                 "state",
                 "loading"
-              ),
+              )
             })}
           >
             <div
@@ -210,7 +238,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
                   $state,
                   "state",
                   "loading"
-                ),
+                )
               })}
             />
 
@@ -228,8 +256,8 @@ function PlasmicWebhookEvent__RenderFunc(props: {
                       $state,
                       "state",
                       "loading"
-                    ),
-                  }),
+                    )
+                  })
                 })
               : null}
           </div>
@@ -237,7 +265,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
             {renderPlasmicSlot({
               defaultContents: "POST",
               value: args.method,
-              className: classNames(sty.slotTargetMethod),
+              className: classNames(sty.slotTargetMethod)
             })}
           </div>
           <div className={classNames("all", sty.freeBox___5UJ68)}>
@@ -254,8 +282,8 @@ function PlasmicWebhookEvent__RenderFunc(props: {
                   $state,
                   "state",
                   "loading"
-                ),
-              }),
+                )
+              })
             })}
           </div>
         </div>
@@ -278,7 +306,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
               $state,
               "state",
               "loading"
-            ),
+            )
           })}
           disabled={hasVariant($state, "state", "loading") ? true : undefined}
           size={"small"}
@@ -305,7 +333,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
                 $state,
                 "state",
                 "loading"
-              ),
+              )
             })}
             role={"img"}
           />
@@ -318,7 +346,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
               $state,
               "expanded",
               "expanded"
-            ),
+            )
           })}
         >
           {renderPlasmicSlot({
@@ -329,8 +357,8 @@ function PlasmicWebhookEvent__RenderFunc(props: {
                 $state,
                 "expanded",
                 "expanded"
-              ),
-            }),
+              )
+            })
           })}
           {renderPlasmicSlot({
             defaultContents: "2020-01-14 22:11:34",
@@ -340,8 +368,8 @@ function PlasmicWebhookEvent__RenderFunc(props: {
                 $state,
                 "expanded",
                 "expanded"
-              ),
-            }),
+              )
+            })
           })}
         </div>
       ) : null}
@@ -352,7 +380,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
 const PlasmicDescendants = {
   root: ["root", "indicator", "viewButton"],
   indicator: ["indicator"],
-  viewButton: ["viewButton"],
+  viewButton: ["viewButton"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -374,8 +402,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicWebhookEvent__VariantsArgs;
     args?: PlasmicWebhookEvent__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicWebhookEvent__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicWebhookEvent__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicWebhookEvent__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -400,7 +429,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicWebhookEvent__ArgProps,
-          internalVariantPropNames: PlasmicWebhookEvent__VariantProps,
+          internalVariantPropNames: PlasmicWebhookEvent__VariantProps
         }),
       [props, nodeName]
     );
@@ -408,7 +437,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -429,7 +458,7 @@ export const PlasmicWebhookEvent = Object.assign(
 
     // Metadata about props expected for PlasmicWebhookEvent
     internalVariantProps: PlasmicWebhookEvent__VariantProps,
-    internalArgProps: PlasmicWebhookEvent__ArgProps,
+    internalArgProps: PlasmicWebhookEvent__ArgProps
   }
 );
 

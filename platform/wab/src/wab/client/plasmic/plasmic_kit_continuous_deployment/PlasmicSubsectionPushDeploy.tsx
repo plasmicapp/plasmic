@@ -15,27 +15,54 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
   PlasmicIcon as PlasmicIcon__,
   PlasmicImg as PlasmicImg__,
   PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
   generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Checkbox from "../../components/widgets/Checkbox"; // plasmic-import: W-rO7NZqPjZ/component
+import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import ExpandButton from "../../components/widgets/ExpandButton"; // plasmic-import: JJhv0MV9DH/component
-import GitJobStep from "../../components/widgets/GitJobStep"; // plasmic-import: JzpEJAQTjPX/component
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
+import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
+import Select__OptionGroup from "../../components/widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
+import GitJobStep from "../../components/widgets/GitJobStep"; // plasmic-import: JzpEJAQTjPX/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -44,14 +71,14 @@ import "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_pla
 import sty from "./PlasmicSubsectionPushDeploy.module.css"; // plasmic-import: 0HHLsxeAqF8/css
 
 import CheckCircleIcon from "../plasmic_kit/PlasmicIcon__CheckCircle"; // plasmic-import: gU-8UYs9RllyJ/icon
-import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
-import OpenIcon from "../plasmic_kit/PlasmicIcon__Open"; // plasmic-import: 7D0GDLdF72udM/icon
-import TriangleBottomIcon from "../plasmic_kit/PlasmicIcon__TriangleBottom"; // plasmic-import: A8NQUZ7Lg1OHO/icon
+import WarningTriangleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
-import WarningTriangleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
+import TriangleBottomIcon from "../plasmic_kit/PlasmicIcon__TriangleBottom"; // plasmic-import: A8NQUZ7Lg1OHO/icon
+import OpenIcon from "../plasmic_kit/PlasmicIcon__Open"; // plasmic-import: 7D0GDLdF72udM/icon
 import IconIcon from "./icons/PlasmicIcon__Icon"; // plasmic-import: vvFDLf-9Nl/icon
+import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
+import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 import image2DAmIiITwd from "./images/image2.svg"; // plasmic-import: dAMIiI_twd/picture
 
 createPlasmicElementProxy;
@@ -140,7 +167,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -153,51 +180,51 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
         path: "collapse",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.collapse,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.collapse
       },
       {
         path: "view",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.view,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.view
       },
       {
         path: "connection",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.connection,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.connection
       },
       {
         path: "collapseOptions",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.collapseOptions,
+          $props.collapseOptions
       },
       {
         path: "repoState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.repoState,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.repoState
       },
       {
         path: "result",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.result,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.result
       },
       {
         path: "checkbox.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
       },
       {
         path: "pushAs.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -207,7 +234,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -230,7 +257,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
           [sty.rootview_status]: hasVariant($state, "view", "status"),
           [sty.rootview_status_result_success]:
             hasVariant($state, "view", "status") &&
-            hasVariant($state, "result", "success"),
+            hasVariant($state, "result", "success")
         }
       )}
     >
@@ -256,7 +283,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
             hasVariant($state, "result", "publishing"),
           [sty.freeBoxview_status_result_success__lnWi5WsXz9YnSik]:
             hasVariant($state, "view", "status") &&
-            hasVariant($state, "result", "success"),
+            hasVariant($state, "result", "success")
         })}
       >
         <div
@@ -270,7 +297,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
               $state,
               "view",
               "status"
-            ),
+            )
           })}
         >
           <div
@@ -285,7 +312,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                 hasVariant($state, "result", "failure"),
               [sty.freeBoxview_status_result_success__hdOhBwsXz9YnSik]:
                 hasVariant($state, "view", "status") &&
-                hasVariant($state, "result", "success"),
+                hasVariant($state, "result", "success")
             })}
           >
             {(hasVariant($state, "view", "status") ? false : true) ? (
@@ -298,7 +325,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                     $state,
                     "view",
                     "status"
-                  ),
+                  )
                 })}
                 isChecked={
                   generateStateValueProp($state, ["checkbox", "isChecked"]) ??
@@ -308,7 +335,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   ((...eventArgs) => {
                     generateStateOnChangeProp($state, [
                       "checkbox",
-                      "isChecked",
+                      "isChecked"
                     ])(eventArgs[0]);
                   }).apply(null, eventArgs);
 
@@ -328,7 +355,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                 data-plasmic-override={overrides.img}
                 alt={""}
                 className={classNames(sty.img, {
-                  [sty.imgview_status]: hasVariant($state, "view", "status"),
+                  [sty.imgview_status]: hasVariant($state, "view", "status")
                 })}
                 displayHeight={"20px"}
                 displayMaxHeight={"none"}
@@ -340,7 +367,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   src: image2DAmIiITwd,
                   fullWidth: 150,
                   fullHeight: 150,
-                  aspectRatio: 1,
+                  aspectRatio: 1
                 }}
               />
             ) : null}
@@ -365,7 +392,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                 hasVariant($state, "result", "publishing"),
               [sty.textview_status_result_success__o4IEuwsXz9YnSik]:
                 hasVariant($state, "view", "status") &&
-                hasVariant($state, "result", "success"),
+                hasVariant($state, "result", "success")
             })}
           >
             {"Push to GitHub"}
@@ -375,9 +402,9 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
             hasVariant($state, "result", "failure")
               ? true
               : hasVariant($state, "view", "status") &&
-                hasVariant($state, "result", "success")
-              ? true
-              : false
+                  hasVariant($state, "result", "success")
+                ? true
+                : false
           ) ? (
             <PlasmicIcon__
               PlasmicIconType={
@@ -385,9 +412,9 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                 hasVariant($state, "result", "failure")
                   ? WarningTriangleSvgIcon
                   : hasVariant($state, "view", "status") &&
-                    hasVariant($state, "result", "success")
-                  ? CheckCircleIcon
-                  : "div"
+                      hasVariant($state, "result", "success")
+                    ? CheckCircleIcon
+                    : "div"
               }
               className={classNames("all", sty.svg___6DFCg, {
                 [sty.svgview_status_result_failure___6DFCgWsXz9XcibJ]:
@@ -395,7 +422,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   hasVariant($state, "result", "failure"),
                 [sty.svgview_status_result_success___6DFCgWsXz9YnSik]:
                   hasVariant($state, "view", "status") &&
-                  hasVariant($state, "result", "success"),
+                  hasVariant($state, "result", "success")
               })}
               role={"img"}
             />
@@ -407,7 +434,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
               $state,
               "view",
               "status"
-            ),
+            )
           })}
         >
           {(hasVariant($state, "view", "status") ? false : true) ? (
@@ -435,7 +462,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                     $state,
                     "collapse",
                     "collapse"
-                  ),
+                  )
                 })}
               >
                 {hasVariant($state, "collapse", "collapse") ? "Show" : "Remove"}
@@ -459,7 +486,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                 ),
                 [sty.viewGithubButtonview_status_result_success]:
                   hasVariant($state, "view", "status") &&
-                  hasVariant($state, "result", "success"),
+                  hasVariant($state, "result", "success")
               })}
               endIcon={
                 <PlasmicIcon__
@@ -476,7 +503,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                     ),
                     [sty.svgview_status_result_success___1OmkawsXz9YnSik]:
                       hasVariant($state, "view", "status") &&
-                      hasVariant($state, "result", "success"),
+                      hasVariant($state, "result", "success")
                   })}
                   role={"img"}
                 />
@@ -501,7 +528,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   ),
                   [sty.textview_status_result_success___9VjHyWsXz9YnSik]:
                     hasVariant($state, "view", "status") &&
-                    hasVariant($state, "result", "success"),
+                    hasVariant($state, "result", "success")
                 })}
               >
                 {hasVariant($state, "view", "status")
@@ -516,8 +543,8 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
         hasVariant($state, "view", "status")
           ? false
           : hasVariant($state, "collapse", "collapse")
-          ? false
-          : true
+            ? false
+            : true
       ) ? (
         <div
           className={classNames("all", sty.freeBox__juaWs, {
@@ -530,7 +557,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
               $state,
               "view",
               "status"
-            ),
+            )
           })}
         >
           <div
@@ -539,7 +566,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                 $state,
                 "view",
                 "setup"
-              ),
+              )
             })}
           >
             <div
@@ -548,7 +575,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   $state,
                   "connection",
                   "connected"
-                ),
+                )
               })}
             >
               {"Publish to a new or existing GitHub repo."}
@@ -578,7 +605,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                 $state,
                 "repoState",
                 "existingLoader"
-              ),
+              )
             })}
           >
             <div
@@ -602,7 +629,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   $state,
                   "result",
                   "success"
-                ),
+                )
               })}
             >
               <div
@@ -611,7 +638,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                     $state,
                     "connection",
                     "error"
-                  ),
+                  )
                 })}
               >
                 <PlasmicIcon__
@@ -630,7 +657,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                       $state,
                       "connection",
                       "error"
-                    ),
+                    )
                   })}
                   role={"img"}
                 />
@@ -669,7 +696,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                         $state,
                         "repoState",
                         "newRepo"
-                      ),
+                      )
                     }
                   )}
                   platform={"react"}
@@ -677,10 +704,10 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   {hasVariant($state, "connection", "error")
                     ? "Error loading repository information."
                     : hasVariant($state, "connection", "connected")
-                    ? "<repository name>"
-                    : hasVariant($state, "connection", "loading")
-                    ? "Loading..."
-                    : "Not connected"}
+                      ? "<repository name>"
+                      : hasVariant($state, "connection", "loading")
+                        ? "Loading..."
+                        : "Not connected"}
                 </PlasmicLink__>
               </div>
               {(hasVariant($state, "connection", "error") ? true : false) ? (
@@ -692,7 +719,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                       $state,
                       "connection",
                       "error"
-                    ),
+                    )
                   })}
                   endIcon={
                     <ChevronDownSvgIcon
@@ -729,7 +756,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                         $state,
                         "connection",
                         "connected"
-                      ),
+                      )
                     }
                   )}
                   endIcon={
@@ -754,10 +781,10 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                 hasVariant($state, "connection", "error")
                   ? false
                   : hasVariant($state, "connection", "connected")
-                  ? false
-                  : hasVariant($state, "connection", "loading")
-                  ? false
-                  : true
+                    ? false
+                    : hasVariant($state, "connection", "loading")
+                      ? false
+                      : true
               ) ? (
                 <Button
                   data-plasmic-name={"connectGithubButton"}
@@ -780,7 +807,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                         $state,
                         "connection",
                         "loading"
-                      ),
+                      )
                     }
                   )}
                   endIcon={
@@ -813,7 +840,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                           $state,
                           "connection",
                           "loading"
-                        ),
+                        )
                       }
                     )}
                   >
@@ -827,10 +854,10 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
               hasVariant($state, "repoState", "existingLoader")
                 ? true
                 : hasVariant($state, "repoState", "existingLoader")
-                ? false
-                : hasVariant($state, "connection", "connected")
-                ? true
-                : false
+                  ? false
+                  : hasVariant($state, "connection", "connected")
+                    ? true
+                    : false
             ) ? (
               <div
                 className={classNames("all", sty.freeBox__cDl4U, {
@@ -846,7 +873,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   ),
                   [sty.freeBoxrepoState_existingLoader_connection_connected__cDl4UBuuMbX7Cr]:
                     hasVariant($state, "connection", "connected") &&
-                    hasVariant($state, "repoState", "existingLoader"),
+                    hasVariant($state, "repoState", "existingLoader")
                 })}
               >
                 {(
@@ -865,7 +892,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                         hasVariant($state, "repoState", "existingLoader"),
                       [sty.freeBoxrepoState_existingLoader_connection_connected__vcnnMBuuMbX7Cr]:
                         hasVariant($state, "repoState", "existingLoader") &&
-                        hasVariant($state, "connection", "connected"),
+                        hasVariant($state, "connection", "connected")
                     })}
                   >
                     <div
@@ -875,7 +902,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                         sty.text__qOcy,
                         {
                           [sty.textrepoState_existingLoader__qOcyBuuMb]:
-                            hasVariant($state, "repoState", "existingLoader"),
+                            hasVariant($state, "repoState", "existingLoader")
                         }
                       )}
                     >
@@ -892,7 +919,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                             hasVariant($state, "repoState", "existingLoader"),
                           [sty.freeBoxrepoState_newRepo_connection_connected___5W1XOimcQtX7Cr]:
                             hasVariant($state, "repoState", "newRepo") &&
-                            hasVariant($state, "connection", "connected"),
+                            hasVariant($state, "connection", "connected")
                         })}
                       >
                         <Button
@@ -923,7 +950,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                                     $state,
                                     "collapseOptions",
                                     "collapseOptions"
-                                  ),
+                                  )
                               }
                             )}
                           >
@@ -956,7 +983,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                                   $state,
                                   "repoState",
                                   "existingLoader"
-                                ),
+                                )
                             }
                           )}
                           isExpanded={
@@ -979,7 +1006,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                       hasVariant($state, "repoState", "existingLoader"),
                     [sty.freeBoxrepoState_existingLoader_connection_connected___3TCBuuMbX7Cr]:
                       hasVariant($state, "connection", "connected") &&
-                      hasVariant($state, "repoState", "existingLoader"),
+                      hasVariant($state, "repoState", "existingLoader")
                   })}
                 >
                   {(
@@ -1001,7 +1028,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                           $state,
                           "repoState",
                           "newRepo"
-                        ),
+                        )
                       })}
                     >
                       <div
@@ -1012,7 +1039,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                           {
                             [sty.textrepoState_existingLoader_connection_connected__vbjsrBuuMbX7Cr]:
                               hasVariant($state, "connection", "connected") &&
-                              hasVariant($state, "repoState", "existingLoader"),
+                              hasVariant($state, "repoState", "existingLoader")
                           }
                         )}
                       >
@@ -1032,7 +1059,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                           ((...eventArgs) => {
                             generateStateOnChangeProp($state, [
                               "pushAs",
-                              "value",
+                              "value"
                             ])(eventArgs[0]);
                           }).apply(null, eventArgs);
 
@@ -1047,7 +1074,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                         type={"bordered"}
                         value={generateStateValueProp($state, [
                           "pushAs",
-                          "value",
+                          "value"
                         ])}
                       />
                     </div>
@@ -1056,8 +1083,8 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                     hasVariant($state, "repoState", "existingLoader")
                       ? false
                       : hasVariant($state, "collapseOptions", "collapseOptions")
-                      ? false
-                      : true
+                        ? false
+                        : true
                   ) ? (
                     <div
                       className={classNames("all", sty.freeBox__nrItu, {
@@ -1077,7 +1104,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                           $state,
                           "repoState",
                           "newRepo"
-                        ),
+                        )
                       })}
                     >
                       <div
@@ -1095,7 +1122,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                             hasVariant($state, "repoState", "newRepo"),
                           [sty.freeBoxrepoState_newRepo_connection_connected__vUo8ZimcQtX7Cr]:
                             hasVariant($state, "connection", "connected") &&
-                            hasVariant($state, "repoState", "newRepo"),
+                            hasVariant($state, "repoState", "newRepo")
                         })}
                       >
                         <div
@@ -1120,11 +1147,11 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                                 $state,
                                 "connection",
                                 "connected"
-                              ),
+                              )
                             }
                           )}
                           placeholder={"Title (optional)"}
-                          ref={(ref) => {
+                          ref={ref => {
                             $refs["title"] = ref;
                           }}
                           size={1}
@@ -1152,7 +1179,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                             sty.description
                           )}
                           placeholder={"Description (optional)"}
-                          ref={(ref) => {
+                          ref={ref => {
                             $refs["description"] = ref;
                           }}
                           rows={3}
@@ -1180,14 +1207,14 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
               hasVariant($state, "result", "failure"),
             [sty.freeBoxview_status_result_success__s2NHxWsXz9YnSik]:
               hasVariant($state, "view", "status") &&
-              hasVariant($state, "result", "success"),
+              hasVariant($state, "result", "success")
           })}
         >
           <ul
             data-plasmic-name={"steps"}
             data-plasmic-override={overrides.steps}
             className={classNames("all", "ul", "ul__fpbcK", sty.steps, {
-              [sty.stepsview_status]: hasVariant($state, "view", "status"),
+              [sty.stepsview_status]: hasVariant($state, "view", "status")
             })}
           >
             <GitJobStep
@@ -1199,7 +1226,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                 ),
                 [sty.gitJobStepview_status_result_success__iFbAmwsXz9YnSik]:
                   hasVariant($state, "view", "status") &&
-                  hasVariant($state, "result", "success"),
+                  hasVariant($state, "result", "success")
               })}
               status={"finished"}
             >
@@ -1217,7 +1244,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   $state,
                   "view",
                   "status"
-                ),
+                )
               })}
               status={"finished"}
             >
@@ -1229,7 +1256,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   $state,
                   "view",
                   "status"
-                ),
+                )
               })}
               status={"started"}
             >
@@ -1258,7 +1285,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   $state,
                   "view",
                   "status"
-                ),
+                )
               })}
             >
               {"Make pull request"}
@@ -1287,7 +1314,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
               ),
               [sty.githubPagesDelayNoticeview_status_result_success]:
                 hasVariant($state, "view", "status") &&
-                hasVariant($state, "result", "success"),
+                hasVariant($state, "result", "success")
             }
           )}
         >
@@ -1319,7 +1346,7 @@ const PlasmicDescendants = {
     "title",
     "description",
     "steps",
-    "githubPagesDelayNotice",
+    "githubPagesDelayNotice"
   ],
   checkbox: ["checkbox"],
   img: ["img"],
@@ -1336,7 +1363,7 @@ const PlasmicDescendants = {
   title: ["title"],
   description: ["description"],
   steps: ["steps"],
-  githubPagesDelayNotice: ["githubPagesDelayNotice"],
+  githubPagesDelayNotice: ["githubPagesDelayNotice"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -1372,8 +1399,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSubsectionPushDeploy__VariantsArgs;
     args?: PlasmicSubsectionPushDeploy__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicSubsectionPushDeploy__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicSubsectionPushDeploy__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicSubsectionPushDeploy__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -1398,7 +1426,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicSubsectionPushDeploy__ArgProps,
-          internalVariantPropNames: PlasmicSubsectionPushDeploy__VariantProps,
+          internalVariantPropNames: PlasmicSubsectionPushDeploy__VariantProps
         }),
       [props, nodeName]
     );
@@ -1406,7 +1434,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -1441,7 +1469,7 @@ export const PlasmicSubsectionPushDeploy = Object.assign(
 
     // Metadata about props expected for PlasmicSubsectionPushDeploy
     internalVariantProps: PlasmicSubsectionPushDeploy__VariantProps,
-    internalArgProps: PlasmicSubsectionPushDeploy__ArgProps,
+    internalArgProps: PlasmicSubsectionPushDeploy__ArgProps
   }
 );
 

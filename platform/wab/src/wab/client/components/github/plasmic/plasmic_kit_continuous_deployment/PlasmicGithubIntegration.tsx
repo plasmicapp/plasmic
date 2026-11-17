@@ -16,37 +16,65 @@ import * as React from "react";
 import {
   Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
   PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
   generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import { _useStyleTokens } from "../../../../plasmic/plasmic_kit_continuous_deployment/PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 import Button from "../../../widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Select from "../../../widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
+import Select__Option from "../../../widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
+import Select__OptionGroup from "../../../widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
 import Switch from "../../../widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
 import ErrorFeedback from "../../ErrorFeedback"; // plasmic-import: 6ztKJ9-EG9Y/component
+import { _useGlobalVariants } from "../../../../plasmic/plasmic_kit_continuous_deployment/plasmic"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectModule
+import { _useStyleTokens } from "../../../../plasmic/plasmic_kit_continuous_deployment/PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicGithubIntegration.module.css"; // plasmic-import: FuvSZfvXL5/css
 
-import InfoIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
-import OpenIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Open"; // plasmic-import: 7D0GDLdF72udM/icon
 import ArrowRightSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ArrowUpRightSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowUpRightSvg"; // plasmic-import: N_BtK6grX/icon
 import ChevronDownSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import PlusSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import ArrowUpRightSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowUpRightSvg"; // plasmic-import: N_BtK6grX/icon
+import OpenIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Open"; // plasmic-import: 7D0GDLdF72udM/icon
+import InfoIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
 
 createPlasmicElementProxy;
 
@@ -186,7 +214,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -199,87 +227,87 @@ function PlasmicGithubIntegration__RenderFunc(props: {
         path: "view",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.view,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.view
       },
       {
         path: "errors",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.errors,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.errors
       },
       {
         path: "loading",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.loading,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.loading
       },
       {
         path: "hide",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hide,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hide
       },
       {
         path: "isPublishingSite",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.isPublishingSite,
+          $props.isPublishingSite
       },
       {
         path: "hideGithubPages",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.hideGithubPages,
+          $props.hideGithubPages
       },
       {
         path: "org.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
       },
       {
         path: "privateRepo.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
       },
       {
         path: "repository.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
       },
       {
         path: "branch.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
       },
       {
         path: "framework.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
       },
       {
         path: "language.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
       },
       {
         path: "mode.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
       },
       {
         path: "action.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
       },
       {
         path: "publishSite.isChecked",
@@ -288,8 +316,8 @@ function PlasmicGithubIntegration__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           hasVariant($state, "isPublishingSite", "isPublishingSite")
             ? "isChecked"
-            : undefined,
-      },
+            : undefined
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -299,7 +327,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -328,7 +356,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
             $state,
             "view",
             "existingRepo"
-          ),
+          )
         }
       )}
     >
@@ -366,7 +394,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
             $state,
             "view",
             "existingRepo"
-          ),
+          )
         })}
       >
         <div
@@ -375,7 +403,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               $state,
               "view",
               "existingRepo"
-            ),
+            )
           })}
         >
           <Button
@@ -391,7 +419,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 $state,
                 "view",
                 "existingRepo"
-              ),
+              )
             })}
             endIcon={
               <ChevronDownSvgIcon
@@ -427,7 +455,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 $state,
                 "view",
                 "existingRepo"
-              ),
+              )
             })}
             endIcon={
               <ChevronDownSvgIcon
@@ -452,7 +480,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   $state,
                   "view",
                   "existingRepo"
-                ),
+                )
               })}
             >
               {"Existing repo"}
@@ -475,7 +503,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 $state,
                 "view",
                 "existingRepo"
-              ),
+              )
             })}
           >
             <div
@@ -486,7 +514,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   $state,
                   "loading",
                   "githubData"
-                ),
+                )
               })}
             >
               <div
@@ -505,7 +533,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     $state,
                     "view",
                     "existingRepo"
-                  ),
+                  )
                 })}
               >
                 {"Organization"}
@@ -551,7 +579,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   $state,
                   "view",
                   "existingRepo"
-                ),
+                )
               })}
             >
               <div
@@ -560,7 +588,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     $state,
                     "view",
                     "existingRepo"
-                  ),
+                  )
                 })}
               />
 
@@ -575,7 +603,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     $state,
                     "view",
                     "existingRepo"
-                  ),
+                  )
                 })}
               >
                 <div
@@ -584,7 +612,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                       $state,
                       "view",
                       "existingRepo"
-                    ),
+                    )
                   })}
                 >
                   {"Missing user/org?"}
@@ -597,7 +625,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                       $state,
                       "hide",
                       "action"
-                    ),
+                    )
                   })}
                   endIcon={
                     <ArrowUpRightSvgIcon
@@ -624,7 +652,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                           $state,
                           "view",
                           "existingRepo"
-                        ),
+                        )
                       }
                     )}
                   >
@@ -642,7 +670,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   $state,
                   "view",
                   "existingRepo"
-                ),
+                )
               })}
             >
               <div
@@ -651,7 +679,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     $state,
                     "errors",
                     "name"
-                  ),
+                  )
                 })}
               >
                 {"Name"}
@@ -670,11 +698,11 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                       $state,
                       "loading",
                       "githubData"
-                    ),
+                    )
                   }
                 )}
                 placeholder={"Enter name…"}
-                ref={(ref) => {
+                ref={ref => {
                   $refs["name"] = ref;
                 }}
                 size={1}
@@ -689,7 +717,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     $state,
                     "errors",
                     "name"
-                  ),
+                  )
                 })}
               >
                 {(hasVariant($state, "errors", "name") ? true : false) ? (
@@ -699,7 +727,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                         $state,
                         "errors",
                         "name"
-                      ),
+                      )
                     })}
                   />
                 ) : null}
@@ -720,7 +748,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                       ),
                       [sty.nameErrorview_existingRepo_errors_name]:
                         hasVariant($state, "view", "existingRepo") &&
-                        hasVariant($state, "errors", "name"),
+                        hasVariant($state, "errors", "name")
                     })}
                   >
                     <div
@@ -733,7 +761,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                             $state,
                             "errors",
                             "name"
-                          ),
+                          )
                         }
                       )}
                     >
@@ -758,7 +786,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   $state,
                   "view",
                   "existingRepo"
-                ),
+                )
               })}
             >
               <div
@@ -767,7 +795,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     $state,
                     "isPublishingSite",
                     "isPublishingSite"
-                  ),
+                  )
                 })}
               >
                 {"Private?"}
@@ -778,7 +806,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     $state,
                     "isPublishingSite",
                     "isPublishingSite"
-                  ),
+                  )
                 })}
               >
                 <Switch
@@ -789,14 +817,14 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   isChecked={
                     generateStateValueProp($state, [
                       "privateRepo",
-                      "isChecked",
+                      "isChecked"
                     ]) ?? false
                   }
                   onChange={async (...eventArgs: any) => {
                     ((...eventArgs) => {
                       generateStateOnChangeProp($state, [
                         "privateRepo",
-                        "isChecked",
+                        "isChecked"
                       ])(eventArgs[0]);
                     }).apply(null, eventArgs);
 
@@ -818,7 +846,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     $state,
                     "errors",
                     "name"
-                  ),
+                  )
                 })}
               />
             ) : null}
@@ -833,7 +861,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 $state,
                 "view",
                 "existingRepo"
-              ),
+              )
             })}
           >
             <div
@@ -844,7 +872,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   $state,
                   "view",
                   "existingRepo"
-                ),
+                )
               })}
             >
               <div
@@ -853,7 +881,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     $state,
                     "view",
                     "existingRepo"
-                  ),
+                  )
                 })}
               >
                 {"Repository"}
@@ -892,7 +920,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   $state,
                   "view",
                   "existingRepo"
-                ),
+                )
               })}
             >
               {(hasVariant($state, "view", "existingRepo") ? true : false) ? (
@@ -902,7 +930,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                       $state,
                       "view",
                       "existingRepo"
-                    ),
+                    )
                   })}
                 />
               ) : null}
@@ -912,7 +940,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     $state,
                     "view",
                     "existingRepo"
-                  ),
+                  )
                 })}
               >
                 <div
@@ -921,7 +949,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                       $state,
                       "view",
                       "existingRepo"
-                    ),
+                    )
                   })}
                 >
                   {"Missing repository?"}
@@ -955,7 +983,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                           $state,
                           "view",
                           "existingRepo"
-                        ),
+                        )
                       }
                     )}
                   >
@@ -972,7 +1000,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   $state,
                   "view",
                   "existingRepo"
-                ),
+                )
               })}
             >
               <div
@@ -981,7 +1009,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     $state,
                     "view",
                     "existingRepo"
-                  ),
+                  )
                 })}
               >
                 {"Branch"}
@@ -1027,7 +1055,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   $state,
                   "view",
                   "existingRepo"
-                ),
+                )
               })}
             >
               <div
@@ -1036,7 +1064,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     $state,
                     "view",
                     "existingRepo"
-                  ),
+                  )
                 })}
               >
                 {"Directory"}
@@ -1059,11 +1087,11 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                       $state,
                       "view",
                       "existingRepo"
-                    ),
+                    )
                   }
                 )}
                 placeholder={"Enter directory if not repository root..."}
-                ref={(ref) => {
+                ref={ref => {
                   $refs["directory"] = ref;
                 }}
                 size={1}
@@ -1093,7 +1121,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   ),
                   [sty.directoryErrorview_existingRepo_errors_name]:
                     hasVariant($state, "view", "existingRepo") &&
-                    hasVariant($state, "errors", "name"),
+                    hasVariant($state, "errors", "name")
                 })}
               >
                 <div
@@ -1102,7 +1130,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                       $state,
                       "errors",
                       "directory"
-                    ),
+                    )
                   })}
                 >
                   {
@@ -1119,7 +1147,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               $state,
               "view",
               "existingRepo"
-            ),
+            )
           })}
         />
 
@@ -1132,7 +1160,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               $state,
               "view",
               "existingRepo"
-            ),
+            )
           })}
         >
           <div
@@ -1148,7 +1176,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 $state,
                 "view",
                 "existingRepo"
-              ),
+              )
             })}
           >
             <div
@@ -1162,7 +1190,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   $state,
                   "view",
                   "existingRepo"
-                ),
+                )
               })}
             >
               {"Framework"}
@@ -1204,7 +1232,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 $state,
                 "view",
                 "existingRepo"
-              ),
+              )
             })}
           >
             <div
@@ -1213,7 +1241,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   $state,
                   "view",
                   "existingRepo"
-                ),
+                )
               })}
             >
               {"Language"}
@@ -1260,7 +1288,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 $state,
                 "view",
                 "existingRepo"
-              ),
+              )
             })}
           >
             <div
@@ -1274,7 +1302,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   $state,
                   "view",
                   "existingRepo"
-                ),
+                )
               })}
             >
               <div
@@ -1283,7 +1311,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     $state,
                     "view",
                     "existingRepo"
-                  ),
+                  )
                 })}
               >
                 {"Mode"}
@@ -1343,7 +1371,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   $state,
                   "view",
                   "existingRepo"
-                ),
+                )
               })}
             >
               <div
@@ -1352,7 +1380,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     $state,
                     "view",
                     "existingRepo"
-                  ),
+                  )
                 })}
               >
                 <div
@@ -1361,7 +1389,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                       $state,
                       "view",
                       "existingRepo"
-                    ),
+                    )
                   })}
                 >
                   {"Default action"}
@@ -1408,8 +1436,8 @@ function PlasmicGithubIntegration__RenderFunc(props: {
           hasVariant($state, "hideGithubPages", "hideGithubPages")
             ? false
             : hasVariant($state, "view", "existingRepo")
-            ? false
-            : true
+              ? false
+              : true
         ) ? (
           <div
             className={classNames("all", sty.freeBox__r6Rpm, {
@@ -1422,7 +1450,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 $state,
                 "view",
                 "existingRepo"
-              ),
+              )
             })}
           />
         ) : null}
@@ -1430,8 +1458,8 @@ function PlasmicGithubIntegration__RenderFunc(props: {
           hasVariant($state, "hideGithubPages", "hideGithubPages")
             ? false
             : hasVariant($state, "view", "existingRepo")
-            ? false
-            : true
+              ? false
+              : true
         ) ? (
           <div
             data-plasmic-name={"deployment"}
@@ -1472,7 +1500,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 $state,
                 "view",
                 "existingRepo"
-              ),
+              )
             })}
           >
             <div
@@ -1486,7 +1514,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   $state,
                   "view",
                   "existingRepo"
-                ),
+                )
               })}
             >
               <div
@@ -1507,7 +1535,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     $state,
                     "view",
                     "existingRepo"
-                  ),
+                  )
                 })}
               >
                 <div
@@ -1573,7 +1601,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                         $state,
                         "loading",
                         "saving"
-                      ),
+                      )
                     }
                   )}
                 >
@@ -1605,7 +1633,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                         $state,
                         "isPublishingSite",
                         "isPublishingSite"
-                      ) && hasVariant($state, "errors", "missingDomain"),
+                      ) && hasVariant($state, "errors", "missingDomain")
                   })}
                 >
                   <Switch
@@ -1622,19 +1650,19 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                         $state,
                         "isPublishingSite",
                         "isPublishingSite"
-                      ),
+                      )
                     })}
                     isChecked={
                       generateStateValueProp($state, [
                         "publishSite",
-                        "isChecked",
+                        "isChecked"
                       ]) ?? false
                     }
                     onChange={async (...eventArgs: any) => {
                       ((...eventArgs) => {
                         generateStateOnChangeProp($state, [
                           "publishSite",
-                          "isChecked",
+                          "isChecked"
                         ])(eventArgs[0]);
                       }).apply(null, eventArgs);
 
@@ -1672,7 +1700,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                               $state,
                               "isPublishingSite",
                               "isPublishingSite"
-                            ),
+                            )
                         }
                       )}
                     />
@@ -1685,8 +1713,8 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               hasVariant($state, "isPublishingSite", "isPublishingSite")
                 ? true
                 : hasVariant($state, "errors", "hasDomainError")
-                ? true
-                : false
+                  ? true
+                  : false
             ) ? (
               <ErrorFeedback
                 data-plasmic-name={"domainError2"}
@@ -1707,7 +1735,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     hasVariant($state, "errors", "invalidDomainError"),
                   [sty.domainError2errors_publishSiteWarning_isPublishingSite]:
                     hasVariant($state, "errors", "publishSiteWarning") &&
-                    hasVariant($state, "isPublishingSite", "isPublishingSite"),
+                    hasVariant($state, "isPublishingSite", "isPublishingSite")
                 })}
                 warning={
                   hasVariant($state, "errors", "publishSiteWarning") &&
@@ -1733,11 +1761,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                       hasVariant($state, "errors", "invalidDomainError"),
                     [sty.texterrors_publishSiteWarning_isPublishingSite__bSfWw2OGsOQOy2M]:
                       hasVariant($state, "errors", "publishSiteWarning") &&
-                      hasVariant(
-                        $state,
-                        "isPublishingSite",
-                        "isPublishingSite"
-                      ),
+                      hasVariant($state, "isPublishingSite", "isPublishingSite")
                   })}
                 >
                   {hasVariant($state, "isPublishingSite", "isPublishingSite") &&
@@ -1787,7 +1811,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     $state,
                     "isPublishingSite",
                     "isPublishingSite"
-                  ),
+                  )
                 })}
               >
                 <div
@@ -1803,7 +1827,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                       $state,
                       "isPublishingSite",
                       "isPublishingSite"
-                    ),
+                    )
                   })}
                 >
                   <div
@@ -1831,7 +1855,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                         $state,
                         "view",
                         "existingRepo"
-                      ),
+                      )
                     })}
                   >
                     <div
@@ -1855,7 +1879,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                             $state,
                             "isPublishingSite",
                             "isPublishingSite"
-                          ),
+                          )
                         }
                       )}
                     >
@@ -1872,7 +1896,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                             $state,
                             "isPublishingSite",
                             "isPublishingSite"
-                          ),
+                          )
                       })}
                     >
                       <input
@@ -1912,12 +1936,11 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                                 $state,
                                 "isPublishingSite",
                                 "isPublishingSite"
-                              ) &&
-                              hasVariant($state, "errors", "missingDomain"),
+                              ) && hasVariant($state, "errors", "missingDomain")
                           }
                         )}
                         placeholder={"Enter name..."}
-                        ref={(ref) => {
+                        ref={ref => {
                           $refs["subdomainInput"] = ref;
                         }}
                         size={1}
@@ -1935,7 +1958,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                               $state,
                               "isPublishingSite",
                               "isPublishingSite"
-                            ),
+                            )
                           }
                         )}
                       >
@@ -1969,7 +1992,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                           $state,
                           "isPublishingSite",
                           "isPublishingSite"
-                        ),
+                        )
                       })}
                     >
                       {hasVariant(
@@ -2013,7 +2036,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                         $state,
                         "isPublishingSite",
                         "isPublishingSite"
-                      ) && hasVariant($state, "errors", "missingDomain"),
+                      ) && hasVariant($state, "errors", "missingDomain")
                   })}
                 >
                   <div
@@ -2041,7 +2064,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                           $state,
                           "isPublishingSite",
                           "isPublishingSite"
-                        ),
+                        )
                       }
                     )}
                   >
@@ -2068,7 +2091,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                           $state,
                           "isPublishingSite",
                           "isPublishingSite"
-                        ),
+                        )
                       }
                     )}
                     href={"https://www.plasmic.app/learn/publishing"}
@@ -2098,7 +2121,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
             $state,
             "view",
             "existingRepo"
-          ),
+          )
         })}
       >
         <Button
@@ -2119,7 +2142,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               $state,
               "view",
               "existingRepo"
-            ),
+            )
           })}
           disabled={hasVariant($state, "loading", "saving") ? true : undefined}
           endIcon={
@@ -2143,7 +2166,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 $state,
                 "loading",
                 "saving"
-              ),
+              )
             })}
           >
             {hasVariant($state, "loading", "saving")
@@ -2199,7 +2222,7 @@ const PlasmicDescendants = {
     "subdomainInput",
     "domainError",
     "moreProvidersLink",
-    "pushButton",
+    "pushButton"
   ],
   newRepoButton: ["newRepoButton"],
   existingRepoButton: ["existingRepoButton"],
@@ -2212,7 +2235,7 @@ const PlasmicDescendants = {
     "name",
     "nameError",
     "privateBox",
-    "privateRepo",
+    "privateRepo"
   ],
   orgBox: ["orgBox", "org"],
   org: ["org"],
@@ -2231,7 +2254,7 @@ const PlasmicDescendants = {
     "branch",
     "directoryBox",
     "directory",
-    "directoryError",
+    "directoryError"
   ],
   repositoryBox: ["repositoryBox", "repository"],
   repository: ["repository"],
@@ -2252,7 +2275,7 @@ const PlasmicDescendants = {
     "mode",
     "actionBox",
     "actionInfo",
-    "action",
+    "action"
   ],
   frameworkBox: ["frameworkBox", "framework"],
   framework: ["framework"],
@@ -2273,7 +2296,7 @@ const PlasmicDescendants = {
     "apparentSubdomainInput",
     "subdomainInput",
     "domainError",
-    "moreProvidersLink",
+    "moreProvidersLink"
   ],
   publishSiteLabel: ["publishSiteLabel"],
   publishSite: ["publishSite"],
@@ -2283,7 +2306,7 @@ const PlasmicDescendants = {
   subdomainInput: ["subdomainInput"],
   domainError: ["domainError"],
   moreProvidersLink: ["moreProvidersLink"],
-  pushButton: ["pushButton"],
+  pushButton: ["pushButton"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -2344,8 +2367,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicGithubIntegration__VariantsArgs;
     args?: PlasmicGithubIntegration__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicGithubIntegration__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicGithubIntegration__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicGithubIntegration__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -2370,7 +2394,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicGithubIntegration__ArgProps,
-          internalVariantPropNames: PlasmicGithubIntegration__VariantProps,
+          internalVariantPropNames: PlasmicGithubIntegration__VariantProps
         }),
       [props, nodeName]
     );
@@ -2378,7 +2402,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -2438,7 +2462,7 @@ export const PlasmicGithubIntegration = Object.assign(
 
     // Metadata about props expected for PlasmicGithubIntegration
     internalVariantProps: PlasmicGithubIntegration__VariantProps,
-    internalArgProps: PlasmicGithubIntegration__ArgProps,
+    internalArgProps: PlasmicGithubIntegration__ArgProps
   }
 );
 

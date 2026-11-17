@@ -15,33 +15,63 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
   generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import { _useStyleTokens } from "../../../../plasmic/plasmic_kit_continuous_deployment/PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 import Checkbox from "../../../widgets/Checkbox"; // plasmic-import: W-rO7NZqPjZ/component
-import MenuButton from "../../../widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 import Select from "../../../widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
-import Switch from "../../../widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
+import Select__Option from "../../../widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
+import Select__OptionGroup from "../../../widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
+import MenuButton from "../../../widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 import WebhookHeader from "../../WebhookHeader"; // plasmic-import: OkB-fXuJPc/component
+import Switch from "../../../widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
+import { _useGlobalVariants } from "../../../../plasmic/plasmic_kit_continuous_deployment/plasmic"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectModule
+import { _useStyleTokens } from "../../../../plasmic/plasmic_kit_continuous_deployment/PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicWebhooksItem.module.css"; // plasmic-import: mSgnlB96I5A/css
 
-import InfoIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
 import PlusSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import InfoIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
 
 createPlasmicElementProxy;
 
@@ -105,7 +135,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -118,26 +148,26 @@ function PlasmicWebhooksItem__RenderFunc(props: {
         path: "expanded",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.expanded,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.expanded
       },
       {
         path: "checkbox.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
       },
       {
         path: "method.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
       },
       {
         path: "sendPlasmicDataSwitch.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -147,7 +177,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -174,7 +204,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
             $state,
             "expanded",
             "expanded"
-          ),
+          )
         })}
       >
         <div
@@ -183,7 +213,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
               $state,
               "expanded",
               "expanded"
-            ),
+            )
           })}
         >
           <div className={classNames("all", sty.freeBox__ptuDx)}>
@@ -248,7 +278,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
             data-plasmic-override={overrides.url}
             className={classNames("all", "input", "input__fpbcK", sty.url)}
             placeholder={"URL…"}
-            ref={(ref) => {
+            ref={ref => {
               $refs["url"] = ref;
             }}
             size={1}
@@ -272,7 +302,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
               $state,
               "expanded",
               "expanded"
-            ),
+            )
           })}
         >
           <div
@@ -288,7 +318,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
                   <WebhookHeader />
                 </React.Fragment>
               ),
-              value: args.headers,
+              value: args.headers
             })}
           </div>
           <div
@@ -299,7 +329,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
                 $state,
                 "expanded",
                 "expanded"
-              ),
+              )
             })}
           >
             <div
@@ -308,7 +338,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
                   $state,
                   "expanded",
                   "expanded"
-                ),
+                )
               })}
             >
               {"Payload"}
@@ -326,11 +356,11 @@ function PlasmicWebhooksItem__RenderFunc(props: {
                     $state,
                     "expanded",
                     "expanded"
-                  ),
+                  )
                 }
               )}
               placeholder={"Enter payload…"}
-              ref={(ref) => {
+              ref={ref => {
                 $refs["payload"] = ref;
               }}
               rows={5}
@@ -345,7 +375,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
                 $state,
                 "expanded",
                 "expanded"
-              ),
+              )
             })}
           >
             <div className={classNames("all", sty.freeBox___5X7VS)}>
@@ -355,7 +385,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
                     $state,
                     "expanded",
                     "expanded"
-                  ),
+                  )
                 })}
               >
                 {"Send Data?"}
@@ -378,14 +408,14 @@ function PlasmicWebhooksItem__RenderFunc(props: {
               isChecked={
                 generateStateValueProp($state, [
                   "sendPlasmicDataSwitch",
-                  "isChecked",
+                  "isChecked"
                 ]) ?? false
               }
               onChange={async (...eventArgs: any) => {
                 ((...eventArgs) => {
                   generateStateOnChangeProp($state, [
                     "sendPlasmicDataSwitch",
-                    "isChecked",
+                    "isChecked"
                   ])(eventArgs[0]);
                 }).apply(null, eventArgs);
 
@@ -420,7 +450,7 @@ const PlasmicDescendants = {
     "payload",
     "sendDataField",
     "sendDataInfo",
-    "sendPlasmicDataSwitch",
+    "sendPlasmicDataSwitch"
   ],
   checkbox: ["checkbox"],
   method: ["method", "svg"],
@@ -434,14 +464,14 @@ const PlasmicDescendants = {
     "payload",
     "sendDataField",
     "sendDataInfo",
-    "sendPlasmicDataSwitch",
+    "sendPlasmicDataSwitch"
   ],
   headerField: ["headerField"],
   payloadField: ["payloadField", "payload"],
   payload: ["payload"],
   sendDataField: ["sendDataField", "sendDataInfo", "sendPlasmicDataSwitch"],
   sendDataInfo: ["sendDataInfo"],
-  sendPlasmicDataSwitch: ["sendPlasmicDataSwitch"],
+  sendPlasmicDataSwitch: ["sendPlasmicDataSwitch"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -473,8 +503,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicWebhooksItem__VariantsArgs;
     args?: PlasmicWebhooksItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicWebhooksItem__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicWebhooksItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicWebhooksItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -499,7 +530,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicWebhooksItem__ArgProps,
-          internalVariantPropNames: PlasmicWebhooksItem__VariantProps,
+          internalVariantPropNames: PlasmicWebhooksItem__VariantProps
         }),
       [props, nodeName]
     );
@@ -507,7 +538,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -538,7 +569,7 @@ export const PlasmicWebhooksItem = Object.assign(
 
     // Metadata about props expected for PlasmicWebhooksItem
     internalVariantProps: PlasmicWebhooksItem__VariantProps,
-    internalArgProps: PlasmicWebhooksItem__ArgProps,
+    internalArgProps: PlasmicWebhooksItem__ArgProps
   }
 );
 

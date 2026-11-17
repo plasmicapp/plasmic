@@ -1628,6 +1628,9 @@ export interface DeleteCommentResponse {}
 
 export interface DomainsForProjectResponse {
   domains: string[];
+  /** Server-issued subdomain, which any plan can assign to the project. */
+  freeSubdomain: string;
+  canChooseSubdomain: boolean;
 }
 
 export interface AddCommentReactionRequest {
@@ -1644,6 +1647,7 @@ export type SetDomainStatus =
   | "DomainUsedElsewhereInVercel"
   | "VercelAuthError"
   | "OtherDomainError"
+  | "UpgradeRequired"
   | "DomainUpdated";
 
 /** What was being done to a domain when it failed. */

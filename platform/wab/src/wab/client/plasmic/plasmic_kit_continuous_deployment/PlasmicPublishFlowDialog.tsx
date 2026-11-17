@@ -15,26 +15,57 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
   PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
+import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+import SubsectionSaveVersion from "../../components/TopFrame/TopBar/SubsectionSaveVersion"; // plasmic-import: 74wUdEnJhwr/component
 import SubsectionPlasmicHosting from "../../components/TopFrame/TopBar/SubsectionPlasmicHosting"; // plasmic-import: aeDQsBfp-eA/component
 import SubsectionPushDeploy from "../../components/TopFrame/TopBar/SubsectionPushDeploy"; // plasmic-import: 0HHLsxeAqF8/component
-import SubsectionSaveVersion from "../../components/TopFrame/TopBar/SubsectionSaveVersion"; // plasmic-import: 74wUdEnJhwr/component
 import SubsectionWebhooks from "../../components/TopFrame/TopBar/SubsectionWebhooks"; // plasmic-import: 9EUA-QZFp69/component
-import WebhookEvent from "../../components/webhooks/WebhookEvent"; // plasmic-import: MtBpr4iNob/component
+import WebhooksItem from "../../components/webhooks/WebhooksItem"; // plasmic-import: mSgnlB96I5A/component
+import WebhookHeader from "../../components/webhooks/WebhookHeader"; // plasmic-import: OkB-fXuJPc/component
 import WebhooksHistory from "../../components/webhooks/WebhooksHistory"; // plasmic-import: Ynwp30ZgYk/component
-import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import WebhookEvent from "../../components/webhooks/WebhookEvent"; // plasmic-import: MtBpr4iNob/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -42,10 +73,10 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicPublishFlowDialog.module.css"; // plasmic-import: aXXfRDkhD-/css
 
-import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
-import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
 
 createPlasmicElementProxy;
 
@@ -130,7 +161,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -144,14 +175,14 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.publishState,
+          $props.publishState
       },
       {
         path: "view",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.view,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.view
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -161,7 +192,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -200,7 +231,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             $state,
             "view",
             "webhooksHistory"
-          ),
+          )
         }
       )}
     >
@@ -210,7 +241,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             $state,
             "view",
             "status"
-          ),
+          )
         })}
       >
         <div
@@ -219,7 +250,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
               $state,
               "view",
               "status"
-            ),
+            )
           })}
         >
           <div className={classNames("all", sty.freeBox___36Jc0)}>
@@ -228,7 +259,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             </div>
             {renderPlasmicSlot({
               defaultContents: "Project Acme",
-              value: args.projectName,
+              value: args.projectName
             })}
           </div>
           <IconButton
@@ -245,7 +276,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                 $state,
                 "publishState",
                 "publishing"
-              ),
+              )
             })}
             size={"small"}
             withBackgroundHover={true}
@@ -256,7 +287,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                   $state,
                   "publishState",
                   "publishing"
-                ),
+                )
               })}
               role={"img"}
             />
@@ -273,7 +304,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
               $state,
               "view",
               "status"
-            ),
+            )
           })}
         >
           <div
@@ -285,7 +316,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                 $state,
                 "view",
                 "webhooksHistory"
-              ),
+              )
             })}
           >
             <div className={classNames("all", sty.freeBox__fbpu6)}>
@@ -298,7 +329,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                   </div>
                 ),
                 value: args.currentVersionNumber,
-                className: classNames(sty.slotTargetCurrentVersionNumber),
+                className: classNames(sty.slotTargetCurrentVersionNumber)
               })}
               <div className={classNames("all", "__wab_text", sty.text__hL72Z)}>
                 {"Version"}
@@ -331,7 +362,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                     ),
                     [sty.destinationpublishState_success_view_status]:
                       hasVariant($state, "publishState", "success") &&
-                      hasVariant($state, "view", "status"),
+                      hasVariant($state, "view", "status")
                   }
                 )}
                 platform={"react"}
@@ -349,8 +380,8 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
         hasVariant($state, "view", "webhooksHistory")
           ? true
           : hasVariant($state, "view", "reviewChanges")
-          ? true
-          : false
+            ? true
+            : false
       ) ? (
         <div
           data-plasmic-name={"backPanel"}
@@ -365,7 +396,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
               $state,
               "view",
               "webhooksHistory"
-            ),
+            )
           })}
         >
           <Button
@@ -397,7 +428,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                   $state,
                   "view",
                   "webhooksHistory"
-                ),
+                )
               })}
             >
               {"<- Back"}
@@ -409,8 +440,8 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
         hasVariant($state, "view", "webhooksHistory")
           ? false
           : hasVariant($state, "view", "reviewChanges")
-          ? false
-          : true
+            ? false
+            : true
       ) ? (
         <div
           className={classNames("all", sty.freeBox__h4IIk, {
@@ -433,7 +464,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
               $state,
               "view",
               "webhooksHistory"
-            ),
+            )
           })}
         >
           <div
@@ -447,7 +478,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                 $state,
                 "view",
                 "webhooksHistory"
-              ),
+              )
             })}
           >
             {"Publishing pipeline"}
@@ -471,7 +502,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                 $state,
                 "view",
                 "status"
-              ),
+              )
             })}
             view={hasVariant($state, "view", "status") ? "status" : undefined}
           />
@@ -487,7 +518,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                   $state,
                   "view",
                   "status"
-                ),
+                )
               }
             )}
             view={hasVariant($state, "view", "status") ? "status" : undefined}
@@ -506,7 +537,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                 $state,
                 "view",
                 "status"
-              ),
+              )
             })}
             view={hasVariant($state, "view", "status") ? "status" : undefined}
           />
@@ -519,7 +550,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                 $state,
                 "view",
                 "status"
-              ),
+              )
             })}
             view={hasVariant($state, "view", "status") ? "status" : undefined}
           />
@@ -532,7 +563,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                 $state,
                 "view",
                 "status"
-              ),
+              )
             })}
           >
             <div className={classNames("all", sty.freeBox__uIv1)} />
@@ -661,7 +692,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
               $state,
               "view",
               "reviewChanges"
-            ),
+            )
           })}
         >
           <div
@@ -672,7 +703,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                 $state,
                 "view",
                 "reviewChanges"
-              ),
+              )
             })}
           />
         </div>
@@ -684,7 +715,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
               $state,
               "view",
               "webhooksHistory"
-            ),
+            )
           })}
         >
           <WebhooksHistory
@@ -698,7 +729,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                     sty.webhookEvent__hm3Cn,
                     {
                       [sty.webhookEventview_webhooksHistory__hm3CnPC2C]:
-                        hasVariant($state, "view", "webhooksHistory"),
+                        hasVariant($state, "view", "webhooksHistory")
                     }
                   )}
                   method={"GET"}
@@ -711,7 +742,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                     sty.webhookEvent__lLp8M,
                     {
                       [sty.webhookEventview_webhooksHistory__lLp8MPC2C]:
-                        hasVariant($state, "view", "webhooksHistory"),
+                        hasVariant($state, "view", "webhooksHistory")
                     }
                   )}
                   status={"404"}
@@ -780,7 +811,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             $state,
             "view",
             "webhooksHistory"
-          ),
+          )
         })}
       >
         <div
@@ -794,15 +825,15 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
               $state,
               "view",
               "status"
-            ),
+            )
           })}
         >
           {(
             hasVariant($state, "view", "webhooksHistory")
               ? false
               : hasVariant($state, "view", "reviewChanges")
-              ? false
-              : true
+                ? false
+                : true
           ) ? (
             <div
               className={classNames("all", sty.freeBox__wcPuC, {
@@ -820,17 +851,17 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                   $state,
                   "view",
                   "webhooksHistory"
-                ),
+                )
               })}
             >
               {(
                 hasVariant($state, "view", "webhooksHistory")
                   ? false
                   : hasVariant($state, "view", "reviewChanges")
-                  ? false
-                  : hasVariant($state, "view", "status")
-                  ? false
-                  : true
+                    ? false
+                    : hasVariant($state, "view", "status")
+                      ? false
+                      : true
               ) ? (
                 <Button
                   data-plasmic-name={"publishButton"}
@@ -850,7 +881,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                       $state,
                       "view",
                       "webhooksHistory"
-                    ),
+                    )
                   })}
                   endIcon={
                     <ChevronDownSvgIcon
@@ -901,7 +932,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                   $state,
                   "view",
                   "status"
-                ),
+                )
               })}
             >
               {hasVariant($state, "view", "status")
@@ -923,7 +954,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                   $state,
                   "view",
                   "webhooksHistory"
-                ),
+                )
               })}
               endIcon={
                 <ChevronDownSvgIcon
@@ -946,7 +977,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                     $state,
                     "view",
                     "status"
-                  ),
+                  )
                 })}
               >
                 {"Cancel"}
@@ -958,16 +989,16 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
           hasVariant($state, "view", "webhooksHistory")
             ? false
             : hasVariant($state, "view", "reviewChanges")
-            ? false
-            : hasVariant($state, "view", "status")
-            ? false
-            : hasVariant($state, "publishState", "publishing")
-            ? true
-            : hasVariant($state, "publishState", "success")
-            ? true
-            : hasVariant($state, "publishState", "failure")
-            ? true
-            : false
+              ? false
+              : hasVariant($state, "view", "status")
+                ? false
+                : hasVariant($state, "publishState", "publishing")
+                  ? true
+                  : hasVariant($state, "publishState", "success")
+                    ? true
+                    : hasVariant($state, "publishState", "failure")
+                      ? true
+                      : false
         ) ? (
           <div
             className={classNames("all", sty.freeBox___0MvLu, {
@@ -1000,7 +1031,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                 $state,
                 "view",
                 "webhooksHistory"
-              ),
+              )
             })}
           >
             <div
@@ -1019,14 +1050,14 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                   $state,
                   "publishState",
                   "success"
-                ),
+                )
               })}
             >
               {hasVariant($state, "publishState", "publishing")
                 ? "The project is being published at the moment..."
                 : hasVariant($state, "publishState", "failure")
-                ? "The latest publish failed."
-                : "The latest publish was successful."}
+                  ? "The latest publish failed."
+                  : "The latest publish was successful."}
             </div>
             <Button
               data-plasmic-name={"statusButton"}
@@ -1051,7 +1082,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                   $state,
                   "view",
                   "status"
-                ),
+                )
               })}
               endIcon={
                 <ChevronDownSvgIcon
@@ -1074,7 +1105,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                     $state,
                     "publishState",
                     "failure"
-                  ),
+                  )
                 })}
               >
                 {"See more ->"}
@@ -1113,7 +1144,7 @@ const PlasmicDescendants = {
     "publishButton",
     "startOverButton",
     "cancelButton",
-    "statusButton",
+    "statusButton"
   ],
   dismissButton: ["dismissButton"],
   statusBar: ["statusBar", "destinationSection", "destination"],
@@ -1133,7 +1164,7 @@ const PlasmicDescendants = {
     "addGithubButton",
     "addWebhooksPanel",
     "addWebhooksButton",
-    "webhooksDescription",
+    "webhooksDescription"
   ],
   addWebsitePanel: ["addWebsitePanel", "addWebsiteButton"],
   addWebsiteButton: ["addWebsiteButton"],
@@ -1142,7 +1173,7 @@ const PlasmicDescendants = {
   addWebhooksPanel: [
     "addWebhooksPanel",
     "addWebhooksButton",
-    "webhooksDescription",
+    "webhooksDescription"
   ],
   addWebhooksButton: ["addWebhooksButton"],
   webhooksDescription: ["webhooksDescription"],
@@ -1151,7 +1182,7 @@ const PlasmicDescendants = {
   publishButton: ["publishButton"],
   startOverButton: ["startOverButton"],
   cancelButton: ["cancelButton"],
-  statusButton: ["statusButton"],
+  statusButton: ["statusButton"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -1195,8 +1226,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPublishFlowDialog__VariantsArgs;
     args?: PlasmicPublishFlowDialog__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicPublishFlowDialog__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicPublishFlowDialog__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicPublishFlowDialog__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -1221,7 +1253,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPublishFlowDialog__ArgProps,
-          internalVariantPropNames: PlasmicPublishFlowDialog__VariantProps,
+          internalVariantPropNames: PlasmicPublishFlowDialog__VariantProps
         }),
       [props, nodeName]
     );
@@ -1229,7 +1261,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -1272,7 +1304,7 @@ export const PlasmicPublishFlowDialog = Object.assign(
 
     // Metadata about props expected for PlasmicPublishFlowDialog
     internalVariantProps: PlasmicPublishFlowDialog__VariantProps,
-    internalArgProps: PlasmicPublishFlowDialog__ArgProps,
+    internalArgProps: PlasmicPublishFlowDialog__ArgProps
   }
 );
 

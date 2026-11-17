@@ -15,25 +15,52 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
   PlasmicImg as PlasmicImg__,
   PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
   generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Checkbox from "../../components/widgets/Checkbox"; // plasmic-import: W-rO7NZqPjZ/component
+import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
+import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
+import Select__OptionGroup from "../../components/widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -126,7 +153,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -139,39 +166,39 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
         path: "collapse",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.collapse,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.collapse
       },
       {
         path: "changesState",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
-          $props.changesState,
+          $props.changesState
       },
       {
         path: "view",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.view,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.view
       },
       {
         path: "failed",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.failed,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.failed
       },
       {
         path: "checkbox.isChecked",
         type: "private",
         variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
       },
       {
         path: "tagsSelector.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -181,7 +208,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -202,7 +229,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
         {
           [sty.rootcollapse]: hasVariant($state, "collapse", "collapse"),
           [sty.rootfailed]: hasVariant($state, "failed", "failed"),
-          [sty.rootview_status]: hasVariant($state, "view", "status"),
+          [sty.rootview_status]: hasVariant($state, "view", "status")
         }
       )}
     >
@@ -219,7 +246,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
             $state,
             "view",
             "status"
-          ),
+          )
         })}
       >
         <div className={classNames("all", sty.freeBox__aHwL)}>
@@ -229,7 +256,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 $state,
                 "failed",
                 "failed"
-              ),
+              )
             })}
           >
             {(hasVariant($state, "view", "status") ? false : true) ? (
@@ -242,7 +269,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                     $state,
                     "view",
                     "status"
-                  ),
+                  )
                 })}
                 isChecked={
                   generateStateValueProp($state, ["checkbox", "isChecked"]) ??
@@ -252,7 +279,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                   ((...eventArgs) => {
                     generateStateOnChangeProp($state, [
                       "checkbox",
-                      "isChecked",
+                      "isChecked"
                     ])(eventArgs[0]);
                   }).apply(null, eventArgs);
 
@@ -272,7 +299,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 data-plasmic-override={overrides.img}
                 alt={""}
                 className={classNames(sty.img, {
-                  [sty.imgview_status]: hasVariant($state, "view", "status"),
+                  [sty.imgview_status]: hasVariant($state, "view", "status")
                 })}
                 displayHeight={"20px"}
                 displayMaxHeight={"none"}
@@ -284,7 +311,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                   src: imageXpXXn3D3XS,
                   fullWidth: 150,
                   fullHeight: 150,
-                  aspectRatio: 1,
+                  aspectRatio: 1
                 }}
               />
             ) : null}
@@ -298,10 +325,10 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
         hasVariant($state, "failed", "failed")
           ? false
           : hasVariant($state, "view", "status")
-          ? false
-          : hasVariant($state, "collapse", "collapse")
-          ? false
-          : true
+            ? false
+            : hasVariant($state, "collapse", "collapse")
+              ? false
+              : true
       ) ? (
         <div
           className={classNames("all", sty.freeBox___556M, {
@@ -319,7 +346,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
               $state,
               "view",
               "status"
-            ),
+            )
           })}
         >
           <div
@@ -328,7 +355,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 $state,
                 "failed",
                 "failed"
-              ),
+              )
             })}
           >
             <div className={classNames("all", "__wab_text", sty.text__dnUmC)}>
@@ -368,7 +395,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 $state,
                 "failed",
                 "failed"
-              ),
+              )
             })}
           >
             <div
@@ -382,7 +409,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                   $state,
                   "failed",
                   "failed"
-                ),
+                )
               })}
             >
               <div className={classNames("all", "__wab_text", sty.text__kJhMc)}>
@@ -414,7 +441,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                     $state,
                     "changesState",
                     "patch"
-                  ),
+                  )
                 })}
               >
                 <div
@@ -448,29 +475,29 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                       $state,
                       "changesState",
                       "patch"
-                    ),
+                    )
                   })}
                 >
                   {hasVariant($state, "changesState", "first")
                     ? "You're publishing for the first time!"
                     : hasVariant($state, "changesState", "major")
-                    ? "The new version you're saving contains potentially breaking changes, as some things have been removed or renamed. Please review changes before saving."
-                    : hasVariant($state, "changesState", "minor")
-                    ? "You have new changes to publish."
-                    : hasVariant($state, "changesState", "patch")
-                    ? "You have new changes to publish."
-                    : hasVariant($state, "changesState", "none")
-                    ? "You have no new changes to publish."
-                    : "Computing changes since last publish..."}
+                      ? "The new version you're saving contains potentially breaking changes, as some things have been removed or renamed. Please review changes before saving."
+                      : hasVariant($state, "changesState", "minor")
+                        ? "You have new changes to publish."
+                        : hasVariant($state, "changesState", "patch")
+                          ? "You have new changes to publish."
+                          : hasVariant($state, "changesState", "none")
+                            ? "You have no new changes to publish."
+                            : "Computing changes since last publish..."}
                 </div>
                 {(
                   hasVariant($state, "changesState", "major")
                     ? true
                     : hasVariant($state, "changesState", "minor")
-                    ? true
-                    : hasVariant($state, "changesState", "patch")
-                    ? true
-                    : false
+                      ? true
+                      : hasVariant($state, "changesState", "patch")
+                        ? true
+                        : false
                 ) ? (
                   <div
                     className={classNames("all", sty.freeBox__hTHvd, {
@@ -488,7 +515,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                         $state,
                         "changesState",
                         "patch"
-                      ),
+                      )
                     })}
                   >
                     {renderPlasmicSlot({
@@ -504,8 +531,8 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                         [sty.slotTargetChangesSummarychangesState_none]:
                           hasVariant($state, "changesState", "none"),
                         [sty.slotTargetChangesSummarychangesState_patch]:
-                          hasVariant($state, "changesState", "patch"),
-                      }),
+                          hasVariant($state, "changesState", "patch")
+                      })
                     })}
                   </div>
                 ) : null}
@@ -513,12 +540,12 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                   hasVariant($state, "changesState", "major")
                     ? true
                     : hasVariant($state, "changesState", "minor")
-                    ? true
-                    : hasVariant($state, "changesState", "patch")
-                    ? true
-                    : hasVariant($state, "changesState", "none")
-                    ? false
-                    : false
+                      ? true
+                      : hasVariant($state, "changesState", "patch")
+                        ? true
+                        : hasVariant($state, "changesState", "none")
+                          ? false
+                          : false
                 ) ? (
                   <Button
                     data-plasmic-name={"reviewChangesButton"}
@@ -548,7 +575,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                           $state,
                           "changesState",
                           "patch"
-                        ),
+                        )
                       }
                     )}
                     endIcon={
@@ -575,10 +602,10 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
               hasVariant($state, "changesState", "major")
                 ? true
                 : hasVariant($state, "changesState", "minor")
-                ? true
-                : hasVariant($state, "changesState", "patch")
-                ? true
-                : false
+                  ? true
+                  : hasVariant($state, "changesState", "patch")
+                    ? true
+                    : false
             ) ? (
               <div
                 className={classNames("all", sty.freeBox__zomOs, {
@@ -596,7 +623,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                     $state,
                     "changesState",
                     "patch"
-                  ),
+                  )
                 })}
               >
                 <div
@@ -610,7 +637,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                       $state,
                       "view",
                       "setup"
-                    ),
+                    )
                   })}
                 >
                   {"Version"}
@@ -621,7 +648,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                       $state,
                       "changesState",
                       "patch"
-                    ),
+                    )
                   })}
                 >
                   <div className={classNames("all", sty.freeBox___0E7Ii)}>
@@ -630,8 +657,8 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                       value: args.nextVersion,
                       className: classNames(sty.slotTargetNextVersion, {
                         [sty.slotTargetNextVersionchangesState_patch]:
-                          hasVariant($state, "changesState", "patch"),
-                      }),
+                          hasVariant($state, "changesState", "patch")
+                      })
                     })}
                   </div>
                   <Button
@@ -673,10 +700,10 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
               hasVariant($state, "changesState", "major")
                 ? true
                 : hasVariant($state, "changesState", "minor")
-                ? true
-                : hasVariant($state, "changesState", "patch")
-                ? true
-                : false
+                  ? true
+                  : hasVariant($state, "changesState", "patch")
+                    ? true
+                    : false
             ) ? (
               <div
                 className={classNames("all", sty.freeBox__pX75D, {
@@ -694,7 +721,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                     $state,
                     "changesState",
                     "patch"
-                  ),
+                  )
                 })}
               >
                 <div
@@ -703,7 +730,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                       $state,
                       "changesState",
                       "patch"
-                    ),
+                    )
                   })}
                 >
                   {"Description"}
@@ -726,11 +753,11 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                         $state,
                         "changesState",
                         "patch"
-                      ),
+                      )
                     }
                   )}
                   placeholder={"Enter description here (optional)…"}
-                  ref={(ref) => {
+                  ref={ref => {
                     $refs["description"] = ref;
                   }}
                   rows={2}
@@ -742,10 +769,10 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
               hasVariant($state, "changesState", "major")
                 ? true
                 : hasVariant($state, "changesState", "minor")
-                ? true
-                : hasVariant($state, "changesState", "patch")
-                ? true
-                : false
+                  ? true
+                  : hasVariant($state, "changesState", "patch")
+                    ? true
+                    : false
             ) ? (
               <div
                 data-plasmic-name={"tagsStack"}
@@ -765,7 +792,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                     $state,
                     "changesState",
                     "patch"
-                  ),
+                  )
                 })}
               >
                 <div
@@ -774,7 +801,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                       $state,
                       "changesState",
                       "patch"
-                    ),
+                    )
                   })}
                 >
                   {"Tags"}
@@ -792,7 +819,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                       $state,
                       "changesState",
                       "patch"
-                    ),
+                    )
                   })}
                   icon={
                     <PlusSvgIcon
@@ -804,7 +831,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                     ((...eventArgs) => {
                       generateStateOnChangeProp($state, [
                         "tagsSelector",
-                        "value",
+                        "value"
                       ])(eventArgs[0]);
                     }).apply(null, eventArgs);
 
@@ -819,7 +846,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                   type={"bordered"}
                   value={generateStateValueProp($state, [
                     "tagsSelector",
-                    "value",
+                    "value"
                   ])}
                 />
               </div>
@@ -831,8 +858,8 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
         hasVariant($state, "failed", "failed")
           ? true
           : hasVariant($state, "view", "status")
-          ? true
-          : false
+            ? true
+            : false
       ) ? (
         <div
           className={classNames("all", sty.freeBox___0V80Z, {
@@ -850,7 +877,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
               $state,
               "view",
               "status"
-            ),
+            )
           })}
         >
           {renderPlasmicSlot({
@@ -881,8 +908,8 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 $state,
                 "view",
                 "status"
-              ),
-            }),
+              )
+            })
           })}
         </div>
       ) : null}
@@ -900,7 +927,7 @@ const PlasmicDescendants = {
     "viewHistoryButton",
     "description",
     "tagsStack",
-    "tagsSelector",
+    "tagsSelector"
   ],
   checkbox: ["checkbox"],
   img: ["img"],
@@ -909,7 +936,7 @@ const PlasmicDescendants = {
   viewHistoryButton: ["viewHistoryButton"],
   description: ["description"],
   tagsStack: ["tagsStack", "tagsSelector"],
-  tagsSelector: ["tagsSelector"],
+  tagsSelector: ["tagsSelector"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -937,8 +964,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSubsectionSaveVersion__VariantsArgs;
     args?: PlasmicSubsectionSaveVersion__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicSubsectionSaveVersion__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicSubsectionSaveVersion__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicSubsectionSaveVersion__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -963,7 +991,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicSubsectionSaveVersion__ArgProps,
-          internalVariantPropNames: PlasmicSubsectionSaveVersion__VariantProps,
+          internalVariantPropNames: PlasmicSubsectionSaveVersion__VariantProps
         }),
       [props, nodeName]
     );
@@ -971,7 +999,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -998,7 +1026,7 @@ export const PlasmicSubsectionSaveVersion = Object.assign(
 
     // Metadata about props expected for PlasmicSubsectionSaveVersion
     internalVariantProps: PlasmicSubsectionSaveVersion__VariantProps,
-    internalArgProps: PlasmicSubsectionSaveVersion__ArgProps,
+    internalArgProps: PlasmicSubsectionSaveVersion__ArgProps
   }
 );
 

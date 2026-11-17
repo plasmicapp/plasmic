@@ -15,19 +15,49 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
   hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
   renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
   useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName
 } from "@plasmicapp/react-web";
-import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions
+} from "@plasmicapp/react-web/lib/host";
 
-import { _useStyleTokens } from "../../../../plasmic/plasmic_kit_continuous_deployment/PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 import WebhookEvent from "../../WebhookEvent"; // plasmic-import: MtBpr4iNob/component
+import { _useGlobalVariants } from "../../../../plasmic/plasmic_kit_continuous_deployment/plasmic"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectModule
+import { _useStyleTokens } from "../../../../plasmic/plasmic_kit_continuous_deployment/PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -88,7 +118,7 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
 
   const $props = {
     ...args,
-    ...variants,
+    ...variants
   };
 
   const $ctx = useDataEnv?.() || {};
@@ -101,8 +131,8 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
         path: "loading",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.loading,
-      },
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.loading
+      }
     ],
     [$props, $ctx, $refs]
   );
@@ -112,7 +142,7 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
     $ctx,
     $queries: {},
     $q: {},
-    $refs,
+    $refs
   });
 
   const styleTokensClassNames = _useStyleTokens();
@@ -138,7 +168,7 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
           className={classNames("all", sty.freeBox, {
-            [sty.freeBoxloading]: hasVariant($state, "loading", "loading"),
+            [sty.freeBoxloading]: hasVariant($state, "loading", "loading")
           })}
         >
           {renderPlasmicSlot({
@@ -195,7 +225,7 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
                 />
               </React.Fragment>
             ),
-            value: args.events,
+            value: args.events
           })}
         </div>
       ) : null}
@@ -204,7 +234,7 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
           data-plasmic-name={"text"}
           data-plasmic-override={overrides.text}
           className={classNames("all", "__wab_text", sty.text, {
-            [sty.textloading]: hasVariant($state, "loading", "loading"),
+            [sty.textloading]: hasVariant($state, "loading", "loading")
           })}
         >
           {hasVariant($state, "loading", "loading")
@@ -219,7 +249,7 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
 const PlasmicDescendants = {
   root: ["root", "freeBox", "text"],
   freeBox: ["freeBox"],
-  text: ["text"],
+  text: ["text"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -241,8 +271,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicWebhooksHistory__VariantsArgs;
     args?: PlasmicWebhooksHistory__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicWebhooksHistory__VariantsArgs, ReservedPropsType> &
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicWebhooksHistory__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicWebhooksHistory__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -267,7 +298,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
           name: nodeName,
           descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicWebhooksHistory__ArgProps,
-          internalVariantPropNames: PlasmicWebhooksHistory__VariantProps,
+          internalVariantPropNames: PlasmicWebhooksHistory__VariantProps
         }),
       [props, nodeName]
     );
@@ -275,7 +306,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -296,7 +327,7 @@ export const PlasmicWebhooksHistory = Object.assign(
 
     // Metadata about props expected for PlasmicWebhooksHistory
     internalVariantProps: PlasmicWebhooksHistory__VariantProps,
-    internalArgProps: PlasmicWebhooksHistory__ArgProps,
+    internalArgProps: PlasmicWebhooksHistory__ArgProps
   }
 );
 
