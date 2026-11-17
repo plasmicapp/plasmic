@@ -336,8 +336,8 @@ importers:
         specifier: ^0.0.276
         version: 0.0.276(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(@types/react@18.3.18)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/contentful':
-        specifier: ^0.0.37
-        version: 0.0.37(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+        specifier: ^0.0.38
+        version: 0.0.38(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@plasmicpkgs/fetch':
         specifier: ^0.0.56
         version: 0.0.56(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -363,8 +363,8 @@ importers:
         specifier: ^0.0.219
         version: 0.0.219(react@18.3.1)
       '@plasmicpkgs/plasmic-contentful':
-        specifier: ^0.0.213
-        version: 0.0.213(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.214
+        version: 0.0.214(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-embed-css':
         specifier: ^0.1.248
         version: 0.1.248(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -806,8 +806,8 @@ importers:
         specifier: ^0.0.276
         version: 0.0.276(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@plasmicapp/query@0.1.88(react@18.3.1))(@types/node-fetch@2.6.13)(@types/react@18.3.18)(node-fetch@3.3.2)(react@18.3.1)
       '@plasmicpkgs/contentful':
-        specifier: ^0.0.37
-        version: 0.0.37(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+        specifier: ^0.0.38
+        version: 0.0.38(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@plasmicpkgs/fetch':
         specifier: ^0.0.56
         version: 0.0.56(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -833,8 +833,8 @@ importers:
         specifier: ^0.0.219
         version: 0.0.219(react@18.3.1)
       '@plasmicpkgs/plasmic-contentful':
-        specifier: ^0.0.213
-        version: 0.0.213(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.214
+        version: 0.0.214(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/plasmic-embed-css':
         specifier: ^0.1.248
         version: 0.1.248(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -5066,8 +5066,8 @@ packages:
       '@plasmicapp/query': '>=0.1.0'
       react: '>=16.8.0'
 
-  '@plasmicpkgs/contentful@0.0.37':
-    resolution: {integrity: sha512-bFIQOyiNqi5LiMDnH6Qiu9pzTYS61upXdcRhPHKncs+NCAJPye6sT7cXG4cfm1Idy0hev3xjtvvuDNK6fOPnFg==}
+  '@plasmicpkgs/contentful@0.0.38':
+    resolution: {integrity: sha512-x5JPQ2Bvuqx2vLo/7zAsxh1UDq0Rh6e7kRUGoKh1P5cF8C9bQU5IcxbeovFLOZULExhGZ0IQv9GWa1FZxDPudQ==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.211'
 
@@ -5127,8 +5127,8 @@ packages:
     peerDependencies:
       react: '>=16'
 
-  '@plasmicpkgs/plasmic-contentful@0.0.213':
-    resolution: {integrity: sha512-UEpG3Dr3EuawoE3VD7mcDdmj8PjprcQ+sYDj/TuvbMhF0TKHM/QxFwrBR3/NP1nVxZSkja/Yh4R9x6NOP9yTFA==}
+  '@plasmicpkgs/plasmic-contentful@0.0.214':
+    resolution: {integrity: sha512-NjBbMK4KwfnwPwxXlBaqPjayIJffobfulZIT9KxIg9O/VCIEa4gbOGc1vPfhQf7HPUyDDDrq4map0Fit4drlnA==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.211'
       react: '>=16.8.0'
@@ -20386,7 +20386,7 @@ snapshots:
       - node-fetch
       - supports-color
 
-  '@plasmicpkgs/contentful@0.0.37(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
+  '@plasmicpkgs/contentful@0.0.38(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
     dependencies:
       '@plasmicapp/host': 2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
@@ -20453,7 +20453,7 @@ snapshots:
       dlv: 1.1.3
       react: 18.3.1
 
-  '@plasmicpkgs/plasmic-contentful@0.0.213(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/plasmic-contentful@0.0.214(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@contentful/rich-text-html-renderer': 15.15.1
       '@contentful/rich-text-react-renderer': 15.22.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
