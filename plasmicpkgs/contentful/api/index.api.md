@@ -12,23 +12,8 @@ export function _denormalizeData(data: any | null): any;
 // @public (undocumented)
 export function _ensure<T>(x: T | null | undefined, msg?: string): T;
 
-// @public (undocumented)
-export interface _Entry {
-    // (undocumented)
-    fields: {
-        [fieldName: string]: unknown | unknown[];
-    };
-    // (undocumented)
-    sys: {
-        id: string;
-    };
-}
-
 // @public
-export function queryContentful({ space, accessToken, environment, contentType, filterLogic, }: QueryContentfulOpts): Promise<any>;
-
-// @public @deprecated
-export function _queryContentful({ space, accessToken, environment, contentType, filterLogic, filterField, searchParameter, filterValue, order, reverseOrder, limit, skip, include, select, }: QueryContentfulOpts & QueryContentfulOldFilterProps): Promise<any>;
+export function queryContentful({ space, accessToken, environment, contentType, filterLogic, order, reverseOrder, limit, skip, include, select, locale, }: QueryContentfulOpts): Promise<any>;
 
 // @public (undocumented)
 export function registerContentful(loader?: {
