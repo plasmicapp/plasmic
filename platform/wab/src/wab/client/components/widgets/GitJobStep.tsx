@@ -26,9 +26,6 @@ function GitJobStep(props: GitJobStepProps) {
   return (
     <PlasmicGitJobStep
       {...rest}
-      // The slot renders with `display: contents` inside a flex row, so a
-      // fragment's text and elements would become separate flex items and
-      // lose the spaces between them. The span keeps them in one inline run.
       children={<span>{text}</span>}
       svg={
         rest.status === "started"
