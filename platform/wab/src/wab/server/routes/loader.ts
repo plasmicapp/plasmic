@@ -1,4 +1,5 @@
 import { DbMgr } from "@/wab/server/db/DbMgr";
+import { getDevFlagsMergedWithOverrides } from "@/wab/server/db/appconfig";
 import { Project } from "@/wab/server/entities/Entities";
 import {
   LATEST_LOADER_VERSION,
@@ -16,6 +17,7 @@ import {
   parseComponentProps,
   parseGlobalVariants,
 } from "@/wab/server/loader/parse-query-params";
+import { PreviewBundleCache } from "@/wab/server/loader/preview-bundle-cache";
 import {
   VersionToSync,
   getResolvedProjectVersions,
@@ -48,7 +50,7 @@ import type { TraceCarrier } from "@plasmic-shared/observability";
 import execa from "execa";
 import { Request, Response } from "express-serve-static-core";
 import fs from "fs";
-import { pickBy } from "lodash";
+import { pickBy, sortBy } from "lodash";
 import path from "path";
 
 /**
@@ -416,23 +418,73 @@ export async function buildLatestLoaderAssets(req: Request, res: Response) {
     platform,
   });
 
-  const result = await genLatestLoaderCodeBundle(mgr, req.workerpool, {
-    source: "live",
-    platform,
-    platformOptions: {
-      nextjs: {
-        appDir: nextjsAppDir,
+  const compute = () =>
+    genLatestLoaderCodeBundle(mgr, req.workerpool, {
+      source: "live",
+      platform,
+      platformOptions: {
+        nextjs: {
+          appDir: nextjsAppDir,
+        },
       },
-    },
-    projectIdsBranches: projectIdsBranches,
-    loaderVersion,
-    browserOnly,
-    i18nKeyScheme,
-    i18nTagPrefix,
-    skipHead,
-  });
+      projectIdsBranches: projectIdsBranches,
+      loaderVersion,
+      browserOnly,
+      i18nKeyScheme,
+      i18nTagPrefix,
+      skipHead,
+    });
 
-  res.json(result);
+  // Permissions are checked above, so a shared result only reaches callers
+  // allowed to see these projects.
+  const { lane, key } = makePreviewBundleCacheKeys({
+    projectIdsBranches,
+    projectRevs,
+    options: {
+      platform,
+      nextjsAppDir,
+      browserOnly,
+      loaderVersion,
+      i18nKeyScheme,
+      i18nTagPrefix,
+      skipHead,
+    },
+  });
+  const { body, source } = await previewBundleCache.get({
+    lane,
+    key,
+    ttlMs: req.devflags.previewLoaderCacheTtlMs,
+    getTtlAfterBuild: async () =>
+      (await getDevFlagsMergedWithOverrides(mgr)).previewLoaderCacheTtlMs,
+    skipFinished: isUptimeCheck(req),
+    compute,
+  });
+  if (source !== "computed") {
+    logger.info(`Preview bundle ${source}: ${key}`);
+  }
+  res.type("json").send(body);
+}
+
+// Bounds memory held by finished preview bundles in the codegen process.
+const previewBundleCache = new PreviewBundleCache({ maxBytes: 200_000_000 });
+
+export function makePreviewBundleCacheKeys(args: {
+  projectIdsBranches: { id: string; branchName: string | undefined }[];
+  projectRevs: Record<string, number>;
+  options: Record<string, unknown>;
+}) {
+  const projects = sortBy(args.projectIdsBranches, (p) => p.id);
+  const base = [LOADER_CACHE_BUST, JSON.stringify(args.options)];
+  const lane = [
+    ...base,
+    ...projects.map((p) => `${p.id}:${p.branchName ?? ""}`),
+  ].join("|");
+  // Revisions are what make a finished bundle stale.
+  const key = [
+    lane,
+    ...projects.map((p) => `${p.id}@${args.projectRevs[p.id]}`),
+  ].join("|");
+  return { lane, key };
 }
 
 export async function getLoaderChunk(req: Request, res: Response) {
@@ -980,6 +1032,10 @@ function setAsCacheableResource(res: Response, maxAge = 31536000) {
   );
 }
 
+function isUptimeCheck(req: Request) {
+  return Boolean(req.headers["x-plasmic-uptime-check"]);
+}
+
 export function checkEtagSkippable(req: Request, res: Response, etag: string) {
   if (req.devflags.disableETagCaching) {
     logger.info("Etag mechanism is disabled");
@@ -997,7 +1053,7 @@ export function checkEtagSkippable(req: Request, res: Response, etag: string) {
   // requests.
   res.setHeader("Cache-Control", "max-age=5");
 
-  if (req.headers["x-plasmic-uptime-check"]) {
+  if (isUptimeCheck(req)) {
     // Never skip uptime checks, but still set cache headers above
     return false;
   }

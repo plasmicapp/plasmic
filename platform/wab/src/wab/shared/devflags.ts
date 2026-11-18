@@ -323,6 +323,8 @@ const DEFAULT_DEVFLAGS = {
   disableETagCaching: false,
   // Used to invalidate etags that use it
   eTagsVersionPrefix: "0",
+  // How long codegen reuses a finished preview bundle. 0 = only share running builds
+  previewLoaderCacheTtlMs: 60_000,
   // The tiers to get dynamically retrieve from the server
   featureTierNames: featureTiers,
   newFeatureTierNames: newFeatureTiers,

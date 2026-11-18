@@ -115,6 +115,12 @@ export const loaderBundleCacheCounter = new Counter({
   labelNames: ["result", "source"],
 });
 
+export const previewLoaderCacheCounter = new Counter({
+  name: "preview_loader_cache_total",
+  help: "Preview loader bundle requests by result (cache, joined, computed)",
+  labelNames: ["result"],
+});
+
 export const loaderCodegenCacheCounter = new Counter({
   name: "loader_codegen_cache_total",
   help: "Per-project codegen S3 cache hits and misses by source (prefill vs live)",

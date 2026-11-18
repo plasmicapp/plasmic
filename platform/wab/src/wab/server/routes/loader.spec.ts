@@ -9,6 +9,7 @@ import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { seedTestUserAndProjects } from "@/wab/server/db/DbInit";
 import { DbMgr, normalActor } from "@/wab/server/db/DbMgr";
 import { Project, User } from "@/wab/server/entities/Entities";
+import { previewLoaderCacheCounter } from "@/wab/server/promstats";
 import { _testonly } from "@/wab/server/routes/loader";
 import { Bundler } from "@/wab/shared/bundler";
 import { createSite } from "@/wab/shared/core/sites";
@@ -18,6 +19,7 @@ describe("loader", () => {
   let baseURL: string;
   let cleanup: () => Promise<void>;
 
+  let db: DbMgr;
   let userToken: string;
   let user: User;
   let projects: Project[];
@@ -81,6 +83,7 @@ describe("loader", () => {
       polyfillProject = polyfillProjectObj;
     });
 
+    db = new DbMgr(con.manager, normalActor(user.id));
     const { host, cleanup: cleanupBackend } = await createBackend(dburi);
     baseURL = host;
 
@@ -289,6 +292,45 @@ describe("loader", () => {
         message: `Error: Unable to find components NonExistentComponent (project ${projects[0].id})`,
       },
     });
+  });
+
+  it("rebuilds a warm preview for uptime probes and when the TTL is disabled", async () => {
+    const project = projects[3];
+    const preview = (headers: Record<string, string> = {}) =>
+      publicApi.rawReq(
+        "get",
+        `/api/v1/loader/code/preview?loaderVersion=10&projectId=${project.id}`,
+        undefined,
+        {
+          headers: {
+            "x-plasmic-api-project-tokens": `${project.id}:${project.projectApiToken}`,
+            ...headers,
+          },
+        },
+      );
+    const builds = async () => {
+      const { values } = await previewLoaderCacheCounter.get();
+      return values.find((v) => v.labels.result === "computed")?.value ?? 0;
+    };
+
+    const before = await builds();
+    const warm = await preview();
+    expect(warm.status()).toBe(200);
+    await preview({
+      "x-plasmic-uptime-check": "1",
+      "if-none-match": warm.headers().etag,
+    });
+    expect(await builds()).toBe(before + 2);
+    const previous = (await db.tryGetDevFlagOverrides())?.data ?? "{}";
+    try {
+      await db.setDevFlagOverrides(
+        JSON.stringify({ ...JSON.parse(previous), previewLoaderCacheTtlMs: 0 }),
+      );
+      expect((await preview()).status()).toBe(200);
+      expect(await builds()).toBe(before + 3);
+    } finally {
+      await db.setDevFlagOverrides(previous);
+    }
   });
 
   it("sets a valid preview HTML ETag for non-Latin-1 component names", async () => {

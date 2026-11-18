@@ -51,6 +51,7 @@ export function createWorkerPool(config: Config) {
     workerType: "process",
     maxWorkers: config.loaderWorkerPoolSize,
     forkOpts: {
+      serialization: "advanced",
       env: {
         ...process.env,
         ...(process.env.GCLOUD_PROFILER_SERVICE && {
@@ -63,6 +64,7 @@ export function createWorkerPool(config: Config) {
     workerType: "process",
     maxWorkers: config.genericWorkerPoolSize,
     forkOpts: {
+      serialization: "advanced",
       env: {
         ...process.env,
         ...(process.env.GCLOUD_PROFILER_SERVICE && {

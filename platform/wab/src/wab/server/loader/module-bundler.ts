@@ -108,10 +108,10 @@ function componentEntrypoint(c: ComponentExportOutput) {
   return c.isPage ? c.renderModuleFileName : c.skeletonModuleFileName;
 }
 
-async function bundleModulesEsbuild(
+async function buildModuleFiles(
   dir: string,
   codegenOutputs: CachedCodegenOutputBundle[],
-  componentDeps: Record<string, string[]>,
+  browserOutDir: string,
   opts: BundleOpts,
 ) {
   // First we build the javascript, which we need to build separately for browser
@@ -368,7 +368,6 @@ async function bundleModulesEsbuild(
   // do any combining / chunking / etc. There's no difference for minification of
   // css whether for node or browser, so we only do it once here (and output to
   // dist-esbuild-browser):
-  const browserOutDir = path.join(dir, `dist-esbuild-browser`);
   // First, all the component css
   const cssRes = await esbuild.build({
     logLevel: "silent",
@@ -421,6 +420,24 @@ async function bundleModulesEsbuild(
     ],
   });
   reportEsbuildWarnings("css", [cssRes, cssEntrypointRes]);
+  return metafiles;
+}
+
+async function bundleModulesEsbuild(
+  dir: string,
+  codegenOutputs: CachedCodegenOutputBundle[],
+  componentDeps: Record<string, string[]>,
+  opts: BundleOpts,
+) {
+  const browserOutDir = path.join(dir, `dist-esbuild-browser`);
+  // Each loader worker runs one build at a time. Release esbuild's memory before
+  // loading the generated files into the worker.
+  const metafiles = await buildModuleFiles(
+    dir,
+    codegenOutputs,
+    browserOutDir,
+    opts,
+  ).finally(() => esbuild.stop());
   // We rename the output css file from the last step to entrypoint.css, which is what
   // loader expects
   await fs.rename(
