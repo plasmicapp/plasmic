@@ -562,7 +562,7 @@ function MergeFlow_(
     pretendMergeResult.status !== "uncommitted changes on destination branch" &&
     pretendMergeResult.status !== "app host mismatch";
 
-  const defaultDescription = `Merged from branch ${fromBranch?.name}`;
+  const defaultDescription = `Merged from branch ${fromBranch?.name ?? "main"}`;
 
   switch (mode) {
     case "main":
