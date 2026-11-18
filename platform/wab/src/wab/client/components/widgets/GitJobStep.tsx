@@ -26,7 +26,7 @@ function GitJobStep(props: GitJobStepProps) {
   return (
     <PlasmicGitJobStep
       {...rest}
-      children={text}
+      children={<span>{text}</span>}
       svg={
         rest.status === "started"
           ? {
