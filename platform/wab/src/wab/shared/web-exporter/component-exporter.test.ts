@@ -1,4 +1,5 @@
 import { mkStyleToken } from "@/wab/commons/StyleToken";
+import { TplMgr } from "@/wab/shared/TplMgr";
 import {
   ensureVariantSetting,
   getBaseVariant,
@@ -15,6 +16,7 @@ import { codeLit, customCode } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { mkImageAsset } from "@/wab/shared/core/image-assets";
 import { mkParam, mkVar } from "@/wab/shared/core/lang";
+import { createSite } from "@/wab/shared/core/sites";
 import { mkRuleSet } from "@/wab/shared/core/styles";
 import { TplTagType, mkTplComponentX, mkTplTagX } from "@/wab/shared/core/tpls";
 import {
@@ -28,6 +30,7 @@ import {
   StyleTokenRef,
   TplComponent,
   TplTag,
+  Variant,
 } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
 import { TplVisibility, setTplVisibility } from "@/wab/shared/visibility-utils";
@@ -90,6 +93,43 @@ describe("Component Serialization", () => {
       { elements: [{ attrs: { "aria-label": "Hover label" } }] },
     ]);
     expect(JSON.stringify(result)).not.toContain("html-id");
+  });
+
+  it("serializes combination and global variant overrides in precedence order", () => {
+    const testSite = createSite();
+    const tplMgr = new TplMgr({ site: testSite });
+    const component = tplMgr.addComponent({
+      name: "Button",
+      type: ComponentType.Plain,
+    });
+    const sizeGroup = tplMgr.createVariantGroup({ component, name: "size" });
+    const large = tplMgr.createVariant(component, sizeGroup, "large");
+    const shapeGroup = tplMgr.createVariantGroup({ component, name: "shape" });
+    const rounded = tplMgr.createVariant(component, shapeGroup, "rounded");
+    const dark = tplMgr.createGlobalVariant(
+      tplMgr.createGlobalVariantGroup("Theme"),
+      "Dark",
+    );
+    const tpl = component.tplTree as TplTag;
+    const setColor = (variants: Variant[], color: string) =>
+      (ensureVariantSetting(tpl, variants).rs = mkRuleSet({
+        values: { color },
+      }));
+    setColor([rounded, large], "red");
+    setColor([dark], "white");
+    setColor([large], "blue");
+
+    const result = buildComponentResource(component, { site: testSite });
+    expect(
+      result.variantSettings?.map((o) => ({
+        variants: o.variants.map((v) => v.name),
+        color: o.elements[0].styles?.color,
+      })),
+    ).toEqual([
+      { variants: ["dark"], color: "white" },
+      { variants: ["large"], color: "blue" },
+      { variants: ["rounded", "large"], color: "red" },
+    ]);
   });
 
   it("serializes variant visibility overrides as data-visibility attrs", () => {

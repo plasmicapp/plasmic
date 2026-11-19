@@ -242,7 +242,7 @@ export function componentSchema() {
     variantSettings: z
       .array(variantOverrideSchema())
       .optional()
-      .describe("Per-variant style/attr overrides."),
+      .describe("Style/attr overrides per variant combination."),
     interactions: z
       .array(interactionSchema())
       .optional()
@@ -685,10 +685,12 @@ export function elementVariantDefSchema() {
 export function variantOverrideSchema() {
   return z.object({
     __type: z.literal("VariantOverride"),
-    variant: variantSchema().describe("The variant these overrides apply to."),
+    variants: z
+      .array(variantSchema())
+      .describe("The variant combination these overrides apply to."),
     elements: z
       .array(elementOverrideSchema())
-      .describe("Per-element overrides activated by this variant."),
+      .describe("Per-element overrides activated by these variants."),
   });
 }
 export type VariantOverrideJson = z.infer<
@@ -1109,6 +1111,7 @@ export function variantSchema() {
     uuid: z.string().describe("Variant UUID."),
   });
 }
+export type VariantJson = z.infer<ReturnType<typeof variantSchema>>;
 
 /** An imported (direct dependency) project and its resources. */
 export function importedProjectSchema() {

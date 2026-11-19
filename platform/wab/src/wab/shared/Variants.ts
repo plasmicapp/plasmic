@@ -943,10 +943,14 @@ export function variantComboKey(combo: VariantCombo) {
     .join("-");
 }
 
-export function ensureValidCombo(component: Component, combo: VariantCombo) {
-  if (!isBaseVariant(combo)) {
-    combo = combo.filter((v) => !isBaseVariant(v));
-    combo = uniqBy(combo, (v) => {
+export function validateCombo(
+  component: Component,
+  combo: VariantCombo,
+): { valid: VariantCombo; error?: Error } {
+  let validCombo = combo;
+  if (!isBaseVariant(validCombo)) {
+    validCombo = validCombo.filter((v) => !isBaseVariant(v));
+    validCombo = uniqBy(validCombo, (v) => {
       /**
        * Handle the following cases:
        * 1. Variant that doesn't have a parent (e.g. style variants like :hover)
@@ -965,10 +969,27 @@ export function ensureValidCombo(component: Component, combo: VariantCombo) {
       return v.parent.uuid;
     });
   }
-  if (combo.length === 0) {
-    combo = [getBaseVariant(component)];
+  if (validCombo.length === 0) {
+    validCombo = [getBaseVariant(component)];
   }
-  return combo;
+  const dropped = combo.filter((v) => !validCombo.includes(v));
+  return {
+    valid: validCombo,
+    error:
+      dropped.length === 0
+        ? undefined
+        : new Error(
+            `Variant(s) ${dropped
+              .map((v) => `"${v.uuid}"`)
+              .join(
+                ", ",
+              )} can't be combined with the others: a combination can't include the base variant or two variants of the same single-choice group.`,
+          ),
+  };
+}
+
+export function ensureValidCombo(component: Component, combo: VariantCombo) {
+  return validateCombo(component, combo).valid;
 }
 
 export function isValidComboForToken(combo: VariantCombo) {

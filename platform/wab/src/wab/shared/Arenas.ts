@@ -34,6 +34,7 @@ import {
   allGlobalVariants,
   getAllSiteFrames,
   getComponentArena,
+  getDedicatedArena,
   getPageArena,
   getResponsiveStrategy,
   getSiteArenas,
@@ -679,6 +680,17 @@ export function ensureCustomFrameForActivatedVariants(
   }
 
   return frame;
+}
+
+export function ensureCombinationFrame(
+  site: Site,
+  component: Component,
+  combo: VariantCombo,
+) {
+  const arena = getDedicatedArena(site, component);
+  if (arena && combo.length > 1) {
+    ensureCustomFrameForActivatedVariants(site, arena, new Set(combo));
+  }
 }
 
 export function ensureActivatedScreenVariantsForArena(

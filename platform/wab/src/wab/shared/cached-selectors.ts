@@ -171,22 +171,29 @@ export const extractImageAssetRefsByAttrs = siteSelector(
 export const findNonEmptyCombos = componentSelector(function findNonEmptyCombos(
   component: Component,
 ) {
-  const combos = new Map<string, VariantCombo>();
-  for (const tpl of flattenComponent(component)) {
-    if (isTplVariantable(tpl)) {
-      for (const vs of tpl.vsettings) {
-        const combo = vs.variants.filter((v) => !isPrivateStyleVariant(v));
-        if (combo.length > 1 && !isVariantSettingEmpty(vs)) {
-          const comboKey = variantComboKey(vs.variants);
-          if (!combos.has(comboKey)) {
-            combos.set(comboKey, combo);
+  return findNonEmptyCombosWithElementStates(component)
+    .map((combo) => combo.filter((v) => !isPrivateStyleVariant(v)))
+    .filter((combo) => combo.length > 1);
+});
+
+export const findNonEmptyCombosWithElementStates = componentSelector(
+  function findNonEmptyCombosWithElementStates(component: Component) {
+    const combos = new Map<string, VariantCombo>();
+    for (const tpl of flattenComponent(component)) {
+      if (isTplVariantable(tpl)) {
+        for (const vs of tpl.vsettings) {
+          if (vs.variants.length > 1 && !isVariantSettingEmpty(vs)) {
+            const comboKey = variantComboKey(vs.variants);
+            if (!combos.has(comboKey)) {
+              combos.set(comboKey, vs.variants);
+            }
           }
         }
       }
     }
-  }
-  return [...combos.values()];
-});
+    return [...combos.values()];
+  },
+);
 
 export const usesVariantGroup = componentSelector(function usesVariantGroup(
   component: Component,

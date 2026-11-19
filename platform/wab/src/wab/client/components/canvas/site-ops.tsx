@@ -33,6 +33,7 @@ import {
   deriveInitFrameSettings,
   ensureActivatedScreenVariantsForArena,
   getActivatedVariantsForFrame,
+  getArenaFrameCellsInGrid,
   getArenaFrames,
   getArenaName,
   isComponentArena,
@@ -50,6 +51,7 @@ import {
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
+  VariantCombo,
   VariantGroupType,
   areEquivalentScreenVariants,
   findDuplicateComponentVariant,
@@ -355,16 +357,29 @@ export class SiteOps {
   }
 
   clearFrameComboSettings(frame: ArenaFrame) {
-    const variants = getDisplayVariants({
-      site: this.site,
-      frame,
-    }).map((e) => e.variant);
+    const arena = this.getArenaByFrame(frame);
+    const cellKey =
+      arena && !isMixedArena(arena)
+        ? getArenaFrameCellsInGrid(arena.customMatrix).find(
+            (cell) => cell.frame === frame,
+          )?.cellKey
+        : undefined;
+    const variants =
+      Array.isArray(cellKey) && cellKey.length > 0
+        ? cellKey
+        : getDisplayVariants({
+            site: this.site,
+            frame,
+          }).map((e) => e.variant);
+    this.clearComboSettings(frame.container.component, variants);
+  }
 
+  clearComboSettings(component: Component, combo: VariantCombo) {
     // ensure it's a combo
-    if (variants.length > 1) {
-      flattenTpls(frame.container.component.tplTree).forEach((tpl) => {
+    if (combo.length > 1) {
+      flattenTpls(component.tplTree).forEach((tpl) => {
         if (isTplVariantable(tpl)) {
-          removeTplVariantSettings(tpl, variants);
+          removeTplVariantSettings(tpl, combo);
         }
       });
     }

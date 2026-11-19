@@ -1,9 +1,14 @@
 import { isSlot } from "@/wab/shared/SlotUtils";
 import {
+  VariantCombo,
+  isBaseVariant,
+  isCodeComponentVariant,
   isPrivateStyleVariant,
   isStandaloneVariantGroup,
+  isStyleVariant,
   tryGetBaseVariantSetting,
   tryGetVariantSetting,
+  variantComboKey,
 } from "@/wab/shared/Variants";
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import { assert, switchType } from "@/wab/shared/common";
@@ -83,6 +88,10 @@ import {
   normalizeToChoiceObjects,
 } from "@/wab/shared/model/model-util";
 import {
+  makeVariantComboSorter,
+  sortedVariantCombos,
+} from "@/wab/shared/variant-sort";
+import {
   TplVisibility,
   getVariantSettingVisibility,
   hasVisibilitySetting,
@@ -107,6 +116,7 @@ import {
   type PropJson,
   type StateJson,
   type VariantDefJson,
+  type VariantJson,
   type VariantOverrideJson,
 } from "@/wab/shared/web-exporter/schema";
 import {
@@ -500,44 +510,6 @@ function getParamType(component: Component, param: any): string {
   return param.type.name || "text";
 }
 
-interface TplOverride {
-  tplUuid: string;
-  styles: Record<string, string>;
-  attrs: Record<string, string>;
-}
-
-/** Extracts per-element style/attr overrides for a specific variant. */
-function getTplOverrides(
-  component: Component,
-  variant: Variant,
-): TplOverride[] {
-  if (!component.tplTree) {
-    return [];
-  }
-
-  const overrides: TplOverride[] = [];
-
-  for (const tpl of flattenTpls(component.tplTree)) {
-    const vs = tryGetVariantSetting(tpl, [variant]);
-    if (!vs) {
-      continue;
-    }
-
-    const styles = getStylesFromVariantSetting(vs, tpl);
-    const attrs = {
-      ...getAttrsFromVariantSetting(vs),
-      ...getMixinAttrs(vs),
-      ...getVisibilityAttrs(vs, { explicitVisible: true }),
-    };
-
-    if (Object.keys(styles).length > 0 || Object.keys(attrs).length > 0) {
-      overrides.push({ tplUuid: tpl.uuid, styles, attrs });
-    }
-  }
-
-  return overrides;
-}
-
 function buildComponentProps(component: Component): PropJson[] {
   return component.params
     .filter((param) => isKnownPropParam(param))
@@ -816,50 +788,37 @@ function buildComponentStates(component: Component): StateJson[] {
   });
 }
 
-interface SerializableVariant {
-  /** The model variant, used to read its per-element overrides. */
-  variant: Variant;
-  /** The variant's canonical JSON definition. */
-  variantDef: VariantDefJson;
+function variantJson(variant: Variant): VariantJson {
+  return {
+    __type: "Variant",
+    name: isStyleVariant(variant)
+      ? variant.selectors.join(", ")
+      : isCodeComponentVariant(variant)
+        ? variant.codeComponentVariantKeys.join(", ")
+        : toVarName(variant.name),
+    uuid: variant.uuid,
+  };
 }
 
-/**
- * Collects all variants to serialize (component variant groups + element style
- * variants), each paired with its canonical JSON definition.
- */
-function getComponentVariants(component: Component): SerializableVariant[] {
-  const result: SerializableVariant[] = [];
+function buildComponentVariantDefs(component: Component): VariantDefJson[] {
+  const result: VariantDefJson[] = [];
 
   for (const variantGroup of component.variantGroups) {
     const group = paramToVarName(component, variantGroup.param);
     for (const variant of variantGroup.variants) {
       result.push({
-        variant,
-        variantDef: {
-          __type: "ComponentVariant",
-          variant: {
-            __type: "Variant",
-            name: toVarName(variant.name),
-            uuid: variant.uuid,
-          },
-          group,
-        },
+        __type: "ComponentVariant",
+        variant: variantJson(variant),
+        group,
       });
     }
   }
 
   for (const variant of component.variants.filter(isPrivateStyleVariant)) {
     result.push({
-      variant,
-      variantDef: {
-        __type: "ElementVariant",
-        variant: {
-          __type: "Variant",
-          name: variant.selectors.join(", "),
-          uuid: variant.uuid,
-        },
-        elementUuid: variant.forTpl.uuid,
-      },
+      __type: "ElementVariant",
+      variant: variantJson(variant),
+      elementUuid: variant.forTpl.uuid,
     });
   }
 
@@ -879,37 +838,57 @@ function buildVariantGroups(component: Component): ComponentVariantGroupJson[] {
   }));
 }
 
-function buildComponentVariantDefs(component: Component): VariantDefJson[] {
-  return getComponentVariants(component).map((entry) => entry.variantDef);
+function buildElementOverride(
+  tpl: TplNode,
+  vs: VariantSetting,
+): ElementOverrideJson | undefined {
+  const styles = getStylesFromVariantSetting(vs, tpl);
+  const attrs = {
+    ...getAttrsFromVariantSetting(vs),
+    ...getMixinAttrs(vs),
+    ...getVisibilityAttrs(vs, { explicitVisible: true }),
+  };
+  if (Object.keys(styles).length === 0 && Object.keys(attrs).length === 0) {
+    return undefined;
+  }
+  return {
+    __type: "ElementOverride",
+    uuid: tpl.uuid,
+    ...(Object.keys(styles).length > 0 ? { styles } : {}),
+    ...(Object.keys(attrs).length > 0 ? { attrs } : {}),
+  };
 }
 
 function buildVariantOverrides(
   component: Component,
+  site: Site,
 ): VariantOverrideJson[] | undefined {
-  const variantOverrides: VariantOverrideJson[] = [];
-  for (const { variant, variantDef } of getComponentVariants(component)) {
-    const overrides = getTplOverrides(component, variant);
-    if (overrides.length === 0) {
-      continue;
-    }
-    variantOverrides.push({
-      __type: "VariantOverride",
-      variant: variantDef.variant,
-      elements: overrides.map((o) => {
-        const element: ElementOverrideJson = {
-          __type: "ElementOverride",
-          uuid: o.tplUuid,
-        };
-        if (Object.keys(o.styles).length > 0) {
-          element.styles = o.styles;
-        }
-        if (Object.keys(o.attrs).length > 0) {
-          element.attrs = o.attrs;
-        }
-        return element;
-      }),
-    });
+  if (!component.tplTree) {
+    return undefined;
   }
+  const tpls = flattenTpls(component.tplTree);
+  const combos = new Map<string, VariantCombo>();
+  for (const tpl of tpls) {
+    for (const vs of tpl.vsettings) {
+      if (!isBaseVariant(vs.variants)) {
+        combos.set(variantComboKey(vs.variants), vs.variants);
+      }
+    }
+  }
+  const variantOverrides = sortedVariantCombos(
+    [...combos.values()],
+    makeVariantComboSorter(site, component),
+  )
+    .map((combo): VariantOverrideJson => ({
+      __type: "VariantOverride",
+      variants: combo.map(variantJson),
+      elements: tpls.flatMap((tpl) => {
+        const vs = tryGetVariantSetting(tpl, combo);
+        const element = vs && buildElementOverride(tpl, vs);
+        return element ? [element] : [];
+      }),
+    }))
+    .filter((o) => o.elements.length > 0);
   return variantOverrides.length > 0 ? variantOverrides : undefined;
 }
 
@@ -963,7 +942,7 @@ export function buildComponentResource(
   const pageMeta = buildPageMeta(component);
   const fromProject = getDataPlasmicProject(opts.site, component);
   const states = buildComponentStates(component);
-  const variantSettings = buildVariantOverrides(component);
+  const variantSettings = buildVariantOverrides(component, opts.site);
   const interactions = buildComponentInteractions(component);
   return {
     __type: "Component",

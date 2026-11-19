@@ -10,6 +10,7 @@ import {
   VariantCombo,
   getAllVariantsForTpl,
   getBaseVariant,
+  validateCombo,
 } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { ensure, maybe, uniqueName } from "@/wab/shared/common";
@@ -184,7 +185,11 @@ export function getComponentVariantCombo(
         .join(", ")}.`,
     );
   }
-  return result.variants;
+  const { valid, error } = validateCombo(component, result.variants);
+  if (error) {
+    throw error;
+  }
+  return valid;
 }
 
 /**
