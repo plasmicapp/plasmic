@@ -461,6 +461,13 @@ export const popoverProps = {
     defaultValueHint: 0,
     advanced: true,
   },
+  collisionPadding: {
+    type: "number",
+    defaultValueHint: 0,
+    advanced: true,
+    description:
+      "Minimum distance in pixels to keep from the viewport edges when the content is repositioned to stay in view.",
+  },
   ...animPropTypes({
     defaultEnterAnimations: () => ["fade-in", "zoom-enter"],
     defaultExitAnimations: () => ["fade-out", "zoom-exit"],
