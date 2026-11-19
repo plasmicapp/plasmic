@@ -135,7 +135,7 @@ export async function buildPublishedLoaderAssets(req: Request, res: Response) {
     // the token, which isn't in the cache key, so they stay no-store.
     const apiErr = transformErrors(err);
     if (apiErr instanceof BadRequestError || apiErr instanceof NotFoundError) {
-      setAsCacheableRedirect(res);
+      setAsCacheableRedirect(req, res);
     }
     throw err;
   }
@@ -163,12 +163,12 @@ export async function buildPublishedLoaderAssets(req: Request, res: Response) {
   );
 
   if (isPolyfillProject) {
-    setAsCacheableRedirect(res);
+    setAsCacheableRedirect(req, res);
     res.status(200).json({ redirectUrl: destination });
     return;
   }
 
-  redirectToCacheableResource(res, destination);
+  redirectToCacheableResource(req, res, destination);
 }
 
 export function makeCacheableVersionedLoaderQuery({
@@ -295,7 +295,7 @@ export async function buildVersionedLoaderAssets(req: Request, res: Response) {
     appDir: nextjsAppDir,
   });
 
-  setAsCacheableResource(res);
+  setAsCacheableResource(req, res);
   res.json(result);
 }
 
@@ -404,7 +404,7 @@ export async function buildLatestLoaderAssets(req: Request, res: Response) {
     .map(([pid, rev]) => `${pid}@${rev}`)
     .join(",")}"`;
 
-  if (checkEtagSkippable(req, res, etag)) {
+  if (checkEtagSkippable(req, res, etag, previewCacheControl(req))) {
     return;
   }
 
@@ -550,7 +550,8 @@ export async function getLoaderChunk(req: Request, res: Response) {
         )
         .join("\n")}
     })()`.trim();
-  setAsCacheableResource(res);
+  // Chunks need no authorization, so they are cached under a URL-only key.
+  setAsPublicCacheableResource(res);
   res.setHeader("content-type", "text/javascript");
   res.send(response);
 }
@@ -661,7 +662,7 @@ async function buildLoader(
       : "";
     const etag = `W/${prefix}${suffix}`;
 
-    if (checkEtagSkippable(req, res, etag)) {
+    if (checkEtagSkippable(req, res, etag, previewCacheControl(req))) {
       return;
     }
   }
@@ -822,7 +823,7 @@ export async function buildVersionedLoaderHtml(req: Request, res: Response) {
       appDir: false,
     });
 
-    setAsCacheableResource(res, maxAge);
+    setAsCacheableResource(req, res, maxAge);
     res.json(result);
   });
 }
@@ -916,6 +917,7 @@ async function buildPublishedLoaderRedirect(
 
   // Make sure we don't cache redirects
   redirectToCacheableResource(
+    req,
     res,
     `/api/v1/loader/${loaderType}/versioned/${resolvedProjectIdSpec}${
       component ? "/" + normComponentName(component) : ""
@@ -1010,17 +1012,56 @@ export async function prefillPublishedLoader(req: Request, res: Response) {
   res.json({});
 }
 
-function redirectToCacheableResource(res: Response, destination: string) {
-  setAsCacheableRedirect(res);
+/**
+ * Whether a response to this request may be stored by shared caches (Media CDN
+ * and mini-cache) and served to other callers.
+ *
+ * Those caches key loader responses on the URL plus the
+ * `x-plasmic-api-project-tokens` header, so a response is only safe to share
+ * when the project tokens (or the project being public) are what authorized
+ * it: every caller that hits the same entry presented the same tokens. A
+ * session cookie, personal API token or team API token authorizes a specific
+ * actor instead. Those responses are marked private so no cache ever hands
+ * them to a caller that presented different credentials.
+ */
+function isSharedCacheable(req: Request) {
+  return !req.user && !req.apiTeam;
+}
+
+const PRIVATE_CACHE_CONTROL = "private, no-store";
+
+function redirectToCacheableResource(
+  req: Request,
+  res: Response,
+  destination: string,
+) {
+  setAsCacheableRedirect(req, res);
   res.redirect(destination);
 }
 
-function setAsCacheableRedirect(res: Response) {
+function setAsCacheableRedirect(req: Request, res: Response) {
+  if (!isSharedCacheable(req)) {
+    res.setHeader("Cache-Control", PRIVATE_CACHE_CONTROL);
+    return;
+  }
   // We ask the CDN to cache redirects for us for a short time
   res.setHeader("Cache-Control", "s-maxage=30");
 }
 
-function setAsCacheableResource(res: Response, maxAge = 31536000) {
+function setAsCacheableResource(
+  req: Request,
+  res: Response,
+  maxAge = 31536000,
+) {
+  if (!isSharedCacheable(req)) {
+    res.setHeader("Cache-Control", PRIVATE_CACHE_CONTROL);
+    return;
+  }
+  setAsPublicCacheableResource(res, maxAge);
+}
+
+/** For resources that need no authorization. */
+function setAsPublicCacheableResource(res: Response, maxAge = 31536000) {
   // We set a relatively short max-age, and a long s-maxage (so, the browser
   // doesn't cache much, but cloudfront caches for a long time).  This is
   // because if we discover a bug on the image optimizer, it is easy for us to
@@ -1036,7 +1077,20 @@ function isUptimeCheck(req: Request) {
   return Boolean(req.headers["x-plasmic-uptime-check"]);
 }
 
-export function checkEtagSkippable(req: Request, res: Response, etag: string) {
+/**
+ * Cache-Control override for loader preview responses, which pass through
+ * mini-cache. See `isSharedCacheable`.
+ */
+function previewCacheControl(req: Request) {
+  return isSharedCacheable(req) ? undefined : PRIVATE_CACHE_CONTROL;
+}
+
+export function checkEtagSkippable(
+  req: Request,
+  res: Response,
+  etag: string,
+  cacheControl = "max-age=5",
+) {
   if (req.devflags.disableETagCaching) {
     logger.info("Etag mechanism is disabled");
     return false;
@@ -1046,12 +1100,12 @@ export function checkEtagSkippable(req: Request, res: Response, etag: string) {
   // next time as well.
   res.setHeader("ETag", etag);
 
-  // We set a short max-age here so that the browser or cloudfront
+  // By default we set a short max-age here so that the browser or cloudfront
   // will try to revalidate via if-none-match first before reusing
   // the cache entry. We used to set no-cache here, but no-cache would
   // disable request collapsing that cloudfront does for simultaneous
   // requests.
-  res.setHeader("Cache-Control", "max-age=5");
+  res.setHeader("Cache-Control", cacheControl);
 
   if (isUptimeCheck(req)) {
     // Never skip uptime checks, but still set cache headers above

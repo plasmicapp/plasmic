@@ -307,7 +307,12 @@ export class Api {
   }
 
   private makeAuthHeaders() {
-    const tokens = this.opts.projects
+    // CDN caches key loader responses on this header, so serialize projects in
+    // a canonical order: callers listing the same projects in a different
+    // order then share cache entries. The sort is stable, so duplicate IDs keep
+    // their relative order.
+    const tokens = [...this.opts.projects]
+      .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
       .map((p) => `${p.id}:${p.token}`)
       .join(",");
     return {

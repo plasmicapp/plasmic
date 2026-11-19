@@ -83,7 +83,7 @@ describe("Api", () => {
         const mockFetch = vi
           .fn()
           .mockResolvedValueOnce(
-            mockResponse(200, { redirectUrl: "/versioned?cb=123" })
+            mockResponse(200, { redirectUrl: "/versioned?cb=123" }),
           )
           .mockResolvedValueOnce(mockResponse(200, mockBundle));
         (api as any).fetch = mockFetch;
@@ -94,7 +94,7 @@ describe("Api", () => {
         expect(mockFetch).toHaveBeenNthCalledWith(
           2,
           "https://codegen.plasmic.app/versioned?cb=123",
-          expect.any(Object)
+          expect.any(Object),
         );
         expect(result).toMatchObject(mockBundle);
       });
@@ -103,11 +103,11 @@ describe("Api", () => {
         (api as any).fetch = vi
           .fn()
           .mockResolvedValue(
-            mockResponse(400, { error: { message: "Bad request" } })
+            mockResponse(400, { error: { message: "Bad request" } }),
           );
 
         await expect(api.fetchLoaderData(["test"], {})).rejects.toThrow(
-          "Bad request"
+          "Bad request",
         );
       });
 
@@ -115,15 +115,15 @@ describe("Api", () => {
         const mockFetch = vi
           .fn()
           .mockResolvedValueOnce(
-            mockResponse(200, { redirectUrl: "/versioned" })
+            mockResponse(200, { redirectUrl: "/versioned" }),
           )
           .mockResolvedValueOnce(
-            mockResponse(500, { error: { message: "Server error" } })
+            mockResponse(500, { error: { message: "Server error" } }),
           );
         (api as any).fetch = mockFetch;
 
         await expect(api.fetchLoaderData(["test"], {})).rejects.toThrow(
-          "Server error"
+          "Server error",
         );
         expect(mockFetch).toHaveBeenCalledTimes(2);
       });
@@ -163,7 +163,7 @@ describe("Api", () => {
         (api as any).fetch = mockFetch;
 
         await expect(api.fetchLoaderData(["test"], {})).rejects.toThrow(
-          "redirect was expected"
+          "redirect was expected",
         );
       });
 
@@ -175,7 +175,7 @@ describe("Api", () => {
         (api as any).fetch = mockFetch;
 
         await expect(api.fetchLoaderData(["test"], {})).rejects.toThrow(
-          "no location header"
+          "no location header",
         );
       });
 
@@ -214,14 +214,47 @@ describe("Api", () => {
             },
           })
           .mockResolvedValueOnce(
-            mockResponse(404, { error: { message: "Not found" } })
+            mockResponse(404, { error: { message: "Not found" } }),
           );
         (api as any).fetch = mockFetch;
 
         await expect(api.fetchLoaderData(["test"], {})).rejects.toThrow(
-          "Not found"
+          "Not found",
         );
       });
+    });
+  });
+
+  describe("project tokens header", () => {
+    const tokensHeader = async (projects: { id: string; token: string }[]) => {
+      const api = new Api({ projects, manualRedirect: false });
+      const mockFetch = vi.fn().mockResolvedValue({
+        status: 200,
+        text: async () => JSON.stringify({ projects: [] }),
+        headers: { get: (_key: string) => null },
+      });
+      (api as any).fetch = mockFetch;
+      await api.fetchLoaderData(["b", "a"], {});
+      return mockFetch.mock.calls[0][1].headers["x-plasmic-api-project-tokens"];
+    };
+
+    it("serializes projects sorted by ID, regardless of input order", async () => {
+      const ab = [
+        { id: "a", token: "ta" },
+        { id: "b", token: "tb" },
+      ];
+      expect(await tokensHeader(ab)).toBe("a:ta,b:tb");
+      expect(await tokensHeader([...ab].reverse())).toBe("a:ta,b:tb");
+    });
+
+    it("keeps the relative order of duplicate IDs and doesn't mutate the input", async () => {
+      const projects = [
+        { id: "b", token: "tb" },
+        { id: "a", token: "first" },
+        { id: "a", token: "second" },
+      ];
+      expect(await tokensHeader(projects)).toBe("a:first,a:second,b:tb");
+      expect(projects.map((p) => p.id)).toEqual(["b", "a", "a"]);
     });
   });
 });

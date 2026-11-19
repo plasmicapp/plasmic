@@ -16,6 +16,7 @@ import { createSite } from "@/wab/shared/core/sites";
 
 describe("loader", () => {
   let publicApi: PublicApiTester;
+  let userApi: PublicApiTester;
   let baseURL: string;
   let cleanup: () => Promise<void>;
 
@@ -94,7 +95,12 @@ describe("loader", () => {
   });
 
   beforeEach(async () => {
-    publicApi = new PublicApiTester(baseURL, {
+    // Loader clients authenticate with project tokens only, which the request
+    // helpers add per project.
+    publicApi = new PublicApiTester(baseURL);
+    // A personal API token authorizes a specific user. Shared caches must
+    // never reuse responses to such requests.
+    userApi = new PublicApiTester(baseURL, {
       "x-plasmic-api-user": user.email,
       "x-plasmic-api-token": userToken,
     });
@@ -102,6 +108,7 @@ describe("loader", () => {
 
   afterEach(async () => {
     await publicApi.dispose();
+    await userApi.dispose();
   });
 
   afterAll(async () => {
@@ -109,10 +116,10 @@ describe("loader", () => {
   });
 
   it("fails code loader requests with no projectId", async () => {
-    const publishedRes = await publicApi.getPublishedLoaderAssets([], {});
+    const publishedRes = await userApi.getPublishedLoaderAssets([], {});
     expect(publishedRes.status()).toEqual(400);
 
-    const versionedRes = await publicApi.rawReq(
+    const versionedRes = await userApi.rawReq(
       "get",
       "/api/v1/loader/code/versioned?cb=23&platform=nextjs&loaderVersion=7",
     );
@@ -163,6 +170,31 @@ describe("loader", () => {
       `/api/v1/loader/code/versioned?cb=23&platform=react&loaderVersion=7&projectId=${a.id}%400.0.2&projectId=${b.id}%400.0.2`,
     );
     expect(res.headers()["cache-control"]).toEqual("s-maxage=30");
+  });
+
+  it("marks responses authorized by a user as private", async () => {
+    // Shared caches key on the project tokens header, so a response that a
+    // user's own credentials authorized must not be stored for other callers.
+    const redirectRes = await userApi.getPublishedLoaderAssets([projects[0]], {
+      loaderVersion: "7",
+    });
+    expect(redirectRes.status()).toEqual(302);
+    expect(redirectRes.headers()["cache-control"]).toEqual("private, no-store");
+
+    const htmlRes = await userApi.getPublishedLoaderHtml(
+      projects[0],
+      "Homepage",
+      { followRedirect: true },
+    );
+    expect(htmlRes.status()).toEqual(200);
+    expect(htmlRes.headers()["cache-control"]).toEqual("private, no-store");
+
+    const previewRes = await userApi.getPreviewLoaderHtml(
+      projects[0],
+      "Homepage",
+    );
+    expect(previewRes.status()).toEqual(200);
+    expect(previewRes.headers()["cache-control"]).toEqual("private, no-store");
   });
 
   it("fails if any project has no prefilled versions", async () => {
@@ -220,6 +252,9 @@ describe("loader", () => {
       { followRedirect: true },
     );
     expect(htmlRes.status()).toEqual(200);
+    expect(htmlRes.headers()["cache-control"]).toEqual(
+      "max-age=3600, s-maxage=31536000",
+    );
     expect(await htmlRes.text()).toInclude("Hello, world!");
   });
 
@@ -265,6 +300,9 @@ describe("loader", () => {
       { followRedirect: true },
     );
     expect(htmlRes.status()).toEqual(200);
+    expect(htmlRes.headers()["cache-control"]).toEqual(
+      "max-age=3600, s-maxage=31536000",
+    );
     expect(await htmlRes.text()).toInclude("Hello, world!");
   });
 
