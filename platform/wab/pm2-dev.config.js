@@ -106,7 +106,6 @@ module.exports = {
       time: true,
       env: {
         SOCKET_PORT: 3020,
-        NQ_SQLJS: "1",
       },
       exec_mode: "cluster",
       instances: 1,
