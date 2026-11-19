@@ -499,6 +499,9 @@ packages:
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
 
+  csstype@3.2.4:
+    resolution: {integrity: sha512-PoKaoPzQapnEoqUSnHx1u6W6ku8CVEgKsnpmmzU3m1nwkidpPBQ8V/Zq2+bWNrsOKoKLwTGdbx6xF7BXP1zLVQ==}
+
   damerau-levenshtein@1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
 
@@ -1606,7 +1609,7 @@ snapshots:
   '@plasmicapp/host@2.0.21(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@plasmicapp/query': 0.1.88(react@18.2.0)
-      csstype: 3.2.3
+      csstype: 3.2.4
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       window-or-global: 1.0.1
@@ -1911,6 +1914,8 @@ snapshots:
       which: 2.0.2
 
   csstype@3.2.3: {}
+
+  csstype@3.2.4: {}
 
   damerau-levenshtein@1.0.8: {}
 
