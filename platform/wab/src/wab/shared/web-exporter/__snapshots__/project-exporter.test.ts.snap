@@ -188,13 +188,7 @@ exports[`Project Serialization > serialize project with all filters enabled 1`] 
               <variantedValues>
                 <ARRAY>
                   <ITEM>
-                    <VariantedValue value="var(--token-LRdyYjwXlY-r)" resolvedValue="#9333EA">
-                      <variantUuids>
-                        <ARRAY>
-                          <ITEM>pIBrJnbkAQLL</ITEM>
-                        </ARRAY>
-                      </variantUuids>
-                    </VariantedValue>
+                    <VariantedValue variantUuid="pIBrJnbkAQLL" value="var(--token-LRdyYjwXlY-r)" resolvedValue="#9333EA"></VariantedValue>
                   </ITEM>
                 </ARRAY>
               </variantedValues>
@@ -300,13 +294,7 @@ exports[`Project Serialization > serialize project with all filters enabled 1`] 
               <variantedValues>
                 <ARRAY>
                   <ITEM>
-                    <VariantedValue value="var(--token-IQebKfyP9Vbp)" resolvedValue="#F3E8FF">
-                      <variantUuids>
-                        <ARRAY>
-                          <ITEM>pIBrJnbkAQLL</ITEM>
-                        </ARRAY>
-                      </variantUuids>
-                    </VariantedValue>
+                    <VariantedValue variantUuid="pIBrJnbkAQLL" value="var(--token-IQebKfyP9Vbp)" resolvedValue="#F3E8FF"></VariantedValue>
                   </ITEM>
                 </ARRAY>
               </variantedValues>
@@ -356,13 +344,7 @@ exports[`Project Serialization > serialize project with all filters enabled 1`] 
               <variantedValues>
                 <ARRAY>
                   <ITEM>
-                    <VariantedValue value="var(--token-qeHSzxlRDSRm)" resolvedValue="#D8B4FE">
-                      <variantUuids>
-                        <ARRAY>
-                          <ITEM>pIBrJnbkAQLL</ITEM>
-                        </ARRAY>
-                      </variantUuids>
-                    </VariantedValue>
+                    <VariantedValue variantUuid="pIBrJnbkAQLL" value="var(--token-qeHSzxlRDSRm)" resolvedValue="#D8B4FE"></VariantedValue>
                   </ITEM>
                 </ARRAY>
               </variantedValues>
@@ -440,13 +422,7 @@ exports[`Project Serialization > serialize project with all filters enabled 1`] 
               <variantedValues>
                 <ARRAY>
                   <ITEM>
-                    <VariantedValue value="var(--token-zrzu4DH_2Ak0)" resolvedValue="#FAF5FF">
-                      <variantUuids>
-                        <ARRAY>
-                          <ITEM>pIBrJnbkAQLL</ITEM>
-                        </ARRAY>
-                      </variantUuids>
-                    </VariantedValue>
+                    <VariantedValue variantUuid="pIBrJnbkAQLL" value="var(--token-zrzu4DH_2Ak0)" resolvedValue="#FAF5FF"></VariantedValue>
                   </ITEM>
                 </ARRAY>
               </variantedValues>
@@ -475,13 +451,7 @@ exports[`Project Serialization > serialize project with all filters enabled 1`] 
               <variantedValues>
                 <ARRAY>
                   <ITEM>
-                    <VariantedValue value="var(--token-4Hnug9A3OCfz)" resolvedValue="#581C87">
-                      <variantUuids>
-                        <ARRAY>
-                          <ITEM>pIBrJnbkAQLL</ITEM>
-                        </ARRAY>
-                      </variantUuids>
-                    </VariantedValue>
+                    <VariantedValue variantUuid="pIBrJnbkAQLL" value="var(--token-4Hnug9A3OCfz)" resolvedValue="#581C87"></VariantedValue>
                   </ITEM>
                 </ARRAY>
               </variantedValues>
@@ -1558,13 +1528,7 @@ exports[`Project Serialization > serialize project with all filters enabled 1`] 
                           <variantedValues>
                             <ARRAY>
                               <ITEM>
-                                <VariantedValue value="#0CC14E">
-                                  <variantUuids>
-                                    <ARRAY>
-                                      <ITEM>pIBrJnbkAQLL</ITEM>
-                                    </ARRAY>
-                                  </variantUuids>
-                                </VariantedValue>
+                                <VariantedValue variantUuid="pIBrJnbkAQLL" value="#0CC14E"></VariantedValue>
                               </ITEM>
                             </ARRAY>
                           </variantedValues>
@@ -4435,9 +4399,7 @@ exports[`Project Serialization > serialize project with all filters enabled 2`] 
                 {
                   "__type": "VariantedValue",
                   "value": "#0CC14E",
-                  "variantUuids": [
-                    "pIBrJnbkAQLL",
-                  ],
+                  "variantUuid": "pIBrJnbkAQLL",
                 },
               ],
             },
@@ -6389,9 +6351,7 @@ exports[`Project Serialization > serialize project with all filters enabled 2`] 
             "__type": "VariantedValue",
             "resolvedValue": "#9333EA",
             "value": "var(--token-LRdyYjwXlY-r)",
-            "variantUuids": [
-              "pIBrJnbkAQLL",
-            ],
+            "variantUuid": "pIBrJnbkAQLL",
           },
         ],
       },
@@ -6547,9 +6507,7 @@ exports[`Project Serialization > serialize project with all filters enabled 2`] 
             "__type": "VariantedValue",
             "resolvedValue": "#F3E8FF",
             "value": "var(--token-IQebKfyP9Vbp)",
-            "variantUuids": [
-              "pIBrJnbkAQLL",
-            ],
+            "variantUuid": "pIBrJnbkAQLL",
           },
         ],
       },
@@ -6623,9 +6581,7 @@ exports[`Project Serialization > serialize project with all filters enabled 2`] 
             "__type": "VariantedValue",
             "resolvedValue": "#D8B4FE",
             "value": "var(--token-qeHSzxlRDSRm)",
-            "variantUuids": [
-              "pIBrJnbkAQLL",
-            ],
+            "variantUuid": "pIBrJnbkAQLL",
           },
         ],
       },
@@ -6740,9 +6696,7 @@ exports[`Project Serialization > serialize project with all filters enabled 2`] 
             "__type": "VariantedValue",
             "resolvedValue": "#FAF5FF",
             "value": "var(--token-zrzu4DH_2Ak0)",
-            "variantUuids": [
-              "pIBrJnbkAQLL",
-            ],
+            "variantUuid": "pIBrJnbkAQLL",
           },
         ],
       },
@@ -6783,9 +6737,7 @@ exports[`Project Serialization > serialize project with all filters enabled 2`] 
             "__type": "VariantedValue",
             "resolvedValue": "#581C87",
             "value": "var(--token-4Hnug9A3OCfz)",
-            "variantUuids": [
-              "pIBrJnbkAQLL",
-            ],
+            "variantUuid": "pIBrJnbkAQLL",
           },
         ],
       },

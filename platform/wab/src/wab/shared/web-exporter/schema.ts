@@ -797,16 +797,12 @@ export function tokenValuesSchema() {
 }
 export type TokenValuesJson = z.infer<ReturnType<typeof tokenValuesSchema>>;
 
-/** A per-global-variant-combination value override. */
+/** A per-global-variant value override. */
 export function variantedValueSchema() {
   return z.object({
     __type: z.literal("VariantedValue"),
-    variantUuids: z
-      .array(z.string())
-      .describe(
-        "Global-variant UUIDs whose combination this value applies to (order-independent).",
-      ),
-    value: z.string().describe("CSS value for this variant combination."),
+    variantUuid: z.string(),
+    value: z.string(),
     resolvedValue: z
       .string()
       .optional()
@@ -887,14 +883,8 @@ export type ThemeStyleJson = z.infer<ReturnType<typeof themeStyleSchema>>;
 export function variantedStyleSchema() {
   return z.object({
     __type: z.literal("VariantedStyle"),
-    variantUuids: z
-      .array(z.string())
-      .describe(
-        "Global-variant UUIDs whose combination these styles apply to (order-independent).",
-      ),
-    styles: z
-      .record(z.string(), z.string())
-      .describe("CSS property values for this variant combination."),
+    variantUuid: z.string(),
+    styles: z.record(z.string(), z.string()),
   });
 }
 export type VariantedStyleJson = z.infer<

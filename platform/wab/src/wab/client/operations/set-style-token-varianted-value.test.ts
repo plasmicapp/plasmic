@@ -3,7 +3,6 @@ import { setStyleTokenVariantedValue } from "@/wab/client/operations/set-style-t
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { assert } from "@/wab/shared/common";
 import { createSite } from "@/wab/shared/core/sites";
-import { Variant } from "@/wab/shared/model/classes";
 
 describe("setStyleTokenVariantedValue", () => {
   function setup() {
@@ -30,7 +29,7 @@ describe("setStyleTokenVariantedValue", () => {
     const setResult = setStyleTokenVariantedValue({
       site,
       token,
-      variants: [dark],
+      variant: dark,
       value: "#111111",
     });
     assert(setResult.isOk(), "expected set success");
@@ -41,21 +40,10 @@ describe("setStyleTokenVariantedValue", () => {
     const removeResult = setStyleTokenVariantedValue({
       site,
       token,
-      variants: [dark],
+      variant: dark,
       value: null,
     });
     assert(removeResult.isOk(), "expected remove success");
     expect(token.variantedValues.length).toEqual(0);
-  });
-
-  it("errors when no variants are provided", () => {
-    const { site, token } = setup();
-    const result = setStyleTokenVariantedValue({
-      site,
-      token,
-      variants: [] as Variant[],
-      value: "#000",
-    });
-    expect(result.isErr()).toBe(true);
   });
 });

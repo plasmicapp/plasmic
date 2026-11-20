@@ -4,9 +4,7 @@ import {
 } from "@/wab/client/operations/set-mixin-styles";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { mkVariant } from "@/wab/shared/Variants";
-import { assert } from "@/wab/shared/common";
 import { createSite } from "@/wab/shared/core/sites";
-import { ScreenSizeSpec } from "@/wab/shared/css-size";
 import { Mixin } from "@/wab/shared/model/classes";
 
 describe("setMixinStyles", () => {
@@ -170,17 +168,14 @@ describe("setMixinVariantedStyles", () => {
     return { site, tplMgr, mixin, variant };
   }
 
-  it("creates then updates the override for a variant combo", () => {
+  it("creates then updates the override for a variant", () => {
     const { mixin, variant } = setup();
 
-    assert(
-      setMixinVariantedStyles({
-        mixin,
-        variants: [variant],
-        styles: { "font-size": "16px" },
-      }).isOk(),
-      "expected success result",
-    );
+    setMixinVariantedStyles({
+      mixin,
+      variant,
+      styles: { "font-size": "16px" },
+    });
     expect(mixin.rs.values).toEqual({ "font-size": "24px", color: "#fff" });
     expect(mixin.variantedRs.length).toEqual(1);
     expect(mixin.variantedRs[0].variants).toEqual([variant]);
@@ -188,7 +183,7 @@ describe("setMixinVariantedStyles", () => {
 
     setMixinVariantedStyles({
       mixin,
-      variants: [variant],
+      variant,
       styles: { "font-size": "18px", color: "#000" },
     });
     expect(mixin.variantedRs.length).toEqual(1);
@@ -203,39 +198,28 @@ describe("setMixinVariantedStyles", () => {
 
     setMixinVariantedStyles({
       mixin,
-      variants: [variant],
+      variant,
       styles: { "font-size": "16px" },
     });
-    assert(
+    expect(
       setMixinVariantedStyles({
         mixin,
-        variants: [variant],
+        variant,
         styles: null,
-      }).isOk(),
-      "expected success result",
-    );
+      }),
+    ).toEqual([]);
     expect(mixin.variantedRs).toEqual([]);
   });
 
   it("is a no-op when removing an override that does not exist", () => {
     const { mixin, variant } = setup();
-    const result = setMixinVariantedStyles({
-      mixin,
-      variants: [variant],
-      styles: null,
-    });
-    expect(result.isOk()).toBe(true);
-    expect(mixin.variantedRs).toEqual([]);
-  });
-
-  it("errors without any variant", () => {
-    const { mixin } = setup();
-    const result = setMixinVariantedStyles({
-      mixin,
-      variants: [],
-      styles: { color: "#000" },
-    });
-    expect(result.isErr()).toBe(true);
+    expect(
+      setMixinVariantedStyles({
+        mixin,
+        variant,
+        styles: null,
+      }),
+    ).toEqual([]);
     expect(mixin.variantedRs).toEqual([]);
   });
 
@@ -244,13 +228,12 @@ describe("setMixinVariantedStyles", () => {
 
     const result = setMixinVariantedStyles({
       mixin,
-      variants: [variant],
+      variant,
       styles: { "font-size": "16px", padding: "8px", "line-height": null },
     });
 
-    assert(result.isOk(), "expected success result");
-    expect(result.value).toEqual([
-      'Skipped for the targeted variants: "padding". A property needs a base value before it can be overridden per variant; set it without variantUuids first.',
+    expect(result).toEqual([
+      'Skipped for the targeted variants: "padding". A property needs a base value before it can be overridden per variant; set it without variantUuid first.',
       'Ignored removal of properties that are not set: "line-height".',
     ]);
     expect(mixin.variantedRs[0].rs.values).toEqual({ "font-size": "16px" });
@@ -263,12 +246,11 @@ describe("setMixinVariantedStyles", () => {
 
     const result = setMixinVariantedStyles({
       mixin,
-      variants: [variant],
+      variant,
       styles: { border: "2px" },
     });
 
-    assert(result.isOk(), "expected success result");
-    expect(result.value).toEqual([]);
+    expect(result).toEqual([]);
     expect(mixin.variantedRs).toHaveLength(1);
     expect(mixin.variantedRs[0].rs.values).toEqual({
       "border-top-width": "2px",
@@ -284,12 +266,11 @@ describe("setMixinVariantedStyles", () => {
 
     const result = setMixinVariantedStyles({
       mixin,
-      variants: [variant],
+      variant,
       styles: { gap: "8px" },
     });
 
-    assert(result.isOk(), "expected success result");
-    expect(result.value).toEqual([]);
+    expect(result).toEqual([]);
     expect(mixin.variantedRs[0].rs.values).toEqual({
       "grid-row-gap": "8px",
       "grid-column-gap": "8px",
@@ -301,79 +282,21 @@ describe("setMixinVariantedStyles", () => {
 
     setMixinVariantedStyles({
       mixin,
-      variants: [variant],
+      variant,
       styles: { padding: "8px" },
     });
     expect(mixin.variantedRs).toEqual([]);
 
     setMixinVariantedStyles({
       mixin,
-      variants: [variant],
+      variant,
       styles: { "font-size": "16px" },
     });
     setMixinVariantedStyles({
       mixin,
-      variants: [variant],
+      variant,
       styles: { "font-size": null },
     });
-    expect(mixin.variantedRs).toEqual([]);
-  });
-
-  it("dedupes a repeated variant so later edits can match the override", () => {
-    const { mixin, variant } = setup();
-
-    setMixinVariantedStyles({
-      mixin,
-      variants: [variant, variant],
-      styles: { "font-size": "16px" },
-    });
-    setMixinVariantedStyles({
-      mixin,
-      variants: [variant],
-      styles: { "font-size": "18px" },
-    });
-
-    expect(mixin.variantedRs.length).toEqual(1);
-    expect(mixin.variantedRs[0].variants).toEqual([variant]);
-    expect(mixin.variantedRs[0].rs.values).toEqual({ "font-size": "18px" });
-  });
-
-  it("rejects two variants from one single-choice group", () => {
-    const { tplMgr, mixin } = setup();
-    const group = tplMgr.createGlobalVariantGroup("Theme");
-    const dark = tplMgr.createGlobalVariant(group, "Dark");
-    const light = tplMgr.createGlobalVariant(group, "Light");
-
-    const result = setMixinVariantedStyles({
-      mixin,
-      variants: [dark, light],
-      styles: { color: "#000" },
-    });
-
-    assert(result.isErr(), "expected error result");
-    expect(result.error.message).toContain("single-choice");
-    expect(mixin.variantedRs).toEqual([]);
-  });
-
-  it("rejects two screen breakpoints, as CSS gets one media query", () => {
-    const { tplMgr, mixin } = setup();
-    const mobile = tplMgr.createScreenVariant({
-      name: "Mobile",
-      spec: new ScreenSizeSpec(undefined, 768),
-    });
-    const tablet = tplMgr.createScreenVariant({
-      name: "Tablet",
-      spec: new ScreenSizeSpec(undefined, 1024),
-    });
-
-    const result = setMixinVariantedStyles({
-      mixin,
-      variants: [mobile, tablet],
-      styles: { color: "#000" },
-    });
-
-    assert(result.isErr(), "expected error result");
-    expect(result.error.message).toContain("one screen breakpoint");
     expect(mixin.variantedRs).toEqual([]);
   });
 });

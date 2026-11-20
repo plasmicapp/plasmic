@@ -10,18 +10,16 @@ import {
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { replaceImageDataUrisInStyles } from "@/wab/client/web-importer/images";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
-import {
-  VariantCombo,
-  validateGlobalVariantCombo,
-} from "@/wab/shared/Variants";
 import { arrayWithout } from "@/wab/shared/collections";
 import { arrayEqIgnoreOrder } from "@/wab/shared/common";
 import { mkRuleSet } from "@/wab/shared/core/styles";
 import { normProp } from "@/wab/shared/css";
-import { GenericError } from "@/wab/shared/error-handling";
-import { Mixin, RuleSet, VariantedRuleSet } from "@/wab/shared/model/classes";
-import { uniq } from "lodash";
-import { Result, err, ok } from "neverthrow";
+import {
+  Mixin,
+  RuleSet,
+  Variant,
+  VariantedRuleSet,
+} from "@/wab/shared/model/classes";
 
 /**
  * null removes a property. Unlike elements, mixins can't stash styles Studio
@@ -76,27 +74,16 @@ function writeStyleChanges(
   return messages;
 }
 
-/** Variant order is irrelevant. null styles removes the whole override. */
+/** null styles removes the whole override. */
 export function setMixinVariantedStyles(opts: {
   mixin: Mixin;
-  variants: VariantCombo;
+  variant: Variant;
   styles: Record<string, string | null> | null;
   studioCtx?: StudioCtx;
   imageAssetRefs?: Map<string, string>;
-}): Result<string[], GenericError> {
-  const { mixin, styles, studioCtx, imageAssetRefs } = opts;
-  // A repeated variant would create an override no later edit can match.
-  const variants = uniq(opts.variants);
-
-  if (variants.length === 0) {
-    return err({
-      message: "At least one variant is required for a varianted style.",
-    });
-  }
-  const comboCheck = validateGlobalVariantCombo(variants);
-  if (!comboCheck.ok) {
-    return err({ message: comboCheck.error });
-  }
+}): string[] {
+  const { mixin, variant, styles, studioCtx, imageAssetRefs } = opts;
+  const variants = [variant];
 
   const existing = mixin.variantedRs.find((vRs) =>
     arrayEqIgnoreOrder(vRs.variants, variants),
@@ -106,7 +93,7 @@ export function setMixinVariantedStyles(opts: {
     if (existing) {
       mixin.variantedRs = arrayWithout(mixin.variantedRs, existing);
     }
-    return ok([]);
+    return [];
   }
 
   // Generated CSS only references base props, so a varianted-only prop renders
@@ -137,7 +124,7 @@ export function setMixinVariantedStyles(opts: {
     messages.push(
       `Skipped for the targeted variants: ${quoteProps(
         missingBase,
-      )}. A property needs a base value before it can be overridden per variant; set it without variantUuids first.`,
+      )}. A property needs a base value before it can be overridden per variant; set it without variantUuid first.`,
     );
   }
 
@@ -157,5 +144,5 @@ export function setMixinVariantedStyles(opts: {
   if (Object.keys(variantedRs.rs.values).length === 0) {
     mixin.variantedRs = arrayWithout(mixin.variantedRs, variantedRs);
   }
-  return ok(messages);
+  return messages;
 }

@@ -385,7 +385,7 @@ function buildVariantedValuesModel(
   return token.variantedValues.map((vv) => {
     const value: VariantedValueJson = {
       __type: "VariantedValue",
-      variantUuids: vv.variants.map((v) => v.uuid),
+      variantUuid: vv.variants[0].uuid,
       value: vv.value,
     };
     if (isTokenRef(vv.value)) {
@@ -435,7 +435,7 @@ export function buildMixinResource(mixin: Mixin): MixinJson {
 function buildStylesModel(mixin: Mixin) {
   const variantedStyles = mixin.variantedRs.map((vRs): VariantedStyleJson => ({
     __type: "VariantedStyle",
-    variantUuids: vRs.variants.map((v) => v.uuid),
+    variantUuid: vRs.variants[0].uuid,
     styles: getStylesFromRuleSet(vRs.rs),
   }));
   return {
