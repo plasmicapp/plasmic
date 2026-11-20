@@ -31,8 +31,10 @@ import { createSite } from "@/wab/shared/core/sites";
 import { unbundleSite } from "@/wab/shared/core/tagged-unbundle";
 import {
   Component,
+  CustomFunction,
   CustomFunctionExpr,
   FunctionArg,
+  HostLessPackageInfo,
   ProjectDependency,
   PropParam,
   Site,
@@ -584,42 +586,66 @@ describe("custom function sync", () => {
     expect(ctx.change).not.toHaveBeenCalled();
   });
 
+  function addQueryWithMatchingDependency(
+    site: Site,
+    local: CustomFunction,
+    hostLessPackageInfo: HostLessPackageInfo | null,
+  ) {
+    const dependencyFunction = createCustomFunctionFromRegistration(
+      registration(local.importName, [{ name: "keep", type: "string" }]),
+    );
+    site.projectDependencies = [
+      new ProjectDependency({
+        name: "Library",
+        pkgId: "library",
+        projectId: "library-project",
+        uuid: mkShortId(),
+        version: "1.0.0",
+        site: createSite({
+          customFunctions: [dependencyFunction],
+          hostLessPackageInfo,
+        }),
+      }),
+    ];
+    const call = new CustomFunctionExpr({
+      func: local,
+      args: local.params.map(
+        (argType) =>
+          new FunctionArg({
+            uuid: mkShortId(),
+            argType,
+            expr: codeLit(argType.argName),
+          }),
+      ),
+    });
+    site.components = [mkComponentWithQueries(mkServerQuery("query", call))];
+    const originalArgs = [...call.args];
+    return { call, dependencyFunction, originalArgs };
+  }
+
   it.each(["matching", "importPath", "defaultExport", "registered", "invalid"])(
-    "restores only unregistered matching imports: %s",
+    "restores only unregistered matching hostless imports: %s",
     async (kind) => {
       const { site, existing, removed, ctx, callbacks } = setup();
       const local = kind === "registered" ? existing : removed;
-      const dependencyFunction = createCustomFunctionFromRegistration(
-        registration(local.importName, [{ name: "keep", type: "string" }]),
-      );
+      const { call, dependencyFunction, originalArgs } =
+        addQueryWithMatchingDependency(
+          site,
+          local,
+          new HostLessPackageInfo({
+            name: "test-library",
+            npmPkg: [],
+            cssImport: [],
+            deps: [],
+            registerCalls: [],
+            minimumReactVersion: null,
+          }),
+        );
       if (kind === "importPath") {
         dependencyFunction.importPath = "./other-functions";
       } else if (kind === "defaultExport") {
         dependencyFunction.defaultExport = true;
       }
-      site.projectDependencies = [
-        new ProjectDependency({
-          name: "Library",
-          pkgId: "library",
-          projectId: "library-project",
-          uuid: mkShortId(),
-          version: "1.0.0",
-          site: createSite({ customFunctions: [dependencyFunction] }),
-        }),
-      ];
-      const call = new CustomFunctionExpr({
-        func: local,
-        args: local.params.map(
-          (argType) =>
-            new FunctionArg({
-              uuid: mkShortId(),
-              argType,
-              expr: codeLit(argType.argName),
-            }),
-        ),
-      });
-      site.components = [mkComponentWithQueries(mkServerQuery("query", call))];
-      const originalArgs = [...call.args];
       const callback = vi.fn();
       callbacks.onUpdatedCustomFunctions = callback;
       if (kind === "invalid") {
@@ -655,6 +681,49 @@ describe("custom function sync", () => {
       }
     },
   );
+
+  it("keeps the local query and its arguments when a hosted function is registered again", async () => {
+    const { site, removed: local, ctx, callbacks } = setup();
+    const { call, originalArgs } = addQueryWithMatchingDependency(
+      site,
+      local,
+      null,
+    );
+    const callback = vi.fn();
+    callbacks.onUpdatedCustomFunctions = callback;
+    expect(
+      (await _testonly.upsertRegisteredFunctions(ctx, callbacks)).isOk(),
+    ).toBe(true);
+    expect(callback.mock.calls[0][0].removedFunctions.has(local)).toBe(true);
+    expect(ctx.change).not.toHaveBeenCalled();
+    expect(site.customFunctions).toContain(local);
+    expect(call.func).toBe(local);
+    expect(call.args).toEqual(originalArgs);
+
+    const restored = registration(local.importName, [
+      { name: "limit", type: "number" },
+      { name: "keep", type: "string" },
+      { name: "obsolete", type: "number" },
+    ]);
+    ctx.codeComponentsRegistry
+      .getRegisteredFunctionsMap()
+      .set(registeredFunctionId(restored), restored);
+    callbacks.onUpdatedCustomFunctions = async (changes) => {
+      applyCustomFunctionChanges(site, changes);
+    };
+    expect(
+      (await _testonly.upsertRegisteredFunctions(ctx, callbacks)).isOk(),
+    ).toBe(true);
+    expect(call.func).toBe(local);
+    expect(call.func.params.map((p) => p.argName)).toEqual([
+      "limit",
+      "keep",
+      "obsolete",
+    ]);
+    expect(call.args).toEqual(originalArgs);
+    expect(call.args[0].argType).toBe(local.params[1]);
+    expect(call.args[1].argType).toBe(local.params[2]);
+  });
 
   it("awaits the fallback transaction", async () => {
     const { site, ctx, callbacks } = setup();

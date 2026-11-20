@@ -48,6 +48,7 @@ import {
   CustomFunctionExpr,
   EventHandler,
   FunctionArg,
+  HostLessPackageInfo,
   Interaction,
   NameArg,
   ProjectDependency,
@@ -750,14 +751,30 @@ describe("upgradeProjectDeps with removed custom functions", () => {
       isQuery: true,
       isMutation: false,
     });
-  const mkDep = (version: string, customFunctions: CustomFunction[]) =>
+  const mkDep = (
+    version: string,
+    customFunctions: CustomFunction[],
+    hostless = true,
+  ) =>
     new ProjectDependency({
       name: "Lib",
       pkgId: "lib-pkg-id",
       projectId: "lib-project-id",
       version,
       uuid: mkShortId(),
-      site: createSite({ customFunctions }),
+      site: createSite({
+        customFunctions,
+        hostLessPackageInfo: hostless
+          ? new HostLessPackageInfo({
+              name: "test-library",
+              npmPkg: [],
+              cssImport: [],
+              deps: [],
+              registerCalls: [],
+              minimumReactVersion: null,
+            })
+          : null,
+      }),
     });
 
   async function syncWithoutHostFunctions(site: Site) {
@@ -830,6 +847,64 @@ describe("upgradeProjectDeps with removed custom functions", () => {
     expect(op.func).toBe(localFunc);
     expect(op.args[0].argType).toBe(localFunc.params[0]);
   });
+
+  it.each([false, true])(
+    "preserves functions against the whole batch (dependent first: %s)",
+    (dependentFirst) => {
+      const { site, oldDep, page, op } = setup();
+      const dependent = new ProjectDependency({
+        name: "Dependent",
+        pkgId: "dependent",
+        projectId: "dependent",
+        uuid: mkShortId(),
+        version: "1.0.0",
+        site: createSite({ projectDependencies: [oldDep] }),
+      });
+      const removed = mkDep("2.0.0", []);
+      const nextDependent = new ProjectDependency({
+        name: "Dependent",
+        pkgId: "dependent",
+        projectId: "dependent",
+        uuid: mkShortId(),
+        version: "2.0.0",
+        site: createSite({ projectDependencies: [removed] }),
+      });
+      site.projectDependencies = [...site.projectDependencies, dependent];
+      const batch = [
+        { oldDep, newDep: removed },
+        { oldDep: dependent, newDep: nextDependent },
+      ];
+      upgradeProjectDeps(site, dependentFirst ? batch.reverse() : batch);
+      expect(site.customFunctions.map((f) => f.importName)).toEqual([
+        "queried",
+        "inCode",
+      ]);
+      expect(op.func).toBe(site.customFunctions[0]);
+      expect(op.args[0].argType).toBe(op.func.params[0]);
+
+      const restored = mkFunc("queried");
+      restored.params = [
+        typeFactory.arg("limit", typeFactory.num()),
+        ...restored.params,
+      ];
+      upgradeProjectDeps(site, [
+        {
+          oldDep: removed,
+          newDep: mkDep("3.0.0", [restored, mkFunc("inCode")]),
+        },
+      ]);
+      rebindRestoredFunctions(site, new Map());
+      expect(op.func).toBe(restored);
+      expect(op.args[0].argType).toBe(restored.params[1]);
+      expect(
+        getCustomFunctionParams(
+          op,
+          {},
+          { projectFlags: DEVFLAGS, component: page, inStudio: true },
+        ),
+      ).toEqual([undefined, "a"]);
+    },
+  );
 
   it("reuses a local function with the same id", () => {
     const { site, oldDep, op } = setup();
@@ -1102,7 +1177,7 @@ describe("upgradeProjectDeps with removed custom functions", () => {
       component: inner,
       baseVariant: getBaseVariant(outer),
     });
-    const oldDep = mkDep("1.0.0", [func]);
+    const oldDep = mkDep("1.0.0", [func], false);
     oldDep.site.components = [outer, inner];
     oldDep.site.components.forEach((c) => {
       trackComponentRoot(c);

@@ -4768,14 +4768,17 @@ export function applyCustomFunctionChanges(
   }
 }
 
-// Only the host registry can distinguish a preserved dependency function from a
-// local registration with the same import.
+// Hostless functions are absent from the host registry. Ordinary dependency
+// matches may be local registrations that went away and need the removal prompt.
 function findRestoredFunctions(
   site: Site,
   registeredFunctions: Map<CustomFunctionId, CustomFunctionRegistration>,
 ) {
   const dependencyFunctions = new Map<CustomFunctionId, CustomFunction>();
   for (const dep of walkDependencyTree(site, "all")) {
+    if (!isHostLessPackage(dep.site)) {
+      continue;
+    }
     for (const func of dep.site.customFunctions) {
       const id = customFunctionId(func);
       if (!dependencyFunctions.has(id)) {

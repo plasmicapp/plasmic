@@ -130,6 +130,7 @@ import {
   ArenaFrameGrid,
   ArenaFrameRow,
   Component,
+  CustomFunction,
   Expr,
   GlobalVariantGroup,
   ImageAsset,
@@ -178,7 +179,7 @@ export type DependencyWalkScope = "all" | "direct";
  * @param scope defaults to "direct" dependencies only, use "all" to include transitive dependencies
  */
 export function walkDependencyTree(
-  site: Site,
+  site: Pick<Site, "projectDependencies">,
   scope: DependencyWalkScope,
 ): ProjectDependency[] {
   const queue: ProjectDependency[] = [...site.projectDependencies];
@@ -661,9 +662,27 @@ export function upgradeProjectDeps(
     futureDeps?: ProjectDependency[];
   }[],
 ) {
+  // Resolve providers after the entire batch, before any old dependent can
+  // make a removed library function appear to survive.
+  let finalDeps = [...site.projectDependencies];
+  for (const { oldDep, newDep } of deps) {
+    finalDeps = finalDeps.flatMap((dep) =>
+      dep === oldDep ? (newDep ? [newDep] : []) : [dep],
+    );
+  }
+  const remainingDependencyFunctions = walkDependencyTree(
+    { projectDependencies: finalDeps },
+    "all",
+  ).flatMap((dep) => dep.site.customFunctions);
   const newDeps: ProjectDependency[] = [];
   deps.forEach(({ oldDep, newDep, futureDeps = [] }) => {
-    upgradeProjectDep(site, oldDep, newDep, futureDeps);
+    upgradeProjectDep(
+      site,
+      oldDep,
+      newDep,
+      futureDeps,
+      remainingDependencyFunctions,
+    );
     if (newDep) {
       newDeps.push(newDep);
     }
@@ -697,6 +716,7 @@ function upgradeProjectDep(
   oldDep: ProjectDependency,
   newDep: ProjectDependency | undefined,
   futureDeps: ProjectDependency[],
+  remainingDependencyFunctions: CustomFunction[],
 ) {
   // We need to look for and replace these references:
   // 1. TplComponent referencing imported Component.  We need to fix up
@@ -727,15 +747,6 @@ function upgradeProjectDep(
       .filter(([, newFunc]) => !newFunc)
       .map(([oldFunc]) => tuple(customFunctionId(oldFunc), oldFunc)),
   );
-  const remainingFunctions = [
-    ...site.customFunctions,
-    ...[
-      ...site.projectDependencies.filter((dep) => dep !== oldDep),
-      ...(newDep ? [newDep] : []),
-    ]
-      .flatMap((dep) => [dep, ...walkDependencyTree(dep.site, "all")])
-      .flatMap((dep) => dep.site.customFunctions),
-  ];
   // Runs per fixed component, so it also covers components cloned from oldDep.
   const preserveRemovedFunctions = (component: Component) => {
     if (removedFunctions.size === 0) {
@@ -749,9 +760,10 @@ function upgradeProjectDep(
         continue;
       }
       removedFunctions.delete(funcId);
-      let newFunc = remainingFunctions.find(
-        (f) => customFunctionId(f) === funcId,
-      );
+      let newFunc = [
+        ...site.customFunctions,
+        ...remainingDependencyFunctions,
+      ].find((f) => customFunctionId(f) === funcId);
       if (!newFunc) {
         newFunc = cloneCustomFunction(oldFunc);
         site.customFunctions = [...site.customFunctions, newFunc];
