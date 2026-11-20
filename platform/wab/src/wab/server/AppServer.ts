@@ -178,10 +178,12 @@ import {
   buildLatestLoaderHtml,
   buildLatestLoaderReprV2,
   buildLatestLoaderReprV3,
+  buildLatestRevisionLoaderRedirect,
   buildPublishedLoaderAssets,
   buildPublishedLoaderHtml,
   buildPublishedLoaderReprV2,
   buildPublishedLoaderReprV3,
+  buildRevisionLoaderAssets,
   buildVersionedLoaderAssets,
   buildVersionedLoaderHtml,
   buildVersionedLoaderReprV2,
@@ -1027,6 +1029,20 @@ export function addCodegenRoutes(app: express.Application) {
     cors(),
     apiAuth,
     withNext(buildLatestLoaderAssets),
+  );
+  // Errors keep the default no-store Cache-Control (see addMiddlewares); the
+  // handlers set a cacheable one only once they succeed.
+  app.get(
+    "/api/v1/loader/code/revision/latest",
+    cors(),
+    apiAuth,
+    withNext(buildLatestRevisionLoaderRedirect),
+  );
+  app.get(
+    "/api/v1/loader/code/revision",
+    cors(),
+    apiAuth,
+    withNext(buildRevisionLoaderAssets),
   );
   app.get("/api/v1/loader/chunks", cors(), getLoaderChunk);
   app.get(

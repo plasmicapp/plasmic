@@ -689,6 +689,12 @@ type PkgVersionOpts = { prefilledOnly?: boolean; branchId?: BranchId };
 
 export type PkgVersionWithoutModel = Omit<PkgVersion, "model">;
 
+/** Identifies a project revision without its `data`. */
+export interface ProjectRevRef {
+  id: string;
+  revision: number;
+}
+
 /**
  * DbMgr currently errs on the side of runtime strictness by throwing errors.
  * This doesn't afford great static time checking, since TS has neither checked
@@ -4032,6 +4038,83 @@ export class DbMgr implements MigrationDbMgr {
     return res.maxrev as number;
   }
 
+  /**
+   * Like `getLatestProjectRev`, but selects only the revision's id and number,
+   * so it never loads the revision `data`.
+   */
+  async getLatestProjectRevRef(
+    projectId: string,
+    { branchId }: { branchId?: BranchId } = {},
+  ): Promise<ProjectRevRef> {
+    await this.checkProjectBranchPerms(
+      { projectId, branchId },
+      "viewer",
+      "get latest revision for",
+    );
+    const qb = this.projectRevs()
+      .createQueryBuilder("rev")
+      .select(["rev.id", "rev.revision"])
+      .where("rev.projectId = :projectId", { projectId })
+      .andWhere("rev.deletedAt IS NULL");
+    whereEqOrNull(qb, "rev.branchId", { branchId }, true);
+    qb.orderBy("rev.revision", "DESC").limit(1);
+    const rev = ensureFound<ProjectRevision>(
+      await getOneOrFailIfTooMany(qb),
+      `Project with ID ${projectId} branch ${branchId}`,
+    );
+    return { id: rev.id, revision: rev.revision };
+  }
+
+  /**
+   * Gets a project revision by id. Throws NotFoundError unless the revision
+   * belongs to `projectId` and is not soft-deleted, so a caller can't read a
+   * revision of another project by naming a project it has access to.
+   */
+  async getProjectRevByIdForProject(
+    projectId: string,
+    revisionId: string,
+  ): Promise<ProjectRevision> {
+    return await this.findProjectRevByIdForProject(projectId, revisionId, {
+      refOnly: false,
+    });
+  }
+
+  /** Like `getProjectRevByIdForProject`, but doesn't load the revision `data`. */
+  async getProjectRevRefByIdForProject(
+    projectId: string,
+    revisionId: string,
+  ): Promise<ProjectRevRef> {
+    const rev = await this.findProjectRevByIdForProject(projectId, revisionId, {
+      refOnly: true,
+    });
+    return { id: rev.id, revision: rev.revision };
+  }
+
+  private async findProjectRevByIdForProject(
+    projectId: string,
+    revisionId: string,
+    { refOnly }: { refOnly: boolean },
+  ) {
+    await this.checkProjectPerms(projectId, "viewer", "get revision for");
+    const qb = this.projectRevs()
+      .createQueryBuilder("rev")
+      .where("rev.id = :revisionId", { revisionId })
+      .andWhere("rev.projectId = :projectId", { projectId })
+      .andWhere("rev.deletedAt IS NULL");
+    if (refOnly) {
+      // branchId is only for the branch perm check below
+      qb.select(["rev.id", "rev.revision", "rev.branchId"]);
+    }
+    const rev = ensureFound<ProjectRevision>(
+      await getOneOrFailIfTooMany(qb),
+      `Revision ${revisionId} of project ${projectId}`,
+    );
+    if (rev.branchId) {
+      await this.checkBranchPerms(rev.branchId, "viewer", "get revision for");
+    }
+    return rev;
+  }
+
   async getPreviousProjectRev(
     current: ProjectRevision | PkgVersion,
   ): Promise<ProjectRevision | undefined> {
@@ -4762,6 +4845,10 @@ export class DbMgr implements MigrationDbMgr {
    * PkgVersion that satisfies that range
    * - If versionRangeOrTag is not a valid semver range, assume it's a tag and
    * try to get the latest version that cantains the tag
+   * - If versionRangeOrTag is `{ revisionId }`, returns that revision, which
+   * must belong to projectId and not be soft-deleted. The returned version is
+   * the revision's branch name, or "latest" on the main branch, the same as
+   * if that revision were the latest one.
    * @param bundler
    * @param projectId
    * @param versionRangeOrTag
@@ -4769,7 +4856,7 @@ export class DbMgr implements MigrationDbMgr {
   async tryGetPkgVersionByProjectVersionOrTag(
     bundler: Bundler,
     projectId: string,
-    versionRangeOrTag?: string,
+    versionRangeOrTag?: string | { revisionId: string },
     withModel?: boolean,
   ): Promise<{
     version: string;
@@ -4784,6 +4871,40 @@ export class DbMgr implements MigrationDbMgr {
 
     // If versionRangeOfTag is a tag, maybe it's a branch name
     const branches = await this.listBranchesForProject(projectId as ProjectId);
+
+    const fromProjectRev = async (
+      projectRev: ProjectRevision,
+      version: string,
+    ) => {
+      const bundle = await getMigratedBundle(projectRev);
+      return {
+        version,
+        pkgVersion: undefined,
+        site: await unbundleProjectFromBundle(this, bundler, {
+          projectId,
+          bundle,
+        }),
+        model: withModel ? JSON.stringify(bundle) : undefined,
+        unbundledAs: projectRev.projectId,
+        revisionNumber: projectRev.revision,
+        revisionId: projectRev.id,
+      };
+    };
+
+    if (typeof versionRangeOrTag === "object") {
+      const projectRev = await this.getProjectRevByIdForProject(
+        projectId,
+        versionRangeOrTag.revisionId,
+      );
+      const branch = projectRev.branchId
+        ? ensure(
+            branches.find((b) => b.id === projectRev.branchId),
+            `Branch ${projectRev.branchId} of project ${projectId} must exist`,
+          )
+        : undefined;
+      return await fromProjectRev(projectRev, branch?.name ?? "latest");
+    }
+
     const maybeBranch = branches.find(
       (branch) => branch.name === versionRangeOrTag,
     );
@@ -4796,19 +4917,7 @@ export class DbMgr implements MigrationDbMgr {
       const projectRev = await this.getLatestProjectRev(projectId, {
         branchId: maybeBranch?.id,
       });
-      const bundle = await getMigratedBundle(projectRev);
-      return {
-        version: versionOrTag,
-        pkgVersion: undefined,
-        site: await unbundleProjectFromBundle(this, bundler, {
-          projectId,
-          bundle,
-        }),
-        model: withModel ? JSON.stringify(bundle) : undefined,
-        unbundledAs: projectRev.projectId,
-        revisionNumber: projectRev.revision,
-        revisionId: projectRev.id,
-      };
+      return await fromProjectRev(projectRev, versionOrTag);
     } else {
       const pkg = await this.getPkgByProjectId(projectId);
       if (!pkg) {

@@ -8,11 +8,12 @@ import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { seedTestUserAndProjects } from "@/wab/server/db/DbInit";
 import { DbMgr, normalActor } from "@/wab/server/db/DbMgr";
-import { Project, User } from "@/wab/server/entities/Entities";
+import { Project, ProjectRevision, User } from "@/wab/server/entities/Entities";
 import { previewLoaderCacheCounter } from "@/wab/server/promstats";
 import { _testonly } from "@/wab/server/routes/loader";
 import { Bundler } from "@/wab/shared/bundler";
 import { createSite } from "@/wab/shared/core/sites";
+import { Connection } from "typeorm";
 
 describe("loader", () => {
   let publicApi: PublicApiTester;
@@ -25,6 +26,7 @@ describe("loader", () => {
   let user: User;
   let projects: Project[];
   let polyfillProject: Project;
+  let con: Connection;
 
   beforeAll(async () => {
     const {
@@ -32,7 +34,7 @@ describe("loader", () => {
       dbname,
       cleanup: cleanupDatabase,
     } = await createDatabase("loader_test");
-    const con = await ensureDbConnection(dburi, dbname);
+    con = await ensureDbConnection(dburi, dbname);
     await con.synchronize();
     await con.transaction(async (em) => {
       const userAndProjects = await seedTestUserAndProjects(
@@ -369,6 +371,121 @@ describe("loader", () => {
     } finally {
       await db.setDevFlagOverrides(previous);
     }
+  });
+
+  describe("revision routes", () => {
+    const tokensHeader = (...ps: Project[]) => ({
+      "x-plasmic-api-project-tokens": ps
+        .map((p) => `${p.id}:${p.projectApiToken}`)
+        .join(","),
+    });
+
+    async function latestRev(project: Project) {
+      return await con
+        .getRepository(ProjectRevision)
+        .createQueryBuilder("rev")
+        .where('rev."projectId" = :projectId', { projectId: project.id })
+        .andWhere('rev."branchId" is null and rev."deletedAt" is null')
+        .orderBy("rev.revision", "DESC")
+        .getOneOrFail();
+    }
+
+    function revisionUrl(project: Project, revisionId: string, query = "") {
+      return `/api/v1/loader/code/revision?cb=23&platform=react&loaderVersion=10&projectId=${
+        project.id
+      }%40rev%3A${revisionId}${query}`;
+    }
+
+    it("redirects revision/latest to the latest revision", async () => {
+      const rev = await latestRev(projects[0]);
+      const res = await publicApi.rawReq(
+        "get",
+        `/api/v1/loader/code/revision/latest?loaderVersion=10&projectId=${projects[0].id}`,
+        undefined,
+        { headers: tokensHeader(projects[0]), maxRedirects: 0 },
+      );
+      expect(res.status()).toEqual(302);
+      // The test backend is its own CDN host, so the Location is relative.
+      expect(res.headers()["location"]).toEqual(
+        revisionUrl(projects[0], rev.id),
+      );
+      expect(res.headers()["cache-control"]).toEqual(
+        "public, max-age=0, s-maxage=5",
+      );
+      // Media CDN doesn't cache a GET 302 with a body.
+      expect(res.headers()["vary"]).toEqual("x-plasmic-api-project-tokens");
+      expect(await res.text()).toEqual("");
+    });
+
+    // Media CDN doesn't reliably cache a response without Content-Length.
+    it.each(["gzip", "identity"])(
+      "serves the bundle for a revision with Content-Length for %s",
+      async (encoding) => {
+        const rev = await latestRev(projects[0]);
+        const res = await publicApi.rawReq(
+          "get",
+          revisionUrl(projects[0], rev.id),
+          undefined,
+          {
+            headers: {
+              ...tokensHeader(projects[0]),
+              "accept-encoding": encoding,
+            },
+          },
+        );
+        expect(res.status()).toEqual(200);
+        expect(res.headers()["cache-control"]).toEqual(
+          "max-age=3600, s-maxage=31536000",
+        );
+        expect(res.headers()["vary"]).toEqual(
+          "x-plasmic-api-project-tokens, Accept-Encoding",
+        );
+        expect(res.headers()["content-encoding"]).toEqual(
+          encoding === "gzip" ? "gzip" : undefined,
+        );
+        expect(res.headers()["content-length"]).toBeDefined();
+        const body = await res.json();
+        expect(body.projects[0].id).toEqual(projects[0].id);
+        expect(body.projects[0].version).toEqual("latest");
+      },
+    );
+
+    it("404s a revision of another project", async () => {
+      const otherRev = await latestRev(projects[1]);
+      const res = await publicApi.rawReq(
+        "get",
+        revisionUrl(projects[0], otherRev.id),
+        undefined,
+        { headers: tokensHeader(projects[0], projects[1]) },
+      );
+      expect(res.status()).toEqual(404);
+      expect(res.headers()["cache-control"]).toEqual(
+        "no-store, no-cache, must-revalidate, private",
+      );
+    });
+
+    it("404s a soft-deleted revision", async () => {
+      const db = new DbMgr(con.manager, normalActor(user.id));
+      const rev = await latestRev(projects[3]);
+      const data = JSON.stringify(
+        new Bundler().bundle(createSite(), "", await getLastBundleVersion()),
+      );
+      const saved = await db.saveProjectRev({
+        projectId: projects[3].id,
+        data,
+        revisionNum: rev.revision + 1,
+      });
+      await con
+        .getRepository(ProjectRevision)
+        .update(saved.id, { deletedAt: new Date() });
+      const res = await publicApi.rawReq(
+        "get",
+        revisionUrl(projects[3], saved.id),
+        undefined,
+        { headers: tokensHeader(projects[3]) },
+      );
+      expect(res.status()).toEqual(404);
+    });
   });
 
   it("sets a valid preview HTML ETag for non-Latin-1 component names", async () => {

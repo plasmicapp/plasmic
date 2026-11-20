@@ -7,6 +7,8 @@ import {
   LOADER_CACHE_BUST,
   genLatestLoaderCodeBundle,
   genPublishedLoaderCodeBundle,
+  genRevisionLoaderCodeBundle,
+  isChunkableBundleKey,
 } from "@/wab/server/loader/gen-code-bundle";
 import { genLoaderHtmlBundle } from "@/wab/server/loader/gen-html-bundle";
 import {
@@ -21,8 +23,10 @@ import { PreviewBundleCache } from "@/wab/server/loader/preview-bundle-cache";
 import {
   VersionToSync,
   getResolvedProjectVersions,
+  makeRevisionSpec,
   mkVersionToSync,
   parseProjectIdSpec,
+  parseRevisionSpec,
   resolveLatestProjectRevisions,
 } from "@/wab/server/loader/resolve-projects";
 import { logger, withSpan } from "@/wab/server/observability";
@@ -36,7 +40,6 @@ import {
   UnauthorizedError,
   transformErrors,
 } from "@/wab/shared/ApiErrors/errors";
-import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
 import { toClassName } from "@/wab/shared/codegen/util";
 import { ensure, ensureArray, hackyCast, tuple } from "@/wab/shared/common";
@@ -52,6 +55,10 @@ import { Request, Response } from "express-serve-static-core";
 import fs from "fs";
 import { pickBy, sortBy } from "lodash";
 import path from "path";
+import { promisify } from "util";
+import zlib from "zlib";
+
+const gzip = promisify(zlib.gzip);
 
 /**
  * Loader version is used for backwards compatibility (otherwise we could
@@ -82,6 +89,21 @@ function getLoaderVersion(req: Request) {
   const loaderVersion = (req.query.loaderVersion ||
     req.headers["x-plasmic-loader-version"]) as string | undefined;
   return parseInt(loaderVersion || "0");
+}
+
+// Only the query is part of the CDN cache key, so never fall back to the
+// x-plasmic-loader-version header.
+function getQueryLoaderVersion(req: Request) {
+  if (typeof req.query.loaderVersion !== "string") {
+    throw new BadRequestError("loaderVersion must be specified in the query");
+  }
+  const loaderVersion = parseInt(req.query.loaderVersion);
+  if (Number.isNaN(loaderVersion)) {
+    throw new BadRequestError(
+      `Invalid loaderVersion: ${req.query.loaderVersion}`,
+    );
+  }
+  return loaderVersion;
 }
 
 function getLoaderOptions(req: Request) {
@@ -356,36 +378,9 @@ export async function buildLatestLoaderAssets(req: Request, res: Response) {
     skipHead,
   } = getLoaderOptions(req);
 
-  const parsedProjectIdsSpecs = projectIdSpecs.map(parseProjectIdSpec);
-  const projectIdsBranches = await Promise.all(
-    parsedProjectIdsSpecs.map(async (pv) => {
-      // We ignore pv.version, as preview:true should have higher priority over
-      // versions. But we can't just ignore pv.tag, as it may be used for branches,
-      // and maybe the user is trying to get the latest version of a branch.
-      if (pv.tag) {
-        // We need to check if pv.tag is a branch name or a pkgversion tag.
-        // The only way to know is to try to find a branch with the same name...
-        const branches = await mgr.listBranchesForProject(
-          pv.projectId as ProjectId,
-        );
-        if (branches.some((b) => b.name === pv.tag)) {
-          // Found it!
-          return {
-            id: pv.projectId,
-            branchName: pv.tag,
-          };
-        } else {
-          // No matching branch, so assume this is a pkgversion tag,
-          // which we don't care about for preview bundle
-          return {
-            id: pv.projectId,
-            branchName: undefined,
-          };
-        }
-      } else {
-        return { id: pv.projectId, branchName: undefined };
-      }
-    }),
+  const projectIdsBranches = await resolvePreviewProjectBranches(
+    mgr,
+    projectIdSpecs,
   );
   await Promise.all(
     projectIdsBranches.map(({ id }) =>
@@ -487,6 +482,269 @@ export function makePreviewBundleCacheKeys(args: {
   return { lane, key };
 }
 
+/**
+ * Resolves preview project specs to project ids and branches. Preview ignores
+ * any version in the spec, as preview should have higher priority over
+ * versions. But a tag may be a branch name, in which case the user wants the
+ * latest revision of that branch.
+ */
+async function resolvePreviewProjectBranches(
+  mgr: DbMgr,
+  projectIdSpecs: string[],
+) {
+  return await Promise.all(
+    projectIdSpecs.map(parseProjectIdSpec).map(async (pv) => {
+      if (pv.tag) {
+        // We need to check if pv.tag is a branch name or a pkgversion tag.
+        // The only way to know is to try to find a branch with the same name...
+        const branches = await mgr.listBranchesForProject(pv.projectId);
+        const branch = branches.find((b) => b.name === pv.tag);
+        // If there's no matching branch, assume this is a pkgversion tag,
+        // which we don't care about for preview bundle
+        return {
+          id: pv.projectId,
+          branchName: branch?.name,
+          branchId: branch?.id,
+        };
+      } else {
+        return { id: pv.projectId, branchName: undefined, branchId: undefined };
+      }
+    }),
+  );
+}
+
+/**
+ * The `/api/v1/loader/code/revision` query for root projects pinned to
+ * revisions. Mirrors `makeCacheableVersionedLoaderQuery`, except that
+ * `loaderVersion` is always set, so the response never depends on the
+ * `x-plasmic-loader-version` header, which isn't part of the CDN cache key.
+ */
+export function makeCacheableRevisionLoaderQuery({
+  projectRevisions,
+  loaderVersion,
+  ...opts
+}: Omit<
+  Parameters<typeof makeCacheableVersionedLoaderQuery>[0],
+  "resolvedProjectIdSpecs" | "loaderVersion"
+> & {
+  projectRevisions: { projectId: string; revisionId: string }[];
+  loaderVersion: number;
+}) {
+  return makeCacheableVersionedLoaderQuery({
+    ...opts,
+    loaderVersion,
+    resolvedProjectIdSpecs: projectRevisions.map(({ projectId, revisionId }) =>
+      makeRevisionSpec(projectId, revisionId),
+    ),
+  });
+}
+
+function hostOf(url: string) {
+  return new URL(url).host.toLowerCase();
+}
+
+/**
+ * Returns the `Location` for a redirect from /code/revision/latest to
+ * `path` (/code/revision).
+ *
+ * Requests to a codegen host (the CDN host or codegen-origin) are sent to the
+ * CDN host, which caches /code/revision. Requests to any other host (a custom
+ * apiHost, a proxy, the studio host) stay on that host. The `Location` is
+ * relative when the target is the request's own host, as with /published,
+ * and absolute otherwise.
+ */
+export function makeRevisionRedirectLocation({
+  requestHost,
+  path,
+  cdnUrl = getCodegenUrl(),
+  codegenOriginUrl = getCodegenOriginUrl(),
+}: {
+  requestHost: string | undefined;
+  path: string;
+  cdnUrl?: string;
+  codegenOriginUrl?: string;
+}) {
+  if (!requestHost) {
+    return path;
+  }
+  const host = requestHost.toLowerCase();
+  const cdnHost = hostOf(cdnUrl);
+  const isCodegenHost = host === cdnHost || host === hostOf(codegenOriginUrl);
+  if (!isCodegenHost || host === cdnHost) {
+    return path;
+  }
+  return `${new URL(cdnUrl).origin}${path}`;
+}
+
+/**
+ * GET /api/v1/loader/code/revision/latest
+ *
+ * Takes the same query as /code/preview, plus `loaderVersion`. Without any
+ * codegen, it resolves each project's latest revision and redirects to the
+ * immutable /code/revision URL for those revisions, which the CDN caches.
+ */
+export async function buildLatestRevisionLoaderRedirect(
+  req: Request,
+  res: Response,
+) {
+  const mgr = userDbMgr(req);
+  const {
+    platform,
+    nextjsAppDir,
+    browserOnly,
+    projectIdSpecs,
+    i18nKeyScheme,
+    i18nTagPrefix,
+    skipHead,
+  } = getLoaderOptions(req);
+  const loaderVersion = getQueryLoaderVersion(req);
+
+  const projectIdsBranches = await resolvePreviewProjectBranches(
+    mgr,
+    projectIdSpecs,
+  );
+  await Promise.all(
+    projectIdsBranches.map(({ id }) =>
+      mgr.checkProjectPerms(id, "viewer", "get"),
+    ),
+  );
+  const projectRevisions = await Promise.all(
+    projectIdsBranches.map(async ({ id, branchId }) => ({
+      projectId: id,
+      revisionId: (await mgr.getLatestProjectRevRef(id, { branchId })).id,
+    })),
+  );
+
+  req.promLabels.projectId = projectIdsBranches.map((p) => p.id).join(",");
+
+  const query = makeCacheableRevisionLoaderQuery({
+    platform,
+    nextjsAppDir,
+    loaderVersion,
+    projectRevisions,
+    browserOnly,
+    i18nKeyScheme,
+    i18nTagPrefix,
+    skipHead,
+  });
+  const destination = `/api/v1/loader/code/revision?${query}`;
+
+  // Browsers always ask the edge, and the edge reuses the redirect for 5s.
+  res.setHeader(
+    "Cache-Control",
+    isSharedCacheable(req)
+      ? "public, max-age=0, s-maxage=5"
+      : PRIVATE_CACHE_CONTROL,
+  );
+  // A fail-safe, in case a shared cache doesn't key on the token header.
+  // Media CDN still caches it, since the header is in its cache key.
+  res.vary("x-plasmic-api-project-tokens");
+
+  // See buildPublishedLoaderAssets. Every SDK requests `${host}${redirectUrl}`,
+  // so this must stay relative.
+  if (projectIdsBranches.some(({ id }) => id === ANGULAR_POLYFILL_PROJECT_ID)) {
+    res.status(200).json({ redirectUrl: destination });
+    return;
+  }
+
+  // No body: Media CDN doesn't cache a GET 302 from res.redirect, which has one.
+  res
+    .status(302)
+    .location(
+      makeRevisionRedirectLocation({
+        requestHost: req.headers.host,
+        path: destination,
+      }),
+    )
+    .end();
+}
+
+/**
+ * GET /api/v1/loader/code/revision
+ *
+ * Serves the preview bundle for root projects pinned to revisions
+ * (`projectId=<projectId>@rev:<projectRevisionId>`). The response is immutable
+ * for a URL, so the CDN caches it, keyed on the project token header.
+ */
+export async function buildRevisionLoaderAssets(req: Request, res: Response) {
+  const mgr = userDbMgr(req);
+  const {
+    platform,
+    nextjsAppDir,
+    browserOnly,
+    projectIdSpecs,
+    i18nKeyScheme,
+    i18nTagPrefix,
+    skipHead,
+  } = getLoaderOptions(req);
+  const loaderVersion = getQueryLoaderVersion(req);
+
+  const projectRevisions = projectIdSpecs.map(parseRevisionSpec);
+  const projectIds = projectRevisions.map(({ projectId }) => projectId);
+  if (new Set(projectIds).size !== projectIds.length) {
+    throw new BadRequestError("Each projectId must be specified once");
+  }
+
+  await Promise.all(
+    projectIds.map((projectId) =>
+      mgr.checkProjectPerms(projectId, "viewer", "get"),
+    ),
+  );
+  // 404 unless each revision belongs to its project and isn't soft-deleted
+  await Promise.all(
+    projectRevisions.map(({ projectId, revisionId }) =>
+      mgr.getProjectRevRefByIdForProject(projectId, revisionId),
+    ),
+  );
+
+  const projects = await Promise.all(
+    projectIds.map(async (projectId) => await mgr.getProjectById(projectId)),
+  );
+  trackLoaderCodegenEvent(req, projects, {
+    versionType: "revision",
+    platform,
+  });
+  req.promLabels.projectId = projectIds.join(",");
+
+  const result = await genRevisionLoaderCodeBundle(mgr, req.workerpool, {
+    source: "live",
+    platform,
+    platformOptions: {
+      nextjs: {
+        appDir: nextjsAppDir,
+      },
+    },
+    projectRevisions: Object.fromEntries(
+      projectRevisions.map(({ projectId, revisionId }) => [
+        projectId,
+        revisionId,
+      ]),
+    ),
+    loaderVersion,
+    browserOnly,
+    i18nKeyScheme,
+    i18nTagPrefix,
+    skipHead,
+  });
+
+  setAsCacheableResource(req, res);
+  // A fail-safe, in case a shared cache doesn't key on the token header.
+  // Media CDN only caches a response with Vary on a header in its cache key
+  // (cache_key_policy.included_header_names), which this one is.
+  res.vary("x-plasmic-api-project-tokens");
+  // nginx gzips the body as a stream with no Content-Length, which Media CDN
+  // doesn't reliably cache. Media CDN only compresses bodies up to 1 MiB.
+  res.vary("Accept-Encoding");
+  res.type("json");
+  const body = Buffer.from(JSON.stringify(result));
+  if (req.acceptsEncodings("gzip") === "gzip") {
+    res.set("Content-Encoding", "gzip");
+    res.send(await gzip(body));
+  } else {
+    res.send(body);
+  }
+}
+
 export async function getLoaderChunk(req: Request, res: Response) {
   const fileNames =
     typeof req.query.fileName === "string"
@@ -495,7 +753,7 @@ export async function getLoaderChunk(req: Request, res: Response) {
 
   const bundleKey = req.query.bundleKey;
 
-  if (typeof bundleKey !== "string") {
+  if (typeof bundleKey !== "string" || !isChunkableBundleKey(bundleKey)) {
     throw new BadRequestError("Invalid `bundleKey` param: " + bundleKey);
   }
 
@@ -1022,10 +1280,11 @@ export async function prefillPublishedLoader(req: Request, res: Response) {
  * it: every caller that hits the same entry presented the same tokens. A
  * session cookie, personal API token or team API token authorizes a specific
  * actor instead. Those responses are marked private so no cache ever hands
- * them to a caller that presented different credentials.
+ * them to a caller that presented different credentials. So are responses
+ * authorized by `body.projectIdsAndTokens`, which no cache keys on.
  */
 function isSharedCacheable(req: Request) {
-  return !req.user && !req.apiTeam;
+  return !req.user && !req.apiTeam && !req.body?.projectIdsAndTokens;
 }
 
 const PRIVATE_CACHE_CONTROL = "private, no-store";
@@ -1133,7 +1392,7 @@ function trackLoaderCodegenEvent(
   req: Request,
   projects: Project[],
   opts: {
-    versionType: "versioned" | "preview" | "chunk";
+    versionType: "versioned" | "preview" | "revision" | "chunk";
     platform: string;
   },
 ) {

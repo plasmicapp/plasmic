@@ -118,6 +118,9 @@ interface CodegenOpts {
   exportOpts: ExportOpts;
   componentIdOrNames?: string[];
   maybeVersionOrTag?: string;
+  // Pins codegen to this ProjectRevision of projectId; takes precedence over
+  // maybeVersionOrTag.
+  revisionId?: string;
   existingChecksums?: ChecksumBundle;
   // if we are generating code for the loader, we don't need the checksums
   skipChecksums?: boolean;
@@ -155,13 +158,16 @@ export async function doGenCode(
     maybeVersionOrTag,
     indirect,
   } = opts;
+  const versionToLoad = opts.revisionId
+    ? { revisionId: opts.revisionId }
+    : maybeVersionOrTag;
   const project = await mgr.getProjectById(projectId);
   const bundler = new Bundler();
   const { site, unbundledAs, revisionNumber, revisionId, version } =
     await mgr.tryGetPkgVersionByProjectVersionOrTag(
       bundler,
       projectId,
-      maybeVersionOrTag,
+      versionToLoad,
     );
 
   // TODO: We need to populate some weak maps in tpls.ts mapping component
@@ -374,7 +380,7 @@ export async function doGenCode(
       const { model } = await mgr.tryGetPkgVersionByProjectVersionOrTag(
         bundler,
         projectId,
-        maybeVersionOrTag,
+        versionToLoad,
         true,
       );
       if (model) {

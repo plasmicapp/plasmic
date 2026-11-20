@@ -109,10 +109,19 @@ const taskDuration = new Histogram({
   buckets: DEFAULT_HISTOGRAM_BUCKETS,
 });
 
-export const loaderBundleCacheCounter = new Counter({
+/**
+ * Which loader bundle a cache counter is for: published (pkg versions),
+ * preview (latest revisions; only its deps' codegen is cacheable), or revision
+ * (pinned revisions, from /code/revision).
+ */
+export type LoaderCacheKind = "published" | "preview" | "revision";
+
+export const loaderBundleCacheCounter = new Counter<
+  "result" | "source" | "kind"
+>({
   name: "loader_bundle_cache_total",
-  help: "Final bundle S3 cache hits and misses by source (prefill vs live)",
-  labelNames: ["result", "source"],
+  help: "Final bundle S3 cache hits and misses by source (prefill vs live) and kind (published, preview, revision)",
+  labelNames: ["result", "source", "kind"],
 });
 
 export const previewLoaderCacheCounter = new Counter({
@@ -121,10 +130,12 @@ export const previewLoaderCacheCounter = new Counter({
   labelNames: ["result"],
 });
 
-export const loaderCodegenCacheCounter = new Counter({
+export const loaderCodegenCacheCounter = new Counter<
+  "result" | "source" | "kind"
+>({
   name: "loader_codegen_cache_total",
-  help: "Per-project codegen S3 cache hits and misses by source (prefill vs live)",
-  labelNames: ["result", "source"],
+  help: "Per-project codegen S3 cache hits and misses by source (prefill vs live) and kind (published, preview, revision)",
+  labelNames: ["result", "source", "kind"],
 });
 
 export class WabPromTimer {

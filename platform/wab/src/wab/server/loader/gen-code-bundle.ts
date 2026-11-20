@@ -3,6 +3,10 @@ import { DbMgr } from "@/wab/server/db/DbMgr";
 import { LoaderBundleOutput } from "@/wab/server/loader/module-bundler";
 import {
   extractProjectId,
+  isPinnedVersionToSync,
+  isRevisionToSync,
+  makeRevisionSpec,
+  mkRevisionToSync,
   mkVersionToSync,
   resolveProjectDeps,
   VersionToSync,
@@ -10,6 +14,7 @@ import {
 import { logger, withSpan } from "@/wab/server/observability";
 import {
   loaderBundleCacheCounter,
+  LoaderCacheKind,
   loaderCodegenCacheCounter,
 } from "@/wab/server/promstats";
 import {
@@ -82,7 +87,11 @@ export async function genPublishedLoaderCodeBundle(
 ) {
   const { projectVersions } = opts;
 
-  const cachedBundle = await tryGetCachedPublishedBundle(opts);
+  const cachedBundle = await tryGetCachedBundle({
+    ...opts,
+    mode: "production",
+    kind: "published",
+  });
   if (cachedBundle) {
     return cachedBundle;
   }
@@ -109,6 +118,77 @@ export async function genPublishedLoaderCodeBundle(
       loaderVersion: opts.loaderVersion,
       browserOnly: opts.browserOnly,
       mode: "production",
+      kind: "published",
+      i18nKeyScheme: opts.i18nKeyScheme,
+      i18nTagPrefix: opts.i18nTagPrefix,
+      skipHead: opts.skipHead,
+    },
+  );
+}
+
+/**
+ * Generates the preview bundle for root projects pinned to revisions, for
+ * /api/v1/loader/code/revision. The output only depends on the revision ids
+ * and loader options, so both codegen and the bundle are cached in S3.
+ */
+export async function genRevisionLoaderCodeBundle(
+  dbMgr: DbMgr,
+  pool: PlasmicWorkerPool,
+  opts: {
+    source: "live";
+    platform?: string;
+    platformOptions: ExportPlatformOptions;
+    /** Root project id to ProjectRevision id */
+    projectRevisions: Record<string, string>;
+    loaderVersion: number;
+    browserOnly: boolean;
+    i18nKeyScheme: LocalizationKeyScheme | undefined;
+    i18nTagPrefix: string | undefined;
+    skipHead?: boolean;
+  },
+) {
+  const projectVersions: Record<string, VersionToSync> = Object.fromEntries(
+    Object.entries(opts.projectRevisions).map(([projectId, revisionId]) => [
+      projectId,
+      mkRevisionToSync(revisionId),
+    ]),
+  );
+
+  const cachedBundle = await tryGetCachedBundle({
+    ...opts,
+    projectVersions,
+    mode: "development",
+    kind: "revision",
+  });
+  if (cachedBundle) {
+    return cachedBundle;
+  }
+
+  const allProjectVersions = await withSpan(
+    "loader-resolve-deps",
+    async () => ({
+      // Deps resolve from the pinned revisions' sites to pkg versions
+      ...(await resolveProjectDeps(dbMgr, projectVersions)),
+      ...projectVersions,
+    }),
+    `Project revisions ${JSON.stringify(opts.projectRevisions)}`,
+  );
+
+  await ensureDevFlags(dbMgr);
+
+  return await genLoaderCodeBundleForProjectVersions(
+    dbMgr,
+    allProjectVersions,
+    pool,
+    {
+      source: opts.source,
+      platform: opts.platform,
+      platformOptions: opts.platformOptions,
+      loaderVersion: opts.loaderVersion,
+      browserOnly: opts.browserOnly,
+      // Same as preview
+      mode: "development",
+      kind: "revision",
       i18nKeyScheme: opts.i18nKeyScheme,
       i18nTagPrefix: opts.i18nTagPrefix,
       skipHead: opts.skipHead,
@@ -161,6 +241,7 @@ export async function genLatestLoaderCodeBundle(
       browserOnly: opts.browserOnly,
       // Use development build for fastest response
       mode: "development",
+      kind: "preview",
       i18nKeyScheme: opts.i18nKeyScheme,
       i18nTagPrefix: opts.i18nTagPrefix,
       skipHead: opts.skipHead,
@@ -177,6 +258,7 @@ async function genLoaderCodeBundleForProjectVersions(
     platform?: string;
     platformOptions: ExportPlatformOptions;
     mode: "production" | "development";
+    kind: LoaderCacheKind;
     loaderVersion: number;
     browserOnly: boolean;
     i18nKeyScheme?: LocalizationKeyScheme;
@@ -186,19 +268,16 @@ async function genLoaderCodeBundleForProjectVersions(
 ) {
   const exportOpts = makeExportOpts(opts);
 
-  const codegenProject = async (
-    projectId: string,
-    version: string | undefined,
-    indirect: boolean,
-  ) => {
+  const codegenProject = async (projectId: string, v: VersionToSync) => {
     const res = await pool.exec("codegen", [
       {
         scheme: "blackbox",
         connectionOptions: getSerializableConnectionOptions(),
         projectId,
         exportOpts: exportOpts,
-        maybeVersionOrTag: version,
-        indirect,
+        maybeVersionOrTag: v.version,
+        revisionId: v.revisionId,
+        indirect: v.indirect,
         skipChecksums: true,
       },
     ]);
@@ -206,28 +285,29 @@ async function genLoaderCodeBundleForProjectVersions(
     return tuple(res.output, res.componentDeps, res.componentRefs);
   };
 
+  const listBranches = async (projectId: string, v: VersionToSync) =>
+    // A revision id is pinned whatever the branches are
+    isRevisionToSync(v)
+      ? []
+      : await dbMgr.listBranchesForProject(projectId as ProjectId);
+
   const [outputBundles, componentDeps, componentRefs] = unzip3(
     await withSpan(
       "loader-codegen",
       async () =>
         await Promise.all(
           Object.entries(projectVersions).map(async ([projectId, v]) => {
-            const branches = await dbMgr.listBranchesForProject(
-              projectId as ProjectId,
-            );
-            const maybeBranch = branches.find(
-              (branch) => branch.name === v.version,
-            );
+            const branches = await listBranches(projectId, v);
 
-            // If version is a branch name, we want to get the latest of that branch
-            if (v.version === "latest" || maybeBranch) {
+            // If version is "latest" or a branch name, we want to get the
+            // latest revision of that branch
+            if (!isPinnedVersionToSync(v, branches)) {
               // If no explicit version, then we cannot cache; just perform the codegen
-              return await codegenProject(projectId, v.version, v.indirect);
+              return await codegenProject(projectId, v);
             } else {
               const codegenKey = makeCodegenBucketPath({
                 projectId,
-                version: v.version,
-                indirect: v.indirect,
+                version: v,
                 exportOpts,
               });
               const { data: codegenResult, cacheHit: codegenCacheHit } =
@@ -240,14 +320,14 @@ async function genLoaderCodeBundleForProjectVersions(
                 >({
                   bucket: LOADER_ASSETS_BUCKET,
                   key: codegenKey,
-                  compute: async () =>
-                    await codegenProject(projectId, v.version, v.indirect),
+                  compute: async () => await codegenProject(projectId, v),
                   serialize: (obj) => JSON.stringify(obj),
                   deserialize: (str) => JSON.parse(str),
                 });
               loaderCodegenCacheCounter.inc({
                 result: codegenCacheHit ? "hit" : "miss",
                 source: opts.source,
+                kind: opts.kind,
               });
               if (!codegenCacheHit && opts.source === "live") {
                 logger.info(
@@ -287,19 +367,15 @@ async function genLoaderCodeBundleForProjectVersions(
   const result = await withSpan(
     "loader-bundle",
     async () => {
+      // Cacheable when every version is pinned. That's published bundles
+      // (production) and revision bundles (development); preview bundles
+      // always have a "latest" or branch root, so they're never cached.
       if (
-        opts.mode === "production" &&
         (
           await Promise.all(
-            Object.entries(projectVersions).map(async ([p, v]) => {
-              const branches = await dbMgr.listBranchesForProject(
-                p as ProjectId,
-              );
-              const versionIsBranchName = !!branches.find(
-                (branch) => branch.name === v.version,
-              );
-              return v.version !== "latest" && !versionIsBranchName;
-            }),
+            Object.entries(projectVersions).map(async ([p, v]) =>
+              isPinnedVersionToSync(v, await listBranches(p, v)),
+            ),
           )
         ).every((x) => x)
       ) {
@@ -308,6 +384,7 @@ async function genLoaderCodeBundleForProjectVersions(
           platform: exportOpts.platform,
           loaderVersion: opts.loaderVersion,
           browserOnly: opts.browserOnly,
+          mode: opts.mode,
           exportOpts,
         });
         const { data: bundle, cacheHit: bundleCacheHit } =
@@ -321,14 +398,14 @@ async function genLoaderCodeBundleForProjectVersions(
         loaderBundleCacheCounter.inc({
           result: bundleCacheHit ? "hit" : "miss",
           source: opts.source,
+          kind: opts.kind,
         });
         if (!bundleCacheHit && opts.source === "live") {
           logger.info(
             `Loader bundle cache miss for live request: ${bundleKey}`,
           );
         }
-        bundle.bundleKey = bundleKey;
-        return bundle;
+        return withBundleKey(bundle, bundleKey, opts.mode);
       } else {
         return await bundleProjects();
       }
@@ -365,30 +442,51 @@ export const LOADER_CODEGEN_OPTS_DEFAULTS: ExportOpts = {
   targetEnv: "loader",
 };
 
+/**
+ * Only for a pinned version: a pkg version (`v=<version>`) or a revision
+ * (`rev=<revisionId>`). `indirect` is part of the key because it affects
+ * whether page components are included; indirect deps have no page
+ * components.
+ */
 function makeCodegenBucketPath(opts: {
   projectId: string;
-  version: string;
-  // affects whether page components are included; is not indirect, no page components
-  indirect: boolean;
+  version: VersionToSync;
   exportOpts: ExportOpts;
 }) {
-  return `codegen/cb=${LOADER_CACHE_BUST}/pid=${opts.projectId}/v=${
-    opts.version
-  }/indirect=${opts.indirect}/opts=${makeExportOptsKey(opts.exportOpts)}`;
+  const { version } = opts;
+  const versionPart = isRevisionToSync(version)
+    ? `rev=${version.revisionId}`
+    : `v=${version.version}`;
+  return `codegen/cb=${LOADER_CACHE_BUST}/pid=${
+    opts.projectId
+  }/${versionPart}/indirect=${version.indirect}/opts=${makeExportOptsKey(
+    opts.exportOpts,
+  )}`;
 }
 
+/**
+ * Production keys have no `mode` segment, which keeps the keys of bundles
+ * cached before revision bundles existed. Development (revision) bundles get
+ * `mode=development`, so the two can never collide.
+ */
 function makeBundleBucketPath(opts: {
   projectVersions: Record<string, VersionToSync>;
   platform: string;
   loaderVersion: number;
   browserOnly: boolean;
+  mode: "production" | "development";
   exportOpts: ExportOpts;
 }) {
   const projectSpecs = Object.entries(opts.projectVersions)
     .filter(([_, v]) => !v.indirect)
-    .map(([p, v]) => `${p}@${v.version}`)
+    .map(([p, v]) =>
+      isRevisionToSync(v)
+        ? makeRevisionSpec(p, v.revisionId)
+        : `${p}@${v.version}`,
+    )
     .sort();
-  const key = `bundle/cb=${LOADER_CACHE_BUST}/loaderVersion=${
+  const modePart = opts.mode === "production" ? "" : `/mode=${opts.mode}`;
+  const key = `bundle/cb=${LOADER_CACHE_BUST}${modePart}/loaderVersion=${
     opts.loaderVersion
   }/ps=${projectSpecs.join(",")}/platform=${
     opts.platform
@@ -396,6 +494,12 @@ function makeBundleBucketPath(opts: {
     opts.exportOpts,
   )}`;
   return key;
+}
+
+// Only production bundles hand out their key (see withBundleKey), so only they
+// serve /chunks, which has no auth.
+export function isChunkableBundleKey(bundleKey: string) {
+  return !bundleKey.includes("/mode=");
 }
 
 export function extractBundleKeyProjectIds(bundleKey: string): ProjectId[] {
@@ -440,15 +544,35 @@ function makeExportOpts(opts: ExportOptsInputs): ExportOpts {
 }
 
 /**
- * Probes the bundle cache before resolving deps or running codegen. Costs one
- * extra S3 get on a miss, but lets a fully-cached published bundle skip all
- * the db and worker-pool work that produces the very same key.
+ * Only production bundles get a `bundleKey`, which the SDK uses to fetch
+ * chunks from the unauthenticated /chunks route. Revision (preview) bundles
+ * don't split chunks (PLA-10961), so they leave it unset.
  */
-async function tryGetCachedPublishedBundle(
+function withBundleKey(
+  bundle: LoaderBundleOutput,
+  bundleKey: string,
+  mode: "production" | "development",
+) {
+  if (mode === "production") {
+    bundle.bundleKey = bundleKey;
+  }
+  return bundle;
+}
+
+/**
+ * Probes the bundle cache before resolving deps or running codegen. Costs one
+ * extra S3 get on a miss, but lets a fully-cached bundle skip all the db and
+ * worker-pool work that produces the very same key.
+ *
+ * Every version in `projectVersions` must be pinned.
+ */
+async function tryGetCachedBundle(
   opts: ExportOptsInputs & {
     source: "prefill" | "live";
     projectVersions: Record<string, VersionToSync>;
     browserOnly: boolean;
+    mode: "production" | "development";
+    kind: LoaderCacheKind;
   },
 ): Promise<LoaderBundleOutput | null> {
   const exportOpts = makeExportOpts(opts);
@@ -457,6 +581,7 @@ async function tryGetCachedPublishedBundle(
     platform: exportOpts.platform,
     loaderVersion: opts.loaderVersion,
     browserOnly: opts.browserOnly,
+    mode: opts.mode,
     exportOpts,
   });
   const cached = await withSpan("loader-bundle-cache-probe", async () =>
@@ -471,12 +596,16 @@ async function tryGetCachedPublishedBundle(
     // which probes the same key again before computing.
     return null;
   }
-  loaderBundleCacheCounter.inc({ result: "hit", source: opts.source });
-  cached.bundleKey = bundleKey;
-  return cached;
+  loaderBundleCacheCounter.inc({
+    result: "hit",
+    source: opts.source,
+    kind: opts.kind,
+  });
+  return withBundleKey(cached, bundleKey, opts.mode);
 }
 
 export const _testonly = {
   makeBundleBucketPath,
+  makeCodegenBucketPath,
   makeExportOpts,
 };

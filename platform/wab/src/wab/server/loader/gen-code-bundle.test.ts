@@ -3,11 +3,19 @@ import {
   _testonly,
   extractBundleKeyProjectIds,
   genPublishedLoaderCodeBundle,
+  genRevisionLoaderCodeBundle,
+  isChunkableBundleKey,
   LATEST_LOADER_VERSION,
   LOADER_CODEGEN_OPTS_DEFAULTS,
 } from "@/wab/server/loader/gen-code-bundle";
-import { resolveProjectDeps } from "@/wab/server/loader/resolve-projects";
-import { loaderBundleCacheCounter } from "@/wab/server/promstats";
+import {
+  mkRevisionToSync,
+  resolveProjectDeps,
+} from "@/wab/server/loader/resolve-projects";
+import {
+  loaderBundleCacheCounter,
+  loaderCodegenCacheCounter,
+} from "@/wab/server/promstats";
 import type { PlasmicWorkerPool } from "@/wab/server/workers/pool";
 import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
 
@@ -222,6 +230,7 @@ describe("genPublishedLoaderCodeBundle", () => {
     expect(inc).toHaveBeenCalledExactlyOnceWith({
       result: "hit",
       source: "live",
+      kind: "published",
     });
   });
 
@@ -263,11 +272,229 @@ describe("makeBundleBucketPath/extractBundleKeyProjectIds", () => {
       platform: "react",
       loaderVersion: 7,
       browserOnly: true,
+      mode: "production",
       exportOpts: LOADER_CODEGEN_OPTS_DEFAULTS,
     });
     expect(bundleKey).toEqual(
       "bundle/cb=23/loaderVersion=7/ps=p1@10.0.0,p2@1.2.3/platform=react/browserOnly=true/opts=22a86211efc9ac67440fb332014652a6010e993f48c3068b936afe2128f03e3c",
     );
     expect(extractBundleKeyProjectIds(bundleKey)).toEqual(["p1", "p2"]);
+  });
+});
+
+describe("revision cache keys", () => {
+  const exportOpts = LOADER_CODEGEN_OPTS_DEFAULTS;
+
+  it("keys revision bundles on mode=development and the revision ids", () => {
+    const bundleKey = _testonly.makeBundleBucketPath({
+      projectVersions: {
+        p2: mkRevisionToSync("rev2"),
+        p1: mkRevisionToSync("rev1"),
+        p3: { version: "0.0.1", indirect: true },
+      },
+      platform: "react",
+      loaderVersion: 10,
+      browserOnly: false,
+      mode: "development",
+      exportOpts,
+    });
+    expect(bundleKey).toStartWith(
+      "bundle/cb=23/mode=development/loaderVersion=10/ps=p1@rev:rev1,p2@rev:rev2/platform=react/browserOnly=false/opts=",
+    );
+    expect(extractBundleKeyProjectIds(bundleKey)).toEqual(["p1", "p2"]);
+  });
+
+  it("serves /chunks only for production bundle keys", () => {
+    const opts = {
+      projectVersions: { p1: mkRevisionToSync("rev1") },
+      platform: "react",
+      loaderVersion: 10,
+      browserOnly: false,
+      exportOpts,
+    };
+    expect(
+      isChunkableBundleKey(
+        _testonly.makeBundleBucketPath({ ...opts, mode: "production" }),
+      ),
+    ).toBe(true);
+    expect(
+      isChunkableBundleKey(
+        _testonly.makeBundleBucketPath({ ...opts, mode: "development" }),
+      ),
+    ).toBe(false);
+  });
+
+  it("keys revision codegen on rev=<revisionId>", () => {
+    expect(
+      _testonly.makeCodegenBucketPath({
+        projectId: "p1",
+        version: mkRevisionToSync("rev1"),
+        exportOpts,
+      }),
+    ).toStartWith("codegen/cb=23/pid=p1/rev=rev1/indirect=false/opts=");
+    expect(
+      _testonly.makeCodegenBucketPath({
+        projectId: "p1",
+        version: { version: "1.0.0", indirect: true },
+        exportOpts,
+      }),
+    ).toStartWith("codegen/cb=23/pid=p1/v=1.0.0/indirect=true/opts=");
+  });
+});
+
+describe("genRevisionLoaderCodeBundle", () => {
+  const CALL_OPTS = {
+    source: "live",
+    platformOptions: {},
+    projectRevisions: { proj1: "rev1" },
+    loaderVersion: LATEST_LOADER_VERSION,
+    browserOnly: false,
+    i18nKeyScheme: undefined,
+    i18nTagPrefix: undefined,
+  } as const;
+
+  let dbMgr: DbMgr;
+  let pool: PlasmicWorkerPool;
+
+  beforeEach(() => {
+    s3.objects.clear();
+    s3.getObject.mockImplementation(({ Key }) => async () => {
+      const body = s3.objects.get(Key);
+      if (body === undefined) {
+        throw Object.assign(new Error("NoSuchKey"), { name: "NoSuchKey" });
+      }
+      return { Body: { transformToString: async () => body } };
+    });
+    s3.putObject.mockImplementation(
+      ({ Key, Body }) =>
+        async () =>
+          void s3.objects.set(Key, Body),
+    );
+    s3.GetObjectCommand.mockImplementation(function (input) {
+      return { run: s3.getObject(input) };
+    });
+    s3.PutObjectCommand.mockImplementation(function (input) {
+      return { run: s3.putObject(input) };
+    });
+    s3.S3Client.mockImplementation(function () {
+      return {
+        send: (command: { run: () => Promise<unknown> }) => command.run(),
+      };
+    });
+
+    s3.getObject.mockClear();
+    s3.putObject.mockClear();
+    vi.mocked(resolveProjectDeps).mockClear();
+
+    // The pinned revision depends on a published pkg version of dep1
+    vi.mocked(resolveProjectDeps).mockResolvedValue({
+      dep1: { version: "2.0.0", indirect: true },
+    });
+    dbMgr = {
+      listBranchesForProject: vi.fn().mockResolvedValue([]),
+    } as unknown as DbMgr;
+    pool = {
+      exec: vi.fn(async (method: string) =>
+        method === "codegen"
+          ? { output: {}, componentDeps: {}, componentRefs: [] }
+          : { modules: [], bundleKey: null },
+      ),
+    } as unknown as PlasmicWorkerPool;
+  });
+
+  function s3Keys(mock: typeof s3.getObject | typeof s3.putObject) {
+    return mock.mock.calls.map(([{ Key }]) => Key);
+  }
+
+  it("generates a development bundle pinned to the revision and caches it", async () => {
+    const bundleInc = vi.spyOn(loaderBundleCacheCounter, "inc");
+    const codegenInc = vi.spyOn(loaderCodegenCacheCounter, "inc");
+
+    const result = await genRevisionLoaderCodeBundle(dbMgr, pool, CALL_OPTS);
+
+    expect(resolveProjectDeps).toHaveBeenCalledWith(dbMgr, {
+      proj1: { revisionId: "rev1", indirect: false },
+    });
+    expect(pool.exec).toHaveBeenCalledWith("codegen", [
+      expect.objectContaining({
+        projectId: "proj1",
+        revisionId: "rev1",
+        indirect: false,
+      }),
+    ]);
+    expect(pool.exec).toHaveBeenCalledWith("codegen", [
+      expect.objectContaining({
+        projectId: "dep1",
+        maybeVersionOrTag: "2.0.0",
+        revisionId: undefined,
+        indirect: true,
+      }),
+    ]);
+    expect(pool.exec).toHaveBeenCalledWith("loader-assets", [
+      expect.anything(),
+      expect.anything(),
+      expect.anything(),
+      "react",
+      expect.objectContaining({ mode: "development" }),
+    ]);
+
+    const putKeys = s3Keys(s3.putObject);
+    expect(putKeys).toContainEqual(
+      expect.stringMatching(/^codegen\/cb=23\/pid=proj1\/rev=rev1\//),
+    );
+    expect(putKeys).toContainEqual(
+      expect.stringMatching(/^codegen\/cb=23\/pid=dep1\/v=2\.0\.0\//),
+    );
+    const bundleKey = putKeys.find((key) => key.startsWith("bundle/"));
+    expect(bundleKey).toStartWith(
+      "bundle/cb=23/mode=development/loaderVersion=10/ps=proj1@rev:rev1/",
+    );
+    // The probe reads the same key the full path writes.
+    expect(s3Keys(s3.getObject)[0]).toEqual(bundleKey);
+
+    // Revision bundles are not served through /chunks.
+    expect(result.bundleKey).toBeNull();
+
+    expect(bundleInc).toHaveBeenCalledWith({
+      result: "miss",
+      source: "live",
+      kind: "revision",
+    });
+    expect(codegenInc).toHaveBeenCalledWith({
+      result: "miss",
+      source: "live",
+      kind: "revision",
+    });
+    // A pinned revision never needs a branch lookup.
+    expect(dbMgr.listBranchesForProject).not.toHaveBeenCalledWith("proj1");
+  });
+
+  it("serves a cached revision bundle without codegen", async () => {
+    await genRevisionLoaderCodeBundle(dbMgr, pool, CALL_OPTS);
+    vi.mocked(pool.exec).mockClear();
+    vi.mocked(resolveProjectDeps).mockClear();
+    const inc = vi.spyOn(loaderBundleCacheCounter, "inc");
+
+    const result = await genRevisionLoaderCodeBundle(dbMgr, pool, CALL_OPTS);
+
+    expect(pool.exec).not.toHaveBeenCalled();
+    expect(resolveProjectDeps).not.toHaveBeenCalled();
+    expect(result.bundleKey).toBeNull();
+    expect(inc).toHaveBeenCalledExactlyOnceWith({
+      result: "hit",
+      source: "live",
+      kind: "revision",
+    });
+  });
+
+  it("caches each revision separately", async () => {
+    await genRevisionLoaderCodeBundle(dbMgr, pool, CALL_OPTS);
+    await genRevisionLoaderCodeBundle(dbMgr, pool, {
+      ...CALL_OPTS,
+      projectRevisions: { proj1: "rev2" },
+    });
+    expect(
+      [...s3.objects.keys()].filter((key) => key.startsWith("bundle/")),
+    ).toHaveLength(2);
   });
 });

@@ -8,19 +8,89 @@ import { ProjectId } from "@/wab/shared/ApiSchema";
 import { UnsafeBundle } from "@/wab/shared/bundles";
 import { sortBy } from "lodash";
 
-export type VersionToSync = {
+/** A pkg version, or "latest" / a branch name for the latest revision. */
+export interface PkgVersionToSync {
   version: string;
   indirect: boolean;
-};
+  revisionId?: undefined;
+}
+
+/**
+ * A root project pinned to a ProjectRevision by id. Only root projects are
+ * pinned this way; their deps resolve to pkg versions.
+ */
+export interface RevisionToSync {
+  revisionId: string;
+  indirect: false;
+  version?: undefined;
+}
+
+export type VersionToSync = PkgVersionToSync | RevisionToSync;
 
 export function mkVersionToSync(
   version: string,
   indirect?: boolean,
-): VersionToSync {
+): PkgVersionToSync {
   return {
     version,
     indirect: !!indirect,
   };
+}
+
+export function mkRevisionToSync(revisionId: string): RevisionToSync {
+  return { revisionId, indirect: false };
+}
+
+export function isRevisionToSync(v: VersionToSync): v is RevisionToSync {
+  return v.revisionId !== undefined;
+}
+
+/**
+ * Whether the version is fully pinned, so output for it can be cached: a pkg
+ * version or a revision id, but not "latest" or a branch name.
+ */
+export function isPinnedVersionToSync(
+  v: VersionToSync,
+  branches: { name: string }[],
+) {
+  return (
+    isRevisionToSync(v) ||
+    (v.version !== "latest" && !branches.some((b) => b.name === v.version))
+  );
+}
+
+const REVISION_SPEC_SEPARATOR = "@rev:";
+// Project and revision ids are alphanumeric strings.
+const REVISION_SPEC_PART_RE = /^[A-Za-z0-9_-]+$/;
+
+/** Makes a `<projectId>@rev:<projectRevisionId>` spec. */
+export function makeRevisionSpec(projectId: string, revisionId: string) {
+  return `${projectId}${REVISION_SPEC_SEPARATOR}${revisionId}`;
+}
+
+/**
+ * Parses a `<projectId>@rev:<projectRevisionId>` spec, as used by
+ * `/api/v1/loader/code/revision`. Unlike `parseProjectIdSpec`, which treats
+ * any non-semver suffix as a tag or branch name, this only accepts a revision
+ * id.
+ */
+export function parseRevisionSpec(spec: string): {
+  projectId: ProjectId;
+  revisionId: string;
+} {
+  const sepIndex = spec.indexOf(REVISION_SPEC_SEPARATOR);
+  const projectId = spec.slice(0, sepIndex);
+  const revisionId = spec.slice(sepIndex + REVISION_SPEC_SEPARATOR.length);
+  if (
+    sepIndex < 0 ||
+    !REVISION_SPEC_PART_RE.test(projectId) ||
+    !REVISION_SPEC_PART_RE.test(revisionId)
+  ) {
+    throw new BadRequestError(
+      `Invalid revision spec "${spec}"; expected <projectId>@rev:<projectRevisionId>`,
+    );
+  }
+  return { projectId: projectId as ProjectId, revisionId };
 }
 
 async function getPkgByProjectOrThrow(dbMgr: DbMgr, projectId: string) {
@@ -51,6 +121,9 @@ export async function resolveProjectDeps(
 ): Promise<Record<string, VersionToSync>> {
   const seeds = await Promise.all(
     Object.entries(projectVersions).map(async ([projectId, v]) => {
+      if (isRevisionToSync(v)) {
+        return await dbMgr.getProjectRevByIdForProject(projectId, v.revisionId);
+      }
       const branches = await dbMgr.listBranchesForProject(
         projectId as ProjectId,
       );
