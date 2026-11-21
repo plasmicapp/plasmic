@@ -245,7 +245,7 @@ export async function listProjects(req: Request, res: Response) {
   );
 }
 
-export async function createProject(req: Request, res: Response) {
+export async function createProject(req: Request) {
   const mgr = userDbMgr(req);
   const { bundler } = req;
 
@@ -264,7 +264,7 @@ export async function createProject(req: Request, res: Response) {
     projectId: project.id,
   });
   req.promLabels.projectId = project.id;
-  res.json({ project: mkApiProject(project), rev: omit(rev, "data") });
+  return { project: mkApiProject(project), rev: omit(rev, "data") };
 }
 
 export async function createProjectWithHostlessPackages(
@@ -1462,7 +1462,7 @@ export async function setMainBranchProtection(req: Request, res: Response) {
   res.json({});
 }
 
-export async function getProjectRev(req: Request, res: Response) {
+export async function getProjectRev(req: Request) {
   const revisionId = req.query.revisionId
     ? parseJsonQueryParam(req, "revisionId")
     : undefined;
@@ -1526,7 +1526,7 @@ export async function getProjectRev(req: Request, res: Response) {
     branchId,
     branchName: branch?.name,
   });
-  res.json({
+  return {
     rev,
     project: mkApiProject(project),
     perms,
@@ -1538,7 +1538,7 @@ export async function getProjectRev(req: Request, res: Response) {
     hasAppAuth,
     appAuthProvider,
     isMainBranchProtected: !!project.isMainBranchProtected,
-  });
+  };
 }
 
 export async function getProjectRevWithoutData(req: Request, res: Response) {

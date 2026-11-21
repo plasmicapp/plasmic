@@ -366,6 +366,16 @@ export async function startTransaction<TCommit, TRollback>(
   }
 }
 
+/** Sends the JSON response after the transaction commits. */
+export function sendJsonAfterCommit<T>(handler: (req: Request) => Promise<T>) {
+  return async (req: Request, res: Response) => {
+    const { commit } = await startTransaction(req, async () =>
+      commitTransaction(await handler(req)),
+    );
+    res.json(commit);
+  };
+}
+
 /**
  * Wraps a route handler in a database transaction.
  * The transaction will automatically commit on resolve or rollback on reject.

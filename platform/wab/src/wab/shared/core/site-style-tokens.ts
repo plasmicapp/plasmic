@@ -27,6 +27,7 @@ import {
   TplNode,
 } from "@/wab/shared/model/classes";
 import keyBy from "lodash/keyBy";
+import memoize from "lodash/memoize";
 import { computedFn } from "mobx-utils";
 
 /** Token resolver that returns the value and token. */
@@ -246,10 +247,10 @@ export const componentToUsedTokens = siteSelector(
     component: Component,
   ): ReadonlyArray<StyleToken> {
     const usedTokens = new Set<StyleToken>();
-    const allTokensDict = siteFinalStyleTokensAllDepsDict(site);
+    const getTokensDict = memoize(() => siteFinalStyleTokensAllDepsDict(site));
     for (const tpl of flattenComponent(component)) {
       if (isTplVariantable(tpl)) {
-        xAddAll(usedTokens, tplToUsedTokens(site, tpl, allTokensDict));
+        xAddAll(usedTokens, tplToUsedTokens(site, tpl, getTokensDict));
       }
     }
     return [...usedTokens.keys()];
@@ -261,13 +262,13 @@ export const componentToUsedTokens = siteSelector(
 function tplToUsedTokens(
   site: Site,
   tpl: TplNode,
-  allTokensDict: ReturnType<typeof siteFinalStyleTokensAllDepsDict>,
+  getTokensDict: () => ReturnType<typeof siteFinalStyleTokensAllDepsDict>,
 ): ReadonlyArray<StyleToken> {
   const collector = new Set<StyleToken>();
   for (const vs of tpl.vsettings) {
     const rulesets = expandRuleSets([vs.rs]);
     for (const rs of rulesets) {
-      xAddAll(collector, usedTokensForExp(site, rs, tpl, allTokensDict));
+      xAddAll(collector, usedTokensForExp(site, rs, tpl, getTokensDict));
     }
   }
   return [...collector.keys()];
@@ -277,7 +278,7 @@ function usedTokensForExp(
   site: Site,
   rs: DeepReadonly<RuleSet>,
   tpl: TplNode,
-  allTokensDict: ReturnType<typeof siteFinalStyleTokensAllDepsDict>,
+  getTokensDict: () => ReturnType<typeof siteFinalStyleTokensAllDepsDict>,
 ): ReadonlyArray<StyleToken> {
   const exp = readonlyRSH(rs, tpl);
   const collector = new Set<StyleToken>();
@@ -285,16 +286,17 @@ function usedTokensForExp(
     const val = exp.getRaw(prop);
     if (val) {
       const refTokenIds = extractAllReferencedTokenIds(val);
+      if (!refTokenIds.length) {
+        continue;
+      }
+      const allTokensDict = getTokensDict();
       const refTokens = withoutNils(refTokenIds.map((x) => allTokensDict[x]));
       xAddAll(
         collector,
         refTokens.map((t) => t.base),
       );
       for (const token of refTokens) {
-        xAddAll(
-          collector,
-          usedTokensForToken(site, allTokensDict[token.uuid], allTokensDict),
-        );
+        xAddAll(collector, usedTokensForToken(site, token, allTokensDict));
       }
     }
   }

@@ -206,7 +206,7 @@ export class MetaRuntime {
     if (this.clsToFieldsCache.has(cls)) {
       return ensure(
         this.clsToFieldsCache.get(cls),
-        `Class ${cls} does not exist in clsToFieldsCache`,
+        () => `Class ${cls} does not exist in clsToFieldsCache`,
       );
     }
 
@@ -225,7 +225,7 @@ export class MetaRuntime {
     if (this.clsToFieldKeysCache.has(cls)) {
       return ensure(
         this.clsToFieldKeysCache.get(cls),
-        `Class ${cls} does not exist in clsToFieldKeysCache`,
+        () => `Class ${cls} does not exist in clsToFieldKeysCache`,
       );
     }
 
@@ -239,7 +239,7 @@ export class MetaRuntime {
     if (this.clsToTransientFieldKeysCache.has(cls)) {
       return ensure(
         this.clsToTransientFieldKeysCache.get(cls),
-        `Class ${cls} does not exist in clsToPersistentFieldKeysCache`,
+        () => `Class ${cls} does not exist in clsToPersistentFieldKeysCache`,
       );
     }
 

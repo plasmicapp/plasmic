@@ -266,6 +266,7 @@ import {
   adminOnly,
   adminOrDevelopmentEnvOnly,
   createTsRestEndpoints,
+  sendJsonAfterCommit,
   superDbMgr,
   withNext,
 } from "@/wab/server/routes/util";
@@ -1455,7 +1456,7 @@ export function addMainAppServerRoutes(
     safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
     withNext(listProjects),
   );
-  app.post("/api/v1/projects", withNext(createProject));
+  app.post("/api/v1/projects", sendJsonAfterCommit(createProject));
   app.post(
     "/api/v1/projects/create-project-with-hostless-packages",
     withNext(createProjectWithHostlessPackages),
@@ -1503,7 +1504,10 @@ export function addMainAppServerRoutes(
     "/api/v1/projects/:projectId/main-branch-protection",
     withNext(setMainBranchProtection),
   );
-  app.get("/api/v1/projects/:projectBranchId", withNext(getProjectRev));
+  app.get(
+    "/api/v1/projects/:projectBranchId",
+    sendJsonAfterCommit(getProjectRev),
+  );
   app.get(
     "/api/v1/projects/:projectId/revision-without-data",
     getProjectRevWithoutData,
