@@ -16,5 +16,6 @@ export type {
 export {
   PlasmicModulesFetcher,
   internal_getCachedBundleInNodeServer,
+  internal_setPreviewMinRev,
 } from "./fetcher";
 export type { FetcherOptions, LoaderBundleCache } from "./fetcher";

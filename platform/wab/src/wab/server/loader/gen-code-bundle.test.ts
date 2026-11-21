@@ -386,7 +386,6 @@ describe("genRevisionLoaderCodeBundle", () => {
     s3.putObject.mockClear();
     vi.mocked(resolveProjectDeps).mockClear();
 
-    // The pinned revision depends on a published pkg version of dep1
     vi.mocked(resolveProjectDeps).mockResolvedValue({
       dep1: { version: "2.0.0", indirect: true },
     });
@@ -449,10 +448,8 @@ describe("genRevisionLoaderCodeBundle", () => {
     expect(bundleKey).toStartWith(
       "bundle/cb=23/mode=development/loaderVersion=10/ps=proj1@rev:rev1/",
     );
-    // The probe reads the same key the full path writes.
     expect(s3Keys(s3.getObject)[0]).toEqual(bundleKey);
 
-    // Revision bundles are not served through /chunks.
     expect(result.bundleKey).toBeNull();
 
     expect(bundleInc).toHaveBeenCalledWith({
@@ -465,7 +462,6 @@ describe("genRevisionLoaderCodeBundle", () => {
       source: "live",
       kind: "revision",
     });
-    // A pinned revision never needs a branch lookup.
     expect(dbMgr.listBranchesForProject).not.toHaveBeenCalledWith("proj1");
   });
 

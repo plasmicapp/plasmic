@@ -1030,8 +1030,6 @@ export function addCodegenRoutes(app: express.Application) {
     apiAuth,
     withNext(buildLatestLoaderAssets),
   );
-  // Errors keep the default no-store Cache-Control (see addMiddlewares); the
-  // handlers set a cacheable one only once they succeed.
   app.get(
     "/api/v1/loader/code/revision/latest",
     cors(),
@@ -2069,7 +2067,7 @@ export function makeExpressSessionMiddleware(config: Config) {
       cleanupLimit: 0,
       // By not using a subquery, maybe less likely for deadlock
       limitSubquery: false,
-      onError: () => {},
+      onError: () => undefined,
       // Anonymous sessions are only for CSRF, expire them sooner.
       ttl: (_store, sess) =>
         sess.passport?.user ? Math.floor(sess.cookie.maxAge / 1000) : 86400,

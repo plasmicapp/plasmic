@@ -1,11 +1,6 @@
 /** @vitest-environment node */
 import { DbMgr, NotFoundError, SUPER_USER } from "@/wab/server/db/DbMgr";
 
-/**
- * Unit tests for the revision lookups used by the loader revision routes. A
- * fake query builder records the query, so these run without a database.
- */
-
 type Call = [method: string, ...args: unknown[]];
 
 function mkFakeMgr(rows: object[]) {
@@ -121,7 +116,6 @@ describe("DbMgr.getProjectRevRefByIdForProject", () => {
       "rev.projectId = :projectId",
       { projectId: "proj1" },
     ]);
-    // Never loads the revision data
     expect(fake.selects()).toEqual([
       ["rev.id", "rev.revision", "rev.branchId"],
     ]);
@@ -134,7 +128,6 @@ describe("DbMgr.getProjectRevRefByIdForProject", () => {
   });
 
   it("throws NotFoundError for a revision of another project or a soft-deleted one", async () => {
-    // Either way, the projectId and deletedAt filters leave no rows.
     const fake = mkFakeMgr([]);
     await expect(
       fake.mgr.getProjectRevRefByIdForProject("proj1", "rev1"),

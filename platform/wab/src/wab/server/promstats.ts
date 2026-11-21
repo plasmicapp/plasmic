@@ -109,11 +109,6 @@ const taskDuration = new Histogram({
   buckets: DEFAULT_HISTOGRAM_BUCKETS,
 });
 
-/**
- * Which loader bundle a cache counter is for: published (pkg versions),
- * preview (latest revisions; only its deps' codegen is cacheable), or revision
- * (pinned revisions, from /code/revision).
- */
 export type LoaderCacheKind = "published" | "preview" | "revision";
 
 export const loaderBundleCacheCounter = new Counter<

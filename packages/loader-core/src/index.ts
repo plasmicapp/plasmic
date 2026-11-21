@@ -1,4 +1,8 @@
-export { Api, PlasmicModulesFetcher } from "@plasmicapp/loader-fetcher";
+export {
+  Api,
+  PlasmicModulesFetcher,
+  internal_setPreviewMinRev,
+} from "@plasmicapp/loader-fetcher";
 export type {
   AssetModule,
   CodeModule,

@@ -91,8 +91,7 @@ function getLoaderVersion(req: Request) {
   return parseInt(loaderVersion || "0");
 }
 
-// Only the query is part of the CDN cache key, so never fall back to the
-// x-plasmic-loader-version header.
+// The CDN cache key includes loaderVersion from the query only.
 function getQueryLoaderVersion(req: Request) {
   if (typeof req.query.loaderVersion !== "string") {
     throw new BadRequestError("loaderVersion must be specified in the query");
@@ -482,12 +481,7 @@ export function makePreviewBundleCacheKeys(args: {
   return { lane, key };
 }
 
-/**
- * Resolves preview project specs to project ids and branches. Preview ignores
- * any version in the spec, as preview should have higher priority over
- * versions. But a tag may be a branch name, in which case the user wants the
- * latest revision of that branch.
- */
+/** Preview uses the latest revision on the matching branch, or main for a version tag. */
 async function resolvePreviewProjectBranches(
   mgr: DbMgr,
   projectIdSpecs: string[],
@@ -495,12 +489,8 @@ async function resolvePreviewProjectBranches(
   return await Promise.all(
     projectIdSpecs.map(parseProjectIdSpec).map(async (pv) => {
       if (pv.tag) {
-        // We need to check if pv.tag is a branch name or a pkgversion tag.
-        // The only way to know is to try to find a branch with the same name...
         const branches = await mgr.listBranchesForProject(pv.projectId);
         const branch = branches.find((b) => b.name === pv.tag);
-        // If there's no matching branch, assume this is a pkgversion tag,
-        // which we don't care about for preview bundle
         return {
           id: pv.projectId,
           branchName: branch?.name,
@@ -513,12 +503,6 @@ async function resolvePreviewProjectBranches(
   );
 }
 
-/**
- * The `/api/v1/loader/code/revision` query for root projects pinned to
- * revisions. Mirrors `makeCacheableVersionedLoaderQuery`, except that
- * `loaderVersion` is always set, so the response never depends on the
- * `x-plasmic-loader-version` header, which isn't part of the CDN cache key.
- */
 export function makeCacheableRevisionLoaderQuery({
   projectRevisions,
   loaderVersion,
@@ -543,16 +527,7 @@ function hostOf(url: string) {
   return new URL(url).host.toLowerCase();
 }
 
-/**
- * Returns the `Location` for a redirect from /code/revision/latest to
- * `path` (/code/revision).
- *
- * Requests to a codegen host (the CDN host or codegen-origin) are sent to the
- * CDN host, which caches /code/revision. Requests to any other host (a custom
- * apiHost, a proxy, the studio host) stay on that host. The `Location` is
- * relative when the target is the request's own host, as with /published,
- * and absolute otherwise.
- */
+/** Send codegen origin traffic to the CDN. Keep custom hosts on their own origin. */
 export function makeRevisionRedirectLocation({
   requestHost,
   path,
@@ -576,13 +551,6 @@ export function makeRevisionRedirectLocation({
   return `${new URL(cdnUrl).origin}${path}`;
 }
 
-/**
- * GET /api/v1/loader/code/revision/latest
- *
- * Takes the same query as /code/preview, plus `loaderVersion`. Without any
- * codegen, it resolves each project's latest revision and redirects to the
- * immutable /code/revision URL for those revisions, which the CDN caches.
- */
 export async function buildLatestRevisionLoaderRedirect(
   req: Request,
   res: Response,
@@ -629,19 +597,15 @@ export async function buildLatestRevisionLoaderRedirect(
   });
   const destination = `/api/v1/loader/code/revision?${query}`;
 
-  // Browsers always ask the edge, and the edge reuses the redirect for 5s.
   res.setHeader(
     "Cache-Control",
     isSharedCacheable(req)
       ? "public, max-age=0, s-maxage=5"
       : PRIVATE_CACHE_CONTROL,
   );
-  // A fail-safe, in case a shared cache doesn't key on the token header.
-  // Media CDN still caches it, since the header is in its cache key.
   res.vary("x-plasmic-api-project-tokens");
 
-  // See buildPublishedLoaderAssets. Every SDK requests `${host}${redirectUrl}`,
-  // so this must stay relative.
+  // The SDK prepends its configured host to JSON redirect URLs.
   if (projectIdsBranches.some(({ id }) => id === ANGULAR_POLYFILL_PROJECT_ID)) {
     res.status(200).json({ redirectUrl: destination });
     return;
@@ -659,13 +623,6 @@ export async function buildLatestRevisionLoaderRedirect(
     .end();
 }
 
-/**
- * GET /api/v1/loader/code/revision
- *
- * Serves the preview bundle for root projects pinned to revisions
- * (`projectId=<projectId>@rev:<projectRevisionId>`). The response is immutable
- * for a URL, so the CDN caches it, keyed on the project token header.
- */
 export async function buildRevisionLoaderAssets(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const {
@@ -690,7 +647,6 @@ export async function buildRevisionLoaderAssets(req: Request, res: Response) {
       mgr.checkProjectPerms(projectId, "viewer", "get"),
     ),
   );
-  // 404 unless each revision belongs to its project and isn't soft-deleted
   await Promise.all(
     projectRevisions.map(({ projectId, revisionId }) =>
       mgr.getProjectRevRefByIdForProject(projectId, revisionId),
@@ -728,9 +684,6 @@ export async function buildRevisionLoaderAssets(req: Request, res: Response) {
   });
 
   setAsCacheableResource(req, res);
-  // A fail-safe, in case a shared cache doesn't key on the token header.
-  // Media CDN only caches a response with Vary on a header in its cache key
-  // (cache_key_policy.included_header_names), which this one is.
   res.vary("x-plasmic-api-project-tokens");
   // nginx gzips the body as a stream with no Content-Length, which Media CDN
   // doesn't reliably cache. Media CDN only compresses bodies up to 1 MiB.
@@ -1270,19 +1223,7 @@ export async function prefillPublishedLoader(req: Request, res: Response) {
   res.json({});
 }
 
-/**
- * Whether a response to this request may be stored by shared caches (Media CDN
- * and mini-cache) and served to other callers.
- *
- * Those caches key loader responses on the URL plus the
- * `x-plasmic-api-project-tokens` header, so a response is only safe to share
- * when the project tokens (or the project being public) are what authorized
- * it: every caller that hits the same entry presented the same tokens. A
- * session cookie, personal API token or team API token authorizes a specific
- * actor instead. Those responses are marked private so no cache ever hands
- * them to a caller that presented different credentials. So are responses
- * authorized by `body.projectIdsAndTokens`, which no cache keys on.
- */
+/** Only credentials in the project token header are part of the shared cache key. */
 function isSharedCacheable(req: Request) {
   return !req.user && !req.apiTeam && !req.body?.projectIdsAndTokens;
 }

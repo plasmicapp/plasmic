@@ -15,7 +15,7 @@ export class PlasmicRemoteChangeWatcher {
     private opts: {
       projects: { id: string; token: string }[];
       host?: string;
-    }
+    },
   ) {
     this.host = opts.host ?? "https://studio.plasmic.app";
   }
@@ -84,25 +84,27 @@ export class PlasmicRemoteChangeWatcher {
       this.socket = undefined;
     });
 
-    socket.on("update", async (data: any) => {
-      console.log(
-        `${new Date().toISOString()}: Project ${
-          data.projectId
-        } updated to revision ${data.revisionNum}`
-      );
-      this.watchers.forEach((watcher) =>
-        watcher.onUpdate?.(data.projectId, data.revisionNum)
-      );
-    });
+    socket.on(
+      "update",
+      (data: { projectId: string; rev: { revision: number } }) => {
+        const { projectId, rev } = data;
+        console.log(
+          `${new Date().toISOString()}: Project ${projectId} updated to revision ${rev.revision}`,
+        );
+        this.watchers.forEach((watcher) =>
+          watcher.onUpdate?.(projectId, rev.revision),
+        );
+      },
+    );
 
     socket.on("publish", async (data: any) => {
       console.log(
         `${new Date().toISOString()}: Project ${
           data.projectId
-        } updated to version ${data.version}`
+        } updated to version ${data.version}`,
       );
       this.watchers.forEach((watcher) =>
-        watcher.onPublish?.(data.projectId, data.version)
+        watcher.onPublish?.(data.projectId, data.version),
       );
     });
   }

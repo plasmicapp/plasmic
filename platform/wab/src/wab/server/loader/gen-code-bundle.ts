@@ -126,11 +126,6 @@ export async function genPublishedLoaderCodeBundle(
   );
 }
 
-/**
- * Generates the preview bundle for root projects pinned to revisions, for
- * /api/v1/loader/code/revision. The output only depends on the revision ids
- * and loader options, so both codegen and the bundle are cached in S3.
- */
 export async function genRevisionLoaderCodeBundle(
   dbMgr: DbMgr,
   pool: PlasmicWorkerPool,
@@ -138,7 +133,6 @@ export async function genRevisionLoaderCodeBundle(
     source: "live";
     platform?: string;
     platformOptions: ExportPlatformOptions;
-    /** Root project id to ProjectRevision id */
     projectRevisions: Record<string, string>;
     loaderVersion: number;
     browserOnly: boolean;
@@ -167,7 +161,6 @@ export async function genRevisionLoaderCodeBundle(
   const allProjectVersions = await withSpan(
     "loader-resolve-deps",
     async () => ({
-      // Deps resolve from the pinned revisions' sites to pkg versions
       ...(await resolveProjectDeps(dbMgr, projectVersions)),
       ...projectVersions,
     }),
@@ -186,7 +179,6 @@ export async function genRevisionLoaderCodeBundle(
       platformOptions: opts.platformOptions,
       loaderVersion: opts.loaderVersion,
       browserOnly: opts.browserOnly,
-      // Same as preview
       mode: "development",
       kind: "revision",
       i18nKeyScheme: opts.i18nKeyScheme,
@@ -286,7 +278,6 @@ async function genLoaderCodeBundleForProjectVersions(
   };
 
   const listBranches = async (projectId: string, v: VersionToSync) =>
-    // A revision id is pinned whatever the branches are
     isRevisionToSync(v)
       ? []
       : await dbMgr.listBranchesForProject(projectId as ProjectId);
@@ -299,8 +290,6 @@ async function genLoaderCodeBundleForProjectVersions(
           Object.entries(projectVersions).map(async ([projectId, v]) => {
             const branches = await listBranches(projectId, v);
 
-            // If version is "latest" or a branch name, we want to get the
-            // latest revision of that branch
             if (!isPinnedVersionToSync(v, branches)) {
               // If no explicit version, then we cannot cache; just perform the codegen
               return await codegenProject(projectId, v);
@@ -367,9 +356,6 @@ async function genLoaderCodeBundleForProjectVersions(
   const result = await withSpan(
     "loader-bundle",
     async () => {
-      // Cacheable when every version is pinned. That's published bundles
-      // (production) and revision bundles (development); preview bundles
-      // always have a "latest" or branch root, so they're never cached.
       if (
         (
           await Promise.all(
@@ -442,12 +428,7 @@ export const LOADER_CODEGEN_OPTS_DEFAULTS: ExportOpts = {
   targetEnv: "loader",
 };
 
-/**
- * Only for a pinned version: a pkg version (`v=<version>`) or a revision
- * (`rev=<revisionId>`). `indirect` is part of the key because it affects
- * whether page components are included; indirect deps have no page
- * components.
- */
+/** Indirect dependencies omit page components, so their codegen needs a separate key. */
 function makeCodegenBucketPath(opts: {
   projectId: string;
   version: VersionToSync;
@@ -464,11 +445,6 @@ function makeCodegenBucketPath(opts: {
   )}`;
 }
 
-/**
- * Production keys have no `mode` segment, which keeps the keys of bundles
- * cached before revision bundles existed. Development (revision) bundles get
- * `mode=development`, so the two can never collide.
- */
 function makeBundleBucketPath(opts: {
   projectVersions: Record<string, VersionToSync>;
   platform: string;
@@ -496,8 +472,6 @@ function makeBundleBucketPath(opts: {
   return key;
 }
 
-// Only production bundles hand out their key (see withBundleKey), so only they
-// serve /chunks, which has no auth.
 export function isChunkableBundleKey(bundleKey: string) {
   return !bundleKey.includes("/mode=");
 }
@@ -543,11 +517,7 @@ function makeExportOpts(opts: ExportOptsInputs): ExportOpts {
   };
 }
 
-/**
- * Only production bundles get a `bundleKey`, which the SDK uses to fetch
- * chunks from the unauthenticated /chunks route. Revision (preview) bundles
- * don't split chunks (PLA-10961), so they leave it unset.
- */
+/** The SDK uses bundleKey to request chunks from the public /chunks route. */
 function withBundleKey(
   bundle: LoaderBundleOutput,
   bundleKey: string,
@@ -559,13 +529,7 @@ function withBundleKey(
   return bundle;
 }
 
-/**
- * Probes the bundle cache before resolving deps or running codegen. Costs one
- * extra S3 get on a miss, but lets a fully-cached bundle skip all the db and
- * worker-pool work that produces the very same key.
- *
- * Every version in `projectVersions` must be pinned.
- */
+/** Probe pinned versions before resolving dependencies or scheduling codegen. */
 async function tryGetCachedBundle(
   opts: ExportOptsInputs & {
     source: "prefill" | "live";

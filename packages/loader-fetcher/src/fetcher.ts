@@ -16,7 +16,7 @@ export interface FetcherOptions {
   preview?: boolean;
   /** Fallback for apiHost and cdnHost. */
   host?: string;
-  /** Used for fetching/previewing unpublished content. */
+  /** Preview host. Defaults to `host`, then `cdnHost`. */
   apiHost?: string;
   /** Used for fetching published content. */
   cdnHost?: string;
@@ -97,7 +97,7 @@ export class PlasmicModulesFetcher {
   private async doFetch() {
     const data = await this.api.fetchLoaderData(
       this.opts.projects.map((p) =>
-        p.version ? `${p.id}@${p.version}` : p.id
+        p.version ? `${p.id}@${p.version}` : p.id,
       ),
       {
         platform: this.opts.platform,
@@ -107,7 +107,8 @@ export class PlasmicModulesFetcher {
         i18nTagPrefix: this.opts.i18n?.tagPrefix,
         browserOnly: isBrowser,
         skipHead: this.opts.skipHead,
-      }
+        minRevs: this.opts.preview ? this.getPreviewMinRevs() : undefined,
+      },
     );
     if (this.opts.cache) {
       await this.opts.cache.set(data);
@@ -116,10 +117,27 @@ export class PlasmicModulesFetcher {
       console.debug(
         `Plasmic: fetched designs for ${data.projects
           .map((p) => `"${p.name}" (${p.id}@${p.version})`)
-          .join(", ")}`
+          .join(", ")}`,
       );
     }
     return data;
+  }
+
+  private getPreviewMinRevs() {
+    if (isBrowser) {
+      return undefined;
+    }
+    const known = (globalThis as GlobalWithBundles).__PLASMIC_PREVIEW_MIN_REVS;
+    if (!known) {
+      return undefined;
+    }
+    const minRevs: Record<string, number> = {};
+    for (const { id } of this.opts.projects) {
+      if (known[id] !== undefined) {
+        minRevs[id] = known[id];
+      }
+    }
+    return Object.keys(minRevs).length > 0 ? minRevs : undefined;
   }
 
   private cacheBundleInNodeServer(bundle: LoaderBundleOutput) {
@@ -136,7 +154,7 @@ export class PlasmicModulesFetcher {
 }
 
 export function internal_getCachedBundleInNodeServer(
-  opts: FetcherOptions
+  opts: FetcherOptions,
 ): LoaderBundleOutput | undefined {
   if (isBrowser) {
     throw new Error(`Should not be consulting Node server cache in browser`);
@@ -171,6 +189,23 @@ function getBundleKey({
   });
 }
 
+/** Share watcher revisions across Next.js server and RSC bundles in the same process. */
+export function internal_setPreviewMinRev(
+  projectId: string,
+  revisionNum: number,
+) {
+  if (isBrowser || !Number.isFinite(revisionNum)) {
+    return;
+  }
+  const global = globalThis as GlobalWithBundles;
+  if (global.__PLASMIC_PREVIEW_MIN_REVS === undefined) {
+    global.__PLASMIC_PREVIEW_MIN_REVS = {};
+  }
+  const known = global.__PLASMIC_PREVIEW_MIN_REVS;
+  known[projectId] = Math.max(known[projectId] ?? revisionNum, revisionNum);
+}
+
 interface GlobalWithBundles {
   __PLASMIC_BUNDLES?: { [bundleKey: string]: LoaderBundleOutput };
+  __PLASMIC_PREVIEW_MIN_REVS?: { [projectId: string]: number };
 }

@@ -55,7 +55,7 @@ export interface InitOptions {
   preview?: boolean;
   /** Fallback for apiHost and cdnHost. */
   host?: string;
-  /** Used for fetching/previewing unpublished content. */
+  /** Preview host. Defaults to `host`, then `cdnHost`. */
   apiHost?: string;
   /** Used for fetching published content. */
   cdnHost?: string;
@@ -252,7 +252,7 @@ export const REGISTERED_CUSTOM_FUNCTIONS: Record<
 > = {};
 
 export function customFunctionImportAlias<F extends (...args: any[]) => any>(
-  meta: CustomFunctionMeta<F>
+  meta: CustomFunctionMeta<F>,
 ) {
   const customFunctionPrefix = `__fn_`;
   return meta.namespace
@@ -261,7 +261,7 @@ export function customFunctionImportAlias<F extends (...args: any[]) => any>(
 }
 
 export function internalSetRegisteredFunction<
-  F extends (...args: any[]) => any
+  F extends (...args: any[]) => any,
 >(fn: F, meta: CustomFunctionMeta<F>) {
   REGISTERED_CUSTOM_FUNCTIONS[customFunctionImportAlias(meta)] = fn;
 }
@@ -284,13 +284,13 @@ interface RequiredServerQueryFunction {
  */
 function checkRequiredQueryFunctions(
   module: any,
-  componentDisplayName?: string
+  componentDisplayName?: string,
 ): void {
   const required: RequiredServerQueryFunction[] | undefined =
     module?.requiredServerQueryFunctions;
 
   const missing = required?.filter(
-    (f) => !REGISTERED_CUSTOM_FUNCTIONS[f.alias]
+    (f) => !REGISTERED_CUSTOM_FUNCTIONS[f.alias],
   );
   if (!missing || missing.length === 0) {
     return;
@@ -306,7 +306,7 @@ function checkRequiredQueryFunctions(
   throw new Error(
     `Missing custom functions for Plasmic data queries: ${missingNames}${componentInfo}\n\n` +
       `In app-router projects, functions used in SSR'd queries must be registered in\n` +
-      `plasmic-init.ts, not plasmic-init-client.tsx`
+      `plasmic-init.ts, not plasmic-init-client.tsx`,
   );
 }
 
@@ -346,7 +346,7 @@ export interface FetchComponentDataOpts {
 
 function parseFetchComponentDataArgs(
   specs: ComponentLookupSpec[],
-  opts?: FetchComponentDataOpts
+  opts?: FetchComponentDataOpts,
 ): { specs: ComponentLookupSpec[]; opts?: FetchComponentDataOpts };
 function parseFetchComponentDataArgs(...specs: ComponentLookupSpec[]): {
   specs: ComponentLookupSpec[];
@@ -422,7 +422,7 @@ export abstract class BaseInternalPlasmicComponentLoader {
 
   async maybeFetchComponentData(
     specs: ComponentLookupSpec[],
-    opts?: FetchComponentDataOpts
+    opts?: FetchComponentDataOpts,
   ): Promise<ComponentRenderData | null>;
   async maybeFetchComponentData(
     ...specs: ComponentLookupSpec[]
@@ -432,7 +432,7 @@ export abstract class BaseInternalPlasmicComponentLoader {
   ): Promise<ComponentRenderData | null> {
     const { specs, opts } = parseFetchComponentDataArgs(...args);
     const returnWithSpecsToFetch = async (
-      specsToFetch: ComponentLookupSpec[]
+      specsToFetch: ComponentLookupSpec[],
     ) => {
       await this.fetchMissingData({ missingSpecs: specsToFetch });
       const { found: existingMetas2, missing: missingSpecs2 } =
@@ -461,7 +461,7 @@ export abstract class BaseInternalPlasmicComponentLoader {
 
   async fetchComponentData(
     specs: ComponentLookupSpec[],
-    opts?: FetchComponentDataOpts
+    opts?: FetchComponentDataOpts,
   ): Promise<ComponentRenderData>;
   async fetchComponentData(
     ...specs: ComponentLookupSpec[]
@@ -475,7 +475,7 @@ export abstract class BaseInternalPlasmicComponentLoader {
       throw new Error(
         `Unable to find components ${missingSpecs
           .map(getLookupSpecName)
-          .join(", ")}`
+          .join(", ")}`,
       );
     }
 
@@ -484,20 +484,20 @@ export abstract class BaseInternalPlasmicComponentLoader {
 
   async fetchPages(opts?: FetchPagesOpts) {
     this.maybeReportClientSideFetch(
-      () => `Plasmic: fetching all page metadata in the browser`
+      () => `Plasmic: fetching all page metadata in the browser`,
     );
     const data = await this.fetchAllData();
     return data.components.filter(
       (comp) =>
         comp.isPage &&
         comp.path &&
-        (opts?.includeDynamicPages || !isDynamicPagePath(comp.path))
+        (opts?.includeDynamicPages || !isDynamicPagePath(comp.path)),
     ) as PageMeta[];
   }
 
   async fetchComponents() {
     this.maybeReportClientSideFetch(
-      () => `Plasmic: fetching all component metadata in the browser`
+      () => `Plasmic: fetching all component metadata in the browser`,
     );
     const data = await this.fetchAllData();
     return data.components;
@@ -519,7 +519,7 @@ export abstract class BaseInternalPlasmicComponentLoader {
       () =>
         `Plasmic: fetching missing components in the browser: ${opts.missingSpecs
           .map((spec) => getLookupSpecName(spec))
-          .join(", ")}`
+          .join(", ")}`,
     );
     return this.fetchAllData();
   }
@@ -553,7 +553,7 @@ export abstract class BaseInternalPlasmicComponentLoader {
         `Plasmic Error: Different code export hashes. This can happen if your app is using different loaders with different project IDs or project versions.
 Conflicting values:
 ${newBundle.bundleKey}
-${this.bundle.bundleKey}`
+${this.bundle.bundleKey}`,
       );
     }
     // Merge the old bundle into the new bundle, this way
@@ -589,12 +589,12 @@ ${this.bundle.bundleKey}`
   registerModules(modules: Record<string, any>) {
     if (
       Object.keys(modules).some(
-        (name) => this.registry.getRegisteredModule(name) !== modules[name]
+        (name) => this.registry.getRegisteredModule(name) !== modules[name],
       )
     ) {
       if (!this.registry.isEmpty()) {
         console.warn(
-          "Calling PlasmicComponentLoader.registerModules() after Plasmic component has rendered; starting over."
+          "Calling PlasmicComponentLoader.registerModules() after Plasmic component has rendered; starting over.",
         );
         this.registry.clear();
       }
@@ -606,7 +606,7 @@ ${this.bundle.bundleKey}`
 
   substituteComponent<P>(
     component: React.ComponentType<P>,
-    name: ComponentLookupSpec
+    name: ComponentLookupSpec,
   ) {
     this.internalSubstituteComponent(component, name, undefined);
   }
@@ -618,11 +618,11 @@ ${this.bundle.bundleKey}`
       | InternalCodeComponentHelpers<
           React.ComponentProps<React.ComponentType<P>>
         >
-      | undefined
+      | undefined,
   ) {
     if (!this.isRegistryEmpty()) {
       console.warn(
-        "Calling PlasmicComponentLoader.registerSubstitution() after Plasmic component has rendered; starting over."
+        "Calling PlasmicComponentLoader.registerSubstitution() after Plasmic component has rendered; starting over.",
       );
       this.clearRegistry();
     }
@@ -631,15 +631,15 @@ ${this.bundle.bundleKey}`
 
   abstract registerComponent<T extends React.ComponentType<any>>(
     component: T,
-    meta: CodeComponentMeta<React.ComponentProps<T>>
+    meta: CodeComponentMeta<React.ComponentProps<T>>,
   ): void;
   abstract registerFunction<F extends (...args: any[]) => any>(
     fn: F,
-    meta: CustomFunctionMeta<F>
+    meta: CustomFunctionMeta<F>,
   ): void;
   abstract registerGlobalContext<T extends React.ComponentType<any>>(
     context: T,
-    meta: GlobalContextMeta<React.ComponentProps<T>>
+    meta: GlobalContextMeta<React.ComponentProps<T>>,
   ): void;
   abstract registerTrait(trait: string, meta: TraitMeta): void;
   abstract registerToken(token: TokenRegistration): void;
@@ -701,7 +701,7 @@ ${this.bundle.bundleKey}`
   }
 
   public async getActiveVariation(
-    opts: Omit<Parameters<typeof getActiveVariation>[0], "splits">
+    opts: Omit<Parameters<typeof getActiveVariation>[0], "splits">,
   ) {
     await this.fetchComponents();
     return getActiveVariation({
@@ -714,17 +714,17 @@ ${this.bundle.bundleKey}`
     return uniq(
       this.getBundle()
         .projects.map((p) =>
-          p.teamId ? `${p.teamId}${p.indirect ? "@indirect" : ""}` : null
+          p.teamId ? `${p.teamId}${p.indirect ? "@indirect" : ""}` : null,
         )
-        .filter((x): x is string => !!x)
+        .filter((x): x is string => !!x),
     );
   }
 
   public getProjectIds(): string[] {
     return uniq(
       this.getBundle().projects.map(
-        (p) => `${p.id}${p.indirect ? "@indirect" : ""}`
-      )
+        (p) => `${p.id}${p.indirect ? "@indirect" : ""}`,
+      ),
     );
   }
 
@@ -767,7 +767,7 @@ export class PlasmicComponentLoader {
    */
   substituteComponent<P>(
     component: React.ComponentType<P>,
-    name: ComponentLookupSpec
+    name: ComponentLookupSpec,
   ) {
     this.__internal.substituteComponent(component, name);
   }
@@ -777,26 +777,26 @@ export class PlasmicComponentLoader {
    */
   registerComponent<T extends React.ComponentType<any>>(
     component: T,
-    meta: CodeComponentMeta<React.ComponentProps<T>>
+    meta: CodeComponentMeta<React.ComponentProps<T>>,
   ): void;
 
   registerComponent<T extends React.ComponentType<any>>(
     component: T,
-    meta: CodeComponentMeta<React.ComponentProps<T>>
+    meta: CodeComponentMeta<React.ComponentProps<T>>,
   ) {
     this.__internal.registerComponent(component, meta);
   }
 
   registerFunction<F extends (...args: any[]) => any>(
     fn: F,
-    meta: CustomFunctionMeta<F>
+    meta: CustomFunctionMeta<F>,
   ) {
     this.__internal.registerFunction(fn, meta);
   }
 
   registerGlobalContext<T extends React.ComponentType<any>>(
     context: T,
-    meta: GlobalContextMeta<React.ComponentProps<T>>
+    meta: GlobalContextMeta<React.ComponentProps<T>>,
   ) {
     this.__internal.registerGlobalContext(context, meta);
   }
@@ -829,7 +829,7 @@ export class PlasmicComponentLoader {
   ): Promise<ComponentRenderData>;
   fetchComponentData(
     specs: ComponentLookupSpec[],
-    opts?: FetchComponentDataOpts
+    opts?: FetchComponentDataOpts,
   ): Promise<ComponentRenderData>;
   fetchComponentData(...args: any[]): Promise<ComponentRenderData> {
     return this.__internal.fetchComponentData(...args);
@@ -845,7 +845,7 @@ export class PlasmicComponentLoader {
   ): Promise<ComponentRenderData | null>;
   async maybeFetchComponentData(
     specs: ComponentLookupSpec[],
-    opts?: FetchComponentDataOpts
+    opts?: FetchComponentDataOpts,
   ): Promise<ComponentRenderData | null>;
   async maybeFetchComponentData(
     ...args: any[]
@@ -868,7 +868,7 @@ export class PlasmicComponentLoader {
   }
 
   protected async _getActiveVariation(
-    opts: Parameters<typeof this.__internal.getActiveVariation>[0]
+    opts: Parameters<typeof this.__internal.getActiveVariation>[0],
   ) {
     return this.__internal.getActiveVariation(opts);
   }
@@ -901,7 +901,7 @@ export class PlasmicComponentLoader {
 
   getExternalVariation(
     variation: Record<string, string>,
-    filters?: Parameters<typeof getExternalIds>[2]
+    filters?: Parameters<typeof getExternalIds>[2],
   ) {
     return getExternalIds(this.getActiveSplits(), variation, filters);
   }
@@ -916,7 +916,7 @@ export class PlasmicComponentLoader {
 
   getExecFuncModule(
     renderData: ComponentRenderData,
-    fileNameKey: "serverQueriesExecFuncFileName"
+    fileNameKey: "serverQueriesExecFuncFileName",
   ) {
     if (renderData.entryCompMetas.length === 0) {
       return undefined;
@@ -933,16 +933,16 @@ export class PlasmicComponentLoader {
   async getPlasmicQueriesData(
     renderData: ComponentRenderData,
     ctx: Record<string, any>,
-    props?: Record<string, any>
+    props?: Record<string, any>,
   ) {
     const module = this.getExecFuncModule(
       renderData,
-      "serverQueriesExecFuncFileName"
+      "serverQueriesExecFuncFileName",
     );
 
     checkRequiredQueryFunctions(
       module,
-      renderData.entryCompMetas[0]?.displayName
+      renderData.entryCompMetas[0]?.displayName,
     );
 
     try {
@@ -960,7 +960,7 @@ export class PlasmicComponentLoader {
   async unstable__getServerQueriesData(
     renderData: ComponentRenderData,
     ctx: Record<string, any>,
-    props?: Record<string, any>
+    props?: Record<string, any>,
   ) {
     return this.getPlasmicQueriesData(renderData, ctx, props);
   }
@@ -970,11 +970,11 @@ export class PlasmicComponentLoader {
     props: {
       params: Promise<ParamsRecord> | ParamsRecord;
       query: Promise<ParamsRecord> | ParamsRecord;
-    }
+    },
   ) {
     const module = this.getExecFuncModule(
       renderData,
-      "serverQueriesExecFuncFileName"
+      "serverQueriesExecFuncFileName",
     );
     const component = renderData.entryCompMetas[0];
     const fallback = component?.pageMetadata || {};
@@ -1000,7 +1000,7 @@ export class PlasmicComponentLoader {
     props: {
       params: Promise<ParamsRecord> | ParamsRecord;
       query: Promise<ParamsRecord> | ParamsRecord;
-    }
+    },
   ) {
     return this.getPlasmicMetadata(renderData, props);
   }

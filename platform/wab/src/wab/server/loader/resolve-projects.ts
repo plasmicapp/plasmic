@@ -8,17 +8,13 @@ import { ProjectId } from "@/wab/shared/ApiSchema";
 import { UnsafeBundle } from "@/wab/shared/bundles";
 import { sortBy } from "lodash";
 
-/** A pkg version, or "latest" / a branch name for the latest revision. */
 export interface PkgVersionToSync {
   version: string;
   indirect: boolean;
   revisionId?: undefined;
 }
 
-/**
- * A root project pinned to a ProjectRevision by id. Only root projects are
- * pinned this way; their deps resolve to pkg versions.
- */
+/** Root projects can use revision IDs. Dependencies always use package versions. */
 export interface RevisionToSync {
   revisionId: string;
   indirect: false;
@@ -45,10 +41,6 @@ export function isRevisionToSync(v: VersionToSync): v is RevisionToSync {
   return v.revisionId !== undefined;
 }
 
-/**
- * Whether the version is fully pinned, so output for it can be cached: a pkg
- * version or a revision id, but not "latest" or a branch name.
- */
 export function isPinnedVersionToSync(
   v: VersionToSync,
   branches: { name: string }[],
@@ -60,20 +52,12 @@ export function isPinnedVersionToSync(
 }
 
 const REVISION_SPEC_SEPARATOR = "@rev:";
-// Project and revision ids are alphanumeric strings.
 const REVISION_SPEC_PART_RE = /^[A-Za-z0-9_-]+$/;
 
-/** Makes a `<projectId>@rev:<projectRevisionId>` spec. */
 export function makeRevisionSpec(projectId: string, revisionId: string) {
   return `${projectId}${REVISION_SPEC_SEPARATOR}${revisionId}`;
 }
 
-/**
- * Parses a `<projectId>@rev:<projectRevisionId>` spec, as used by
- * `/api/v1/loader/code/revision`. Unlike `parseProjectIdSpec`, which treats
- * any non-semver suffix as a tag or branch name, this only accepts a revision
- * id.
- */
 export function parseRevisionSpec(spec: string): {
   projectId: ProjectId;
   revisionId: string;

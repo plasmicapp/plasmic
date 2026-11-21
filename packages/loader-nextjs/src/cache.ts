@@ -1,4 +1,7 @@
-import { LoaderBundleOutput } from "@plasmicapp/loader-core";
+import {
+  LoaderBundleOutput,
+  internal_setPreviewMinRev,
+} from "@plasmicapp/loader-core";
 import type { InitOptions } from "@plasmicapp/loader-react/react-server-conditional";
 import type * as Watcher from "@plasmicapp/watcher";
 import { PHASE_PRODUCTION_BUILD } from "next/constants";
@@ -54,8 +57,8 @@ function makeCache(opts: InitOptions) {
     `plasmic-${hashString(
       [...opts.projects.map((p) => `${p.id}@${p.version ?? ""}`)]
         .sort()
-        .join("-")
-    )}${opts.preview ? "-preview" : ""}-cache.json`
+        .join("-"),
+    )}${opts.preview ? "-preview" : ""}-cache.json`,
   );
   return new FileCache(cachePath);
 }
@@ -63,7 +66,7 @@ function makeCache(opts: InitOptions) {
 export function initPlasmicLoaderWithCache<
   T extends {
     clearCache(): void;
-  }
+  },
 >(initFn: (opts_: InitOptions) => T, opts: InitOptions): T {
   const isBrowser = typeof window !== "undefined";
   const isProd = process.env.NODE_ENV === "production";
@@ -91,7 +94,7 @@ export function initPlasmicLoaderWithCache<
 
     if (process.env.PLASMIC_OPTS && process.env.PLASMIC_OPTS !== stringOpts) {
       console.warn(
-        `PLASMIC: We detected that you created a new PlasmicLoader with different configurations. You may need to restart your dev server.\n`
+        `PLASMIC: We detected that you created a new PlasmicLoader with different configurations. You may need to restart your dev server.\n`,
       );
     }
 
@@ -121,8 +124,9 @@ export function initPlasmicLoaderWithCache<
             };
 
             watcher.subscribe({
-              onUpdate: () => {
+              onUpdate: (projectId, revisionNum) => {
                 if (opts.preview) {
+                  internal_setPreviewMinRev(projectId, revisionNum);
                   clearCache();
                 }
               },

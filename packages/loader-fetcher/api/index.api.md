@@ -30,6 +30,7 @@ export class Api {
         i18nKeyScheme?: "content" | "hash" | "path";
         i18nTagPrefix?: string;
         skipHead?: boolean;
+        minRevs?: Record<string, number>;
     }): Promise<LoaderBundleOutput>;
     // (undocumented)
     getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]): string;
@@ -157,6 +158,9 @@ export interface GlobalGroupMeta {
 
 // @public (undocumented)
 export function internal_getCachedBundleInNodeServer(opts: FetcherOptions): LoaderBundleOutput | undefined;
+
+// @public
+export function internal_setPreviewMinRev(projectId: string, revisionNum: number): void;
 
 // @public (undocumented)
 export interface LoaderBundleCache {

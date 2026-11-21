@@ -689,7 +689,6 @@ type PkgVersionOpts = { prefilledOnly?: boolean; branchId?: BranchId };
 
 export type PkgVersionWithoutModel = Omit<PkgVersion, "model">;
 
-/** Identifies a project revision without its `data`. */
 export interface ProjectRevRef {
   id: string;
   revision: number;
@@ -824,7 +823,9 @@ export class DbMgr implements MigrationDbMgr {
     checkPermissions(this.actor.type === "SuperUser", `Must be Super User.`);
   }
 
-  private allowAnyone() {}
+  private allowAnyone() {
+    // Marks operations that every actor may perform.
+  }
 
   //
   // Entity types.
@@ -4038,10 +4039,6 @@ export class DbMgr implements MigrationDbMgr {
     return res.maxrev as number;
   }
 
-  /**
-   * Like `getLatestProjectRev`, but selects only the revision's id and number,
-   * so it never loads the revision `data`.
-   */
   async getLatestProjectRevRef(
     projectId: string,
     { branchId }: { branchId?: BranchId } = {},
@@ -4065,11 +4062,6 @@ export class DbMgr implements MigrationDbMgr {
     return { id: rev.id, revision: rev.revision };
   }
 
-  /**
-   * Gets a project revision by id. Throws NotFoundError unless the revision
-   * belongs to `projectId` and is not soft-deleted, so a caller can't read a
-   * revision of another project by naming a project it has access to.
-   */
   async getProjectRevByIdForProject(
     projectId: string,
     revisionId: string,
@@ -4079,7 +4071,6 @@ export class DbMgr implements MigrationDbMgr {
     });
   }
 
-  /** Like `getProjectRevByIdForProject`, but doesn't load the revision `data`. */
   async getProjectRevRefByIdForProject(
     projectId: string,
     revisionId: string,
@@ -4102,7 +4093,6 @@ export class DbMgr implements MigrationDbMgr {
       .andWhere("rev.projectId = :projectId", { projectId })
       .andWhere("rev.deletedAt IS NULL");
     if (refOnly) {
-      // branchId is only for the branch perm check below
       qb.select(["rev.id", "rev.revision", "rev.branchId"]);
     }
     const rev = ensureFound<ProjectRevision>(
@@ -4836,23 +4826,8 @@ export class DbMgr implements MigrationDbMgr {
       .filter((c) => c !== "model");
   }
 
-  /**
-   * Unbundles a site for a given projectId and versionRangeOrTag.
-   * - If versionRangeOrTag is "latest" or undefined, returns the latest
-   * revision
-   *   - NOTE: not the latest PkgVersion
-   * - If versionRangeOrTag is a valid semver range, return the latest
-   * PkgVersion that satisfies that range
-   * - If versionRangeOrTag is not a valid semver range, assume it's a tag and
-   * try to get the latest version that cantains the tag
-   * - If versionRangeOrTag is `{ revisionId }`, returns that revision, which
-   * must belong to projectId and not be soft-deleted. The returned version is
-   * the revision's branch name, or "latest" on the main branch, the same as
-   * if that revision were the latest one.
-   * @param bundler
-   * @param projectId
-   * @param versionRangeOrTag
-   */
+  // A revision ID, branch, or "latest" selects a draft. Other specs select a package
+  // version by semver range or tag.
   async tryGetPkgVersionByProjectVersionOrTag(
     bundler: Bundler,
     projectId: string,
@@ -4911,9 +4886,7 @@ export class DbMgr implements MigrationDbMgr {
 
     const versionOrTag = versionRangeOrTag ?? "latest";
 
-    // If versionRangeOrTag is a branch name, then we want to get the "latest" of that branch
     if (semver.isLatest(versionOrTag) || maybeBranch) {
-      // Only get the PkgVersion for valid non-"latest" version ranges, otherwise use the latest Revision
       const projectRev = await this.getLatestProjectRev(projectId, {
         branchId: maybeBranch?.id,
       });

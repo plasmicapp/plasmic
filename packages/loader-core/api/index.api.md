@@ -11,6 +11,7 @@ import { ComponentMeta } from '@plasmicapp/loader-fetcher';
 import { ExperimentSlice } from '@plasmicapp/loader-fetcher';
 import { FontMeta } from '@plasmicapp/loader-fetcher';
 import { GlobalGroupMeta } from '@plasmicapp/loader-fetcher';
+import { internal_setPreviewMinRev } from '@plasmicapp/loader-fetcher';
 import { LoaderBundleCache } from '@plasmicapp/loader-fetcher';
 import { LoaderBundleOutput } from '@plasmicapp/loader-fetcher';
 import { PageMeta } from '@plasmicapp/loader-fetcher';
@@ -38,6 +39,8 @@ export function getBundleSubset(bundle: LoaderBundleOutput, names: string[], opt
 }): LoaderBundleOutput;
 
 export { GlobalGroupMeta }
+
+export { internal_setPreviewMinRev }
 
 export { LoaderBundleCache }
 

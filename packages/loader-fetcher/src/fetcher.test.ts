@@ -4,6 +4,7 @@ import {
   FetcherOptions,
   PlasmicModulesFetcher,
   internal_getCachedBundleInNodeServer,
+  internal_setPreviewMinRev,
 } from "./fetcher";
 
 const FETCHER_OPTIONS: FetcherOptions = {
@@ -136,6 +137,45 @@ describe("PlasmicModulesFetcher", () => {
       await fetch2;
       expect(fetchLoaderData).toHaveBeenCalledTimes(1);
       expect(fetcher.curFetch).toBeUndefined();
+    });
+  });
+
+  describe("preview minRev hints", () => {
+    afterEach(() => {
+      delete (globalThis as any).__PLASMIC_PREVIEW_MIN_REVS;
+    });
+
+    const fetchWith = async (opts: Partial<FetcherOptions>) => {
+      const fetcher = new PlasmicModulesFetcher({
+        ...FETCHER_OPTIONS,
+        ...opts,
+      });
+      const fetchLoaderData = vi.fn().mockResolvedValue({ projects: [] });
+      fetcher.api = { fetchLoaderData };
+      await fetcher.fetchAllData();
+      return fetchLoaderData.mock.calls[0][1];
+    };
+
+    it("should pass the highest known revision of this fetcher's projects", async () => {
+      internal_setPreviewMinRev("projA", 5);
+      internal_setPreviewMinRev("projA", 7);
+      internal_setPreviewMinRev("projA", 6);
+      internal_setPreviewMinRev("otherProject", 3);
+
+      const opts = await fetchWith({ preview: true });
+
+      expect(opts.minRevs).toEqual({ projA: 7 });
+    });
+
+    it("should not pass minRevs when none are known", async () => {
+      const opts = await fetchWith({ preview: true });
+      expect(opts.minRevs).toBeUndefined();
+    });
+
+    it("should not pass minRevs for published", async () => {
+      internal_setPreviewMinRev("projA", 5);
+      const opts = await fetchWith({ preview: false });
+      expect(opts.minRevs).toBeUndefined();
     });
   });
 });
