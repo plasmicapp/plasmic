@@ -101,6 +101,7 @@ import {
   isPrivateState,
   isStateUsedInExpr,
   removeComponentState,
+  removeImplicitStatesAfterRemovingTplNode,
 } from "@/wab/shared/core/states";
 import { cloneAnimationSequence, cloneMixin } from "@/wab/shared/core/styles";
 import {
@@ -121,6 +122,7 @@ import {
   isTplNamable,
   isTplVariantable,
   replaceTplTreeByEmptyBox,
+  walkTpls,
 } from "@/wab/shared/core/tpls";
 import { HostLessPackageInfo } from "@/wab/shared/devflags";
 import {
@@ -145,7 +147,6 @@ import {
   Theme,
   TplComponent,
   TplNode,
-  TplSlot,
   Variant,
   VariantGroup,
   VariantedRuleSet,
@@ -980,10 +981,9 @@ function upgradeProjectDep(
       mapParams(oldComp, newComp);
       mapStates(oldComp, newComp);
 
-      // Add the newly created tpls to attachedTpls, so they will get
-      // fixed up too
+      // Cloned components still reference the old dependency.
       for (const tpl of flattenComponent(newComp)) {
-        attachedTpls.add(tpl);
+        tplsToFix.add(tpl);
       }
       for (const subDep of extractTransitiveDepsFromComponents(site, [
         newComp,
@@ -1362,16 +1362,15 @@ function upgradeProjectDep(
    */
   const parentDefaultSlots: any[] = [];
 
-  // We use this instead of isTplAttachedToSite() so we don't have to traverse
-  // the site for every tpl
-  const attachedTpls = getAllAttachedTpls(site);
+  // Fresh slot contents already reference the upgraded dependency.
+  const tplsToFix = getAllAttachedTpls(site);
   const fixTpl = (tpl: TplNode, owner: Component | ArenaFrame) => {
-    if (!attachedTpls.has(tpl)) {
-      return;
+    if (!tplsToFix.has(tpl)) {
+      return false;
     }
 
     if (!isTplVariantable(tpl)) {
-      return;
+      return true;
     }
 
     fixCustomFunctionsInTpl(oldToNewCustomFunctions, tpl);
@@ -1460,11 +1459,10 @@ function upgradeProjectDep(
           // We need to replace the root, just create an empty free box with
           // all vsettings
           replaceTplTreeByEmptyBox(owner);
-          flattenTpls(tpl).forEach((t) => attachedTpls.delete(t));
         } else {
           $$$(tpl).remove({ deep: true });
         }
-        return;
+        return false;
       }
       // For TplComponent, replace reference to Component and Params
       // in our args.
@@ -1498,26 +1496,15 @@ function upgradeProjectDep(
             continue;
           }
           if (!newParam) {
-            // This param has been deleted, so we delete the corresponding arg.
-            if (isKnownRenderExpr(arg.expr)) {
-              arg.expr.tpl.forEach((tplNode) => {
-                // Mark tpls from the slots as unnatached, as they are going to be removed from the site
-                flattenTpls(tplNode).forEach((t) => attachedTpls.delete(t));
-
-                // Search for slots and remove them from the parent component
-                if (isKnownComponent(owner)) {
-                  const slots = flattenTpls(tplNode).filter((t) =>
-                    isKnownTplSlot(t),
-                  );
-                  slots.forEach((tplSlot) => {
-                    removeComponentParam(
-                      site,
-                      owner,
-                      (tplSlot as TplSlot).param,
-                    );
-                  });
+            if (isKnownRenderExpr(arg.expr) && isKnownComponent(owner)) {
+              for (const root of arg.expr.tpl) {
+                for (const child of flattenTpls(root)) {
+                  removeImplicitStatesAfterRemovingTplNode(site, owner, child);
+                  if (isKnownTplSlot(child)) {
+                    removeComponentParam(site, owner, child.param);
+                  }
                 }
-              });
+              }
             }
             vs.args = arrayWithout(vs.args, arg);
             continue;
@@ -1563,21 +1550,8 @@ function upgradeProjectDep(
       // virtual render expr.
       fillVirtualSlotContents(tplMgr, tpl, undefined, false);
 
-      // Now, this TplComponent may have been the default content of some
-      // local component's slot (say, LocalComp), and there may be different
-      // TplComponent instances of the LocalComp that are referencing this
-      // TplComponent instance as a VirtualRenderExpr. In that case, since we
-      // just updated this TplComponent instance, we may detect that as a change
-      // to VirtualRenderExpr and attempt to fork it into a non-virtual RenderExpr.
-      // We make sure this doesn't happen by reverting the slot contents to a new
-      // VirtualRenderExpr.
-      // For example, a Button component is from project "core".  In project "app",
-      // I have a Header component, with a slot using a Button instance, and a
-      // Header instance that is using the default slot content.  When I upgrade,
-      // I will change TplComponent to point to the new Button component, but I don't
-      // want to interpret that as forking the slot content of the Header instance.
-      // We store it in an array to avoid changing the slot reference to the old
-      // dependency if the order of components we process is not optimal.
+      // Refresh enclosing virtual slots after all components are upgraded so an
+      // updated default stays in sync even if its instances were visited first.
       const parentArgs = findParentArgs(tpl);
       for (const { tplComponent: parentTplComponent, arg } of parentArgs) {
         if (isKnownVirtualRenderExpr(arg.expr)) {
@@ -1588,6 +1562,7 @@ function upgradeProjectDep(
         }
       }
     }
+    return true;
   };
 
   const fixComponent = (component: Component) => {
@@ -1625,9 +1600,8 @@ function upgradeProjectDep(
       }
     }
 
-    for (const tpl of flattenTpls(component.tplTree)) {
-      fixTpl(tpl, component);
-    }
+    // Upgrading an instance can replace its slot contents. Read its children after fixing it.
+    walkTpls(component.tplTree, { pre: (tpl) => fixTpl(tpl, component) });
 
     // We need to ensure the code component variants only after we've fixed all the tpls
     // so that we ensure with the upgraded version of the component

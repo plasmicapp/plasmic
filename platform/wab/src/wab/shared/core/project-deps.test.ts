@@ -1,6 +1,8 @@
+import { createComponentState } from "@/wab/client/operations/create-component-state";
 import { mkTokenRef } from "@/wab/commons/StyleToken";
 import { getArenaFrames, setFocusedFrame } from "@/wab/shared/Arenas";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
+import { fillVirtualSlotContents, getTplSlots } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
@@ -20,7 +22,11 @@ import {
 import { mkServerQuery } from "@/wab/shared/codegen/react-p/server-queries/__testonly__/test-utils";
 import { ensure, jsonClone, mkShortId } from "@/wab/shared/common";
 import { mkComponentArena } from "@/wab/shared/component-arenas";
-import { ComponentType, mkComponent } from "@/wab/shared/core/components";
+import {
+  ComponentType,
+  mkComponent,
+  removeComponentParam,
+} from "@/wab/shared/core/components";
 import { getCustomFunctionParams } from "@/wab/shared/core/custom-functions";
 import { codeLit, customCode } from "@/wab/shared/core/exprs";
 import { mkParam } from "@/wab/shared/core/lang";
@@ -35,8 +41,11 @@ import {
   TplTagType,
   findExprsInNode,
   flattenTpls,
+  mkSlot,
+  mkTplComponent,
   mkTplComponentX,
   mkTplTagX,
+  tplChildren,
   trackComponentRoot,
   trackComponentSite,
 } from "@/wab/shared/core/tpls";
@@ -52,11 +61,13 @@ import {
   Interaction,
   NameArg,
   ProjectDependency,
+  RenderExpr,
   Site,
   StyleToken,
   StyleTokenOverride,
   VariantedValue,
   ensureKnownProjectDependency,
+  ensureKnownTplComponent,
   isKnownCustomFunctionExpr,
 } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
@@ -640,10 +651,105 @@ describe("upgradeProjectDeps", () => {
     expect(columns.columnsSetting?.screenBreakpoint).toBeNull();
   });
 
+  // Like a real publish, keeps the uuids of unchanged objects.
+  function release(dep: ProjectDependency, version: string) {
+    const bundler = new Bundler();
+    const next = ensureKnownProjectDependency(
+      bundler.unbundle(
+        jsonClone(bundler.bundle(dep, `kit-${dep.version}`, "")),
+        `kit-${version}`,
+      ),
+    );
+    next.version = version;
+    return next;
+  }
+
+  test.each(["default", "customized", "removed"] as const)(
+    "updates implicit state when upgrading a %s slot",
+    (kind) => {
+      const lib = createSite();
+      const libMgr = new TplMgr({ site: lib });
+      const input = libMgr.addComponent({
+        name: "Input",
+        type: ComponentType.Plain,
+      });
+      createComponentState({
+        site: lib,
+        tplMgr: libMgr,
+        component: input,
+        name: "value",
+        accessType: "writable",
+      })._unsafeUnwrap();
+      const form = libMgr.addComponent({
+        name: "Form",
+        type: ComponentType.Plain,
+      });
+      const slot = mkParam({
+        name: "children",
+        type: typeFactory.renderable(),
+        paramType: "slot",
+      });
+      form.params = [...form.params, slot];
+      $$$(form.tplTree).append(
+        mkSlot(slot, [mkTplComponent(input, getBaseVariant(form))]),
+      );
+      const oldDep = new ProjectDependency({
+        name: "Lib",
+        pkgId: "lib",
+        projectId: "lib",
+        uuid: "lib-v1",
+        version: "1.0.0",
+        site: lib,
+      });
+      const newDep = release(oldDep, "2.0.0");
+      const [newInput, newForm] = newDep.site.components;
+      const site = createSite({ projectDependencies: [oldDep] });
+      const tplMgr = new TplMgr({ site });
+      const local = tplMgr.addComponent({
+        name: "Local",
+        type: ComponentType.Plain,
+      });
+      const instance = mkTplComponent(form, getBaseVariant(local));
+      $$$(local.tplTree).append(instance);
+      if (kind !== "customized") {
+        fillVirtualSlotContents(tplMgr, instance);
+      } else {
+        $$$(instance).setSlotArgForParam(
+          slot,
+          new RenderExpr({
+            tpl: [mkTplComponent(input, getBaseVariant(local))],
+          }),
+        );
+      }
+      const [before] = tplChildren(instance);
+      expect(local.states[0].tplNode).toBe(before);
+      if (kind === "removed") {
+        removeComponentParam(
+          newDep.site,
+          newForm,
+          getTplSlots(newForm)[0].param,
+        );
+      }
+
+      upgradeProjectDeps(site, [{ oldDep, newDep }]);
+
+      if (kind === "removed") {
+        expect(tplChildren(instance)).toHaveLength(0);
+        expect(local.states).toHaveLength(0);
+        return;
+      }
+      const [after] = tplChildren(instance);
+      expect(ensureKnownTplComponent(after).component).toBe(newInput);
+      expect(after === before).toBe(kind === "customized");
+      expect(local.states).toHaveLength(1);
+      expect(local.states[0].tplNode).toBe(after);
+      expect(local.states[0].implicitState).toBe(newInput.states[0]);
+    },
+  );
+
   // Three versions of a kit whose Intro gets an `align` prop in 3.0.0, and a
   // page with an Intro instance on 1.0.0.
   function setupIntroUpgrades() {
-    const bundler = new Bundler();
     const kitSite = createSite();
     new TplMgr({ site: kitSite }).addComponent({
       name: "Intro",
@@ -657,17 +763,6 @@ describe("upgradeProjectDeps", () => {
       uuid: "kit-dep-uuid",
       site: kitSite,
     });
-    // Like a real publish, keeps the uuids of unchanged objects.
-    const release = (dep: ProjectDependency, version: string) => {
-      const next = ensureKnownProjectDependency(
-        bundler.unbundle(
-          jsonClone(bundler.bundle(dep, `kit-${dep.version}`, "")),
-          `kit-${version}`,
-        ),
-      );
-      next.version = version;
-      return next;
-    };
     const kit2Dep = release(kit1Dep, "2.0.0");
     const kit3Dep = release(kit2Dep, "3.0.0");
     const [kit1, kit2, kit3] = [kit1Dep, kit2Dep, kit3Dep].map((dep) => ({
