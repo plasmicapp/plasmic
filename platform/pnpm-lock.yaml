@@ -9548,8 +9548,8 @@ packages:
   color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
 
-  color2k@2.0.4:
-    resolution: {integrity: sha512-OXAPGFRNeLFnUfqDtloYdxkwsJoIdXe28+bjbpJiPqyei2HPa3VHmMCWa0Qe62+U4Ftf9Hj7hRssOkxz7WiWbg==}
+  color2k@2.1.0:
+    resolution: {integrity: sha512-ohe2JUfg2IOY1cf4sBtdwIW2fAn41OR14wURKqsQgk7WHSJAnl/WlAFhk4O15CNUMAD+dep9Lxh6mjrKCpQMkA==}
 
   colorjs.io@0.5.2:
     resolution: {integrity: sha512-twmVoizEW7ylZSN32OgKdXRmo1qg+wT5/6C3xu5b9QsWzSFAhHLn2xd8ro0diCsKfCj1RdaTP/nrcW+vAoQPIw==}
@@ -12933,6 +12933,10 @@ packages:
     resolution: {integrity: sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew==}
     engines: {node: '>= 0.4'}
 
+  object-inspect@1.14.0:
+    resolution: {integrity: sha512-IVgHNlp/jwQX271+Xzoq9LZNTWXxZK+cEOrGBOBxXNbn7fapnZ+Ts6TVMgNOuAezwG2wdtnMX97tTPK6VEnuOQ==}
+    engines: {node: '>= 0.4'}
+
   object-is@1.1.6:
     resolution: {integrity: sha512-F8cZ+KfGlSGi09lJT7/Nd6KJZ9ygtvYC0/UYYLI9nmQKLMnydpB9yvbv9K1uSkEu7FU9vYPmVwLg328tX+ot3Q==}
     engines: {node: '>= 0.4'}
@@ -14341,8 +14345,8 @@ packages:
       '@types/react':
         optional: true
 
-  react-parallax-tilt@1.7.353:
-    resolution: {integrity: sha512-ToxjUVe5uTticebCvmmPd3hsExgMoGKVOLnW+Z1J2pzy9NXUldYKRZCey2WIdjV+5olo7wvMvFkpv2psh7GbDA==}
+  react-parallax-tilt@1.7.354:
+    resolution: {integrity: sha512-5W4KXK5NvPp+GnH4zqxBUNnyT38REstAQrBeFsTtlvfs9PNO/mVq02NPDGdAqLR+6rXTDVSsD29MuWoImrQf5g==}
     peerDependencies:
       react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -17858,7 +17862,7 @@ snapshots:
       '@chakra-ui/anatomy': 2.3.6
       '@chakra-ui/styled-system': 2.12.5(react@18.3.1)
       '@chakra-ui/utils': 2.2.6(react@18.3.1)
-      color2k: 2.0.4
+      color2k: 2.1.0
     transitivePeerDependencies:
       - react
 
@@ -20626,7 +20630,7 @@ snapshots:
       '@plasmicapp/host': 2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      react-parallax-tilt: 1.7.353(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-parallax-tilt: 1.7.354(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   '@plasmicpkgs/react-quill@1.0.127(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -25750,7 +25754,7 @@ snapshots:
 
   color-name@1.1.4: {}
 
-  color2k@2.0.4: {}
+  color2k@2.1.0: {}
 
   colorjs.io@0.5.2: {}
 
@@ -29723,6 +29727,8 @@ snapshots:
 
   object-inspect@1.13.4: {}
 
+  object-inspect@1.14.0: {}
+
   object-is@1.1.6:
     dependencies:
       call-bind: 1.0.9
@@ -31590,7 +31596,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  react-parallax-tilt@1.7.353(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-parallax-tilt@1.7.354(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -32463,21 +32469,21 @@ snapshots:
   side-channel-list@1.0.1:
     dependencies:
       es-errors: 1.3.0
-      object-inspect: 1.13.4
+      object-inspect: 1.14.0
 
   side-channel-map@1.0.1:
     dependencies:
       call-bound: 1.0.4
       es-errors: 1.3.0
       get-intrinsic: 1.3.0
-      object-inspect: 1.13.4
+      object-inspect: 1.14.0
 
   side-channel-weakmap@1.0.2:
     dependencies:
       call-bound: 1.0.4
       es-errors: 1.3.0
       get-intrinsic: 1.3.0
-      object-inspect: 1.13.4
+      object-inspect: 1.14.0
       side-channel-map: 1.0.1
 
   side-channel@1.1.0:
@@ -32491,7 +32497,7 @@ snapshots:
   side-channel@1.1.1:
     dependencies:
       es-errors: 1.3.0
-      object-inspect: 1.13.4
+      object-inspect: 1.14.0
       side-channel-list: 1.0.1
       side-channel-map: 1.0.1
       side-channel-weakmap: 1.0.2
