@@ -4,10 +4,10 @@ import type {
 } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { USER_MENTION_REGEX } from "@/wab/shared/comments-utils";
 import {
-  MENTION_TAGS,
+  MENTION_TAGS_BY_NAME,
   MentionTag,
+  getMentionTagName,
   isComponentScopedMentionTag,
-  isMentionTag,
 } from "@/wab/shared/mentions";
 import { regex } from "regex";
 
@@ -21,9 +21,9 @@ export function mkMentionRaw(mention: ParsedMention): string {
     case "user":
       return mention.email;
     case "SiteScoped":
-      return `${mention.tag}:${mention.uuid}`;
+      return `${getMentionTagName(mention.tag)}:${mention.uuid}`;
     case "ComponentScoped":
-      return `${mention.tag}:${mention.componentUuid}/${mention.uuid}`;
+      return `${getMentionTagName(mention.tag)}:${mention.componentUuid}/${mention.uuid}`;
   }
 }
 
@@ -36,12 +36,13 @@ export function parseMention(raw: string): ParsedMention | undefined {
   if (!modelMentionRaw) {
     return undefined;
   }
-  const { tag, key } = modelMentionRaw.groups!;
-  return isMentionTag(tag) ? parseModelMention(tag, key) : undefined;
+  const { tagName, key } = modelMentionRaw.groups!;
+  const tag = MENTION_TAGS_BY_NAME.get(tagName);
+  return tag ? parseModelMention(tag, key) : undefined;
 }
 
 const MODEL_MENTION_REGEX = regex`
-  ^ (?<tag> ${new RegExp(MENTION_TAGS.join("|"))} ) : (?<key> .+ ) $
+  ^ (?<tagName> ${new RegExp([...MENTION_TAGS_BY_NAME.keys()].join("|"))} ) : (?<key> .+ ) $
 `;
 
 function parseModelMention(

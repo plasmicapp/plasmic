@@ -54,6 +54,30 @@ describe("parseMention", () => {
     expect(parseMention("just text")).toBeUndefined();
   });
 
+  it("parses data query mentions under their mention names", () => {
+    expect(parseMention("DataQuery:comp1/q1")).toEqual({
+      type: "ComponentScoped",
+      tag: "ComponentServerQuery",
+      componentUuid: "comp1",
+      uuid: "q1",
+    });
+    expect(parseMention("LegacyDataQuery:comp1/q1")).toEqual({
+      type: "ComponentScoped",
+      tag: "ComponentDataQuery",
+      componentUuid: "comp1",
+      uuid: "q1",
+    });
+  });
+
+  it("still parses data query mentions under their model names", () => {
+    expect(parseMention("ComponentServerQuery:comp1/q1")).toMatchObject({
+      tag: "ComponentServerQuery",
+    });
+    expect(parseMention("ComponentDataQuery:comp1/q1")).toMatchObject({
+      tag: "ComponentDataQuery",
+    });
+  });
+
   it("returns undefined for an unrecognized tag", () => {
     expect(parseMention("widget:w1")).toBeUndefined();
     expect(parseMention("Widget:w1")).toBeUndefined();
@@ -77,6 +101,17 @@ describe("mkMentionRaw", () => {
       componentUuid: "comp1",
       uuid: "tpl1",
     } as const;
+    expect(parseMention(mkMentionRaw(target))).toEqual(target);
+  });
+
+  it("writes a data query under its mention name", () => {
+    const target = {
+      type: "ComponentScoped",
+      tag: "ComponentServerQuery",
+      componentUuid: "comp1",
+      uuid: "q1",
+    } as const;
+    expect(mkMentionRaw(target)).toBe("DataQuery:comp1/q1");
     expect(parseMention(mkMentionRaw(target))).toEqual(target);
   });
 

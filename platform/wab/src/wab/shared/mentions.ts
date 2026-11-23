@@ -44,9 +44,23 @@ export const MENTION_TAGS = [
 ];
 export type MentionTag = (typeof MENTION_TAGS)[number];
 
-export function isMentionTag(tag: string): tag is MentionTag {
-  return includes(MENTION_TAGS, tag);
+/** Mention names that match the exported `__type`. */
+const RENAMED_MENTION_TAGS: ReadonlyArray<readonly [MentionTag, string]> = [
+  ["ComponentServerQuery", "DataQuery"],
+  ["ComponentDataQuery", "LegacyDataQuery"],
+];
+
+/** Returns the tag's mention name. */
+export function getMentionTagName(
+  tag: SiteScopedTag | ComponentScopedTag,
+): string {
+  return RENAMED_MENTION_TAGS.find(([renamed]) => renamed === tag)?.[1] ?? tag;
 }
+
+export const MENTION_TAGS_BY_NAME = new Map<string, MentionTag>([
+  ...MENTION_TAGS.map((tag) => [tag, tag] as const),
+  ...RENAMED_MENTION_TAGS.map(([tag, name]) => [name, tag] as const),
+]);
 
 export function isComponentScopedMentionTag(
   tag: MentionTag,
