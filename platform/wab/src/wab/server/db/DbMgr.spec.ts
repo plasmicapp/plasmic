@@ -2482,6 +2482,99 @@ describe("DbMgr organization entitlements", () => {
       await sudo.sudoUpdateTeam({ id: team.id, featureTierId: proFt.id });
       expect(await levels()).toEqual(["commenter", "commenter", "editor"]);
     }));
+
+  it("computes monthly AI credits on self-serve tiers and keeps custom enterprise credits", () =>
+    withDb(async (sudo, _users, dbs, _project, em) => {
+      const { pro2026Ft, enterpriseFt } = await seedTestFeatureTiers(em);
+      const { team } = await getTeamAndWorkspace(dbs[0]());
+      const credits = async () =>
+        (await sudo.getTeamById(team.id)).monthlyAiCredits;
+      const cdnGb = async () => (await sudo.getTeamById(team.id)).monthlyCdnGb;
+      expect(await credits()).toBeNull();
+      expect(await cdnGb()).toBeNull();
+
+      await sudo.sudoUpdateTeam({
+        id: team.id,
+        featureTierId: pro2026Ft.id,
+        seats: 3,
+      });
+      expect(await credits()).toBe(600);
+      expect(await cdnGb()).toBe(100);
+      await sudo.sudoUpdateTeam({ id: team.id, seats: 5 });
+      expect(await credits()).toBe(1000);
+
+      // Moving onto enterprise starts from the computed default.
+      await sudo.sudoUpdateTeam({
+        id: team.id,
+        featureTierId: enterpriseFt.id,
+      });
+      expect(await credits()).toBe(1250);
+      expect(await cdnGb()).toBe(1000);
+      // Custom values survive later seat changes.
+      await sudo.sudoUpdateTeam({
+        id: team.id,
+        monthlyAiCredits: 50_000,
+        monthlyCdnGb: 5_000,
+      });
+      await sudo.sudoUpdateTeam({ id: team.id, seats: 10 });
+      expect(await credits()).toBe(50_000);
+      expect(await cdnGb()).toBe(5_000);
+
+      // Back to the free tier clears them, like seats.
+      await sudo.sudoUpdateTeam({
+        id: team.id,
+        featureTierId: null,
+        seats: null,
+      });
+      expect(await credits()).toBeNull();
+      expect(await cdnGb()).toBeNull();
+    }));
+
+  it("keeps custom allowances when moving between enterprise tiers", () =>
+    withDb(async (sudo, _users, dbs, _project, em) => {
+      const { enterpriseFt } = await seedTestFeatureTiers(em);
+      const newerEnterpriseFt = await sudo.addFeatureTier({
+        ...L.omit(enterpriseFt, "id"),
+        name: "Enterprise 2026",
+      });
+      const { team } = await getTeamAndWorkspace(dbs[0]());
+      await sudo.sudoUpdateTeam({
+        id: team.id,
+        featureTierId: enterpriseFt.id,
+        seats: 30,
+        monthlyAiCredits: 50_000,
+        monthlyCdnGb: 5_000,
+      });
+      await sudo.sudoUpdateTeam({
+        id: team.id,
+        featureTierId: newerEnterpriseFt.id,
+        seats: 40,
+      });
+      const updated = await sudo.getTeamById(team.id);
+      expect(updated.featureTierId).toBe(newerEnterpriseFt.id);
+      expect(updated.monthlyAiCredits).toBe(50_000);
+      expect(updated.monthlyCdnGb).toBe(5_000);
+    }));
+
+  it("computes allowances from the team's current values for omitted fields", () =>
+    withDb(async (sudo, _users, dbs, _project, em) => {
+      const { pro2026Ft, teamFt } = await seedTestFeatureTiers(em);
+      const { team } = await getTeamAndWorkspace(dbs[0]());
+      await sudo.sudoUpdateTeam({
+        id: team.id,
+        featureTierId: pro2026Ft.id,
+        seats: 5,
+      });
+      // An explicitly undefined field is left as is, not treated as 0 seats.
+      await sudo.sudoUpdateTeam({
+        id: team.id,
+        featureTierId: teamFt.id,
+        seats: undefined,
+      });
+      const updated = await sudo.getTeamById(team.id);
+      expect(updated.seats).toBe(5);
+      expect(updated.monthlyAiCredits).toBe(1_250);
+    }));
 });
 
 describe("DbMgr project transfers", () => {

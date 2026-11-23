@@ -174,6 +174,7 @@ import {
   WORKSPACE_CAP,
 } from "@/wab/shared/Labels";
 import { ApiCmsQuery } from "@/wab/shared/api/cms";
+import { calculateAllowances } from "@/wab/shared/billing/billing-util";
 import { Bundler } from "@/wab/shared/bundler";
 import { getBundle } from "@/wab/shared/bundles";
 import { getUniqueFieldsData } from "@/wab/shared/cms";
@@ -366,10 +367,13 @@ export type UserUpdatableTeamFields = Pick<
 export const sudoUpdatableTeamFields: readonly (keyof Team)[] = [
   "name",
   "seats",
+  "monthlyAiCredits",
+  "monthlyCdnGb",
   "featureTierId",
   "stripeCustomerId",
   "stripeSubscriptionId",
   "billingFrequency",
+  "billingCycleAnchor",
   "trialStartDate",
   "parentTeamId",
 ] as const;
@@ -1440,14 +1444,19 @@ export class DbMgr implements MigrationDbMgr {
   }: { id: TeamId } & Partial<SudoUpdatableTeamFields> &
     Partial<UserUpdatableTeamFields>): Promise<Team> {
     this.checkSuperUser();
-    fields = _.pick(fields, [
-      ...sudoUpdatableTeamFields,
-      ...userUpdatableTeamFields,
-    ]);
+    // Drop undefined fields: save() would skip them, so allowances must be
+    // computed from the team's current values instead.
+    fields = _.omitBy(
+      _.pick(fields, [...sudoUpdatableTeamFields, ...userUpdatableTeamFields]),
+      _.isUndefined,
+    );
     const team = await this.getTeamById(id);
+    const prevFeatureTierId = team.featureTierId;
     const tierChanged =
       fields.featureTierId !== undefined &&
       fields.featureTierId !== team.featureTierId;
+    const seatsChanged =
+      fields.seats !== undefined && fields.seats !== team.seats;
     // We need to keep featureTier and featureTierId consistent
     if (!fields.featureTierId) {
       fields["featureTier"] = undefined;
@@ -1455,11 +1464,60 @@ export class DbMgr implements MigrationDbMgr {
       fields["featureTier"] = { id: fields.featureTierId } as any;
     }
     assignAllowEmpty(team, this.stampUpdate(), fields);
+    if (tierChanged || seatsChanged) {
+      await this.recomputeAllowances(
+        team,
+        tierChanged ? prevFeatureTierId : undefined,
+        fields,
+      );
+    }
     const saved = await this.entMgr.save(team);
     if (tierChanged) {
       await this.downgradeTeamRoles(saved);
     }
     return saved;
+  }
+
+  /**
+   * Self-serve tiers derive the team's allowances from the tier and seats.
+   * Enterprise allowances are negotiated, so a seat change or a move between
+   * enterprise tiers keeps the admin's values; moving onto an enterprise tier
+   * from another tier starts from the computed defaults.
+   * An allowance passed explicitly in `fields` is never overwritten.
+   * Like seats, allowances are null on the free tier.
+   *
+   * @param prevFeatureTierId the team's tier before this update, or undefined
+   *   if the tier didn't change
+   */
+  private async recomputeAllowances(
+    team: Team,
+    prevFeatureTierId: FeatureTierId | null | undefined,
+    fields: Partial<SudoUpdatableTeamFields>,
+  ) {
+    if (!team.featureTierId) {
+      team.monthlyAiCredits = null;
+      team.monthlyCdnGb = null;
+      return;
+    }
+    const tier = await this.getFeatureTier(team.featureTierId);
+    if (isEnterprise(tier)) {
+      const prevTier =
+        prevFeatureTierId === undefined
+          ? tier
+          : prevFeatureTierId === null
+            ? null
+            : await this.getFeatureTier(prevFeatureTierId);
+      if (isEnterprise(prevTier)) {
+        return;
+      }
+    }
+    const allowances = calculateAllowances(tier, team.seats ?? 0);
+    if (fields.monthlyAiCredits === undefined) {
+      team.monthlyAiCredits = allowances.monthlyAiCredits;
+    }
+    if (fields.monthlyCdnGb === undefined) {
+      team.monthlyCdnGb = allowances.monthlyCdnGb;
+    }
   }
 
   /** Revert roles the team's feature tier doesn't include to commenter. */

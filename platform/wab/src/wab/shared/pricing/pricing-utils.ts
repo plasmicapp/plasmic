@@ -56,7 +56,7 @@ export const getNewPriceTierType = (name?: string): NewPriceTierType => {
     return "free";
   } else if (["starter"].includes(lowerName)) {
     return "starter";
-  } else if (["pro"].includes(lowerName)) {
+  } else if (["pro", "pro2026"].includes(lowerName)) {
     return "pro";
   } else if (["team"].includes(lowerName)) {
     return "team";

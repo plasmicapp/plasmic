@@ -40,6 +40,7 @@ import {
   UpdateSelfAdminModeRequest,
   UserId,
 } from "@/wab/shared/ApiSchema";
+import { isValidMonthlyAllowance } from "@/wab/shared/billing/billing-util";
 import { Bundle } from "@/wab/shared/bundler";
 import {
   ensure,
@@ -47,6 +48,8 @@ import {
   uncheckedCast,
   withoutNils,
 } from "@/wab/shared/common";
+import { isEnterprise } from "@/wab/shared/pricing/pricing-utils";
+import { PG_INTEGER_MAX } from "@/wab/shared/utils/pg-utils";
 import { Request, Response } from "express-serve-static-core";
 import { omit, uniq } from "lodash";
 
@@ -375,7 +378,26 @@ export async function upgradeTeam(req: Request, res: Response) {
     billingEmail,
     stripeCustomerId,
     stripeSubscriptionId,
+    monthlyAiCredits,
+    monthlyCdnGb,
   } = req.body;
+  // Enterprise allowances are negotiated, so they must be given. Otherwise,
+  // a missing allowance (undefined or null) is computed from the tier.
+  const tier = featureTierId ? await mgr.getFeatureTier(featureTierId) : null;
+  for (const [name, value] of Object.entries({
+    monthlyAiCredits,
+    monthlyCdnGb,
+  })) {
+    if (value == null) {
+      if (isEnterprise(tier)) {
+        throw new BadRequestError(`${name} is required for enterprise tiers`);
+      }
+    } else if (!isValidMonthlyAllowance(value)) {
+      throw new BadRequestError(
+        `${name} must be an integer between 0 and ${PG_INTEGER_MAX}`,
+      );
+    }
+  }
   await mgr.sudoUpdateTeam({
     id: teamId,
     featureTierId,
@@ -384,6 +406,8 @@ export async function upgradeTeam(req: Request, res: Response) {
     billingEmail,
     stripeCustomerId,
     stripeSubscriptionId,
+    monthlyAiCredits: monthlyAiCredits ?? undefined,
+    monthlyCdnGb: monthlyCdnGb ?? undefined,
   });
   await syncTeamSubscription(
     { superMgr: mgr, devflags: req.devflags },

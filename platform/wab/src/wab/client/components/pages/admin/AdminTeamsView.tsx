@@ -19,7 +19,8 @@ import {
   StripeSubscriptionId,
   TeamWhiteLabelInfo,
 } from "@/wab/shared/ApiSchema";
-import { notNil, uncheckedCast } from "@/wab/shared/common";
+import { isValidMonthlyAllowance } from "@/wab/shared/billing/billing-util";
+import { notNil, tryParseNumLit, uncheckedCast } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   BASE_URL,
@@ -444,6 +445,10 @@ function TeamTierControls({ team }: TeamProps) {
     string | undefined
   >();
   const [seats, setSeats] = React.useState<number | undefined>();
+  const [changeFeatureTierName, setChangeFeatureTierName] = React.useState<
+    string | undefined
+  >();
+  const [changeSeats, setChangeSeats] = React.useState<number | undefined>();
   const [billingFrequency, setBillingFreq] = React.useState<
     BillingFrequency | undefined
   >();
@@ -454,6 +459,12 @@ function TeamTierControls({ team }: TeamProps) {
   const [stripeSubscriptionId, setStripeSubscriptionId] = React.useState<
     StripeSubscriptionId | undefined
   >();
+  const [monthlyAiCredits, setMonthlyAiCredits] = React.useState<
+    number | undefined
+  >();
+  const [monthlyCdnGb, setMonthlyCdnGb] = React.useState<number | undefined>();
+  const isEnterpriseTierSelected =
+    featureTierName?.toLowerCase().includes("enterprise") ?? false;
   return (
     <div>
       <h2>Modify team billing</h2>
@@ -499,6 +510,13 @@ function TeamTierControls({ team }: TeamProps) {
           if (!tier) {
             return setError(`Cannot find a tier with name ${featureTierName}`);
           }
+          if (isEnterpriseTierSelected) {
+            if (!isValidMonthlyAllowance(monthlyAiCredits)) {
+              return setError("Missing or invalid Monthly AI Credits");
+            } else if (!isValidMonthlyAllowance(monthlyCdnGb)) {
+              return setError("Missing or invalid Monthly CDN GB");
+            }
+          }
           await nonAuthCtx.api.upgradeTeamAsAdmin({
             teamId,
             featureTierId: tier.id,
@@ -507,6 +525,7 @@ function TeamTierControls({ team }: TeamProps) {
             billingEmail,
             stripeCustomerId,
             stripeSubscriptionId,
+            ...(isEnterpriseTierSelected && { monthlyAiCredits, monthlyCdnGb }),
           });
           setError("");
           notification.info({
@@ -516,6 +535,7 @@ function TeamTierControls({ team }: TeamProps) {
       >
         <Select
           style={{ width: 120 }}
+          value={featureTierName}
           onChange={(v: string) => setFeatureTierName(v)}
         >
           {[
@@ -562,6 +582,28 @@ function TeamTierControls({ team }: TeamProps) {
             )
           }
         />
+        {isEnterpriseTierSelected && (
+          <>
+            <Input
+              type={"number"}
+              min={0}
+              value={monthlyAiCredits ?? ""}
+              aria-label="Monthly AI credits"
+              addonBefore="Monthly AI credits"
+              onChange={(e) =>
+                setMonthlyAiCredits(tryParseNumLit(e.target.value))
+              }
+            />
+            <Input
+              type={"number"}
+              min={0}
+              value={monthlyCdnGb ?? ""}
+              aria-label="Monthly CDN GB"
+              addonBefore="Monthly CDN GB"
+              onChange={(e) => setMonthlyCdnGb(tryParseNumLit(e.target.value))}
+            />
+          </>
+        )}
         <Button htmlType={"submit"}>Upgrade team </Button>
       </Form>
 
@@ -577,23 +619,25 @@ function TeamTierControls({ team }: TeamProps) {
         onFinish={async () => {
           if (!teamId) {
             return setError("Missing Team ID");
-          } else if (!featureTierName) {
+          } else if (!changeFeatureTierName) {
             return setError("Missing Feature Tier");
-          } else if (!seats) {
+          } else if (!changeSeats) {
             return setError("Missing Seats");
           }
           const { tiers } = await nonAuthCtx.api.listCurrentFeatureTiers();
           const tier = tiers.find(
-            (t) => t.name.toLowerCase() === featureTierName.toLowerCase(),
+            (t) => t.name.toLowerCase() === changeFeatureTierName.toLowerCase(),
           );
           if (!tier) {
-            return setError(`Cannot find a tier with name ${featureTierName}`);
+            return setError(
+              `Cannot find a tier with name ${changeFeatureTierName}`,
+            );
           }
           const result = await nonAuthCtx.api.changeSubscription({
             teamId,
             featureTierId: tier.id,
             billingFrequency: team.billingFrequency ?? "month",
-            seats,
+            seats: changeSeats,
           });
           if (result.type !== "success") {
             return setError("Error changing subscription");
@@ -606,7 +650,8 @@ function TeamTierControls({ team }: TeamProps) {
       >
         <Select
           style={{ width: 120 }}
-          onChange={(v: string) => setFeatureTierName(v)}
+          value={changeFeatureTierName}
+          onChange={(v: string) => setChangeFeatureTierName(v)}
         >
           {[
             ...DEVFLAGS.featureTierNames.slice(0, -1),
@@ -617,9 +662,9 @@ function TeamTierControls({ team }: TeamProps) {
         </Select>
         <Input
           type={"input"}
-          value={seats}
+          value={changeSeats}
           placeholder="Number of Seats"
-          onChange={(e) => setSeats(parseInt(e.target.value))}
+          onChange={(e) => setChangeSeats(parseInt(e.target.value))}
         />
         <Button htmlType={"submit"}>Change plan</Button>
       </Form>

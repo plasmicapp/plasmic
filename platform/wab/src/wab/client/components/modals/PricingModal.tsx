@@ -218,6 +218,16 @@ function UpsellForm(
     }
   }, [tier, teamMeta]);
 
+  // The starting seats are picked before teamMeta loads. Once it does, start
+  // with at least one seat per member, which the server requires.
+  React.useEffect(() => {
+    if (teamMeta) {
+      setSeats((s) =>
+        Math.min(tier?.maxUsers || Infinity, Math.max(s, teamMeta.memberCount)),
+      );
+    }
+  }, [teamMeta]);
+
   const safeSetSeats = (newSeats: number) => {
     if (tier?.maxUsers && tier.maxUsers < newSeats) {
       setErrorMsg({
@@ -408,6 +418,14 @@ function UpsellForm(
         type: "success",
         team,
         tier: ensureTier,
+      });
+    } catch (err) {
+      setErrorMsg({
+        type: "nonfatal",
+        errorMsg:
+          err instanceof Error
+            ? err.message
+            : "Error processing payment. Please contact help@plasmic.app.",
       });
     } finally {
       setWaiting(false);

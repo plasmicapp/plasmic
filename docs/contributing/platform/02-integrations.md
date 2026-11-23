@@ -143,6 +143,9 @@ To test billing locally, add Stripe test secret key (https://dashboard.stripe.co
 }
 ```
 
+The test tier seed includes `pro2026` at $30 per seat monthly or $288 per seat annually.
+To test checkout for this plan, include `pro2026` in the local `newFeatureTierNames` devflag.
+
 ## Setting up Google Sheets
 
 Have a GCloud account, Sheets API enabled, OAuth consent screen.

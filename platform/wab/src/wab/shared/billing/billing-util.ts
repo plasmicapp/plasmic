@@ -8,6 +8,7 @@ import {
 import { assert } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
+import { isPgInteger } from "@/wab/shared/utils/pg-utils";
 import { Temporal } from "temporal-polyfill";
 import { MakeADT } from "ts-adt/MakeADT";
 
@@ -181,8 +182,35 @@ export function calculateBill(
   };
 }
 
+/**
+ * Plans like Scale have a base price that includes its minimum seats.
+ * Plans like Pro (2026) or older legacy plans must be charged for every seat.
+ * Names are matched case-insensitively, like getNewPriceTierType.
+ */
 function tierIncludesMinSeats(tier: ApiFeatureTier) {
-  return !["Basic", "Growth"].includes(tier.name);
+  return !["basic", "growth", "pro2026"].includes(tier.name.toLowerCase());
+}
+
+// Organization allowances are stored as PostgreSQL integers.
+export function isValidMonthlyAllowance(value: unknown): value is number {
+  return isPgInteger(value) && value >= 0;
+}
+
+/**
+ * A team's monthly allowances. An allowance the tier doesn't set stays null,
+ * so teams on a tier that hasn't been configured yet can be found and fixed.
+ */
+export function calculateAllowances(
+  tier: ApiFeatureTier,
+  seats: number,
+): { monthlyAiCredits: number | null; monthlyCdnGb: number | null } {
+  return {
+    monthlyAiCredits:
+      tier.monthlyAiCreditsPerSeat === null
+        ? null
+        : tier.monthlyAiCreditsPerSeat * seats,
+    monthlyCdnGb: tier.monthlyCdnGb,
+  };
 }
 
 /** End of the last allowed day in UTC-12, the latest timezone. */
@@ -193,4 +221,30 @@ export function getPastDueBlocksAt(
     .add({ days: 1 })
     .toZonedDateTime("-12:00")
     .toInstant();
+}
+
+/**
+ * The monthly allowance period containing `now`, starting monthly from the
+ * billing cycle anchor rounded down to the hour.
+ */
+export function getMonthlyAllowancePeriod(
+  billingCycleAnchor: Temporal.Instant,
+  now: Temporal.Instant,
+): { start: Temporal.Instant; end: Temporal.Instant } {
+  const anchor = billingCycleAnchor
+    .toZonedDateTimeISO("UTC")
+    .round({ smallestUnit: "hour", roundingMode: "floor" });
+  const current = now.toZonedDateTimeISO("UTC");
+  // Add months to the anchor itself, not to the previous period's start, so a
+  // clamped day doesn't carry over to later months.
+  const periodStart = (months: number) => anchor.add({ months });
+  let months =
+    (current.year - anchor.year) * 12 + (current.month - anchor.month);
+  if (Temporal.ZonedDateTime.compare(periodStart(months), current) > 0) {
+    months--;
+  }
+  return {
+    start: periodStart(months).toInstant(),
+    end: periodStart(months + 1).toInstant(),
+  };
 }

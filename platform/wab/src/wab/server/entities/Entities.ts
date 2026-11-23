@@ -165,6 +165,16 @@ export class Team extends Base<"TeamId"> {
   @Column("integer", { nullable: true })
   seats: number | null;
 
+  // How many AI credits does the team get per month?
+  // - null if on free tier
+  @Column("integer", { nullable: true })
+  monthlyAiCredits: number | null;
+
+  // How many GB of CDN usage does the team get per month?
+  // - null if on free tier
+  @Column("integer", { nullable: true })
+  monthlyCdnGb: number | null;
+
   @ManyToOne(() => FeatureTier)
   featureTier: FeatureTier | null;
 
@@ -179,6 +189,11 @@ export class Team extends Base<"TeamId"> {
 
   @Column("text", { nullable: true })
   billingFrequency: BillingFrequency | null;
+
+  // Stripe subscription's billing_cycle_anchor, which aligns its billing periods
+  // - null if no Stripe subscription
+  @Column("timestamptz", { nullable: true })
+  billingCycleAnchor: Date | null;
 
   @Column("timestamptz", { nullable: true })
   trialStartDate: Date | null;
@@ -960,6 +975,10 @@ export class FeatureTier extends Base<"FeatureTierId"> {
   @Column("integer", { default: 1000000000 /* 1B */ }) monthlyViews: number;
   // If can access analytics page
   @Column("boolean", { default: false }) analytics: boolean;
+  // AI credits allowed per month for each seat in the team, null if not set
+  @Column("integer", { nullable: true }) monthlyAiCreditsPerSeat: number | null;
+  // GB of CDN usage allowed per month for a team, null if not set
+  @Column("integer", { nullable: true }) monthlyCdnGb: number | null;
 }
 
 @Entity()

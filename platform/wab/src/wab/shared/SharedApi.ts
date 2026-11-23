@@ -1353,6 +1353,8 @@ export abstract class SharedApi {
     billingEmail: string;
     stripeCustomerId: StripeCustomerId;
     stripeSubscriptionId: StripeSubscriptionId;
+    monthlyAiCredits?: number;
+    monthlyCdnGb?: number;
   }): Promise<{}> {
     return this.post("/admin/upgrade-team", args);
   }

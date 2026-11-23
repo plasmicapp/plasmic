@@ -171,6 +171,8 @@ export interface ApiTeam extends ApiEntityBase {
   name: string;
   billingEmail: string;
   seats: number | null;
+  monthlyAiCredits: number | null;
+  monthlyCdnGb: number | null;
   featureTier: ApiFeatureTier | null;
   featureTierId: FeatureTierId | null;
   stripeCustomerId: StripeCustomerId | null;
@@ -233,6 +235,8 @@ export interface ApiFeatureTier extends ApiEntityBase {
   maxWorkspaces: number | null;
   analytics: boolean;
   monthlyViews: number;
+  monthlyAiCreditsPerSeat: number | null;
+  monthlyCdnGb: number | null;
 }
 
 export type MayTriggerPaywall<T> = MakeADT<

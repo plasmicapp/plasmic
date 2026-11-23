@@ -78,6 +78,10 @@ function mkApiTeam(
   team: Team,
   subscriptionStatus: TeamSubscriptionStatus,
 ): ApiTeam {
+  // Checkout sets the tier before payment, so a team isn't entitled to its
+  // tier's allowances until its subscription is no longer free.
+  const entitled =
+    subscriptionStatus === "free" ? undefined : getEntitledTeam(team);
   return L.assign(
     L.pick(team, [
       "createdAt",
@@ -105,6 +109,8 @@ function mkApiTeam(
     {
       parentTeamId: team.parentTeamId,
       featureTier: team.featureTier || team.parentTeam?.featureTier || null,
+      monthlyAiCredits: entitled?.monthlyAiCredits ?? null,
+      monthlyCdnGb: entitled?.monthlyCdnGb ?? null,
       uiConfig: mergeUiConfigs(team.parentTeam?.uiConfig, team.uiConfig),
       onTrial: subscriptionStatus === "trial",
     },

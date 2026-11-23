@@ -327,7 +327,7 @@ const DEFAULT_DEVFLAGS = {
   previewLoaderCacheTtlMs: 60_000,
   // The tiers to get dynamically retrieve from the server
   featureTierNames: featureTiers,
-  newFeatureTierNames: newFeatureTiers,
+  newFeatureTierNames: newFeatureTiers as readonly string[],
   freeTier: ensureType<ApiFeatureTier>({
     createdAt: "2021-08-05T23:39:21.570Z",
     updatedAt: "2023-05-22T23:39:21.570Z",
@@ -360,6 +360,8 @@ const DEFAULT_DEVFLAGS = {
     localization: false,
     analytics: false,
     monthlyViews: 50000,
+    monthlyAiCreditsPerSeat: 0, // see chatCopilotFreeDailyTokenLimit instead
+    monthlyCdnGb: 1,
   }),
   // Whether new teams automatically start a free trial of freeTrialTierName.
   // Requires that feature tier to exist in the database.

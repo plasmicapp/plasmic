@@ -12,10 +12,12 @@ import {
   SubscriptionStatusRecord,
   Team,
 } from "@/wab/server/entities/Entities";
-import { getProjectIdAndTokenForDomain } from "@/wab/server/routes/internal/hosting";
 import { sendPastDueWarnings } from "@/wab/server/internal/sync-subscriptions";
+import { getProjectIdAndTokenForDomain } from "@/wab/server/routes/internal/hosting";
 import {
   cancelSubscription,
+  changeSubscription,
+  createSubscription,
   updatePaymentMethod,
 } from "@/wab/server/routes/internal/payment";
 import {
@@ -34,6 +36,7 @@ import {
   getTeamSubscription,
   isPaidTeam,
 } from "@/wab/server/subscription-status";
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   StripeCustomerId,
   StripeSubscriptionId,
@@ -333,6 +336,7 @@ function stripeSub(
     id = "sub_test",
     paymentMethod = "pm_test" as string | null,
     created = (NOW - DAY) / 1000,
+    billingCycleAnchor = created,
   } = {},
 ) {
   return {
@@ -340,6 +344,7 @@ function stripeSub(
     status,
     default_payment_method: paymentMethod,
     created,
+    billing_cycle_anchor: billingCycleAnchor,
   } as Stripe.Subscription;
 }
 
@@ -414,6 +419,43 @@ describe("syncTeamSubscription", () => {
       }
       expect(list).toHaveBeenCalled();
       expect(await em.count(SubscriptionStatusRecord)).toBeGreaterThan(1);
+    }));
+
+  it("stores the subscription's billing cycle anchor and clears it on reset", () =>
+    withTrial(async (fixture) => {
+      const { team, sudo } = fixture;
+      vi.spyOn(stripe.subscriptions, "list").mockResolvedValue({
+        data: [],
+        has_more: false,
+      } as any);
+      vi.spyOn(stripe.paymentMethods, "list").mockResolvedValue({
+        data: [],
+        has_more: false,
+      } as any);
+      const anchor = async () =>
+        (await sudo.getTeamById(team.id)).billingCycleAnchor?.toISOString();
+      const ctx = await subscribe(fixture);
+      expect(await anchor()).toBeUndefined();
+
+      const first = Date.parse("2026-03-10T14:25:31Z");
+      await syncTeamSubscription(
+        ctx,
+        team.id,
+        stripeSub("active", { billingCycleAnchor: first / 1000 }),
+      );
+      expect(await anchor()).toBe("2026-03-10T14:25:31.000Z");
+
+      // e.g. reset from the Stripe dashboard
+      const second = Date.parse("2026-04-02T08:00:00Z");
+      await syncTeamSubscription(
+        ctx,
+        team.id,
+        stripeSub("active", { billingCycleAnchor: second / 1000 }),
+      );
+      expect(await anchor()).toBe("2026-04-02T08:00:00.000Z");
+
+      await syncTeamSubscription(ctx, team.id, stripeSub("canceled"));
+      expect(await anchor()).toBeUndefined();
     }));
 
   it("restores the hosted badge after cancellation without republishing the project", () =>
@@ -902,5 +944,350 @@ describe("subscription status endpoints", () => {
         "viewer",
       );
       expect(await getProjectSubscriptionStatus(req)).toEqual(null);
+    }));
+});
+
+describe("subscription routes", () => {
+  /** Puts the 2026 tiers on sale, which makes "Pro" a legacy tier. */
+  async function setup(fixture: Awaited<ReturnType<typeof setupTrial>>) {
+    const { sudo, team, req } = fixture;
+    req.devflags.newFeatureTierNames = ["pro2026", "Team", "Enterprise"];
+    req.config = { host: "https://studio.example.com" } as Request["config"];
+    req.mailer = mock<Request["mailer"]>();
+    req.query = {};
+    req.params = { teamId: team.id };
+    const tiers = await sudo.listAllFeatureTiers();
+    const tierByName = (name: string) =>
+      ensure(
+        tiers.find((t) => t.name === name),
+        `tier ${name}`,
+      );
+    for (const list of [stripe.subscriptions, stripe.paymentMethods]) {
+      vi.spyOn(list, "list").mockResolvedValue({
+        data: [],
+        has_more: false,
+      } as any);
+    }
+    return {
+      pro2026Ft: tierByName("pro2026"),
+      legacyProFt: tierByName("Pro"),
+      growthFt: tierByName("Growth"),
+    };
+  }
+
+  /** Gives the team an active monthly subscription to a tier. */
+  async function subscribeTo(
+    fixture: Awaited<ReturnType<typeof setupTrial>>,
+    tier: { id: Team["featureTierId"] },
+    seats: number,
+    items: { id: string; price: { id: string | null } }[],
+  ) {
+    await fixture.sudo.sudoUpdateTeam({
+      id: fixture.team.id,
+      featureTierId: tier.id,
+      seats,
+      billingFrequency: "month",
+      stripeSubscriptionId: "sub_test" as StripeSubscriptionId,
+      stripeCustomerId: "cus_test" as StripeCustomerId,
+      trialStartDate: null,
+    });
+    vi.spyOn(stripe.subscriptions, "retrieve").mockResolvedValue({
+      ...stripeSub("active"),
+      items: { data: items },
+    } as any);
+    return vi
+      .spyOn(stripe.subscriptions, "update")
+      .mockResolvedValue(stripeSub("active") as any);
+  }
+
+  function request(
+    fixture: Awaited<ReturnType<typeof setupTrial>>,
+    tier: { id: Team["featureTierId"] },
+    seats: number,
+  ) {
+    fixture.req.body = {
+      teamId: fixture.team.id,
+      featureTierId: tier.id,
+      billingFrequency: "month",
+      seats,
+    };
+    return fixture.req;
+  }
+
+  it("creates a seats-only subscription with any seat count within limits", () =>
+    withTrial(async (fixture) => {
+      const { sudo, team } = fixture;
+      const { pro2026Ft } = await setup(fixture);
+      vi.spyOn(stripe.customers, "create").mockResolvedValue({
+        id: "cus_test",
+      } as any);
+      const create = vi
+        .spyOn(stripe.subscriptions, "create")
+        .mockResolvedValue({
+          ...stripeSub("incomplete", {
+            paymentMethod: null,
+            created: NOW / 1000,
+          }),
+          latest_invoice: { confirmation_secret: { client_secret: "secret" } },
+        } as any);
+      const res = mock<Response>();
+      await createSubscription(request(fixture, pro2026Ft, 2), res);
+      expect(create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          customer: "cus_test",
+          items: [{ price: pro2026Ft.monthlySeatStripePriceId, quantity: 2 }],
+        }),
+      );
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({ type: "needPayment" }),
+      );
+      expect(await sudo.getTeamById(team.id)).toMatchObject({
+        featureTierId: pro2026Ft.id,
+        seats: 2,
+        stripeSubscriptionId: "sub_test",
+      });
+    }));
+
+  it("rejects seat counts outside the tier's limits", () =>
+    withTrial(async (fixture) => {
+      const { pro2026Ft } = await setup(fixture);
+      const update = await subscribeTo(fixture, pro2026Ft, 2, []);
+      await expect(
+        changeSubscription(request(fixture, pro2026Ft, 31), mock<Response>()),
+      ).rejects.toThrow("does not allow 31 seats");
+      await expect(
+        changeSubscription(
+          request(fixture, fixture.teamFt, 7),
+          mock<Response>(),
+        ),
+      ).rejects.toThrow("does not allow 7 seats");
+      expect(update).not.toHaveBeenCalled();
+    }));
+
+  it("changes seats on a seats-only subscription", () =>
+    withTrial(async (fixture) => {
+      const { sudo, team } = fixture;
+      const { pro2026Ft } = await setup(fixture);
+      const update = await subscribeTo(fixture, pro2026Ft, 2, [
+        { id: "si_seat", price: { id: pro2026Ft.monthlySeatStripePriceId } },
+      ]);
+      await changeSubscription(
+        request(fixture, pro2026Ft, 5),
+        mock<Response>(),
+      );
+      expect(update).toHaveBeenCalledWith("sub_test", {
+        cancel_at_period_end: false,
+        proration_behavior: "always_invoice",
+        items: [
+          {
+            id: "si_seat",
+            price: pro2026Ft.monthlySeatStripePriceId,
+            quantity: 5,
+          },
+        ],
+      });
+      expect(await sudo.getTeamById(team.id)).toMatchObject({
+        featureTierId: pro2026Ft.id,
+        seats: 5,
+      });
+    }));
+
+  it("keeps the legacy prices when changing seats on a legacy plan", () =>
+    withTrial(async (fixture) => {
+      const { sudo, team } = fixture;
+      const { legacyProFt } = await setup(fixture);
+      const update = await subscribeTo(fixture, legacyProFt, 4, [
+        { id: "si_base", price: { id: legacyProFt.monthlyBaseStripePriceId } },
+      ]);
+      await changeSubscription(
+        request(fixture, legacyProFt, 6),
+        mock<Response>(),
+      );
+      expect(update).toHaveBeenCalledWith(
+        "sub_test",
+        expect.objectContaining({
+          items: [
+            {
+              id: undefined,
+              price: legacyProFt.monthlySeatStripePriceId,
+              quantity: 2,
+            },
+            {
+              id: "si_base",
+              price: legacyProFt.monthlyBaseStripePriceId,
+              quantity: 1,
+            },
+          ],
+        }),
+      );
+      expect(await sudo.getTeamById(team.id)).toMatchObject({
+        featureTierId: legacyProFt.id,
+        seats: 6,
+      });
+    }));
+
+  it("switches from a legacy plan to a current plan in one prorated update", () =>
+    withTrial(async (fixture) => {
+      const { sudo, team } = fixture;
+      const { legacyProFt, pro2026Ft } = await setup(fixture);
+      const update = await subscribeTo(fixture, legacyProFt, 6, [
+        { id: "si_seat", price: { id: legacyProFt.monthlySeatStripePriceId } },
+        { id: "si_base", price: { id: legacyProFt.monthlyBaseStripePriceId } },
+      ]);
+      const del = vi.spyOn(stripe.subscriptionItems, "del");
+      await changeSubscription(
+        request(fixture, pro2026Ft, 6),
+        mock<Response>(),
+      );
+      expect(update).toHaveBeenCalledTimes(1);
+      expect(update).toHaveBeenCalledWith("sub_test", {
+        cancel_at_period_end: false,
+        proration_behavior: "always_invoice",
+        items: [
+          {
+            id: undefined,
+            price: pro2026Ft.monthlySeatStripePriceId,
+            quantity: 6,
+          },
+          { id: "si_seat", deleted: true },
+          { id: "si_base", deleted: true },
+        ],
+      });
+      expect(del).not.toHaveBeenCalled();
+      expect(await sudo.getTeamById(team.id)).toMatchObject({
+        featureTierId: pro2026Ft.id,
+        seats: 6,
+      });
+    }));
+
+  it("rejects subscribing or switching to a legacy plan", () =>
+    withTrial(async (fixture) => {
+      const { legacyProFt, growthFt, pro2026Ft } = await setup(fixture);
+      vi.spyOn(stripe.customers, "create").mockResolvedValue({
+        id: "cus_test",
+      } as any);
+      const create = vi.spyOn(stripe.subscriptions, "create");
+      await expect(
+        createSubscription(request(fixture, legacyProFt, 4), mock<Response>()),
+      ).rejects.toThrow("is not available");
+      expect(create).not.toHaveBeenCalled();
+
+      const update = await subscribeTo(fixture, pro2026Ft, 8, []);
+      for (const legacyTier of [legacyProFt, growthFt]) {
+        await expect(
+          changeSubscription(request(fixture, legacyTier, 8), mock<Response>()),
+        ).rejects.toThrow("is not available");
+      }
+      expect(update).not.toHaveBeenCalled();
+    }));
+
+  it("rejects restarting a lapsed subscription on its legacy plan", () =>
+    withTrial(async (fixture) => {
+      const { legacyProFt } = await setup(fixture);
+      await subscribeTo(fixture, legacyProFt, 4, []);
+      vi.spyOn(stripe.subscriptions, "retrieve").mockResolvedValue(
+        stripeSub("canceled") as any,
+      );
+      const create = vi.spyOn(stripe.subscriptions, "create");
+      await expect(
+        createSubscription(request(fixture, legacyProFt, 4), mock<Response>()),
+      ).rejects.toThrow("is not available");
+      expect(create).not.toHaveBeenCalled();
+    }));
+
+  it("rejects changing between monthly and yearly billing", () =>
+    withTrial(async (fixture) => {
+      const { pro2026Ft } = await setup(fixture);
+      const update = await subscribeTo(fixture, pro2026Ft, 2, []);
+      const req = request(fixture, pro2026Ft, 2);
+      req.body.billingFrequency = "year";
+      await expect(changeSubscription(req, mock<Response>())).rejects.toThrow(
+        BadRequestError,
+      );
+      expect(update).not.toHaveBeenCalled();
+    }));
+
+  it("rejects fewer seats than the team has members", () =>
+    withTrial(async (fixture) => {
+      const { sudo, team } = fixture;
+      const { pro2026Ft } = await setup(fixture);
+      for (const email of ["second@member.test", "third@member.test"]) {
+        await sudo.grantTeamPermissionByEmail(team.id, email, "editor");
+      }
+      const create = vi.spyOn(stripe.subscriptions, "create");
+      await expect(
+        createSubscription(request(fixture, pro2026Ft, 2), mock<Response>()),
+      ).rejects.toThrow("2 seats is not enough for the 3 members");
+      expect(create).not.toHaveBeenCalled();
+
+      const update = await subscribeTo(fixture, pro2026Ft, 3, [
+        { id: "si_seat", price: { id: pro2026Ft.monthlySeatStripePriceId } },
+      ]);
+      await expect(
+        changeSubscription(request(fixture, pro2026Ft, 2), mock<Response>()),
+      ).rejects.toThrow("2 seats is not enough for the 3 members");
+      expect(update).not.toHaveBeenCalled();
+      await changeSubscription(
+        request(fixture, pro2026Ft, 3),
+        mock<Response>(),
+      );
+      expect(update).toHaveBeenCalledTimes(1);
+    }));
+
+  it("rejects a checkout before creating a Stripe customer", () =>
+    withTrial(async (fixture) => {
+      const { legacyProFt, pro2026Ft } = await setup(fixture);
+      const createCustomer = vi.spyOn(stripe.customers, "create");
+      await expect(
+        createSubscription(request(fixture, legacyProFt, 4), mock<Response>()),
+      ).rejects.toThrow("is not available");
+      await expect(
+        createSubscription(request(fixture, pro2026Ft, 31), mock<Response>()),
+      ).rejects.toThrow("does not allow 31 seats");
+      const req = request(fixture, pro2026Ft, 2);
+      req.body.billingFrequency = "week";
+      await expect(createSubscription(req, mock<Response>())).rejects.toThrow(
+        BadRequestError,
+      );
+      delete req.body.seats;
+      req.body.billingFrequency = "month";
+      await expect(createSubscription(req, mock<Response>())).rejects.toThrow(
+        BadRequestError,
+      );
+      expect(createCustomer).not.toHaveBeenCalled();
+      expect(
+        (await fixture.sudo.getTeamById(fixture.team.id)).stripeCustomerId,
+      ).toBeNull();
+    }));
+
+  it("keeps the 2026 Pro plan off sale by default", () =>
+    withTrial(async (fixture) => {
+      const { pro2026Ft } = await setup(fixture);
+      fixture.req.devflags.newFeatureTierNames = DEVFLAGS.newFeatureTierNames;
+      await subscribeTo(fixture, fixture.teamFt, 8, []);
+      await expect(
+        changeSubscription(request(fixture, pro2026Ft, 8), mock<Response>()),
+      ).rejects.toThrow("is not available");
+    }));
+
+  it("cancels a seats-only subscription back to the free tier", () =>
+    withTrial(async (fixture) => {
+      const { sudo, team, req } = fixture;
+      const { pro2026Ft } = await setup(fixture);
+      await subscribeTo(fixture, pro2026Ft, 1, []);
+      vi.spyOn(stripe.subscriptions, "list").mockResolvedValueOnce({
+        data: [stripeSub("active")],
+        has_more: false,
+      } as any);
+      const cancel = vi
+        .spyOn(stripe.subscriptions, "cancel")
+        .mockResolvedValue(stripeSub("canceled") as any);
+      await cancelSubscription(req, mock<Response>());
+      expect(cancel).toHaveBeenCalledWith("sub_test");
+      expect(await sudo.getTeamById(team.id)).toMatchObject({
+        featureTierId: null,
+        seats: null,
+        stripeSubscriptionId: null,
+      });
     }));
 });
