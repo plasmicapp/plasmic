@@ -40,20 +40,16 @@ import {
 } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
 import { mkSiteScopedUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ImageUploadResponse } from "@/wab/shared/ApiSchema";
-import { ensure } from "@/wab/shared/common";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { extractImageAssetUsages } from "@/wab/shared/core/image-assets";
 import {
   isHostLessPackage,
   tryGetImageAssetByUuid,
 } from "@/wab/shared/core/sites";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ImageAsset, ProjectDependency } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
 import { canRead, canWrite } from "@/wab/shared/ui-config-utils";
 import { Menu } from "antd";
-import { last } from "lodash";
 import { observer } from "mobx-react";
 import { ok } from "neverthrow";
 import React from "react";
@@ -574,23 +570,6 @@ export const ImageAssetSidebarPopup = observer(
     );
   },
 );
-
-export function getCmsImageUrl(uploaded: ImageUploadResponse) {
-  const imgId = ensure(last(uploaded.dataUri.split("/")), "Expected imgId");
-  let imgUrl = uploaded.dataUri;
-
-  if (DEVFLAGS.imgOptimizerHost && !uploaded.mimeType?.includes("svg")) {
-    imgUrl = `${
-      DEVFLAGS.imgOptimizerHost
-    }/img-optimizer/v1/img?src=${encodeURIComponent(imgId)}&f=webp&q=75`;
-    if (uploaded.width > 3840) {
-      // Cap width at 3840
-      imgUrl += "&w=3840";
-    }
-  }
-
-  return imgUrl;
-}
 
 function getImageAssetsPermissions(studioCtx: StudioCtx) {
   const panelPermission = studioCtx.getLeftTabPermission("images");

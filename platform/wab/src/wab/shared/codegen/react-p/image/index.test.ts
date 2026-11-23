@@ -1,5 +1,6 @@
 import { TplMgr } from "@/wab/shared/TplMgr";
 import {
+  getCmsImageUrl,
   getPlasmicImgLoader,
   maybeMakePlasmicImgSrc,
 } from "@/wab/shared/codegen/react-p/image";
@@ -40,34 +41,71 @@ describe("getPlasmicImgLoader", () => {
   );
 });
 
-describe("maybeMakePlasmicImgSrc", () => {
+describe("image asset URLs", () => {
+  const key = "07a7153536a89fef14e0075c7632d6b3.jpg";
+  const dataUri = `https://site-assets.plasmic.app/${key}`;
   const site = createSite();
-  const picture = new TplMgr({ site }).addImageAsset({
-    name: "bicycle",
-    type: ImageAssetType.Picture,
-    dataUri: "https://site-assets.plasmic.app/bicycle.jpg",
-    width: 800,
-    height: 600,
-  });
+  const picture = (src = dataUri) =>
+    new TplMgr({ site }).addImageAsset({
+      name: "bicycle",
+      type: ImageAssetType.Picture,
+      dataUri: src,
+      width: 800,
+      height: 600,
+    });
   const defaultHost = DEVFLAGS.imgOptimizerHost;
 
+  const defaultAssetsBase = DEVFLAGS.siteAssetsBaseUrl;
+
   afterEach(() => {
+    DEVFLAGS.siteAssetsBaseUrl = defaultAssetsBase;
     DEVFLAGS.imgOptimizerHost = defaultHost;
   });
 
   it("serves pictures through the image optimizer host", () => {
     DEVFLAGS.imgOptimizerHost = "https://img.example.com";
-    expect(maybeMakePlasmicImgSrc(picture)).toMatchObject({
-      src: "https://img.example.com/img-optimizer/v1/img/bicycle.jpg",
+    expect(maybeMakePlasmicImgSrc(picture())).toMatchObject({
+      src: `https://img.example.com/i/${key}`,
       fullWidth: 800,
       fullHeight: 600,
     });
   });
 
+  it.each([
+    `https://external.example/${key}`,
+    dataUri.replace(".jpg", ".svg") + "?v=1",
+  ])("preserves the source of %s", (src) => {
+    DEVFLAGS.imgOptimizerHost = "https://img.example.com";
+    expect(maybeMakePlasmicImgSrc(picture(src))).toMatchObject({ src });
+  });
+
+  it("uses the configured site-assets base for uploads", () => {
+    DEVFLAGS.imgOptimizerHost = "https://img.example.com";
+    DEVFLAGS.siteAssetsBaseUrl = "https://assets.example.com/bucket/";
+    const src = DEVFLAGS.siteAssetsBaseUrl + key;
+    expect(maybeMakePlasmicImgSrc(picture(src))).toMatchObject({
+      src: `https://img.example.com/i/${key}`,
+    });
+    const external = `https://assets.example.com/other/${key}`;
+    expect(maybeMakePlasmicImgSrc(picture(external))).toMatchObject({
+      src: external,
+    });
+  });
+
+  it.each([
+    [3840, "q=75&f=webp"],
+    [3841, "w=3840&q=75&f=webp"],
+  ] as const)("caps CMS uploads wider than 3840 (%i)", (width, params) => {
+    DEVFLAGS.imgOptimizerHost = "https://img.example.com";
+    expect(getCmsImageUrl({ dataUri, width, height: 600 })).toBe(
+      `https://img.example.com/i/${key}?${params}`,
+    );
+  });
+
   it("keeps the original url and size when there is no image optimizer host", () => {
     DEVFLAGS.imgOptimizerHost = "";
-    expect(maybeMakePlasmicImgSrc(picture)).toMatchObject({
-      src: "https://site-assets.plasmic.app/bicycle.jpg",
+    expect(maybeMakePlasmicImgSrc(picture())).toMatchObject({
+      src: dataUri,
       fullWidth: 800,
       fullHeight: 600,
     });

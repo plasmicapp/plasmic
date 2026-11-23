@@ -29,13 +29,11 @@ if (window && "matchMedia" in window) {
 
 import "tinymce/skins/ui/tinymce-5/skin.min.css";
 
-// @ts-ignore
-import contentCss from "!!raw-loader!../../gen/static/styles/tinymce-content-css.txt";
-// @ts-ignore
 import prismCss from "!!raw-loader!../../gen/static/styles/prismjs-css.txt";
+import contentCss from "!!raw-loader!../../gen/static/styles/tinymce-content-css.txt";
 
-import { getCmsImageUrl } from "@/wab/client/components/sidebar/image-asset-controls";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { getCmsImageUrl } from "@/wab/shared/codegen/react-p/image";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
 import * as React from "react";
 

@@ -70,6 +70,11 @@ declare module "*.module.sass" {
   export default classes;
 }
 
+declare module "!!raw-loader!*.txt" {
+  const text: string;
+  export default text;
+}
+
 // Side-effect CSS/SCSS/SASS/LESS imports (TS2882 in TypeScript 6)
 declare module "*.css" {}
 declare module "*.scss" {}

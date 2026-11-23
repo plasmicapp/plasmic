@@ -421,6 +421,8 @@ const DEFAULT_DEVFLAGS = {
     },
   ]),
   usePlasmicTranslation: false,
+  siteAssetsBaseUrl:
+    process.env.SITE_ASSETS_BASE_URL || "https://site-assets.plasmic.app/",
   imgOptimizerHost: process.env.IMAGE_OPTIMIZER_HOST || "",
   revisionNum: undefined,
   secretApiTokenTeams: ["teamId"],

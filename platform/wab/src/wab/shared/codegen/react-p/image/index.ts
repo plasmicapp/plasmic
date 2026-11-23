@@ -1,12 +1,12 @@
+import type { ImageUploadResponse } from "@/wab/shared/ApiSchema";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import { ImageExportOpts } from "@/wab/shared/codegen/types";
 import { jsLiteral, toVarName } from "@/wab/shared/codegen/util";
-import { ensure, maybe } from "@/wab/shared/common";
+import { maybe } from "@/wab/shared/common";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ImageAsset } from "@/wab/shared/model/classes";
-import { last } from "lodash";
 
 export function makeImportedPictureRef(asset: ImageAsset) {
   return `${toVarName(`${asset.name}-${asset.uuid}`)}`;
@@ -14,6 +14,42 @@ export function makeImportedPictureRef(asset: ImageAsset) {
 
 export function makePictureRefToken(asset: ImageAsset) {
   return `Plasmic_Image_${asset.uuid}__Ref`;
+}
+
+function getOptimizedImageUrl(src: string) {
+  const host = DEVFLAGS.imgOptimizerHost.replace(/\/+$/, "");
+  if (!host) {
+    return undefined;
+  }
+  let key = src;
+  if (/^https?:\/\//i.test(src)) {
+    try {
+      const url = new URL(src);
+      if (
+        url.hostname !== "site-assets.plasmic.app" &&
+        url.hostname !== "img.plasmic.app" &&
+        !url.href.startsWith(DEVFLAGS.siteAssetsBaseUrl.replace(/\/?$/, "/")) &&
+        url.origin !== new URL(host).origin
+      ) {
+        return undefined;
+      }
+      key = url.pathname.split("/").pop() ?? "";
+    } catch {
+      return undefined;
+    }
+  }
+  return /^[a-f0-9]{32}\.[a-z0-9]{1,16}$/i.test(key) && !/\.svg$/i.test(key)
+    ? `${host}/i/${key}`
+    : undefined;
+}
+
+export function getCmsImageUrl(uploaded: ImageUploadResponse) {
+  const url = getOptimizedImageUrl(uploaded.dataUri);
+  if (!url || uploaded.mimeType?.includes("svg")) {
+    return uploaded.dataUri;
+  }
+  const width = uploaded.width > 3840 ? "w=3840&" : "";
+  return `${url}?${width}q=75&f=webp`;
 }
 
 export function maybeMakePlasmicImgSrc(asset: ImageAsset) {
@@ -32,18 +68,8 @@ export function maybeMakePlasmicImgSrc(asset: ImageAsset) {
     return asset.dataUri;
   }
 
-  const imgId =
-    asset.dataUri.startsWith("http") &&
-    ensure(
-      last(asset.dataUri.split("/")),
-      "A URL starting with 'http' should contain slashes",
-    );
-
   return {
-    src:
-      DEVFLAGS.imgOptimizerHost && imgId && !imgId.endsWith(".svg")
-        ? `${DEVFLAGS.imgOptimizerHost}/img-optimizer/v1/img/${imgId}`
-        : asset.dataUri,
+    src: getOptimizedImageUrl(asset.dataUri) ?? asset.dataUri,
     fullWidth: asset.width,
     fullHeight: asset.height,
     aspectRatio: maybe(

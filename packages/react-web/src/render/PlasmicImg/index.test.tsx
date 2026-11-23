@@ -4,40 +4,67 @@ import { describe, expect, it } from "vitest";
 import { PlasmicImg } from "./index";
 
 describe("PlasmicImg", () => {
-  const src = {
-    src: "https://img.plasmic.app/img-optimizer/v1/img/example.jpg",
-    fullWidth: 1200,
-    fullHeight: 800,
-  };
+  const key = "07a7153536a89fef14e0075c7632d6b3.jpg";
+  const host = "https://img.plasmic.app";
 
-  it("passes quality through to optimized image URLs", () => {
-    const markup = renderToStaticMarkup(
-      <PlasmicImg src={src} loader="plasmic" quality={42} />
+  function renderImage(
+    src: string,
+    props: Partial<React.ComponentProps<typeof PlasmicImg>> = {},
+  ) {
+    return renderToStaticMarkup(
+      <PlasmicImg
+        src={{ src, fullWidth: 1200, fullHeight: 800 }}
+        loader="plasmic"
+        {...props}
+      />,
     );
-    expect(markup).toEqual(
-      `<div class="__wab_img-wrapper" style="width:auto;height:auto"><img alt="" aria-hidden="true" class="__wab_img-spacer-svg" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI4MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIi8+"/><picture class="__wab_picture"><source type="image/webp" srcSet="https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;w=640&amp;q=42&amp;f=webp 640w, https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;w=750&amp;q=42&amp;f=webp 750w, https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;w=828&amp;q=42&amp;f=webp 828w, https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;q=42&amp;f=webp 1080w"/><img loading="lazy" class="__wab_img" decoding="async" src="https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;q=42" srcSet="https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;w=640&amp;q=42 640w, https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;w=750&amp;q=42 750w, https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;w=828&amp;q=42 828w, https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;q=42 1080w" sizes="100vw" style="width:0;height:0"/></picture></div>`
-    );
-  });
+  }
 
-  it("uses an explicit format for optimized image URLs", () => {
-    const markup = renderToStaticMarkup(
-      <PlasmicImg src={src} loader="plasmic" format="png" />
-    );
-    expect(markup).toEqual(
-      `<div class="__wab_img-wrapper" style="width:auto;height:auto"><img alt="" aria-hidden="true" class="__wab_img-spacer-svg" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI4MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIi8+"/><picture class="__wab_picture"><img loading="lazy" class="__wab_img" decoding="async" src="https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;q=75&amp;f=png" srcSet="https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;w=640&amp;q=75&amp;f=png 640w, https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;w=750&amp;q=75&amp;f=png 750w, https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;w=828&amp;q=75&amp;f=png 828w, https://img.plasmic.app/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;q=75&amp;f=png 1080w" sizes="100vw" style="width:0;height:0"/></picture></div>`
-    );
-  });
-
-  it("uses the image optimizer at a loader base URL", () => {
-    const markup = renderToStaticMarkup(
-      <PlasmicImg src={src} loader="https://img.example.com" format="png" />
-    );
+  it.each([
+    key,
+    `http://site-assets.plasmic.app/${key}`,
+    `${host}/img-optimizer/v1/img/${key}`,
+    `${host}/i/${key}?w=320`,
+  ])("emits canonical responsive URLs for %s", (src) => {
+    const markup = renderImage(src, { quality: 42 });
+    expect(markup).toContain(`src="${host}/i/${key}?q=42"`);
     expect(markup).toContain(
-      `src="https://img.example.com/img-optimizer/v1/img?src=https%3A%2F%2Fimg.plasmic.app%2Fimg-optimizer%2Fv1%2Fimg%2Fexample.jpg&amp;q=75&amp;f=png"`
+      `srcSet="${host}/i/${key}?w=640&amp;q=42&amp;f=webp 640w`,
     );
-    expect(markup).not.toContain(
-      `https://img.plasmic.app/img-optimizer/v1/img?`
-    );
+  });
+
+  it.each([
+    `https://external.example/${key}`,
+    `https://img.plasmic.app.example/i/${key}`,
+    `ftp://img.plasmic.app/i/${key}`,
+    `${host}/i/example.jpg`,
+    `${host}/i/${key.replace(".jpg", ".SVG")}?v=1`,
+    key.replace(".jpg", ".svg"),
+    key + "/child",
+    "/images/photo.jpg",
+  ])("renders %s directly", (src) => {
+    const markup = renderImage(src);
+    expect(markup).toContain(`src="${src}"`);
+    expect(markup).not.toContain("srcSet=");
+  });
+
+  it("uses the configured optimizer and explicit format", () => {
+    const loader = "https://img.example.com";
+    const markup = renderImage(`${loader}/i/${key}`, { loader, format: "png" });
+    expect(markup).toContain(`src="${loader}/i/${key}?q=75&amp;f=png"`);
+    expect(markup).not.toContain("<source");
+  });
+
+  it("lets a custom loader resize external images", () => {
+    const src = "https://external.example/photo.jpg";
+    const markup = renderImage(src, {
+      loader: {
+        supportsUrl: (url) => url === src,
+        transformUrl: ({ src: url, width }) => `${url}?w=${width ?? "full"}`,
+      },
+    });
+    expect(markup).toContain(`src="${src}?w=full"`);
+    expect(markup).toContain(`srcSet="${src}?w=640 640w`);
   });
 
   it("sizes the spacer of an SVG from its exact aspect ratio", () => {
@@ -49,11 +76,11 @@ describe("PlasmicImg", () => {
           fullHeight: 150,
           aspectRatio: 1120 / 682,
         }}
-      />
+      />,
     );
     const spacerSrc = markup.match(/data:image\/svg\+xml;base64,([^"]+)/)![1];
     expect(Buffer.from(spacerSrc, "base64").toString()).toContain(
-      `width="10000" height="${10000 / (1120 / 682)}"`
+      `width="10000" height="${10000 / (1120 / 682)}"`,
     );
   });
 });
