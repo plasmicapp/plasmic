@@ -1,23 +1,21 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import {
   PromptTeamUpgradeOpts,
-  canIEditTeam,
   canUpgradeTeam,
-  maybeShowPaywall,
   promptTeamUpgrade,
 } from "@/wab/client/components/modals/PricingModal";
+import { ProjectDestinationOrg } from "@/wab/client/components/modals/ProjectDestinationForm";
 import {
-  NEW_WORKSPACE_NAME,
-  ProjectDestination,
-  ProjectDestinationOrg,
-} from "@/wab/client/components/modals/ProjectDestinationForm";
-import { promptProjectDestination } from "@/wab/client/components/modals/ProjectDestinationModal";
+  getMoveDestinationOrgs,
+  moveProjectToDestination,
+  promptProjectDestination,
+} from "@/wab/client/components/modals/ProjectDestinationModal";
 import { ApiProject, ApiTeam } from "@/wab/shared/ApiSchema";
 import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
 import { checkIsTeamOnPaidTier } from "@/wab/shared/billing/billing-util";
 import { assertNever } from "@/wab/shared/common";
-import { naturalSortByName } from "@/wab/shared/sort";
-import sortBy from "lodash/sortBy";
+
+const NEW_WORKSPACE_NAME = "AI Projects";
 
 /**
  * Possible actions user can take when a project needs a paid plan.
@@ -46,30 +44,14 @@ export function getProjectUpsellAction(
       : { type: "askAdmin", team: projectTeam };
   }
 
-  // Paid organizations first, each part sorted by name.
-  const orgs = sortBy(
-    naturalSortByName(
-      appCtx.teams.filter(
-        (t) =>
-          !t.personalTeamOwnerId &&
-          canIEditTeam(appCtx, t) &&
-          (checkIsTeamOnPaidTier(t) || canUpgradeTeam(appCtx, t)),
-      ),
-    ),
-    (t) => !checkIsTeamOnPaidTier(t),
+  // A white-label organization takes the project without a plan, but Plasmic
+  // AI still treats it as free, so moving there wouldn't unlock AI.
+  const orgs = getMoveDestinationOrgs(appCtx, null).filter(
+    (o) => !o.org.whiteLabelName || checkIsTeamOnPaidTier(o.org),
   );
 
   return orgs.length > 0
-    ? {
-        type: "move",
-        destinationOrgs: orgs.map((org) => ({
-          org,
-          needsUpgrade: !checkIsTeamOnPaidTier(org),
-          workspaces: naturalSortByName(
-            appCtx.workspaces.filter((w) => w.team.id === org.id),
-          ),
-        })),
-      }
+    ? { type: "move", destinationOrgs: orgs }
     : { type: "createOrg" };
 }
 
@@ -96,9 +78,12 @@ export async function runProjectUpsellAction(
       const destination = await promptProjectDestination(
         appCtx,
         action.destinationOrgs,
+        { defaultNewWorkspaceName: NEW_WORKSPACE_NAME },
       );
       return destination
-        ? moveProjectToPaidOrg(appCtx, project, destination, opts)
+        ? moveProjectToDestination(appCtx, project, destination, {
+            upgrade: opts,
+          })
         : false;
     }
     case "createOrg": {
@@ -107,45 +92,14 @@ export async function runProjectUpsellAction(
       );
       await appCtx.reloadAppCtx();
       // A new organization has no workspaces yet.
-      return moveProjectToPaidOrg(
+      return moveProjectToDestination(
         appCtx,
         project,
         { type: "newWorkspace", org: team, name: NEW_WORKSPACE_NAME },
-        opts,
+        { upgrade: opts },
       );
     }
     default:
       return assertNever(action);
   }
-}
-
-async function moveProjectToPaidOrg(
-  appCtx: AppCtx,
-  project: Pick<ApiProject, "id">,
-  destination: ProjectDestination,
-  opts: PromptTeamUpgradeOpts,
-) {
-  if (
-    !checkIsTeamOnPaidTier(destination.org) &&
-    !(await promptTeamUpgrade(appCtx, destination.org, opts))
-  ) {
-    return false;
-  }
-  const workspaceId =
-    destination.type === "workspace"
-      ? destination.workspace.id
-      : (
-          await maybeShowPaywall(appCtx, () =>
-            appCtx.api.createWorkspace({
-              teamId: destination.org.id,
-              name: destination.name,
-            }),
-          )
-        ).workspace.id;
-
-  await maybeShowPaywall(appCtx, () =>
-    appCtx.api.setSiteInfo(project.id, { workspaceId }),
-  );
-  await appCtx.reloadAppCtx();
-  return true;
 }

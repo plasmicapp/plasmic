@@ -15,6 +15,7 @@ import * as React from "react";
 export interface ProjectDestinationOrg {
   org: ApiTeam;
   needsUpgrade: boolean;
+  canCreateWorkspace: boolean;
   workspaces: ApiWorkspace[];
 }
 
@@ -22,10 +23,9 @@ export type ProjectDestination =
   | { type: "workspace"; org: ApiTeam; workspace: ApiWorkspace }
   | { type: "newWorkspace"; org: ApiTeam; name: string };
 
-export const NEW_WORKSPACE_NAME = "AI Projects";
-
 export interface ProjectDestinationFormProps extends DefaultProjectDestinationFormProps {
   orgs: ProjectDestinationOrg[];
+  defaultNewWorkspaceName?: string;
   onSubmit: (destination: ProjectDestination) => void;
   onCancel: () => void;
 }
@@ -34,11 +34,12 @@ export interface ProjectDestinationFormProps extends DefaultProjectDestinationFo
 const NEW_WORKSPACE_VALUE = "new";
 
 function getDefaultWorkspaceValue(destinationOrg: ProjectDestinationOrg) {
-  if (destinationOrg.workspaces.length === 0) {
-    return NEW_WORKSPACE_VALUE;
+  const { workspaces, canCreateWorkspace } = destinationOrg;
+  if (workspaces.length === 1) {
+    return workspaces[0].id;
   }
-  return destinationOrg.workspaces.length === 1
-    ? destinationOrg.workspaces[0].id
+  return workspaces.length === 0 && canCreateWorkspace
+    ? NEW_WORKSPACE_VALUE
     : undefined;
 }
 
@@ -46,15 +47,22 @@ function ProjectDestinationForm_(
   props: ProjectDestinationFormProps,
   ref: HTMLElementRefOf<"div">,
 ) {
-  const { orgs, onSubmit, onCancel, ...rest } = props;
+  const {
+    orgs,
+    defaultNewWorkspaceName = "",
+    onSubmit,
+    onCancel,
+    ...rest
+  } = props;
   const [selected, setSelected] = React.useState(() =>
     ensure(orgs[0], "Expected an organization to move the project to"),
   );
   const [workspaceValue, setWorkspaceValue] = React.useState(() =>
     getDefaultWorkspaceValue(selected),
   );
-  const [newWorkspaceName, setNewWorkspaceName] =
-    React.useState(NEW_WORKSPACE_NAME);
+  const [newWorkspaceName, setNewWorkspaceName] = React.useState(
+    defaultNewWorkspaceName,
+  );
 
   const workspace = selected.workspaces.find((w) => w.id === workspaceValue);
   const isNewWorkspace = workspaceValue === NEW_WORKSPACE_VALUE;
@@ -69,6 +77,7 @@ function ProjectDestinationForm_(
     <PlasmicProjectDestinationForm
       root={{ ref }}
       {...rest}
+      intro={{ children: "Choose where to move this project." }}
       orgSwitcher={{
         props: {
           selectedOrg: selected.org,
@@ -97,12 +106,16 @@ function ProjectDestinationForm_(
                 {w.name}
               </Select.Option>
             )),
-            <Select.Option
-              key={NEW_WORKSPACE_VALUE}
-              value={NEW_WORKSPACE_VALUE}
-            >
-              <CreateNewMenuItemContent entity="workspace" />
-            </Select.Option>,
+            ...(selected.canCreateWorkspace
+              ? [
+                  <Select.Option
+                    key={NEW_WORKSPACE_VALUE}
+                    value={NEW_WORKSPACE_VALUE}
+                  >
+                    <CreateNewMenuItemContent entity="workspace" />
+                  </Select.Option>,
+                ]
+              : []),
           ],
         },
       }}

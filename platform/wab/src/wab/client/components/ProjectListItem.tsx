@@ -2,7 +2,11 @@ import EditableResourceName from "@/wab/client/components/EditableResourceName";
 import { HostConfig } from "@/wab/client/components/HostConfig";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { promptMoveToWorkspace } from "@/wab/client/components/dashboard/dashboard-actions";
-import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
+import {
+  getMoveDestinationOrgs,
+  moveProjectToDestination,
+  promptProjectDestination,
+} from "@/wab/client/components/modals/ProjectDestinationModal";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { Matcher } from "@/wab/client/components/view-common";
 import { ClickStopper } from "@/wab/client/components/widgets";
@@ -227,35 +231,44 @@ function ProjectListItem(props: ProjectListItemProps) {
                 {workspaces && canMove && (
                   <Menu.Item
                     onClick={async () => {
-                      const response = await promptMoveToWorkspace(
+                      const orgs = getMoveDestinationOrgs(
                         appCtx,
                         project.workspaceId,
-                        false,
-                        "Move",
                       );
-                      if (response === undefined) {
+                      if (orgs.length === 0) {
+                        notification.info({
+                          message: "No workspaces available.",
+                        });
                         return;
                       }
-                      await maybeShowPaywall(
+                      const destination = await promptProjectDestination(
                         appCtx,
-                        async () =>
-                          await appCtx.api.setSiteInfo(project.id, {
-                            workspaceId:
-                              response.result === "workspace"
-                                ? response.workspace.id
-                                : null,
-                          }),
+                        orgs,
+                      );
+                      if (!destination) {
+                        return;
+                      }
+                      const moved = await moveProjectToDestination(
+                        appCtx,
+                        project,
+                        destination,
                         {
-                          title: "Upgrade to move this project",
-                          description:
-                            "The destination workspace belongs to a team that does not have enough seats. Increase the number of seats to perform this action.",
+                          upgrade: { title: "Upgrade to move this project" },
+                          paywall: {
+                            title: "Upgrade to move this project",
+                            description:
+                              "The destination workspace belongs to a team that does not have enough seats. Increase the number of seats to perform this action.",
+                          },
                         },
                       );
+                      if (!moved) {
+                        return;
+                      }
                       notification.info({
                         message: `Project moved to ${
-                          response.result === "workspace"
-                            ? response.workspace.name
-                            : PERSONAL_WORKSPACE
+                          destination.type === "workspace"
+                            ? destination.workspace.name
+                            : destination.name
                         }.`,
                       });
                       await onUpdate?.();

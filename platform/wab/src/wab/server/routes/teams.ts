@@ -104,13 +104,14 @@ function mkApiTeam(
       "inviteId",
       "defaultAccessLevel",
       "whiteLabelInfo",
-      "whiteLabelName",
     ]),
     {
       parentTeamId: team.parentTeamId,
       featureTier: team.featureTier || team.parentTeam?.featureTier || null,
       monthlyAiCredits: entitled?.monthlyAiCredits ?? null,
       monthlyCdnGb: entitled?.monthlyCdnGb ?? null,
+      whiteLabelName:
+        team.whiteLabelName || team.parentTeam?.whiteLabelName || null,
       uiConfig: mergeUiConfigs(team.parentTeam?.uiConfig, team.uiConfig),
       onTrial: subscriptionStatus === "trial",
     },

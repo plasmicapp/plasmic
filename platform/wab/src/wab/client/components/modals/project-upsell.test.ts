@@ -39,12 +39,24 @@ function mkAppCtx(
   teams: ApiTeam[],
   access: Record<string, AccessLevel>,
   workspaces: ApiWorkspace[] = [],
+  workspaceAccess: Record<string, AccessLevel> = {},
 ): AppCtx {
-  const perms = Object.entries(access).map(
-    ([teamId, accessLevel]) =>
-      ({ teamId, userId: USER_ID, accessLevel }) as ApiPermission,
-  );
-  return { teams, perms, workspaces, selfInfo: { id: USER_ID } } as AppCtx;
+  const perms = [
+    ...Object.entries(access).map(
+      ([teamId, accessLevel]) =>
+        ({ teamId, userId: USER_ID, accessLevel }) as ApiPermission,
+    ),
+    ...Object.entries(workspaceAccess).map(
+      ([workspaceId, accessLevel]) =>
+        ({ workspaceId, userId: USER_ID, accessLevel }) as ApiPermission,
+    ),
+  ];
+  return Object.assign(Object.create(AppCtx.prototype), {
+    teams,
+    perms,
+    workspaces,
+    selfInfo: { id: USER_ID },
+  });
 }
 
 function mkProject(teamId: TeamId | null, createdById: UserId = USER_ID) {
@@ -142,10 +154,30 @@ describe("getProjectUpsellAction", () => {
     expect(getProjectUpsellAction(appCtx, mkProject(personal.id))).toEqual({
       type: "move",
       destinationOrgs: [
-        { org: paid2, needsUpgrade: false, workspaces: [apps, site2, site10] },
-        { org: paid10, needsUpgrade: false, workspaces: [] },
-        { org: free2, needsUpgrade: true, workspaces: [] },
-        { org: free10, needsUpgrade: true, workspaces: [] },
+        {
+          org: paid2,
+          needsUpgrade: false,
+          canCreateWorkspace: true,
+          workspaces: [apps, site2, site10],
+        },
+        {
+          org: paid10,
+          needsUpgrade: false,
+          canCreateWorkspace: true,
+          workspaces: [],
+        },
+        {
+          org: free2,
+          needsUpgrade: true,
+          canCreateWorkspace: true,
+          workspaces: [],
+        },
+        {
+          org: free10,
+          needsUpgrade: true,
+          canCreateWorkspace: true,
+          workspaces: [],
+        },
       ],
     });
   });
@@ -154,7 +186,59 @@ describe("getProjectUpsellAction", () => {
     const appCtx = mkAppCtx([personal, trialOrg], { "trial-org": "owner" });
     expect(getProjectUpsellAction(appCtx, mkProject(personal.id))).toEqual({
       type: "move",
-      destinationOrgs: [{ org: trialOrg, needsUpgrade: true, workspaces: [] }],
+      destinationOrgs: [
+        {
+          org: trialOrg,
+          needsUpgrade: true,
+          canCreateWorkspace: true,
+          workspaces: [],
+        },
+      ],
+    });
+  });
+
+  it("offers a workspace shared with the user in a paid organization", () => {
+    const shared = mkWorkspace("Shared", paidOrg);
+    const freeShared = mkWorkspace("Shared", freeOrg);
+    const appCtx = mkAppCtx([personal], {}, [shared, freeShared], {
+      [shared.id]: "editor",
+      [freeShared.id]: "editor",
+    });
+    expect(getProjectUpsellAction(appCtx, mkProject(personal.id))).toEqual({
+      type: "move",
+      destinationOrgs: [
+        {
+          org: paidOrg,
+          needsUpgrade: false,
+          canCreateWorkspace: false,
+          workspaces: [shared],
+        },
+      ],
+    });
+  });
+
+  it("leaves out white-label organizations without a plan, where AI stays free", () => {
+    const freeWhiteLabel = mkTeam("free-white-label", {
+      whiteLabelName: "free-partner",
+    });
+    const paidWhiteLabel = mkTeam("paid-white-label", {
+      featureTierId: PAID_TIER,
+      whiteLabelName: "paid-partner",
+    });
+    const appCtx = mkAppCtx([personal, freeWhiteLabel, paidWhiteLabel], {
+      "free-white-label": "owner",
+      "paid-white-label": "owner",
+    });
+    expect(getProjectUpsellAction(appCtx, mkProject(personal.id))).toEqual({
+      type: "move",
+      destinationOrgs: [
+        {
+          org: paidWhiteLabel,
+          needsUpgrade: false,
+          canCreateWorkspace: true,
+          workspaces: [],
+        },
+      ],
     });
   });
 

@@ -69,6 +69,19 @@ describe("mkApiTeam", () => {
     expect(apiTeam.name).toEqual("Child Team");
     expect(apiTeam.featureTier?.name).toEqual("Child Feature Tier");
   });
+  it("inherits parent team's white label name", () => {
+    const team = {
+      name: "Child Team",
+      whiteLabelName: null,
+      parentTeam: {
+        name: "Parent Team",
+        whiteLabelName: "parent-white-label",
+      },
+    } as Team;
+    expect(mkApiTeam(team, "free").whiteLabelName).toEqual(
+      "parent-white-label",
+    );
+  });
   it("merges with parent team's UI config", () => {
     const team = {
       name: "Child Team",
