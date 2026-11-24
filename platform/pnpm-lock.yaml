@@ -399,8 +399,8 @@ importers:
         specifier: ^0.0.181
         version: 0.0.181(react@18.3.1)
       '@plasmicpkgs/radix-ui':
-        specifier: ^0.0.123
-        version: 0.0.123(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.124
+        version: 0.0.124(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-aria':
         specifier: ^0.0.202
         version: 0.0.202(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -869,8 +869,8 @@ importers:
         specifier: ^0.0.181
         version: 0.0.181(react@18.3.1)
       '@plasmicpkgs/radix-ui':
-        specifier: ^0.0.123
-        version: 0.0.123(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.124
+        version: 0.0.124(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@plasmicpkgs/react-aria':
         specifier: ^0.0.202
         version: 0.0.202(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -5210,8 +5210,8 @@ packages:
       '@plasmicapp/query': '>=0.1.0'
       react: '>=16'
 
-  '@plasmicpkgs/radix-ui@0.0.123':
-    resolution: {integrity: sha512-/3fVO+YhqayODoCaIXqNaCIkjz4aEhEalKdZSzPfqh9MaMqpL9lWTnLAKGcgCqZcR0Wv/Xu3cZuBl9usvtlZ6g==}
+  '@plasmicpkgs/radix-ui@0.0.124':
+    resolution: {integrity: sha512-dND7MQ3oBx/TZBEJUUV5KiqV85g4atRuA3XeC8VUzO8GjcExpKHapIJnZEHCVD9kj/FCN1hzWbWQZkiuO2hrGQ==}
     peerDependencies:
       '@plasmicapp/host': '>=1.0.0'
       react: '>=16.8.0'
@@ -20574,7 +20574,7 @@ snapshots:
       dlv: 1.1.3
       react: 18.3.1
 
-  '@plasmicpkgs/radix-ui@0.0.123(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@plasmicpkgs/radix-ui@0.0.124(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@plasmicapp/host': 2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-context-menu': 2.4.1(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
