@@ -1,4 +1,4 @@
-import { CodeComponentMeta } from "@plasmicapp/host";
+import { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import { DialogProps } from "@radix-ui/react-dialog";
 import * as React from "react";
 import { ReactElement, ReactNode, useState } from "react";
@@ -92,7 +92,7 @@ export const Animated = ({
     "fade-in": `--tw-enter-opacity: ${enterOpacity};`,
     "fade-out": `--tw-exit-opacity: ${exitOpacity};`,
     "slide-in-from-top": `--tw-enter-translate-y: ${neg(
-      pct(enterTranslateY)
+      pct(enterTranslateY),
     )};`,
     "slide-out-to-top": `--tw-exit-translate-y: ${neg(pct(exitTranslateY))};`,
     "slide-in-from-right": `--tw-enter-translate-x: ${pct(enterTranslateX)};`,
@@ -100,7 +100,7 @@ export const Animated = ({
     "slide-in-from-bottom": `--tw-enter-translate-y: ${pct(enterTranslateY)};`,
     "slide-out-to-bottom": `--tw-exit-translate-y: ${pct(exitTranslateY)};`,
     "slide-in-from-left": `--tw-enter-translate-x: ${neg(
-      pct(enterTranslateX)
+      pct(enterTranslateX),
     )};`,
     "slide-out-to-left": `--tw-exit-translate-x: ${neg(pct(exitTranslateX))};`,
     "zoom-enter": `--tw-enter-scale: ${enterScale};`,
@@ -134,7 +134,7 @@ export const Animated = ({
 };
 
 export function splitAnimProps<T extends AnimatedProps>(
-  props: T
+  props: T,
 ): [AnimatedProps, Omit<T, keyof AnimatedProps>] {
   const keys = [
     "enterAnimations",
@@ -461,6 +461,13 @@ export const popoverProps = {
     defaultValueHint: 0,
     advanced: true,
   },
+  collisionPadding: {
+    type: "number",
+    defaultValueHint: 0,
+    advanced: true,
+    description:
+      "Minimum distance in pixels to keep from the viewport edges when the content is repositioned to stay in view.",
+  },
   ...animPropTypes({
     defaultEnterAnimations: () => ["fade-in", "zoom-enter"],
     defaultExitAnimations: () => ["fade-out", "zoom-exit"],
@@ -480,7 +487,7 @@ export type PopoverExtraProps = AnimatedProps & {
 
 export function wrapFragmentInDiv(
   node: React.ReactNode,
-  className?: string
+  className?: string,
 ): React.ReactNode {
   if (React.isValidElement(node) && node.type === React.Fragment) {
     const props: { [key: string]: string | undefined | null } = {
