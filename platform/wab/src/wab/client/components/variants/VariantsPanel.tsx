@@ -157,6 +157,12 @@ export const VariantsPanel = observer(
       globalVariantsSectionRef.current?.expand();
     });
 
+    const combinationsSectionRef = React.useRef<SidebarSectionHandle>(null);
+
+    useModelUiActionHandler("Combination", () => {
+      combinationsSectionRef.current?.expand();
+    });
+
     const addVariantsMenu = React.useMemo(
       () =>
         new MenuBuilder()
@@ -737,6 +743,7 @@ export const VariantsPanel = observer(
         </SidebarSection>
 
         <SidebarSection
+          ref={combinationsSectionRef}
           title={
             <LabelWithDetailedTooltip tooltip={<VariantCombosTooltip />}>
               Combinations

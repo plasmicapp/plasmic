@@ -11,12 +11,15 @@ import {
 } from "@/wab/client/components/style-controls/DefinedIndicator";
 import Chip from "@/wab/client/components/widgets/Chip";
 import { PlasmicVariantComboRow } from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicVariantComboRow";
+import { UiActionsWrapper } from "@/wab/client/studio-ctx/ui/studio-ui-actions";
+import { mkComponentScopedUiId } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   VariantCombo,
   isVariantSettingEmpty,
   makeVariantName,
   tryGetVariantSetting,
+  variantComboKey,
 } from "@/wab/shared/Variants";
 import { maybe } from "@/wab/shared/common";
 import { isTplVariantable, summarizeTpl } from "@/wab/shared/core/tpls";
@@ -73,56 +76,70 @@ const VariantComboRow = observer(function VariantComboRow(
     },
   });
 
+  const component = viewCtx.currentComponent();
   return (
-    <PlasmicVariantComboRow
-      labelContainer={combo.map((v) => (
-        <Chip key={v.uuid}>
-          {makeVariantName({ variant: v, site: viewCtx.site })}
-        </Chip>
-      ))}
-      root={{ onClick, ...contextMenuProps }}
-      visibleButton={
-        onActivate
-          ? {
-              onClick: (e) => {
-                e.stopPropagation();
-                onActivate();
-              },
-            }
-          : { render: () => null }
-      }
-      isIndicated={!!indicatedVs}
-      indicator={
-        indicatedVs && tpl
-          ? {
-              popover: () => (
-                <VariantSettingPopoverContent
-                  site={viewCtx.site}
-                  tpl={tpl}
-                  vs={indicatedVs}
-                  viewCtx={viewCtx}
-                />
-              ),
+    <UiActionsWrapper
+      uiId={mkComponentScopedUiId(
+        {
+          typeTag: "Combination",
+          uuid: variantComboKey(combo),
+        },
+        component.uuid,
+      )}
+    >
+      <PlasmicVariantComboRow
+        labelContainer={combo.map((v) => (
+          <Chip key={v.uuid}>
+            {makeVariantName({ variant: v, site: viewCtx.site })}
+          </Chip>
+        ))}
+        root={{ onClick, ...contextMenuProps }}
+        visibleButton={
+          onActivate
+            ? {
+                onClick: (e) => {
+                  e.stopPropagation();
+                  onActivate();
+                },
+              }
+            : { render: () => null }
+        }
+        isIndicated={!!indicatedVs}
+        indicator={
+          indicatedVs && tpl
+            ? {
+                popover: () => (
+                  <VariantSettingPopoverContent
+                    site={viewCtx.site}
+                    tpl={tpl}
+                    vs={indicatedVs}
+                    viewCtx={viewCtx}
+                  />
+                ),
 
-              popoverTitle: () => (
-                <VariantSettingPopoverTitle vs={indicatedVs} viewCtx={viewCtx}>
-                  {`Settings for element ${summarizeTpl(
-                    tpl,
-                    isTplVariantable(tpl)
-                      ? getEffectiveVariantSetting(
-                          tpl,
-                          indicatedVs?.variants,
-                        ).rsh()
-                      : undefined,
-                  )}`}
-                </VariantSettingPopoverTitle>
-              ),
+                popoverTitle: () => (
+                  <VariantSettingPopoverTitle
+                    vs={indicatedVs}
+                    viewCtx={viewCtx}
+                  >
+                    {`Settings for element ${summarizeTpl(
+                      tpl,
+                      isTplVariantable(tpl)
+                        ? getEffectiveVariantSetting(
+                            tpl,
+                            indicatedVs?.variants,
+                          ).rsh()
+                        : undefined,
+                    )}`}
+                  </VariantSettingPopoverTitle>
+                ),
 
-              placement: "left",
-            }
-          : undefined
-      }
-    />
+                placement: "left",
+              }
+            : undefined
+        }
+      />
+    </UiActionsWrapper>
   );
 });
 

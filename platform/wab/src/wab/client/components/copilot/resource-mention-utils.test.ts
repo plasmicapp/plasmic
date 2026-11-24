@@ -19,13 +19,16 @@ import {
 } from "@/wab/client/studio-ctx/ui/studio-ui-resources";
 import { mkDataToken } from "@/wab/commons/DataToken";
 import { mkStyleToken } from "@/wab/commons/StyleToken";
+import { ensureCustomFrameForActivatedVariants } from "@/wab/shared/Arenas";
 import { FREE_CONTAINER_LOWER } from "@/wab/shared/Labels";
 import { TplMgr, VariantOptionsType } from "@/wab/shared/TplMgr";
 import {
   VariantGroupType,
+  ensureVariantSetting,
   getBaseVariant,
   mkGlobalVariantGroup,
   mkVariant,
+  variantUuidsKey,
 } from "@/wab/shared/Variants";
 import { arrayWithout } from "@/wab/shared/collections";
 import { assert, ensure, mkShortId } from "@/wab/shared/common";
@@ -37,7 +40,11 @@ import {
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { mkImageAsset } from "@/wab/shared/core/image-assets";
 import { mkParam, mkParamsForState } from "@/wab/shared/core/lang";
-import { createSite, writeable } from "@/wab/shared/core/sites";
+import {
+  createSite,
+  getComponentArena,
+  writeable,
+} from "@/wab/shared/core/sites";
 import { mkImplicitState, mkState } from "@/wab/shared/core/states";
 import { mkRuleSet } from "@/wab/shared/core/styles";
 import { deepTrackComponents, mkSlot, mkTplTagX } from "@/wab/shared/core/tpls";
@@ -709,8 +716,7 @@ describe("resolveResource: the resources a component owns", () => {
     expect(scoped("Tpl", fx.slot.uuid)).toBe(fx.slot);
   });
 
-  it("resolves an element state and an interaction variant", () => {
-    expect(scoped("Variant", fx.elementState.uuid)).toBe(fx.elementState);
+  it("resolves an interaction variant", () => {
     expect(scoped("Variant", fx.interactionVariant.uuid)).toBe(
       fx.interactionVariant,
     );
@@ -759,9 +765,8 @@ describe("resolveResourceLabel", () => {
     );
   });
 
-  it("names a style variant by its selectors, an element state by its element too", () => {
+  it("names a style variant by its selectors", () => {
     expect(scoped("Variant", fx.interactionVariant.uuid)).toBe("Pressed");
-    expect(scoped("Variant", fx.elementState.uuid)).toBe("MyElement: Hover");
   });
 
   it("has no label left once the resource is gone", () => {
@@ -1032,7 +1037,6 @@ describe("mkMentionableResources", () => {
       componentVariantGroup,
       componentVariant,
       standaloneGroup,
-      elementState,
       interactionVariant,
     } = fixture;
     const componentUuid = component.uuid;
@@ -1105,14 +1109,6 @@ describe("mkMentionableResources", () => {
         componentUuid,
         name: "Compact",
       },
-      // An element state is qualified by the element it is on.
-      {
-        tag: "Variant",
-        uuid: elementState.uuid,
-        componentUuid,
-        name: "Hover",
-        detail: "MyElement",
-      },
       {
         tag: "Variant",
         uuid: componentVariant.uuid,
@@ -1144,7 +1140,7 @@ describe("mkMentionableResources", () => {
         { typeTag: r.tag, uuid: r.uuid },
         r.componentUuid,
       );
-      // A chip joins an element state's element in; the row has it as `detail`.
+      // A chip joins an implicit state's element in; the row has it as `detail`.
       const chip = resolveResourceLabel(site, uiId);
       expect(chip === r.name || chip === `${r.detail}: ${r.name}`).toBe(true);
     }
@@ -1156,6 +1152,119 @@ describe("mkMentionableResources", () => {
     expect(
       searchable.some((r) => r.uuid === fixture.componentVariant.uuid),
     ).toBe(false);
+  });
+});
+
+describe("Combination mentions", () => {
+  const fx = mkTestSite();
+  const { site, component, componentVariant: large, tpl, elementState } = fx;
+  const dark = fx.variant;
+  const rounded = runInAction(() => {
+    const tplMgr = new TplMgr({ site });
+    const group = tplMgr.createVariantGroup({ component, name: "Shape" });
+    const v = tplMgr.createVariant(component, group, "Rounded");
+    for (const combo of [
+      [large, v],
+      [large, dark],
+      [large, elementState],
+    ]) {
+      ensureVariantSetting(tpl, combo).rs = mkRuleSet({
+        values: { color: "red" },
+      });
+    }
+    return v;
+  });
+  const uiId = (...uuids: string[]) =>
+    mkComponentScopedUiId(
+      { typeTag: "Combination", uuid: variantUuidsKey(uuids) },
+      component.uuid,
+    );
+
+  it("resolves a combination mention in either uuid order, labelled as Studio shows it", () => {
+    for (const key of [
+      `${large.uuid}+${rounded.uuid}`,
+      `${rounded.uuid}+${large.uuid}`,
+    ]) {
+      const parsed = parseMention(`Combination:${component.uuid}/${key}`);
+      assert(parsed && parsed.type !== "user", "a model mention");
+      const id = mkModelUiId(parsed);
+      expect(resolveResource(site, id)?.resource).toEqual([large, rounded]);
+      expect(resolveResourceLabel(site, id)).toBe("Large + Rounded");
+    }
+  });
+
+  it("resolves a combination with a global variant", () => {
+    expect(resolveResourceLabel(site, uiId(large.uuid, dark.uuid))).toBe(
+      "Large + Dark",
+    );
+  });
+
+  it("does not resolve a combination with an element state", () => {
+    expect(
+      resolveResource(site, uiId(large.uuid, elementState.uuid)),
+    ).toBeUndefined();
+  });
+
+  it("does not resolve a combination with neither variant settings nor a frame", () => {
+    expect(
+      resolveResource(site, uiId(rounded.uuid, dark.uuid)),
+    ).toBeUndefined();
+  });
+
+  it("resolves and lists a combination that has a frame but no variant settings", () => {
+    const frameSite = createSite();
+    const { card, l, r } = runInAction(() => {
+      const tplMgr = new TplMgr({ site: frameSite });
+      const comp = tplMgr.addComponent({
+        name: "Card",
+        type: ComponentType.Plain,
+      });
+      const size = tplMgr.createVariantGroup({ component: comp, name: "Size" });
+      const shape = tplMgr.createVariantGroup({
+        component: comp,
+        name: "Shape",
+      });
+      const largeV = tplMgr.createVariant(comp, size, "Large");
+      const roundedV = tplMgr.createVariant(comp, shape, "Rounded");
+      ensureCustomFrameForActivatedVariants(
+        frameSite,
+        ensure(getComponentArena(frameSite, comp), "an arena"),
+        new Set([largeV, roundedV]),
+      );
+      return { card: comp, l: largeV, r: roundedV };
+    });
+    const key = variantUuidsKey([l.uuid, r.uuid]);
+
+    expect(
+      resolveResourceLabel(
+        frameSite,
+        mkComponentScopedUiId({ typeTag: "Combination", uuid: key }, card.uuid),
+      ),
+    ).toBe("Large + Rounded");
+    expect(
+      mkMentionableResources({
+        site: frameSite,
+        focusedComponent: card,
+        selectedTpls: [],
+        getDepName: (dep) => dep.name,
+      }).searchable.filter((res) => res.tag === "Combination"),
+    ).toEqual([
+      expect.objectContaining({ uuid: key, name: "Large + Rounded" }),
+    ]);
+  });
+
+  it("lists each combination once, with a stable key", () => {
+    const rows = mkResources(fx, component).searchable.filter(
+      (r) => r.tag === "Combination",
+    );
+    expect(rows.map((r) => [r.name, r.uuid])).toEqual([
+      ["Large + Dark", variantUuidsKey([large.uuid, dark.uuid])],
+      ["Large + Rounded", variantUuidsKey([large.uuid, rounded.uuid])],
+    ]);
+    expect(parseMention(mkResourceMentionRaw(rows[0]))).toMatchObject({
+      tag: "Combination",
+      uuid: variantUuidsKey([large.uuid, dark.uuid]),
+    });
   });
 });
 

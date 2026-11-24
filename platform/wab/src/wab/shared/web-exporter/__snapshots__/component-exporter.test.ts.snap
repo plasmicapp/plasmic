@@ -181,6 +181,49 @@ exports[`Component Serialization > serializes all components 1`] = `
           </variant>
         </ComponentVariant>
       </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="hovered" uuid="5JN6ixNeU3yA"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="pressed" uuid="pJxtwditQBi_"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="focusVisible" uuid="CChoueEvWSHR"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="disabled" uuid="1idxV7_peJy0"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="hovered" displayName="Hovered"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="pressed" displayName="Pressed"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focused" displayName="Focused"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focusVisible" displayName="Focus Visible"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="disabled" displayName="Disabled"></RootCodeComponentVariant>
+      </ITEM>
     </ARRAY>
   </variants>
   <states>
@@ -233,14 +276,7 @@ exports[`Component Serialization > serializes all components 1`] = `
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="hovered" uuid="5JN6ixNeU3yA"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="5JN6ixNeU3yA">
           <elements>
             <ARRAY>
               <ITEM>
@@ -253,14 +289,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="pressed" uuid="pJxtwditQBi_"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="pJxtwditQBi_">
           <elements>
             <ARRAY>
               <ITEM>
@@ -273,14 +302,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="focusVisible" uuid="CChoueEvWSHR"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="CChoueEvWSHR">
           <elements>
             <ARRAY>
               <ITEM>
@@ -293,14 +315,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="disabled" uuid="1idxV7_peJy0"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="1idxV7_peJy0">
           <elements>
             <ARRAY>
               <ITEM>
@@ -318,14 +333,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="neutral" uuid="sy5AokJJ7g7H"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="sy5AokJJ7g7H">
           <elements>
             <ARRAY>
               <ITEM>
@@ -363,14 +371,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="muted" uuid="gdLWnA57ufpt"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="gdLWnA57ufpt">
           <elements>
             <ARRAY>
               <ITEM>
@@ -408,14 +409,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="success" uuid="4EM17LBKD7cA"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="4EM17LBKD7cA">
           <elements>
             <ARRAY>
               <ITEM>
@@ -453,14 +447,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="warning" uuid="rS75iYmeFNPU"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="rS75iYmeFNPU">
           <elements>
             <ARRAY>
               <ITEM>
@@ -498,14 +485,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="errorDestructive" uuid="UZpDGjtFbbo-"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="UZpDGjtFbbo-">
           <elements>
             <ARRAY>
               <ITEM>
@@ -543,14 +523,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="soft" uuid="NzLhyUcNJ56l"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="NzLhyUcNJ56l">
           <elements>
             <ARRAY>
               <ITEM>
@@ -583,14 +556,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="bordered" uuid="CFlf6CAr5PRq"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="CFlf6CAr5PRq">
           <elements>
             <ARRAY>
               <ITEM>
@@ -624,17 +590,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="bordered" uuid="CFlf6CAr5PRq"></Variant>
-              </ITEM>
-              <ITEM>
-                <Variant name="hovered" uuid="5JN6ixNeU3yA"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="5JN6ixNeU3yA+CFlf6CAr5PRq">
           <elements>
             <ARRAY>
               <ITEM>
@@ -652,17 +608,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="bordered" uuid="CFlf6CAr5PRq"></Variant>
-              </ITEM>
-              <ITEM>
-                <Variant name="pressed" uuid="pJxtwditQBi_"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="CFlf6CAr5PRq+pJxtwditQBi_">
           <elements>
             <ARRAY>
               <ITEM>
@@ -675,14 +621,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="extraSmall" uuid="RDlJE6wlLaV0"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="RDlJE6wlLaV0">
           <elements>
             <ARRAY>
               <ITEM>
@@ -710,14 +649,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="small" uuid="1Wus14yXOz6z"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="1Wus14yXOz6z">
           <elements>
             <ARRAY>
               <ITEM>
@@ -745,14 +677,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="large" uuid="f0h7JomxhfMB"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="f0h7JomxhfMB">
           <elements>
             <ARRAY>
               <ITEM>
@@ -780,14 +705,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="extraLarge" uuid="IL042y6ZmTqU"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="IL042y6ZmTqU">
           <elements>
             <ARRAY>
               <ITEM>
@@ -815,14 +733,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="iconStart" uuid="sHwmv6VTmYIE"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="sHwmv6VTmYIE">
           <elements>
             <ARRAY>
               <ITEM>
@@ -840,14 +751,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="iconEnd" uuid="WG_MUEe-AF5Z"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="WG_MUEe-AF5Z">
           <elements>
             <ARRAY>
               <ITEM>
@@ -865,14 +769,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="roundedFull" uuid="rnbD-4X93Vp0"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="rnbD-4X93Vp0">
           <elements>
             <ARRAY>
               <ITEM>
@@ -905,14 +802,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="top" uuid="LAvN7TnRtX1E"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="LAvN7TnRtX1E">
           <elements>
             <ARRAY>
               <ITEM>
@@ -930,14 +820,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="right" uuid="F877AcVY27WU"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="F877AcVY27WU">
           <elements>
             <ARRAY>
               <ITEM>
@@ -955,14 +838,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="bottom" uuid="JG2Gsxo917WB"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="JG2Gsxo917WB">
           <elements>
             <ARRAY>
               <ITEM>
@@ -980,14 +856,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="left" uuid="ZDz-CWXMxtWT"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="ZDz-CWXMxtWT">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1005,17 +874,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="neutral" uuid="sy5AokJJ7g7H"></Variant>
-              </ITEM>
-              <ITEM>
-                <Variant name="soft" uuid="NzLhyUcNJ56l"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="NzLhyUcNJ56l+sy5AokJJ7g7H">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1038,17 +897,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="muted" uuid="gdLWnA57ufpt"></Variant>
-              </ITEM>
-              <ITEM>
-                <Variant name="soft" uuid="NzLhyUcNJ56l"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="NzLhyUcNJ56l+gdLWnA57ufpt">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1071,17 +920,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="neutral" uuid="sy5AokJJ7g7H"></Variant>
-              </ITEM>
-              <ITEM>
-                <Variant name="bordered" uuid="CFlf6CAr5PRq"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="CFlf6CAr5PRq+sy5AokJJ7g7H">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1104,17 +943,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="success" uuid="4EM17LBKD7cA"></Variant>
-              </ITEM>
-              <ITEM>
-                <Variant name="soft" uuid="NzLhyUcNJ56l"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="4EM17LBKD7cA+NzLhyUcNJ56l">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1137,17 +966,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="muted" uuid="gdLWnA57ufpt"></Variant>
-              </ITEM>
-              <ITEM>
-                <Variant name="bordered" uuid="CFlf6CAr5PRq"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="CFlf6CAr5PRq+gdLWnA57ufpt">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1170,17 +989,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="warning" uuid="rS75iYmeFNPU"></Variant>
-              </ITEM>
-              <ITEM>
-                <Variant name="soft" uuid="NzLhyUcNJ56l"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="NzLhyUcNJ56l+rS75iYmeFNPU">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1203,17 +1012,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="success" uuid="4EM17LBKD7cA"></Variant>
-              </ITEM>
-              <ITEM>
-                <Variant name="bordered" uuid="CFlf6CAr5PRq"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="4EM17LBKD7cA+CFlf6CAr5PRq">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1236,17 +1035,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="errorDestructive" uuid="UZpDGjtFbbo-"></Variant>
-              </ITEM>
-              <ITEM>
-                <Variant name="soft" uuid="NzLhyUcNJ56l"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="NzLhyUcNJ56l+UZpDGjtFbbo-">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1269,17 +1058,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="warning" uuid="rS75iYmeFNPU"></Variant>
-              </ITEM>
-              <ITEM>
-                <Variant name="bordered" uuid="CFlf6CAr5PRq"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="CFlf6CAr5PRq+rS75iYmeFNPU">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1302,17 +1081,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="errorDestructive" uuid="UZpDGjtFbbo-"></Variant>
-              </ITEM>
-              <ITEM>
-                <Variant name="bordered" uuid="CFlf6CAr5PRq"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="CFlf6CAr5PRq+UZpDGjtFbbo-">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1358,7 +1127,67 @@ exports[`Component Serialization > serializes all components 1`] = `
     <ARRAY></ARRAY>
   </variantGroups>
   <variants>
-    <ARRAY></ARRAY>
+    <ARRAY>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="focusVisible" uuid="1RZmK0fG6PyF"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="disabled" uuid="StmI0fZofs2K"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="indeterminate" uuid="lsR7D1j4l_4D"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="selected" uuid="X0NFdWUQsWDK"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="readonly" uuid="ksI6A44s4Rdx"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="hovered" displayName="Hovered"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="pressed" displayName="Pressed"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focused" displayName="Focused"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focusVisible" displayName="Focus Visible"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="indeterminate" displayName="Indeterminate"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="disabled" displayName="Disabled"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="selected" displayName="Selected"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="readonly" displayName="Read Only"></RootCodeComponentVariant>
+      </ITEM>
+    </ARRAY>
   </variants>
   <states>
     <ARRAY>
@@ -1381,14 +1210,7 @@ exports[`Component Serialization > serializes all components 1`] = `
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="focusVisible" uuid="1RZmK0fG6PyF"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="1RZmK0fG6PyF">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1401,14 +1223,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="indeterminate" uuid="lsR7D1j4l_4D"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="lsR7D1j4l_4D">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1426,14 +1241,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="disabled" uuid="StmI0fZofs2K"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="StmI0fZofs2K">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1446,14 +1254,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="readonly" uuid="ksI6A44s4Rdx"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="ksI6A44s4Rdx">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1466,17 +1267,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="selected" uuid="X0NFdWUQsWDK"></Variant>
-              </ITEM>
-              <ITEM>
-                <Variant name="indeterminate" uuid="lsR7D1j4l_4D"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="X0NFdWUQsWDK+lsR7D1j4l_4D">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1489,14 +1280,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="selected" uuid="X0NFdWUQsWDK"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="X0NFdWUQsWDK">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1540,7 +1324,28 @@ exports[`Component Serialization > serializes all components 1`] = `
     <ARRAY></ARRAY>
   </variantGroups>
   <variants>
-    <ARRAY></ARRAY>
+    <ARRAY>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="disabled" uuid="mTtC6PfWMIgQ"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="readonly" uuid="wBHSWnXNDVAK"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="disabled" displayName="Disabled"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="readonly" displayName="Read Only"></RootCodeComponentVariant>
+      </ITEM>
+    </ARRAY>
   </variants>
   <states>
     <ARRAY>
@@ -1589,14 +1394,7 @@ exports[`Component Serialization > serializes all components 1`] = `
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="disabled" uuid="mTtC6PfWMIgQ"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="mTtC6PfWMIgQ">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1609,14 +1407,7 @@ exports[`Component Serialization > serializes all components 1`] = `
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="readonly" uuid="wBHSWnXNDVAK"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="wBHSWnXNDVAK">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1682,6 +1473,16 @@ exports[`Component Serialization > serializes all components 1`] = `
             <Variant name="plain" uuid="gcKc5e0uirg6"></Variant>
           </variant>
         </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="disabled" uuid="dbOL7ZnGgTZA"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="disabled" displayName="Disabled"></RootCodeComponentVariant>
       </ITEM>
     </ARRAY>
   </variants>
@@ -1749,14 +1550,7 @@ exports[`Component Serialization > serializes all components 1`] = `
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="disabled" uuid="dbOL7ZnGgTZA"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="dbOL7ZnGgTZA">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1930,14 +1724,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="mobileOnly" uuid="pIBrJnbkAQLL"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="pIBrJnbkAQLL">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1950,14 +1737,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="noTrigger" uuid="XcAK-UZkDgAi"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="XcAK-UZkDgAi">
           <elements>
             <ARRAY>
               <ITEM>
@@ -1988,29 +1768,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <ARRAY></ARRAY>
   </variantGroups>
   <variants>
-    <ARRAY>
-      <ITEM>
-        <ElementVariant elementUuid="Sya0jp-3z04Q">
-          <variant>
-            <Variant name=":focus" uuid="nXTFjlmK5XoA"></Variant>
-          </variant>
-        </ElementVariant>
-      </ITEM>
-      <ITEM>
-        <ElementVariant elementUuid="dmoXeGSEu9FR">
-          <variant>
-            <Variant name=":focus" uuid="o0aQD1uD0PE7"></Variant>
-          </variant>
-        </ElementVariant>
-      </ITEM>
-      <ITEM>
-        <ElementVariant elementUuid="Y2BCutCiq0ay">
-          <variant>
-            <Variant name=":focus" uuid="PSb4MDAD-yZ3"></Variant>
-          </variant>
-        </ElementVariant>
-      </ITEM>
-    </ARRAY>
+    <ARRAY></ARRAY>
   </variants>
   <states>
     <ARRAY>
@@ -2086,14 +1844,45 @@ Join our Slack community (icon in bottom left) for help any time.</div>
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
+        <VariantOverride variantCombo="">
+          <elements>
             <ARRAY>
               <ITEM>
-                <Variant name="mobileOnly" uuid="pIBrJnbkAQLL"></Variant>
+                <ElementOverride uuid="Sya0jp-3z04Q">
+                  <pseudoSelectors>
+                    <ARRAY>
+                      <ITEM>:focus</ITEM>
+                    </ARRAY>
+                  </pseudoSelectors>
+                  <styles animation="var(--anim-mz8pGamSoahc) 1s ease-in-out 0s 1 normal none running"></styles>
+                </ElementOverride>
+              </ITEM>
+              <ITEM>
+                <ElementOverride uuid="dmoXeGSEu9FR">
+                  <pseudoSelectors>
+                    <ARRAY>
+                      <ITEM>:focus</ITEM>
+                    </ARRAY>
+                  </pseudoSelectors>
+                  <styles animation="var(--anim-8_EsQyUE1f6D) 1s ease-in-out 0s 1 normal none running"></styles>
+                </ElementOverride>
+              </ITEM>
+              <ITEM>
+                <ElementOverride uuid="Y2BCutCiq0ay">
+                  <pseudoSelectors>
+                    <ARRAY>
+                      <ITEM>:focus</ITEM>
+                    </ARRAY>
+                  </pseudoSelectors>
+                  <styles animation="var(--anim-amPxFRYy2Bqz) 1s ease-in-out 0s 1 normal none running"></styles>
+                </ElementOverride>
               </ITEM>
             </ARRAY>
-          </variants>
+          </elements>
+        </VariantOverride>
+      </ITEM>
+      <ITEM>
+        <VariantOverride variantCombo="pIBrJnbkAQLL">
           <elements>
             <ARRAY>
               <ITEM>
@@ -2109,66 +1898,6 @@ Join our Slack community (icon in bottom left) for help any time.</div>
               <ITEM>
                 <ElementOverride uuid="ECPnnoz-UM9u">
                   <styles width="33%"></styles>
-                </ElementOverride>
-              </ITEM>
-            </ARRAY>
-          </elements>
-        </VariantOverride>
-      </ITEM>
-      <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name=":focus" uuid="nXTFjlmK5XoA"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
-          <elements>
-            <ARRAY>
-              <ITEM>
-                <ElementOverride uuid="Sya0jp-3z04Q">
-                  <styles animation="var(--anim-mz8pGamSoahc) 1s ease-in-out 0s 1 normal none running"></styles>
-                </ElementOverride>
-              </ITEM>
-            </ARRAY>
-          </elements>
-        </VariantOverride>
-      </ITEM>
-      <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name=":focus" uuid="o0aQD1uD0PE7"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
-          <elements>
-            <ARRAY>
-              <ITEM>
-                <ElementOverride uuid="dmoXeGSEu9FR">
-                  <styles animation="var(--anim-8_EsQyUE1f6D) 1s ease-in-out 0s 1 normal none running"></styles>
-                </ElementOverride>
-              </ITEM>
-            </ARRAY>
-          </elements>
-        </VariantOverride>
-      </ITEM>
-      <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name=":focus" uuid="PSb4MDAD-yZ3"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
-          <elements>
-            <ARRAY>
-              <ITEM>
-                <ElementOverride uuid="Y2BCutCiq0ay">
-                  <styles animation="var(--anim-amPxFRYy2Bqz) 1s ease-in-out 0s 1 normal none running"></styles>
                 </ElementOverride>
               </ITEM>
             </ARRAY>
@@ -2247,14 +1976,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="sm" uuid="Mc-Oh4udbRX7"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="Mc-Oh4udbRX7">
           <elements>
             <ARRAY>
               <ITEM>
@@ -2267,14 +1989,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="lg" uuid="VHb-pUA8lidW"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="VHb-pUA8lidW">
           <elements>
             <ARRAY>
               <ITEM>
@@ -2287,14 +2002,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="optional" uuid="-6wdZI4H74qM"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="-6wdZI4H74qM">
           <elements>
             <ARRAY>
               <ITEM>
@@ -2308,14 +2016,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="required" uuid="Kfk1fRQ40Hgx"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="Kfk1fRQ40Hgx">
           <elements>
             <ARRAY>
               <ITEM>
@@ -2349,7 +2050,54 @@ Join our Slack community (icon in bottom left) for help any time.</div>
     <ARRAY></ARRAY>
   </variantGroups>
   <variants>
-    <ARRAY></ARRAY>
+    <ARRAY>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="hovered" uuid="SE23HKXod54n"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="selected" uuid="S_uVxfm-rJCF"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="disabled" uuid="aXwpKp_5DM_X"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="focusVisible" uuid="qNxz1FfeRcMD"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="hovered" displayName="Hovered"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="pressed" displayName="Pressed"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focused" displayName="Focused"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focusVisible" displayName="Focus Visible"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="selected" displayName="Selected"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="disabled" displayName="Disabled"></RootCodeComponentVariant>
+      </ITEM>
+    </ARRAY>
   </variants>
   <baseVariantTplTree><![CDATA[<plasmic-component id="b90U9w7UxwBC" data-plasmic-component="plasmicReactAriaListboxItem" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-props='{"id":"{{ $props.value }}","textValue":"{{ $props.label }}"}' style="position: relative; cursor: pointer; border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX); color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); outline-style: none">
   <slot name="children">
@@ -2372,14 +2120,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="hovered" uuid="SE23HKXod54n"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="SE23HKXod54n">
           <elements>
             <ARRAY>
               <ITEM>
@@ -2392,14 +2133,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="selected" uuid="S_uVxfm-rJCF"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="S_uVxfm-rJCF">
           <elements>
             <ARRAY>
               <ITEM>
@@ -2412,14 +2146,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="disabled" uuid="aXwpKp_5DM_X"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="aXwpKp_5DM_X">
           <elements>
             <ARRAY>
               <ITEM>
@@ -2432,14 +2159,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="focusVisible" uuid="qNxz1FfeRcMD"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="qNxz1FfeRcMD">
           <elements>
             <ARRAY>
               <ITEM>
@@ -2667,14 +2387,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="noTrigger" uuid="phcL-adiLQWW"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="phcL-adiLQWW">
           <elements>
             <ARRAY>
               <ITEM>
@@ -2709,6 +2422,36 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
           </variant>
         </ComponentVariant>
       </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="placementTop" uuid="_z6-7IKrE8u3"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="placementLeft" uuid="mETEEtqdTupQ"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="placementRight" uuid="KsuuirFrB1PM"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="placementTop" displayName="Placement (Top)"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="placementLeft" displayName="Placement (Left)"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="placementRight" displayName="Placement (Right)"></RootCodeComponentVariant>
+      </ITEM>
     </ARRAY>
   </variants>
   <states>
@@ -2726,14 +2469,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="placementTop" uuid="_z6-7IKrE8u3"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="_z6-7IKrE8u3">
           <elements>
             <ARRAY>
               <ITEM>
@@ -2746,14 +2482,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="placementLeft" uuid="mETEEtqdTupQ"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="mETEEtqdTupQ">
           <elements>
             <ARRAY>
               <ITEM>
@@ -2766,14 +2495,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="placementRight" uuid="KsuuirFrB1PM"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="KsuuirFrB1PM">
           <elements>
             <ARRAY>
               <ITEM>
@@ -2786,14 +2508,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="dark" uuid="8X2l3Su5Ev8K"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="8X2l3Su5Ev8K">
           <elements>
             <ARRAY>
               <ITEM>
@@ -2906,7 +2621,71 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <ARRAY></ARRAY>
   </variantGroups>
   <variants>
-    <ARRAY></ARRAY>
+    <ARRAY>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="disabled" uuid="mHPfQH5oATlh"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="readonly" uuid="Q4Cp76HU4rCo"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="selected" uuid="rh07V4gMvx9M"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="focusVisible" uuid="u7CX58vux6LH"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="hovered" uuid="OvuIsmyyLBx0"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="pressed" uuid="DYFzUMp98efX"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="selected" displayName="Selected"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="hovered" displayName="Hovered"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="pressed" displayName="Pressed"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focused" displayName="Focused"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focusVisible" displayName="Focus Visible"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="disabled" displayName="Disabled"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="readonly" displayName="Read Only"></RootCodeComponentVariant>
+      </ITEM>
+    </ARRAY>
   </variants>
   <baseVariantTplTree><![CDATA[<plasmic-component id="MlKoRbZwK2UG" data-plasmic-component="plasmicReactAriaRadioGroupRadio" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-plasmic-name="Aria Radio" data-props='{"value":"{{ $props.value }}","autoFocus":"{{ $props.autoFocus }}","aria-label":"{{ $props.ariaLabel }}","isDisabled":"{{ $props.disabled }}"}' style="position: relative; display: flex; flex-direction: row; justify-content: flex-start; align-items: center; cursor: pointer; box-sizing: border-box; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; column-gap: var(--token-J8bgk1cLaZ5G)">
   <slot name="children">
@@ -2921,14 +2700,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="disabled" uuid="mHPfQH5oATlh"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="mHPfQH5oATlh">
           <elements>
             <ARRAY>
               <ITEM>
@@ -2941,14 +2713,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="selected" uuid="rh07V4gMvx9M"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="rh07V4gMvx9M">
           <elements>
             <ARRAY>
               <ITEM>
@@ -2967,14 +2732,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="focusVisible" uuid="u7CX58vux6LH"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="u7CX58vux6LH">
           <elements>
             <ARRAY>
               <ITEM>
@@ -3010,7 +2768,28 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <ARRAY></ARRAY>
   </variantGroups>
   <variants>
-    <ARRAY></ARRAY>
+    <ARRAY>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="disabled" uuid="WAgPCXCOk5ny"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="readonly" uuid="UU7IPk6bJzTb"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="disabled" displayName="Disabled"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="readonly" displayName="Read Only"></RootCodeComponentVariant>
+      </ITEM>
+    </ARRAY>
   </variants>
   <states>
     <ARRAY>
@@ -3059,14 +2838,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="disabled" uuid="WAgPCXCOk5ny"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="WAgPCXCOk5ny">
           <elements>
             <ARRAY>
               <ITEM>
@@ -3120,7 +2892,18 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <ARRAY></ARRAY>
   </variantGroups>
   <variants>
-    <ARRAY></ARRAY>
+    <ARRAY>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="disabled" uuid="2GHUvDWRjMSf"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="disabled" displayName="Disabled"></RootCodeComponentVariant>
+      </ITEM>
+    </ARRAY>
   </variants>
   <states>
     <ARRAY>
@@ -3169,14 +2952,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="disabled" uuid="2GHUvDWRjMSf"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="2GHUvDWRjMSf">
           <elements>
             <ARRAY>
               <ITEM>
@@ -3233,6 +3009,29 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             <Variant name="plain" uuid="AUJGtdMM0Zz4"></Variant>
           </variant>
         </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="disabled" uuid="Eyo0gKoBRdvv"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="focusVisible" uuid="aIoGbD6GZlXx"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focused" displayName="Focused"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focusVisible" displayName="Focus Visible"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="disabled" displayName="Disabled"></RootCodeComponentVariant>
       </ITEM>
     </ARRAY>
   </variants>
@@ -3301,14 +3100,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="disabled" uuid="Eyo0gKoBRdvv"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="Eyo0gKoBRdvv">
           <elements>
             <ARRAY>
               <ITEM>
@@ -3321,14 +3113,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="focusVisible" uuid="aIoGbD6GZlXx"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="aIoGbD6GZlXx">
           <elements>
             <ARRAY>
               <ITEM>
@@ -3382,7 +3167,18 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <ARRAY></ARRAY>
   </variantGroups>
   <variants>
-    <ARRAY></ARRAY>
+    <ARRAY>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="disabled" uuid="hrSV7nfEukqY"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="disabled" displayName="Disabled"></RootCodeComponentVariant>
+      </ITEM>
+    </ARRAY>
   </variants>
   <states>
     <ARRAY>
@@ -3431,14 +3227,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="disabled" uuid="hrSV7nfEukqY"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="hrSV7nfEukqY">
           <elements>
             <ARRAY>
               <ITEM>
@@ -3473,7 +3262,44 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <ARRAY></ARRAY>
   </variantGroups>
   <variants>
-    <ARRAY></ARRAY>
+    <ARRAY>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="hovered" uuid="ucGyFS9OrhDn"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="focusVisible" uuid="491p_KgJ7qOl"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="disabled" uuid="J6mkmQk4SzTz"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="dragging" displayName="Dragging"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="hovered" displayName="Hovered"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focused" displayName="Focused"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focusVisible" displayName="Focus Visible"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="disabled" displayName="Disabled"></RootCodeComponentVariant>
+      </ITEM>
+    </ARRAY>
   </variants>
   <baseVariantTplTree><![CDATA[<plasmic-component id="IeCipxoS434j" data-plasmic-component="plasmicReactAriaSliderSliderThumb" data-plasmic-project="vraRvHJQpWZ2nQbXtKvCmD" data-props='{"isDisabled":"{{ $props.disabled }}","autoFocus":"{{ $props.autoFocus }}","advanced":false}' style="position: relative; background: linear-gradient(var(--token-48p0Jlumb6Of), var(--token-48p0Jlumb6Of)); border-top-color: var(--token-6R_RCgXDnfCy); border-top-width: 1px; border-top-style: solid; border-right-color: var(--token-6R_RCgXDnfCy); border-right-width: 1px; border-right-style: solid; border-bottom-color: var(--token-6R_RCgXDnfCy); border-bottom-width: 1px; border-bottom-style: solid; border-left-color: var(--token-6R_RCgXDnfCy); border-left-width: 1px; border-left-style: solid; cursor: pointer; box-sizing: border-box; display: flex; height: var(--token-41IdgVnm_uZQ); width: var(--token-41IdgVnm_uZQ); border-top-left-radius: 99px; border-top-right-radius: 99px; border-bottom-right-radius: 99px; border-bottom-left-radius: 99px">
   <slot name="children"></slot>
@@ -3481,14 +3307,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="hovered" uuid="ucGyFS9OrhDn"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="ucGyFS9OrhDn">
           <elements>
             <ARRAY>
               <ITEM>
@@ -3501,14 +3320,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="focusVisible" uuid="491p_KgJ7qOl"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="491p_KgJ7qOl">
           <elements>
             <ARRAY>
               <ITEM>
@@ -3550,7 +3362,71 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <ARRAY></ARRAY>
   </variantGroups>
   <variants>
-    <ARRAY></ARRAY>
+    <ARRAY>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="hovered" uuid="EESdiYI2E3sg"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="pressed" uuid="g3nxpUSag90D"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="selected" uuid="ZyuY04fkemtt"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="disabled" uuid="VrU0EvnWC9K3"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="readonly" uuid="tFykyAahV3Rt"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="focusVisible" uuid="__eKKQ9gxlQv"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="hovered" displayName="Hovered"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="pressed" displayName="Pressed"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focused" displayName="Focused"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focusVisible" displayName="Focus Visible"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="selected" displayName="Selected"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="disabled" displayName="Disabled"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="readonly" displayName="Read Only"></RootCodeComponentVariant>
+      </ITEM>
+    </ARRAY>
   </variants>
   <states>
     <ARRAY>
@@ -3579,14 +3455,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="selected" uuid="ZyuY04fkemtt"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="ZyuY04fkemtt">
           <elements>
             <ARRAY>
               <ITEM>
@@ -3604,14 +3473,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="disabled" uuid="VrU0EvnWC9K3"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="VrU0EvnWC9K3">
           <elements>
             <ARRAY>
               <ITEM>
@@ -3629,14 +3491,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="readonly" uuid="tFykyAahV3Rt"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="tFykyAahV3Rt">
           <elements>
             <ARRAY>
               <ITEM>
@@ -3649,14 +3504,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="focusVisible" uuid="__eKKQ9gxlQv"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="__eKKQ9gxlQv">
           <elements>
             <ARRAY>
               <ITEM>
@@ -3850,6 +3698,26 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
           </variant>
         </ComponentVariant>
       </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="disabled" uuid="4xigtLZHyLD1"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="readonly" uuid="3zwcaxQ7tSjZ"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="disabled" displayName="Disabled"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="readonly" displayName="Read Only"></RootCodeComponentVariant>
+      </ITEM>
     </ARRAY>
   </variants>
   <states>
@@ -3909,14 +3777,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="disabled" uuid="4xigtLZHyLD1"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="4xigtLZHyLD1">
           <elements>
             <ARRAY>
               <ITEM>
@@ -3929,14 +3790,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="multiLine" uuid="ujPUz5-pNQo3"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="ujPUz5-pNQo3">
           <elements>
             <ARRAY>
               <ITEM>
@@ -3954,14 +3808,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="iconStart" uuid="Y1wfrLkCK3tp"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="Y1wfrLkCK3tp">
           <elements>
             <ARRAY>
               <ITEM>
@@ -3974,14 +3821,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="iconEnd" uuid="lZuHYDu-P997"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="lZuHYDu-P997">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4184,6 +4024,39 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
           </variant>
         </ComponentVariant>
       </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="disabled" uuid="_b-LhjWGnizr"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="hovered" uuid="XVzC02ZqqV6l"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="focused" uuid="KsIohX0M8jCd"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focused" displayName="Focused"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focusVisible" displayName="Focus Visible"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="hovered" displayName="Hovered"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="disabled" displayName="Disabled"></RootCodeComponentVariant>
+      </ITEM>
     </ARRAY>
   </variants>
   <states>
@@ -4206,14 +4079,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="disabled" uuid="_b-LhjWGnizr"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="_b-LhjWGnizr">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4226,14 +4092,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="focused" uuid="KsIohX0M8jCd"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="KsIohX0M8jCd">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4246,14 +4105,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="soft" uuid="0cXa8u_Fd6-c"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="0cXa8u_Fd6-c">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4266,17 +4118,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="soft" uuid="0cXa8u_Fd6-c"></Variant>
-              </ITEM>
-              <ITEM>
-                <Variant name="hovered" uuid="XVzC02ZqqV6l"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="0cXa8u_Fd6-c+XVzC02ZqqV6l">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4289,14 +4131,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="plain" uuid="9cJ3z_ZYGZvt"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="9cJ3z_ZYGZvt">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4309,17 +4144,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="plain" uuid="9cJ3z_ZYGZvt"></Variant>
-              </ITEM>
-              <ITEM>
-                <Variant name="hovered" uuid="XVzC02ZqqV6l"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="9cJ3z_ZYGZvt+XVzC02ZqqV6l">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4332,14 +4157,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="top" uuid="pUxG-pkjbXcJ"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="pUxG-pkjbXcJ">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4352,14 +4170,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="right" uuid="jFOHHIE_LIsW"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="jFOHHIE_LIsW">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4372,14 +4183,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="bottom" uuid="oRa7KNUAvba6"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="oRa7KNUAvba6">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4392,14 +4196,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="left" uuid="f-jiC3pxjmB0"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="f-jiC3pxjmB0">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4412,14 +4209,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="left" uuid="aIRXAYdM6pXb"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="aIRXAYdM6pXb">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4432,14 +4222,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="right" uuid="t5DeV--6wj_c"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="t5DeV--6wj_c">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4561,6 +4344,39 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
           </variant>
         </ComponentVariant>
       </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="focused" uuid="0LqmmqQzQho-"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="disabled" uuid="zFI8C8uPgTTj"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <ComponentVariant>
+          <variant>
+            <Variant name="hovered" uuid="EdILTSznToW4"></Variant>
+          </variant>
+        </ComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focused" displayName="Focused"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="focusVisible" displayName="Focus Visible"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="hovered" displayName="Hovered"></RootCodeComponentVariant>
+      </ITEM>
+      <ITEM>
+        <RootCodeComponentVariant key="disabled" displayName="Disabled"></RootCodeComponentVariant>
+      </ITEM>
     </ARRAY>
   </variants>
   <states>
@@ -4583,14 +4399,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   <variantSettings>
     <ARRAY>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="focused" uuid="0LqmmqQzQho-"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="0LqmmqQzQho-">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4603,14 +4412,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="disabled" uuid="zFI8C8uPgTTj"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="zFI8C8uPgTTj">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4623,14 +4425,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="soft" uuid="BYaTSYRbp5k-"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="BYaTSYRbp5k-">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4643,17 +4438,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="soft" uuid="BYaTSYRbp5k-"></Variant>
-              </ITEM>
-              <ITEM>
-                <Variant name="hovered" uuid="EdILTSznToW4"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="BYaTSYRbp5k-+EdILTSznToW4">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4666,14 +4451,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="plain" uuid="RVfUSn_4OlZE"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="RVfUSn_4OlZE">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4686,17 +4464,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="plain" uuid="RVfUSn_4OlZE"></Variant>
-              </ITEM>
-              <ITEM>
-                <Variant name="hovered" uuid="EdILTSznToW4"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="EdILTSznToW4+RVfUSn_4OlZE">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4709,14 +4477,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="top" uuid="uub7dYD9Ahd9"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="uub7dYD9Ahd9">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4729,14 +4490,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="right" uuid="YEvyTqML8ybV"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="YEvyTqML8ybV">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4749,14 +4503,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="bottom" uuid="DoKOv7moJkW2"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="DoKOv7moJkW2">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4769,14 +4516,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="left" uuid="EDke_10m8Cz5"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="EDke_10m8Cz5">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4789,14 +4529,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="left" uuid="PscEmlQHZllk"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="PscEmlQHZllk">
           <elements>
             <ARRAY>
               <ITEM>
@@ -4809,14 +4542,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
         </VariantOverride>
       </ITEM>
       <ITEM>
-        <VariantOverride>
-          <variants>
-            <ARRAY>
-              <ITEM>
-                <Variant name="right" uuid="tbJOPfM389OI"></Variant>
-              </ITEM>
-            </ARRAY>
-          </variants>
+        <VariantOverride variantCombo="tbJOPfM389OI">
           <elements>
             <ARRAY>
               <ITEM>
@@ -5140,13 +4866,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "7ftEZY6-lBPq",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "hovered",
-            "uuid": "5JN6ixNeU3yA",
-          },
-        ],
+        "variantCombo": "5JN6ixNeU3yA",
       },
       {
         "__type": "VariantOverride",
@@ -5159,13 +4879,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "7ftEZY6-lBPq",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "pressed",
-            "uuid": "pJxtwditQBi_",
-          },
-        ],
+        "variantCombo": "pJxtwditQBi_",
       },
       {
         "__type": "VariantOverride",
@@ -5181,13 +4895,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "P4urRFgjF3wU",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "focusVisible",
-            "uuid": "CChoueEvWSHR",
-          },
-        ],
+        "variantCombo": "CChoueEvWSHR",
       },
       {
         "__type": "VariantOverride",
@@ -5207,13 +4915,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "7ftEZY6-lBPq",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "disabled",
-            "uuid": "1idxV7_peJy0",
-          },
-        ],
+        "variantCombo": "1idxV7_peJy0",
       },
       {
         "__type": "VariantOverride",
@@ -5264,13 +4966,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "neutral",
-            "uuid": "sy5AokJJ7g7H",
-          },
-        ],
+        "variantCombo": "sy5AokJJ7g7H",
       },
       {
         "__type": "VariantOverride",
@@ -5321,13 +5017,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "muted",
-            "uuid": "gdLWnA57ufpt",
-          },
-        ],
+        "variantCombo": "gdLWnA57ufpt",
       },
       {
         "__type": "VariantOverride",
@@ -5378,13 +5068,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "success",
-            "uuid": "4EM17LBKD7cA",
-          },
-        ],
+        "variantCombo": "4EM17LBKD7cA",
       },
       {
         "__type": "VariantOverride",
@@ -5435,13 +5119,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "warning",
-            "uuid": "rS75iYmeFNPU",
-          },
-        ],
+        "variantCombo": "rS75iYmeFNPU",
       },
       {
         "__type": "VariantOverride",
@@ -5492,13 +5170,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "errorDestructive",
-            "uuid": "UZpDGjtFbbo-",
-          },
-        ],
+        "variantCombo": "UZpDGjtFbbo-",
       },
       {
         "__type": "VariantOverride",
@@ -5539,13 +5211,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "soft",
-            "uuid": "NzLhyUcNJ56l",
-          },
-        ],
+        "variantCombo": "NzLhyUcNJ56l",
       },
       {
         "__type": "VariantOverride",
@@ -5593,13 +5259,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "bordered",
-            "uuid": "CFlf6CAr5PRq",
-          },
-        ],
+        "variantCombo": "CFlf6CAr5PRq",
       },
       {
         "__type": "VariantOverride",
@@ -5619,18 +5279,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "7ftEZY6-lBPq",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "bordered",
-            "uuid": "CFlf6CAr5PRq",
-          },
-          {
-            "__type": "Variant",
-            "name": "hovered",
-            "uuid": "5JN6ixNeU3yA",
-          },
-        ],
+        "variantCombo": "5JN6ixNeU3yA+CFlf6CAr5PRq",
       },
       {
         "__type": "VariantOverride",
@@ -5643,18 +5292,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "zhn6dj3FeLUL",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "bordered",
-            "uuid": "CFlf6CAr5PRq",
-          },
-          {
-            "__type": "Variant",
-            "name": "pressed",
-            "uuid": "pJxtwditQBi_",
-          },
-        ],
+        "variantCombo": "CFlf6CAr5PRq+pJxtwditQBi_",
       },
       {
         "__type": "VariantOverride",
@@ -5697,13 +5335,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "extraSmall",
-            "uuid": "RDlJE6wlLaV0",
-          },
-        ],
+        "variantCombo": "RDlJE6wlLaV0",
       },
       {
         "__type": "VariantOverride",
@@ -5746,13 +5378,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "small",
-            "uuid": "1Wus14yXOz6z",
-          },
-        ],
+        "variantCombo": "1Wus14yXOz6z",
       },
       {
         "__type": "VariantOverride",
@@ -5788,13 +5414,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "large",
-            "uuid": "f0h7JomxhfMB",
-          },
-        ],
+        "variantCombo": "f0h7JomxhfMB",
       },
       {
         "__type": "VariantOverride",
@@ -5830,13 +5450,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "extraLarge",
-            "uuid": "IL042y6ZmTqU",
-          },
-        ],
+        "variantCombo": "IL042y6ZmTqU",
       },
       {
         "__type": "VariantOverride",
@@ -5856,13 +5470,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "omi74nYXXVka",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "iconStart",
-            "uuid": "sHwmv6VTmYIE",
-          },
-        ],
+        "variantCombo": "sHwmv6VTmYIE",
       },
       {
         "__type": "VariantOverride",
@@ -5882,13 +5490,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "iconEnd",
-            "uuid": "WG_MUEe-AF5Z",
-          },
-        ],
+        "variantCombo": "WG_MUEe-AF5Z",
       },
       {
         "__type": "VariantOverride",
@@ -5942,13 +5544,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "LcbjVN0--45d",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "roundedFull",
-            "uuid": "rnbD-4X93Vp0",
-          },
-        ],
+        "variantCombo": "rnbD-4X93Vp0",
       },
       {
         "__type": "VariantOverride",
@@ -5970,13 +5566,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "MpYlNqLG4pwf",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "top",
-            "uuid": "LAvN7TnRtX1E",
-          },
-        ],
+        "variantCombo": "LAvN7TnRtX1E",
       },
       {
         "__type": "VariantOverride",
@@ -5998,13 +5588,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "MpYlNqLG4pwf",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "right",
-            "uuid": "F877AcVY27WU",
-          },
-        ],
+        "variantCombo": "F877AcVY27WU",
       },
       {
         "__type": "VariantOverride",
@@ -6026,13 +5610,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "MpYlNqLG4pwf",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "bottom",
-            "uuid": "JG2Gsxo917WB",
-          },
-        ],
+        "variantCombo": "JG2Gsxo917WB",
       },
       {
         "__type": "VariantOverride",
@@ -6054,13 +5632,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "MpYlNqLG4pwf",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "left",
-            "uuid": "ZDz-CWXMxtWT",
-          },
-        ],
+        "variantCombo": "ZDz-CWXMxtWT",
       },
       {
         "__type": "VariantOverride",
@@ -6087,18 +5659,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "neutral",
-            "uuid": "sy5AokJJ7g7H",
-          },
-          {
-            "__type": "Variant",
-            "name": "soft",
-            "uuid": "NzLhyUcNJ56l",
-          },
-        ],
+        "variantCombo": "NzLhyUcNJ56l+sy5AokJJ7g7H",
       },
       {
         "__type": "VariantOverride",
@@ -6125,18 +5686,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "muted",
-            "uuid": "gdLWnA57ufpt",
-          },
-          {
-            "__type": "Variant",
-            "name": "soft",
-            "uuid": "NzLhyUcNJ56l",
-          },
-        ],
+        "variantCombo": "NzLhyUcNJ56l+gdLWnA57ufpt",
       },
       {
         "__type": "VariantOverride",
@@ -6163,18 +5713,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "neutral",
-            "uuid": "sy5AokJJ7g7H",
-          },
-          {
-            "__type": "Variant",
-            "name": "bordered",
-            "uuid": "CFlf6CAr5PRq",
-          },
-        ],
+        "variantCombo": "CFlf6CAr5PRq+sy5AokJJ7g7H",
       },
       {
         "__type": "VariantOverride",
@@ -6201,18 +5740,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "success",
-            "uuid": "4EM17LBKD7cA",
-          },
-          {
-            "__type": "Variant",
-            "name": "soft",
-            "uuid": "NzLhyUcNJ56l",
-          },
-        ],
+        "variantCombo": "4EM17LBKD7cA+NzLhyUcNJ56l",
       },
       {
         "__type": "VariantOverride",
@@ -6239,18 +5767,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "muted",
-            "uuid": "gdLWnA57ufpt",
-          },
-          {
-            "__type": "Variant",
-            "name": "bordered",
-            "uuid": "CFlf6CAr5PRq",
-          },
-        ],
+        "variantCombo": "CFlf6CAr5PRq+gdLWnA57ufpt",
       },
       {
         "__type": "VariantOverride",
@@ -6277,18 +5794,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "warning",
-            "uuid": "rS75iYmeFNPU",
-          },
-          {
-            "__type": "Variant",
-            "name": "soft",
-            "uuid": "NzLhyUcNJ56l",
-          },
-        ],
+        "variantCombo": "NzLhyUcNJ56l+rS75iYmeFNPU",
       },
       {
         "__type": "VariantOverride",
@@ -6315,18 +5821,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "success",
-            "uuid": "4EM17LBKD7cA",
-          },
-          {
-            "__type": "Variant",
-            "name": "bordered",
-            "uuid": "CFlf6CAr5PRq",
-          },
-        ],
+        "variantCombo": "4EM17LBKD7cA+CFlf6CAr5PRq",
       },
       {
         "__type": "VariantOverride",
@@ -6353,18 +5848,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "errorDestructive",
-            "uuid": "UZpDGjtFbbo-",
-          },
-          {
-            "__type": "Variant",
-            "name": "soft",
-            "uuid": "NzLhyUcNJ56l",
-          },
-        ],
+        "variantCombo": "NzLhyUcNJ56l+UZpDGjtFbbo-",
       },
       {
         "__type": "VariantOverride",
@@ -6391,18 +5875,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "warning",
-            "uuid": "rS75iYmeFNPU",
-          },
-          {
-            "__type": "Variant",
-            "name": "bordered",
-            "uuid": "CFlf6CAr5PRq",
-          },
-        ],
+        "variantCombo": "CFlf6CAr5PRq+rS75iYmeFNPU",
       },
       {
         "__type": "VariantOverride",
@@ -6429,18 +5902,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6sD-taUBGCX5",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "errorDestructive",
-            "uuid": "UZpDGjtFbbo-",
-          },
-          {
-            "__type": "Variant",
-            "name": "bordered",
-            "uuid": "CFlf6CAr5PRq",
-          },
-        ],
+        "variantCombo": "CFlf6CAr5PRq+UZpDGjtFbbo-",
       },
     ],
     "variants": [
@@ -6606,6 +6068,63 @@ exports[`Component Serialization > serializes all components 2`] = `
           "uuid": "ZDz-CWXMxtWT",
         },
       },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "hovered",
+          "uuid": "5JN6ixNeU3yA",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "pressed",
+          "uuid": "pJxtwditQBi_",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "focusVisible",
+          "uuid": "CChoueEvWSHR",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "disabled",
+          "uuid": "1idxV7_peJy0",
+        },
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Hovered",
+        "key": "hovered",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Pressed",
+        "key": "pressed",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focused",
+        "key": "focused",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focus Visible",
+        "key": "focusVisible",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Disabled",
+        "key": "disabled",
+      },
     ],
   },
   "Checkbox": {
@@ -6678,13 +6197,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "n1iOLNRviVTt",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "focusVisible",
-            "uuid": "1RZmK0fG6PyF",
-          },
-        ],
+        "variantCombo": "1RZmK0fG6PyF",
       },
       {
         "__type": "VariantOverride",
@@ -6708,13 +6221,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "hK5nTl8uWngo",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "indeterminate",
-            "uuid": "lsR7D1j4l_4D",
-          },
-        ],
+        "variantCombo": "lsR7D1j4l_4D",
       },
       {
         "__type": "VariantOverride",
@@ -6729,13 +6236,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "wSXrGkHnJdlR",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "disabled",
-            "uuid": "StmI0fZofs2K",
-          },
-        ],
+        "variantCombo": "StmI0fZofs2K",
       },
       {
         "__type": "VariantOverride",
@@ -6749,13 +6250,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "wSXrGkHnJdlR",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "readonly",
-            "uuid": "ksI6A44s4Rdx",
-          },
-        ],
+        "variantCombo": "ksI6A44s4Rdx",
       },
       {
         "__type": "VariantOverride",
@@ -6768,18 +6263,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "RTvvgGVs_XKc",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "selected",
-            "uuid": "X0NFdWUQsWDK",
-          },
-          {
-            "__type": "Variant",
-            "name": "indeterminate",
-            "uuid": "lsR7D1j4l_4D",
-          },
-        ],
+        "variantCombo": "X0NFdWUQsWDK+lsR7D1j4l_4D",
       },
       {
         "__type": "VariantOverride",
@@ -6803,16 +6287,91 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "RTvvgGVs_XKc",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "selected",
-            "uuid": "X0NFdWUQsWDK",
-          },
-        ],
+        "variantCombo": "X0NFdWUQsWDK",
       },
     ],
-    "variants": [],
+    "variants": [
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "focusVisible",
+          "uuid": "1RZmK0fG6PyF",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "disabled",
+          "uuid": "StmI0fZofs2K",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "indeterminate",
+          "uuid": "lsR7D1j4l_4D",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "selected",
+          "uuid": "X0NFdWUQsWDK",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "readonly",
+          "uuid": "ksI6A44s4Rdx",
+        },
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Hovered",
+        "key": "hovered",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Pressed",
+        "key": "pressed",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focused",
+        "key": "focused",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focus Visible",
+        "key": "focusVisible",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Indeterminate",
+        "key": "indeterminate",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Disabled",
+        "key": "disabled",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Selected",
+        "key": "selected",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Read Only",
+        "key": "readonly",
+      },
+    ],
   },
   "Checkbox Group": {
     "__type": "Component",
@@ -6916,13 +6475,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "EQwO08BkwohB",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "disabled",
-            "uuid": "mTtC6PfWMIgQ",
-          },
-        ],
+        "variantCombo": "mTtC6PfWMIgQ",
       },
       {
         "__type": "VariantOverride",
@@ -6936,16 +6489,37 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "EQwO08BkwohB",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "readonly",
-            "uuid": "wBHSWnXNDVAK",
-          },
-        ],
+        "variantCombo": "wBHSWnXNDVAK",
       },
     ],
-    "variants": [],
+    "variants": [
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "disabled",
+          "uuid": "mTtC6PfWMIgQ",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "readonly",
+          "uuid": "wBHSWnXNDVAK",
+        },
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Disabled",
+        "key": "disabled",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Read Only",
+        "key": "readonly",
+      },
+    ],
   },
   "Combobox": {
     "__type": "Component",
@@ -7107,13 +6681,7 @@ exports[`Component Serialization > serializes all components 2`] = `
             "uuid": "6toPxJJ_4YJU",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "disabled",
-            "uuid": "dbOL7ZnGgTZA",
-          },
-        ],
+        "variantCombo": "dbOL7ZnGgTZA",
       },
     ],
     "variants": [
@@ -7134,6 +6702,19 @@ exports[`Component Serialization > serializes all components 2`] = `
           "name": "plain",
           "uuid": "gcKc5e0uirg6",
         },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "disabled",
+          "uuid": "dbOL7ZnGgTZA",
+        },
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Disabled",
+        "key": "disabled",
       },
     ],
   },
@@ -7335,13 +6916,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "8STuIQigZ3vG",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "mobileOnly",
-            "uuid": "pIBrJnbkAQLL",
-          },
-        ],
+        "variantCombo": "pIBrJnbkAQLL",
       },
       {
         "__type": "VariantOverride",
@@ -7361,13 +6936,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "EgoIzR721aP7",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "noTrigger",
-            "uuid": "XcAK-UZkDgAi",
-          },
-        ],
+        "variantCombo": "XcAK-UZkDgAi",
       },
     ],
     "variants": [
@@ -7498,6 +7067,42 @@ Join our Slack community (icon in bottom left) for help any time.</div>
         "elements": [
           {
             "__type": "ElementOverride",
+            "pseudoSelectors": [
+              ":focus",
+            ],
+            "styles": {
+              "animation": "var(--anim-mz8pGamSoahc) 1s ease-in-out 0s 1 normal none running",
+            },
+            "uuid": "Sya0jp-3z04Q",
+          },
+          {
+            "__type": "ElementOverride",
+            "pseudoSelectors": [
+              ":focus",
+            ],
+            "styles": {
+              "animation": "var(--anim-8_EsQyUE1f6D) 1s ease-in-out 0s 1 normal none running",
+            },
+            "uuid": "dmoXeGSEu9FR",
+          },
+          {
+            "__type": "ElementOverride",
+            "pseudoSelectors": [
+              ":focus",
+            ],
+            "styles": {
+              "animation": "var(--anim-amPxFRYy2Bqz) 1s ease-in-out 0s 1 normal none running",
+            },
+            "uuid": "Y2BCutCiq0ay",
+          },
+        ],
+        "variantCombo": "",
+      },
+      {
+        "__type": "VariantOverride",
+        "elements": [
+          {
+            "__type": "ElementOverride",
             "styles": {
               "align-items": "center",
               "justify-content": "center",
@@ -7519,101 +7124,10 @@ Join our Slack community (icon in bottom left) for help any time.</div>
             "uuid": "ECPnnoz-UM9u",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "mobileOnly",
-            "uuid": "pIBrJnbkAQLL",
-          },
-        ],
-      },
-      {
-        "__type": "VariantOverride",
-        "elements": [
-          {
-            "__type": "ElementOverride",
-            "styles": {
-              "animation": "var(--anim-mz8pGamSoahc) 1s ease-in-out 0s 1 normal none running",
-            },
-            "uuid": "Sya0jp-3z04Q",
-          },
-        ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": ":focus",
-            "uuid": "nXTFjlmK5XoA",
-          },
-        ],
-      },
-      {
-        "__type": "VariantOverride",
-        "elements": [
-          {
-            "__type": "ElementOverride",
-            "styles": {
-              "animation": "var(--anim-8_EsQyUE1f6D) 1s ease-in-out 0s 1 normal none running",
-            },
-            "uuid": "dmoXeGSEu9FR",
-          },
-        ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": ":focus",
-            "uuid": "o0aQD1uD0PE7",
-          },
-        ],
-      },
-      {
-        "__type": "VariantOverride",
-        "elements": [
-          {
-            "__type": "ElementOverride",
-            "styles": {
-              "animation": "var(--anim-amPxFRYy2Bqz) 1s ease-in-out 0s 1 normal none running",
-            },
-            "uuid": "Y2BCutCiq0ay",
-          },
-        ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": ":focus",
-            "uuid": "PSb4MDAD-yZ3",
-          },
-        ],
+        "variantCombo": "pIBrJnbkAQLL",
       },
     ],
-    "variants": [
-      {
-        "__type": "ElementVariant",
-        "elementUuid": "Sya0jp-3z04Q",
-        "variant": {
-          "__type": "Variant",
-          "name": ":focus",
-          "uuid": "nXTFjlmK5XoA",
-        },
-      },
-      {
-        "__type": "ElementVariant",
-        "elementUuid": "dmoXeGSEu9FR",
-        "variant": {
-          "__type": "Variant",
-          "name": ":focus",
-          "uuid": "o0aQD1uD0PE7",
-        },
-      },
-      {
-        "__type": "ElementVariant",
-        "elementUuid": "Y2BCutCiq0ay",
-        "variant": {
-          "__type": "Variant",
-          "name": ":focus",
-          "uuid": "PSb4MDAD-yZ3",
-        },
-      },
-    ],
+    "variants": [],
   },
   "Label": {
     "__type": "Component",
@@ -7674,13 +7188,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
             "uuid": "ck67sECnXw-2",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "sm",
-            "uuid": "Mc-Oh4udbRX7",
-          },
-        ],
+        "variantCombo": "Mc-Oh4udbRX7",
       },
       {
         "__type": "VariantOverride",
@@ -7694,13 +7202,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
             "uuid": "ck67sECnXw-2",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "lg",
-            "uuid": "VHb-pUA8lidW",
-          },
-        ],
+        "variantCombo": "VHb-pUA8lidW",
       },
       {
         "__type": "VariantOverride",
@@ -7716,13 +7218,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
             "uuid": "O3UhwtNeECFd",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "optional",
-            "uuid": "-6wdZI4H74qM",
-          },
-        ],
+        "variantCombo": "-6wdZI4H74qM",
       },
       {
         "__type": "VariantOverride",
@@ -7738,13 +7234,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
             "uuid": "O3UhwtNeECFd",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "required",
-            "uuid": "Kfk1fRQ40Hgx",
-          },
-        ],
+        "variantCombo": "Kfk1fRQ40Hgx",
       },
     ],
     "variants": [
@@ -7844,13 +7334,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
             "uuid": "b90U9w7UxwBC",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "hovered",
-            "uuid": "SE23HKXod54n",
-          },
-        ],
+        "variantCombo": "SE23HKXod54n",
       },
       {
         "__type": "VariantOverride",
@@ -7863,13 +7347,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
             "uuid": "b90U9w7UxwBC",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "selected",
-            "uuid": "S_uVxfm-rJCF",
-          },
-        ],
+        "variantCombo": "S_uVxfm-rJCF",
       },
       {
         "__type": "VariantOverride",
@@ -7883,13 +7361,7 @@ Join our Slack community (icon in bottom left) for help any time.</div>
             "uuid": "b90U9w7UxwBC",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "disabled",
-            "uuid": "aXwpKp_5DM_X",
-          },
-        ],
+        "variantCombo": "aXwpKp_5DM_X",
       },
       {
         "__type": "VariantOverride",
@@ -7905,16 +7377,73 @@ Join our Slack community (icon in bottom left) for help any time.</div>
             "uuid": "b90U9w7UxwBC",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "focusVisible",
-            "uuid": "qNxz1FfeRcMD",
-          },
-        ],
+        "variantCombo": "qNxz1FfeRcMD",
       },
     ],
-    "variants": [],
+    "variants": [
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "hovered",
+          "uuid": "SE23HKXod54n",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "selected",
+          "uuid": "S_uVxfm-rJCF",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "disabled",
+          "uuid": "aXwpKp_5DM_X",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "focusVisible",
+          "uuid": "qNxz1FfeRcMD",
+        },
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Hovered",
+        "key": "hovered",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Pressed",
+        "key": "pressed",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focused",
+        "key": "focused",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focus Visible",
+        "key": "focusVisible",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Selected",
+        "key": "selected",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Disabled",
+        "key": "disabled",
+      },
+    ],
   },
   "Menu Popover": {
     "__type": "Component",
@@ -8165,13 +7694,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "ZTA2-vbNl2Ib",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "noTrigger",
-            "uuid": "phcL-adiLQWW",
-          },
-        ],
+        "variantCombo": "phcL-adiLQWW",
       },
     ],
     "variants": [
@@ -8226,13 +7749,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "-2SFIm9VX_6T",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "placementTop",
-            "uuid": "_z6-7IKrE8u3",
-          },
-        ],
+        "variantCombo": "_z6-7IKrE8u3",
       },
       {
         "__type": "VariantOverride",
@@ -8245,13 +7762,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "-2SFIm9VX_6T",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "placementLeft",
-            "uuid": "mETEEtqdTupQ",
-          },
-        ],
+        "variantCombo": "mETEEtqdTupQ",
       },
       {
         "__type": "VariantOverride",
@@ -8264,13 +7775,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "-2SFIm9VX_6T",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "placementRight",
-            "uuid": "KsuuirFrB1PM",
-          },
-        ],
+        "variantCombo": "KsuuirFrB1PM",
       },
       {
         "__type": "VariantOverride",
@@ -8283,13 +7788,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "-2SFIm9VX_6T",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "dark",
-            "uuid": "8X2l3Su5Ev8K",
-          },
-        ],
+        "variantCombo": "8X2l3Su5Ev8K",
       },
     ],
     "variants": [
@@ -8301,6 +7800,45 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
           "name": "dark",
           "uuid": "8X2l3Su5Ev8K",
         },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "placementTop",
+          "uuid": "_z6-7IKrE8u3",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "placementLeft",
+          "uuid": "mETEEtqdTupQ",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "placementRight",
+          "uuid": "KsuuirFrB1PM",
+        },
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Placement (Top)",
+        "key": "placementTop",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Placement (Left)",
+        "key": "placementLeft",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Placement (Right)",
+        "key": "placementRight",
       },
     ],
   },
@@ -8469,13 +8007,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "MlKoRbZwK2UG",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "disabled",
-            "uuid": "mHPfQH5oATlh",
-          },
-        ],
+        "variantCombo": "mHPfQH5oATlh",
       },
       {
         "__type": "VariantOverride",
@@ -8503,13 +8035,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "GZ4Zt117B32n",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "selected",
-            "uuid": "rh07V4gMvx9M",
-          },
-        ],
+        "variantCombo": "rh07V4gMvx9M",
       },
       {
         "__type": "VariantOverride",
@@ -8525,16 +8051,94 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "WV-i1VxJMtKx",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "focusVisible",
-            "uuid": "u7CX58vux6LH",
-          },
-        ],
+        "variantCombo": "u7CX58vux6LH",
       },
     ],
-    "variants": [],
+    "variants": [
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "disabled",
+          "uuid": "mHPfQH5oATlh",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "readonly",
+          "uuid": "Q4Cp76HU4rCo",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "selected",
+          "uuid": "rh07V4gMvx9M",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "focusVisible",
+          "uuid": "u7CX58vux6LH",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "hovered",
+          "uuid": "OvuIsmyyLBx0",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "pressed",
+          "uuid": "DYFzUMp98efX",
+        },
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Selected",
+        "key": "selected",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Hovered",
+        "key": "hovered",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Pressed",
+        "key": "pressed",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focused",
+        "key": "focused",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focus Visible",
+        "key": "focusVisible",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Disabled",
+        "key": "disabled",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Read Only",
+        "key": "readonly",
+      },
+    ],
   },
   "Radio Group": {
     "__type": "Component",
@@ -8630,16 +8234,37 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "VjDG6dqVYVzS",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "disabled",
-            "uuid": "WAgPCXCOk5ny",
-          },
-        ],
+        "variantCombo": "WAgPCXCOk5ny",
       },
     ],
-    "variants": [],
+    "variants": [
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "disabled",
+          "uuid": "WAgPCXCOk5ny",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "readonly",
+          "uuid": "UU7IPk6bJzTb",
+        },
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Disabled",
+        "key": "disabled",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Read Only",
+        "key": "readonly",
+      },
+    ],
   },
   "Range Slider": {
     "__type": "Component",
@@ -8773,16 +8398,24 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "ZRpvtB4bErD6",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "disabled",
-            "uuid": "2GHUvDWRjMSf",
-          },
-        ],
+        "variantCombo": "2GHUvDWRjMSf",
       },
     ],
-    "variants": [],
+    "variants": [
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "disabled",
+          "uuid": "2GHUvDWRjMSf",
+        },
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Disabled",
+        "key": "disabled",
+      },
+    ],
   },
   "Select": {
     "__type": "Component",
@@ -8922,13 +8555,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "P6ldrdX5EJky",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "disabled",
-            "uuid": "Eyo0gKoBRdvv",
-          },
-        ],
+        "variantCombo": "Eyo0gKoBRdvv",
       },
       {
         "__type": "VariantOverride",
@@ -8944,13 +8571,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "r0INMxhlNM0w",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "focusVisible",
-            "uuid": "aIoGbD6GZlXx",
-          },
-        ],
+        "variantCombo": "aIoGbD6GZlXx",
       },
     ],
     "variants": [
@@ -8971,6 +8592,37 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
           "name": "plain",
           "uuid": "AUJGtdMM0Zz4",
         },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "disabled",
+          "uuid": "Eyo0gKoBRdvv",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "focusVisible",
+          "uuid": "aIoGbD6GZlXx",
+        },
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focused",
+        "key": "focused",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focus Visible",
+        "key": "focusVisible",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Disabled",
+        "key": "disabled",
       },
     ],
   },
@@ -9113,16 +8765,24 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "91lbkEjbqr0d",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "disabled",
-            "uuid": "hrSV7nfEukqY",
-          },
-        ],
+        "variantCombo": "hrSV7nfEukqY",
       },
     ],
-    "variants": [],
+    "variants": [
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "disabled",
+          "uuid": "hrSV7nfEukqY",
+        },
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Disabled",
+        "key": "disabled",
+      },
+    ],
   },
   "Slider Thumb": {
     "__type": "Component",
@@ -9162,13 +8822,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "IeCipxoS434j",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "hovered",
-            "uuid": "ucGyFS9OrhDn",
-          },
-        ],
+        "variantCombo": "ucGyFS9OrhDn",
       },
       {
         "__type": "VariantOverride",
@@ -9184,16 +8838,60 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "IeCipxoS434j",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "focusVisible",
-            "uuid": "491p_KgJ7qOl",
-          },
-        ],
+        "variantCombo": "491p_KgJ7qOl",
       },
     ],
-    "variants": [],
+    "variants": [
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "hovered",
+          "uuid": "ucGyFS9OrhDn",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "focusVisible",
+          "uuid": "491p_KgJ7qOl",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "disabled",
+          "uuid": "J6mkmQk4SzTz",
+        },
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Dragging",
+        "key": "dragging",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Hovered",
+        "key": "hovered",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focused",
+        "key": "focused",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focus Visible",
+        "key": "focusVisible",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Disabled",
+        "key": "disabled",
+      },
+    ],
   },
   "Switch": {
     "__type": "Component",
@@ -9290,13 +8988,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "cmzAv8RO2am1",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "selected",
-            "uuid": "ZyuY04fkemtt",
-          },
-        ],
+        "variantCombo": "ZyuY04fkemtt",
       },
       {
         "__type": "VariantOverride",
@@ -9318,13 +9010,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "R4xTRuIAg4VS",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "disabled",
-            "uuid": "VrU0EvnWC9K3",
-          },
-        ],
+        "variantCombo": "VrU0EvnWC9K3",
       },
       {
         "__type": "VariantOverride",
@@ -9338,13 +9024,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "qOaYUalmx_Mw",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "readonly",
-            "uuid": "tFykyAahV3Rt",
-          },
-        ],
+        "variantCombo": "tFykyAahV3Rt",
       },
       {
         "__type": "VariantOverride",
@@ -9360,16 +9040,94 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "R4xTRuIAg4VS",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "focusVisible",
-            "uuid": "__eKKQ9gxlQv",
-          },
-        ],
+        "variantCombo": "__eKKQ9gxlQv",
       },
     ],
-    "variants": [],
+    "variants": [
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "hovered",
+          "uuid": "EESdiYI2E3sg",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "pressed",
+          "uuid": "g3nxpUSag90D",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "selected",
+          "uuid": "ZyuY04fkemtt",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "disabled",
+          "uuid": "VrU0EvnWC9K3",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "readonly",
+          "uuid": "tFykyAahV3Rt",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "focusVisible",
+          "uuid": "__eKKQ9gxlQv",
+        },
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Hovered",
+        "key": "hovered",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Pressed",
+        "key": "pressed",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focused",
+        "key": "focused",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focus Visible",
+        "key": "focusVisible",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Selected",
+        "key": "selected",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Disabled",
+        "key": "disabled",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Read Only",
+        "key": "readonly",
+      },
+    ],
   },
   "TestComponent": {
     "__type": "Component",
@@ -9874,13 +9632,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "NESDFXPGRUxY",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "disabled",
-            "uuid": "4xigtLZHyLD1",
-          },
-        ],
+        "variantCombo": "4xigtLZHyLD1",
       },
       {
         "__type": "VariantOverride",
@@ -9900,13 +9652,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "owbUg8BLCrEo",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "multiLine",
-            "uuid": "ujPUz5-pNQo3",
-          },
-        ],
+        "variantCombo": "ujPUz5-pNQo3",
       },
       {
         "__type": "VariantOverride",
@@ -9919,13 +9665,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "EiP28sViJ6pF",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "iconStart",
-            "uuid": "Y1wfrLkCK3tp",
-          },
-        ],
+        "variantCombo": "Y1wfrLkCK3tp",
       },
       {
         "__type": "VariantOverride",
@@ -9938,13 +9678,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "sy4BAFLD5x2S",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "iconEnd",
-            "uuid": "lZuHYDu-P997",
-          },
-        ],
+        "variantCombo": "lZuHYDu-P997",
       },
     ],
     "variants": [
@@ -9974,6 +9708,32 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
           "name": "iconEnd",
           "uuid": "lZuHYDu-P997",
         },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "disabled",
+          "uuid": "4xigtLZHyLD1",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "readonly",
+          "uuid": "3zwcaxQ7tSjZ",
+        },
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Disabled",
+        "key": "disabled",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Read Only",
+        "key": "readonly",
       },
     ],
   },
@@ -10395,13 +10155,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "PzECf6Nfa4vE",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "disabled",
-            "uuid": "_b-LhjWGnizr",
-          },
-        ],
+        "variantCombo": "_b-LhjWGnizr",
       },
       {
         "__type": "VariantOverride",
@@ -10417,13 +10171,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "PzECf6Nfa4vE",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "focused",
-            "uuid": "KsIohX0M8jCd",
-          },
-        ],
+        "variantCombo": "KsIohX0M8jCd",
       },
       {
         "__type": "VariantOverride",
@@ -10437,13 +10185,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "PzECf6Nfa4vE",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "soft",
-            "uuid": "0cXa8u_Fd6-c",
-          },
-        ],
+        "variantCombo": "0cXa8u_Fd6-c",
       },
       {
         "__type": "VariantOverride",
@@ -10456,18 +10198,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "PzECf6Nfa4vE",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "soft",
-            "uuid": "0cXa8u_Fd6-c",
-          },
-          {
-            "__type": "Variant",
-            "name": "hovered",
-            "uuid": "XVzC02ZqqV6l",
-          },
-        ],
+        "variantCombo": "0cXa8u_Fd6-c+XVzC02ZqqV6l",
       },
       {
         "__type": "VariantOverride",
@@ -10480,13 +10211,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "PzECf6Nfa4vE",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "plain",
-            "uuid": "9cJ3z_ZYGZvt",
-          },
-        ],
+        "variantCombo": "9cJ3z_ZYGZvt",
       },
       {
         "__type": "VariantOverride",
@@ -10499,18 +10224,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "PzECf6Nfa4vE",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "plain",
-            "uuid": "9cJ3z_ZYGZvt",
-          },
-          {
-            "__type": "Variant",
-            "name": "hovered",
-            "uuid": "XVzC02ZqqV6l",
-          },
-        ],
+        "variantCombo": "9cJ3z_ZYGZvt+XVzC02ZqqV6l",
       },
       {
         "__type": "VariantOverride",
@@ -10524,13 +10238,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "PzECf6Nfa4vE",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "top",
-            "uuid": "pUxG-pkjbXcJ",
-          },
-        ],
+        "variantCombo": "pUxG-pkjbXcJ",
       },
       {
         "__type": "VariantOverride",
@@ -10544,13 +10252,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "PzECf6Nfa4vE",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "right",
-            "uuid": "jFOHHIE_LIsW",
-          },
-        ],
+        "variantCombo": "jFOHHIE_LIsW",
       },
       {
         "__type": "VariantOverride",
@@ -10564,13 +10266,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "PzECf6Nfa4vE",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "bottom",
-            "uuid": "oRa7KNUAvba6",
-          },
-        ],
+        "variantCombo": "oRa7KNUAvba6",
       },
       {
         "__type": "VariantOverride",
@@ -10584,13 +10280,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "PzECf6Nfa4vE",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "left",
-            "uuid": "f-jiC3pxjmB0",
-          },
-        ],
+        "variantCombo": "f-jiC3pxjmB0",
       },
       {
         "__type": "VariantOverride",
@@ -10603,13 +10293,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "PzECf6Nfa4vE",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "left",
-            "uuid": "aIRXAYdM6pXb",
-          },
-        ],
+        "variantCombo": "aIRXAYdM6pXb",
       },
       {
         "__type": "VariantOverride",
@@ -10622,13 +10306,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "PzECf6Nfa4vE",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "right",
-            "uuid": "t5DeV--6wj_c",
-          },
-        ],
+        "variantCombo": "t5DeV--6wj_c",
       },
     ],
     "variants": [
@@ -10703,6 +10381,50 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
           "name": "right",
           "uuid": "t5DeV--6wj_c",
         },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "disabled",
+          "uuid": "_b-LhjWGnizr",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "hovered",
+          "uuid": "XVzC02ZqqV6l",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "focused",
+          "uuid": "KsIohX0M8jCd",
+        },
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focused",
+        "key": "focused",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focus Visible",
+        "key": "focusVisible",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Hovered",
+        "key": "hovered",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Disabled",
+        "key": "disabled",
       },
     ],
   },
@@ -10851,13 +10573,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "yx_4PVCh-WFR",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "focused",
-            "uuid": "0LqmmqQzQho-",
-          },
-        ],
+        "variantCombo": "0LqmmqQzQho-",
       },
       {
         "__type": "VariantOverride",
@@ -10870,13 +10586,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "yx_4PVCh-WFR",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "disabled",
-            "uuid": "zFI8C8uPgTTj",
-          },
-        ],
+        "variantCombo": "zFI8C8uPgTTj",
       },
       {
         "__type": "VariantOverride",
@@ -10890,13 +10600,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "yx_4PVCh-WFR",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "soft",
-            "uuid": "BYaTSYRbp5k-",
-          },
-        ],
+        "variantCombo": "BYaTSYRbp5k-",
       },
       {
         "__type": "VariantOverride",
@@ -10909,18 +10613,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "yx_4PVCh-WFR",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "soft",
-            "uuid": "BYaTSYRbp5k-",
-          },
-          {
-            "__type": "Variant",
-            "name": "hovered",
-            "uuid": "EdILTSznToW4",
-          },
-        ],
+        "variantCombo": "BYaTSYRbp5k-+EdILTSznToW4",
       },
       {
         "__type": "VariantOverride",
@@ -10933,13 +10626,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "yx_4PVCh-WFR",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "plain",
-            "uuid": "RVfUSn_4OlZE",
-          },
-        ],
+        "variantCombo": "RVfUSn_4OlZE",
       },
       {
         "__type": "VariantOverride",
@@ -10952,18 +10639,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "yx_4PVCh-WFR",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "plain",
-            "uuid": "RVfUSn_4OlZE",
-          },
-          {
-            "__type": "Variant",
-            "name": "hovered",
-            "uuid": "EdILTSznToW4",
-          },
-        ],
+        "variantCombo": "EdILTSznToW4+RVfUSn_4OlZE",
       },
       {
         "__type": "VariantOverride",
@@ -10977,13 +10653,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "yx_4PVCh-WFR",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "top",
-            "uuid": "uub7dYD9Ahd9",
-          },
-        ],
+        "variantCombo": "uub7dYD9Ahd9",
       },
       {
         "__type": "VariantOverride",
@@ -10997,13 +10667,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "yx_4PVCh-WFR",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "right",
-            "uuid": "YEvyTqML8ybV",
-          },
-        ],
+        "variantCombo": "YEvyTqML8ybV",
       },
       {
         "__type": "VariantOverride",
@@ -11017,13 +10681,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "yx_4PVCh-WFR",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "bottom",
-            "uuid": "DoKOv7moJkW2",
-          },
-        ],
+        "variantCombo": "DoKOv7moJkW2",
       },
       {
         "__type": "VariantOverride",
@@ -11037,13 +10695,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "yx_4PVCh-WFR",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "left",
-            "uuid": "EDke_10m8Cz5",
-          },
-        ],
+        "variantCombo": "EDke_10m8Cz5",
       },
       {
         "__type": "VariantOverride",
@@ -11056,13 +10708,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "yx_4PVCh-WFR",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "left",
-            "uuid": "PscEmlQHZllk",
-          },
-        ],
+        "variantCombo": "PscEmlQHZllk",
       },
       {
         "__type": "VariantOverride",
@@ -11075,13 +10721,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
             "uuid": "yx_4PVCh-WFR",
           },
         ],
-        "variants": [
-          {
-            "__type": "Variant",
-            "name": "right",
-            "uuid": "tbJOPfM389OI",
-          },
-        ],
+        "variantCombo": "tbJOPfM389OI",
       },
     ],
     "variants": [
@@ -11156,6 +10796,50 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
           "name": "right",
           "uuid": "tbJOPfM389OI",
         },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "focused",
+          "uuid": "0LqmmqQzQho-",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "disabled",
+          "uuid": "zFI8C8uPgTTj",
+        },
+      },
+      {
+        "__type": "ComponentVariant",
+        "variant": {
+          "__type": "Variant",
+          "name": "hovered",
+          "uuid": "EdILTSznToW4",
+        },
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focused",
+        "key": "focused",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Focus Visible",
+        "key": "focusVisible",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Hovered",
+        "key": "hovered",
+      },
+      {
+        "__type": "RootCodeComponentVariant",
+        "displayName": "Disabled",
+        "key": "disabled",
       },
     ],
   },

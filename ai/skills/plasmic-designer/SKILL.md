@@ -147,6 +147,16 @@ To use a component in insertHtml:
 - `<slot name="slotName">` children fill named slots; its children become the slot content.
 - **Only layout/position styles work on instances**: width, height, min/max sizing, margin, position, top/left/bottom/right, z-index, order, align-self, flex-grow/shrink, opacity, display (only `none`), transform, and transition properties. Background, padding, color, font, border, etc. are ignored on instances — use `changeElement` on the component's root element instead. This is a Plasmic platform constraint, not a preference.
 
+### Component Variants
+
+A component can be styled per variant combo: one or more global or component variants active together. The `variantCombo` field of `changeElement` and `insertHtml` is a string of variant identifiers joined by `+`, e.g. `uuidA+:hover`. It applies to the whole call; use separate calls for different combos. Omit it, or pass `""`, for the base variant. Each identifier is one of:
+
+- a variant's uuid;
+- a CSS pseudo-class selector such as `:hover`, for a state of the whole component;
+- a registered key such as `pressed`, when the component's root is a code component.
+
+Selectors and keys become variants on first use, and `read` lists them as `ComponentVariant`s without a `group`.
+
 ## Dynamic Data
 
 Text, attributes, and component props can be bound to runtime data — `$props`, `$state`, `$ctx` (page params/query), `$queries` / `$q` (data query results), and repetition locals (`currentItem`, `currentIndex`).

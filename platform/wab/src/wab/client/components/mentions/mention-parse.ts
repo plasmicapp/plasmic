@@ -2,6 +2,7 @@ import type {
   ParsedComponentScopedUiId,
   ParsedSiteScopedUiId,
 } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
+import { splitVariantComboKey, variantUuidsKey } from "@/wab/shared/Variants";
 import { USER_MENTION_REGEX } from "@/wab/shared/comments-utils";
 import {
   MENTION_TAGS_BY_NAME,
@@ -51,7 +52,8 @@ function parseModelMention(
 ): ParsedSiteScopedUiId | ParsedComponentScopedUiId | undefined {
   const parts = key.split("/");
   if (isComponentScopedMentionTag(tag)) {
-    const [componentUuid, uuid] = parts;
+    const [componentUuid, rawUuid] = parts;
+    const uuid = tag === "Combination" ? parseCombinationKey(rawUuid) : rawUuid;
     return parts.length === 2 && componentUuid && uuid
       ? { type: "ComponentScoped", tag, componentUuid, uuid }
       : undefined;
@@ -59,5 +61,12 @@ function parseModelMention(
   const [uuid] = parts;
   return parts.length === 1 && uuid
     ? { type: "SiteScoped", tag, uuid }
+    : undefined;
+}
+
+function parseCombinationKey(key: string | undefined) {
+  const variantUuids = key ? splitVariantComboKey(key) : [];
+  return variantUuids.length > 1 && variantUuids.every(Boolean)
+    ? variantUuidsKey(variantUuids)
     : undefined;
 }

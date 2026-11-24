@@ -189,9 +189,9 @@ import { isSlot, tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
 import { UserError } from "@/wab/shared/UserError";
 import {
   VariantCombo,
-  isPrivateStyleVariant,
   isScreenVariantGroup,
   isVariantSettingEmpty,
+  splitVariantComboKey,
 } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import type { ServerToClientEvents } from "@/wab/shared/api/socket";
@@ -868,14 +868,21 @@ export class StudioCtx extends WithDbCtx {
                 const variant = allComponentVariants(component).find(
                   (v) => v.uuid === parsed.uuid,
                 );
-                if (variant && isPrivateStyleVariant(variant)) {
-                  // An element state is edited on its element's design tab.
-                  spawn(this.setStudioFocusOnTpl(component, variant.forTpl));
-                  this.switchRightTab(RightTabKey.style);
-                } else {
+                if (!variant) {
                   this.switchToComponentArena(component);
                   this.switchRightTab(RightTabKey.component);
+                } else {
+                  spawn(this.setStudioFocusOnVariants(component, [variant]));
                 }
+                break;
+              }
+              case "Combination": {
+                const uuids = splitVariantComboKey(parsed.uuid);
+                const variants = [
+                  ...allComponentVariants(component),
+                  ...allGlobalVariants(this.site, { includeDeps: "direct" }),
+                ].filter((v) => uuids.includes(v.uuid));
+                spawn(this.setStudioFocusOnVariants(component, variants));
                 break;
               }
               case "ComponentVariantGroup":
@@ -3018,6 +3025,14 @@ export class StudioCtx extends WithDbCtx {
       threadId,
     });
     viewCtx.setStudioFocusByTpl(tpl);
+  }
+
+  async setStudioFocusOnVariants(component: Component, variants: VariantCombo) {
+    const viewCtx = await this.getViewCtxForComponent(component, variants);
+    this.switchRightTab(RightTabKey.component);
+    if (!this.focusedMode) {
+      this.tryZoomToFitFrame(viewCtx.arenaFrame());
+    }
   }
 
   getArenaFrameForSetOfVariants(

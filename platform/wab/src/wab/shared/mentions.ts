@@ -33,6 +33,7 @@ export const COMPONENT_SCOPED_MENTION_TAGS = [
   "ComponentServerQuery",
   "ComponentDataQuery",
   "Tpl",
+  "Combination",
 ] as const satisfies readonly ComponentScopedTag[];
 
 export type ComponentScopedMentionTag =

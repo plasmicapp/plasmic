@@ -1,3 +1,4 @@
+import type { VariantCombo } from "@/wab/shared/Variants";
 import {
   AnimationSequence,
   Component,
@@ -32,13 +33,16 @@ export type ComponentScopedModel =
   | ComponentVariantGroup
   | Param
   | Variant
-  | TplNode;
+  | TplNode
+  | VariantCombo;
 
 export type SiteScopedTag =
   Exclude<SiteScopedModel, Variant>["typeTag"] | "GlobalVariant";
 
 export type ComponentScopedTag =
-  Exclude<ComponentScopedModel, TplNode>["typeTag"] | "Tpl";
+  | Exclude<ComponentScopedModel, TplNode | VariantCombo>["typeTag"]
+  | "Tpl"
+  | "Combination";
 
 type Section = "PageMetaUrl" | "PageMetaUrlParams";
 

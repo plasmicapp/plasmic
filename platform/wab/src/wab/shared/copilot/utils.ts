@@ -10,17 +10,28 @@ import {
   VariantCombo,
   getAllVariantsForTpl,
   getBaseVariant,
+  isComponentStyleVariant,
+  splitVariantComboKey,
   validateCombo,
 } from "@/wab/shared/Variants";
+import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { ensure, maybe, uniqueName } from "@/wab/shared/common";
+import {
+  arrayEqIgnoreOrder,
+  ensure,
+  maybe,
+  uniqueName,
+  withoutNils,
+} from "@/wab/shared/common";
 import { getComponentArenaBaseFrame } from "@/wab/shared/component-arenas";
 import {
   GlobalVariantFrame,
   TransientComponentVariantFrame,
 } from "@/wab/shared/component-frame";
 import {
+  allCodeComponentVariants,
   isFrameComponent,
+  isPageComponent,
   tryGetComponentByUuid,
 } from "@/wab/shared/core/components";
 import { mkVar } from "@/wab/shared/core/lang";
@@ -29,6 +40,7 @@ import {
   getDedicatedArena,
   getReferencingFrames,
 } from "@/wab/shared/core/sites";
+import { getApplicableSelectors } from "@/wab/shared/core/styles";
 import { toFinalToken } from "@/wab/shared/core/tokens";
 import {
   EventHandlerKeyType,
@@ -56,6 +68,7 @@ import {
   serializeInvalidResource,
   type InvalidResourceJson,
 } from "@/wab/shared/web-exporter/schema";
+import { partition, uniq } from "lodash";
 import { Result, err, ok } from "neverthrow";
 
 /**
@@ -190,6 +203,146 @@ export function getComponentVariantCombo(
     throw error;
   }
   return valid;
+}
+
+export interface VariantComboParts {
+  variants: VariantCombo;
+  selectors: string[];
+  keys: string[];
+}
+
+export function splitVariantCombo(
+  site: Site,
+  component: Component,
+  variantCombo: string | undefined,
+): VariantComboParts {
+  const parts = variantCombo
+    ? splitVariantComboKey(variantCombo).filter(Boolean)
+    : [];
+  if (parts.length === 0) {
+    return { variants: [], selectors: [], keys: [] };
+  }
+  const [selectors, maybeUuids] = partition(uniq(parts), (v) =>
+    v.startsWith(":"),
+  );
+  const { variants, invalidUuids: maybeRegisteredKeys } = getVariantsByUuids(
+    maybeUuids,
+    { component, site },
+  );
+  const ccVariantKeys = codeComponentVariantKeys();
+  const [registeredVariantKeys, unknown] = partition(
+    uniq(maybeRegisteredKeys),
+    (key) => ccVariantKeys.includes(key),
+  );
+
+  const errors = withoutNils([selectorError(), notFoundError()]);
+  if (errors.length > 0) {
+    throw new Error(errors.join(" "));
+  }
+  const { error: comboError } = validateCombo(component, variants);
+  if (comboError) {
+    throw comboError;
+  }
+
+  const [interactionVariants, otherVariants] = partition(
+    variants,
+    isComponentStyleVariant,
+  );
+  return {
+    variants: otherVariants,
+    selectors: uniq([
+      ...interactionVariants.flatMap((v) => v.selectors),
+      ...selectors,
+    ]),
+    keys: registeredVariantKeys,
+  };
+
+  function codeComponentVariantKeys() {
+    const root = component.tplTree;
+    return !isPageComponent(component) &&
+      isTplRootWithCodeComponentVariants(root)
+      ? Object.keys(root.component.codeComponentMeta.variants)
+      : [];
+  }
+
+  function selectorError() {
+    if (selectors.length === 0) {
+      return undefined;
+    }
+    const root = component.tplTree;
+    const name = component.name;
+    const list = selectors.map((s) => `"${s}"`).join(", ");
+    if (isPageComponent(component)) {
+      return `Selector(s) ${list} don't apply to pages; "${name}" is a page. Use variant groups instead.`;
+    }
+    if (isTplRootWithCodeComponentVariants(root)) {
+      return `Selector(s) ${list} don't apply to "${name}"; use its RootCodeComponentVariant keys instead.`;
+    }
+    if (!isTplTag(root)) {
+      return `Selector(s) ${list} need a tag root; "${name}" has a component instance as its root, which supports neither selectors nor registered keys.`;
+    }
+    return unsupportedSelectorsError(selectors, root.tag, {
+      forElement: false,
+      isRoot: true,
+    });
+  }
+
+  function notFoundError() {
+    if (unknown.length === 0) {
+      return undefined;
+    }
+    return `Variant(s) not found: ${unknown.map((u) => `"${u}"`).join(", ")}.${
+      ccVariantKeys.length > 0
+        ? ` Registered keys: ${ccVariantKeys.join(", ")}.`
+        : ""
+    }`;
+  }
+}
+
+export function unsupportedSelectorsError(
+  selectors: string[],
+  tag: string,
+  { forElement, isRoot }: { forElement: boolean; isRoot: boolean },
+): string | undefined {
+  const applicable = getApplicableSelectors(tag, forElement, isRoot).map(
+    (option) => option.cssSelector,
+  );
+  const unsupported = selectors.filter((s) => !applicable.includes(s));
+  if (unsupported.length === 0) {
+    return undefined;
+  }
+  const list = unsupported.map((s) => `"${s}"`).join(", ");
+  if (forElement && isRoot) {
+    const supported =
+      applicable.length > 0 ? ` Supported: ${applicable.join(", ")}.` : "";
+    return `Unsupported selector(s) ${list} for the root <${tag}> element.${supported} For the component's states, omit pseudoSelectors and set variantCombo instead, e.g. variantCombo: "${unsupported[0]}".`;
+  }
+  const target = forElement ? `a <${tag}> element` : `a <${tag}> root`;
+  return `Unsupported selector(s) ${list} for ${target}. Supported: ${
+    applicable.join(", ") || "none"
+  }.`;
+}
+
+/** Returns the combo's variants, creating any that don't exist yet. */
+export function ensureVariantCombo(
+  tplMgr: TplMgr,
+  component: Component,
+  { variants, selectors, keys }: VariantComboParts,
+): VariantCombo {
+  const combo = [...variants];
+  if (selectors.length > 0) {
+    combo.push(tplMgr.createStyleVariant(component, selectors)[0]);
+  }
+  const root = component.tplTree;
+  if (keys.length > 0 && isTplRootWithCodeComponentVariants(root)) {
+    combo.push(
+      allCodeComponentVariants(component).find((variant) =>
+        arrayEqIgnoreOrder(variant.codeComponentVariantKeys, keys),
+      ) ??
+        tplMgr.createCodeComponentVariant(component, root.component.name, keys),
+    );
+  }
+  return combo.length > 0 ? combo : [getBaseVariant(component)];
 }
 
 /**

@@ -900,11 +900,18 @@ export function ensureBaseRuleVariantSetting(
   }
 }
 
+export const VARIANT_COMBO_KEY_SEPARATOR = "+";
+
+export function variantUuidsKey(uuids: readonly string[]) {
+  return [...uuids].sort().join(VARIANT_COMBO_KEY_SEPARATOR);
+}
+
+export function splitVariantComboKey(key: string) {
+  return key.split(VARIANT_COMBO_KEY_SEPARATOR);
+}
+
 export function variantComboKey(combo: VariantCombo) {
-  return combo
-    .map((v) => v.uuid)
-    .sort()
-    .join("-");
+  return variantUuidsKey(combo.map((v) => v.uuid));
 }
 
 export function validateCombo(

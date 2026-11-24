@@ -1,5 +1,6 @@
 import { dataTokenTypes } from "@/wab/commons/DataToken";
 import { tokenTypes } from "@/wab/commons/StyleToken";
+import { VARIANT_COMBO_KEY_SEPARATOR } from "@/wab/shared/Variants";
 import { dataQueryArgSchema } from "@/wab/shared/copilot/dynamic-value-input";
 import { JsonValue } from "@/wab/shared/core/lang";
 import {
@@ -221,7 +222,7 @@ export function componentSchema() {
       .describe("Variant groups; their variants are listed under variants."),
     variants: z
       .array(variantDefSchema())
-      .describe("Component variant definitions (group + element variants)."),
+      .describe("Component variant definitions."),
     states: z
       .array(stateSchema())
       .optional()
@@ -659,7 +660,7 @@ export type ComponentVariantGroupJson = z.infer<
 export function variantDefSchema() {
   return z.discriminatedUnion("__type", [
     componentVariantDefSchema(),
-    elementVariantDefSchema(),
+    rootCodeComponentVariantDefSchema(),
   ]);
 }
 export type VariantDefJson = z.infer<ReturnType<typeof variantDefSchema>>;
@@ -668,26 +669,26 @@ export function componentVariantDefSchema() {
   return z.object({
     __type: z.literal("ComponentVariant"),
     variant: variantSchema().describe("Variant identity."),
-    group: z.string().describe("Owning variant group name."),
+    group: z.string().optional().describe("Owning variant group name."),
   });
 }
 
-export function elementVariantDefSchema() {
+export function rootCodeComponentVariantDefSchema() {
   return z.object({
-    __type: z.literal("ElementVariant"),
-    variant: variantSchema().describe("Variant identity."),
-    elementUuid: z
-      .string()
-      .describe("UUID of the element this style variant targets."),
+    __type: z.literal("RootCodeComponentVariant"),
+    key: z.string().describe("Registered variant key."),
+    displayName: z.string().describe("Display name shown in the studio."),
   });
 }
 
 export function variantOverrideSchema() {
   return z.object({
     __type: z.literal("VariantOverride"),
-    variants: z
-      .array(variantSchema())
-      .describe("The variant combination these overrides apply to."),
+    variantCombo: z
+      .string()
+      .describe(
+        `Variant uuids joined by "${VARIANT_COMBO_KEY_SEPARATOR}"; uuids not listed in variants are global variants (named in the project read). "" for element states on the base variant.`,
+      ),
     elements: z
       .array(elementOverrideSchema())
       .describe("Per-element overrides activated by these variants."),
@@ -702,6 +703,10 @@ export function elementOverrideSchema() {
   return z.object({
     __type: z.literal("ElementOverride"),
     uuid: z.string().describe("Target element (TplNode) UUID."),
+    pseudoSelectors: z
+      .array(z.string())
+      .optional()
+      .describe("The element's own states these overrides apply in."),
     styles: z
       .record(z.string(), z.string())
       .optional()
@@ -1097,7 +1102,11 @@ export type GlobalVariantGroupJson = z.infer<
 export function variantSchema() {
   return z.object({
     __type: z.literal("Variant"),
-    name: z.string().describe("Variant name."),
+    name: z
+      .string()
+      .describe(
+        "Variant name; for interaction variants, the activating selectors; for registered variants, their keys.",
+      ),
     uuid: z.string().describe("Variant UUID."),
   });
 }

@@ -30,6 +30,21 @@ describe("parseMention", () => {
     });
   });
 
+  it("parses a combination keyed by its variant uuids", () => {
+    expect(parseMention("Combination:comp1/v1+v2")).toEqual({
+      type: "ComponentScoped",
+      tag: "Combination",
+      componentUuid: "comp1",
+      uuid: "v1+v2",
+    });
+  });
+
+  it("rejects a combination key without two variant uuids", () => {
+    expect(parseMention("Combination:comp1/v1")).toBeUndefined();
+    expect(parseMention("Combination:comp1/v1+")).toBeUndefined();
+    expect(parseMention("Combination:comp1/v1-v2")).toBeUndefined();
+  });
+
   it("parses a user mention", () => {
     expect(parseMention("abc@xyz.com")).toEqual({
       type: "user",

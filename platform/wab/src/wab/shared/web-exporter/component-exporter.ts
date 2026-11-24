@@ -1,19 +1,19 @@
 import { isSlot } from "@/wab/shared/SlotUtils";
 import {
-  VariantCombo,
   isBaseVariant,
   isCodeComponentVariant,
   isPrivateStyleVariant,
   isStandaloneVariantGroup,
   isStyleVariant,
   tryGetBaseVariantSetting,
-  tryGetVariantSetting,
+  tryGetPrivateStyleVariant,
   variantComboKey,
 } from "@/wab/shared/Variants";
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
-import { assert, switchType } from "@/wab/shared/common";
+import { assert, switchType, withoutNils } from "@/wab/shared/common";
 import { exprToInterpolatedString } from "@/wab/shared/copilot/dynamic-value-input";
 import {
+  allComponentStyleOrCodeComponentVariants,
   isPageComponent,
   tryGetVariantGroupValueFromArg,
 } from "@/wab/shared/core/components";
@@ -36,6 +36,7 @@ import {
   flattenTpls,
   getAllEventHandlersOfAttrType,
   getAllEventHandlersOfParamType,
+  isTplCodeComponent,
   isTplComponent,
   isTplTag,
   isTplTextBlock,
@@ -126,6 +127,7 @@ import {
   mkXmlElement,
   toXml,
 } from "@/wab/shared/web-exporter/xml-utils";
+import { groupBy, uniqBy } from "lodash";
 
 /**
  * Renders a tpl subtree to HTML markup, used as the `baseVariantTplTree` string
@@ -800,6 +802,22 @@ function variantJson(variant: Variant): VariantJson {
   };
 }
 
+function buildRootCodeComponentVariants(
+  component: Component,
+): VariantDefJson[] {
+  const root = component.tplTree;
+  if (!isTplCodeComponent(root)) {
+    return [];
+  }
+  return Object.entries(root.component.codeComponentMeta.variants).map(
+    ([key, meta]) => ({
+      __type: "RootCodeComponentVariant",
+      key,
+      displayName: meta.displayName,
+    }),
+  );
+}
+
 function buildComponentVariantDefs(component: Component): VariantDefJson[] {
   const result: VariantDefJson[] = [];
 
@@ -814,14 +832,14 @@ function buildComponentVariantDefs(component: Component): VariantDefJson[] {
     }
   }
 
-  for (const variant of component.variants.filter(isPrivateStyleVariant)) {
+  for (const variant of allComponentStyleOrCodeComponentVariants(component)) {
     result.push({
-      __type: "ElementVariant",
+      __type: "ComponentVariant",
       variant: variantJson(variant),
-      elementUuid: variant.forTpl.uuid,
     });
   }
 
+  result.push(...buildRootCodeComponentVariants(component));
   return result;
 }
 
@@ -851,9 +869,11 @@ function buildElementOverride(
   if (Object.keys(styles).length === 0 && Object.keys(attrs).length === 0) {
     return undefined;
   }
+  const selectors = tryGetPrivateStyleVariant(vs.variants)?.selectors;
   return {
     __type: "ElementOverride",
     uuid: tpl.uuid,
+    ...(selectors ? { pseudoSelectors: [...selectors] } : {}),
     ...(Object.keys(styles).length > 0 ? { styles } : {}),
     ...(Object.keys(attrs).length > 0 ? { attrs } : {}),
   };
@@ -866,27 +886,32 @@ function buildVariantOverrides(
   if (!component.tplTree) {
     return undefined;
   }
-  const tpls = flattenTpls(component.tplTree);
-  const combos = new Map<string, VariantCombo>();
-  for (const tpl of tpls) {
-    for (const vs of tpl.vsettings) {
-      if (!isBaseVariant(vs.variants)) {
-        combos.set(variantComboKey(vs.variants), vs.variants);
-      }
-    }
-  }
-  const variantOverrides = sortedVariantCombos(
-    [...combos.values()],
+  const settings = flattenTpls(component.tplTree).flatMap((tpl) =>
+    tpl.vsettings
+      .filter((vs) => !isBaseVariant(vs.variants))
+      .map((vs) => ({
+        tpl,
+        vs,
+        combo: vs.variants.filter((v) => !isPrivateStyleVariant(v)),
+      })),
+  );
+  const settingsByCombo = groupBy(settings, (s) => variantComboKey(s.combo));
+  const combos = sortedVariantCombos(
+    uniqBy(
+      settings.map((s) => s.combo).filter((combo) => combo.length > 0),
+      variantComboKey,
+    ),
     makeVariantComboSorter(site, component),
-  )
-    .map((combo): VariantOverrideJson => ({
+  );
+  const variantOverrides = ["", ...combos.map(variantComboKey)]
+    .map((variantCombo): VariantOverrideJson => ({
       __type: "VariantOverride",
-      variants: combo.map(variantJson),
-      elements: tpls.flatMap((tpl) => {
-        const vs = tryGetVariantSetting(tpl, combo);
-        const element = vs && buildElementOverride(tpl, vs);
-        return element ? [element] : [];
-      }),
+      variantCombo,
+      elements: withoutNils(
+        (settingsByCombo[variantCombo] ?? []).map(({ tpl, vs }) =>
+          buildElementOverride(tpl, vs),
+        ),
+      ),
     }))
     .filter((o) => o.elements.length > 0);
   return variantOverrides.length > 0 ? variantOverrides : undefined;

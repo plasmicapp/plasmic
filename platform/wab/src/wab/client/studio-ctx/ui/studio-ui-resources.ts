@@ -11,7 +11,15 @@ import {
   UiId,
   parseModelUiId,
 } from "@/wab/client/studio-ctx/ui/studio-ui-ids";
-import { getBaseVariant, makeVariantName } from "@/wab/shared/Variants";
+import { getArenaFrameCellsInGrid } from "@/wab/shared/Arenas";
+import {
+  VariantCombo,
+  getBaseVariant,
+  makeVariantName,
+  variantComboKey,
+} from "@/wab/shared/Variants";
+import { findNonEmptyCombos } from "@/wab/shared/cached-selectors";
+import { isReadonlyArray } from "@/wab/shared/collections";
 import {
   assertNever,
   ensure,
@@ -30,6 +38,7 @@ import {
   allAnimationSequencesDict,
   allGlobalVariantGroups,
   allMixins,
+  getDedicatedArena,
   tryGetGlobalVariantByUuid,
   tryGetImageAssetByUuid,
 } from "@/wab/shared/core/sites";
@@ -56,6 +65,7 @@ import {
   isKnownStateParam,
 } from "@/wab/shared/model/classes";
 import * as Comlink from "comlink";
+import { uniqBy } from "lodash";
 import { reaction } from "mobx";
 import * as React from "react";
 
@@ -150,7 +160,7 @@ export function resolveResource(
       return (
         owner &&
         maybe(
-          findComponentScoped(owner, parsed.tag, parsed.uuid),
+          findComponentScoped(site, owner, parsed.tag, parsed.uuid),
           (resource) => ({
             resource,
             owner,
@@ -161,15 +171,46 @@ export function resolveResource(
   }
 }
 
+export function mentionableCombinations(
+  site: Site,
+  component: Component,
+): VariantCombo[] {
+  const arena = getDedicatedArena(site, component);
+  return uniqBy(
+    [
+      ...findNonEmptyCombos(component),
+      // For combos that have a frame but no vsettings
+      ...(arena
+        ? getArenaFrameCellsInGrid(arena.customMatrix)
+            .map((cell) => cell.cellKey)
+            .filter(
+              (key): key is Variant[] => Array.isArray(key) && key.length > 1,
+            )
+        : []),
+    ],
+    variantComboKey,
+  );
+}
+
+function baseRsh(owner: Component | undefined, tpl: TplNode) {
+  const baseVariant = getBaseVariant(
+    ensure(owner, "a Tpl is always component-scoped"),
+  );
+  return getEffectiveVariantSetting(tpl, [baseVariant]).rsh();
+}
+
+export function makeVariantComboName(combo: VariantCombo, site: Site) {
+  return combo.map((variant) => makeVariantName({ variant, site })).join(" + ");
+}
+
 export function resolveResourceLabel(
   site: Site,
   uiId: ModelUiId,
 ): string | undefined {
   return maybe(resolveResource(site, uiId), ({ resource, owner }) => {
-    const baseRsh = (tpl: TplNode) =>
-      getEffectiveVariantSetting(tpl, [
-        getBaseVariant(ensure(owner, "a Tpl is always component-scoped")),
-      ]).rsh();
+    if (isReadonlyArray(resource)) {
+      return makeVariantComboName(resource, site);
+    }
     return switchType(resource)
       .when(
         [
@@ -192,12 +233,7 @@ export function resolveResourceLabel(
         [GlobalVariantGroup, ComponentVariantGroup],
         (group) => group.param.variable.name,
       )
-      .when(Variant, (variant) => {
-        const name = makeVariantName({ variant, site });
-        return variant.forTpl
-          ? `${getTplNodeLabel(variant.forTpl, baseRsh(variant.forTpl))}: ${name}`
-          : name;
-      })
+      .when(Variant, (variant) => makeVariantName({ variant, site }))
       .when([ComponentDataQuery, ComponentServerQuery], (q) => q.name)
       .when(Param, (p) => {
         if (!isKnownStateParam(p)) {
@@ -209,10 +245,10 @@ export function resolveResourceLabel(
         const name = getStateDisplayName(p.state, "short");
         const { tplNode } = p.state;
         return tplNode
-          ? `${getTplNodeLabel(tplNode, baseRsh(tplNode))}: ${name}`
+          ? `${getTplNodeLabel(tplNode, baseRsh(owner, tplNode))}: ${name}`
           : name;
       })
-      .when(TplNode, (tpl) => getTplNodeLabel(tpl, baseRsh(tpl)))
+      .when(TplNode, (tpl) => getTplNodeLabel(tpl, baseRsh(owner, tpl)))
       .result();
   });
 }
@@ -255,6 +291,7 @@ function findSiteScoped(
 }
 
 function findComponentScoped(
+  site: Site,
   owner: Component,
   tag: ComponentScopedTag,
   uuid: string,
@@ -276,6 +313,10 @@ function findComponentScoped(
       return owner.serverQueries.find((q) => q.uuid === uuid);
     case "Tpl":
       return tryGetTplByUuid(owner, uuid);
+    case "Combination":
+      return mentionableCombinations(site, owner).find(
+        (combo) => variantComboKey(combo) === uuid,
+      );
     default:
       return assertNever(tag);
   }

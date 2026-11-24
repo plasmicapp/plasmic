@@ -14,6 +14,7 @@ import type {
   Variant,
   VariantGroup,
 } from "@/wab/shared/model/classes";
+import { isKnownVariant } from "@/wab/shared/model/classes";
 import { Result, err, ok } from "neverthrow";
 
 export interface UsageSummary {
@@ -142,5 +143,11 @@ export async function deleteResourcesWithUsages<R extends DeletableResource>(
 }
 
 function getDeletableResourceLabel(resource: DeletableResource) {
+  if (isKnownVariant(resource) && !resource.name) {
+    return [
+      ...(resource.selectors ?? []),
+      ...(resource.codeComponentVariantKeys ?? []),
+    ].join(", ");
+  }
   return "name" in resource ? resource.name : resource.typeTag;
 }

@@ -4,6 +4,7 @@ import {
   ensureVariantSetting,
   getBaseVariant,
   mkVariant,
+  variantComboKey,
 } from "@/wab/shared/Variants";
 import { generateSiteFromBundle } from "@/wab/shared/__testonly__/site-tests-utils";
 import { Bundle } from "@/wab/shared/bundler";
@@ -122,13 +123,13 @@ describe("Component Serialization", () => {
     const result = buildComponentResource(component, { site: testSite });
     expect(
       result.variantSettings?.map((o) => ({
-        variants: o.variants.map((v) => v.name),
+        variantCombo: o.variantCombo,
         color: o.elements[0].styles?.color,
       })),
     ).toEqual([
-      { variants: ["dark"], color: "white" },
-      { variants: ["large"], color: "blue" },
-      { variants: ["rounded", "large"], color: "red" },
+      { variantCombo: variantComboKey([dark]), color: "white" },
+      { variantCombo: variantComboKey([large]), color: "blue" },
+      { variantCombo: variantComboKey([rounded, large]), color: "red" },
     ]);
   });
 

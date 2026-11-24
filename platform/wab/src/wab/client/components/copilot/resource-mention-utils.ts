@@ -1,14 +1,20 @@
 import { matchScore } from "@/wab/client/components/mentions/mention-query";
 
 import { mkMentionRaw } from "@/wab/client/components/mentions/mention-parse";
+import {
+  makeVariantComboName,
+  mentionableCombinations,
+} from "@/wab/client/studio-ctx/ui/studio-ui-resources";
 import { MIXIN_LOWER } from "@/wab/shared/Labels";
 import {
   getBaseVariant,
   getVariantGroupName,
+  isPrivateStyleVariant,
   isScreenVariantGroup,
   isStandaloneVariant,
   isStandaloneVariantGroup,
   makeVariantName,
+  variantComboKey,
 } from "@/wab/shared/Variants";
 import { isNonNil, withoutNils } from "@/wab/shared/common";
 import {
@@ -199,23 +205,29 @@ function mkComponentScopedResources(
     }));
   resources.push(...naturalSortByName(groups));
 
-  const variants = allComponentVariants(component).map((variant) => ({
-    tag: "Variant" as const,
-    uuid: variant.uuid,
-    componentUuid,
-    name: makeVariantName({ variant, site }),
-    // Show the group name as the detail, nothing for standalone groups
-    detail: isStandaloneVariant(variant)
-      ? undefined
-      : (getVariantGroupName(variant) ??
-        (variant.forTpl
-          ? getTplNodeLabel(
-              variant.forTpl,
-              getEffectiveVariantSetting(variant.forTpl, [baseVariant]).rsh(),
-            )
-          : undefined)),
-  }));
+  const variants = allComponentVariants(component)
+    .filter((variant) => !isPrivateStyleVariant(variant))
+    .map((variant) => ({
+      tag: "Variant" as const,
+      uuid: variant.uuid,
+      componentUuid,
+      name: makeVariantName({ variant, site }),
+      // Show the group name as the detail, nothing for standalone groups
+      detail: isStandaloneVariant(variant)
+        ? undefined
+        : getVariantGroupName(variant),
+    }));
   resources.push(...naturalSortByName(variants));
+
+  const combinations = mentionableCombinations(site, component).map(
+    (combo) => ({
+      tag: "Combination" as const,
+      uuid: variantComboKey(combo),
+      componentUuid,
+      name: makeVariantComboName(combo, site),
+    }),
+  );
+  resources.push(...naturalSortByName(combinations));
 
   return resources;
 }
@@ -419,6 +431,8 @@ function mentionSearchKeywords(resource: MentionableResource): string[] {
       return ["variant group"];
     case "GlobalVariantGroup":
       return ["global variant group", "variant group"];
+    case "Combination":
+      return ["combination", "variant"];
     case "PropParam":
       return ["prop"];
     case "StateParam":
