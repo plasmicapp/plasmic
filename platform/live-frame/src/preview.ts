@@ -5,6 +5,7 @@ export type PreviewRender =
   | {
       root: string;
       isPage: boolean;
+      defaultCss: string;
       depCss: string[];
       propsModule: string;
       globalContexts?: string;
@@ -39,6 +40,10 @@ export function createPreview(
     if ("run" in spec) {
       return require(spec.run).__run();
     }
+    // CSS cascades in first-require order, and components import the project
+    // CSS (via their style tokens provider) before the default styles. Load the
+    // default styles first so their resets don't override the project's.
+    require(spec.defaultCss);
     spec.depCss.forEach(require);
     const Root = require(spec.root).default;
     const initialProps: Values = require(spec.propsModule).default;
