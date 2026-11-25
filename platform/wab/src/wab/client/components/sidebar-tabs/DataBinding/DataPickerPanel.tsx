@@ -48,6 +48,7 @@ export function DataPickerPanelProvider(props: { children?: React.ReactNode }) {
 interface DataPickerTriggerProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
+  onPopoverClosed?: () => void;
   /** Tab label; says which field is being edited, e.g. `span › Content`. */
   title: string;
   picker: DataPickerProps;
@@ -78,7 +79,7 @@ const DataPickerPopoverTrigger = React.forwardRef<
   DataPickerTriggerHandle,
   DataPickerTriggerProps
 >(function DataPickerPopoverTrigger(
-  { visible, setVisible, picker, children },
+  { visible, setVisible, onPopoverClosed, picker, children },
   ref,
 ) {
   React.useImperativeHandle(ref, () => ({ open: () => setVisible(true) }), [
@@ -126,6 +127,11 @@ const DataPickerPopoverTrigger = React.forwardRef<
           } else {
             setVisible(false);
           }
+        }
+      }}
+      afterOpenChange={(open) => {
+        if (!open) {
+          onPopoverClosed?.();
         }
       }}
       destroyTooltipOnHide={true}
