@@ -6,7 +6,6 @@ import {
   coalesce,
   ensure,
   ensureInstance,
-  filterFalsy,
   isLiteralObject,
   maybe,
   mkShortId,
@@ -19,16 +18,18 @@ import { InstUtil } from "@/wab/shared/model/InstUtil";
 import * as classesModule from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
 import {
+  Class,
   Field,
   MetaRuntime,
   Type,
   checkEqKeys,
+  isModelInst,
   isStrongRefField,
   isWeakRefField,
   toTs,
 } from "@/wab/shared/model/model-meta";
 import { conformsToType } from "@/wab/shared/model/model-util";
-import { isArray, isEmpty, isNil, isObject, uniq } from "lodash";
+import { isArray, isObject, uniq } from "lodash";
 import { Result, err, ok } from "neverthrow";
 
 export type { Bundle, BundledInst };
@@ -70,10 +71,7 @@ function visitFieldRefs(valueOrRef: any, visitRef: (ref: Ref) => void) {
   }
 }
 
-/**
- * Similar to `bundler._fieldVals`, but doesn't return anything and iterates
- * over a bundled instance, visiting all references to other instances
- */
+/** Visits references in the selected fields of a bundled instance. */
 export function visitRefsInFields(
   bundledInst: any,
   visitRef: (fieldRef: Ref, field: Field) => void,
@@ -427,6 +425,62 @@ export function checkBundleFields(bundle: Bundle, iidsToCheck?: string[]) {
   }
 }
 
+interface GatheredInst {
+  iid: string;
+  json: BundledInst;
+  deps?: string[];
+}
+
+// Preserve own __proto__ keys when copying maps and instance IDs.
+function setOwnProperty(obj: object, key: string, value: unknown) {
+  if (key === "__proto__") {
+    Object.defineProperty(obj, key, {
+      value,
+      enumerable: true,
+      writable: true,
+      configurable: true,
+    });
+  } else {
+    obj[key] = value;
+  }
+}
+
+function bundleFieldVal(
+  val: any,
+  field: Field,
+  visitInst: (inst: classesModule.ObjInst, field: Field) => any,
+) {
+  if (val == null) {
+    return null;
+  } else if (Array.isArray(val)) {
+    // Holes become undefined
+    const copy = new Array(val.length);
+    for (let i = 0; i < val.length; i++) {
+      const x = val[i];
+      copy[i] = isModelInst(x)
+        ? visitInst(x as classesModule.ObjInst, field)
+        : x;
+    }
+    return copy;
+  } else if (isLiteralObject(val)) {
+    const copy = {};
+    const keys = Object.keys(val);
+    for (let i = 0; i < keys.length; i++) {
+      const x = val[keys[i]];
+      setOwnProperty(
+        copy,
+        keys[i],
+        isModelInst(x) ? visitInst(x as classesModule.ObjInst, field) : x,
+      );
+    }
+    return copy;
+  } else {
+    return isModelInst(val)
+      ? visitInst(val as classesModule.ObjInst, field)
+      : val;
+  }
+}
+
 // TODO fix mem leak, should track entire bundles so that they can be wiped
 export class Bundler {
   protected _rt: MetaRuntime;
@@ -453,76 +507,70 @@ export class Bundler {
 
   getNewIid = () => mkShortId();
 
-  /**
-   * Maps `visitInst` over the field values of the argument `inst`.
-   *
-   * Calls `visitInst` on all field values of the argument `inst` that are
-   * instances of runtime classes.  If a field value is a List, Set or Map,
-   * then members of those collections are also visited if they are also
-   * instances of runtime classes.  Note this is not recursive; we only
-   * go over the field values for the argument `inst`.
-   *
-   * The returned value is a list of tuples; first element is the field,
-   * and second element is the result of calling `visitInst` on that field
-   * value.  Field values that are not instances are left intact and
-   * also returned; we just don't call `visitInst` on them.
-   */
-  protected _fieldVals(
+  private _ctorToBundledClass = new Map<
+    Function,
+    { cls: Class; fields: readonly Field[] }
+  >();
+
+  private _bundledClass(inst: classesModule.ObjInst) {
+    let entry = this._ctorToBundledClass.get(inst.constructor);
+    if (!entry) {
+      const cls = this._instUtil.getInstClass(inst);
+      entry = {
+        cls,
+        fields: this._rt
+          .allFields(cls)
+          .filter((f) => !f.annotations.includes("Transient")),
+      };
+      this._ctorToBundledClass.set(inst.constructor, entry);
+    }
+    return entry;
+  }
+
+  private _assertFieldType(cls: Class, f: Field, val: any) {
+    if (!conformsToType(val, f.type, this._instUtil)) {
+      assert(
+        false,
+        `Expected type ${toTs(f.type)} for field ${cls.name}.${
+          f.name
+        } value ${val} ${
+          this._instUtil.isObjInst(val)
+            ? `(${this._instUtil.getInstClassName(val)})`
+            : ""
+        }`.trim(),
+      );
+    }
+  }
+
+  protected _typeCheckFields(inst: classesModule.ObjInst) {
+    const { cls, fields } = this._bundledClass(inst);
+    for (let i = 0; i < fields.length; i++) {
+      const f = fields[i];
+      this._assertFieldType(cls, f, inst[f.name]);
+    }
+  }
+
+  /** Writes fields in schema order, replacing model instances with references. */
+  protected _bundleFields(
     inst: classesModule.ObjInst,
     visitInst: (inst: classesModule.ObjInst, field: Field) => any,
-    fields?: string[],
+    json: Record<string, any>,
+    fields?: readonly string[],
     opts?: { noTypeCheck?: boolean },
   ) {
-    const cls = this._instUtil.getInstClass(inst);
-    const maybeVisit = (x: {} | null | undefined, field: Field) => {
-      if (x && this._instUtil.isObjInst(x)) {
-        return visitInst(x as classesModule.ObjInst, field);
-      } else {
-        return x;
+    const { cls, fields: bundledFields } = this._bundledClass(inst);
+    const typeCheck = !opts?.noTypeCheck;
+    for (let i = 0; i < bundledFields.length; i++) {
+      const f = bundledFields[i];
+      if (fields && !fields.includes(f.name)) {
+        continue;
       }
-    };
-    return this._rt
-      .allFields(cls)
-      .filter(
-        (f) =>
-          (!fields || fields.includes(f.name)) &&
-          !f.annotations.includes("Transient"),
-      )
-      .map((f) => {
-        const val = inst[f.name];
-        if (!opts?.noTypeCheck) {
-          assert(conformsToType(val, f.type, this._instUtil), () =>
-            `Expected type ${toTs(f.type)} for field ${cls.name}.${
-              f.name
-            } value ${val} ${
-              this._instUtil.isObjInst(val)
-                ? `(${this._instUtil.getInstClassName(val)})`
-                : ""
-            }`.trim(),
-          );
-        }
-        if (f.type.type === "Optional" && (val === null || val === undefined)) {
-          return tuple(f, val);
-        } else if (isArray(val)) {
-          return tuple(
-            f,
-            [...val].map((x) => maybeVisit(x, f)),
-          );
-        } else if (isLiteralObject(val)) {
-          return tuple(
-            f,
-            Object.fromEntries(
-              Object.keys(val || {}).map((k) => {
-                const v = val[k];
-
-                return tuple(k, maybeVisit(v, f));
-              }),
-            ),
-          );
-        } else {
-          return tuple(f, maybeVisit(val, f));
-        }
-      });
+      const val = inst[f.name];
+      if (typeCheck) {
+        this._assertFieldType(cls, f, val);
+      }
+      json[f.name] = bundleFieldVal(val, f, visitInst);
+    }
   }
 
   addrOf(obj: classesModule.ObjInst): Addr | undefined {
@@ -548,105 +596,55 @@ export class Bundler {
     return [...this._uuid2root.keys()].sort();
   }
 
-  /**
-   * Gathers all "internal" instances under the root tree.  Internal means that
-   * an instance does not belong to another uuid that we know about.  For
-   * instances that we don't have addrs yet, we also create one.
-   *
-   * Returns a mapping from uuid to ObjInst for internal instances.
-   */
-  private _gatherInternalInstsAndAssignAddrs(
-    root: classesModule.ObjInst,
-    uuid: string,
-  ): Record<number, classesModule.ObjInst> {
-    const map = {};
-    const visitInst = (inst: classesModule.ObjInst) => {
-      if (inst.uid in map) {
-        return;
-      }
-      let addr = this._uid2addr.get(inst.uid);
-      if (addr && addr.uuid !== uuid) {
-        // This instance belongs to another uuid
-        return;
-      }
-
-      if (!addr) {
-        // No address for this instance yet; create one!
-        addr = { uuid, iid: this.getNewIid() };
-        this._uid2addr.set(inst.uid, addr);
-        this._addr2inst.set(addrKey(addr), inst);
-      }
-      map[inst.uid] = inst;
-      this._fieldVals(inst, visitInst);
-    };
-    visitInst(root);
-    return map;
-  }
-
-  // Produce a bundle using a bundle map.
-  //
-  // UID/Insts referencing Insts -> Addr/Json referencing Addrs
-  //
-  // Need uid2addr.
   bundle(root: classesModule.ObjInst, uuid: string, version: string): Bundle {
     this._uuid2root.set(uuid, root);
+    const gathered: Record<number, GatheredInst> = {};
 
-    // Build a map from uid to all instances under `root`.  This map will only
-    // include instances that belong to this `uuid`.
-    const uid2inst = this._gatherInternalInstsAndAssignAddrs(root, uuid);
-
-    // At this point, all "internal instances" (instances belonging to this `uuid`)
-    // will have an entry in `uid2inst`.
-    check(!isEmpty(uid2inst));
-    check(root.uid in uid2inst);
-
-    const seenDeps = new Set<string>();
-    /**
-     * Creates a reference to the argument `inst` by its id
-     */
-    const mkRef = (inst: classesModule.ObjInst) => {
-      const addr = check(this._uid2addr.get(inst.uid));
-      if (addr.uuid === uuid) {
-        // If this is an internal instance, we reference it by the internal id
-        return { __ref: addr.iid };
-      } else {
-        // If this is an external instance, we reference it by the full Addr
-        // (including both the external `uuid` and the iid in that namespace)
-        seenDeps.add(addr.uuid);
+    const visitInst = (
+      inst: classesModule.ObjInst,
+      parent?: GatheredInst,
+    ): Ref => {
+      const uid = inst.uid;
+      const seen = gathered[uid];
+      if (seen) {
+        return { __ref: seen.iid };
+      }
+      let addr = this._uid2addr.get(uid);
+      if (addr && addr.uuid !== uuid) {
+        if (parent) {
+          (parent.deps ??= []).push(addr.uuid);
+        }
         return { __xref: addr };
       }
+      if (!addr) {
+        addr = { uuid, iid: this.getNewIid() };
+        this._uid2addr.set(uid, addr);
+        this._addr2inst.set(addrKey(addr), inst);
+      }
+      // Register before visiting children so cycles resolve to the same IID.
+      const json = {} as BundledInst;
+      const entry = { iid: addr.iid, json };
+      gathered[uid] = entry;
+      this._bundleFields(inst, (child) => visitInst(child, entry), json);
+      json.__type = this._bundledClass(inst).cls.name;
+      return { __ref: addr.iid };
     };
 
-    const getIid = (inst: classesModule.ObjInst) =>
-      check(this._uid2addr.get(inst.uid)).iid;
-    const iid2json = Object.fromEntries(
-      Object.keys(uid2inst || {}).map((uid) => {
-        const inst = uid2inst[uid];
-        const iid = getIid(inst);
-        // To turn this instance into its json representation, we turn
-        // all its field values that are instances into references (via mkRef)
-        // and leave field values that are primitives intact.  That means
-        // the json should not contain another instance; only primitives and
-        // references to other instances.
-        const json = Object.fromEntries(
-          filterFalsy(
-            this._fieldVals(inst, mkRef).map(([field, val]) => {
-              if (field.annotations.includes("Transient")) {
-                return undefined;
-              }
-              return tuple(field.name, isNil(val) ? null : val);
-            }),
-          ),
-        );
-
-        return tuple(iid, {
-          ...json,
-          __type: this._instUtil.getInstClass(inst).name,
-        });
-      }),
-    );
+    visitInst(root);
+    check(gathered[root.uid]);
+    // Emit instances by ascending UID. List each dependency at its first reference in that order.
+    const iid2json: Record<string, BundledInst> = {};
+    const seenDeps = new Set<string>();
+    for (const { iid, json, deps } of Object.values(gathered)) {
+      setOwnProperty(iid2json, iid, json);
+      if (deps) {
+        for (const dep of deps) {
+          seenDeps.add(dep);
+        }
+      }
+    }
     return {
-      root: getIid(root),
+      root: gathered[root.uid].iid,
       map: iid2json,
       deps: Array.from(seenDeps),
       version,
@@ -958,11 +956,8 @@ export class FastBundler extends Bundler {
       );
     }
 
-    while (queueOfChangedNodes.length > 0) {
-      const [inst, field] = ensure(
-        queueOfChangedNodes.shift(),
-        () => `queueOfChangedNodes shouldn't be empty`,
-      );
+    for (let next = 0; next < queueOfChangedNodes.length; next++) {
+      const [inst, field] = queueOfChangedNodes[next];
       if (
         seenNodesToField.has(inst) &&
         (seenNodesToField.get(inst) === null ||
@@ -987,30 +982,22 @@ export class FastBundler extends Bundler {
           this._rt,
         );
       }
-      const json = Object.fromEntries(
-        this._fieldVals(
-          inst,
-          (child, f) => mkRefAndMaybeVisit(child, iid, f),
-          listOfFields,
-          {
-            // We don't type check the fields right now, because unreachable
-            // instances might have uninitialized values. We make sure to type
-            // check the fields for reachable instances below.
-            noTypeCheck: true,
-          },
-        ).map(([f, val]) => {
-          return tuple(f.name, isNil(val) ? null : val);
-        }),
+      // Updating one field keeps the old json's key order; otherwise __type
+      // comes first.
+      const json: BundledInst = listOfFields
+        ? { ...bundle.map[iid] }
+        : { __type: this._instUtil.getInstClass(inst).name };
+      this._bundleFields(
+        inst,
+        (child, f) => mkRefAndMaybeVisit(child, iid, f),
+        json,
+        listOfFields,
+        {
+          // Unreachable instances may be uninitialized. Validate after pruning.
+          noTypeCheck: true,
+        },
       );
-
-      bundle.map[iid] = {
-        ...(listOfFields
-          ? bundle.map[iid]
-          : {
-              __type: this._instUtil.getInstClass(inst).name,
-            }),
-        ...json,
-      };
+      bundle.map[iid] = json;
     }
 
     // Remove all unreachable iids from bundle (filter insts that are still
@@ -1018,13 +1005,12 @@ export class FastBundler extends Bundler {
     this.prune(toDeleteNodes.filter((iid) => !this._iid2Parents.has(iid)));
 
     // Type check bundle fields for reachable nodes
-    Array.from(seenNodesToField.keys())
-      .filter((inst) =>
-        maybe(getIid(inst), (iid) => (iid in bundle.map ? true : false)),
-      )
-      .forEach((inst) =>
-        this._fieldVals(inst, () => null, undefined, { noTypeCheck: false }),
-      );
+    for (const inst of seenNodesToField.keys()) {
+      const iid = getIid(inst);
+      if (iid != null && iid in bundle.map) {
+        this._typeCheckFields(inst);
+      }
+    }
 
     bundle.deps = uniq(
       Array.from(this._xref2Parents.entries())

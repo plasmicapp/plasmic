@@ -62,7 +62,7 @@ import {
 import { instUtil as defaultInstUtil } from "@/wab/shared/model/InstUtil";
 import { Type as ModelType } from "@/wab/shared/model/model-meta";
 import { ChoiceOptions, ChoiceValue } from "@plasmicapp/host";
-import { isArray, isEqual, isNil } from "lodash";
+import { isEqual } from "lodash";
 
 export const typeFactory = {
   text: () => new Text({ name: "text" }),
@@ -368,11 +368,16 @@ export function typeDisplayName(type: Type, shortDescription?: boolean) {
     .elseUnsafe(() => `${type.name} object`);
 }
 
+function paramType(type: ModelType, i: number): ModelType {
+  const param = type.params[i];
+  return param instanceof ModelType ? param : ensureInstance(param, ModelType);
+}
+
 export function conformsToType(
   value: any,
   type: ModelType,
   instUtil = defaultInstUtil,
-) {
+): boolean {
   switch (type.type) {
     case "String":
       return typeof value === "string";
@@ -384,47 +389,49 @@ export function conformsToType(
       return typeof value === "boolean";
     case "Lit":
       return (
-        isNil(value) || typeof value === "string" || typeof value === "boolean"
+        value == null || typeof value === "string" || typeof value === "boolean"
       );
     case "List":
-    case "Set":
-      return (
-        isArray(value) &&
-        value.every((v) =>
-          conformsToType(
-            v,
-            ensureInstance(type.params[0], ModelType),
-            instUtil,
-          ),
-        )
-      );
+    case "Set": {
+      if (!Array.isArray(value)) {
+        return false;
+      }
+      for (let i = 0; i < value.length; i++) {
+        const v = value[i];
+        // Skip holes, like Array.prototype.every
+        if (v === undefined && !(i in value)) {
+          continue;
+        }
+        if (!conformsToType(v, paramType(type, 0), instUtil)) {
+          return false;
+        }
+      }
+      return true;
+    }
     case "Optional":
       return (
-        value == null ||
-        conformsToType(
-          value,
-          ensureInstance(type.params[0], ModelType),
-          instUtil,
-        )
+        value == null || conformsToType(value, paramType(type, 0), instUtil)
       );
-    case "Map":
-      return Object.entries(value).every(
-        ([k, v]) =>
-          conformsToType(
-            k,
-            ensureInstance(type.params[0], ModelType),
-            instUtil,
-          ) &&
-          conformsToType(
-            v,
-            ensureInstance(type.params[1], ModelType),
-            instUtil,
-          ),
-      );
+    case "Map": {
+      const keys = Object.keys(value);
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        if (
+          !conformsToType(key, paramType(type, 0), instUtil) ||
+          !conformsToType(value[key], paramType(type, 1), instUtil)
+        ) {
+          return false;
+        }
+      }
+      return true;
+    }
     case "Or":
-      return type.params.some((sub) =>
-        conformsToType(value, ensureInstance(sub, ModelType), instUtil),
-      );
+      for (let i = 0; i < type.params.length; i++) {
+        if (conformsToType(value, paramType(type, i), instUtil)) {
+          return true;
+        }
+      }
+      return false;
     case "Any":
       return true;
     default: {
