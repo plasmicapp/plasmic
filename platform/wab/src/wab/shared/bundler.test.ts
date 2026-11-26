@@ -5,11 +5,22 @@ import {
   loadPlexusBundles,
   loadStarterBundles,
 } from "@/wab/shared/__testonly__/project-fixtures";
-import { Bundle, Bundler, FastBundler } from "@/wab/shared/bundler";
+import {
+  Bundle,
+  Bundler,
+  FastBundler,
+  checkBundleFields,
+  checkExistingReferences,
+  checkRefsInBundle,
+  removeUnreachableNodesFromBundle,
+  visitRefsInFields,
+} from "@/wab/shared/bundler";
 import { jsonClone, mkUuid } from "@/wab/shared/common";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import { jsonLit } from "@/wab/shared/core/exprs";
 import { mkParam } from "@/wab/shared/core/lang";
+import { observeModel } from "@/wab/shared/core/observable-model";
+import { createSite } from "@/wab/shared/core/sites";
 import {
   flattenTpls,
   isTplTag,
@@ -18,10 +29,12 @@ import {
 } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { instUtil } from "@/wab/shared/model/InstUtil";
+import * as classes from "@/wab/shared/model/classes";
 import {
   Component,
   CustomCode,
   ObjInst,
+  RuleSet,
   Site,
   TplTag,
   ensureKnownComponent,
@@ -31,7 +44,12 @@ import {
   isKnownSite,
 } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
-import { Field, MetaRuntime, isModelInst } from "@/wab/shared/model/model-meta";
+import {
+  Field,
+  MetaRuntime,
+  isModelInst,
+  isStrongRefField,
+} from "@/wab/shared/model/model-meta";
 import { conformsToType, typeFactory } from "@/wab/shared/model/model-util";
 
 // Equality comparator that uses class metadata to guide its crawling
@@ -378,6 +396,434 @@ describe("FastBundler.fastBundle", () => {
   });
 });
 
+const UUID = "site-uuid";
+
+// Give fixture instances stable names for partial updates and error assertions.
+function mkSiteBundle(): Bundle {
+  const site = createSite();
+  const span1 = mkTplTagX("span");
+  const span2 = mkTplTagX("span");
+  const div = mkTplTagX("div", {}, span1, span2);
+  const comp = mkComponent({
+    name: "Comp",
+    params: [
+      mkParam({ name: "p", type: typeFactory.text(), paramType: "prop" }),
+    ],
+    tplTree: div,
+    type: ComponentType.Plain,
+  });
+  site.components = [comp];
+  const bundler = new Bundler();
+  const bundle = bundler.bundle(site, UUID, "v");
+  const rename = new Map<string, string>();
+  for (const [name, inst] of Object.entries({
+    comp,
+    div,
+    span1,
+    span2,
+    baseVariant: comp.variants[0],
+    param: comp.params[0],
+  })) {
+    rename.set(bundler.addrOf(inst)!.iid, name);
+  }
+  const counts: Record<string, number> = {};
+  for (const [iid, json] of Object.entries(bundle.map)) {
+    if (!rename.has(iid)) {
+      const n = (counts[json.__type] = (counts[json.__type] ?? -1) + 1);
+      rename.set(iid, `${json.__type}${n}`);
+    }
+  }
+  const renamed: Bundle = JSON.parse(
+    JSON.stringify(bundle, (key, value) =>
+      key === "__ref" || key === "root" ? rename.get(value) : value,
+    ),
+  );
+  renamed.map = Object.fromEntries(
+    Object.entries(renamed.map).map(([iid, json]) => [rename.get(iid)!, json]),
+  );
+  return renamed;
+}
+
+function thrownMessage(f: () => unknown) {
+  try {
+    f();
+  } catch (e) {
+    return (e as Error).message;
+  }
+  throw new Error("Didn't throw");
+}
+
+function unbundleSite(bundle: Bundle) {
+  const bundler = new Bundler();
+  const site = bundler.unbundle(bundle, UUID) as Site;
+  const byIid = (iid: string) => bundler.objByAddr({ uuid: UUID, iid })!;
+  return { bundler, site, byIid };
+}
+
+describe("unbundle", () => {
+  it("copies collection fields", () => {
+    const bundle = mkSiteBundle();
+    const { byIid } = unbundleSite(bundle);
+    const component = byIid("comp") as Component;
+    const div = byIid("div") as TplTag;
+    const rs = byIid("RuleSet0") as RuleSet;
+    expect(component.params).not.toBe(bundle.map.comp.params);
+    expect(div.children).not.toBe(bundle.map.div.children);
+    expect(rs.values).not.toBe(bundle.map.RuleSet0.values);
+    expect(rs.values).toEqual(bundle.map.RuleSet0.values);
+  });
+
+  it("makes holes in a list undefined", () => {
+    const bundle = mkSiteBundle();
+    // eslint-disable-next-line no-sparse-arrays
+    bundle.map.div.children = [, { __ref: "span1" }];
+    const { byIid } = unbundleSite(bundle);
+    const children = (byIid("div") as TplTag).children;
+    expect(children).toHaveLength(2);
+    expect(0 in children).toBe(true);
+    expect(children[0]).toBeUndefined();
+    expect(children[1]).toBe(byIid("span1"));
+  });
+
+  it("keeps a __proto__ key of a map as an own key", () => {
+    const bundle = mkSiteBundle();
+    bundle.map.RuleSet0.values = JSON.parse(
+      '{"__proto__": "a", "width": "1px"}',
+    );
+    const { byIid } = unbundleSite(bundle);
+    const values = (byIid("RuleSet0") as RuleSet).values;
+    expect(Object.getPrototypeOf(values)).toBe(Object.prototype);
+    expect(Object.keys(values)).toEqual(["__proto__", "width"]);
+    expect(values["__proto__"]).toBe("a");
+  });
+
+  it.each<[string, (bundle: Bundle) => void, string]>([
+    [
+      "a missing ref",
+      (b) => (b.map.comp.params = [{ __ref: "nope" }]),
+      "Value must not be undefined or null- Missing reference (IID nope)",
+    ],
+    [
+      "a missing xref",
+      (b) => (b.map.comp.superComp = { __xref: { uuid: "u", iid: "i" } }),
+      "Missing xref (u, i) (only know about: )",
+    ],
+    [
+      "an unknown type",
+      (b) => (b.map.span1.__type = "NoSuchType"),
+      "Unknown type NoSuchType",
+    ],
+    [
+      "an abstract class",
+      (b) => (b.map.span1.__type = "TplNode"),
+      "Cannot instantiate abstract class TplNode",
+    ],
+  ])("fails on %s", (_name, corrupt, message) => {
+    const bundle = mkSiteBundle();
+    corrupt(bundle);
+    const bundler = new Bundler();
+    expect(thrownMessage(() => bundler.unbundle(bundle, UUID))).toBe(message);
+    expect(bundler._addr2inst.size).toBe(0);
+  });
+
+  it("fails on a cached inst of another type", () => {
+    const bundle = mkSiteBundle();
+    const { bundler } = unbundleSite(bundle);
+    const partial = { ...bundle, map: { span1: bundle.map.span1 } };
+    partial.map.span1 = { ...partial.map.span1, __type: "TplSlot" };
+    expect(thrownMessage(() => bundler.unbundlePartial(partial, UUID))).toBe(
+      "Cached instance has unexpected type TplTag, expected TplSlot",
+    );
+  });
+
+  it("generated setters delegate to writeField with their schema field", () => {
+    const writeField = vi
+      .spyOn(meta, "writeField")
+      .mockImplementation(() => undefined);
+    for (const cls of meta.schema) {
+      if (meta.isAbstract(cls) || !classes[cls.name]) {
+        continue;
+      }
+      const inst = Object.create(classes[cls.name].prototype);
+      for (const field of meta.allFields(cls)) {
+        if (!field.annotations.includes("Transient")) {
+          writeField.mockClear();
+          inst[field.name] = "value";
+          expect(writeField).toHaveBeenCalledExactlyOnceWith(
+            inst,
+            field,
+            "value",
+          );
+          expect(writeField.mock.calls[0][1]).toBe(field);
+        }
+      }
+    }
+  });
+
+  it.each([
+    ["custom classes", new Bundler(meta, { ...classes })],
+    ["a custom runtime", new Bundler(new MetaRuntime(meta.schema, 0))],
+  ] as const)("uses field setters with %s", (_, bundler) => {
+    const bundle = mkSiteBundle();
+    const setter = vi.spyOn(TplTag.prototype, "tag", "set");
+    bundler.unbundle(bundle, UUID);
+    expect(setter).toHaveBeenCalledWith("div");
+  });
+});
+
+describe("unbundlePartial", () => {
+  it("writes only the fields in the bundle, resolving other refs from the cache", () => {
+    const bundle = mkSiteBundle();
+    const { bundler, byIid } = unbundleSite(bundle);
+    const component = byIid("comp") as Component;
+    const params = component.params;
+    const [span1, span2] = (byIid("div") as TplTag).children;
+    bundler.unbundlePartial(
+      {
+        ...bundle,
+        map: {
+          comp: { __type: "Component", name: "Renamed" },
+          div: {
+            ...bundle.map.div,
+            children: [{ __ref: "span2" }, { __ref: "span1" }],
+          },
+        },
+      },
+      UUID,
+    );
+    expect(component.name).toBe("Renamed");
+    expect(component.params).toBe(params);
+    expect((byIid("div") as TplTag).children).toEqual([span2, span1]);
+  });
+
+  it("writes new insts first, each changed field once", () => {
+    const bundle = mkSiteBundle();
+    const { bundler, byIid } = unbundleSite(bundle);
+    const div = byIid("div");
+    const writes: [ObjInst, string][] = [];
+    const writeField = meta.writeField.bind(meta);
+    const spy = vi
+      .spyOn(meta, "writeField")
+      .mockImplementation((inst, field, value) => {
+        writes.push([inst as ObjInst, field.name]);
+        writeField(inst, field, value);
+      });
+    try {
+      bundler.unbundlePartial(
+        {
+          ...bundle,
+          map: {
+            div: {
+              ...bundle.map.div,
+              children: [...bundle.map.div.children, { __ref: "new" }],
+            },
+            new: { ...bundle.map.span2, tag: "b" },
+          },
+        },
+        UUID,
+      );
+    } finally {
+      spy.mockRestore();
+    }
+    const newTag = byIid("new") as TplTag;
+    expect(newTag.tag).toBe("b");
+    expect(writes.map(([inst, field]) => [inst === div, field])).toEqual([
+      // Refs of the new inst. Its other fields come from its constructor.
+      [false, "children"],
+      [false, "parent"],
+      [false, "vsettings"],
+      // The collections of the existing inst, which are fresh copies; its
+      // unchanged fields, like a null parent, aren't written
+      [true, "children"],
+      [true, "vsettings"],
+    ]);
+    expect((div as TplTag).children[2]).toBe(newTag);
+  });
+
+  it("records only what changed on a tracked site", () => {
+    const bundle = mkSiteBundle();
+    const { bundler, site, byIid } = unbundleSite(bundle);
+    const changes: string[] = [];
+    const tracker = observeModel(site, {
+      quiet: true,
+      listener: (change) =>
+        changes.push(
+          `${change.type} ${bundler.addrOf(change.changeNode.inst)?.iid}.${
+            change.changeNode.field
+          }`,
+        ),
+    });
+    onTestFinished(() => tracker.dispose());
+    const partial = {
+      ...bundle,
+      map: {
+        comp: { ...bundle.map.comp, name: "Renamed" },
+        div: {
+          ...bundle.map.div,
+          children: [{ __ref: "span2" }, { __ref: "span1" }],
+        },
+      },
+    };
+    bundler.unbundlePartial(jsonClone(partial), UUID);
+    expect(changes).toEqual(["update comp.name", "array-splice div.children"]);
+    expect((byIid("comp") as Component).name).toBe("Renamed");
+
+    changes.length = 0;
+    bundler.unbundlePartial(jsonClone(partial), UUID);
+    expect(changes).toEqual([]);
+  });
+});
+
+describe("check functions", () => {
+  it("checkBundleFields reports the first bad item of each field, in order", () => {
+    const bundle = mkSiteBundle();
+    bundle.map.comp.name = 5;
+    bundle.map.comp.params = [
+      { __ref: "param" },
+      { __ref: "span1" },
+      { __ref: "baseVariant" },
+    ];
+    bundle.map.div.type = "bad";
+    bundle.map.div.children = [{ __ref: "baseVariant" }, { __ref: "param" }];
+    bundle.map.RuleSet0.values = { a: "1", b: 2, c: 3 };
+    bundle.map.span1.vsettings = { a: 1 };
+    bundle.map.span2.locked = "yes";
+    expect(thrownMessage(() => checkBundleFields(bundle)))
+      .toMatchInlineSnapshot(`
+        "Type checking error
+        - iid: RuleSet0, field: values, error: 2 is not a string
+        - iid: span1, field: vsettings, error: [object Object] is not an array
+        - iid: span2, field: locked, error: yes is not a boolean
+        - iid: div, field: children, error: Wrong type (got Variant, want TplNode)
+        - iid: div, field: type, error: "bad" does not match any of the types "text","image","column","columns","other"
+        - iid: comp, field: name, error: 5 is not a string
+        - iid: comp, field: params, error: Wrong type (got TplTag, want Param)"
+      `);
+    // Only checks the given iids
+    expect(() => checkBundleFields(bundle, ["param", "nope"])).not.toThrow();
+    // Every item is checked, not just up to the first bad one, so a null
+    // among insts throws, as it always has
+    bundle.map.div.children = [{ __ref: "baseVariant" }, null];
+    expect(thrownMessage(() => checkBundleFields(bundle))).toBe(
+      "Cannot read properties of null (reading '__ref')",
+    );
+  });
+
+  it("checkBundleFields reports unknown types and fields", () => {
+    const bundle = mkSiteBundle();
+    bundle.map.comp.params = [{ __ref: "nope" }];
+    expect(thrownMessage(() => checkBundleFields(bundle))).toBe(
+      "Type checking error\n" +
+        '- iid: comp, field: params, error: undefined (referenced by (Param): {"__ref":"nope"}) has unknown type "undefined"',
+    );
+    bundle.map.div.extra = 1;
+    expect(thrownMessage(() => checkBundleFields(bundle))).toMatch(
+      /^Unexpected fields on \[TplTag\]:\n\s*\+ extra\s*$/,
+    );
+  });
+
+  it("checkExistingReferences reports missing refs and xrefs", () => {
+    const bundle = mkSiteBundle();
+    checkExistingReferences(bundle);
+    bundle.map.comp.superComp = { __xref: { uuid: "u", iid: "i" } };
+    expect(thrownMessage(() => checkExistingReferences(bundle))).toBe(
+      "Missing xref (u, i) (only know about: )",
+    );
+    bundle.map.comp.params = [{ __ref: "nope" }];
+    expect(thrownMessage(() => checkExistingReferences(bundle))).toBe(
+      "Missing reference (IID nope)",
+    );
+  });
+
+  it("checkRefsInBundle reports weak refs to unreachable insts", () => {
+    const bundle = mkSiteBundle();
+    checkRefsInBundle(bundle);
+    // Unlink the div, which the spans still weakly reference as their parent
+    bundle.map.comp.tplTree = { __ref: "span1" };
+    const report = vi.fn();
+    checkRefsInBundle(bundle, { onWeakRefToUnreachableInst: report });
+    expect(report).toHaveBeenCalledTimes(1);
+    const [{ referencedIid, weakRefParents, strongRefParents }] =
+      report.mock.calls[0];
+    expect(referencedIid).toBe("div");
+    expect(weakRefParents.size).toBe(Object.keys(bundle.map).length);
+    expect(weakRefParents.get("div")).toEqual([
+      { iid: "span1", field: "parent" },
+      { iid: "span2", field: "parent" },
+    ]);
+    expect(strongRefParents.get("div")).toEqual([]);
+    expect(thrownMessage(() => checkRefsInBundle(bundle))).toBe(
+      "Unreachable instance has weak refs",
+    );
+  });
+
+  it("checkRefsInBundle reports strong refs to xrefs", () => {
+    const bundle = mkSiteBundle();
+    bundle.map.div.children = [{ __xref: { uuid: "u", iid: "i" } }];
+    const xrefs: unknown[] = [];
+    checkRefsInBundle(bundle, {
+      onWeakRefToUnreachableInst: () => undefined,
+      onStrongRefToXref: ({ referencedXref }) => xrefs.push(referencedXref),
+    });
+    expect(xrefs).toEqual([{ uuid: "u", iid: "i" }]);
+    expect(thrownMessage(() => checkRefsInBundle(bundle))).toBe(
+      "Xref has strong refs",
+    );
+  });
+});
+
+describe("FastBundler", () => {
+  it("reports an inst with two parents", () => {
+    const bundle = mkSiteBundle();
+    bundle.map.span1.children = [{ __ref: "span2" }];
+    expect(
+      thrownMessage(() =>
+        new FastBundler().unbundleAndRecomputeParents(bundle, UUID),
+      ),
+    ).toMatchInlineSnapshot(`
+      "Bundle invariant failed
+      Instance (IID span2) of type TplTag has multiple parents:
+      (TplTag.children IID:span1), (TplTag.children IID:div)"
+    `);
+  });
+
+  it("reports an inst referenced twice by one field", () => {
+    const bundle = mkSiteBundle();
+    bundle.map.div.children = [
+      { __ref: "span1" },
+      { __ref: "span2" },
+      { __ref: "span2" },
+    ];
+    expect(
+      thrownMessage(() =>
+        new FastBundler().unbundleAndRecomputeParents(bundle, UUID),
+      ),
+    ).toBe("parentKey already used: div children");
+  });
+
+  it("tracks the parents of each inst", () => {
+    const bundle = mkSiteBundle();
+    const fastBundler = new FastBundler();
+    const site = fastBundler.unbundleAndRecomputeParents(
+      jsonClone(bundle),
+      UUID,
+    ) as Site;
+    const parents = (iid: string) => [
+      ...((fastBundler as any)._iid2Parents.get(iid) ?? []),
+    ];
+    expect(parents("span2")).toEqual(["div children"]);
+    expect(parents(bundle.root)).toEqual([]);
+    // Removing a subtree prunes it from the bundle and the parents
+    const div = site.components[0].tplTree as TplTag;
+    div.children = div.children.slice(0, 1);
+    const result = fastBundler.fastBundle(site, UUID, [
+      { inst: div, field: "children" },
+    ]);
+    expect(result.map.span2).toBeUndefined();
+    expect(parents("span2")).toEqual([]);
+  });
+});
+
 describe("benchmarks", () => {
   [10000 /*, 100000, 1000000*/].forEach((n) => {
     it(`should measure performance of unbundle and bundle operations [n=${n}]`, function () {
@@ -411,6 +857,7 @@ describe("benchmarks", () => {
     ["plexus", loadPlexusBundles],
   ] as const)("%s", (fixture, loadDeps) => {
     const deps = loadDeps();
+    const [mainUuid, main] = deps[deps.length - 1];
 
     it("bundle(site)", () => {
       const bundler = new Bundler();
@@ -481,6 +928,88 @@ describe("benchmarks", () => {
           }
         }
       });
+    });
+
+    it("unbundle", () => {
+      bench(`${fixture}: unbundle all deps`, () => {
+        const bundler = new Bundler();
+        for (const [uuid, bundle] of deps) {
+          bundler.unbundle(bundle, uuid);
+        }
+      });
+    });
+
+    it("unbundleAndRecomputeParents", () => {
+      bench(
+        `${fixture}: unbundleAndRecomputeParents all deps`,
+        (cloned) => {
+          const bundler = new FastBundler();
+          for (const [uuid, bundle] of cloned) {
+            bundler.unbundleAndRecomputeParents(bundle, uuid);
+          }
+        },
+        { setup: () => jsonClone(deps) },
+      );
+    });
+
+    it("unbundlePartial", () => {
+      // A partial bundle like another user's edits of a few components: the
+      // insts of 5 components, with some changed fields and new insts
+      const bundler = new Bundler();
+      for (const [uuid, bundle] of deps) {
+        bundler.unbundle(jsonClone(bundle), uuid);
+      }
+      const back: Bundle = { ...main, map: {} };
+      const queue = Object.keys(main.map)
+        .filter((iid) => main.map[iid].__type === "Component")
+        .slice(0, 5);
+      while (queue.length > 0) {
+        const iid = queue.pop()!;
+        if (iid in back.map || !(iid in main.map)) {
+          continue;
+        }
+        back.map[iid] = jsonClone(main.map[iid]);
+        visitRefsInFields(main.map[iid], (ref, field) => {
+          if ("__ref" in ref && isStrongRefField(field)) {
+            queue.push(ref.__ref);
+          }
+        });
+      }
+      const fwd: Bundle = jsonClone(back);
+      for (const [iid, json] of Object.entries(fwd.map)) {
+        if (json.__type === "Component") {
+          json.name += " changed";
+        } else if (json.__type === "TplTag") {
+          json.children.reverse();
+        } else if (json.__type === "RuleSet") {
+          json.values = { ...json.values, "z-index": "1" };
+        } else if (json.__type === "VariantSetting") {
+          fwd.map[`new-${iid}`] = {
+            __type: "CustomCode",
+            code: '"title"',
+            fallback: null,
+          };
+          json.attrs = { ...json.attrs, title: { __ref: `new-${iid}` } };
+        }
+      }
+      let i = 0;
+      bench(
+        `${fixture}: unbundlePartial (${Object.keys(back.map).length} insts)`,
+        () => bundler.unbundlePartial(i++ % 2 ? back : fwd, mainUuid),
+      );
+    });
+
+    it("check functions", () => {
+      bench(`${fixture}: checkBundleFields`, () => checkBundleFields(main));
+      bench(`${fixture}: checkRefsInBundle`, () => checkRefsInBundle(main));
+      bench(`${fixture}: checkExistingReferences`, () =>
+        checkExistingReferences(main),
+      );
+      bench(
+        `${fixture}: removeUnreachableNodesFromBundle`,
+        (cloned) => removeUnreachableNodesFromBundle(cloned),
+        { setup: () => jsonClone(main) },
+      );
     });
   });
 });
