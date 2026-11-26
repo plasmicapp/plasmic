@@ -14345,8 +14345,8 @@ packages:
       '@types/react':
         optional: true
 
-  react-parallax-tilt@1.7.354:
-    resolution: {integrity: sha512-5W4KXK5NvPp+GnH4zqxBUNnyT38REstAQrBeFsTtlvfs9PNO/mVq02NPDGdAqLR+6rXTDVSsD29MuWoImrQf5g==}
+  react-parallax-tilt@1.7.355:
+    resolution: {integrity: sha512-h2G6luy4sJhOBUS6K0apE+zgAXP7GHOeyjCWrQW5ZdDYXVlBWITQDGRvJkbxbjOzsebQX3IyAy7H+3nilVlHJA==}
     peerDependencies:
       react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -20630,7 +20630,7 @@ snapshots:
       '@plasmicapp/host': 2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      react-parallax-tilt: 1.7.354(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-parallax-tilt: 1.7.355(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   '@plasmicpkgs/react-quill@1.0.127(@plasmicapp/host@2.0.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -31596,7 +31596,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  react-parallax-tilt@1.7.354(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-parallax-tilt@1.7.355(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
