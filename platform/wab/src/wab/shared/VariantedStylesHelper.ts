@@ -4,7 +4,7 @@ import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { VariantCombo, isValidComboForToken } from "@/wab/shared/Variants";
 import { arrayEqIgnoreOrder, assert, ensure, last } from "@/wab/shared/common";
 import { cloneRuleSet } from "@/wab/shared/core/styles";
-import { FinalToken, ImmutableToken } from "@/wab/shared/core/tokens";
+import { FinalToken } from "@/wab/shared/core/tokens";
 import {
   Mixin,
   RuleSet,
@@ -139,32 +139,21 @@ export class VariantedStylesHelper {
     );
   }
 
-  updateToken(token: FinalToken<StyleToken>, value: string): void {
-    assert(
-      !(token instanceof ImmutableToken),
-      `cannot update token "${token.name}" from transitive dep`,
-    );
-
+  /**
+   * The variants a token update writes to, or none for the base value. Pass
+   * them to setStyleTokenValue.
+   */
+  getTokenUpdateVariants(): VariantCombo {
     if (this.isTargetBaseVariant()) {
-      token.setValue(value);
-    } else {
-      assert(
-        this.canUpdateToken(),
-        `cannot update token "${token.name}" with target global variants "${
-          this.targetGlobalVariants?.map((v) => v.name).join(",") ?? "base"
-        }"`,
-      );
-
-      token.setVariantedValue(this.targetGlobalVariants ?? [], value);
+      return [];
     }
-  }
-
-  removeVariantedValue(token: FinalToken<StyleToken>): void {
     assert(
-      !(token instanceof ImmutableToken),
-      `cannot update token "${token.name}" from transitive dep`,
+      this.canUpdateToken(),
+      `cannot update a token with target global variants "${
+        this.targetGlobalVariants?.map((v) => v.name).join(",") ?? "base"
+      }"`,
     );
-    token.removeVariantedValue(this.targetGlobalVariants ?? []);
+    return this.targetGlobalVariants ?? [];
   }
 
   updateMixinRule(

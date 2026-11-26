@@ -481,6 +481,24 @@ describe("TplMgr.changePagePath", () => {
 
     expect(Object.keys(page.pageMeta.params)).toEqual(["a", "...rest"]);
   });
+
+  it.each([
+    ["/blog[slug]", "/blog/[slug]"],
+    ["/blog-[slug].json", "/blog/[slug]/json"],
+    ["/[a][b]", "/[a]/[b]"],
+    ["/[id]edit", "/[id]/edit"],
+    ["/[id]-edit", "/[id]/edit"],
+    ["/blog [slug]", "/blog/[slug]"],
+    ["/docs/[[...rest]]", "/docs/[[...rest]]"],
+    ["/foo[[...rest]]", "/foo/[[...rest]]"],
+    ["/[a][[...b]]", "/[a]/[[...b]]"],
+  ])("makes params whole segments: %s", (input, expected) => {
+    const { mgr, page } = mkPage("/start");
+
+    mgr.changePagePath(page, input);
+
+    expect(page.pageMeta.path).toEqual(expected);
+  });
 });
 
 describe("TplMgr global contexts", () => {

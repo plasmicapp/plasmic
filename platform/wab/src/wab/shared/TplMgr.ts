@@ -1885,12 +1885,9 @@ export class TplMgr {
 
     // Path must only be /like/[this]/here, not /like-[this].here or /like[this]here.
     // Params must be entire route segments, not part of a route segment.
-    // We auto insert slashes to break up things. If there are adjacent hyphens or periods, we just remove them.
-    path = path
-      .replace(/[-.]\[/g, "/[")
-      .replace(/[^/[]\[/g, "/[")
-      .replace(/\][^/]]/g, "]/")
-      .replace(/\][-.]/g, "]/");
+    // We put slashes around every param, replacing an adjacent hyphen, period
+    // or space; cleanup() then collapses the duplicate and trailing slashes.
+    path = path.replace(/[-.\s]?(\[+)/g, "/$1").replace(/(\]+)[-.\s]?/g, "$1/");
 
     cleanup();
 
@@ -2593,7 +2590,7 @@ export class TplMgr {
     );
   }
 
-  canExtractComponent(tpl: TplNode) {
+  canExtractComponent(tpl: TplNode): tpl is TplTag | TplComponent {
     return (
       !isComponentRoot(tpl) &&
       isTplTagOrComponent(tpl) &&

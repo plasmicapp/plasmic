@@ -447,17 +447,16 @@ function renameTokenVarNameToUuid(
   const tokens = siteStyleTokensDirectDeps(site);
   const unresolvedTokens = new Set<string>();
   const renamed = value.replaceAll(
-    /var\(--token-([^)]+)\)/g,
-    (match, tokenIdentifier) => {
+    // Match the name only. The input is HTML, including CSS inside quoted attributes.
+    /\b([vV][aA][rR]\(\s*--token-)([^,()]+?)(?=\s*[,)])/g,
+    (match, prefix, id) => {
       const token = tokens.find(
-        (t) =>
-          toVarName(t.name) === toVarName(tokenIdentifier) ||
-          t.uuid === tokenIdentifier,
+        (t) => t.uuid === id || toVarName(t.name) === toVarName(id),
       );
       if (token) {
-        return `var(--token-${token.uuid})`;
+        return prefix + token.uuid;
       }
-      unresolvedTokens.add(tokenIdentifier);
+      unresolvedTokens.add(id);
       return match;
     },
   );

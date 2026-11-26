@@ -1,4 +1,7 @@
-import { newTokenValueAllowed } from "@/wab/client/components/sidebar/token-utils";
+import {
+  notifyStyleTokenValueError,
+  updateStyleTokenValue,
+} from "@/wab/client/components/sidebar/token-utils";
 import { ColorSidebarPopup } from "@/wab/client/components/style-controls/ColorButton";
 import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -42,9 +45,17 @@ export const ColorTokenPopup = observer(function ColorTokenPopup(props: {
     <ColorSidebarPopup
       color={tokenRefOrRealColor}
       onChange={async (newColor) => {
-        if (newTokenValueAllowed(token, studioCtx.site, newColor, vsh)) {
-          await studioCtx.changeUnsafe(() => vsh.updateToken(token, newColor));
-        }
+        await studioCtx.changeUnsafe(() => {
+          const result = updateStyleTokenValue(
+            studioCtx.site,
+            token,
+            newColor,
+            vsh,
+          );
+          if (result.isErr()) {
+            notifyStyleTokenValueError(result.error);
+          }
+        });
       }}
       show={show}
       onClose={() => onClose()}

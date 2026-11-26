@@ -67,6 +67,42 @@ describe("model change queue failures", () => {
       studioCtx.dispose();
     }
   }, 5000);
+
+  // pruneInvalidViewCtxs runs in the last fix of fixupForChanges, after earlier
+  // fixes (e.g. Component.updatedAt) have already changed the model.
+  it.each(["pruneInvalidViewCtxs", "syncAfterChanges"] as const)(
+    "rolls back the model when %s throws after the change was recorded",
+    async (method) => {
+      const { studioCtx } = fakeStudioCtx();
+      try {
+        const component = await studioCtx.changeUnsafe(() =>
+          studioCtx.addComponent("Original", {
+            type: ComponentType.Plain,
+            noSwitchArena: true,
+          }),
+        );
+        const updatedAt = component.updatedAt;
+        // Enable the "Unexpected model change" invariant, like the real studio
+        studioCtx.finishedLoading();
+        const failure = new Error(`${method} failed`);
+        vi.spyOn(studioCtx as any, method).mockImplementation(() => {
+          throw failure;
+        });
+
+        await expect(
+          studioCtx.change(() => {
+            component.name = "Rolled back";
+            return ok(undefined);
+          }),
+        ).rejects.toBe(failure);
+        expect(component.name).toBe("Original");
+        expect(component.updatedAt).toBe(updatedAt);
+      } finally {
+        studioCtx.dispose();
+      }
+    },
+    5000,
+  );
 });
 
 function mockTeam(overrides: Partial<ApiTeam>): ApiTeam {

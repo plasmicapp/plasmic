@@ -3,6 +3,8 @@ import "css-tree";
 // @types/css-tree does not describe the public tokenizer API.
 declare module "css-tree" {
   export const tokenTypes: {
+    Comment: number;
+    Ident: number;
     Function: number;
     LeftParenthesis: number;
     RightParenthesis: number;

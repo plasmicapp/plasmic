@@ -1,3 +1,4 @@
+import { reportError } from "@/wab/client/ErrorNotifications";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { FrameViewMode } from "@/wab/shared/Arenas";
 import {
@@ -39,6 +40,7 @@ import {
   isTplVariantable,
   tryGetOwnerSite,
 } from "@/wab/shared/core/tpls";
+import { undoChanges } from "@/wab/shared/core/undo-util";
 import { isTagListContainer } from "@/wab/shared/html";
 import {
   Arg,
@@ -59,6 +61,17 @@ import {
 import { fixupForPlume } from "@/wab/shared/plume/plume-utils";
 import { isStretchyComponent } from "@/wab/shared/sizingutils";
 
+export function rollbackChanges(
+  studioCtx: StudioCtx,
+  changes: RecordedChanges["changes"],
+) {
+  try {
+    studioCtx.recorder.withRecording(() => undoChanges(changes));
+  } catch (error) {
+    reportError(error);
+  }
+}
+
 /**
  * Applies various fixes to the tpl trees based on the argument changes.
  * These should be fixes that do not effect the integrity of the
@@ -71,51 +84,55 @@ export function fixupForChanges(
 ) {
   let summary = summarizeChanges(studioCtx, changes);
 
+  const originalLength = changes.changes.length;
   const applyFix = (f: () => void) => {
-    const subchanges = studioCtx.recorder.withRecording(f);
-    const newChanges = mergeRecordedChanges(changes, subchanges);
-    const newSummary = summarizeChanges(studioCtx, newChanges);
-    return tuple(newChanges, newSummary);
+    try {
+      changes = mergeRecordedChanges(
+        changes,
+        studioCtx.recorder.withRecording(f),
+      );
+      summary = summarizeChanges(studioCtx, changes);
+    } catch (e) {
+      // The caller rolls back the original change.
+      rollbackChanges(studioCtx, changes.changes.slice(originalLength));
+      throw e;
+    }
   };
 
   if (changes.changes.length > 0) {
     // Do model-related fixes
-    [changes, summary] = applyFix(() =>
-      fixupVirtualSlotArgs(studioCtx.tplMgr(), summary),
-    );
+    applyFix(() => fixupVirtualSlotArgs(studioCtx.tplMgr(), summary));
 
-    [changes, summary] = applyFix(() =>
-      fixupForPlume(summary, studioCtx.focusedViewCtx()),
-    );
+    applyFix(() => fixupForPlume(summary, studioCtx.focusedViewCtx()));
 
-    [changes, summary] = applyFix(() => fixupGridChildren(summary));
+    applyFix(() => fixupGridChildren(summary));
 
-    [changes, summary] = applyFix(() => {
+    applyFix(() => {
       fixupBaseVariantSettings(studioCtx.tplMgr(), summary);
       fixupFrameViewModeByRootSize(studioCtx.site);
     });
 
-    [changes, summary] = applyFix(() => {
+    applyFix(() => {
       fixupTextTags(summary);
     });
 
-    [changes, summary] = applyFix(() => {
+    applyFix(() => {
       fixupIncorrectlyNamedNodes(summary, studioCtx);
       fixupImplicitStates(summary);
     });
 
-    [changes, summary] = applyFix(() => {
+    applyFix(() => {
       fixupSlotParamsOrder(summary);
     });
   }
 
-  [changes, summary] = applyFix(() => {
+  applyFix(() => {
     fixupComponentUpdatedAt(summary);
   });
 
   // Now do view-related fixes
 
-  [changes, summary] = applyFix(() => {
+  applyFix(() => {
     // Before we perform any fixes from view state, we make sure that
     // we only have valid ViewCtxs
     studioCtx.pruneInvalidViewCtxs();

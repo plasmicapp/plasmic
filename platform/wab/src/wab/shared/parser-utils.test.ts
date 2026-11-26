@@ -32,6 +32,16 @@ describe("convertToFunction", function () {
     expect(result).toContain("return 1 + 1;");
   });
 
+  it("should treat object literals as expressions, not blocks", () => {
+    const a = 1;
+    const run = (code: string) => eval(`(${convertToFunction(code)})()`);
+    expect(run(`{ a: 1, b: 2 }`)).toEqual({ a: 1, b: 2 });
+    expect(run(`{ a: 1 }`)).toEqual({ a: 1 });
+    expect(run(`{ a }`)).toEqual({ a });
+    expect(run(`{}`)).toEqual({});
+    expect(run(`{ const x = 1; return x + 1; }`)).toEqual(2);
+  });
+
   it("should throw on invalid code", () => {
     expect(() => convertToFunction("???")).toThrow();
   });

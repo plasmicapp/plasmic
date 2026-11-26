@@ -1153,7 +1153,8 @@ function splitStylesByAnimations(styles: Record<string, string>): {
  * Converts an HTML prop name and value (in the serialized data-props format)
  * to the matching component Param and arg Expr.
  *
- * Err (an `invalid-component-prop` WIError) on invalid prop name, slot params, or type mismatches.
+ * Err (an `invalid-component-prop` WIError) on invalid prop name, slot params,
+ * type mismatches, or a malformed `{{ }}` binding.
  */
 export function getComponentArgFromHtmlProp(
   site: Site,
@@ -1245,7 +1246,14 @@ export function getComponentArgFromHtmlProp(
   // A string with `{{ jsExpr }}` is a dynamic data binding, valid for any
   // (non-variant-group) param type regardless of its declared type.
   if (typeof value === "string" && isDynamicValue(value)) {
-    return ok([param, interpolatedStringToExpr(value)]);
+    try {
+      return ok([param, interpolatedStringToExpr(value)]);
+    } catch (e) {
+      if (!(e instanceof EvaluationError)) {
+        throw e;
+      }
+      return fail(e.message);
+    }
   }
 
   // An image prop can store image asset reference as var(--image-<uuid>).

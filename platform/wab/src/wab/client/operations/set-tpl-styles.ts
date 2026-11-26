@@ -12,6 +12,7 @@ import type { VariantCombo } from "@/wab/shared/Variants";
 import type { CodeComponentsRegistry } from "@/wab/shared/code-components/code-components";
 import { codeLit, tryExtractJson } from "@/wab/shared/core/exprs";
 import type { JsonObject } from "@/wab/shared/core/lang";
+import { siteStyleTokensAllDepsDict } from "@/wab/shared/core/site-style-tokens";
 import { validateStylesForTpl } from "@/wab/shared/core/style-props-tpl";
 import { normProp } from "@/wab/shared/css";
 import { GenericError } from "@/wab/shared/error-handling";
@@ -114,6 +115,7 @@ export function setTplStyles(
   const display = effectiveRsh.getRaw("display");
   const changes = prepareStyleChanges(styles, {
     layoutContext: display ? { display } : {},
+    tokens: siteStyleTokensAllDepsDict(studioCtx.site),
   });
   const messages = [...changes.messages];
 

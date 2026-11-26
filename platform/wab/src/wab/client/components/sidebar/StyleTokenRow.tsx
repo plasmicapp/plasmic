@@ -82,12 +82,7 @@ const StyleTokenRow = observer(function _StyleTokenRow(props: {
             push(
               <Menu.Item
                 key="remove-global-variant-value"
-                onClick={async () => {
-                  return studioCtx.change(() => {
-                    vsh.removeVariantedValue(token);
-                    return ok();
-                  });
-                }}
+                onClick={() => onDeleteOverride(token)}
               >
                 Remove global variant override
               </Menu.Item>,
@@ -130,12 +125,7 @@ const StyleTokenRow = observer(function _StyleTokenRow(props: {
         push(
           <Menu.Item
             key="remove-global-variant-value"
-            onClick={async () => {
-              return studioCtx.change(() => {
-                vsh.removeVariantedValue(token);
-                return ok();
-              });
-            }}
+            onClick={() => onDeleteOverride(token)}
           >
             Remove global variant value
           </Menu.Item>,

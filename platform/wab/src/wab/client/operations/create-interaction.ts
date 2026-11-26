@@ -68,6 +68,9 @@ export function createInteraction(opts: {
       message: `Event "${eventName}" is not available on this element. Available events: ${listed}.`,
     });
   }
+  if (!opts.name.trim()) {
+    return err({ message: "Interaction name cannot be empty." });
+  }
   const interactionArgsResult = buildInteractionArgs(action, { component });
   if (interactionArgsResult.isErr()) {
     return err({ message: interactionArgsResult.error });

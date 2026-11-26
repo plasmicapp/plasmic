@@ -1,5 +1,8 @@
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
-import { newTokenValueAllowed } from "@/wab/client/components/sidebar/token-utils";
+import {
+  notifyStyleTokenValueError,
+  updateStyleTokenValue,
+} from "@/wab/client/components/sidebar/token-utils";
 import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
 import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -39,8 +42,9 @@ export const GeneralTokenEditModal = observer(
     const onChange = async (val: string | undefined) => {
       assert(val !== undefined);
       return studioCtx.changeUnsafe(() => {
-        if (newTokenValueAllowed(token, studioCtx.site, val, vsh)) {
-          vsh.updateToken(token, val);
+        const result = updateStyleTokenValue(studioCtx.site, token, val, vsh);
+        if (result.isErr()) {
+          notifyStyleTokenValueError(result.error);
         }
       });
     };

@@ -4,11 +4,13 @@ import {
   fixCSSValue,
   processUnsanitizedStyles,
 } from "@/wab/client/web-importer/html-parser";
+import { extractAllReferencedTokenIds } from "@/wab/commons/StyleToken";
 import {
   isValidStyleProp,
   typographyCssProps,
 } from "@/wab/shared/core/style-props";
 import { normProp } from "@/wab/shared/css";
+import type { StyleToken } from "@/wab/shared/model/classes";
 import { memoize } from "lodash";
 
 /**
@@ -95,6 +97,8 @@ export interface StyleChangesOpts {
    * target's effective `display` so `gap` expands to the right longhands.
    */
   layoutContext?: Record<string, string>;
+  /** Tokens available to this style, keyed by UUID. */
+  tokens?: Readonly<Record<string, StyleToken>>;
 }
 
 export interface StyleChanges {
@@ -115,7 +119,7 @@ export function prepareStyleChanges(
   styles: Record<string, string | null>,
   opts: StyleChangesOpts = {},
 ): StyleChanges {
-  const { layoutContext = {} } = opts;
+  const { layoutContext = {}, tokens } = opts;
   const messages: string[] = [];
   const set: Record<string, string> = {};
   const toSanitize: Record<string, string> = {};
@@ -128,9 +132,20 @@ export function prepareStyleChanges(
       continue;
     }
     const value = rawValue.trim();
+    const missingTokenIds = tokens
+      ? extractAllReferencedTokenIds(value).filter(
+          (id) => !Object.hasOwn(tokens, id),
+        )
+      : [];
     if (!value) {
       messages.push(
         `Ignored empty value for "${prop}"; use null to remove a property.`,
+      );
+    } else if (missingTokenIds.length > 0) {
+      messages.push(
+        `Ignored "${prop}": no style token exists for ${missingTokenIds
+          .map((id) => `var(--token-${id})`)
+          .join(", ")}.`,
       );
     } else if (isRawTypographyProp(prop)) {
       // Same syntax check as the importer, but keep the raw value: the

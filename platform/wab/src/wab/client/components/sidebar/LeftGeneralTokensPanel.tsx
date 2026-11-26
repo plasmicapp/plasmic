@@ -19,6 +19,7 @@ import {
   StyleTokenFolderActions,
   StyleTokenPanelRow,
   TOKEN_ROW_HEIGHT,
+  notifyStyleTokenValueError,
 } from "@/wab/client/components/sidebar/token-utils";
 import { Matcher } from "@/wab/client/components/view-common";
 import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
@@ -39,6 +40,7 @@ import { ensure, spawn, unexpected, unreachable } from "@/wab/shared/common";
 import {
   TokenValueResolver,
   finalStyleTokensForDep,
+  removeStyleTokenOverride,
   siteFinalStyleTokens,
 } from "@/wab/shared/core/site-style-tokens";
 import { allGlobalVariants, isHostLessPackage } from "@/wab/shared/core/sites";
@@ -71,7 +73,9 @@ type StyleTokenControlsContextValue = {
   onSelect: (
     token: MutableToken<StyleToken> | OverrideableToken<StyleToken>,
   ) => void;
-  onDeleteOverride: (token: OverrideableToken<StyleToken>) => void;
+  onDeleteOverride: (
+    token: MutableToken<StyleToken> | OverrideableToken<StyleToken>,
+  ) => void;
   onAdd: (tokenType: StyleTokenType, folderName?: string) => Promise<void>;
   expandedHeaders: Set<StyleTokenType>;
   setExpandedHeaders: React.Dispatch<React.SetStateAction<Set<StyleTokenType>>>;
@@ -307,13 +311,16 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   );
 
   const onDeleteOverride = React.useCallback(
-    (token: OverrideableToken<StyleToken>) => {
+    (token: MutableToken<StyleToken> | OverrideableToken<StyleToken>) => {
       spawn(
         studioCtx.change(() => {
-          if (!vsh || vsh.isTargetBaseVariant()) {
-            token.removeValue();
-          } else {
-            vsh.removeVariantedValue(token);
+          const result = removeStyleTokenOverride(
+            studioCtx.site,
+            token,
+            vsh?.getTokenUpdateVariants() ?? [],
+          );
+          if (result.isErr()) {
+            notifyStyleTokenValueError(result.error);
           }
           return ok();
         }),

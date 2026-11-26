@@ -59,7 +59,13 @@ function hasAwaitExpression(ast: ast.Program): boolean {
 }
 
 export function convertToFunction(code: string, params?: string) {
-  const ast = parseJsCode(code);
+  let ast: ast.Program;
+  try {
+    // Prefer an expression, so `{ a: 1 }` is an object literal and not a block
+    ast = parseJsCode(`(\n${code}\n)`);
+  } catch {
+    ast = parseJsCode(code);
+  }
 
   addImplicitReturnToAst(ast);
 

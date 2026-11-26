@@ -3939,6 +3939,7 @@ describe("merging", () => {
             ...rs.values,
             "margin-top": mkTokenRef(site.styleTokens[2]),
           };
+          site.styleTokens[0].value = mkTokenRef(site.styleTokens[1]);
         }
       },
       b: (site, tplMgr) => {
@@ -3987,6 +3988,7 @@ describe("merging", () => {
             ...rs.values,
             "margin-top": mkTokenRef(site.styleTokens[2]),
           };
+          site.styleTokens[0].value = mkTokenRef(site.styleTokens[1]);
         }
       },
     });
@@ -4027,6 +4029,11 @@ describe("merging", () => {
         result.mergedSite.styleTokens.find((t) => t.name === name),
         () => `Couldn't find token ${name}`,
       );
+    for (const name of ["nonRegistered", "nonRegistered 2"]) {
+      expect(getTokenByName(name).value).toBe(
+        mkTokenRef(getTokenByName("registered-1")),
+      );
+    }
     const usedTokens = [
       getTokenByName("nonRegistered"),
       getTokenByName("registered-1"),

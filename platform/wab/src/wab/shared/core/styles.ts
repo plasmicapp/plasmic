@@ -167,6 +167,7 @@ import {
   StyleExpr,
   StyleToken,
   StyleTokenOverride,
+  StyleTokenRef,
   Theme,
   ThemeLayoutSettings,
   ThemeStyle,
@@ -2765,51 +2766,12 @@ export function cloneThemeLayoutSettings(layout: ThemeLayoutSettings) {
   });
 }
 
-interface TokenUsageBase {}
-
-interface TokenUsageByRule extends TokenUsageBase {
-  value: string;
-  prop: string;
-  rs: RuleSet;
-  type: "rule";
-}
-
-interface TokenUsageByStyleToken extends TokenUsageBase {
-  styleToken: StyleToken;
-  type: "styleToken";
-}
-
-interface TokenUsageByStyleTokenOverride extends TokenUsageBase {
-  styleTokenOverride: StyleTokenOverride;
-  type: "styleTokenOverride";
-}
-
-interface TokenUsageByVariantedValue extends TokenUsageBase {
-  variantedValue: VariantedValue;
-  type: "variantedValue";
-}
-
-interface TokenUsageByComponentProp extends TokenUsageBase {
-  tpl: TplComponent;
-  vs: VariantSetting;
-  arg: Arg;
-  type: "prop";
-}
-
-interface TokenUsageByComponentPropFallback extends TokenUsageBase {
-  tpl: TplComponent;
-  vs: VariantSetting;
-  expr: FallbackableExpr;
-  type: "fallback";
-}
-
 type TokenUsage =
-  | TokenUsageByRule
-  | TokenUsageByStyleToken
-  | TokenUsageByStyleTokenOverride
-  | TokenUsageByVariantedValue
-  | TokenUsageByComponentProp
-  | TokenUsageByComponentPropFallback;
+  | { type: "rule"; rs: RuleSet; prop: string; value: string }
+  | { type: "token"; token: StyleToken | StyleTokenOverride; value: string }
+  | { type: "variantedValue"; variantedValue: VariantedValue }
+  | { type: "prop"; arg: Arg }
+  | { type: "fallback"; expr: FallbackableExpr };
 
 export function changeTokenUsage(
   site: Site,
@@ -2822,29 +2784,38 @@ export function changeTokenUsage(
     : action === "inline"
       ? token.value
       : tokenTypeDefaults(token.type);
+  const replace = (value: string, replacement = replaced) =>
+    replaceAllTokenRefs(value, (id) =>
+      id === token.uuid ? replacement : undefined,
+    );
+
   if (usage.type === "rule") {
     usage.rs.values = {
       ...usage.rs.values,
-      [usage.prop]: replaceAllTokenRefs(usage.value, (tokenId: string) =>
-        tokenId === token.uuid ? replaced : undefined,
-      ),
+      [usage.prop]: replace(usage.value),
     };
-  } else if (usage.type === "styleToken") {
-    usage.styleToken.value = replaced;
-  } else if (usage.type === "styleTokenOverride") {
-    usage.styleTokenOverride.value = replaced;
+  } else if (usage.type === "token") {
+    usage.token.value = replace(usage.value);
   } else if (usage.type === "variantedValue") {
-    usage.variantedValue.value =
+    const { variantedValue } = usage;
+    variantedValue.value = replace(
+      variantedValue.value,
       action === "inline"
         ? new VariantedStylesHelper(
             site,
-            usage.variantedValue.variants,
+            variantedValue.variants,
           ).getActiveTokenValue(toFinalToken(token, site))
-        : replaced;
-  } else if (usage.type === "prop") {
-    usage.arg.expr = codeLit(replaced);
-  } else if (usage.type === "fallback") {
-    usage.expr.fallback = codeLit(replaced);
+        : replaced,
+    );
+  } else if (usage.type === "prop" || usage.type === "fallback") {
+    const expr = isKnownStyleToken(action)
+      ? new StyleTokenRef({ token: action })
+      : codeLit(replaced);
+    if (usage.type === "prop") {
+      usage.arg.expr = expr;
+    } else {
+      usage.expr.fallback = expr;
+    }
   } else {
     unreachable(usage);
   }
@@ -2903,7 +2874,7 @@ export function extractTokenUsages(
         for (const arg of vs.args) {
           if (isKnownStyleTokenRef(arg.expr) && arg.expr.token === token) {
             trackComponent();
-            usages.add({ type: "prop", tpl, vs, arg });
+            usages.add({ type: "prop", arg });
           } else if (isKnownStyleExpr(arg.expr)) {
             // Tpl Component props of type "class"
             for (const style of arg.expr.styles) {
@@ -2913,7 +2884,7 @@ export function extractTokenUsages(
             const fallback = arg.expr.fallback;
             if (isKnownStyleTokenRef(fallback) && fallback.token === token) {
               trackComponent();
-              usages.add({ type: "fallback", tpl, vs, expr: arg.expr });
+              usages.add({ type: "fallback", expr: arg.expr });
             }
           }
         }
@@ -2974,14 +2945,14 @@ export function extractTokenUsages(
     if (t.value && extractAllReferencedTokenIds(t.value).includes(token.uuid)) {
       if (t.override) {
         usingStyleTokenOverrides.add(t.override);
-        usages.add({
-          styleTokenOverride: t.override,
-          type: "styleTokenOverride",
-        });
       } else {
         usingStyleTokens.add(t.base);
-        usages.add({ styleToken: t.base, type: "styleToken" });
       }
+      usages.add({
+        type: "token",
+        token: t.override ?? t.base,
+        value: t.value,
+      });
     }
 
     for (const variantedValue of t.variantedValues) {

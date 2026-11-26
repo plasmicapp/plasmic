@@ -1,21 +1,15 @@
+import {
+  removeStyleTokenOverride,
+  setStyleTokenValue,
+} from "@/wab/shared/core/site-style-tokens";
 import { ImmutableToken, toFinalToken } from "@/wab/shared/core/tokens";
 import { GenericError } from "@/wab/shared/error-handling";
 import { Site, StyleToken, Variant } from "@/wab/shared/model/classes";
-import { Result, err, ok } from "neverthrow";
+import { Result, err } from "neverthrow";
 
 export type SetStyleTokenVariantedValueResult = Result<void, GenericError>;
 
-/**
- * Upsert or remove a single varianted-value entry on a style token.
- *
- * For local tokens the value is written to the token itself; for imported
- * (direct dependency) or registered tokens it is written to the token's
- * override in the current site. Transitive-dependency tokens, which cannot
- * be overridden, return an error.
- *
- * @param opts.value - New value for the variant, or null to remove the
- *   override entirely.
- */
+/** Pass null to remove the variant override. */
 export function setStyleTokenVariantedValue(opts: {
   site: Site;
   token: StyleToken;
@@ -32,10 +26,7 @@ export function setStyleTokenVariantedValue(opts: {
   }
 
   if (value === null) {
-    finalToken.removeVariantedValue([variant]);
-  } else {
-    finalToken.setVariantedValue([variant], value);
+    return removeStyleTokenOverride(site, finalToken, [variant]);
   }
-
-  return ok(undefined);
+  return setStyleTokenValue(site, finalToken, value, [variant]);
 }

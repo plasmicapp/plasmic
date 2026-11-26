@@ -81,7 +81,11 @@ import {
   scriptExec,
   setElementStyles,
 } from "@/wab/client/dom-utils";
-import { fixupChrome, fixupForChanges } from "@/wab/client/fixes-post-change";
+import {
+  fixupChrome,
+  fixupForChanges,
+  rollbackChanges,
+} from "@/wab/client/fixes-post-change";
 import { FontManager } from "@/wab/client/fonts";
 import {
   getRootSubHostVersion,
@@ -1509,19 +1513,20 @@ export class StudioCtx extends WithDbCtx {
             return err(maybeChanges.error);
           }
 
-          const [newChanges, summary] = fixupForChanges(
-            this,
-            maybeChanges.value,
-          );
-
-          if (newChanges.changes.length > 0) {
-            if (!this.isUnlogged()) {
+          let newChanges = maybeChanges.value;
+          let summary: ChangeSummary;
+          let styleChanges: UpsertStyleChanges | undefined;
+          try {
+            [newChanges, summary] = fixupForChanges(this, newChanges);
+            if (newChanges.changes.length && !this.isUnlogged()) {
               logChangedNodes("CHANGES:", newChanges.changes, false);
               console.log("Change summary", summary);
             }
+            styleChanges = this.syncAfterChanges(summary);
+          } catch (e) {
+            rollbackChanges(this, newChanges.changes);
+            throw e;
           }
-
-          const styleChanges = this.syncAfterChanges(summary);
 
           // Record the changes to undo log before we kick off the evaluators.
           // That's because evaluators may invoke some postEval() handlers that

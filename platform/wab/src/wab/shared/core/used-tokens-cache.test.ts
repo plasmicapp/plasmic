@@ -46,7 +46,7 @@ function addComponent(site: Site, name: string, token: StyleToken) {
 
 /** Counts the token ref lookups made while running `run`. */
 function refLookups(run: () => void) {
-  const spy = vi.spyOn(styleToken, "tryParseTokenRef");
+  const spy = vi.spyOn(styleToken, "extractAllReferencedTokenIds");
   try {
     run();
     return spy.mock.calls.length;

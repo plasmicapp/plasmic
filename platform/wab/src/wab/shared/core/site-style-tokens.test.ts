@@ -1,4 +1,9 @@
-import { mkStyleToken, mkTokenRef } from "@/wab/commons/StyleToken";
+import {
+  extractAllReferencedTokenIds,
+  mkStyleToken,
+  mkTokenRef,
+  replaceAllTokenRefs,
+} from "@/wab/commons/StyleToken";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
 import { observeSiteForTest } from "@/wab/shared/__testonly__/site-tests-utils";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
@@ -88,7 +93,21 @@ for (const observable of [false, true]) {
       site.styleTokens = [...site.styleTokens, extra];
     });
     expect(used()).toEqual([alias.uuid, imported.uuid, extra.uuid]);
+    mobx.runInAction(() => {
+      alias.value = `var(--token-${extra.uuid}, ${mkTokenRef(imported)})`;
+      extra.value = mkTokenRef(alias);
+    });
+    expect(used()).toEqual([alias.uuid, extra.uuid, imported.uuid]);
     mobx.runInAction(() => (alias.value = "green"));
     expect(used()).toEqual([alias.uuid]);
   });
 }
+
+it("retargets nested CSS token fallbacks and leaves quoted text alone", () => {
+  const css = 'var(--token-a, var(--token-b, red)) "var(--token-c)"';
+  expect(extractAllReferencedTokenIds(css)).toEqual(["a", "b"]);
+  const values: Record<string, string> = { a: "var(--token-x)", b: "blue" };
+  expect(replaceAllTokenRefs(css, (id) => values[id])).toBe(
+    'var(--token-x, blue) "var(--token-c)"',
+  );
+});

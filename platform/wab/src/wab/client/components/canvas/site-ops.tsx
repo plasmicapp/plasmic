@@ -137,6 +137,7 @@ import {
   ExprReference,
   findExprsInComponent,
   findExprsInNode,
+  flattenExprs,
   flattenTpls,
   isTplVariantable,
   replaceTplTreeByEmptyBox,
@@ -1174,8 +1175,11 @@ export class SiteOps {
     component: Component,
     query: ComponentServerQuery,
   ) {
-    const refs = findExprsInComponent(component).filter(({ expr }) =>
-      isServerQueryUsedInExpr(query.name, expr),
+    // A query's own code may reference itself
+    const ownExprs = query.op ? flattenExprs(query.op) : [];
+    const refs = findExprsInComponent(component).filter(
+      ({ expr }) =>
+        !ownExprs.includes(expr) && isServerQueryUsedInExpr(query.name, expr),
     );
     if (refs.length > 0) {
       const viewCtx = this.studioCtx.focusedViewCtx();

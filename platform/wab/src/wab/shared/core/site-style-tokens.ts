@@ -3,20 +3,33 @@ import {
   StyleTokenType,
   StyleTokenValue,
   extractAllReferencedTokenIds,
+  isTokenRef,
   resolveToken,
   tryParseTokenRef,
 } from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
 import { readonlyRSH } from "@/wab/shared/RuleSetHelpers";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import type { VariantCombo } from "@/wab/shared/Variants";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
-import { ensure, withoutNils, xAddAll } from "@/wab/shared/common";
+import {
+  arrayEqIgnoreOrder,
+  ensure,
+  withoutNils,
+  xAddAll,
+} from "@/wab/shared/common";
 import {
   DependencyWalkScope,
   walkDependencyTree,
 } from "@/wab/shared/core/project-deps";
+import { allGlobalVariants } from "@/wab/shared/core/sites";
 import { expandRuleSets } from "@/wab/shared/core/styles";
-import { FinalToken, mkToFinalToken } from "@/wab/shared/core/tokens";
+import {
+  FinalToken,
+  MutableToken,
+  OverrideableToken,
+  mkToFinalToken,
+} from "@/wab/shared/core/tokens";
 import { isTplVariantable } from "@/wab/shared/core/tpls";
 import { maybeComputedFn, siteSelector } from "@/wab/shared/mobx-util";
 import {
@@ -29,6 +42,7 @@ import {
 import keyBy from "lodash/keyBy";
 import memoize from "lodash/memoize";
 import { computedFn } from "mobx-utils";
+import { Result, err, ok } from "neverthrow";
 
 /** Token resolver that returns the value and token. */
 export type TokenResolver = (
@@ -220,6 +234,178 @@ export function siteFinalColorTokens(
   return siteFinalStyleTokensOfType(site, "Color", opts);
 }
 
+export type StyleTokenValueError =
+  | { type: "invalid"; message: string }
+  | { type: "cycle"; message: string; cycle: string[] };
+
+export function validateStyleTokenValue(
+  site: Site,
+  type: StyleTokenType,
+  value: string,
+): Result<void, StyleTokenValueError> {
+  // The value is emitted verbatim as `--token-x: <value>;`.
+  if (/[;{}]/.test(value)) {
+    return err({
+      type: "invalid",
+      message: `Value "${value}" must be a single CSS value.`,
+    });
+  }
+  const refs = extractAllReferencedTokenIds(value);
+  if (refs.length || isTokenRef(value)) {
+    const tokens = keyBy(siteStyleTokensDirectDeps(site), (t) => t.uuid);
+    const missingRef = refs.some((id) => !Object.hasOwn(tokens, id));
+    if (missingRef || (isTokenRef(value) && tokens[refs[0]]?.type !== type)) {
+      return err({
+        type: "invalid",
+        message: `Value "${value}" does not reference an existing ${type} token.`,
+      });
+    }
+  }
+  return ok(undefined);
+}
+
+function validateTokenAlias(
+  site: Site,
+  token: FinalToken<StyleToken>,
+  value: string,
+  variants: VariantCombo,
+  active?: VariantedStylesHelper,
+): Result<void, StyleTokenValueError> {
+  if (!value.includes("--token-")) {
+    return ok(undefined);
+  }
+  const tokens = siteFinalStyleTokensAllDepsDict(site);
+  const contexts = [new VariantedStylesHelper(site, variants)];
+  if (active) {
+    contexts.push(active);
+  }
+  // A base alias is also used in each variant where this token inherits its value.
+  if (!variants.length) {
+    for (const variant of allGlobalVariants(site, {
+      includeDeps: "direct",
+    })) {
+      contexts.push(new VariantedStylesHelper(site, [variant]));
+    }
+  }
+  for (const context of contexts) {
+    if (
+      !variants.length &&
+      context.getVariantedValueWithHighestPriority(token)
+    ) {
+      continue;
+    }
+    const cycle = maybeTokenRefCycle(token, value, tokens, context);
+    if (cycle) {
+      return err({
+        type: "cycle",
+        message: `Value "${value}" would create a cyclic token reference: ${cycle.join(" -> ")}.`,
+        cycle,
+      });
+    }
+  }
+  return ok(undefined);
+}
+
+/** Check the alias that will take effect when an override is removed. */
+export function removeStyleTokenOverride(
+  site: Site,
+  token: MutableToken<StyleToken> | OverrideableToken<StyleToken>,
+  variants: VariantCombo,
+): Result<void, StyleTokenValueError> {
+  if (!variants.length) {
+    if (
+      !(token instanceof OverrideableToken) ||
+      token.override?.value == null
+    ) {
+      return ok(undefined);
+    }
+    return validateTokenAlias(site, token, token.base.value, []).map(() => {
+      token.removeValue();
+    });
+  }
+  const editable = token instanceof MutableToken ? token.base : token.override;
+  const removed = editable?.variantedValues.find((v) =>
+    arrayEqIgnoreOrder(v.variants, variants),
+  );
+  if (!removed) {
+    return ok(undefined);
+  }
+  const context = new VariantedStylesHelper(site, variants);
+  const inherited = context
+    .sortedActiveVariantedValue(token)
+    .reverse()
+    .find((v) => v !== removed);
+  return validateTokenAlias(
+    site,
+    token,
+    inherited?.value ?? token.value,
+    variants,
+  ).map(() => {
+    token.removeVariantedValue(variants);
+  });
+}
+
+/** Validates user input before writing the base value or a variant override. */
+export function setStyleTokenValue(
+  site: Site,
+  token: MutableToken<StyleToken> | OverrideableToken<StyleToken>,
+  value: string,
+  variants: VariantCombo = [],
+  vsh?: VariantedStylesHelper,
+): Result<void, StyleTokenValueError> {
+  const trimmed = value.trim();
+  return validateStyleTokenValue(site, token.type, trimmed)
+    .andThen(() => validateTokenAlias(site, token, trimmed, variants, vsh))
+    .map(() =>
+      variants.length > 0
+        ? token.setVariantedValue(variants, trimmed)
+        : token.setValue(trimmed),
+    );
+}
+
+function referencedTokens(
+  value: string,
+  tokens: Readonly<Record<string, FinalToken<StyleToken>>>,
+) {
+  return withoutNils(
+    extractAllReferencedTokenIds(value).map((id) =>
+      Object.hasOwn(tokens, id) ? tokens[id] : undefined,
+    ),
+  );
+}
+
+function maybeTokenRefCycle(
+  token: FinalToken<StyleToken>,
+  value: string,
+  tokens: Readonly<Record<string, FinalToken<StyleToken>>>,
+  vsh: VariantedStylesHelper,
+): string[] | undefined {
+  const path = new Set([token.base]);
+  const checked = new Set<StyleToken>();
+  const stack = [{ token: token.base, refs: referencedTokens(value, tokens) }];
+  while (stack.length) {
+    const current = stack[stack.length - 1];
+    const ref = current.refs.pop();
+    if (!ref) {
+      checked.add(current.token);
+      path.delete(current.token);
+      stack.pop();
+      continue;
+    }
+    if (path.has(ref.base)) {
+      return [...path, ref.base].map((t) => t.name);
+    }
+    if (!checked.has(ref.base)) {
+      path.add(ref.base);
+      stack.push({
+        token: ref.base,
+        refs: referencedTokens(vsh.getActiveTokenValue(ref), tokens),
+      });
+    }
+  }
+  return undefined;
+}
+
 /**
  * Final style tokens for the given dependency, where overrides are from the current site
  */
@@ -284,13 +470,9 @@ function usedTokensForExp(
   const collector = new Set<StyleToken>();
   for (const prop of exp.props()) {
     const val = exp.getRaw(prop);
-    if (val) {
-      const refTokenIds = extractAllReferencedTokenIds(val);
-      if (!refTokenIds.length) {
-        continue;
-      }
+    if (val?.includes("--token-")) {
       const allTokensDict = getTokensDict();
-      const refTokens = withoutNils(refTokenIds.map((x) => allTokensDict[x]));
+      const refTokens = referencedTokens(val, allTokensDict);
       xAddAll(
         collector,
         refTokens.map((t) => t.base),
@@ -307,21 +489,15 @@ function usedTokensForExp(
 // dictionaries are released after token membership changes.
 const usedTokensForToken = maybeComputedFn(
   function collectUsedTokensForToken(
-    site: Site,
+    _site: Site,
     token: FinalToken<StyleToken>,
     allTokensDict: ReturnType<typeof siteFinalStyleTokensAllDepsDict>,
   ): ReadonlyArray<StyleToken> {
-    const collector = new Set<StyleToken>();
-    let sub = tryParseTokenRef(token.value, allTokensDict);
-    while (sub) {
-      collector.add(sub.base);
-      if (sub.value) {
-        sub = tryParseTokenRef(sub.value, allTokensDict);
-      } else {
-        break;
-      }
+    const used = new Set([token]);
+    for (const current of used) {
+      xAddAll(used, referencedTokens(current.value, allTokensDict));
     }
-    return [...collector.keys()];
+    return [...used].map((t) => t.base);
   },
   { keepAlive: false },
 );

@@ -12,6 +12,7 @@ import { replaceImageDataUrisInStyles } from "@/wab/client/web-importer/images";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { arrayWithout } from "@/wab/shared/collections";
 import { arrayEqIgnoreOrder } from "@/wab/shared/common";
+import { siteStyleTokensAllDepsDict } from "@/wab/shared/core/site-style-tokens";
 import { mkRuleSet } from "@/wab/shared/core/styles";
 import { normProp } from "@/wab/shared/css";
 import {
@@ -23,7 +24,8 @@ import {
 
 /**
  * null removes a property. Unlike elements, mixins can't stash styles Studio
- * doesn't model, so those are dropped and reported. With a `studioCtx`, a set
+ * doesn't model, so those are dropped and reported. With a `studioCtx`, values
+ * referencing missing style tokens are dropped and reported, and a set
  * font-family is installed into the canvas, like the Typography section.
  */
 export function setMixinStyles(
@@ -34,7 +36,9 @@ export function setMixinStyles(
 ): string[] {
   return writeStyleChanges(
     rs,
-    prepareStyleChanges(styles),
+    prepareStyleChanges(styles, {
+      tokens: studioCtx && siteStyleTokensAllDepsDict(studioCtx.site),
+    }),
     studioCtx,
     imageAssetRefs,
   );
@@ -136,7 +140,10 @@ export function setMixinVariantedStyles(opts: {
   messages.push(
     ...writeStyleChanges(
       variantedRs.rs,
-      prepareStyleChanges(applicable, { layoutContext }),
+      prepareStyleChanges(applicable, {
+        layoutContext,
+        tokens: studioCtx && siteStyleTokensAllDepsDict(studioCtx.site),
+      }),
       studioCtx,
       imageAssetRefs,
     ),

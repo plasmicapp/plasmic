@@ -37,6 +37,7 @@ import {
   canOverrideImportedTokens,
   canOverrideRegisteredTokens,
 } from "@/wab/shared/ui-config-utils";
+import { tokenTypes as cssTokens, tokenize } from "css-tree";
 import CSSEscape from "css.escape";
 import L from "lodash";
 import type { Opaque, SetOptional } from "type-fest";
@@ -189,10 +190,64 @@ export const getTokenVarName = (token: StyleToken) => `--token-${token.uuid}`;
 export const mkTokenRef = (token: StyleToken) =>
   `var(${getTokenVarName(token)})`;
 
-export const isTokenRef = (ref: string) => ref.startsWith("var(--token-");
+export const isTokenRef = (ref: string) =>
+  ref.startsWith("var(--token-") || tokenRefSpans(ref)[0]?.start === 0;
 
-const RE_TOKENREF = /var\(--token-([^)]+)\)/;
-const RE_TOKENREF_ALL = new RegExp(RE_TOKENREF, "g");
+interface TokenRefSpan {
+  id: string;
+  start: number;
+  nameEnd: number;
+  end: number;
+}
+
+const simpleTokenRef = /^var\(--token-([\w-]+)\)$/;
+
+function tokenRefSpans(value: string): TokenRefSpan[] {
+  if (!value.includes("--token-")) {
+    return [];
+  }
+  const simple = simpleTokenRef.exec(value);
+  if (simple) {
+    return [
+      { id: simple[1], start: 0, nameEnd: value.length - 1, end: value.length },
+    ];
+  }
+
+  const refs: TokenRefSpan[] = [];
+  const stack: (TokenRefSpan | undefined)[] = [];
+  let varStart: number | undefined;
+  tokenize(value, (type, start, end) => {
+    if (type === cssTokens.WhiteSpace || type === cssTokens.Comment) {
+      return;
+    }
+    if (type === cssTokens.Ident && varStart !== undefined) {
+      const name = value.slice(start, end);
+      if (name.startsWith("--token-")) {
+        const ref = {
+          id: name.slice("--token-".length),
+          start: varStart,
+          nameEnd: end,
+          end: 0,
+        };
+        refs.push(ref);
+        stack[stack.length - 1] = ref;
+      }
+    }
+    varStart = undefined;
+    if (type === cssTokens.Function || type === cssTokens.LeftParenthesis) {
+      stack.push(undefined);
+      if (value.slice(start, end).toLowerCase() === "var(") {
+        varStart = start;
+      }
+    } else if (type === cssTokens.RightParenthesis) {
+      const ref = stack.pop();
+      if (ref) {
+        ref.end = end;
+      }
+    }
+  });
+  return refs.filter((ref) => ref.end);
+}
 
 /**
  * Returns the referenced token (shallow parse).
@@ -208,11 +263,10 @@ export const tryParseTokenRef = (
     | Readonly<Record<string, FinalToken<StyleToken>>>
     | ReadonlyMap<string, FinalToken<StyleToken>>,
 ): FinalToken<StyleToken> | undefined => {
-  const m = ref.match(RE_TOKENREF);
-  if (!m) {
+  const tokenId = tokenRefSpans(ref)[0]?.id;
+  if (!tokenId) {
     return undefined;
   }
-  const tokenId = m[1];
   if (L.isArray(tokensProvider) || L.isFunction(tokensProvider)) {
     const tokens = L.isArray(tokensProvider)
       ? tokensProvider
@@ -221,7 +275,9 @@ export const tryParseTokenRef = (
   } else if (tokensProvider instanceof Map) {
     return tokensProvider.get(tokenId);
   } else {
-    return tokensProvider[tokenId];
+    return Object.hasOwn(tokensProvider, tokenId)
+      ? tokensProvider[tokenId]
+      : undefined;
   }
 };
 
@@ -246,7 +302,7 @@ export const parseTokenRef = (
 };
 
 export const hasTokenRefs = (str: string) => {
-  return !!str.match(RE_TOKENREF_ALL);
+  return tokenRefSpans(str).length > 0;
 };
 
 export const resolveAllTokenRefs = (
@@ -274,10 +330,27 @@ export const replaceAllTokenRefs = (
   str: string,
   getVal: (tokenId: string) => string | undefined,
 ) => {
-  return str.replace(RE_TOKENREF_ALL, (sub, tokenId) => {
-    const replace = getVal(tokenId);
-    return replace === undefined ? sub : replace;
-  });
+  let result = "";
+  let cursor = 0;
+  for (const ref of tokenRefSpans(str)) {
+    if (ref.start < cursor) {
+      continue;
+    }
+    const replacement = getVal(ref.id);
+    if (replacement === undefined) {
+      continue;
+    }
+    result += str.slice(cursor, ref.start);
+    if (ref.nameEnd < ref.end - 1 && simpleTokenRef.test(replacement)) {
+      // Retarget the reference and keep its original fallback.
+      result += replacement.slice(0, -1);
+      cursor = ref.nameEnd;
+    } else {
+      result += replacement;
+      cursor = ref.end;
+    }
+  }
+  return result + str.slice(cursor);
 };
 
 export function tryParseAllTokenRefs(
@@ -285,18 +358,18 @@ export function tryParseAllTokenRefs(
   tokens: StyleToken[] | Record<string, StyleToken>,
 ) {
   return withoutNils(
-    [...str.matchAll(RE_TOKENREF_ALL)].map((m) => {
+    extractAllReferencedTokenIds(str).map((id) => {
       if (L.isArray(tokens)) {
-        return tokens.find((t) => t.uuid === m[1]);
+        return tokens.find((t) => t.uuid === id);
       } else {
-        return tokens[m[1]];
+        return Object.hasOwn(tokens, id) ? tokens[id] : undefined;
       }
     }),
   );
 }
 
 export function extractAllReferencedTokenIds(str: string) {
-  return [...str.matchAll(RE_TOKENREF_ALL)].map((r) => r[1]);
+  return tokenRefSpans(str).map((ref) => ref.id);
 }
 
 export const getExternalMixinPropVarName = (mixin: Mixin, p: string) =>

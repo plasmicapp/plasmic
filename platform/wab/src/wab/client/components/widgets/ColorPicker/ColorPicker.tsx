@@ -1,5 +1,8 @@
 import { ColorTokenPopup } from "@/wab/client/components/sidebar/ColorTokenPopup";
-import { newTokenValueAllowed } from "@/wab/client/components/sidebar/token-utils";
+import {
+  notifyStyleTokenValueError,
+  updateStyleTokenValue,
+} from "@/wab/client/components/sidebar/token-utils";
 import { ColorSwatch } from "@/wab/client/components/style-controls/ColorSwatch";
 import { UnloggedDragCatcher } from "@/wab/client/components/style-controls/UnloggedDragCatcher";
 import Button from "@/wab/client/components/widgets/Button";
@@ -547,12 +550,17 @@ function ColorPicker_({
                   ),
                 );
               } else if (appliedToken && editToken) {
-                const value = mkTokenRef(token.base);
-                if (newTokenValueAllowed(appliedToken, sc.site, value, vsh)) {
-                  await sc.changeUnsafe(() =>
-                    vsh.updateToken(appliedToken, mkTokenRef(token.base)),
+                await sc.changeUnsafe(() => {
+                  const result = updateStyleTokenValue(
+                    sc.site,
+                    appliedToken,
+                    mkTokenRef(token.base),
+                    vsh,
                   );
-                }
+                  if (result.isErr()) {
+                    notifyStyleTokenValueError(result.error);
+                  }
+                });
               } else {
                 onChange(mkTokenRef(token.base));
               }

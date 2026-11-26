@@ -1162,48 +1162,24 @@ describe("renameTokenVarNameToUuid", () => {
     value: "#374151",
   });
 
-  it("Rename token variable name to token uuid ", async () => {
-    // "returns original value for invalid token"
-    expect(
-      renameTokenVarNameToUuid("var(--token-unknown-token)", site),
-    ).toEqual("var(--token-unknown-token)");
-
-    // "transform a valid token name to token uuid"
-    expect(
-      renameTokenVarNameToUuid(
-        `var(--token-${toVarName(colorPrimaryToken.name)})`,
-        site,
-      ),
-    ).toEqual(`var(--token-${colorPrimaryToken.uuid})`);
-
-    // "transform multiple valid token names properly"
-    expect(
-      renameTokenVarNameToUuid(
-        `linear-gradient(var(--token-${toVarName(
-          colorPrimaryToken.name,
-        )}), var(--token-${toVarName(colorPrimaryForegroundToken.name)}))`,
-        site,
-      ),
-    ).toEqual(
-      `linear-gradient(var(--token-${colorPrimaryToken.uuid}), var(--token-${colorPrimaryForegroundToken.uuid}))`,
+  it("imports nested token fallbacks in inline styles and stylesheets", async () => {
+    const ref = `var(--token-${toVarName(colorPrimaryToken.name)}, var(--token-${colorPrimaryForegroundToken.uuid}, red))`;
+    const { wiTree, errors } = await parseHtml(
+      `<style>.brand { color: ${ref} }</style><div class="brand"></div><div style="box-shadow: 0 0 2px 0px ${ref}"></div>`,
+      site,
     );
-
-    // "renames valid tokens and keeps invalid tokens in mixed case"
-    expect(
-      renameTokenVarNameToUuid(
-        `linear-gradient(var(--token-unknown-token), var(--token-${toVarName(
-          colorPrimaryForegroundToken.name,
-        )}))`,
-        site,
-      ),
-    ).toEqual(
-      `linear-gradient(var(--token-unknown-token), var(--token-${colorPrimaryForegroundToken.uuid}))`,
-    );
-
-    // "returns original value for invalid token in border value"
-    expect(
-      renameTokenVarNameToUuid(`1px var(--token-border-color) solid`, site),
-    ).toEqual("1px var(--token-border-color) solid");
+    expect(errors).toEqual([]);
+    const color = `var(--token-${colorPrimaryToken.uuid}, var(--token-${colorPrimaryForegroundToken.uuid}, red))`;
+    expect(wiTree).toMatchObject({
+      children: [
+        { variantSettings: [{ safeStyles: { color } }] },
+        {
+          variantSettings: [
+            { safeStyles: { boxShadow: `0 0 2px 0px ${color}` } },
+          ],
+        },
+      ],
+    });
   });
 
   it("resolves tokens from imported projects, with local tokens winning on name clashes", () => {
@@ -2200,17 +2176,13 @@ describe("error reporting", () => {
 
   it("collects unresolved token references", () => {
     const errors: WIError[] = [];
-    _testOnlyUtils.renameTokenVarNameToUuid(
-      "var(--token-unknown-token)",
-      site,
-      errors,
+    const css = "var(--token-unknown-token, var(--token-unknown-token))";
+    expect(_testOnlyUtils.renameTokenVarNameToUuid(css, site, errors)).toBe(
+      css,
     );
-    expect(errors).toContainEqual(
-      expect.objectContaining({
-        code: "unresolved-token",
-        token: "unknown-token",
-      }),
-    );
+    expect(errors).toEqual([
+      { code: "unresolved-token", token: "unknown-token" },
+    ]);
   });
 
   it("returns Err from fixCSSValue for unparseable values", () => {

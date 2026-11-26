@@ -1,17 +1,21 @@
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { DataTokenType, DataTokenValue } from "@/wab/commons/DataToken";
-import {
-  StyleTokenType,
-  StyleTokenValue,
-  tryParseTokenRef,
-} from "@/wab/commons/StyleToken";
+import { StyleTokenType, StyleTokenValue } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { assert, notNil } from "@/wab/shared/common";
-import { siteFinalStyleTokensOfType } from "@/wab/shared/core/site-style-tokens";
-import { FinalToken, MutableToken } from "@/wab/shared/core/tokens";
+import {
+  StyleTokenValueError,
+  setStyleTokenValue,
+} from "@/wab/shared/core/site-style-tokens";
+import {
+  FinalToken,
+  MutableToken,
+  OverrideableToken,
+} from "@/wab/shared/core/tokens";
 import { DataToken, Site, StyleToken, Token } from "@/wab/shared/model/classes";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
 import { notification } from "antd";
+import { Result } from "neverthrow";
 import React from "react";
 import { FaArrowRight } from "react-icons/fa";
 
@@ -185,29 +189,42 @@ export const getTokenIndicatorType = (
   }
 };
 
-export const newTokenValueAllowed = (
-  token: FinalToken<StyleToken>,
+/**
+ * Sets `token`'s value for the variants `vsh` targets. Must be called within
+ * a change; on error nothing is written, and the caller should report it with
+ * notifyStyleTokenValueError.
+ */
+export function updateStyleTokenValue(
   site: Site,
-  newValue: string,
-  vsh?: VariantedStylesHelper,
-) => {
-  const allTokensOfSameType = siteFinalStyleTokensOfType(site, token.type, {
-    includeDeps: "direct",
-  });
-
-  const maybeCycle = maybeTokenRefCycle(
+  token: FinalToken<StyleToken>,
+  value: string,
+  vsh: VariantedStylesHelper,
+): Result<void, StyleTokenValueError> {
+  assert(
+    token instanceof MutableToken || token instanceof OverrideableToken,
+    `cannot update token "${token.name}" from transitive dep`,
+  );
+  return setStyleTokenValue(
+    site,
     token,
-    allTokensOfSameType,
-    newValue,
+    value,
+    vsh.getTokenUpdateVariants(),
     vsh,
   );
-  if (!maybeCycle) {
-    return true;
+}
+
+export function notifyStyleTokenValueError(error: StyleTokenValueError) {
+  if (error.type === "invalid") {
+    notification.error({
+      message: "Invalid token value",
+      description: error.message,
+    });
+    return;
   }
-  const cycle = maybeCycle.map((name, i) => (
+  const cycle = error.cycle.map((name, i) => (
     <span key={i}>
       <span className={"token-ref-cycle-item"}>{name}</span>
-      {i !== maybeCycle.length - 1 && <FaArrowRight />}
+      {i !== error.cycle.length - 1 && <FaArrowRight />}
     </span>
   ));
 
@@ -220,40 +237,6 @@ export const newTokenValueAllowed = (
       </div>
     ),
   });
-
-  return false;
-};
-
-function maybeTokenRefCycle(
-  token: FinalToken<StyleToken>,
-  tokens: ReadonlyArray<FinalToken<StyleToken>>,
-  newValue: string,
-  vsh?: VariantedStylesHelper,
-): string[] | undefined {
-  const visited = new Set<StyleToken>([token.base]);
-  let curValue = newValue;
-  vsh = vsh ?? new VariantedStylesHelper();
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    const referredToken = tryParseTokenRef(curValue, tokens);
-    if (!referredToken) {
-      return undefined;
-    }
-    if (visited.has(referredToken.base)) {
-      // It must be the case the the cycle end up referring token itself;
-      // otherwise, we would have detected the cycle beforehand.
-      assert(
-        referredToken.base === token.base,
-        () =>
-          `token ${token.name} (${token.uuid}) is cyclically referencing ${referredToken.name} (${referredToken.uuid})`,
-      );
-      const cycle = [...visited].map((t) => t.name);
-      cycle.push(referredToken.name);
-      return cycle;
-    }
-    visited.add(referredToken.base);
-    curValue = vsh.getActiveTokenValue(referredToken);
-  }
 }
 
 export const isDataTokenPanelReadOnly = (studioCtx: StudioCtx) => {

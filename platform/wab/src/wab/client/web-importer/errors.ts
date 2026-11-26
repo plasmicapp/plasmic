@@ -169,7 +169,7 @@ export function formatWIError(error: WIError): string {
         ? `Ignored invalid keyframe selector "${error.selector}" in @keyframes "${error.sequence}".`
         : `Skipped invalid @keyframes "${error.sequence}".`;
     case "unknown-animation":
-      return `Dropped animation "${error.animation}": no matching animation sequence in this project.`;
+      return `Unknown animation "${error.animation}": no matching animation sequence in this project.`;
     case "unknown-mixin":
       return `Dropped mixin "${error.mixin}" on ${error.tpl.type} uuid=${error.tpl.uuid}: no matching mixin in this project or its direct imports.`;
     case "invalid-image-asset":

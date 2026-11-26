@@ -173,6 +173,23 @@ describe("createInteraction", () => {
     );
   });
 
+  it("rejects an empty name", () => {
+    const { page, root } = setup();
+
+    const result = createInteraction({
+      component: page,
+      tpl: root,
+      eventName: "onClick",
+      name: " ",
+      action: { actionName: "customFunction", code: "1" },
+    });
+
+    expect(result).toEqual(
+      err({ message: "Interaction name cannot be empty." }),
+    );
+    expect(ensureBaseVariantSetting(root).attrs["onClick"]).toBeUndefined();
+  });
+
   it("rejects empty code", () => {
     const { page, root } = setup();
 

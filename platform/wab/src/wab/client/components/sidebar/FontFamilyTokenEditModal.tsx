@@ -1,5 +1,8 @@
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
-import { newTokenValueAllowed } from "@/wab/client/components/sidebar/token-utils";
+import {
+  notifyStyleTokenValueError,
+  updateStyleTokenValue,
+} from "@/wab/client/components/sidebar/token-utils";
 import { FontFamilySelector } from "@/wab/client/components/widgets/FontFamilySelector";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
@@ -32,9 +35,11 @@ export const FontFamilyTokenEditModal = observer(
       assert(val !== undefined);
       spawn(
         studioCtx.change(() => {
-          if (newTokenValueAllowed(token, studioCtx.site, val, vsh)) {
+          const result = updateStyleTokenValue(studioCtx.site, token, val, vsh);
+          if (result.isOk()) {
             studioCtx.fontManager.useFont(studioCtx, val);
-            vsh.updateToken(token, val);
+          } else {
+            notifyStyleTokenValueError(result.error);
           }
           return ok();
         }),
