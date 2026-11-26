@@ -684,7 +684,6 @@ export async function buildRevisionLoaderAssets(req: Request, res: Response) {
   });
 
   setAsCacheableResource(req, res);
-  res.vary("x-plasmic-api-project-tokens");
   // nginx gzips the body as a stream with no Content-Length, which Media CDN
   // doesn't reliably cache. Media CDN only compresses bodies up to 1 MiB.
   res.vary("Accept-Encoding");
@@ -1257,16 +1256,12 @@ function setAsCacheableResource(
     res.setHeader("Cache-Control", PRIVATE_CACHE_CONTROL);
     return;
   }
+  res.vary("x-plasmic-api-project-tokens");
   setAsPublicCacheableResource(res, maxAge);
 }
 
-/** For resources that need no authorization. */
 function setAsPublicCacheableResource(res: Response, maxAge = 31536000) {
-  // We set a relatively short max-age, and a long s-maxage (so, the browser
-  // doesn't cache much, but cloudfront caches for a long time).  This is
-  // because if we discover a bug on the image optimizer, it is easy for us to
-  // manually invalidate the cloudfront cache, but we can't do so easily for the
-  // browser cache.
+  // Limit browser caching to an hour so CDN invalidations take effect sooner for clients.
   res.setHeader(
     "Cache-Control",
     `max-age=${Math.min(3600, maxAge)}, s-maxage=${maxAge}`,

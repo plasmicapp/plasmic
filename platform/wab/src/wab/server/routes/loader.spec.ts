@@ -28,6 +28,12 @@ describe("loader", () => {
   let polyfillProject: Project;
   let con: Connection;
 
+  const tokensHeader = (...ps: Project[]) => ({
+    "x-plasmic-api-project-tokens": ps
+      .map((p) => `${p.id}:${p.projectApiToken}`)
+      .join(","),
+  });
+
   beforeAll(async () => {
     const {
       dburi,
@@ -140,7 +146,7 @@ describe("loader", () => {
     expect(res.headers()["cache-control"]).toEqual("s-maxage=30");
   });
 
-  it("resolves 1 project", async () => {
+  it("serves a cacheable versioned bundle for a published project", async () => {
     const res = await publicApi.getPublishedLoaderAssets([projects[0]], {
       loaderVersion: "7",
     });
@@ -149,6 +155,22 @@ describe("loader", () => {
       `/api/v1/loader/code/versioned?cb=23&platform=react&loaderVersion=7&projectId=${projects[0].id}%400.0.2`,
     );
     expect(res.headers()["cache-control"]).toEqual("s-maxage=30");
+
+    const bundle = await publicApi.rawReq(
+      "get",
+      res.headers().location,
+      undefined,
+      {
+        headers: tokensHeader(projects[0]),
+      },
+    );
+    expect(bundle.status()).toEqual(200);
+    expect(bundle.headers()["cache-control"]).toEqual(
+      "max-age=3600, s-maxage=31536000",
+    );
+    expect(bundle.headers().vary.split(/,\s*/)).toContain(
+      "x-plasmic-api-project-tokens",
+    );
   });
 
   it("resolves 2 projects, ids sorted for caching", async () => {
@@ -257,6 +279,9 @@ describe("loader", () => {
     expect(htmlRes.headers()["cache-control"]).toEqual(
       "max-age=3600, s-maxage=31536000",
     );
+    expect(htmlRes.headers().vary.split(/,\s*/)).toContain(
+      "x-plasmic-api-project-tokens",
+    );
     expect(await htmlRes.text()).toInclude("Hello, world!");
   });
 
@@ -342,10 +367,7 @@ describe("loader", () => {
         `/api/v1/loader/code/preview?loaderVersion=10&projectId=${project.id}`,
         undefined,
         {
-          headers: {
-            "x-plasmic-api-project-tokens": `${project.id}:${project.projectApiToken}`,
-            ...headers,
-          },
+          headers: { ...tokensHeader(project), ...headers },
         },
       );
     const builds = async () => {
@@ -374,12 +396,6 @@ describe("loader", () => {
   });
 
   describe("revision routes", () => {
-    const tokensHeader = (...ps: Project[]) => ({
-      "x-plasmic-api-project-tokens": ps
-        .map((p) => `${p.id}:${p.projectApiToken}`)
-        .join(","),
-    });
-
     async function latestRev(project: Project) {
       return await con
         .getRepository(ProjectRevision)
