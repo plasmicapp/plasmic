@@ -1,3 +1,4 @@
+import { bench } from "@/wab/shared/__testonly__/bench";
 import { generateSiteFromBundle } from "@/wab/shared/__testonly__/site-tests-utils";
 import { Bundle } from "@/wab/shared/bundler";
 import { toVarName } from "@/wab/shared/codegen/util";
@@ -48,8 +49,6 @@ import { mkVariant } from "@/wab/shared/Variants";
 import _bundle from "@/wab/shared/web-exporter/bundles/starter-project-desktop-first.json";
 import dayjs from "dayjs";
 import { identity } from "lodash";
-
-const PRINT_BENCHMARKS = false;
 
 const isEven = (x) => x % 2 === 0;
 
@@ -1012,7 +1011,15 @@ describe("isEqualWithoutKeys", () => {
       expect(isEqualWithoutKeys(siteCopy, site, uidKeys)).toBe(expected);
     };
 
-    it("equal", () => check(fresh(), fresh(), true));
+    it("equal", () => {
+      const site = fresh();
+      const siteCopy = fresh();
+      const equal = bench("isEqualWithoutKeys(site, siteCopy)", () =>
+        isEqualWithoutKeys(site, siteCopy, uidKeys),
+      );
+      expect(equal).toBe(true);
+      expect(isEqualWithoutKeys(siteCopy, site, uidKeys)).toBe(true);
+    });
 
     it("pushed font", () => {
       const siteCopy = fresh();
@@ -1059,40 +1066,5 @@ describe("isEqualWithoutKeys", () => {
       (siteCopy.components[0] as any).extra = 1;
       check(fresh(), siteCopy, false);
     });
-  });
-});
-
-describe("benchmarks", () => {
-  const bundle = _bundle as [string, Bundle][];
-  let site: Site;
-  let siteCopy: Site;
-  beforeAll(() => {
-    site = generateSiteFromBundle(bundle);
-    siteCopy = generateSiteFromBundle(bundle);
-  });
-
-  function bench(name: string, f: () => void) {
-    if (!PRINT_BENCHMARKS) {
-      f();
-      return;
-    }
-    for (let i = 0; i < 5; i++) {
-      f();
-    }
-    const times: number[] = [];
-    for (let i = 0; i < 20; i++) {
-      const start = performance.now();
-      f();
-      times.push(performance.now() - start);
-    }
-    times.sort((a, b) => a - b);
-    const median = (times[9] + times[10]) / 2;
-    console.log(`${name}: ${median.toFixed(1)} ms (median of 20)`);
-  }
-
-  it("isEqualWithoutKeys(site, siteCopy)", () => {
-    bench("isEqualWithoutKeys(site, siteCopy)", () =>
-      expect(isEqualWithoutKeys(site, siteCopy, ["uid", "uuid"])).toBe(true),
-    );
   });
 });

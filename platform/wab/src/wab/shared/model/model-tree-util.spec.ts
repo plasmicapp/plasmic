@@ -1,5 +1,10 @@
+import { RUN_BENCHMARKS, bench } from "@/wab/shared/__testonly__/bench";
+import {
+  loadPlexusBundles,
+  loadStarterBundles,
+} from "@/wab/shared/__testonly__/project-fixtures";
 import { generateSiteFromBundle } from "@/wab/shared/__testonly__/site-tests-utils";
-import { Bundle, Bundler } from "@/wab/shared/bundler";
+import { Bundler } from "@/wab/shared/bundler";
 import {
   AssertionError,
   InvalidCodePathError,
@@ -19,19 +24,9 @@ import { meta } from "@/wab/shared/model/classes-metas";
 import { isWeakRefField } from "@/wab/shared/model/model-meta";
 import { NodeCtx, walkModelTree } from "@/wab/shared/model/model-tree-util";
 import { tryMerge } from "@/wab/shared/site-diffs/merge-core";
-import _starterBundle from "@/wab/shared/web-exporter/bundles/starter-project-desktop-first.json";
-import { readFileSync } from "fs";
 
-const PRINT_BENCHMARKS = false;
-
-const starterBundle = _starterBundle as [string, Bundle][];
-const loadStarter = () => generateSiteFromBundle(starterBundle);
-// require cannot resolve the @/ alias for this file, so read it from disk.
-const plexusBundle = (): [string, Bundle][] =>
-  JSON.parse(
-    readFileSync("src/wab/server/pkg-mgr/data/plexus-master-pkg.json", "utf8"),
-  );
-const loadPlexus = () => generateSiteFromBundle(plexusBundle());
+const loadStarter = () => generateSiteFromBundle(loadStarterBundles());
+const loadPlexus = () => generateSiteFromBundle(loadPlexusBundles());
 
 describe("NodeCtx", () => {
   const site = {} as Site;
@@ -201,25 +196,6 @@ describe("walkModelTree", () => {
 });
 
 describe("benchmarks", () => {
-  function bench(name: string, f: () => void) {
-    if (!PRINT_BENCHMARKS) {
-      f();
-      return;
-    }
-    for (let i = 0; i < 5; i++) {
-      f();
-    }
-    const times: number[] = [];
-    for (let i = 0; i < 20; i++) {
-      const start = performance.now();
-      f();
-      times.push(performance.now() - start);
-    }
-    times.sort((a, b) => a - b);
-    const median = (times[9] + times[10]) / 2;
-    console.log(`${name}: ${median.toFixed(1)} ms (median of 20)`);
-  }
-
   it.each([
     ["starter", loadStarter],
     ["plexus", loadPlexus],
@@ -246,58 +222,59 @@ describe("benchmarks", () => {
     });
 
   describe.each([
-    ["starter", starterBundle, it],
+    ["starter", loadStarterBundles, it],
     // Plexus merges take about a second, so only run them to print timings.
-    ["plexus", plexusBundle(), it.skipIf(!PRINT_BENCHMARKS)],
-  ] as const)("tryMerge(%s)", (name, bundles, maybeIt) => {
-    // Unbundle the deps once, then the site under a fresh uuid for each copy.
-    const freshSites = () => {
-      const bundler = new Bundler();
-      bundles
-        .slice(0, -1)
-        .forEach(([uuid, bundle]) => bundler.unbundle(jsonClone(bundle), uuid));
+    ["plexus", loadPlexusBundles, it.skipIf(!RUN_BENCHMARKS)],
+  ] as const)("tryMerge(%s)", (name, loadBundles, maybeIt) => {
+    const runMerge = (
+      label: string,
+      edit?: (left: Site, right: Site) => void,
+    ) => {
+      const bundles = loadBundles();
+      const deps = bundles.slice(0, -1);
       const [, siteBundle] = bundles[bundles.length - 1];
-      const freshSite = () => {
-        const inst = bundler.unbundle(jsonClone(siteBundle), mkUuid());
-        return ensureKnownSite(
-          isKnownProjectDependency(inst) ? inst.site : inst,
+      const setup = () => {
+        const bundler = new Bundler();
+        deps.forEach(([uuid, bundle]) =>
+          bundler.unbundle(jsonClone(bundle), uuid),
         );
+        const freshSite = () => {
+          const inst = bundler.unbundle(jsonClone(siteBundle), mkUuid());
+          return ensureKnownSite(
+            isKnownProjectDependency(inst) ? inst.site : inst,
+          );
+        };
+        const ancestor = freshSite();
+        const left = freshSite();
+        const right = freshSite();
+        const merged = freshSite();
+        edit?.(left, right);
+        return { ancestor, left, right, merged, bundler };
       };
-      return { bundler, freshSite };
+      return bench(
+        `${label} tryMerge(${name})`,
+        ({ ancestor, left, right, merged, bundler }) =>
+          tryMerge(ancestor, left, right, merged, bundler, undefined),
+        { setup },
+      );
     };
 
     maybeIt("no-op", () => {
-      const { bundler, freshSite } = freshSites();
-      const ancestor = freshSite();
-      const left = freshSite();
-      const right = freshSite();
-      bench(`no-op tryMerge(${name})`, () => {
-        const merged = freshSite();
-        expect(
-          tryMerge(ancestor, left, right, merged, bundler, undefined).status,
-        ).toBe("merged");
-      });
+      expect(runMerge("no-op").status).toBe("merged");
     });
 
     maybeIt("edited components", () => {
-      const { bundler, freshSite } = freshSites();
-      const ancestor = freshSite();
-      const left = freshSite();
-      const right = freshSite();
-      editComponents(left, 1);
-      editRoots(right, 2);
-      expect(left.components).not.toHaveLength(0);
-      bench(`edited components tryMerge(${name})`, () => {
-        const merged = freshSite();
-        expect(
-          tryMerge(ancestor, left, right, merged, bundler, undefined).status,
-        ).toBe("merged");
-        merged.components.forEach((component) => {
-          expect(component.metadata.bench).toBe("left");
-          expect(component.tplTree.vsettings[0].rs.values["margin-top"]).toBe(
-            "123px",
-          );
-        });
+      const result = runMerge("edited components", (left, right) => {
+        editComponents(left, 1);
+        editRoots(right, 2);
+      });
+      expect(result.status).toBe("merged");
+      expect(result.mergedSite.components).not.toHaveLength(0);
+      result.mergedSite.components.forEach((component) => {
+        expect(component.metadata.bench).toBe("left");
+        expect(component.tplTree.vsettings[0].rs.values["margin-top"]).toBe(
+          "123px",
+        );
       });
     });
   });

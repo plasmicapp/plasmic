@@ -1,5 +1,6 @@
 /** @vitest-environment node */
 import { TEST_GLOBAL_VARIANT } from "@/wab/__testonly__/tpls";
+import { bench } from "@/wab/shared/__testonly__/bench";
 import { Bundler } from "@/wab/shared/bundler";
 import { jsonClone, mkUuid } from "@/wab/shared/common";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
@@ -109,29 +110,23 @@ describe("bundler performance", () => {
       const instanceCount = Object.keys(bundle.map).length;
       expect(instanceCount).toBeGreaterThanOrEqual(n);
 
-      const b = new Bundler();
-
-      // Measure unbundle time
-      const unbundleStartTime = performance.now();
-      const unbundledRoot = b.unbundle(bundle, uuid);
-      const unbundleTime = performance.now() - unbundleStartTime;
+      const { b, unbundledRoot } = bench(`unbundle (n=${n})`, () => {
+        const unbundler = new Bundler();
+        return {
+          b: unbundler,
+          unbundledRoot: unbundler.unbundle(bundle, uuid),
+        };
+      });
 
       expect(unbundledRoot).toBeDefined();
       expect(b._addr2inst.size).toEqual(instanceCount);
 
-      // Measure bundle time
-      const bundleStartTime = performance.now();
-      const rebundled = b.bundle(unbundledRoot!, uuid, bundle.version);
-      const bundleTime = performance.now() - bundleStartTime;
+      const rebundled = bench(`bundle (n=${n})`, () =>
+        b.bundle(unbundledRoot, uuid, bundle.version),
+      );
 
       expect(rebundled).toEqual(bundle);
       expect(Object.keys(rebundled.map)).toHaveLength(instanceCount);
-
-      console.log(
-        `[bundler performance n=${n}] ` +
-          `Unbundle: ${unbundleTime.toFixed(3)}ms, ` +
-          `Bundle: ${bundleTime.toFixed(3)}ms`,
-      );
     });
   });
 });
