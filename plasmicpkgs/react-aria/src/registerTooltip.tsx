@@ -1,3 +1,4 @@
+import { isFocusVisible } from "@react-aria/interactions";
 import React, { useCallback, useContext, useRef, useState } from "react";
 import { mergeProps, useFocusWithin, useHover, useId } from "react-aria";
 import {
@@ -17,7 +18,8 @@ import {
 } from "./utils";
 
 export interface BaseTooltipProps
-  extends Omit<TooltipTriggerProps, "trigger">,
+  extends
+    Omit<TooltipTriggerProps, "trigger">,
     TooltipProps,
     PlasmicCanvasProps {
   children: React.ReactElement<HTMLElement>;
@@ -45,7 +47,7 @@ function UncontrolledBaseTooltip({ onOpenChange, ...props }: BaseTooltipProps) {
       setOpen(newOpen);
       onOpenChange?.(newOpen);
     },
-    [onOpenChange]
+    [onOpenChange],
   );
   return (
     <ControlledBaseTooltip
@@ -142,7 +144,7 @@ interface TriggerWrapperProps {
 const TriggerWrapper = React.forwardRef<HTMLDivElement, TriggerWrapperProps>(
   function TriggerWrapper_(
     { children, isDisabled, triggerOnFocusOnly, tooltipId, className },
-    ref: React.Ref<HTMLDivElement>
+    ref: React.Ref<HTMLDivElement>,
   ) {
     const state = useContext(TooltipTriggerStateContext)!;
 
@@ -152,11 +154,14 @@ const TriggerWrapper = React.forwardRef<HTMLDivElement, TriggerWrapperProps>(
       onHoverEnd: () => !triggerOnFocusOnly && state.close(),
     });
 
-    // useFocusWithin captures focus events for all nested focusable elements
+    // Tooltip should open/close on focus/blur within of the trigger.
+    // This matches the behavior of react-aria's useTooltipTrigger.
     const { focusWithinProps } = useFocusWithin({
       isDisabled,
-      onFocusWithin: () => state.open(),
-      onBlurWithin: () => state.close(),
+      // Open on focus, immediate if focus visible (e.g. keyboard interaction).
+      onFocusWithin: () => state.open(isFocusVisible()),
+      // Close on blur, always immediate.
+      onBlurWithin: () => state.close(true),
     });
 
     const mergedProps = mergeProps(hoverProps, focusWithinProps, {
@@ -168,12 +173,12 @@ const TriggerWrapper = React.forwardRef<HTMLDivElement, TriggerWrapperProps>(
     });
 
     return <div {...mergedProps}>{children}</div>;
-  }
+  },
 );
 
 export function registerTooltip(
   loader?: Registerable,
-  overrides?: CodeComponentMetaOverrides<typeof BaseTooltip>
+  overrides?: CodeComponentMetaOverrides<typeof BaseTooltip>,
 ) {
   registerComponentHelper(
     loader,
@@ -277,6 +282,6 @@ export function registerTooltip(
       },
       trapsFocus: true,
     },
-    overrides
+    overrides,
   );
 }

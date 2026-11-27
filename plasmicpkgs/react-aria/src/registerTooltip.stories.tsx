@@ -21,6 +21,25 @@ const meta: Meta<typeof BaseTooltip> = {
 export default meta;
 type Story = StoryObj<typeof BaseTooltip>;
 
+// Run before another story can warm up React Stately's shared tooltip state.
+export const PointerFocusRespectsDelay: Story = {
+  args: {
+    children: <button type="button">Show tooltip</button>,
+    delay: 10000,
+    trigger: "focus",
+  },
+  play: async ({ canvasElement, args }) => {
+    const trigger = within(canvasElement).getByRole("button", {
+      name: "Show tooltip",
+    });
+
+    await userEvent.click(trigger);
+
+    expect(trigger).toHaveFocus();
+    expect(args.onOpenChange).not.toHaveBeenCalledWith(true);
+  },
+};
+
 // Basic tooltip with hover trigger
 export const Basic: Story = {
   play: async ({ canvasElement, args }) => {
@@ -29,8 +48,8 @@ export const Basic: Story = {
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     await userEvent.hover(trigger);
@@ -41,7 +60,7 @@ export const Basic: Story = {
       const tooltipId = tooltip.parentElement?.getAttribute("id");
       expect(tooltipId).toBeDefined();
       expect(trigger.parentElement?.getAttribute("aria-describedby")).toEqual(
-        tooltipId
+        tooltipId,
       );
     });
 
@@ -69,8 +88,8 @@ export const AlwaysOpen: Story = {
     // Just verify the tooltip content is in the document
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).toBeInTheDocument(),
     );
   },
 };
@@ -78,6 +97,9 @@ export const AlwaysOpen: Story = {
 // Tooltip with focus trigger
 export const FocusTrigger: Story = {
   args: {
+    // Keyboard focus and blur should bypass the hover delays.
+    delay: 10000,
+    closeDelay: 10000,
     // TabIndex=0 makes it focusable
     children: <span tabIndex={0}>Show tooltip</span>, // anything can be used as a trigger
   },
@@ -86,8 +108,8 @@ export const FocusTrigger: Story = {
     const trigger = canvas.getByText("Show tooltip");
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     // Focus trigger
@@ -98,8 +120,8 @@ export const FocusTrigger: Story = {
     // Check that tooltip appears
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).toBeInTheDocument(),
     );
 
     expect(args.onOpenChange).toHaveBeenCalledWith(true);
@@ -131,8 +153,8 @@ export const WithoutForwardRefTrigger: Story = {
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     await expect(innerFocusableButtons[0]).not.toHaveFocus();
@@ -144,8 +166,8 @@ export const WithoutForwardRefTrigger: Story = {
     // Check that tooltip appears
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).toBeInTheDocument(),
     );
 
     expect(args.onOpenChange).toHaveBeenCalledWith(true);
@@ -156,8 +178,8 @@ export const WithoutForwardRefTrigger: Story = {
     expect(innerFocusableButtons[1]).toHaveFocus();
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).toBeInTheDocument(),
     );
 
     await userEvent.tab();
@@ -165,8 +187,8 @@ export const WithoutForwardRefTrigger: Story = {
     await waitFor(() => expect(args.onOpenChange).toHaveBeenCalledWith(false)); //ensure that tooltip is no longer open
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     // should also work with hover
@@ -175,8 +197,8 @@ export const WithoutForwardRefTrigger: Story = {
     // Check that tooltip appears
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).toBeInTheDocument(),
     );
 
     await waitFor(() => expect(args.onOpenChange).toHaveBeenCalledWith(true)); // ensure the tooltip has opened
@@ -185,8 +207,8 @@ export const WithoutForwardRefTrigger: Story = {
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     await waitFor(() => expect(args.onOpenChange).toHaveBeenCalledWith(false));
@@ -205,8 +227,8 @@ export const FocusTriggerOnly: Story = {
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     // Hover over trigger
@@ -215,8 +237,8 @@ export const FocusTriggerOnly: Story = {
     // Check that tooltip does NOT appear on hover
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     expect(args.onOpenChange).not.toHaveBeenCalled();
@@ -231,8 +253,8 @@ export const FocusTriggerOnly: Story = {
     // Check that tooltip DOES appear on focus
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).toBeInTheDocument(),
     );
 
     expect(args.onOpenChange).toHaveBeenCalledWith(true);
@@ -263,8 +285,8 @@ export const TriggerWithEventHandlers: Story = {
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     expect(parameters.customOnFocus).not.toHaveBeenCalled();
@@ -275,8 +297,8 @@ export const TriggerWithEventHandlers: Story = {
     // Check that tooltip DOES appear on focus
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).toBeInTheDocument(),
     );
     expect(parameters.customOnFocus).toHaveBeenCalled();
 
@@ -299,8 +321,8 @@ export const Disabled: Story = {
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     // Focus trigger
@@ -309,8 +331,8 @@ export const Disabled: Story = {
     // Check that the disabled tooltip does NOT appear
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     expect(args.onOpenChange).not.toHaveBeenCalled();
@@ -340,24 +362,24 @@ export const Controlled: Story = {
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     await userEvent.hover(trigger);
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).toBeInTheDocument(),
     );
 
     await userEvent.unhover(trigger);
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
   },
 };
@@ -371,8 +393,8 @@ export const AriaButtonTrigger: Story = {
     const trigger = canvas.getByText("Show tooltip");
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     await userEvent.hover(trigger);
@@ -380,8 +402,8 @@ export const AriaButtonTrigger: Story = {
     // Check that tooltip appears
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).toBeInTheDocument(),
     );
     expect(args.onOpenChange).toHaveBeenCalledWith(true);
     expect(args.onOpenChange).toHaveBeenCalledTimes(1);
@@ -390,8 +412,8 @@ export const AriaButtonTrigger: Story = {
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
     expect(args.onOpenChange).toHaveBeenCalledWith(false);
     expect(args.onOpenChange).toHaveBeenCalledTimes(2);
@@ -403,8 +425,8 @@ export const AriaButtonTrigger: Story = {
     expect(trigger).toHaveFocus();
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).toBeInTheDocument(),
     );
     expect(args.onOpenChange).toHaveBeenCalledWith(true);
     expect(args.onOpenChange).toHaveBeenCalledTimes(3);
@@ -415,8 +437,8 @@ export const AriaButtonTrigger: Story = {
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     await waitFor(() => expect(args.onOpenChange).toHaveBeenCalledWith(false));
@@ -475,32 +497,32 @@ export const SelectedInCanvas: Story = {
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     await userEvent.click(toggleSelectionBtn); // select to open
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).toBeInTheDocument(),
     );
 
     await userEvent.click(triggerSelectionBtn); // selecting trigger should close tooltip
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     await userEvent.click(otherSlotSelectionBtn); // selecting other slot should open tooltip
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).toBeInTheDocument(),
     );
 
     await userEvent.click(toggleSelectionBtn); // un-select to close
@@ -508,9 +530,9 @@ export const SelectedInCanvas: Story = {
     await waitFor(
       () =>
         expect(
-          within(document.body).queryByTestId("tooltip-content")
+          within(document.body).queryByTestId("tooltip-content"),
         ).not.toBeInTheDocument(),
-      { timeout: 1100 }
+      { timeout: 1100 },
     );
   },
 };
@@ -569,8 +591,8 @@ export const TooltipPositionInCanvas: Story = {
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     await userEvent.click(toggleSelectionBtn); // select to open
@@ -584,8 +606,8 @@ export const TooltipPositionInCanvas: Story = {
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     await userEvent.click(moveRightBtn);
@@ -594,7 +616,7 @@ export const TooltipPositionInCanvas: Story = {
     await waitFor(() => {
       const tooltip = within(document.body).getByTestId("tooltip-content");
       expect(initialTooltipLeftPosition).not.toEqual(
-        tooltip.getBoundingClientRect().left
+        tooltip.getBoundingClientRect().left,
       ); // opens at a different position because the position of the trigger changed
     });
 
@@ -602,8 +624,8 @@ export const TooltipPositionInCanvas: Story = {
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     await userEvent.click(moveBackBtn); // move trigger back to initial position
@@ -612,7 +634,7 @@ export const TooltipPositionInCanvas: Story = {
     await waitFor(() => {
       const tooltip = within(document.body).getByTestId("tooltip-content");
       expect(initialTooltipLeftPosition).toEqual(
-        tooltip.getBoundingClientRect().left
+        tooltip.getBoundingClientRect().left,
       ); // opens at the initial position
     });
 
@@ -620,8 +642,8 @@ export const TooltipPositionInCanvas: Story = {
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
   },
 };
@@ -674,8 +696,8 @@ export const TooltipPositionInPreview: Story = {
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     await userEvent.click(moveRightBtn);
@@ -684,7 +706,7 @@ export const TooltipPositionInPreview: Story = {
     await waitFor(() => {
       const tooltip = within(document.body).getByTestId("tooltip-content");
       expect(initialTooltipLeftPosition).not.toEqual(
-        tooltip.getBoundingClientRect().left
+        tooltip.getBoundingClientRect().left,
       ); // opens at a different position because the position of the trigger changed
     });
 
@@ -692,8 +714,8 @@ export const TooltipPositionInPreview: Story = {
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
 
     await userEvent.click(moveBackBtn); // move trigger back to initial position
@@ -702,7 +724,7 @@ export const TooltipPositionInPreview: Story = {
     await waitFor(() => {
       const tooltip = within(document.body).getByTestId("tooltip-content");
       expect(initialTooltipLeftPosition).toEqual(
-        tooltip.getBoundingClientRect().left
+        tooltip.getBoundingClientRect().left,
       ); // opens at the initial position
     });
 
@@ -710,8 +732,8 @@ export const TooltipPositionInPreview: Story = {
 
     await waitFor(() =>
       expect(
-        within(document.body).queryByTestId("tooltip-content")
-      ).not.toBeInTheDocument()
+        within(document.body).queryByTestId("tooltip-content"),
+      ).not.toBeInTheDocument(),
     );
   },
 };
