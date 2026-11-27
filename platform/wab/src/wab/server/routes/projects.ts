@@ -10,6 +10,7 @@ import {
 } from "@/wab/server/db/BundleMigrator";
 import {
   loadDepPackages,
+  loadDepPackagesWithBundles,
   unbundlePkgVersion,
 } from "@/wab/server/db/DbBundleLoader";
 import { getSerializableConnectionOptions } from "@/wab/server/db/DbCon";
@@ -169,7 +170,7 @@ import { mergeUiConfigs } from "@/wab/shared/ui-config-utils";
 import { getCodegenUrl } from "@/wab/shared/urls";
 import * as Sentry from "@sentry/node";
 import { Request, Response } from "express-serve-static-core";
-import { last, map, omit, pick, sortBy, uniq } from "lodash";
+import { last, omit, pick, sortBy, uniq } from "lodash";
 import * as Prettier from "prettier";
 import type { SetRequired } from "type-fest";
 import { EntityManager, MigrationExecutor } from "typeorm";
@@ -1557,12 +1558,13 @@ export async function getProjectRevWithoutData(req: Request, res: Response) {
       ? await mgr.getProjectRevision(
           projectId,
           revisionId,
-          branchId ? branchId : undefined,
+          branchId ?? undefined,
+          { includeData: false },
         )
-      : await mgr.getLatestProjectRev(
-          projectId,
-          branchId ? { branchId } : undefined,
-        ),
+      : await mgr.getLatestProjectRev(projectId, {
+          branchId,
+          includeData: false,
+        }),
     "data",
   );
   const perms = project.readableByPublic
@@ -1837,20 +1839,16 @@ async function getPkgWithDeps(
   const bundle: Bundle = opts?.dontMigrateProject
     ? JSON.parse(pkg.model)
     : await getMigratedBundle(pkg);
-  const depPkgs = await loadDepPackages(mgr, bundle);
-
-  // Ensure deps pkg bundles are up to date.
-  await Promise.all(depPkgs.map((depPkg) => getMigratedBundle(depPkg)));
-  const result = meta
+  const deps = await loadDepPackagesWithBundles(mgr, bundle, getMigratedBundle);
+  return meta
     ? {
         pkg: omit(pkg, "model"),
-        depPkgs: map(depPkgs, (v) => omit(v, "model")),
+        depPkgs: deps.map(({ pkg }) => omit(pkg, "model")),
       }
     : {
-        pkg,
-        depPkgs,
+        pkg: pkg.toJSONWithModel(bundle),
+        depPkgs: deps.map(({ pkg, bundle }) => pkg.toJSONWithModel(bundle)),
       };
-  return result;
 }
 
 async function getPkgVersionEtag(
@@ -1950,6 +1948,7 @@ export async function listUnpublishedProjectRevisions(
   const latest = pkg
     ? await mgr.tryGetPkgVersion(pkg.id, undefined, undefined, {
         branchId,
+        noModel: true,
       })
     : null;
   const revisions = await mgr.listProjectRevisions(projectId, {
@@ -2135,7 +2134,9 @@ export async function getPkgVersionPublishStatus(req: Request, res: Response) {
   const projectApiToken = await mgr.validateOrGetProjectApiToken(projectId);
   const loaderPubilshments = await mgr.getRecentLoaderPublishments(projectId);
   const pkgVersionId = req.params.pkgVersionId;
-  const pkgVersion = await mgr.getPkgVersionById(pkgVersionId);
+  const pkgVersion = await mgr.getPkgVersionById(pkgVersionId, {
+    noModel: true,
+  });
 
   let isRedirectingToLatest = false;
 

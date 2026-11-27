@@ -116,10 +116,14 @@ export const ajax = async (
       .done((responseData, _txtStatus, _xhr) => {
         resolve(responseData);
       })
-      .fail((xhr, txtStatus, err) => {
+      .fail(async (xhr, txtStatus, err) => {
+        const body =
+          "responseBlob" in xhr && xhr.responseBlob instanceof Blob
+            ? await xhr.responseBlob.text().catch(() => "")
+            : xhr.responseText;
         const error =
           swallow(() => {
-            const response = JSON.parse(xhr.responseText);
+            const response = JSON.parse(body);
             if (noErrorTransform) {
               return response;
             }
@@ -160,6 +164,27 @@ export class Api extends SharedApi {
   constructor() {
     super();
     ensureIsTopFrame();
+  }
+
+  getPkgVersionBlob(
+    pkgId: string,
+    version: string,
+    branchId?: string,
+  ): Promise<Blob> {
+    return this.req(
+      "get",
+      `/pkgs/${encodeURIComponent(pkgId)}`,
+      {
+        version,
+        meta: false,
+        branchId,
+      },
+      {
+        dataType: "binary",
+        xhrFields: { responseType: "blob" },
+        responseFields: { binary: "responseBlob" },
+      },
+    );
   }
 
   setUser = setUser;
@@ -484,6 +509,7 @@ export function filteredApi(
     "getPlumePkg",
     "getPkgByProjectId",
     "getPkgVersion",
+    "getPkgVersionBlob",
     "getProjectRevision",
     "listUnpublishedProjectRevisions",
     "revertProjectToRevision",

@@ -14,6 +14,7 @@ import {
   getMigratedBundle,
 } from "@/wab/server/db/BundleMigrator";
 import {
+  unbundleDependencies,
   unbundlePkgVersion,
   unbundlePkgVersionFromBundle,
   unbundleProjectFromBundle,
@@ -232,6 +233,8 @@ import {
   HostLessPackageInfo,
   ProjectDependency,
   Site,
+  ensureKnownSite,
+  ensureKnownSplit,
 } from "@/wab/shared/model/classes";
 import { MAX_PASSWORD_LENGTH } from "@/wab/shared/password-policy";
 import { ratePasswordStrength } from "@/wab/shared/password-strength";
@@ -3540,6 +3543,7 @@ export class DbMgr implements MigrationDbMgr {
     projectId: string,
     revisionNumOrId: number | string,
     branchId?: BranchId,
+    { includeData = true } = {},
   ) {
     await this.checkProjectPerms(projectId, "viewer", "get revision for");
 
@@ -3552,6 +3556,7 @@ export class DbMgr implements MigrationDbMgr {
       await getOneOrFailIfTooMany(
         this.projectRevs()
           .createQueryBuilder("rev")
+          .select(includeData ? ["rev"] : this.projectRevisionMetadataColumns())
           .where(
             `${conditionalWhereClause} AND "projectId"=:projectId AND ((:branchId::text is null AND "branchId" is null) OR "branchId" = :branchId::text)`,
             {
@@ -3566,6 +3571,13 @@ export class DbMgr implements MigrationDbMgr {
         isRevisionId ? "revision id" : "revision"
       } ${revisionNumOrId}`,
     );
+  }
+
+  private projectRevisionMetadataColumns() {
+    return this.entMgr.connection
+      .getMetadata(ProjectRevision)
+      .columns.filter((column) => column.propertyName !== "data")
+      .map((column) => `rev.${column.propertyName}`);
   }
 
   async listProjectRevisions(
@@ -3584,17 +3596,9 @@ export class DbMgr implements MigrationDbMgr {
       "list revisions for project",
     );
     const { branchId, createdAtGt, includeData, revisionNumGt, limit } = opts;
-    const columns = this.entMgr.connection
-      .getMetadata(ProjectRevision)
-      .columns.map((c) => `rev.${c.databaseName}`);
-
-    if (!includeData) {
-      arrayRemove(columns, "rev.data");
-    }
-
     const qb = this.projectRevs()
       .createQueryBuilder("rev")
-      .select(columns)
+      .select(includeData ? ["rev"] : this.projectRevisionMetadataColumns())
       .leftJoinAndSelect("rev.createdBy", "createdBy")
       .where(
         `"projectId" = :projectId AND (:branchId::text is null AND "branchId" is null OR "branchId" = :branchId::text)`,
@@ -3928,17 +3932,8 @@ export class DbMgr implements MigrationDbMgr {
     }
 
     const bundler = new Bundler();
-    const publishedSite = await unbundleProjectFromData(this, bundler, rev);
-    const usedSiteFeatures: SiteFeature[] = [];
-
-    if (
-      publishedSite.splits.filter(
-        (split) => split.status === SplitStatus.Running,
-      ).length > 0
-    ) {
-      usedSiteFeatures.push("split");
-    }
-
+    const revisionBundle = await getMigratedBundle(rev);
+    await unbundleDependencies(this, bundler, revisionBundle);
     if (!version) {
       const prevPkgVersionIds = await this.getLatestPkgVersionIds(
         projectId as ProjectId,
@@ -3956,6 +3951,9 @@ export class DbMgr implements MigrationDbMgr {
           bundler,
           prevPkgVersion,
         );
+        const publishedSite = ensureKnownSite(
+          bundler.unbundleSnapshot(revisionBundle),
+        );
         const releaseType = calculateSemVer(
           compareSites(prevUnbundled.site, publishedSite),
         );
@@ -3966,29 +3964,40 @@ export class DbMgr implements MigrationDbMgr {
       }
     }
 
-    const dep = new ProjectDependency({
+    const depBundle = bundler.prepareSnapshotBundle(revisionBundle);
+    const site = depBundle.map[depBundle.root];
+    assert(site.__type === "Site", "Expected a Site revision");
+    const usedSiteFeatures: SiteFeature[] = [];
+    if (
+      site.splits.some(
+        (ref) =>
+          ("__xref" in ref
+            ? ensureKnownSplit(bundler.objByAddr(ref.__xref)).status
+            : depBundle.map[ref.__ref].status) === SplitStatus.Running,
+      )
+    ) {
+      usedSiteFeatures.push("split");
+    }
+    let root = mkShortId();
+    while (root in depBundle.map) {
+      root = mkShortId();
+    }
+    depBundle.map[root] = {
+      __type: "ProjectDependency",
       uuid: mkShortId(),
       pkgId: pkg.id,
       projectId,
       version,
       name: pkg.name,
-      site: publishedSite,
-    });
-
-    // Bundling with projectId because we don't want xrefs to projectId
-    // This same bundle should be unbundled with PkgVersion.id
-    const depBundle = bundler.bundle(
-      dep,
-      projectId,
-      await getLastBundleVersion(),
-    );
+      site: { __ref: depBundle.root },
+    };
+    depBundle.root = root;
 
     // Create the PkgVersion
     const pkgVersion = this.pkgVersions().create({
       ...this.stampNew(),
       pkg,
       version,
-      model: JSON.stringify(depBundle),
       tags,
       description,
       hostUrl: hostLessPackage ? null : project.hostUrl,
@@ -3997,6 +4006,8 @@ export class DbMgr implements MigrationDbMgr {
       branchId,
       conflictPickMap: conflictPickMap ? JSON.stringify(conflictPickMap) : null,
     });
+
+    pkgVersion.setModelFromBundle(depBundle);
 
     const branchSpec = branchId ?? MainBranchId;
     await this.updateCommitGraphForProject(
@@ -4048,9 +4059,11 @@ export class DbMgr implements MigrationDbMgr {
     {
       branchId,
       revisionNumOnly,
+      includeData = true,
     }: {
       branchId?: BranchId;
       revisionNumOnly?: boolean;
+      includeData?: boolean;
     } = {},
   ) {
     await this.checkProjectBranchPerms(
@@ -4066,7 +4079,13 @@ export class DbMgr implements MigrationDbMgr {
     qb.setParameter("projectId", projectId);
     qb.orderBy("rev.revision", "DESC").limit(1);
     // This is done to avoid loading the entire data of a project revision.
-    qb.select(revisionNumOnly ? "rev.revision" : "rev");
+    qb.select(
+      revisionNumOnly
+        ? ["rev.revision"]
+        : includeData
+          ? ["rev"]
+          : this.projectRevisionMetadataColumns(),
+    );
     return ensureFound<ProjectRevision>(
       await getOneOrFailIfTooMany(qb.printSql()),
       `Project with ID ${projectId} branch ${branchId}`,
@@ -4840,16 +4859,13 @@ export class DbMgr implements MigrationDbMgr {
     const availableVersions = withoutNils(
       availablePkgVersions.map((v) => v.version),
     );
-    const coercedAvailableVersions = withoutNils(
-      availableVersions.map((v) => semver.coerce(v)),
-    );
-    // This will filter out any versions that cannot be coerced into semver
-    const strictVersion = semver.maxSatisfying(coercedAvailableVersions, range);
-    // Just find the first fuzzy version that matches
-    const version = availableVersions.find(
-      (v) => semver.coerce(v) === strictVersion,
-    );
-    if (!strictVersion || !version) {
+    let version = availableVersions.find((v) => v === range);
+    if (!version) {
+      const coerced = withoutNils(availableVersions.map(semver.coerce));
+      const match = semver.maxSatisfying(coerced, range);
+      version = availableVersions.find((v) => semver.coerce(v) === match);
+    }
+    if (!version) {
       logger.warn(
         `No matching versions for pkgId=${pkgId} branchId=${branchId} version=${range}${
           tag ? ", tag=" + tag : ""

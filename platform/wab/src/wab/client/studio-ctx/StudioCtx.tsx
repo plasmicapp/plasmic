@@ -148,6 +148,7 @@ import {
   CopilotImage,
   CopilotInteractionId,
   MainBranchId,
+  NextPublishVersionResponse,
   TemplateSpec,
   UpdatePlayerViewRequest,
 } from "@/wab/shared/ApiSchema";
@@ -207,6 +208,7 @@ import { BoundedCache } from "@/wab/shared/bounded-cache";
 import {
   Bundle,
   BundledInst,
+  Bundler,
   FastBundler,
   checkBundleFields,
   checkRefsInBundle,
@@ -233,7 +235,6 @@ import { arrayRemove, arrayReversed } from "@/wab/shared/collections";
 import {
   AsyncCallable,
   arrayEqIgnoreOrder,
-  asOne,
   assert,
   assertNever,
   asyncMaxAtATime,
@@ -306,7 +307,6 @@ import { SlotSelection } from "@/wab/shared/core/slots";
 import { SplitStatus } from "@/wab/shared/core/splits";
 import {
   taggedUnbundle,
-  unbundleProjectDependency,
   unbundleSite,
 } from "@/wab/shared/core/tagged-unbundle";
 import {
@@ -349,6 +349,7 @@ import {
   ObjInst,
   PageArena,
   ProjectDependency,
+  Site,
   StyleToken,
   TplComponent,
   TplNode,
@@ -356,6 +357,7 @@ import {
   TplTag,
   Variant,
   VariantGroup,
+  ensureKnownProjectDependency,
   isKnownArenaFrame,
   isKnownComponentArena,
   isKnownProjectDependency,
@@ -6445,66 +6447,107 @@ export class StudioCtx extends WithDbCtx {
     return latestPublishedRevId
       ? await this.appCtx.api.getProjectRevWithoutData(
           this.siteInfo.id,
-          ensure(latestPublishedRevId, "latestPublishedRevId must exist"),
+          latestPublishedRevId,
           branchId,
         )
       : { rev: null };
   }
-  /**
-   * Given the current revision number, calculate the correct next
-   * version number based by comparing this.site with the latest release
-   **/
-  async calculateNextPublishVersion() {
-    const releases = await this.getProjectReleases();
 
-    // Defaulting to 0.0.1 as the initial version
-    if (releases.length <= 0) {
+  // Restoring a version can replace the site at the same revision number.
+  private publishComparisons = new WeakMap<
+    Site,
+    { key: string; result: Promise<NextPublishVersionResponse | undefined> }
+  >();
+
+  async calculateNextPublishVersion() {
+    const site = this.site;
+    const branchId = this.branchInfo()?.id;
+    const [latestRelease] = await this.getProjectReleases();
+    if (!latestRelease) {
       return {
         version: INITIAL_VERSION_NUMBER,
-        changeLog: extractSplitStatusDiff(this.site, () => SplitStatus.New),
+        changeLog: extractSplitStatusDiff(site, () => SplitStatus.New),
         releaseType: undefined,
       };
     }
 
-    // Get the latest release
-    const latestRelease = ensure(asOne(releases), "latestRelease should exist");
-    const { rev: latestPublishedRev } =
-      await this.appCtx.api.getProjectRevWithoutData(
-        this.siteInfo.id,
-        ensure(
-          latestRelease.revisionId,
-          "latestRelease should have revision id",
-        ),
-        latestRelease.branchId ?? undefined,
-      );
-    if (latestPublishedRev.revision === this.dbCtx().revisionNum) {
-      return undefined;
-    }
-
+    const revisionNum = this.dbCtx().revisionNum;
     if (
       this.appCtx.appConfig.serverPublishProjectIds.includes(this.siteInfo.id)
     ) {
+      if (await this.isPublishedRevision(latestRelease, revisionNum)) {
+        return undefined;
+      }
       return this.appCtx.api.computeNextProjectVersion(this.siteInfo.id, {
-        revisionNum: this.dbCtx().revisionNum,
-        branchId: this.dbCtx().branchInfo?.id,
+        revisionNum,
+        branchId,
       });
     }
 
-    const latestPublishedPkg = await this.appCtx.api.getPkgVersion(
-      latestRelease.pkgId,
-      undefined,
+    const key = JSON.stringify([
+      branchId,
+      latestRelease.id,
+      revisionNum,
+      this._changeCounter,
+    ]);
+    const cached = this.publishComparisons.get(site);
+    if (cached?.key === key) {
+      return cached.result;
+    }
+
+    const result = this.compareWithPublishedVersion(
+      site,
+      latestRelease,
+      revisionNum,
+    );
+    this.publishComparisons.set(site, { key, result });
+    try {
+      return await result;
+    } catch (error) {
+      if (this.publishComparisons.get(site)?.result === result) {
+        this.publishComparisons.delete(site);
+      }
+      throw error;
+    }
+  }
+
+  private async isPublishedRevision(
+    latestRelease: PkgVersionInfoMeta,
+    revisionNum: number,
+  ) {
+    const { rev } = await this.getLatestVersion(
+      ensure(latestRelease.revisionId, "latestRelease should have revision id"),
       latestRelease.branchId ?? undefined,
     );
+    return rev?.revision === revisionNum;
+  }
 
-    const bundler = new FastBundler();
-    const prevSite = unbundleProjectDependency(
-      bundler,
-      latestPublishedPkg.pkg,
-      latestPublishedPkg.depPkgs,
-    ).projectDependency.site;
+  private async compareWithPublishedVersion(
+    site: Site,
+    latestRelease: PkgVersionInfoMeta,
+    revisionNum: number,
+  ) {
+    if (await this.isPublishedRevision(latestRelease, revisionNum)) {
+      return undefined;
+    }
+    // A Blob shares the response bytes across frames until the host parses them.
+    const blob = await this.appCtx.api.getPkgVersionBlob(
+      latestRelease.pkgId,
+      latestRelease.version,
+      latestRelease.branchId ?? undefined,
+    );
+    const { pkg, depPkgs }: { pkg: PkgVersionInfo; depPkgs: PkgVersionInfo[] } =
+      await new Response(blob).json();
+    const bundler = new Bundler();
+    for (const dep of depPkgs) {
+      bundler.unbundle(dep.model, dep.id);
+    }
+    const prevSite = ensureKnownProjectDependency(
+      bundler.unbundleSnapshot(pkg.model),
+    ).site;
 
     // Compare the 2 sites to calculate a new semantic version
-    const changeLog = compareSites(prevSite, this.site);
+    const changeLog = compareSites(prevSite, site);
     const releaseType = calculateSemVer(changeLog);
     const version = semver.inc(latestRelease.version, releaseType);
     if (!version) {
@@ -6592,7 +6635,25 @@ export class StudioCtx extends WithDbCtx {
 
     try {
       const projectId = this.siteInfo.id;
+      const revisionNum = this.dbCtx().revisionNum;
+      const comparedBranchId = this.branchInfo()?.id;
+      const changeCounter = this._changeCounter;
+      const site = this.site;
       const next = await this.calculateNextPublishVersion();
+      if (
+        site !== this.site ||
+        comparedBranchId !== this.branchInfo()?.id ||
+        !this.isAtTip
+      ) {
+        return PublishResult.OutOfDate;
+      }
+      if (
+        revisionNum !== this.dbCtx().revisionNum ||
+        changeCounter !== this._changeCounter
+      ) {
+        // A save or edit landed during comparison. Save and compare that revision.
+        return this.publish(tags, description, branchId, opts);
+      }
       if (!next) {
         console.log("Skipping publish, no new changes since last published");
         return PublishResult.SkipAlreadyPublished;
@@ -6602,7 +6663,7 @@ export class StudioCtx extends WithDbCtx {
         async () =>
           await this.appCtx.api.publishProject(
             projectId,
-            this.dbCtx().revisionNum,
+            revisionNum,
             next.version,
             tags,
             description,

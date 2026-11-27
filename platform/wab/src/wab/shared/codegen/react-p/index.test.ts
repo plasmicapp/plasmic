@@ -6,6 +6,7 @@ import {
   mkComponentVariantGroup,
 } from "@/wab/shared/Variants";
 import { codegen } from "@/wab/shared/codegen/__testonly__/codegen-tests-util";
+import { buildUidToNameMap } from "@/wab/shared/codegen/react-p";
 import { makeCssClassNameForVariantCombo } from "@/wab/shared/codegen/react-p/class-names";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import { codeLit } from "@/wab/shared/core/exprs";
@@ -32,6 +33,25 @@ import { PlasmicTranslatorContext } from "@plasmicapp/host";
 import { render } from "@testing-library/react";
 import * as React from "react";
 import tmp from "tmp";
+
+it("keeps the first explicit name when generated node names collide", () => {
+  const named = mkTplTagX("div", { name: "root" });
+  const root = mkTplTagX("div", {}, [
+    mkTplTagX("a"),
+    mkTplTagX("a"),
+    named,
+    mkTplTagX("div", { name: "root" }),
+  ]);
+  const component = mkComponent({
+    name: "Links",
+    type: ComponentType.Plain,
+    tplTree: root,
+  });
+  expect(buildUidToNameMap(component)).toEqual({
+    [named.uid]: "root",
+    [root.uid]: "root 2",
+  });
+});
 
 describe("serializeTplTagBase", () => {
   let dir: tmp.DirResult;

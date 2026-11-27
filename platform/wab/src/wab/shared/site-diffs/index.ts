@@ -370,17 +370,7 @@ function fixParamNames(
   });
 }
 
-/**
- * Given an older Site `prev` and newer Site `curr`,
- * this function will generate a change log between the 2.
- *
- * TODO: this only captures API-altering (major/minor)
- * changes (add/rename/remove) at the moment.
- * Patch version changes are NOT included.
- **/
 export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
-  // As we compare components, variants, slots etc
-  // we will keep track of what kinds of changes we see here
   const results: ChangeLogEntry[] = [];
 
   const projectFlags = computedProjectFlags(curr);
@@ -746,11 +736,11 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
     ),
   );
 
-  curr.components.forEach((currComponent) => {
-    results.push(
-      ...checkIndirectTplUsage(currComponent, modifiedComponentUuids),
-    );
-  });
+  if (modifiedComponentUuids.size > 0) {
+    for (const component of curr.components) {
+      results.push(...checkIndirectTplUsage(component, modifiedComponentUuids));
+    }
+  }
 
   return results;
 }
@@ -785,13 +775,11 @@ function genericCheck<T extends AllowedSemVerSiteElement>(
   },
 ) {
   const partialResults: ChangeLogEntry[] = [];
-  const visitedKeys: string[] = [];
   const aMap = L.keyBy(a, keySelector);
   const bMap = L.keyBy(b, keySelector);
 
   for (const key in aMap) {
-    visitedKeys.push(key);
-    if (key in bMap === false) {
+    if (!Object.hasOwn(bMap, key)) {
       partialResults.push({
         releaseType: opts.removed.releaseType,
         parentComponent,
@@ -827,7 +815,7 @@ function genericCheck<T extends AllowedSemVerSiteElement>(
   // If `b` has more keys, we must have added something
   for (const key in bMap) {
     // for all new keys in b
-    if (!visitedKeys.includes(key)) {
+    if (!Object.hasOwn(aMap, key)) {
       partialResults.push({
         releaseType: opts.added.releaseType,
         parentComponent,
@@ -865,16 +853,14 @@ function checkTplNodes(
   const aNodeNamer = makeNodeNamer(aComp);
   const bNodeNamer = makeNodeNamer(bComp);
 
-  const aNames = new Set(withoutNils(aNodes.map(aNodeNamer)));
-  const bNames = new Set(withoutNils(bNodes.map(bNodeNamer)));
+  const aNames = L.once(() => new Set(aNodes.map(aNodeNamer)));
+  const bNames = L.once(() => new Set(bNodes.map(bNodeNamer)));
 
   for (const aNode of aNodes) {
     const aName = aNodeNamer(aNode);
     const bNode = bNodeMap[aNode.uuid];
     if (!bNode) {
-      // This node has been deleted.  If this node had a name, and now no other node has
-      // that name, then this is a major change; else a patch change
-      const releaseType = aName && !bNames.has(aName) ? "major" : "patch";
+      const releaseType = aName && !bNames().has(aName) ? "major" : "patch";
       results.push({
         releaseType,
         parentComponent: formatParentComponent(bComp),
@@ -885,15 +871,15 @@ function checkTplNodes(
     } else {
       const bName = bNodeNamer(bNode);
       if (aName !== bName) {
-        // the node has just been renamed.
+        // The node's name has changed.
         const releaseType =
           // The old name is no longer exposed in the new set of names, so we've
           // lost a name; a major revision
-          aName && !bNames.has(aName)
+          aName && !bNames().has(aName)
             ? "major"
             : // The new name is not in the old set of names, so we've added
               // a new name; a minor revision
-              bName && !aNames.has(bName)
+              bName && !aNames().has(bName)
               ? "minor"
               : // Else, the set of names hasn't been altered by this node's renaming,
                 // so it's a patch revision
@@ -929,7 +915,7 @@ function checkTplNodes(
     if (!aNodeMap[bNode.uuid]) {
       // A new node; minor if introduces a new name
       const bName = bNodeNamer(bNode);
-      const releaseType = bName && !aNames.has(bName) ? "minor" : "patch";
+      const releaseType = bName && !aNames().has(bName) ? "minor" : "patch";
       results.push({
         releaseType,
         parentComponent: formatParentComponent(bComp),

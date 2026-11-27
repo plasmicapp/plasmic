@@ -42,6 +42,7 @@ import {
   isKnownComponentArena,
   isKnownProjectDependency,
   isKnownSite,
+  ensureKnownTplTag,
 } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
 import {
@@ -64,6 +65,13 @@ export class Comparator {
 }
 
 describe("bundler", () => {
+  it("preserves parent references when unbundling a snapshot", () => {
+    const parent = mkTplTagX("div", {}, mkTplTagX("span"));
+    const bundle = new Bundler().bundle(parent, mkUuid(), "1-some-version");
+    const snapshot = ensureKnownTplTag(new Bundler().unbundleSnapshot(bundle));
+    expect(snapshot.children[0].parent).toBe(snapshot);
+  });
+
   it("should work", function () {
     const component = mkComponent({
       name: "Component",
@@ -125,6 +133,29 @@ describe("bundler", () => {
     expect(cmp.deepEq(instance, instance3)).toBe(true);
     expect(cmp.deepEq(component, instance)).toBe(false);
     expect(instance3.component).toBe(component3);
+
+    const prepared = b2.prepareSnapshotBundle({
+      ...instanceBundle,
+      map: {
+        ...instanceBundle.map,
+        unused: componentBundle.map[componentBundle.root],
+      },
+    });
+    expect(prepared).toEqual(instanceBundle);
+    expect(() => new Bundler().prepareSnapshotBundle(instanceBundle)).toThrow();
+    const wrongRef = jsonClone(instanceBundle);
+    wrongRef.map[wrongRef.root].component = { __ref: wrongRef.root };
+    expect(() => b2.prepareSnapshotBundle(wrongRef)).toThrow(/component/);
+
+    const trackedSize = b2._addr2inst.size;
+    const snapshot = ensureKnownTplComponent(
+      b2.unbundleSnapshot(instanceBundle),
+    );
+    expect(cmp.deepEq(instance3, snapshot)).toBe(true);
+    expect(snapshot).not.toBe(instance3);
+    expect(snapshot.component).toBe(component3);
+    expect(b2.addrOf(snapshot)).toBeUndefined();
+    expect(b2._addr2inst.size).toBe(trackedSize);
 
     component3.params = [
       ...component3.params,

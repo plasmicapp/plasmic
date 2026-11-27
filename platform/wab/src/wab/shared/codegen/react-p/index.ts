@@ -236,7 +236,6 @@ import {
   assert,
   ensure,
   ensureArray,
-  isNonNil,
   tuple,
   uniqueName,
   withDefault,
@@ -1246,48 +1245,33 @@ export function makeNodeNamer(
 }
 
 export function buildUidToNameMap(component: Component) {
-  const nodes = flattenTplsWithoutThrowawayNodes(component);
-  const nodeNames: [TplNode, string][] = nodes.map((node) => [
-    node,
-    nodeJsName(component, node),
-  ]);
-  function go<Id extends string | number>(getId: (x: TplNode) => Id) {
-    const idToName: Record<Id, string> = L(nodeNames)
-      .groupBy(([_node, name]) => name)
-      .toPairs()
-      .map(([name, group]) => {
-        if (group.length > 1) {
-          // If there are multiple with the same name, this can happen
-          // because some elements are explicitly named this, and some
-          // are derived to this name (<form/> has a derived name "form").
-          // In that case, we pick the actually explicitly named one.
-          const actuallyNamed = group.find(([t]) => isTplNamable(t) && t.name);
-          if (actuallyNamed) {
-            return [getId(actuallyNamed[0]), name];
-          } else {
-            // None is actually named, so none gets a name
-            return undefined;
-          }
-        } else {
-          // Only one thing with this name, so use it
-          return [getId(group[0][0]), name] as [Id, string];
-        }
-      })
-      .filter(isNonNil)
-      .fromPairs()
-      .value() as Record<Id, string>;
-    const root = component.tplTree;
-    if (!L.has(idToName, getId(root))) {
-      // Always make sure the root element has a name
-      const existingNames: string[] = Object.values(idToName);
-      const rootName = uniqueName(existingNames, "root", {
-        normalize: toVarName,
-      });
-      idToName[getId(root)] = rootName;
+  const owners = new Map<string, TplNode | undefined>();
+  for (const node of flattenTplsWithoutThrowawayNodes(component)) {
+    const name = nodeJsName(component, node);
+    if (!owners.has(name)) {
+      owners.set(name, node);
+      continue;
     }
-    return idToName;
+    // For a shared name, only the first explicitly named node keeps it.
+    const owner = owners.get(name);
+    if (!(owner && isTplNamable(owner) && owner.name)) {
+      owners.set(name, isTplNamable(node) && node.name ? node : undefined);
+    }
   }
-  return go((x) => x.uid);
+
+  const names: Record<number, string> = {};
+  for (const [name, owner] of owners) {
+    if (owner) {
+      names[owner.uid] = name;
+    }
+  }
+  const root = component.tplTree;
+  if (!Object.hasOwn(names, root.uid)) {
+    names[root.uid] = uniqueName(Object.values(names), "root", {
+      normalize: toVarName,
+    });
+  }
+  return names;
 }
 
 export function makeNodeNamerFromMap(uidToName: Record<number, string>) {

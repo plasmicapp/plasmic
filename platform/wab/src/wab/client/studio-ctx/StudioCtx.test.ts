@@ -11,18 +11,21 @@ import {
   ApiFeatureTier,
   ApiTeam,
   FeatureTierId,
+  ProjectRevWithoutDataResponse,
   TeamId,
   UserId,
 } from "@/wab/shared/ApiSchema";
 import { getArenaFrames } from "@/wab/shared/Arenas";
+import { PkgVersionInfo } from "@/wab/shared/SharedApi";
 import { UserError } from "@/wab/shared/UserError";
 import { generateSiteFromBundle } from "@/wab/shared/__testonly__/site-tests-utils";
-import { Bundle } from "@/wab/shared/bundler";
+import { Bundle, Bundler } from "@/wab/shared/bundler";
 import { withoutNils } from "@/wab/shared/common";
 import { AiIdentity } from "@/wab/shared/copilot/copilot-tool-types";
 import { ComponentType } from "@/wab/shared/core/components";
 import { getDedicatedArena } from "@/wab/shared/core/sites";
 import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
+import { ProjectDependency } from "@/wab/shared/model/classes";
 import {
   UiConfig,
   isStudioMcpEnabled,
@@ -30,11 +33,105 @@ import {
 } from "@/wab/shared/ui-config-utils";
 import { resetNowInternalState } from "mobx-utils";
 import { ok } from "neverthrow";
+import { Blob as NodeBlob } from "node:buffer";
 import { Temporal } from "temporal-polyfill";
 
 import _bundle from "@/wab/shared/web-exporter/bundles/starter-project-desktop-first.json";
 
 const TEAM_ID = "team123" as TeamId;
+
+it("reuses publish comparisons until the site or published release changes", async () => {
+  const { studioCtx, dbCtx, api } = fakeStudioCtx();
+  const pkg = mockDeepAuto<PkgVersionInfo>();
+  pkg.id = "version-1";
+  pkg.version = "1.0.0";
+  pkg.pkgId = "pkg";
+  pkg.revisionId = "revision-1";
+  pkg.branchId = null;
+  pkg.model = new Bundler().bundle(
+    new ProjectDependency({
+      name: "Published",
+      pkgId: pkg.pkgId,
+      projectId: studioCtx.siteInfo.id,
+      version: pkg.version,
+      uuid: "dep",
+      site: studioCtx.site,
+    }),
+    pkg.id,
+    "test",
+  );
+  vi.spyOn(studioCtx, "getProjectReleases").mockResolvedValue([pkg]);
+  const revision = mockDeepAuto<ProjectRevWithoutDataResponse>();
+  revision.rev.revision = 1;
+  api.getProjectRevWithoutData.mockResolvedValue(revision);
+  dbCtx.revisionNum = 2;
+  api.getPkgVersionBlob
+    .mockRejectedValueOnce(new Error("Download failed"))
+    .mockResolvedValue(
+      // Response needs a streaming Blob, which jsdom does not implement.
+      new NodeBlob([
+        JSON.stringify({ pkg: { model: pkg.model }, depPkgs: [] }),
+      ]) as Blob,
+    );
+
+  const calculate = () => studioCtx.calculateNextPublishVersion();
+  await expect(calculate()).rejects.toThrow("Download failed");
+  const [first, concurrent] = await Promise.all([calculate(), calculate()]);
+  expect(concurrent).toBe(first);
+  expect(await calculate()).toBe(first);
+  expect(api.getProjectRevWithoutData).toHaveBeenCalledTimes(2);
+  expect(api.getPkgVersionBlob).toHaveBeenCalledTimes(2);
+
+  await studioCtx.changeUnsafe(() =>
+    studioCtx.addComponent("New component", {
+      type: ComponentType.Plain,
+      noSwitchArena: true,
+    }),
+  );
+  const edited = await calculate();
+  expect(edited?.releaseType).toBe("minor");
+  dbCtx.revisionNum++;
+  expect(await calculate()).not.toBe(edited);
+  pkg.id = "version-2";
+  pkg.version = "2.0.0";
+  expect((await calculate())?.version).toBe("2.1.0");
+  expect(api.getPkgVersionBlob).toHaveBeenLastCalledWith(
+    "pkg",
+    "2.0.0",
+    undefined,
+  );
+});
+
+it("confirms the version calculated for the revision it publishes", async () => {
+  const { studioCtx, dbCtx, api } = fakeStudioCtx();
+  dbCtx.revisionNum = 2;
+  const comparison = {
+    version: "1.1.0",
+    releaseType: "minor" as const,
+    changeLog: [],
+  };
+  vi.spyOn(studioCtx, "calculateNextPublishVersion")
+    .mockImplementationOnce(async () => {
+      dbCtx.revisionNum++;
+      return comparison;
+    })
+    .mockResolvedValue({ ...comparison, version: "2.0.0" });
+  api.publishProject.mockResolvedValue({
+    paywall: "pass",
+    response: { pkg: mockDeepAuto<PkgVersionInfo>() },
+  });
+  await studioCtx.publish([], "Test publish");
+  expect(api.publishProject).toHaveBeenCalledTimes(1);
+  expect(api.publishProject).toHaveBeenCalledWith(
+    studioCtx.siteInfo.id,
+    3,
+    "2.0.0",
+    [],
+    "Test publish",
+    undefined,
+    undefined,
+  );
+});
 
 describe("model change queue failures", () => {
   it("change rejects, rolls back, and continues processing after a thrown error", async () => {

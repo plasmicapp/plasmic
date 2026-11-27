@@ -376,7 +376,10 @@ function paramType(type: ModelType, i: number): ModelType {
 export function conformsToType(
   value: any,
   type: ModelType,
-  instUtil = defaultInstUtil,
+  instUtil: Pick<
+    typeof defaultInstUtil,
+    "meta" | "tryGetInstClass"
+  > = defaultInstUtil,
 ): boolean {
   switch (type.type) {
     case "String":

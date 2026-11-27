@@ -53,6 +53,37 @@ const key2Addr = (key: string): Addr => {
 
 type Ref = { __ref: string } | { __xref: Addr };
 
+// Copy model collections when linking them. Publishing can reuse normalized records.
+function mapBundledField(value: any, read: (item: any) => any, reuse = false) {
+  if (Array.isArray(value)) {
+    let result = reuse ? value : new Array(value.length);
+    for (let i = 0; i < value.length; i++) {
+      const item = read(value[i]);
+      if (result !== value || item !== value[i] || !(i in value)) {
+        if (result === value) {
+          result = value.slice();
+        }
+        result[i] = item;
+      }
+    }
+    return result;
+  }
+  if (isLiteralObject(value) && !("__ref" in value) && !("__xref" in value)) {
+    let result = reuse ? value : {};
+    for (const key of Object.keys(value)) {
+      const item = read(value[key]);
+      if (result !== value || item !== value[key]) {
+        if (result === value) {
+          result = { ...value };
+        }
+        setOwnProperty(result, key, item);
+      }
+    }
+    return result;
+  }
+  return read(value);
+}
+
 // Pass the field through recursion to reuse one visitor across instances.
 function visitFieldRefs<A>(
   valueOrRef: any,
@@ -801,29 +832,7 @@ export class Bundler {
         if (partial && !(name in json)) {
           continue;
         }
-        const valueOrRef = json[name];
-        // Each collection is a fresh copy, since the bundle may be kept and
-        // changed later (e.g. by FastBundler)
-        let value: any;
-        if (Array.isArray(valueOrRef)) {
-          // List/Set type. Holes become undefined.
-          value = [];
-          for (let i = 0; i < valueOrRef.length; i++) {
-            value.push(readValueOrRef(valueOrRef[i]));
-          }
-        } else if (
-          isLiteralObject(valueOrRef) &&
-          !("__ref" in valueOrRef) &&
-          !("__xref" in valueOrRef)
-        ) {
-          // Map type
-          value = {};
-          for (const key of Object.keys(valueOrRef)) {
-            setOwnProperty(value, key, readValueOrRef(valueOrRef[key]));
-          }
-        } else {
-          value = readValueOrRef(valueOrRef);
-        }
+        const value = mapBundledField(json[name], readValueOrRef);
         // If we are loading partial changes, we might avoid unnecessary
         // assignments as they could be seen as model changes
         // An assigned collection is recorded as its difference from the
@@ -861,6 +870,149 @@ export class Bundler {
   /** Deserialize a bundle into an object graph and return the root object. */
   unbundle(bundle: UnsafeBundle, uuid: string): classesModule.ObjInst {
     return ensure(this.unbundleInternal(bundle, uuid, false), "missing root");
+  }
+
+  /** Validate and collect reachable records without rebuilding the saved model graph. */
+  prepareSnapshotBundle(bundle: Bundle): Bundle {
+    const map: Bundle["map"] = Object.create(null);
+    const pending = [bundle.root];
+    const deps = new Set<string>();
+    const resolveClass = (ref: any) => {
+      if (ref && typeof ref === "object") {
+        if ("__ref" in ref) {
+          return this._rt.clsByName[bundle.map[ref.__ref]?.__type];
+        }
+        if ("__xref" in ref) {
+          const inst = this.objByAddr(ref.__xref);
+          return inst && this._instUtil.getInstClass(inst);
+        }
+      }
+      return undefined;
+    };
+    const types = { meta: this._rt, tryGetInstClass: resolveClass };
+    const visitRef = (value: any) => {
+      if (value && typeof value === "object") {
+        if ("__ref" in value) {
+          pending.push(value.__ref);
+          return Object.keys(value).length === 1
+            ? value
+            : { __ref: value.__ref };
+        }
+        if ("__xref" in value) {
+          const addr = value.__xref;
+          assert(this.objByAddr(addr), () => `Missing xref (${addrKey(addr)})`);
+          deps.add(addr.uuid);
+          return Object.keys(value).length === 1 &&
+            Object.keys(addr).length === 2
+            ? value
+            : { __xref: { uuid: addr.uuid, iid: addr.iid } };
+        }
+      }
+      return value;
+    };
+    while (pending.length) {
+      const iid = pending.pop()!;
+      if (iid in map) {
+        continue;
+      }
+      const record = ensure(
+        bundle.map[iid],
+        () => `Missing reference (IID ${iid})`,
+      );
+      const cls = ensure(this._rt.clsByName[record.__type]);
+      assert(
+        !this._rt.isAbstract(cls),
+        () => `Unexpected abstract ${cls.name}`,
+      );
+      checkEqKeys(
+        record,
+        this._rt.allFieldKeys(cls),
+        this._rt.allTransientFieldKeys(cls),
+        cls.name,
+      );
+      let output = record;
+      const writable = () => {
+        if (output === record) {
+          output = { ...record };
+        }
+        return output;
+      };
+      if ("uid" in record) {
+        delete writable().uid;
+      }
+      for (const field of this._rt.allFields(cls)) {
+        if (field.annotations.includes("Transient")) {
+          if (field.name in record) {
+            delete writable()[field.name];
+          }
+          continue;
+        }
+        const value = record[field.name];
+        assert(
+          conformsToType(value, field.type, types),
+          () => `Invalid ${cls.name}.${field.name} on ${iid}`,
+        );
+        const normalized = mapBundledField(value, visitRef, true) ?? null;
+        if (normalized !== value) {
+          writable()[field.name] = normalized;
+        }
+      }
+      map[iid] = output;
+    }
+    return { ...bundle, map, deps: Array.from(deps) };
+  }
+
+  /** Link fields on first read, so a comparison only builds the model objects it visits. */
+  unbundleSnapshot(bundle: Bundle): classesModule.ObjInst {
+    const instances = new Map<string, classesModule.ObjInst>();
+    const readRef = (value: any) => {
+      if (value && typeof value === "object") {
+        if ("__ref" in value) {
+          return readInst(value.__ref);
+        }
+        if ("__xref" in value) {
+          return ensure(
+            this.objByAddr(value.__xref),
+            () => `Missing xref (${addrKey(value.__xref)})`,
+          );
+        }
+      }
+      return value;
+    };
+    const readInst = (iid: string): classesModule.ObjInst => {
+      const cached = instances.get(iid);
+      if (cached) {
+        return cached;
+      }
+      const record = ensure(
+        bundle.map[iid],
+        () => `Missing reference (IID ${iid})`,
+      );
+      const cls = ensure(this._rt.clsByName[record.__type]);
+      assert(
+        !this._rt.isAbstract(cls),
+        () => `Unexpected abstract ${cls.name}`,
+      );
+      const inst = Object.create(this._realClasses[cls.name].prototype);
+      instances.set(iid, inst);
+      this._rt.initializers[cls.name](
+        inst,
+        record,
+        (values) =>
+          new Proxy(values, {
+            get(target, key: string) {
+              const value = target[key];
+              // Linked objects and containers are distinct from their serialized values.
+              if (value && typeof value === "object" && value === record[key]) {
+                target[key] = mapBundledField(value, readRef);
+              }
+              return target[key];
+            },
+          }),
+      );
+      return inst;
+    };
+    return readInst(bundle.root);
   }
 
   /** Deserialize a partial bundle into an object graph. */

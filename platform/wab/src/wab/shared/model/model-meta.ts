@@ -130,7 +130,11 @@ export class MetaRuntime {
   }
 
   initializers: {
-    [name: string]: (inst: any, args: any) => any;
+    [name: string]: (
+      inst: ModelInst,
+      args: Record<string, any> | undefined,
+      wrapValues?: (values: Record<string, any>) => Record<string, any>,
+    ) => ModelInst;
   };
 
   private clsToFieldsCache = new Map<Class, Field[]>();
@@ -156,7 +160,11 @@ export class MetaRuntime {
       this.schema.map((cls: Class) =>
         tuple(
           cls.name,
-          (inst: ModelInst, args: Record<string, any> | undefined) => {
+          (
+            inst: ModelInst,
+            args: Record<string, any> | undefined,
+            wrapValues?: (values: Record<string, any>) => Record<string, any>,
+          ) => {
             if (args == null) {
               args = {};
             }
@@ -192,7 +200,7 @@ export class MetaRuntime {
                 inst[key] = args[key];
               }
             }
-            this.initInst(inst, vals);
+            this.initInst(inst, wrapValues ? wrapValues(vals) : vals);
 
             inst.uid = this.mkUid();
             return inst;

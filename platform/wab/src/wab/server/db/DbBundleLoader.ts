@@ -36,7 +36,7 @@ export async function loadDepPackages(
   ).map(({ pkg }) => pkg);
 }
 
-async function loadDepPackagesWithBundles<T extends UnsafeBundle>(
+export async function loadDepPackagesWithBundles<T extends UnsafeBundle>(
   dbMgr: MigrationDbMgr,
   bundle: UnsafeBundle | UnsafeBundle[],
   loadBundle: (pkg: PkgVersion) => Promise<T>,
@@ -160,6 +160,21 @@ export function flattenDeps(id2deps: Record<string, string[]>) {
   return result;
 }
 
+export async function unbundleDependencies(
+  dbMgr: DbMgr,
+  bundler: Bundler,
+  bundles: Bundle | Bundle[],
+) {
+  const deps = await loadDepPackagesWithBundles(
+    dbMgr,
+    bundles,
+    getMigratedBundle,
+  );
+  for (const { pkg, bundle } of deps) {
+    bundler.unbundle(bundle, pkg.id);
+  }
+}
+
 export async function unbundleWithDeps(
   dbMgr: DbMgr,
   bundler: Bundler,
@@ -167,14 +182,7 @@ export async function unbundleWithDeps(
   bundle: Bundle,
 ) {
   logger.info(`Unbundling with deps ${id}`);
-  const deps = await loadDepPackagesWithBundles(
-    dbMgr,
-    bundle,
-    getMigratedBundle,
-  );
-  for (const { pkg, bundle: depBundle } of deps) {
-    bundler.unbundle(depBundle, pkg.id);
-  }
+  await unbundleDependencies(dbMgr, bundler, bundle);
   return bundler.unbundle(bundle, id);
 }
 

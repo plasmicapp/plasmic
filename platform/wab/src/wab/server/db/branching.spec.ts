@@ -363,7 +363,7 @@ describe("branching", () => {
         await helpers[1].save(basicSite({ x: 1 }));
         const { pkgVersion: branchPkg } = await db1().publishProject(
           project.id,
-          "0.1.0",
+          "0.1.0-beta.1",
           [],
           "branch publish",
           undefined,
@@ -374,6 +374,16 @@ describe("branching", () => {
         await breakBranchEntry(sudo, project.id, branch.id);
 
         const pkg = ensure(await db1().getPkgByProjectId(project.id), "");
+
+        const exact = await db1().getPkgVersion(
+          pkg.id,
+          branchPkg.version,
+          undefined,
+          {
+            branchId: branch.id as BranchId,
+          },
+        );
+        expect(exact.id).toBe(branchPkg.id);
 
         // The read names the branch it's about to dereference, so the commit
         // graph accessor detects the bad head and recreates the graph.

@@ -37,6 +37,7 @@ import type {
   UserWhiteLabelInfo,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
+import type { Bundle } from "@/wab/shared/bundles";
 import { Dict } from "@/wab/shared/collections";
 import type { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import type { OperationTemplate } from "@/wab/shared/data-sources-meta/data-sources";
@@ -44,7 +45,13 @@ import { WebhookHeader } from "@/wab/shared/db-json-blobs";
 import type { AccessLevel, GrantableAccessLevel } from "@/wab/shared/EntUtil";
 import { LocalizationKeyScheme } from "@/wab/shared/localization";
 import { UiConfig } from "@/wab/shared/ui-config-utils";
-import { IsEmail, IsJSON, IsOptional, validateOrReject } from "class-validator";
+import {
+  IsEmail,
+  IsJSON,
+  IsOptional,
+  ValidateIf,
+  validateOrReject,
+} from "class-validator";
 import { ISession } from "connect-typeorm";
 import Cryptr from "cryptr";
 import _ from "lodash";
@@ -64,7 +71,7 @@ import {
   Unique,
 } from "typeorm";
 
-function normalizeJson(x, mapping = { model: "json" }) {
+function normalizeJson(x, parsedModel?: Bundle) {
   return _(x)
     .toPairs()
     .map(([k, v]) => [
@@ -73,8 +80,8 @@ function normalizeJson(x, mapping = { model: "json" }) {
         ? null
         : v instanceof Date
           ? v.toISOString()
-          : mapping[k] === "json"
-            ? JSON.parse(v)
+          : k === "model"
+            ? (parsedModel ?? JSON.parse(v))
             : v,
     ])
     .fromPairs()
@@ -650,8 +657,23 @@ export class PkgVersion extends Base<"PkgVersionId"> {
   version: string;
 
   @Column("text")
+  @ValidateIf(
+    (pkg: PkgVersion) =>
+      pkg.model === undefined || pkg.model !== pkg.#serializedModel,
+  )
   @IsJSON()
   model: string;
+
+  #serializedModel?: string;
+
+  toJSONWithModel(model: Bundle) {
+    return normalizeJson(this, model);
+  }
+
+  setModelFromBundle(bundle: Bundle) {
+    this.model = JSON.stringify(bundle);
+    this.#serializedModel = this.model;
+  }
 
   @Column("integer", { nullable: true })
   @Index()
