@@ -324,6 +324,11 @@ describe("revision cache keys", () => {
     ).toBe(false);
   });
 
+  it("rejects keys outside the bundle prefix and parent path segments", () => {
+    expect(isChunkableBundleKey("bundle/cb=23/../other")).toBe(false);
+    expect(isChunkableBundleKey("codegen/cb=23")).toBe(false);
+  });
+
   it("keys revision codegen on rev=<revisionId>", () => {
     expect(
       _testonly.makeCodegenBucketPath({

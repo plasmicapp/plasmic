@@ -473,7 +473,11 @@ function makeBundleBucketPath(opts: {
 }
 
 export function isChunkableBundleKey(bundleKey: string) {
-  return !bundleKey.includes("/mode=");
+  return (
+    bundleKey.startsWith("bundle/cb=") &&
+    !bundleKey.split("/").includes("..") &&
+    !bundleKey.includes("/mode=")
+  );
 }
 
 export function extractBundleKeyProjectIds(bundleKey: string): ProjectId[] {
