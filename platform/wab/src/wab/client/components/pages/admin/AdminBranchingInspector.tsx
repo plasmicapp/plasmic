@@ -1,6 +1,7 @@
 import React from "react";
 
 import { NonAuthCtx, loadAppCtx, useNonAuthCtx } from "@/wab/client/app-ctx";
+import { FormattedTime } from "@/wab/client/components/time/FormattedTime";
 import {
   ApiBranch,
   ApiUser,
@@ -9,10 +10,13 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
 import { assert, ensure } from "@/wab/shared/common";
+import {
+  formatDateShortTimeShort,
+  toInstant,
+} from "@/wab/shared/utils/date-utils";
 import "@xyflow/react/dist/style.css";
 import { Button, Descriptions, Input, notification } from "antd";
 import { keyBy, maxBy, uniq } from "lodash";
-import moment from "moment";
 
 const ReactFlowPromise = import("@xyflow/react");
 const lazyReactFlowComponent = (
@@ -49,14 +53,15 @@ function PkgVersionNodeInfo(props: {
 }) {
   const { branchName, pkgVersion } = props;
 
-  const createdAt = moment(pkgVersion.createdAt);
+  const createdAt = toInstant(pkgVersion.createdAt);
 
   return (
     <div>
       <p>{branchName}</p>
       <p>{pkgVersion.version}</p>
-      <p>{createdAt.format("YYYY-MM-DD HH:mm:ss")}</p>
-      <p>{createdAt.fromNow()}</p>
+      <p>
+        <FormattedTime value={createdAt} format={formatDateShortTimeShort} />
+      </p>
     </div>
   );
 }
@@ -72,7 +77,7 @@ function PkgVersionDetails(props: {
     `pkgVersion ${pkgVersionId} not found`,
   );
 
-  const createdAt = moment(currentPkgVersion.createdAt);
+  const createdAt = toInstant(currentPkgVersion.createdAt);
   const author = metadata.users.find(
     (user) => user.id === currentPkgVersion.createdById,
   );
@@ -137,9 +142,7 @@ function PkgVersionDetails(props: {
           {pkgVersionId}
         </Descriptions.Item>
         <Descriptions.Item label="Created At">
-          {`${createdAt.format(
-            "YYYY-MM-DD HH:mm:ss",
-          )} (${createdAt.fromNow()})`}
+          <FormattedTime value={createdAt} format={formatDateShortTimeShort} />
         </Descriptions.Item>
         <Descriptions.Item label="Created By">
           {author?.email}

@@ -2,12 +2,16 @@ import { useNonAuthCtx } from "@/wab/client/app-ctx";
 import { smartRender } from "@/wab/client/components/pages/admin/admin-util";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
+import { FormattedTime } from "@/wab/client/components/time/FormattedTime";
 import { LinkButton, SearchBox } from "@/wab/client/components/widgets";
 import { ApiUser } from "@/wab/shared/ApiSchema";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import {
+  formatDateShortTimeShort,
+  toInstant,
+} from "@/wab/shared/utils/date-utils";
 import { Table, TableProps, Tag, notification } from "antd";
 import L from "lodash";
-import moment from "moment";
 import React, { useMemo, useRef, useState } from "react";
 
 interface Item {
@@ -79,14 +83,21 @@ export function AdminUserTable<T extends Item = Item>({
             <li>Email: {user.email}</li>
             <li>ID: {user.id}</li>
             <li>
-              Created: {moment(user.createdAt).format("YYYY-MM-DD HH:mm")}
+              Created:{" "}
+              <FormattedTime
+                value={toInstant(user.createdAt)}
+                format={formatDateShortTimeShort}
+              />
             </li>
             {user.isWhiteLabel && <li>White-label user</li>}
             {user.deletedAt && (
               <>
                 <li>
                   Deactivated:{" "}
-                  {moment(user.deletedAt).format("YYYY-MM-DD HH:mm")}
+                  <FormattedTime
+                    value={toInstant(user.deletedAt)}
+                    format={formatDateShortTimeShort}
+                  />
                 </li>
                 <li>Deactivated by: {describeUser(user.deletedById)}</li>
               </>

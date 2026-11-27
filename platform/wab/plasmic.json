@@ -1857,6 +1857,19 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicCombobox.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "AMLgt_jB3Pqp",
+          "name": "TimeTooltip",
+          "type": "managed",
+          "projectId": "tXkSR39sgCDWSitZxC5xFV",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicTimeTooltip.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/plexus/TimeTooltip.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicTimeTooltip.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -11266,6 +11279,6 @@
     "scheme": "theo",
     "tokensFilePath": "wab/styles/plasmic-tokens.theo.json"
   },
-  "cliVersion": "0.1.385",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.385/dist/plasmic.schema.json"
+  "cliVersion": "0.1.386",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.386/dist/plasmic.schema.json"
 }

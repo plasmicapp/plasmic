@@ -78,6 +78,7 @@ test.describe("clone project", () => {
 
     // Clone project from projects list
     await projectLink
+      .locator("..")
       .locator('button[title="More…"]')
       .click({ timeout: 30000 });
     await page.getByText("Duplicate project").click();

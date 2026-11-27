@@ -210,6 +210,7 @@ export const isDescendant = ({
   return false;
 };
 
+// Keep this list in sync with $pointer-interactive-selectors in styles/_utils.sass.
 const POINTER_INTERACTIVE_SELECTORS = [
   "a",
   "button",

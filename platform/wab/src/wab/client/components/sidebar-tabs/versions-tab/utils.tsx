@@ -1,6 +1,7 @@
 import { SiteDiffs } from "@/wab/client/components/modals/SiteDiffs";
 import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
 import { NoItemMessage } from "@/wab/client/components/sidebar-tabs/versions-tab/NoItemMessage";
+import { FormattedTime } from "@/wab/client/components/time/FormattedTime";
 import Button from "@/wab/client/components/widgets/Button";
 import { Modal } from "@/wab/client/components/widgets/Modal";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
@@ -16,7 +17,11 @@ import { getBundle, parseBundle } from "@/wab/shared/bundles";
 import { unbundleProjectDependencyRevision } from "@/wab/shared/core/tagged-unbundle";
 import { ChangeLogEntry, compareSites } from "@/wab/shared/site-diffs";
 import { filterUsefulDiffs } from "@/wab/shared/site-diffs/filter-useful-diffs";
-import { formatDateShortTimeShort } from "@/wab/shared/utils/date-utils";
+import {
+  ExactTime,
+  formatDateShortTimeShort,
+  toInstant,
+} from "@/wab/shared/utils/date-utils";
 import { Alert, Form, Spin, Tooltip } from "antd";
 import React from "react";
 
@@ -203,7 +208,7 @@ export const promptVersionRevert = async (
             <>
               You are about to revert to version {release.version}, originally
               published by{" "}
-              <UserOnDate user={user} date={new Date(release.createdAt)} />.
+              <UserOnDate user={user} date={toInstant(release.createdAt)} />.
             </>
           }
           diffs={state.value ?? null}
@@ -265,7 +270,7 @@ export const promptRevisionRevert = async (
               You are about to go back in time to an autosaved version by{" "}
               <UserOnDate
                 user={user}
-                date={new Date(revertRevision.createdAt)}
+                date={toInstant(revertRevision.createdAt)}
               />
               .
             </>
@@ -288,7 +293,7 @@ export const UserOnDate = function ({
   date,
 }: {
   user?: ApiUser | null;
-  date: Date;
+  date: ExactTime;
 }) {
   return (
     <span>
@@ -297,7 +302,7 @@ export const UserOnDate = function ({
       ) : (
         "Unknown User"
       )}{" "}
-      on {formatDateShortTimeShort(date)}
+      on <FormattedTime value={date} format={formatDateShortTimeShort} />
     </span>
   );
 };

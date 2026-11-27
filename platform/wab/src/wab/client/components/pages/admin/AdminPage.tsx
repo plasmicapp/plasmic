@@ -15,6 +15,7 @@ import {
 import { AdminImportProjectsFromProd } from "@/wab/client/components/pages/admin/AdminImportProjectsFromProd";
 import { AdminTeamsView } from "@/wab/client/components/pages/admin/AdminTeamsView";
 import { AdminUsersView } from "@/wab/client/components/pages/admin/AdminUsersView";
+import { FormattedTime } from "@/wab/client/components/time/FormattedTime";
 import {
   LinkButton,
   SearchBox,
@@ -31,6 +32,10 @@ import { DEVFLAGS } from "@/wab/shared/devflags";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { PkgVersionInfo } from "@/wab/shared/SharedApi";
 import {
+  formatDateShortTimeShort,
+  toInstant,
+} from "@/wab/shared/utils/date-utils";
+import {
   Button,
   Checkbox,
   DatePicker,
@@ -46,7 +51,6 @@ import TextArea from "antd/lib/input/TextArea";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import L from "lodash";
-import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import useSWR from "swr/immutable";
 
@@ -496,7 +500,12 @@ function DevFlagControls() {
           {
             title: "Created at",
             dataIndex: "createdAt",
-            render: (val) => `${moment.utc(val).fromNow()} - ${val}`,
+            render: (val: string) => (
+              <FormattedTime
+                value={toInstant(val)}
+                format={formatDateShortTimeShort}
+              />
+            ),
           },
           {
             title: "Actions",

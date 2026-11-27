@@ -1,5 +1,7 @@
 import TextWithInfo from "@/wab/client/components/TextWithInfo";
+import { FormattedTime } from "@/wab/client/components/time/FormattedTime";
 import { Matcher } from "@/wab/client/components/view-common";
+import Select from "@/wab/client/components/widgets/Select";
 import {
   commenterTooltip,
   contentCreatorTooltip,
@@ -9,7 +11,6 @@ import {
   developerTooltip,
   viewerTooltip,
 } from "@/wab/client/components/widgets/plasmic/PermissionItem";
-import Select from "@/wab/client/components/widgets/Select";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultTeamMemberListItemProps,
@@ -21,11 +22,11 @@ import {
   TeamMember,
 } from "@/wab/shared/ApiSchema";
 import { fullName, getUserEmail } from "@/wab/shared/ApiSchemaUtil";
+import { GrantableAccessLevel, accessLevelRank } from "@/wab/shared/EntUtil";
 import { ensure } from "@/wab/shared/common";
-import { accessLevelRank, GrantableAccessLevel } from "@/wab/shared/EntUtil";
+import { formatRelative, toInstant } from "@/wab/shared/utils/date-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, Tooltip } from "antd";
-import moment from "moment";
 import * as React from "react";
 
 interface TeamMemberListItemProps extends DefaultTeamMemberListItemProps {
@@ -88,9 +89,14 @@ function TeamMemberListItem_(
         user.type === "user" ? getUserEmail(user) : user.email,
       )}
       lastActive={
-        user.type === "user" && user.lastActive
-          ? moment(user.lastActive).fromNow()
-          : "never"
+        user.type === "user" && user.lastActive ? (
+          <FormattedTime
+            value={toInstant(user.lastActive)}
+            format={formatRelative}
+          />
+        ) : (
+          "never"
+        )
       }
       numProjects={`${
         user.type === "user" && user.projectsCreated ? user.projectsCreated : 0

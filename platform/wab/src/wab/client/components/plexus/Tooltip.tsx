@@ -19,7 +19,11 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultTooltipProps altogether and have
 // total control over the props for your component.
-export type TooltipProps = DefaultTooltipProps;
+export type TooltipProps = DefaultTooltipProps &
+  Pick<
+    React.ComponentProps<typeof PlasmicTooltip>,
+    "id" | "isOpen" | "onOpenChange"
+  >;
 
 export function Tooltip(props: TooltipProps) {
   // Use PlasmicTooltip to render this component as it was

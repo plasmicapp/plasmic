@@ -7,11 +7,12 @@ import {
 import { ApiCommentThreadHistory } from "@/wab/shared/ApiSchema";
 
 import { Avatar } from "@/wab/client/components/studio/Avatar";
+import { FormattedTime } from "@/wab/client/components/time/FormattedTime";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
 import { ensure, ensureString } from "@/wab/shared/common";
+import { formatRelative, toInstant } from "@/wab/shared/utils/date-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import moment from "moment";
 import * as React from "react";
 
 export interface ThreadHistoryProps extends DefaultThreadHistoryProps {
@@ -36,7 +37,14 @@ function ThreadHistory_(
   return (
     <PlasmicThreadHistory
       root={{ ref }}
-      timestamp={moment(history.createdAt).fromNow()}
+      timestamp={{
+        children: (
+          <FormattedTime
+            value={toInstant(history.createdAt)}
+            format={formatRelative}
+          />
+        ),
+      }}
       userFullName={fullName(author)}
       avatarContainer={{ children: <Avatar user={author} /> }}
       isResolved={history.resolved}

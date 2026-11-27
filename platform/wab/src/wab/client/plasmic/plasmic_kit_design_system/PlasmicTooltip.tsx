@@ -262,8 +262,7 @@ function PlasmicTooltip__RenderFunc(props: {
             {"Hover me!"}
           </div>
         ),
-        value: args.trigger,
-        className: classNames(sty.slotTargetTrigger)
+        value: args.trigger
       })}
     </BaseTooltip>
   ) as React.ReactElement | null;

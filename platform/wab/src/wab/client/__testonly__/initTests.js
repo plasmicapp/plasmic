@@ -2,7 +2,6 @@
 // vitest.config.ts, since ESM hoists imports above any assignment here.
 
 import { mockMatchMedia } from "@/wab/__mocks__/matchMedia";
-import "@/wab/client/moment-config";
 import { _testonly } from "@/wab/client/observability";
 import { ConsoleLogAnalytics } from "@/wab/shared/observability/ConsoleLogAnalytics";
 

@@ -1,7 +1,8 @@
-import { promptMoveToWorkspace } from "@/wab/client/components/dashboard/dashboard-actions";
 import EditableResourceName from "@/wab/client/components/EditableResourceName";
 import { PublicLink } from "@/wab/client/components/PublicLink";
+import { promptMoveToWorkspace } from "@/wab/client/components/dashboard/dashboard-actions";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
+import { FormattedTime } from "@/wab/client/components/time/FormattedTime";
 import { Matcher } from "@/wab/client/components/view-common";
 import { ClickStopper } from "@/wab/client/components/widgets";
 import Textbox from "@/wab/client/components/widgets/Textbox";
@@ -15,13 +16,13 @@ import {
   ApiPermission,
   ApiWorkspace,
 } from "@/wab/shared/ApiSchema";
-import { assert } from "@/wab/shared/common";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
+import { assert } from "@/wab/shared/common";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { formatRelative, toInstant } from "@/wab/shared/utils/date-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, notification } from "antd";
-import moment from "moment";
 import * as React from "react";
 
 export interface DatabaseListItemProps {
@@ -50,16 +51,34 @@ function DatabaseListItem_(
   return (
     <PlasmicDatabaseListItem
       root={{
-        as: PublicLink,
+        // Move Link to be a sibling to avoid nested focus inside <a>
+        as: "div",
         props: {
-          ref,
           className,
-          href: APP_ROUTES.cmsRoot.fill({
-            databaseId: database.id,
-          }),
+          href: undefined,
+          platform: undefined,
         },
+        wrapChildren: (children) => (
+          <>
+            <PublicLink
+              ref={ref}
+              aria-label={database.name}
+              className="stretched-link"
+              href={APP_ROUTES.cmsRoot.fill({ databaseId: database.id })}
+            />
+            {children}
+          </>
+        ),
       }}
-      timestamp={`updated ${moment(database.updatedAt).fromNow()}`}
+      timestamp={
+        <span>
+          updated{" "}
+          <FormattedTime
+            value={toInstant(database.updatedAt)}
+            format={formatRelative}
+          />
+        </span>
+      }
       shared={{ render: () => null }}
       editableName={{
         render: () => (

@@ -1,5 +1,5 @@
 import { useUsersMap } from "@/wab/client/api-hooks";
-import MenuItem from "@/wab/client/components/MenuItem";
+import { PublicLink } from "@/wab/client/components/PublicLink";
 import { renderContentEntryFormFields } from "@/wab/client/components/cms/CmsEntryDetails";
 import {
   useCmsDatabase,
@@ -10,9 +10,11 @@ import {
   useMutateRow,
 } from "@/wab/client/components/cms/cms-contexts";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
+import { FormattedTime } from "@/wab/client/components/time/FormattedTime";
 import { Spinner } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
 import { useApi } from "@/wab/client/contexts/AppContexts";
+import { PlasmicMenuItem } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicMenuItem";
 import { useHistory } from "@/wab/client/route/HistoryProvider";
 import { Redirect } from "@/wab/client/route/Redirect";
 import { Switch, switchCase, switchDefault } from "@/wab/client/route/Switch";
@@ -20,7 +22,10 @@ import { useMatchedRoute } from "@/wab/client/route/useMatchedRoute";
 import { CmsDatabaseId, CmsRowId, CmsTableId } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
-import { formatDateMediumTimeShort } from "@/wab/shared/utils/date-utils";
+import {
+  formatDateMediumTimeShort,
+  toInstant,
+} from "@/wab/shared/utils/date-utils";
 import { Form, message } from "antd";
 import React from "react";
 
@@ -30,6 +35,7 @@ export function CmsEntryHistory(props: {
   rowId: CmsRowId;
 }) {
   const { databaseId, tableId, rowId } = props;
+  const labelPrefix = React.useId();
   const revisions = useCmsRowHistory(rowId);
   const { data: userById } = useUsersMap(
     (revisions ?? []).map((rev) => rev.createdById),
@@ -54,41 +60,67 @@ export function CmsEntryHistory(props: {
               route: APP_ROUTES.cmsEntryRevision,
               render: ({ revisionId }) => (
                 <>
-                  {revisions.map((revision) => (
-                    <MenuItem
-                      selected={revisionId === revision.id}
-                      href={APP_ROUTES.cmsEntryRevision.fill({
-                        revisionId: revision.id,
-                        tableId,
-                        rowId,
-                        databaseId,
-                      })}
-                      key={revision.id}
-                    >
-                      <div>
-                        {formatDateMediumTimeShort(
-                          new Date(revision.createdAt),
-                        )}
-                        <div>
-                          {revision.isPublished ? (
-                            <span style={{ color: "#4b4" }}>Published</span>
-                          ) : (
-                            <span style={{ color: "#999" }}>Autosave</span>
-                          )}
-                          {userById &&
-                            revision.createdById &&
-                            userById[revision.createdById] &&
-                            ((user) => (
-                              <span>
-                                {" "}
-                                <span style={{ color: "#999" }}>by</span>{" "}
-                                {user.firstName} {user.lastName}
-                              </span>
-                            ))(userById[revision.createdById])}
+                  {revisions.map((revision) => {
+                    const createdAt = toInstant(revision.createdAt);
+                    const status = revision.isPublished
+                      ? "Published"
+                      : "Autosave";
+                    const selected = revisionId === revision.id;
+                    const labelId = `${labelPrefix}-${revision.id}`;
+                    return (
+                      <PlasmicMenuItem
+                        key={revision.id}
+                        selected={selected}
+                        root={{
+                          // Move Link to be a sibling to avoid nested focus inside <a>
+                          as: "div",
+                          props: { platform: undefined },
+                          wrapChildren: (children) => (
+                            <>
+                              <PublicLink
+                                aria-current={selected ? "page" : undefined}
+                                aria-labelledby={labelId}
+                                className="stretched-link"
+                                href={APP_ROUTES.cmsEntryRevision.fill({
+                                  revisionId: revision.id,
+                                  tableId,
+                                  rowId,
+                                  databaseId,
+                                })}
+                              />
+                              {children}
+                            </>
+                          ),
+                        }}
+                      >
+                        <div id={labelId}>
+                          <FormattedTime
+                            value={createdAt}
+                            format={formatDateMediumTimeShort}
+                          />
+                          <div>
+                            <span
+                              style={{
+                                color: revision.isPublished ? "#4b4" : "#999",
+                              }}
+                            >
+                              {status}
+                            </span>
+                            {userById &&
+                              revision.createdById &&
+                              userById[revision.createdById] &&
+                              ((user) => (
+                                <span>
+                                  {" "}
+                                  <span style={{ color: "#999" }}>by</span>{" "}
+                                  {user.firstName} {user.lastName}
+                                </span>
+                              ))(userById[revision.createdById])}
+                          </div>
                         </div>
-                      </div>
-                    </MenuItem>
-                  ))}
+                      </PlasmicMenuItem>
+                    );
+                  })}
                 </>
               ),
             }),

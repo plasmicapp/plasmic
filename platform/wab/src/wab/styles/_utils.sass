@@ -1,6 +1,16 @@
 @import './_vars.sass'
 @import './_mixins.sass'
 
+// Plasmic's generated root reset `:where(.root_reset_...) { ... }`
+// sets each root's typography to the project's theme.
+// Use .no-root-reset to counteract that.
+.no-root-reset
+  color: inherit
+  font: inherit
+  white-space: inherit
+
+// Keep this list in sync with POINTER_INTERACTIVE_SELECTORS in client/dom-utils.ts.
+$pointer-interactive-selectors: 'a, button, input, select, textarea, [role="button"], [contenteditable]:not([contenteditable="false"])'
 
 // Typography
 .text-xsm
@@ -756,6 +766,26 @@ $space-xxxlg: 24px
 // Positioning
 .rel
   position: relative
+
+// Place the link before the content inside a positioned parent.
+:where(:has(> .stretched-link))
+  isolation: isolate
+
+.stretched-link
+  position: absolute
+  inset: 0
+  // Keep the link above the parent's background and below its content.
+  z-index: -1
+  border-radius: inherit
+  &:focus-visible
+    @include focused
+    outline: 2px solid transparent
+  // Let the link cover the content while keeping controls interactive.
+  :where(& ~ *)
+    pointer-events: none
+  & ~ :is(#{$pointer-interactive-selectors}),
+  & ~ * :is(#{$pointer-interactive-selectors})
+    pointer-events: auto
 
 .cover
   @include cover

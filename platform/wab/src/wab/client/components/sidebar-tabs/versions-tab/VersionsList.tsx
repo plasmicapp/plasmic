@@ -12,7 +12,10 @@ import { promptTagsAndDesc } from "@/wab/client/prompts";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ApiUser, BranchId } from "@/wab/shared/ApiSchema";
 import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
-import { formatDateShortTimeShort } from "@/wab/shared/utils/date-utils";
+import {
+  formatDateShortTimeShort,
+  toInstant,
+} from "@/wab/shared/utils/date-utils";
 import { Menu, Tag } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
@@ -39,7 +42,7 @@ export const VersionsList = observer(function VersionsList(
     return studioCtx.releases.filter((release) => {
       const title = `${release.version} : ${
         release.description ??
-        formatDateShortTimeShort(new Date(release.createdAt))
+        formatDateShortTimeShort(toInstant(release.createdAt))
       }`;
       return matcher.matches(title);
     });
@@ -122,7 +125,7 @@ export const VersionsList = observer(function VersionsList(
         const menu = renderMenu(release, user);
         const title = `${release.version} : ${
           release.description ??
-          formatDateShortTimeShort(new Date(release.createdAt))
+          formatDateShortTimeShort(toInstant(release.createdAt))
         }`;
 
         return (

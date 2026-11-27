@@ -2,7 +2,6 @@ import {
   AntdConfigProvider,
   configureAntdStatics,
 } from "@/wab/client/antd-theme";
-import "@/wab/client/moment-config";
 import { initObservability } from "@/wab/client/observability";
 import "@/wab/styles/antd-overrides.scss";
 import "@/wab/styles/loader.scss";

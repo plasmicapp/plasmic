@@ -1,5 +1,9 @@
+import { FormattedTime } from "@/wab/client/components/time/FormattedTime";
+import {
+  formatDateShortTimeShort,
+  toInstant,
+} from "@/wab/shared/utils/date-utils";
 import Descriptions from "antd/lib/descriptions";
-import moment from "moment/moment";
 import React from "react";
 
 export function smartRender(value: any) {
@@ -12,10 +16,14 @@ export function smartRender(value: any) {
   }
 
   if (typeof value === "string" || value instanceof Date) {
-    const m = moment(value, moment.ISO_8601, true /* strict parsing */);
-    if (m.isValid()) {
-      return <pre className="m0">{m.format("YYYY-MM-DD HH:mm:ss")}</pre>;
-    }
+    try {
+      const instant = toInstant(value);
+      return (
+        <pre className="m0">
+          <FormattedTime value={instant} format={formatDateShortTimeShort} />
+        </pre>
+      );
+    } catch {}
   } else if (typeof value === "object") {
     return <pre className="m0">{JSON.stringify(value, null, 2)}</pre>;
   }

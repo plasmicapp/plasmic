@@ -1,13 +1,6 @@
 .ariaTooltip:global(.__wab_instance) {
   box-sizing: border-box;
   position: relative;
-  color: #ffffff;
-}
-.slotTargetTrigger {
-  color: var(--token-dED0FYPw-qtp);
-  font-family: var(--token-NQPeu56hWEVO);
-  font-size: var(--token-y-e1zIVKHJyd);
-  line-height: var(--token-wCNdq3-87nVE);
 }
 .text___3QQbq {
   position: relative;

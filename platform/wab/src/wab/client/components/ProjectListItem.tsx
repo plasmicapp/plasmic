@@ -8,6 +8,7 @@ import {
   promptProjectDestination,
 } from "@/wab/client/components/modals/ProjectDestinationModal";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
+import { FormattedTime } from "@/wab/client/components/time/FormattedTime";
 import { Matcher } from "@/wab/client/components/view-common";
 import { ClickStopper } from "@/wab/client/components/widgets";
 import { Textbox } from "@/wab/client/components/widgets/Textbox";
@@ -27,8 +28,8 @@ import {
   getAccessLevelToResource,
 } from "@/wab/shared/perms";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { formatRelative, toInstant } from "@/wab/shared/utils/date-utils";
 import { Menu, notification } from "antd";
-import moment from "moment";
 import React from "react";
 
 interface ProjectListItemProps {
@@ -76,13 +77,23 @@ function ProjectListItem(props: ProjectListItemProps) {
     <>
       <PlasmicProjectListItem
         root={{
-          as: PublicLink,
+          // Move Link to be a sibling to avoid nested focus inside <a>
+          as: "div",
           props: {
             className: props.className,
-            href: APP_ROUTES.project.fill({
-              projectId: project.id,
-            }),
+            href: undefined,
+            platform: undefined,
           },
+          wrapChildren: (children) => (
+            <>
+              <PublicLink
+                aria-label={project.name}
+                className="stretched-link"
+                href={APP_ROUTES.project.fill({ projectId: project.id })}
+              />
+              {children}
+            </>
+          ),
         }}
         showWorkspace={
           !!(
@@ -113,7 +124,15 @@ function ProjectListItem(props: ProjectListItemProps) {
             },
           },
         }}
-        timestamp={`updated ${moment(project.updatedAt).fromNow()}`}
+        timestamp={
+          <span>
+            updated{" "}
+            <FormattedTime
+              value={toInstant(project.updatedAt)}
+              format={formatRelative}
+            />
+          </span>
+        }
         editableName={{
           render: (editableNameProps) => (
             <>

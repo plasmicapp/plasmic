@@ -2,6 +2,7 @@ import CommentPostForm from "@/wab/client/components/comments/CommentPostForm";
 import { ReactionsByEmoji } from "@/wab/client/components/comments/ReactionsByEmoji";
 import { TplCommentThread } from "@/wab/client/components/comments/utils";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
+import { FormattedTime } from "@/wab/client/components/time/FormattedTime";
 import { ClickStopper } from "@/wab/client/components/widgets";
 import {
   DefaultCommentPostProps,
@@ -15,11 +16,11 @@ import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { ApiComment } from "@/wab/shared/ApiSchema";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
 import { ensure, ensureString, maybe } from "@/wab/shared/common";
+import { formatRelative, toInstant } from "@/wab/shared/utils/date-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu } from "antd";
 import copy from "copy-to-clipboard";
 import { groupBy } from "lodash";
-import moment from "moment";
 import * as React from "react";
 
 export interface CommentPostProps extends DefaultCommentPostProps {
@@ -98,7 +99,14 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
         ),
       }}
       canUpdateHistory={canUpdateThreadHistory}
-      timestamp={moment(comment.createdAt).fromNow()}
+      timestamp={{
+        children: (
+          <FormattedTime
+            value={toInstant(comment.createdAt)}
+            format={formatRelative}
+          />
+        ),
+      }}
       thread={isThread}
       userFullName={fullName(author)}
       repliesLink={{ children: repliesLinkLabel }}

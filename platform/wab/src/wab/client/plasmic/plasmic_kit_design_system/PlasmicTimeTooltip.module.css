@@ -1,0 +1,85 @@
+.root:global(.__wab_instance):global(.__wab_instance) {
+  max-width: 100%;
+  width: max-content;
+}
+.trigger {
+  pointer-events: auto;
+}
+.root .trigger:focus-within {
+  box-shadow: 0px 0px 0px 2px #0091ff80;
+  outline: none;
+}
+.columns {
+  animation: none;
+  display: flex;
+  width: max-content;
+  font-family: var(--token-NQPeu56hWEVO);
+  font-size: var(--token-y-e1zIVKHJyd);
+  line-height: var(--token-wCNdq3-87nVE);
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  column-gap: 12px;
+}
+.freeBox__zap6R {
+  animation: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  width: max-content;
+  flex-shrink: 0;
+}
+.relativeValue {
+  animation: none;
+  text-align: right;
+  white-space: pre;
+}
+.zonedValue {
+  animation: none;
+  text-align: right;
+  white-space: pre;
+}
+.localValue {
+  animation: none;
+  text-align: right;
+  white-space: pre;
+}
+.utcValue {
+  animation: none;
+  text-align: right;
+  white-space: pre;
+}
+.freeBox___3Mq7T {
+  animation: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: max-content;
+  flex-shrink: 0;
+}
+.relativeLabel {
+  animation: none;
+  text-align: left;
+  opacity: 0.7;
+  white-space: pre;
+}
+.zonedLabel {
+  animation: none;
+  text-align: left;
+  opacity: 0.7;
+  white-space: pre;
+}
+.localLabel {
+  animation: none;
+  text-align: left;
+  opacity: 0.7;
+  white-space: pre;
+}
+.utcLabel {
+  animation: none;
+  text-align: left;
+  opacity: 0.7;
+  white-space: pre;
+}
