@@ -51,13 +51,15 @@ export function TimeTooltip({
       onOpenChange={setOpen}
       overrides={{
         trigger: {
-          render: ({ className, style }) => (
+          render: ({ className, style, onFocus, onBlur }) => (
             <time
               className={className}
               style={style}
               dateTime={toInstant(value).toString()}
               tabIndex={0}
               aria-describedby={open ? descriptionId : undefined}
+              onFocus={onFocus}
+              onBlur={onBlur}
               onKeyDown={(event) => {
                 if (event.key === "Escape" && open) {
                   event.stopPropagation();

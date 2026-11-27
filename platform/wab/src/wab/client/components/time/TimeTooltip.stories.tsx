@@ -58,6 +58,7 @@ export const Instant: Story = {
     await expect(time.getAttribute("datetime")).toEqual(NOW.toString());
     await userEvent.tab();
     await expect(time).toHaveFocus();
+    await expect(getComputedStyle(time).boxShadow).not.toEqual("none");
     const tooltip = await waitFor(() => screen.getByRole("tooltip"));
     await waitFor(() => expect(tooltip).toBeVisible());
     const details = within(tooltip).getByRole("group");
@@ -73,6 +74,10 @@ export const Instant: Story = {
       expect(screen.queryByRole("tooltip")).not.toBeInTheDocument(),
     );
     await expect(time).toHaveFocus();
+    time.blur();
+    await userEvent.click(time);
+    await expect(time).toHaveFocus();
+    await expect(getComputedStyle(time).boxShadow).toEqual("none");
     time.blur();
   },
 };

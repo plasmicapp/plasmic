@@ -123,6 +123,14 @@ function PlasmicTimeTooltip__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const [isTriggerFocusVisibleWithin, triggerTriggerFocusVisibleWithinProps] =
+    useTrigger("useFocusVisibleWithin", {
+      isTextInput: false
+    });
+  const triggers = {
+    focusVisibleWithin_trigger: isTriggerFocusVisibleWithin
+  };
+
   const styleTokensClassNames = _useStyleTokens();
 
   return (
@@ -259,9 +267,14 @@ function PlasmicTimeTooltip__RenderFunc(props: {
             "span",
             "span__tXkSR",
             "__wab_text",
-            sty.trigger
+            sty.trigger,
+            {
+              [sty.trigger___focusVisibleWithin]:
+                triggers.focusVisibleWithin_trigger
+            }
           )}
           tabindex={"0"}
+          data-plasmic-trigger-props={[triggerTriggerFocusVisibleWithinProps]}
         >
           {"Nov 26, 2026, 12:30 PM"}
         </span>
